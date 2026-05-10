@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use MOIRAIS in your research, please cite the software DOI together with the package paper, the DLRM framework paper, and (where applicable to your work) the Hawkes-process methodology paper."
+message: "If you use MOIRAIS in your research, please cite the software DOI together with the package paper, the MRM framework paper, and (where applicable to your work) the Hawkes-process methodology paper."
 title: "MOIRAIS: Methods for Observational Inference and Robust Analysis of Interventions in Scientific Experimentation"
 authors:
   - family-names: "Ruhela"
@@ -26,7 +26,7 @@ preferred-citation:
   url: "https://doi.org/10.5281/zenodo.20096350"
 references:
   - type: generic
-    title: "The DLRM Framework: A Multi-Source Mathematical Foundation for Canadian Carceral, Police, and Oversight Data, Implemented as RF Modules in MOIRAIS"
+    title: "The MRM Framework: A Multi-Source Mathematical Foundation for Canadian Carceral, Police, and Oversight Data, Implemented as RF Modules in MOIRAIS"
     authors:
       - family-names: "Ruhela"
         given-names: "Vansh Singh"

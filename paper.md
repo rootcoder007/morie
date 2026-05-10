@@ -1,5 +1,5 @@
 ---
-title: 'MOIRAIS: A Multi-Domain Scientific Computing Toolkit, with the DLRM Framework for Canadian Carceral, Police, and Oversight Data'
+title: 'MOIRAIS: A Multi-Domain Scientific Computing Toolkit, with the MRM Framework for Canadian Carceral, Police, and Oversight Data'
 tags:
   - Python
   - R
@@ -11,7 +11,7 @@ tags:
   - cryptography
   - spatial statistics
   - psychometrics
-  - DLRM
+  - MRM
   - Mandela Rules
   - terminal user interface
 authors:
@@ -35,7 +35,7 @@ inference and intervention analysis across a wide range of
 scientific-experimentation contexts, with sociolegal data
 analysis (carceral, police, and oversight) as its named
 flagship domain. The package is
-home to the DLRM (Doob–Levinsky–Ruhela–Medina) framework, a
+home to the MRM (McNamara-Ruhela-Medina) framework, a
 unified mathematical foundation that integrates five distinct
 Canadian carceral, police, and oversight data streams under one
 set of estimators [@ruhela2026dlrm]: provincial Ontario
@@ -47,7 +47,7 @@ Unit (police-oversight) corpus, the Toronto Police Service
 open-data crime categories with the Statistics Canada Crime
 Severity Index [@wallace2009csi], and federal Corrections and
 Conditional Release Statistical Overview tables introduced via
-Doob's *T-539-20* affidavit [@doob2020affidavit]. DLRM is
+Doob's *T-539-20* affidavit [@doob2020affidavit]. MRM is
 implemented in MOIRAIS as a set of RF modules — a 10-estimator
 per-individual causal ensemble paired with a GEE
 clustering grid, a Doob $\chi^{2}$ family for aggregate
@@ -75,7 +75,7 @@ implementation for offline inference.
 
 # Statement of need
 
-Sociolegal data analysis — DLRM's named home domain — sits
+Sociolegal data analysis — MRM's named home domain — sits
 between criminology, statistics, and law, and is produced by disjoint government agencies under
 disjoint legal frameworks. In the Canadian context alone, an
 analyst comparing provincial restrictive-confinement (OTIS),
@@ -87,7 +87,7 @@ data dictionaries, five release cadences, and five formats
 JSON). No primary key joins these sources, and most existing
 software targets one of them in isolation. MOIRAIS addresses this
 gap by providing a single namespace and a single set of
-estimators that span all five sources, with DLRM/RF as the
+estimators that span all five sources, with MRM/RF as the
 unifying mathematical layer.
 
 The package's reach extends well beyond the sociolegal
@@ -123,11 +123,11 @@ consumer hardware.
 
 # Key features
 
-## DLRM framework (the RF modules)
+## MRM framework (the RF modules)
 
 The carceral, police, and oversight analyses are organised
-around the DLRM framework. The RF modules, MOIRAIS's
-implementation of DLRM, cover:
+around the MRM framework. The RF modules, MOIRAIS's
+implementation of MRM, cover:
 
 - An **aggregate IRR family** for Poisson- and
   negative-binomial-distributed counts with a log offset and
@@ -207,7 +207,7 @@ countries.
 
 # Mathematics
 
-The DLRM framework, including the per-individual 10-estimator
+The MRM framework, including the per-individual 10-estimator
 ensemble, the GEE priority ordering, the Doob $\chi^{2}$ family,
 the Goffmanian institutional-churn estimators, and the Mandela
 Rules classifier, is developed in full in [@ruhela2026dlrm].
@@ -223,7 +223,7 @@ Toronto) for the network of mentorship that made this line of
 work possible, and Prof. Ayobami Laniyonu (University of
 Toronto) for valuable lessons over the broader period of this
 work that informed the author's thinking on policing and
-corrections research. The DLRM methodology lineage acknowledges
+corrections research. The MRM methodology lineage acknowledges
 the federal context provided by Anthony N. Doob's affidavit
 [@doob2020affidavit] and the four Sprott–Doob–Iftene
 independent academic reports [@sprottdoob2020operation;

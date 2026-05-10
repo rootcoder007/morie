@@ -21,7 +21,7 @@ MOIRAIS — Methods for Observational Inference and Robust Analysis of Intervent
 A dual-language (Python + R) multi-domain scientific computing toolkit for
 observational inference, with sociolegal, signal-processing, cryptographic,
 spatial-statistics, statistical-physics, and psychometrics modules. Hosts
-the DLRM (Doob–Levinsky–Ruhela–Medina) framework as a primary application
+the MRM (McNamara-Ruhela-Medina) framework as a primary application
 for Canadian carceral, police, and oversight data analysis.
 
 ----
@@ -104,8 +104,8 @@ for auto-generated function reference.
   on the IRM-DML primary estimate. Propensity calibration (Platt /
   isotonic) on IPW / AIPW / SuperLearner-AIPW with Brier score.
 
-**The DLRM framework**
-  Doob-Levinsky-Ruhela-Medina — a 10-estimator framework applied to
+**The MRM framework**
+  McNamara-Ruhela-Medina — a 10-estimator framework applied to
   every Ruhela formulation on OTIS / SIU / TPS data. Per-row
   individual-level + aggregate (Poisson, NB GLM) modes. Mandela-RF
   classifier (UN Mandela Rules 43 + 44) + provincial-vs-federal
@@ -246,7 +246,7 @@ researchers who need:
   Toronto Police Service open-data feeds.
 - Reproducible pipelines that run unattended in CI / CD — outputs
   carry provenance manifests; synthetic data is labelled as such.
-- The DLRM (Doob-Levinsky-Ruhela-Medina) framework as a primary
+- The MRM (McNamara-Ruhela-Medina) framework as a primary
   application for Canadian carceral, police, and oversight data
   (Ontario OTIS, federal SIU, TPS).
 
@@ -275,7 +275,7 @@ navigation, every page on this site is listed below — top to bottom:
 - :doc:`methods/index` — Statistical-methods reference. Estimands,
   causal estimators, survey statistics, spatial methods, Hawkes
   processes, statistical physics of crime, OTIS / TPS / SIU
-  pipelines, the DLRM framework, key empirical findings.
+  pipelines, the MRM framework, key empirical findings.
 - :doc:`api/index` — Auto-generated Python and R API reference
   (function signatures and docstrings).
 - :doc:`contributing` — Development setup, test conventions,

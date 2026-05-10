@@ -53,6 +53,12 @@ Funding and infrastructure
 Mentorship
 ----------
 
-The author thanks Glenn McNamara — retired Ontario Provincial Police
-HQ statistician (~30 years), previously at Statistics Canada — for
-ongoing methodological mentorship since Summer 2025.
+The author thanks **Glenn McNamara** — ~30 years as the statistician
+at Ontario Provincial Police headquarters, preceded by tenure at
+Statistics Canada, with a Mathematics and Linguistics background from
+the University of Toronto — for weekly methodological mentorship over
+the past six months. Glenn introduced the author to foundational
+distribution theory and the applied-statistics intuition for
+administrative data that grounds much of this framework. He is the
+**M** in **MRM (McNamara-Ruhela-Medina)** — the framework that
+powers the OTIS / SIU / TPS analyses across this package.
