@@ -14,8 +14,21 @@ sgolay_smooth(x, window_length = 11L, polyorder = 3L)
 \item{polyorder}{Polynomial order (default 3).}
 }
 \value{
-List with filtered signal.
+List with \code{filtered} (numeric vector) and \code{name}.
 }
 \description{
-Savitzky-Golay smoothing filter
+Polynomial-fit smoothing filter. Preserves higher moments (peak heights,
+shape) better than a moving average and is the standard tool for
+chromatography, spectroscopy, and biosensor smoothing.
+}
+\examples{
+\donttest{
+if (requireNamespace("signal", quietly = TRUE)) {
+  set.seed(1)
+  t <- seq(0, 1, length.out = 200)
+  x <- sin(2 * pi * 3 * t) + rnorm(200, sd = 0.2)
+  y <- sgolay_smooth(x, window_length = 11, polyorder = 3)
+  length(y$filtered)
+}
+}
 }

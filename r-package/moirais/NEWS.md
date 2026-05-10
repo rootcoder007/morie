@@ -1,6 +1,15 @@
-# moirais 0.1.0-4
+# moirais 0.1.1
 
 * Initial CRAN submission.
+* Twelve new R wrappers bring the curated public API to functional parity
+  with the Python sibling: `calculate_ebac()`, `is_over_legal_limit()`,
+  `calculate_ipw_weights()`, `estimate_irm()` (DoubleML wrapper),
+  `infer_measurement_level()`, `profile_dataset()`, `suggest_analysis_plan()`,
+  `compare_nested_logistic_models()`, `run_treatment_effects_analysis()`,
+  `run_weighted_logistic_analysis()`, `inspect_output()`,
+  `verify_statistical_output()`.
+
+# moirais 0.1.0-4 (r-universe pre-CRAN)
 * 99 exported functions across causal inference (ATE/ATT/ATC/GATE/CATE/LATE,
   AIPW, G-computation, IRM via DoubleML, IPW, AIPW, Rosenbaum bounds,
   E-value), survey sampling (stratified/cluster/PPS/bootstrap/jackknife,

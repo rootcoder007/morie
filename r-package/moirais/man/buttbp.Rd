@@ -18,8 +18,22 @@ buttbp(x, fs, low, high, order = 4L)
 \item{order}{Filter order (default 4).}
 }
 \value{
-List with filtered signal and metadata.
+List with \code{filtered} (numeric vector), \code{fs}, \code{order}, \code{name}.
 }
 \description{
-Butterworth bandpass filter
+Zero-phase Butterworth bandpass filter. Isolates a frequency band of
+interest (e.g., 0.5--40 Hz for EEG, 25--400 Hz for phonocardiogram).
+}
+\examples{
+\donttest{
+if (requireNamespace("signal", quietly = TRUE)) {
+  set.seed(1)
+  t <- seq(0, 1, length.out = 1000)
+  # 2 Hz drift + 10 Hz band of interest + 60 Hz noise
+  x <- sin(2 * pi * 2 * t) + sin(2 * pi * 10 * t) +
+       0.3 * sin(2 * pi * 60 * t)
+  y <- buttbp(x, fs = 1000, low = 5, high = 20)
+  length(y$filtered)
+}
+}
 }

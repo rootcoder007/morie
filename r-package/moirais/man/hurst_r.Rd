@@ -2,7 +2,7 @@
 % Please edit documentation in R/signal.R
 \name{hurst_r}
 \alias{hurst_r}
-\title{Hurst exponent via R/S analysis}
+\title{Hurst exponent via rescaled-range (R/S) analysis}
 \usage{
 hurst_r(x)
 }
@@ -10,8 +10,22 @@ hurst_r(x)
 \item{x}{Numeric vector (time series).}
 }
 \value{
-List with H exponent and interpretation.
+List with \code{H} (numeric) and \code{interpretation}
+(\code{"persistent"}/\code{"anti-persistent"}/\code{"random"}).
 }
 \description{
-Hurst exponent via R/S analysis
+Estimates the Hurst exponent \eqn{H}: a long-memory measure of a time
+series. \eqn{H = 0.5} indicates uncorrelated (Brownian) increments;
+\eqn{H > 0.5} indicates persistent (trending) behaviour;
+\eqn{H < 0.5} indicates anti-persistent (mean-reverting) behaviour.
+}
+\examples{
+\donttest{
+if (requireNamespace("pracma", quietly = TRUE)) {
+  set.seed(1)
+  x <- cumsum(rnorm(2048))   # Brownian motion, expected H ~ 0.5
+  res <- hurst_r(x)
+  res$interpretation
+}
+}
 }
