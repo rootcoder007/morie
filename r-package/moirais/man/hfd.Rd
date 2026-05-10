@@ -12,8 +12,18 @@ hfd(x, kmax = 10L)
 \item{kmax}{Maximum k (default 10).}
 }
 \value{
-List with fractal dimension value.
+List with the fractal-dimension value.
 }
 \description{
-Higuchi fractal dimension
+Estimates the Higuchi (1988) fractal dimension of a 1-D time series via
+length scaling across \code{k} time-lags. Used in EEG and biological-signal
+complexity analysis. Values typically fall in [1, 2]; higher values
+indicate greater signal complexity.
+}
+\examples{
+\donttest{
+set.seed(1)
+x <- cumsum(rnorm(1000))
+hfd(x, kmax = 10)
+}
 }

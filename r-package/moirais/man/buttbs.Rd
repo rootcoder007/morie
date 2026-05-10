@@ -18,8 +18,20 @@ buttbs(x, fs, low = 59, high = 61, order = 4L)
 \item{order}{Filter order (default 4).}
 }
 \value{
-List with filtered signal and metadata.
+List with \code{filtered} (numeric vector), \code{fs}, \code{order}, \code{name}.
 }
 \description{
-Butterworth bandstop (notch) filter
+Zero-phase Butterworth bandstop filter. Default 59--61 Hz removes North-
+American AC mains hum (60 Hz); use 49--51 Hz for European mains.
+}
+\examples{
+\donttest{
+if (requireNamespace("signal", quietly = TRUE)) {
+  set.seed(1)
+  t <- seq(0, 1, length.out = 1000)
+  x <- sin(2 * pi * 10 * t) + sin(2 * pi * 60 * t)
+  y <- buttbs(x, fs = 1000)  # remove 60 Hz mains
+  length(y$filtered)
+}
+}
 }

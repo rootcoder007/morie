@@ -1,7 +1,7 @@
 Package: moirais
 Type: Package
 Title: Methods for Observational Inference and Robust Analysis
-Version: 0.1.0-4
+Version: 0.1.1
 Authors@R: c(
   person(
     given = "Vansh Singh",
@@ -24,10 +24,10 @@ Description: Multi-domain scientific computing toolkit for observational
   Companion modules support signal processing and spectral analysis,
   cryptographic primitives, spatial statistics, statistical physics of
   crime (Hawkes self-exciting processes, reaction-diffusion, Levy flight,
-  urban scaling), classical-test-theory and item-response-theory
-  psychometrics, and automated scrapers for the Ontario Special
-  Investigations Unit (police-oversight) and federal Structured Intervention
-  Unit reports.
+  urban scaling), and classical-test-theory and item-response-theory
+  psychometrics, alongside ingestion utilities for officially published
+  Ontario Special Investigations Unit (police-oversight) and federal
+  Structured Intervention Unit reports.
 License: GPL-2 | file LICENSE
 LazyData: true
 Encoding: UTF-8

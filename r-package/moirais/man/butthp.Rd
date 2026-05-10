@@ -16,8 +16,21 @@ butthp(x, fs, cutoff, order = 4L)
 \item{order}{Filter order (default 4).}
 }
 \value{
-List with filtered signal and metadata.
+List with \code{filtered} (numeric vector), \code{fs}, \code{order}, \code{name}.
 }
 \description{
-Butterworth highpass filter
+Zero-phase Butterworth highpass filter. Removes low-frequency drift while
+preserving higher-frequency content; useful for de-trending physiological
+signals (EEG, ECG) prior to analysis.
+}
+\examples{
+\donttest{
+if (requireNamespace("signal", quietly = TRUE)) {
+  set.seed(1)
+  t <- seq(0, 1, length.out = 500)
+  x <- 5 * t + sin(2 * pi * 10 * t)   # linear drift + 10 Hz signal
+  y <- butthp(x, fs = 500, cutoff = 1)
+  length(y$filtered)
+}
+}
 }

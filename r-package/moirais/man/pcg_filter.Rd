@@ -2,7 +2,7 @@
 % Please edit documentation in R/signal.R
 \name{pcg_filter}
 \alias{pcg_filter}
-\title{PCG bandpass filter}
+\title{Phonocardiogram (PCG) bandpass filter}
 \usage{
 pcg_filter(x, fs = 2000, low = 25, high = 400)
 }
@@ -16,8 +16,20 @@ pcg_filter(x, fs = 2000, low = 25, high = 400)
 \item{high}{Upper cutoff (Hz, default 400).}
 }
 \value{
-List with filtered signal.
+List with filtered signal (see \code{\link[=buttbp]{buttbp()}}).
 }
 \description{
-PCG bandpass filter
+Convenience preset wrapping \code{\link[=buttbp]{buttbp()}} with the standard PCG band
+(25--400 Hz at 2000 Hz sampling). Removes baseline drift below 25 Hz and
+anti-aliased high-frequency noise above 400 Hz.
+}
+\examples{
+\donttest{
+if (requireNamespace("signal", quietly = TRUE)) {
+  set.seed(1)
+  x <- rnorm(2000)            # 1 second of white-noise PCG-like input
+  y <- pcg_filter(x)
+  length(y$filtered)
+}
+}
 }
