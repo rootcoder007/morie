@@ -62,10 +62,13 @@ much of this framework. He is the **M** (catalyst) in **MRM
 SIU / TPS analyses across this package.
 
 The author thanks **Prof. Angela Zorro Medina**, Centre for
-Criminology and Sociolegal Studies, University of Toronto, for expert
-review of the framework. Prof. Medina is the **M** (reviewer) in
-MRM. The methodological lineage MRM follows is established in her
-work on anti-gang legislation:
+Criminology and Sociolegal Studies, University of Toronto, who is
+the author's **supervisor**, **methodological instructor**, the
+**domain-expert reviewer** of the preliminary methodological
+approach, and a **knowledge user** of the framework. Prof. Medina
+is the **M** (supervisor & reviewer) in MRM. The methodological
+lineage MRM follows is established in her work on anti-gang
+legislation:
 
    Zorro Medina, Á. (2023). *The Effect of Anti-Gang Laws on Crime
    and Social Control.* University of Chicago Job Market Paper.

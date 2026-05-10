@@ -108,17 +108,20 @@ implementation but does not change the attribution of the work.
   is the **M** in **MRM (McNamara-Ruhela-Medina)** (catalyst).
 
 - The author thanks **Prof. Angela Zorro Medina**, Centre for
-  Criminology and Sociolegal Studies, University of Toronto, for
-  expert review of the framework and for the methodological lineage
-  established by her work on anti-gang legislation (Zorro Medina,
-  2023, *The Effect of Anti-Gang Laws on Crime and Social
-  Control*) — staggered two-way-fixed-effects identification,
-  formal leads-and-lags Granger-causality diagnostics for parallel
-  trends, multi-source data-integration over five jurisdictional
-  sources, deterrence / routine-activities / certainty mechanism
-  categorisation, and the inequality-effects-of-criminal-law
-  framing — all of which directly shape MRM's empirical-statistical
-  spine. Prof. Medina is the **M** in MRM (reviewer).
+  Criminology and Sociolegal Studies, University of Toronto, who is
+  the author's **supervisor**, **methodological instructor**, the
+  **domain-expert reviewer** of the preliminary methodological
+  approach, and a **knowledge user** of the framework. The
+  methodological lineage MRM follows is established in her work on
+  anti-gang legislation (Zorro Medina, 2023, *The Effect of
+  Anti-Gang Laws on Crime and Social Control*) — staggered
+  two-way-fixed-effects identification, formal leads-and-lags
+  Granger-causality diagnostics for parallel trends, multi-source
+  data-integration over five jurisdictional sources, deterrence /
+  routine-activities / certainty mechanism categorisation, and the
+  inequality-effects-of-criminal-law framing — all of which
+  directly shape MRM's empirical-statistical spine. Prof. Medina is
+  the **M** in MRM (supervisor & reviewer).
 
 ### Data acknowledgments
 
