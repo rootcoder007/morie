@@ -3,11 +3,11 @@
 // MOIRAIS docs include shell + Python snippets where lines are
 // annotated with comments, e.g.
 //
-//   pip install moirais        # Python package (41 datasets)
+//   pip install moirais        # Python package (60+ datasets)
 //   pip install moirais[interactive]  # + Terminal IDE
 //
 // New users paste those into a shell and either (a) get an error
-// because the shell doesn't know what `# Python package (41 datasets)`
+// because the shell doesn't know what `# Python package (60+ datasets)`
 // is, or (b) the comment runs as part of the command.
 //
 // Two affordances ship here:

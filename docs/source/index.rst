@@ -33,7 +33,7 @@ Install via pip, Homebrew (forthcoming), or from source:
 
 .. code-block:: bash
 
-   pip install moirais # Python package (41 built-in datasets)
+   pip install moirais # Python package (60+ built-in datasets)
    pip install "moirais[interactive]" # + Terminal IDE (TUI) with textual
    pip install "moirais[carbon]" # + CodeCarbon emissions (Python ≤3.14 only)
 
@@ -50,7 +50,7 @@ Run your first analysis in seconds:
    # Self-diagnostics — checks LLM providers, datasets, R, Docker
    moirais doctor
 
-   # List all 41 built-in datasets
+   # List all 60+ built-in datasets
    moirais list-datasets
 
    # List all 23 analysis modules
@@ -74,7 +74,7 @@ From R:
    # Load built-in dataset (DBI/RSQLite — no file paths needed)
    cpads <- moirais_load_dataset("cpads_2021")
 
-   # List all 41 built-in datasets
+   # List all 60+ built-in datasets
    moirais_list_datasets()
 
    # Browse dataset catalog
