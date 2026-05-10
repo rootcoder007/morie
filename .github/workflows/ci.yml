@@ -1,20 +1,19 @@
 name: CI
 
+# Triggers only on push to main (admin-merge already short-circuits PR review).
+# Path-restricted so docs-only / paper-only / sibling-workflow-only commits
+# don't fire a 5-10 min Python+R test cycle.
+
 on:
   push:
-    branches: ["main", "dev"]
+    branches: ["main"]
     paths:
       - "src/moirais/**"
+      - "tests/**"
       - "r-package/**"
       - "pyproject.toml"
       - ".github/workflows/ci.yml"
-  pull_request:
-    branches: ["main", "dev"]
-    paths:
-      - "src/moirais/**"
-      - "r-package/**"
-      - "pyproject.toml"
-      - ".github/workflows/ci.yml"
+  workflow_dispatch:
 
 jobs:
   test-python:

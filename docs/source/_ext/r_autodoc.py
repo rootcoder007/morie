@@ -625,8 +625,20 @@ def _run_roxygen_prebuild(app: Sphinx) -> None:
     """Run ``Rscript -e 'devtools::document()'`` before Sphinx builds.
 
     This ensures .Rd files in man/ are up-to-date with Roxygen2 comments.
-    Fails gracefully (warning only) if R or devtools is unavailable.
+    Skipped entirely (no subprocess) when:
+      - SKIP_ROXYGEN env var is set (set this in CI)
+      - r_package_dir is unset / missing / lacks DESCRIPTION
+      - Rscript is not on PATH
+    Otherwise runs with a 30s timeout (down from 120s) and never blocks
+    a Sphinx build.
     """
+    import os
+    import shutil
+
+    if os.environ.get("SKIP_ROXYGEN"):
+        logger.info("SKIP_ROXYGEN set; skipping Roxygen2 pre-build.")
+        return
+
     r_pkg_dir = app.config.r_package_dir
     if not r_pkg_dir:
         logger.info("r_package_dir not set; skipping Roxygen2 pre-build.")
@@ -637,11 +649,15 @@ def _run_roxygen_prebuild(app: Sphinx) -> None:
         logger.warning("R package directory %s does not exist.", r_pkg_dir)
         return
 
-    # Check if DESCRIPTION exists (required for devtools::document)
     if not (r_pkg_path / "DESCRIPTION").is_file():
         logger.warning(
             "No DESCRIPTION file in %s; skipping Roxygen2.", r_pkg_dir
         )
+        return
+
+    # Defensive: check Rscript availability before invoking subprocess.
+    if shutil.which("Rscript") is None:
+        logger.info("Rscript not on PATH; skipping Roxygen2 pre-build.")
         return
 
     logger.info("Running Roxygen2 on %s ...", r_pkg_dir)
@@ -654,30 +670,18 @@ def _run_roxygen_prebuild(app: Sphinx) -> None:
             ],
             capture_output=True,
             text=True,
-            timeout=120,
+            timeout=30,
         )
         if result.returncode == 0:
             logger.info("Roxygen2 completed successfully.")
-            if result.stderr:
-                # Roxygen2 writes progress to stderr
-                for line in result.stderr.strip().splitlines():
-                    logger.debug("  roxygen2: %s", line)
         else:
             logger.warning(
-                "Roxygen2 returned non-zero exit code %d. "
-                "R API documentation may be stale.\n"
-                "stderr: %s",
+                "Roxygen2 returned non-zero exit code %d (likely missing "
+                "devtools); R API documentation may be stale.",
                 result.returncode,
-                result.stderr[:500],
             )
-    except FileNotFoundError:
-        logger.warning(
-            "Rscript not found on PATH. "
-            "Install R and devtools to auto-generate R API documentation. "
-            "Sphinx build will continue with existing .Rd files (if any)."
-        )
     except subprocess.TimeoutExpired:
-        logger.warning("Roxygen2 timed out after 120 seconds; skipping.")
+        logger.warning("Roxygen2 timed out after 30 seconds; skipping.")
     except Exception as exc:
         logger.warning("Roxygen2 pre-build failed: %s", exc)
 
