@@ -1,6 +1,6 @@
 Package: moirais
 Type: Package
-Title: MOIRAIS: Methods for Observational Inference and Robust Analysis
+Title: Methods for Observational Inference and Robust Analysis
 Version: 0.1.0-4
 Authors@R: c(
   person(
@@ -52,6 +52,9 @@ Suggests:
   pracma,
   signal,
   smotefamily,
+  DoubleML,
+  mlr3,
+  mlr3learners,
   testthat (>= 3.0.0),
   knitr,
   rmarkdown
