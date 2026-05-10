@@ -88,7 +88,7 @@ install.packages(
 1. Tag the GitHub release with the same `v*.*.*` tag.
 2. Confirm the Zenodo software DOI minted via the GitHub-Zenodo
    integration (see `.zenodo.json`).
-3. Update the DLRM paper's `[Ruhela2026RF]` citation key on Zenodo
+3. Update the MRM paper's `[Ruhela2026RF]` citation key on Zenodo
    to reference the new release DOI.
 4. Update `papers/ruhela-formulations-paper/zenodo-paper-metadata.yaml`
    `related_identifiers` with the new software DOI.

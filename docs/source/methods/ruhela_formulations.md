@@ -3,8 +3,8 @@
 *Part of {doc}`index` — MOIRAIS's statistical-methods reference.*
 
 A **Ruhela formulation** is a (treatment, outcome, covariates) design
-choice for a specific OTIS dataset, paired with the full **DLRM** —
-the 10-estimator Doob-Levinsky-Ruhela-Medina framework — applied to
+choice for a specific OTIS dataset, paired with the full **MRM** —
+the 10-estimator McNamara-Ruhela-Medina framework — applied to
 it. See the attribution block at the head of `moirais.otis_causal`
 for the full lineage.
 
@@ -14,14 +14,14 @@ for the full lineage.
   for a dataset.
 - **RDF** — Ruhela Dual Formulation: an RF paired with a Naive-arm
   sensitivity contrast.
-- **DLRM** — Doob-Levinsky-Ruhela-Medina: the 10-estimator framework
+- **MRM** — McNamara-Ruhela-Medina: the 10-estimator framework
   applied to any RF. The umbrella name for the full causal-method
   ensemble described below.
 
-## DLRM (10 estimators)
+## MRM (10 estimators)
 
 For every RF that resolves to per-row panel data with a binary T and
-numeric Y, DLRM runs:
+numeric Y, MRM runs:
 
 1. **IPW (Hájek)** — single-robust on propensity, Lunceford-Davidian sandwich SE
 2. **AIPW (RRZ doubly-robust)** — cross-fitted IF plug-in
