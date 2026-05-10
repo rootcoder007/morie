@@ -48,6 +48,8 @@ jobs:
           python -m pip install -e ".[docs]"
 
       - name: Build documentation
+        env:
+          SKIP_ROXYGEN: "1"   # CI runner has no R/devtools; bypass r_autodoc subprocess
         run: |
           sphinx-build -b html -j auto docs/source docs/build/html
           touch docs/build/html/.nojekyll

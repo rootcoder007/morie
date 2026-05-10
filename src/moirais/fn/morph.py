@@ -106,5 +106,8 @@ def tsne_reduce(
     return TsneRes(embedding=Y)
 
 
+morph = tsne_reduce
+
+
 def cheatsheet() -> str:
     return "tsne_reduce({}) -> Dimensionality reduction via Barnes-Hut t-SNE. 'Free your mi"

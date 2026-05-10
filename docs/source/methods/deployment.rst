@@ -52,7 +52,7 @@ MOIRAIS runs on Raspberry Pi 5 with the following reference configuration:
 
 - Perseus inference: ~4 tok/s (CPU, Q4_K_M)
 - Full test suite (15976+ tests): ~8 minutes
-- SQLite dataset queries: < 100ms for 41 datasets
+- SQLite dataset queries: < 100ms for 60+ datasets
 
 Docker
 ------
