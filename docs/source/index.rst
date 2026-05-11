@@ -1,5 +1,5 @@
-MORIE — Methods for Observational Inference and Robust Analysis of Interventions in Scientific Experimentation
-=======================================================
+MORIE — Multi-domain Open Research and Inferential Estimation
+=============================================================
 
 .. image:: https://img.shields.io/badge/license-GPL--2.0-blue.svg
    :alt: License: GPL-2.0
