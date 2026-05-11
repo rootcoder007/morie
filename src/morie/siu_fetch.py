@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-only
 """On-demand scraper for the Ontario Special Investigations Unit (SIU).
 
-The SIU publishes Director's Reports at https://siu.on.ca/en/case_directors_reports.php.
+The SIU publishes Director's Reports at https://siu.on.ca/en/directors_reports.php.
 Each case has a public PDF or HTML report listing the incident date, the
 notifying police service, and the Director's decision. This module scrapes
 the index page(s) and per-case detail pages on demand, caching results as
@@ -35,7 +35,7 @@ __all__ = [
 ]
 
 
-SIU_INDEX_URL = "https://siu.on.ca/en/case_directors_reports.php"
+SIU_INDEX_URL = "https://www.siu.on.ca/en/directors_reports.php"
 USER_AGENT = "morie/0.1.15 (+https://github.com/hadesllm/morie)"
 RATE_LIMIT_SECONDS = 2.0
 

@@ -133,6 +133,17 @@ try:
 except ImportError:
     pass
 
+
+try:
+    from .mrm_mandela_spectrum import mrm_otis_mandela_spectrum
+except ImportError:
+    pass
+
+try:
+    from .mrm_lisa import mrm_tps_lisa, mrm_tps_polygon_moran_per_year, LISAResult
+except ImportError:
+    pass
+
 def load_sample(name: str):
     """Load a bundled reference sample CSV by name.
 
@@ -327,6 +338,10 @@ __all__ = [
     "SIU_INDEX_URL",
     "fetch_siu_cases",
     "siu_cache_path",
+    "mrm_otis_mandela_spectrum",
+    "mrm_tps_lisa",
+    "mrm_tps_polygon_moran_per_year",
+    "LISAResult",
     "load_sample",
     "sync_rng",
     "generate_ar_coefficients",
