@@ -1,0 +1,85 @@
+name: Bug report
+description: Report a bug in MORIE (Python or R)
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Before you submit, please skim the
+        open issues to make sure this isn't a duplicate. If the bug
+        involves a security disclosure, please use the SECURITY.md
+        contact instead of this template.
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      description: Which front-end is affected?
+      options:
+        - Python
+        - R
+        - Both
+        - Documentation
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: MORIE version
+      description: "`morie.__version__` (Python) or `packageVersion('morie')` (R)"
+      placeholder: "0.1.3"
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      description: "Output of `uname -a` on macOS/Linux, or your Windows version"
+      placeholder: "Darwin 23.4.0 arm64"
+    validations:
+      required: true
+
+  - type: input
+    id: language_version
+    attributes:
+      label: Python or R version
+      placeholder: "Python 3.12.4 / R 4.4.1"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproducer
+    attributes:
+      label: Minimal reproducer
+      description: |
+        Smallest code that demonstrates the problem. Use a code block
+        with the appropriate language fence.
+      render: python
+      placeholder: |
+        import morie
+        ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+      placeholder: "Got an error message, wrong value, hang, etc."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Full traceback / error (if any)
+      render: shell
