@@ -1,0 +1,68 @@
+name: Feature request
+description: Suggest a new feature, statistical method, or API
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a feature. For new statistical methods,
+        please include a citation. For API additions, sketch the
+        signature you have in mind.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of feature?
+      options:
+        - New statistical method
+        - New estimator / function
+        - Python ↔ R parity (function exists in one language, not the other)
+        - Performance / scalability
+        - Documentation / tutorial
+        - Developer-experience / tooling
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Which front-end?
+      options:
+        - Python
+        - R
+        - Both
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case
+      description: What problem does this feature solve? Who benefits?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_api
+    attributes:
+      label: Proposed API (optional)
+      description: |
+        Sketch the function signature, return type, and a usage
+        example.
+      render: python
+
+  - type: textarea
+    id: citation
+    attributes:
+      label: Citation (required for new methods)
+      description: |
+        DOI / arXiv / textbook for the statistical method this PR
+        would implement. Use the standard citation style.
+      placeholder: "Imbens & Rubin (2015), Causal Inference for Statistics ..."
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other libraries, methods, or workarounds you looked at.
