@@ -1,0 +1,24 @@
+name: Question / discussion
+description: Ask a question about MORIE's design, methodology, or usage
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For methodology questions, please include the citation chain
+        of methods you're comparing against, and what specifically
+        about MORIE's approach is unclear.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: What you've tried / read
+      description: |
+        Documentation pages, papers, or code you've already looked at.

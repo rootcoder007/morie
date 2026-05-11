@@ -1,6 +1,6 @@
 # Acknowledgments
 
-MORIE (Methods for Observational Inference and Robust Analysis of Interventions in Scientific Experimentation) is developed by Vansh Singh Ruhela via the Collaborative Specialization in Addiction Studies (CoPAS) between Dalla Lana School of Public Health (DLSPH) and the Centre for Criminology and Sociolegal Studies (CrimSL) at the University of Toronto School of Graduate Studies (UTSGS).
+MORIE (Multi-domain Open Research and Inferential Estimation) is developed by Vansh Singh Ruhela via the Collaborative Specialization in Addiction Studies (CoPAS) between Dalla Lana School of Public Health (DLSPH) and the Centre for Criminology and Sociolegal Studies (CrimSL) at the University of Toronto School of Graduate Studies (UTSGS).
 
 ## AI Development Partners
 
@@ -9,6 +9,10 @@ MORIE (Methods for Observational Inference and Robust Analysis of Interventions 
 **Google / Gemma** — The Gemma model family (Gemma 3, Gemma 4) powers Perseus, MORIE's resident AI agent. Perseus (`perseus:e2b`) is a custom-tuned Gemma 4 model (7.2GB, Q4_K_M) with domain-specific expertise in causal inference, scientific experimentation, and statistical computing. Google's open model weights enable fully local, private AI inference.
 
 ## Frameworks and Tools
+
+**Jeroen Ooms / r-universe** — [Jeroen Ooms](https://github.com/jeroen) (rOpenSci, University of California, Berkeley) maintains the [r-universe](https://r-universe.dev) infrastructure that builds and serves nightly Linux + macOS + Windows binaries of the `morie` and `moirais` R packages at [hadesllm.r-universe.dev](https://hadesllm.r-universe.dev). r-universe's CRAN-like service is what makes Linux-binary R installation tractable for downstream users without requiring source compilation.
+
+**DoubleML team** — [DoubleML](https://github.com/DoubleML/doubleml-for-py) (Bach, Chernozhukov, Klaassen, Kurz, Spindler) is MORIE's canonical double-machine-learning back-end. The Python and R packages are released under BSD-3-Clause; MORIE wraps DoubleML for its IRM, PLR, and PLIV estimators, with Python and R idiomatic APIs around them. See Bach et al. (2022, *Journal of Statistical Software*, v108i03).
 
 **Andrej Karpathy / autoresearch** — The [autoresearch](https://github.com/karpathy/autoresearch) framework provided the foundation for MORIE's autonomous LLM pretraining experiments, including the 50.3M parameter model trained on Apple Silicon (M2) with MPS acceleration.
 
