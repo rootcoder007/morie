@@ -1,0 +1,48 @@
+language,package,version,kind,license,gpl2_compatible,notes
+Python,pandas,>=2.0,runtime,BSD-3-Clause,Yes,
+Python,numpy,>=1.24,runtime,BSD-3-Clause,Yes,
+Python,scipy,>=1.10,runtime,BSD-3-Clause,Yes,
+Python,scikit-learn,>=1.3,runtime,BSD-3-Clause,Yes,
+Python,statsmodels,>=0.14,runtime,BSD-3-Clause,Yes,
+Python,DoubleML,>=0.7.1,runtime,BSD-3-Clause,Yes,
+Python,matplotlib,>=3.7.0,runtime,PSF-2.0,Yes,matplotlib custom license is BSD-style
+Python,openpyxl,>=3.1.0,runtime,MIT,Yes,
+Python,httpx,>=0.27,runtime,BSD-3-Clause,Yes,
+Python,rich,>=13.0,runtime,MIT,Yes,
+Python,beautifulsoup4,>=4.12,runtime,MIT,Yes,
+Python,lxml,>=5.0,runtime,BSD-3-Clause,Yes,
+Python,stamina,>=8.0,runtime,MIT,Yes,"retry library, replaces tenacity"
+Python,pytest,>=7.0,extra:test,MIT,Yes,
+Python,pytest-cov,any,extra:test,MIT,Yes,
+Python,psutil,any,extra:test,BSD-3-Clause,Yes,
+Python,pypdf,>=4.0,extra:test,BSD-3-Clause,Yes,
+Python,textual,">=0.85,<1.0",extra:interactive,MIT,Yes,
+Python,dashing,>=0.1.0,extra:interactive,MIT,Yes,
+Python,enlighten,>=1.12,extra:interactive,MPL-2.0,Yes,
+Python,imbalanced-learn,>=0.11,extra:ml,MIT,Yes,
+Python,codecarbon,>=2.3,extra:carbon,MIT,Yes,
+Python,sphinx,>=7.0,extra:docs,BSD-2-Clause,Yes,
+Python,myst-parser,any,extra:docs,MIT,Yes,
+Python,sphinxcontrib-mermaid,any,extra:docs,BSD-2-Clause,Yes,
+R,stats,any,imports,Part of R (GPL-2.0-only),Yes,ships with R itself
+R,utils,any,imports,Part of R (GPL-2.0-only),Yes,ships with R itself
+R,R,>= 4.3.0,depends,GPL-2.0-only,Yes,R itself
+R,survey,any,suggests,GPL-2.0-or-later,Yes,
+R,ivreg,any,suggests,GPL-2.0-or-later,Yes,
+R,MatchIt,any,suggests,GPL-2.0-or-later,Yes,
+R,DBI,any,suggests,LGPL-2.1-or-later,Yes,
+R,RSQLite,any,suggests,LGPL-2.1-or-later,Yes,
+R,jsonlite,any,suggests,MIT,Yes,
+R,data.table,any,suggests,MPL-2.0,Yes,
+R,readxl,any,suggests,MIT,Yes,
+R,pracma,any,suggests,GPL-3.0-only,Yes*,"Suggests-only, optional/not linked"
+R,signal,any,suggests,GPL-2.0-or-later,Yes,
+R,smotefamily,any,suggests,GPL-2.0-only,Yes,
+R,DoubleML,any,suggests,BSD-3-Clause,Yes,
+R,mlr3,any,suggests,LGPL-3.0-only,Yes*,"Suggests-only, optional/not linked"
+R,mlr3learners,any,suggests,LGPL-3.0-only,Yes*,"Suggests-only, optional/not linked"
+R,dbscan,any,suggests,GPL-3.0-only,Yes*,"Suggests-only, optional/not linked"
+R,reticulate,any,suggests,Apache-2.0,Yes*,"Suggests-only, optional/not linked; user opt-in"
+R,testthat,>= 3.0.0,suggests,MIT,Yes,
+R,knitr,any,suggests,GPL-2.0-or-later,Yes,
+R,rmarkdown,any,suggests,GPL-2.0-or-later,Yes,

@@ -1,3 +1,25 @@
+# morie 0.2.0 — 2026-05-11
+
+* Completes Python <-> R full parity: adds Python
+  `morie.mrm_classify_mandela()` as the dual of the R-side
+  `morie::mrm_classify_mandela()` (which had shipped in v0.1.14).
+  All 25 v0.2.0-era callables now exist on both language sides.
+* Version bumped from 0.1.15 to 0.2.0 to mark the cumulative
+  significance of the empirical-workflow work shipped since
+  v0.1.3:  12 mrm_* callables, ArcGIS REST + on-demand SIU
+  scraper + OTIS CKAN fetchers, four bundled reference samples,
+  the longitudinal-panel simulator, the animated demo entrypoint,
+  the GPL-2.0-only signaling layer with optional kernel module
+  and LSM-style userspace audit daemon, the §"Empirical workflow
+  callables" companion-paper sections, all five companion papers
+  built clean against this release.
+* Project tracking artefacts added:
+   - `VERSION_INVENTORY.csv` — every file that carries a version
+     string, its category (CURRENT vs HISTORICAL), and the
+     exact match.
+   - `DEPENDENCIES.csv` — every Python and R dependency with
+     name, version pin, license, and GPL-2.0-only compatibility.
+
 # morie 0.1.15 — 2026-05-11
 
 * Adds the MRM empirical-paper callables: `mrm_otis_*` (5 fns, OTIS),

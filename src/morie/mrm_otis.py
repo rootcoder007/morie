@@ -33,6 +33,7 @@ from scipy import stats
 
 
 __all__ = [
+    "mrm_classify_mandela",
     "mrm_otis_placement_concentration",
     "mrm_otis_seg_duration_km",
     "mrm_otis_mortification_cooccurrence",
@@ -238,3 +239,114 @@ def mrm_otis_region_locality(
         diagonal_share=round(diag_sum / total, 4),
         off_diagonal_share=round(1.0 - diag_sum / total, 4),
     )
+
+
+def mrm_classify_mandela(
+    data: pd.DataFrame,
+    *,
+    duration_col: str = "NumberConsecutiveDays_Segregation",
+    year_col: str = "EndFiscalYear",
+    id_col: str = "UniqueIndividual_ID",
+    threshold_days: int = 15,
+    denominator: str = "individual_any",
+    broader_rc: bool = False,
+    alert_cols: tuple = ("MentalHealth_Alert", "SuicideRisk_Alert", "SuicideWatch_Alert"),
+    meaningful_contact_col: str | None = None,
+) -> pd.DataFrame:
+    """Mandela Rules classifier on OTIS-style placement data.
+
+    Python parity of the R-side `morie::mrm_classify_mandela()`.
+    Classifies placement records under the UN Nelson Mandela Rules
+    (A/RES/70/175) which define prolonged solitary as any continuous
+    placement exceeding 15 days. Three denominator conventions:
+
+      - "row"                    per-placement rate
+      - "individual_any"         proportion of individuals with any
+                                 placement above threshold
+      - "individual_cumulative"  proportion of individuals whose
+                                 cumulative within-year segregation
+                                 days exceed threshold
+
+    Args:
+        data: long-format placement frame.
+        duration_col, year_col, id_col: OTIS-b01 column names.
+        threshold_days: Mandela duration threshold (default 15).
+        denominator: one of row/individual_any/individual_cumulative.
+        broader_rc: if True, numerator also counts placements with
+            alert-complexity >= 2 (broader restrictive-confinement).
+        alert_cols: alert columns for the broader rate.
+        meaningful_contact_col: optional federal Sprott-Doob style
+            "1 = meaningful contact met" indicator; rows with met
+            contact are excluded from the numerator.
+
+    Returns:
+        DataFrame with year / denominator / n_mandela / rate / pct /
+        n_broader_rc / rate_broader columns, one row per fiscal year
+        plus a final "pooled" row.
+    """
+    if denominator not in {"row", "individual_any", "individual_cumulative"}:
+        raise ValueError(f"unknown denominator {denominator!r}")
+    if denominator != "row" and id_col not in data.columns:
+        raise KeyError(f"id_col {id_col!r} required when denominator != 'row'")
+    if duration_col not in data.columns or year_col not in data.columns:
+        raise KeyError("duration_col and year_col must be in data")
+
+    dur = data[duration_col]
+    strict_row = dur.notna() & (dur > threshold_days)
+
+    if broader_rc:
+        if not all(c in data.columns for c in alert_cols):
+            raise KeyError(f"alert_cols {alert_cols} must all be in data")
+        alerts_count = sum(
+            (data[c].astype(str) == "Yes").astype(int) for c in alert_cols
+        )
+        broader_row = strict_row | ((alerts_count >= 2) & dur.notna() & (dur > threshold_days))
+    else:
+        broader_row = strict_row
+
+    if meaningful_contact_col is not None:
+        if meaningful_contact_col not in data.columns:
+            raise KeyError(f"meaningful_contact_col {meaningful_contact_col!r} not in data")
+        met = data[meaningful_contact_col].astype(int) == 1
+        strict_row = strict_row & ~met
+        broader_row = broader_row & ~met
+
+    years = sorted(pd.unique(data[year_col]))
+    rows = []
+    for y in [*years, "pooled"]:
+        if y == "pooled":
+            mask = pd.Series(True, index=data.index)
+            label = "pooled"
+        else:
+            mask = data[year_col] == y
+            label = str(y)
+        sub = data[mask]
+        sub_strict = strict_row[mask]
+        sub_broader = broader_row[mask]
+
+        if denominator == "row":
+            denom = int(mask.sum())
+            n_m = int(sub_strict.sum())
+            n_b = int(sub_broader.sum())
+        elif denominator == "individual_any":
+            ids = sub[id_col].dropna().unique()
+            ids_m = sub.loc[sub_strict, id_col].dropna().unique()
+            ids_b = sub.loc[sub_broader, id_col].dropna().unique()
+            denom, n_m, n_b = len(ids), len(ids_m), len(ids_b)
+        else:  # individual_cumulative
+            cum_dur = sub.groupby(id_col)[duration_col].sum()
+            denom = int(cum_dur.size)
+            n_m = int((cum_dur > threshold_days).sum())
+            n_b = n_m
+
+        rate = n_m / denom if denom > 0 else float("nan")
+        rows.append({
+            "year": label, "denominator": denom, "n_mandela": n_m,
+            "rate": rate, "pct": round(100 * rate, 2) if denom > 0 else float("nan"),
+            "n_broader_rc": n_b,
+            "rate_broader": n_b / denom if denom > 0 else float("nan"),
+        })
+    return pd.DataFrame(rows)
+
+
+

@@ -1,7 +1,7 @@
 # Scientific findings from the MORIE empirical pipeline
 
 A condensed map of the verified, reproducible findings the MORIE
-v0.1.15 callables surface on the OTIS, TPS, and SIU public-release
+v0.2.0 callables surface on the OTIS, TPS, and SIU public-release
 data. Each row links the substantive claim to the morie callable
 that re-derives it, the underlying public dataset, and the
 verification result file in `papers/morie-empirical-paper/results/`.
@@ -217,7 +217,7 @@ relevant paper §.
 ## How to re-run any finding
 
 ```bash
-pip install morie==0.1.15
+pip install morie==0.2.0
 python -m morie.demo           # 30-second showcase with animations
 ```
 

@@ -6,7 +6,7 @@ autoresearch venv) without requiring sklearn, httpx, textual, or other
 optional dependencies.
 """
 
-__version__ = "0.1.15"
+__version__ = "0.2.0"
 
 # --- Guarded eager imports — fail gracefully in minimal envs ---
 # In a full morie install these all succeed and populate the namespace.
@@ -59,6 +59,7 @@ except ImportError:
 
 try:
     from .mrm_otis import (
+        mrm_classify_mandela,
         mrm_otis_placement_concentration,
         mrm_otis_seg_duration_km,
         mrm_otis_mortification_cooccurrence,
@@ -307,6 +308,7 @@ __all__ = [
     "validate_cpads_frame",
     "verify_statistical_output",
     # MRM-framework empirical analyses
+    "mrm_classify_mandela",
     "mrm_otis_placement_concentration",
     "mrm_otis_seg_duration_km",
     "mrm_otis_mortification_cooccurrence",
