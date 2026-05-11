@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-License-Identifier: GPL-2.0-only
 """MRM-framework analyses on Toronto Police Service (TPS) open data.
 
 Python parity for `mrm_tps_*` (see `r-package/morie/R/mrm_tps.R`).

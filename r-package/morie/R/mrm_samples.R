@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-License-Identifier: GPL-2.0-only
 #' Bundled reference data samples and dataset fetchers
 #'
 #' MORIE ships a small set of reference CSVs in `inst/extdata/` so that

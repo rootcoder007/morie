@@ -9,7 +9,8 @@ description = "Multi-domain Open Research and Inferential Estimation. Multi-doma
 authors = [
   { name="Vansh Singh Ruhela", email="hadesllm@proton.me" }
 ]
-license = { file = "LICENSE" }
+license = "GPL-2.0-only"
+license-files = ["LICENSE"]
 readme = "README.md"
 requires-python = ">=3.10"
 keywords = [

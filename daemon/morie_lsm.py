@@ -25,12 +25,12 @@ Audit log entries (JSONL, one per line):
      "compatible": true|false, "pid": ...}
 
 Author: Vansh Singh Ruhela (rootcoder007) <hadesllm@proton.me>
-License: GPL-2.0-or-later
+License: GPL-2.0-only
 """
 
 from __future__ import annotations
 
-# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-License-Identifier: GPL-2.0-only
 
 import argparse
 import datetime as _dt

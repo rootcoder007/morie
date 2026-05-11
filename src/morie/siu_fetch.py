@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-License-Identifier: GPL-2.0-only
 """On-demand scraper for the Ontario Special Investigations Unit (SIU).
 
 The SIU publishes Director's Reports at https://siu.on.ca/en/case_directors_reports.php.

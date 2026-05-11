@@ -1,11 +1,11 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+// SPDX-License-Identifier: GPL-2.0-only
 /*
  * morie.ko — symbolic kernel-side companion to the userspace
  * MORIE scientific-computing toolkit.
  *
  * What this module does:
  *   - Registers /sys/kernel/morie/version (the package version string)
- *   - Registers /sys/kernel/morie/license ("GPL-2.0-or-later")
+ *   - Registers /sys/kernel/morie/license ("GPL-2.0-only")
  *   - Registers /sys/kernel/morie/build_info (compile-time stamp)
  *   - Refuses to load on a kernel that rejects MODULE_LICENSE("GPL v2"),
  *     i.e. on tainted (proprietary-symbol-using) kernels.
@@ -26,11 +26,11 @@
  *     make -C /lib/modules/$(uname -r)/build M=$(pwd) modules
  *     sudo insmod morie.ko
  *     cat /sys/kernel/morie/version    # "0.1.15"
- *     cat /sys/kernel/morie/license    # "GPL-2.0-or-later"
+ *     cat /sys/kernel/morie/license    # "GPL-2.0-only"
  *     sudo rmmod morie
  *
  * Author: Vansh Singh Ruhela (rootcoder007) <hadesllm@proton.me>
- * License: GPL-2.0-or-later
+ * License: GPL-2.0-only
  */
 
 #include <linux/module.h>
@@ -40,7 +40,7 @@
 #include <linux/sysfs.h>
 
 #define MORIE_VERSION    "0.1.15"
-#define MORIE_LICENSE_ID "GPL-2.0-or-later"
+#define MORIE_LICENSE_ID "GPL-2.0-only"
 
 static struct kobject *morie_kobj;
 

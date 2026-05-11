@@ -1,7 +1,7 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-License-Identifier: GPL-2.0-only
 """Runtime license-compatibility guard for morie.
 
-morie is GPL-2.0-or-later. This module exposes a `check_plugin_license()`
+morie is GPL-2.0-only. This module exposes a `check_plugin_license()`
 helper that loaded plugins or downstream code can call to confirm
 they are GPL-compatible before consuming morie internals. The guard
 is **advisory** — it warns or raises, but does not enforce at the
@@ -43,7 +43,7 @@ def morie_license_metadata() -> dict[str, str]:
     """Return morie's SPDX-style license metadata."""
     return {
         "package": "morie",
-        "spdx": "GPL-2.0-or-later",
+        "spdx": "GPL-2.0-only",
         "fsf_libre": "yes",
         "osi_approved": "yes",
         "kernel_compatible": "yes (MODULE_LICENSE(\"GPL v2\") accepts this)",
@@ -55,7 +55,7 @@ def check_plugin_license(plugin_spdx: str, *, raise_on_incompatible: bool = Fals
 
     Args:
         plugin_spdx: SPDX-format license identifier of a downstream plugin
-            (e.g. "MIT", "GPL-2.0-or-later", "Apache-2.0").
+            (e.g. "MIT", "GPL-2.0-only", "Apache-2.0").
         raise_on_incompatible: If True, raise ValueError on incompatibility
             instead of warning.
 
@@ -80,7 +80,7 @@ def check_plugin_license(plugin_spdx: str, *, raise_on_incompatible: bool = Fals
     if not ok:
         msg = (
             f"Plugin SPDX {plugin_spdx!r} is not on the FSF GPL-compatible list; "
-            f"linking against morie may violate the morie GPL-2.0-or-later "
+            f"linking against morie may violate the morie GPL-2.0-only "
             f"license. See https://www.gnu.org/licenses/license-list.html"
         )
         if raise_on_incompatible:

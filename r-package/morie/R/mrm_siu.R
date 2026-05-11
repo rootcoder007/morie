@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-License-Identifier: GPL-2.0-only
 #' MRM-framework analyses on Ontario SIU (Special Investigations Unit) data
 #'
 #' Three callables for SIU case-level CSVs. Unlike OTIS (no placement
