@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Iterator, Optional
 
 import httpx
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+import stamina
 
 from ._parser import parse_html, parse_news_html, PARSER_VERSION
 from ._schema import BLANK_ROW
@@ -46,11 +46,12 @@ def _cache_path(cache_dir: Path, drid: int, suffix: str = ".html") -> Path:
     return cache_dir / f"{drid}{suffix}"
 
 
-@retry(
-    stop=stop_after_attempt(RETRY_ATTEMPTS),
-    wait=wait_exponential(multiplier=1.5, min=1, max=15),
-    retry=retry_if_exception_type((httpx.TransportError, httpx.HTTPStatusError)),
-    reraise=True,
+@stamina.retry(
+    on=(httpx.TransportError, httpx.HTTPStatusError),
+    attempts=RETRY_ATTEMPTS,
+    wait_initial=1.0,
+    wait_max=15.0,
+    wait_jitter=1.5,
 )
 def _fetch(client: httpx.Client, url: str) -> httpx.Response:
     """Single GET with retry on transport / 5xx errors. 404 is NOT retried."""
