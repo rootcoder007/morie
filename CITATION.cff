@@ -1,6 +1,6 @@
 cff-version: 1.2.0
-message: "If you use MORIE in your research, please cite BOTH the software (DOI 10.5281/zenodo.20111233) and the companion paper (DOI 10.5281/zenodo.20096350). Where applicable to your work, also cite the MRM framework paper and the Hawkes-process methodology paper."
-title: "MORIE Toolkit: Multi-domain Open Research and Inferential Estimation"
+message: "If you use morie in your research, please cite the language-specific software paper (R: DOI 10.5281/zenodo.20111233; Python: DOI 10.5281/zenodo.20096350). Where applicable to your work, also cite the MRM framework paper (DOI 10.5281/zenodo.20096075) and the Hawkes-process methodology paper (DOI 10.5281/zenodo.20102198)."
+title: "morie: Multi-domain Open Research and Inferential Estimation in R"
 authors:
   - family-names: "Ruhela"
     given-names: "Vansh Singh"
@@ -13,13 +13,19 @@ license: "GPL-2.0-only"
 identifiers:
   - type: doi
     value: "10.5281/zenodo.20111233"
-    description: "MORIE Toolkit software (this release)."
+    description: "morie R software paper (and R package source)."
   - type: doi
     value: "10.5281/zenodo.20096350"
-    description: "MORIE companion paper (preprint)."
+    description: "morie Python software paper (and Python package source)."
+  - type: doi
+    value: "10.5281/zenodo.20096075"
+    description: "MRM framework paper (theoretical foundations)."
+  - type: doi
+    value: "10.5281/zenodo.20102198"
+    description: "Hawkes-process methodology paper."
 preferred-citation:
   type: software
-  title: "MORIE Toolkit: Multi-domain Open Research and Inferential Estimation"
+  title: "morie: Multi-domain Open Research and Inferential Estimation in R"
   authors:
     - family-names: "Ruhela"
       given-names: "Vansh Singh"
@@ -29,25 +35,28 @@ preferred-citation:
   doi: "10.5281/zenodo.20111233"
   url: "https://doi.org/10.5281/zenodo.20111233"
 references:
-  - type: generic
-    title: "MORIE: A Multi-Domain Scientific Computing Toolkit for Observational Inference, with Sociolegal, Signal-Processing, Cryptographic, and Spatial-Statistics Modules"
+  - type: software
+    title: "morie: Multi-domain Open Research and Inferential Estimation in Python"
     authors:
       - family-names: "Ruhela"
         given-names: "Vansh Singh"
         orcid: "https://orcid.org/0009-0004-1750-3592"
     year: "2026"
+    version: "0.1.3"
     doi: "10.5281/zenodo.20096350"
     url: "https://doi.org/10.5281/zenodo.20096350"
-    notes: "Companion paper that introduces the toolkit."
+    notes: "Python companion software paper (same toolkit, Python implementation)."
   - type: generic
-    title: "The MRM Framework: A Multi-Source Statistical Foundation for Canadian Carceral, Police, and Oversight Data, Implemented as MRM Modules in MORIE"
+    title: "MRM Framework: Multi-Source Statistical Foundation for Canadian Carceral, Police, and Oversight Data"
     authors:
       - family-names: "Ruhela"
         given-names: "Vansh Singh"
         orcid: "https://orcid.org/0009-0004-1750-3592"
     year: "2026"
+    version: "v1"
     doi: "10.5281/zenodo.20096075"
     url: "https://doi.org/10.5281/zenodo.20096075"
+    notes: "Theoretical foundations paper for the MRM framework."
   - type: generic
     title: "Criminological Hawkes Process via MORIE: Markovian and Non-Markovian Self-Exciting Point Processes for Toronto Crime"
     authors:
@@ -55,27 +64,7 @@ references:
         given-names: "Vansh Singh"
         orcid: "https://orcid.org/0009-0004-1750-3592"
     year: "2026"
+    version: "v1"
     doi: "10.5281/zenodo.20102198"
     url: "https://doi.org/10.5281/zenodo.20102198"
-  # AI assistants used during development. Listed for transparency;
-  # the author retains full responsibility for the code, the methods,
-  # and the scientific claims. AI use was supported by research-credit
-  # programs from Anthropic and Google respectively.
-  - type: software
-    title: "Claude"
-    authors:
-      - name: "Anthropic"
-    url: "https://www.anthropic.com/claude"
-    notes: "Anthropic Claude (Opus, Sonnet, Haiku — 4.x generation) was used extensively for code generation, refactoring, documentation, and code review."
-  - type: software
-    title: "Gemini"
-    authors:
-      - name: "Google DeepMind"
-    url: "https://deepmind.google/technologies/gemini/"
-    notes: "Google Gemini 2.5 (Pro and Flash) was used extensively for additional code generation, cross-checking, and prototype evaluation."
-  - type: software
-    title: "Vertex AI"
-    authors:
-      - name: "Google Cloud"
-    url: "https://cloud.google.com/vertex-ai"
-    notes: "Google Vertex AI was used as the platform hosting the Gemini 2.5 models invoked during development."
+    notes: "Hawkes methodology paper."
