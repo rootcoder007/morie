@@ -3,7 +3,15 @@
 ^\.Rproj\.user$
 ^\.github$
 ^cran-comments\.md$
-^vignettes$
 ^doc$
 ^Meta$
-^LICENSE$
+
+# Build artifacts and check outputs (must never be in CRAN tarball)
+^.*\.tar\$
+^.*\.tar\.gz\$
+^morie\.Rcheck\$
+^build\$
+^Meta\$
+^\.DS_Store\$
+^\.RData\$
+^PI_HANDOFF\.md\$
