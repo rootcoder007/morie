@@ -38,7 +38,9 @@ Note: Tested on R 4.3.0, 4.4.x, 4.5.2, 4.5.3 (CRAN). Use CRAN R on Apple
   Silicon (Homebrew R may segfault with RSQLite).
 Imports:
   stats,
-  utils
+  utils,
+  Rcpp
+LinkingTo: Rcpp
 Suggests:
   digest,
   openssl,
@@ -91,6 +93,8 @@ URL: https://github.com/hadesllm/morie
 BugReports: https://github.com/hadesllm/morie/issues
 Config/testthat/edition: 3
 Collate:
+  'RcppExports.R'
+  'fast.R'
   'aaa_helpers_det_rng.R'
   'aaa_helpers_fauzi.R'
   'aaa_helpers_ghosal_bnp.R'
