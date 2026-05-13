@@ -86,4 +86,34 @@ jobs:
           v="${{ steps.ver.outputs.version }}"
           git tag -a "v$v" -m "morie v$v (auto-tagged on pyproject.toml bump)"
           git push origin "v$v"
-          echo "::notice title=Auto-tagged::v$v pushed to origin — pypi-publish + docker-publish + release-debrpm should now fire."
+          echo "::notice title=Auto-tagged::v$v pushed to origin."
+
+      # GitHub's documented limitation: tags pushed by GITHUB_TOKEN do
+      # NOT trigger downstream `on: push: tags:` workflows.  Without
+      # this chain-fire step, every auto-tagged release would require
+      # a manual `gh workflow run pypi-publish.yml --ref vX.Y.Z` to
+      # actually ship to PyPI.  Solution: explicitly invoke the tag-
+      # triggered workflows via workflow_dispatch using the same
+      # GITHUB_TOKEN — workflow_dispatch IS allowed to be fired by
+      # the default token, only push events are filtered.
+      - name: Chain-fire publish workflows on the new tag
+        if: steps.gate.outputs.tag_exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          v="${{ steps.ver.outputs.version }}"
+          # pypi-publish: no inputs
+          if [ -f ".github/workflows/pypi-publish.yml" ]; then
+            echo "Triggering pypi-publish.yml on ref v$v..."
+            gh workflow run pypi-publish.yml --ref "v$v" || \
+              echo "::warning::pypi-publish could not be dispatched"
+          fi
+          # release-debrpm: takes a `version` input (without leading v)
+          if [ -f ".github/workflows/release-debrpm.yml" ]; then
+            echo "Triggering release-debrpm.yml on ref v$v with version=$v..."
+            gh workflow run release-debrpm.yml --ref "v$v" -f version="$v" || \
+              echo "::warning::release-debrpm could not be dispatched"
+          fi
+          # docker-publish.yml already fires on push to main (same commit),
+          # so a separate dispatch on the tag would duplicate the container.
+          echo "::notice title=Publish chain::pypi-publish + release-debrpm dispatched on v$v."
