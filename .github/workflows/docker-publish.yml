@@ -109,3 +109,36 @@ jobs:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
+
+      # GHCR containers default to private even when the source repo is
+      # public.  Without this step, every fresh container in the org
+      # silently lands as private, and `docker pull` requires a
+      # `docker login` for end users — defeating the point of a public
+      # release.  We flip visibility = public idempotently on every
+      # push so the setting survives any future org-admin changes.
+      #
+      # Requires the org-level setting at
+      # https://github.com/organizations/hadesllm/settings/packages to
+      # *allow* public packages first; otherwise the PATCH returns
+      # HTTP 422 and we keep going (warning, not fatal).
+      - name: Set container visibility = public
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          owner="${GITHUB_REPOSITORY_OWNER}"
+          pkg="${GITHUB_REPOSITORY##*/}"
+          echo "Setting ghcr.io/${owner}/${pkg} visibility = public ..."
+          if gh api \
+              --method PATCH \
+              -H "Accept: application/vnd.github+json" \
+              "/orgs/${owner}/packages/container/${pkg}/visibility" \
+              -f visibility=public 2>/tmp/visibility-err; then
+            echo "::notice title=Container visibility::ghcr.io/${owner}/${pkg} is now public."
+          else
+            err=$(cat /tmp/visibility-err 2>/dev/null || echo "unknown")
+            echo "::warning title=Container visibility::Could not flip to public — ${err}"
+            echo "If this is the first run, flip the org default at"
+            echo "https://github.com/organizations/${owner}/settings/packages first,"
+            echo "then re-run this workflow."
+          fi

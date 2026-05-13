@@ -106,13 +106,24 @@ install_r() {
 }
 
 # --- Check Python -------------------------------------------------
+#
+# We deliberately do NOT run `python3 -c "..."` here to read the
+# version: on Debian Trixie / Raspberry Pi OS, the system
+# /usr/bin/python3 is python 3.13 and segfaults on basic `-c`
+# invocations.  Falling at the version probe with `set -eu` would
+# abort the install before we could bootstrap uv around the broken
+# interpreter.  Presence-only check; uv handles version selection.
 HAVE_PY=0
 if command -v python3 >/dev/null 2>&1; then
-  PYV=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-  echo "[install.sh] OK python3 $PYV present"
+  # Probe in a way that tolerates a segfaulting interpreter — fall
+  # back to "unknown" rather than aborting if `python3 --version`
+  # also crashes on some boxes.
+  PYV=$(python3 --version 2>&1 || echo "unknown")
+  echo "[install.sh] python3 present ($PYV) — version-managed install via uv ahead"
   HAVE_PY=1
 else
-  echo "[install.sh] -- python3 NOT found"
+  echo "[install.sh] -- python3 NOT found (uv will install a managed python)"
+  HAVE_PY=1   # uv can bootstrap its own python; we don't need system python at all
 fi
 
 # --- Check R -----------------------------------------------------
@@ -152,10 +163,71 @@ if [ "$R" = "1" ] && [ "$HAVE_R" = "0" ]; then
 fi
 
 # --- Python morie -------------------------------------------------
+#
+# Always install into a managed venv (never the system interpreter):
+#   1. PEP 668 ("externally managed environment") breaks bare pip on
+#      modern Debian / Ubuntu / Raspberry Pi OS — and overriding with
+#      --break-system-packages is hostile to the host's package
+#      manager.
+#   2. Debian Trixie's python 3.13.5 segfaults importing the SciPy
+#      stack (numpy/pandas wheels built against newer ABIs).  A venv
+#      with python 3.12 sidesteps this completely.
+#
+# Strategy: prefer `uv` (handles python version + venv in one step).
+# Fall back to stdlib `python3 -m venv` if uv install fails.
+install_python_morie() {
+  VENV="$HOME/.venvs/morie"
+  USERBIN="$HOME/.local/bin"
+
+  # 1. ensure uv (single-binary, no system deps)
+  if ! command -v uv >/dev/null 2>&1 && [ ! -x "$USERBIN/uv" ]; then
+    echo "[install.sh] installing uv (managed python + venv tool) ..."
+    if curl -LsSf https://astral.sh/uv/install.sh | sh; then
+      export PATH="$USERBIN:$PATH"
+    else
+      echo "[install.sh] uv install failed; falling back to stdlib venv"
+    fi
+  fi
+  export PATH="$USERBIN:$PATH"
+
+  if command -v uv >/dev/null 2>&1; then
+    echo "[install.sh] creating venv at $VENV (managed python 3.12) ..."
+    run uv python install 3.12
+    run uv venv "$VENV" --python 3.12 --allow-existing
+    run uv pip install --python "$VENV/bin/python" --upgrade morie
+  else
+    echo "[install.sh] uv unavailable; using stdlib venv with system python"
+    run python3 -m venv "$VENV"
+    run "$VENV/bin/pip" install --upgrade pip
+    run "$VENV/bin/pip" install --upgrade morie
+  fi
+
+  # 2. expose CLI on PATH via a stable shim
+  mkdir -p "$USERBIN"
+  ln -sf "$VENV/bin/morie" "$USERBIN/morie"
+
+  # 3. smoke-test the install — if `import morie` segfaults we want a
+  #    loud failure, not a silent broken state.  We deliberately do
+  #    NOT exercise `morie --version` because the CLI uses subcommands
+  #    (`morie list-modules`, `morie tui`, ...) and has no `--version`
+  #    flag; argparse would emit an error on a healthy install.
+  echo "[install.sh] verifying import ..."
+  if "$VENV/bin/python" -c "import morie; print('morie', morie.__version__, 'OK')"; then
+    echo "[install.sh] ✓ morie installed at $USERBIN/morie (-> $VENV)"
+    case ":$PATH:" in
+      *":$USERBIN:"*) ;;
+      *) echo "[install.sh] NOTE: $USERBIN is not on your PATH — add this to your shell rc:"
+         echo "             export PATH=\"\$HOME/.local/bin:\$PATH\"" ;;
+    esac
+  else
+    echo "[install.sh] !! morie smoke test failed.  Try:"
+    echo "    $VENV/bin/python -c 'import morie'"
+    exit 1
+  fi
+}
+
 if [ "$PY" = "1" ] && [ "$HAVE_PY" = "1" ]; then
-  echo "[install.sh] installing Python morie via pip"
-  run python3 -m pip install --upgrade pip
-  run python3 -m pip install --upgrade morie
+  install_python_morie
 fi
 
 # --- R morie ------------------------------------------------------
