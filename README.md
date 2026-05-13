@@ -16,23 +16,58 @@ A multi-domain scientific computing toolkit (Python and R) for observational inf
 [![MRM paper](https://img.shields.io/badge/MRM_paper-10.5281%2Fzenodo.20096075-15803d?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.20096075)
 [![Hawkes paper](https://img.shields.io/badge/Hawkes_paper-10.5281%2Fzenodo.20102198-be123c?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.20102198)
 
+> ⚠️ **Pre-alpha (v0.x).** MORIE is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift, datasets may move, and findings may be refined between minor versions. See [`papers/`](papers/) for the empirical work behind these releases.
+
 ## Installation
 
-### Python (PyPI)
+### Recommended — one-liner (Linux / macOS / WSL)
+
+The simplest path. Bootstraps everything you need (Python via `uv`, a managed venv, the morie wheel) — works even if you have **no Python and no `pip` installed**.
+
+```bash
+curl -fsSL https://hadesllm.github.io/morie/install.sh | bash
+```
+
+Or, with R alongside Python:
+
+```bash
+curl -fsSL https://hadesllm.github.io/morie/install.sh | bash -s -- --auto
+```
+
+After install, `~/.local/bin/morie` is a thin shim into the managed venv at `~/.venvs/morie`. Full install instructions, channel comparison, and platform-specific notes are at **[hadesllm.github.io/morie/#quick-start](https://hadesllm.github.io/morie/#quick-start)**.
+
+### Python — Homebrew (macOS / Linuxbrew)
+
+```bash
+brew tap hadesllm/morie
+brew install morie
+```
+
+The tap repo is [`hadesllm/homebrew-morie`](https://github.com/hadesllm/homebrew-morie). It pulls morie's source distribution from PyPI and bundles a self-contained `python@3.12` venv — no system Python required.
+
+### Python — PyPI (manual; requires `pip` already installed)
 
 ```bash
 pip install morie
 ```
 
-### R (CRAN)
+> **Heads-up:** modern Debian / Ubuntu / Raspberry Pi OS forbid `pip` outside virtual environments (PEP 668), and the system `python3` on Raspberry Pi OS 13 segfaults on importing the SciPy stack. If `pip install morie` errors or `import morie` segfaults, use the one-liner above instead — it handles both cases automatically.
 
-```r
-install.packages("morie")
+### Python — Docker (no local dependencies)
+
+```bash
+docker run --rm ghcr.io/hadesllm/morie:0.4.13 morie --help
 ```
 
-### R (r-universe; nightly binary builds)
+Multi-arch image published on every release. Requires only Docker — no Python, no pip.
+
+### R — CRAN (when available) or r-universe
 
 ```r
+# Stable from CRAN (when listing is live)
+install.packages("morie")
+
+# Nightly binary builds (recommended while CRAN listing is rolling out)
 install.packages(
   "morie",
   repos = c(
