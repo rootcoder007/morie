@@ -56,10 +56,14 @@ pip install morie
 ### Python — Docker (no local dependencies)
 
 ```bash
-docker run --rm ghcr.io/hadesllm/morie:0.4.13 morie --help
+# Latest stable
+docker run --rm ghcr.io/hadesllm/morie:latest morie --help
+
+# Pin to a specific version (recommended for reproducibility)
+docker run --rm ghcr.io/hadesllm/morie:0.4.14 morie --help
 ```
 
-Multi-arch image published on every release. Requires only Docker — no Python, no pip.
+Multi-arch image published on every release with both versioned and `:latest` tags. Requires only Docker — no Python, no pip.
 
 ### R — CRAN (when available) or r-universe
 
