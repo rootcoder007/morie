@@ -13,7 +13,15 @@ lazy loader returns AttributeError (as if the symbol were never
 exposed), matching the previous try/except-pass behaviour.
 """
 
-__version__ = "0.4.0"
+try:
+    from importlib.metadata import PackageNotFoundError, version as _pkg_version
+    try:
+        __version__ = _pkg_version("morie")
+    except PackageNotFoundError:
+        __version__ = "0.0.0+unknown"
+    del _pkg_version, PackageNotFoundError
+except ImportError:
+    __version__ = "0.0.0+unknown"
 
 # name -> submodule (".cpads", ".causal", ...).  Generated from the
 # previous eager try-import block at v0.3.0.  Edit this dict to add
