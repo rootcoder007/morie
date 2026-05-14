@@ -27,7 +27,7 @@ Everything else (working drafts, frozen arxiv bundles, paper PDFs, results CSVs,
 
 ## Version stamp
 
-All five papers carry a `morie version stamp` comment block (right after `\Plainkeywords{}`) declaring the morie public-API version the paper documents. The current stamp is **morie v0.7.0**. The papers will be re-stamped on each major API revision.
+All five papers carry a `morie version stamp` comment block (right after `\Plainkeywords{}`) declaring the morie public-API version the paper documents. The current stamp is **morie v0.7.2**. The papers will be re-stamped on each major API revision.
 
 ## Citing
 

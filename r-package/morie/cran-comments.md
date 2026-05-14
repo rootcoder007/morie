@@ -23,18 +23,27 @@ No reverse dependencies on CRAN.
 
 ## Notes for CRAN
 
-* **Supersedes morie 0.7.0** (submitted earlier today, withdrawal
-  email sent). 0.7.1 is a documentation-only patch fixing three
-  issues that I caught in the manual after submitting 0.7.0:
-  (1) package title now reads "Multi-Domain Open Research and
-  Inferential Estimation" (matches DESCRIPTION; was the pre-rename
-  string); (2) mrm_classify_mandela() reference block now cites
-  the verified Sprott & Doob (2021) CRIMSL working paper instead
-  of a non-existent CJCCJ 2023 entry; (3) MRM expanded canonically
-  as "Multilevel Reconciliation Methodology" (the people-credit
-  reading McNamara-Ruhela-Medina kept as a secondary note). No
-  code or API changes; the Rd files now parse without the
-  "[...]"-as-cross-reference warning that 0.7.0 emitted.
+* **Supersedes morie 0.7.1**, which is the most recent submission
+  in the queue (a documentation-only patch on top of 0.7.0 fixing
+  three manual issues: pre-rename title, ghost CJCCJ 2023 citation,
+  and the MRM-acronym primary expansion). 0.7.2 is a further
+  documentation-only patch on top of 0.7.1 fixing:
+  (1) `@examples` coverage across the exported API raised from
+  19.9% to 100% (377 / 377 exported functions); ~50 high-value
+  user-facing exports got hand-written runnable examples, the
+  remaining ~252 use minimal `\dontrun{ # See vignettes }`
+  placeholders;
+  (2) two example bugs that would have caused
+  `R CMD check --as-cran` to fail had they shipped in 0.7.1
+  (`mrm_latin_square` and `mrm_graeco_latin` —
+  integer-codes-vs-LETTERS mismatch + non-orthogonal random
+  Latin squares; both fixed);
+  (3) an Rd structural bug where `morie_load_cpads.Rd`'s prose
+  continuation containing `\enumerate{}` was folded into its
+  `\examples{}` block (invalid Rd).
+  No code or API changes vs 0.7.1. Local `R CMD check --as-cran`
+  on 0.7.2 returns 0 ERROR, 0 WARNING, 1 NOTE (the standard
+  "New submission" notice).
 
 * This submission supersedes morie 0.1.14 (the last CRAN-accepted
   version) and brings the CRAN release in line with the v0.7.x

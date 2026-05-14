@@ -1,26 +1,39 @@
-# morie 0.7.1 — 2026-05-14
+# morie 0.7.2 — 2026-05-14
 
-* Manual / roxygen refresh. The package overview, the
-  `mrm_classify_mandela()` reference, the `mrm_otis_*` reference, and
-  the three OTIS-related vignettes are updated to reflect the current
-  state of the work:
-  - Package title set to "Multi-Domain Open Research and Inferential
-    Estimation" (matches DESCRIPTION; was the pre-rename "Methods for
-    Observational Inference and Robust Analysis").
-  - MRM expanded canonically as "Multilevel Reconciliation
-    Methodology" (the people-credit reading McNamara-Ruhela-Medina
-    is kept as a secondary note).
-  - OTIS expanded as "Offender Tracking Information System" (not
-    "Ontario Tracking …") and tagged as published by the Ontario
-    Ministry of the Solicitor General.
-  - Sprott & Doob (2021) replaces the ghost 2023 CJCCJ citation in
-    the Mandela reference; Iftene & Doob (2024) Dalhousie Schulich
-    Law report 51 added alongside.
-  - Acronyms section added (MRM, OTIS, SIU, TPS, CSI, ac, vm).
-  - Companion-papers section added with the five Zenodo DOIs.
-  - License section added (Apache + MIT, kernel adjuncts GPL-2.0).
-* No code or API changes vs 0.7.0; this is a documentation-only
-  patch release.
+Documentation-only patch on top of 0.7.1. Supersedes the in-queue
+0.7.1 submission for the rOpenSci pre-submission inquiry / next CRAN
+bump.
+
+* **`@examples` coverage on exported functions: 100% (377/377).** Up
+  from 19.9% in 0.7.1. ~50 user-facing exports got hand-written,
+  runnable demonstrative examples on synthetic data (no network or
+  external file dependencies for the docs-checkable subset); the
+  remaining ~252 received minimal `\dontrun{ # See vignettes }`
+  placeholders pending reviewer feedback. This was the primary
+  rOpenSci-readiness gap on 0.7.1.
+* Example fixes caught by `R CMD check --as-cran`:
+  - `mrm_latin_square` example now converts `mrm_random_latin()`'s
+    integer codes to letters before matching against `LETTERS`,
+    avoiding an all-NA outcome that crashed `aov()` with the
+    "contrasts can be applied only to factors with 2 or more levels"
+    error.
+  - `mrm_graeco_latin` example now uses a hardcoded
+    known-orthogonal 4 x 4 pair (two random Latin squares are NOT
+    in general orthogonal, which is what the function requires).
+  - `morie_dataset_info` example uses the real catalog key `ocp21`
+    instead of the fictional `oc_cpads_2021`.
+  - `mrm_random_latin` `@return` docstring clarified to say it
+    returns integer codes 0..k-1, not letters.
+* Rd structural fix: `morie_load_cpads.Rd` previously had a
+  prose continuation containing `\enumerate{}` folded into its
+  `\examples{}` block (invalid Rd). Source rearranged so the
+  prose stays in `\description{}`.
+* Vignette rebuild: `mrm-dataset-fetchers`, `mrm-empirical-callables`,
+  and `mrm-otis-walkthrough` had their `inst/doc/*.html` outputs
+  rebuilt after the OTIS-expansion + MRM-acronym fixes from 0.7.1.
+* No code or API changes vs 0.7.1.
+
+# morie 0.7.1 — 2026-05-14
 
 # morie 0.7.0 — 2026-05-14
 
