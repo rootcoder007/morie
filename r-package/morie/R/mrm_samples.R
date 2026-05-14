@@ -58,6 +58,10 @@ morie_sample <- function(name = c("otis_b01", "otis_b09", "otis_c11", "tps_assau
 #'
 #' @return Named character vector mapping TPS category names to ArcGIS
 #'   FeatureServer layer roots.
+#' @examples
+#' urls <- morie_tps_layer_urls()
+#' names(urls)          # categories: Assault, AutoTheft, Homicide, ...
+#' length(urls)         # number of layers
 #' @export
 morie_tps_layer_urls <- function() {
   c(
@@ -97,6 +101,16 @@ morie_tps_layer_urls <- function() {
 #'   path without re-downloading.
 #' @param max_per_page ArcGIS page size (default `2000`; server caps).
 #' @return Path to the CSV.
+#' @examples
+#' \dontrun{
+#'   # Network: fetches major-crime indicators from the Toronto Police
+#'   # ArcGIS open-data layer.
+#'   csv <- morie_fetch_tps(category = "Assault",
+#'                          cache_dir = tempdir(),
+#'                          where = "OCC_YEAR = 2024")
+#'   tps <- utils::read.csv(csv)
+#'   nrow(tps)
+#' }
 #' @export
 morie_fetch_tps <- function(
   category,
@@ -169,6 +183,14 @@ morie_fetch_tps <- function(
 #' @param overwrite Logical; if `FALSE` and `SIU.csv` exists, returns
 #'   its path without rescraping.
 #' @return Path to the populated SIU.csv.
+#' @examples
+#' \dontrun{
+#'   # Network: scrapes the Ontario SIU Director's Reports site.
+#'   csv <- morie_fetch_siu(years = 2023:2024,
+#'                          cache_dir = tempdir())
+#'   siu <- utils::read.csv(csv)
+#'   table(siu$year)
+#' }
 #' @export
 morie_fetch_siu <- function(
   years = NULL,

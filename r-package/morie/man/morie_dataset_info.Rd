@@ -15,3 +15,10 @@ A named list with dataset metadata.
 \description{
 Get metadata for a single dataset
 }
+\examples{
+info <- morie_dataset_info("oc_cpads_2021")
+info$source; info$year
+# Fuzzy match works too:
+morie_dataset_info("cpads_2021")$key
+
+}

@@ -13,3 +13,8 @@ FeatureServer layer roots.
 \description{
 TPS ArcGIS layer URLs known to MORIE
 }
+\examples{
+urls <- morie_tps_layer_urls()
+names(urls)          # categories: Assault, AutoTheft, Homicide, ...
+length(urls)         # number of layers
+}

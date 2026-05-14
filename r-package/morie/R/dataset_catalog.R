@@ -20,6 +20,13 @@
 #' @return A data.frame with 36 rows (one per dataset) and columns:
 #'   key, name, source, survey, year, format, type, large_file,
 #'   local_path, table_name, ckan_resource_id.
+#' @examples
+#' cat <- morie_dataset_catalog()
+#' nrow(cat)
+#' head(cat[, c("key", "name", "source", "year")])
+#' # Find Ontario carceral datasets:
+#' cat[grepl("OTIS|Ontario", paste(cat$source, cat$survey)),
+#'     c("key", "year")]
 #' @export
 morie_dataset_catalog <- function() {
   entries <- list(
