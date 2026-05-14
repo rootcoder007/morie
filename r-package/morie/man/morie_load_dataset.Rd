@@ -19,3 +19,9 @@ Resolution: SQLite cache -> local file ingest -> CKAN API -> error.
 Supports fuzzy matching: \code{morie_load_dataset("cpads_2021")} resolves
 to \code{oc_cpads_2021}.
 }
+\examples{
+\dontrun{
+  df <- morie_load_dataset("oc_cpads_2021")
+  nrow(df)
+}
+}

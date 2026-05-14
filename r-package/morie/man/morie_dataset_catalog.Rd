@@ -21,3 +21,11 @@ and CKAN resource ID (if available).
 Keys match the Python DATASET_CATALOG in \code{data.py} exactly.
 Use \code{\link{morie_load_dataset}} to load by key.
 }
+\examples{
+cat <- morie_dataset_catalog()
+nrow(cat)
+head(cat[, c("key", "name", "source", "year")])
+# Find Ontario carceral datasets:
+cat[grepl("OTIS|Ontario", paste(cat$source, cat$survey)),
+    c("key", "year")]
+}

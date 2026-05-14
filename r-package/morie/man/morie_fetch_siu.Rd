@@ -32,3 +32,12 @@ The scraped corpus is NOT shipped with the package; each user runs
 the scraper themselves, which is unambiguously fair use of public
 oversight reports.
 }
+\examples{
+\dontrun{
+  # Network: scrapes the Ontario SIU Director's Reports site.
+  csv <- morie_fetch_siu(years = 2023:2024,
+                         cache_dir = tempdir())
+  siu <- utils::read.csv(csv)
+  table(siu$year)
+}
+}

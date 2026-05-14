@@ -30,6 +30,17 @@ morie_builtin_db <- function() {
 #' @param db_path Path to the SQLite file. Defaults to
 #'   \code{MORIE_CACHE_DB} env var or \code{data/cache/morie.db}.
 #' @return A DBI connection object.
+#' @examples
+#' \donttest{
+#'   if (requireNamespace("DBI", quietly = TRUE) &&
+#'       requireNamespace("RSQLite", quietly = TRUE)) {
+#'     tmp <- tempfile(fileext = ".db")
+#'     con <- morie_db_connect(db_path = tmp)
+#'     DBI::dbListTables(con)
+#'     DBI::dbDisconnect(con)
+#'     file.remove(tmp)
+#'   }
+#' }
 #' @export
 morie_db_connect <- function(db_path = NULL) {
   if (!requireNamespace("DBI", quietly = TRUE) ||
@@ -139,6 +150,13 @@ morie_cache_file <- function(path, table_name, db_path = NULL) {
 
 #' Load CPADS data: local files -> cache -> CKAN API
 #'
+#' @examples
+#' \donttest{
+#'   # Prefers local + cache; falls back to CKAN only when use_ckan = TRUE.
+#'   cpads <- morie_load_cpads(use_ckan = FALSE)
+#'   if (!is.null(cpads)) head(cpads)
+#' }
+#'
 #' Resolution order:
 #' \enumerate{
 #'   \item Local RDS/CSV files in standard project locations
@@ -186,6 +204,15 @@ morie_load_cpads <- function(db_path = NULL, use_ckan = TRUE) {
 }
 
 #' Fetch data from the CKAN API and cache it
+#'
+#' @examples
+#' \dontrun{
+#'   # Requires network access. Fetches the first 5000 rows of the
+#'   # Canadian Postsecondary Alcohol and Drug Use Survey from the
+#'   # Government of Canada CKAN datastore:
+#'   cpads <- morie_fetch_ckan(dataset_key = "cpads", limit = 5000L)
+#'   nrow(cpads)
+#' }
 #'
 #' @param dataset_key One of \code{"cpads"}, \code{"csads"}, \code{"csus"}.
 #' @param limit Max records to fetch.
@@ -273,6 +300,11 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = 32000L, db_path = NU
 #' Supports fuzzy matching: \code{morie_load_dataset("cpads_2021")} resolves
 #' to \code{oc_cpads_2021}.
 #'
+#' @examples
+#' \dontrun{
+#'   df <- morie_load_dataset("oc_cpads_2021")
+#'   nrow(df)
+#' }
 #' @param key Dataset catalog key (or fuzzy match).
 #' @param db_path Optional override for the database path.
 #' @return A data.frame.
@@ -358,6 +390,12 @@ morie_list_datasets <- function(db_path = NULL) {
 }
 
 #' Get metadata for a single dataset
+#'
+#' @examples
+#' info <- morie_dataset_info("oc_cpads_2021")
+#' info$source; info$year
+#' # Fuzzy match works too:
+#' morie_dataset_info("cpads_2021")$key
 #'
 #' @param key Dataset catalog key (or fuzzy match).
 #' @return A named list with dataset metadata.

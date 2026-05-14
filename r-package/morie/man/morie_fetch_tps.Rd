@@ -33,3 +33,14 @@ Pages through the ArcGIS \verb{/query} endpoint and writes a tidy CSV to
 the morie cache directory. Calls back to a cached file on subsequent
 calls unless \code{overwrite = TRUE}.
 }
+\examples{
+\dontrun{
+  # Network: fetches major-crime indicators from the Toronto Police
+  # ArcGIS open-data layer.
+  csv <- morie_fetch_tps(category = "Assault",
+                         cache_dir = tempdir(),
+                         where = "OCC_YEAR = 2024")
+  tps <- utils::read.csv(csv)
+  nrow(tps)
+}
+}

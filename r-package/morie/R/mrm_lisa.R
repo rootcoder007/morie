@@ -143,6 +143,20 @@ mrm_tps_lisa <- function(
 #'   \code{mrm_tps_lisa}.
 #' @return data.frame with columns \code{year}, \code{n_events},
 #'   \code{moran_I}, \code{global_p_value}.
+#' @examples
+#' # 4 x 4 polygon grid with two yearly count columns.
+#' set.seed(2026)
+#' grid <- expand.grid(lat = 43.6 + (0:3) * 0.02,
+#'                     lon = -79.4 + (0:3) * 0.02)
+#' grid$ASSAULT_2023 <- rpois(nrow(grid), lambda = grid$lat * 10)
+#' grid$ASSAULT_2024 <- rpois(nrow(grid), lambda = grid$lat * 12)
+#' res <- mrm_tps_polygon_moran_per_year(
+#'   grid,
+#'   year_cols = c("ASSAULT_2023", "ASSAULT_2024"),
+#'   lat_col = "lat", lon_col = "lon",
+#'   k = 4L, n_permutations = 99L, seed = 42L
+#' )
+#' res
 #' @export
 mrm_tps_polygon_moran_per_year <- function(
   data, year_cols,

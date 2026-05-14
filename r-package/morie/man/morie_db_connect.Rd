@@ -17,3 +17,15 @@ A DBI connection object.
 Opens (or creates) the shared cache at \code{data/cache/morie.db}.
 Both R (DBI/RSQLite) and Python (sqlite3) read/write this same file.
 }
+\examples{
+\donttest{
+  if (requireNamespace("DBI", quietly = TRUE) &&
+      requireNamespace("RSQLite", quietly = TRUE)) {
+    tmp <- tempfile(fileext = ".db")
+    con <- morie_db_connect(db_path = tmp)
+    DBI::dbListTables(con)
+    DBI::dbDisconnect(con)
+    file.remove(tmp)
+  }
+}
+}
