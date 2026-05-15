@@ -184,7 +184,7 @@ morie list-modules | head -5
 
 ## 2. Windows
 
-Windows ships without `curl`, `bash`, `python`, or `R`, so the Linux/macOS curl one-liner above will not run there. There are two ways in. The **official installers** (2A) need no prerequisites and work on every Windows — this is the recommended path. **winget** (2B) is faster but is *not present on every Windows install*, so do not assume it. Run all terminal commands in **PowerShell** or **Windows Terminal**; WSL users should follow option 1 instead.
+Windows ships without `bash`, `python`, and `R` (though it *does* include `curl`), so the Linux/macOS one-liner above — which needs `bash` — will not run on native Windows. There are two ways in, and **both work**: the **official installers** (2A) need no prerequisites and work on every Windows; **winget** (2B) is faster where it is present. Pick whichever you prefer. Run all terminal commands in **PowerShell** or **Windows Terminal**; WSL users should follow option 1 instead.
 
 ### 2A. Official installers (recommended — works everywhere)
 
@@ -215,7 +215,7 @@ python -c "import morie; print(morie.__version__)"
 Rscript -e "library(morie); cat(as.character(packageVersion('morie')), '\n')"
 ```
 
-### 2B. winget (faster — only if your Windows has it)
+### 2B. winget (also works — where your Windows has it)
 
 `winget` is Microsoft's package manager. It is bundled with current Windows 11, **but it is missing from many installs** — older Windows 10 builds, freshly imaged machines that have not run Store updates, Windows LTSC, and Windows Server. **Check first:**
 
@@ -223,16 +223,17 @@ Rscript -e "library(morie); cat(as.character(packageVersion('morie')), '\n')"
 winget --version
 ```
 
-- If that prints a version (e.g. `v1.8.x`), you can install the prerequisites with winget:
+- **If that prints a version** (e.g. `v1.8.x`), winget can install every Windows prerequisite for you, each from its official publisher:
 
   ```powershell
-  winget install -e --id Python.Python.3.12
-  winget install -e --id RProject.R
+  winget install -e --id Python.Python.3.12   # Python + pip
+  winget install -e --id Git.Git              # Git, including Git Bash
+  winget install -e --id RProject.R           # R (only for the R package)
   ```
 
-  Close and reopen the terminal afterwards so `python.exe` / `Rscript.exe` land on `PATH`, then install morie with the `pip` / `Rscript` commands from 2A.
+  `curl` needs no install — it already ships with Windows 10 (1803+) and 11. Close and reopen the terminal afterwards so the new tools land on `PATH`, then install morie with the `pip` / `Rscript` commands from 2A.
 
-- If `winget --version` errors ("not recognized") or prints nothing, winget is not installed. Either install **"App Installer"** from the Microsoft Store (that provides `winget`) and reopen the terminal, or just use **option 2A** — it does not need winget at all.
+- **If `winget --version` errors** ("not recognized") or prints nothing, winget is not installed. Install **"App Installer"** from the Microsoft Store — that is the official source of `winget` — then reopen the terminal. Or skip winget entirely and use **option 2A**, which needs no winget at all. Either way, every tool comes from its official publisher.
 
 ### Known Windows gotchas
 
@@ -468,7 +469,7 @@ The agent reads morie's own source + documentation and answers in plain English.
 
 ## Pulling open data with `morie ingest`
 
-v0.5.0 ships three open-data adapters:
+morie ships three open-data adapters:
 
 ```bash
 # CKAN portals (open.canada.ca, data.gov.uk, data.europa.eu, ...)
