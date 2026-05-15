@@ -2,34 +2,88 @@
 
 > ⚠️ **Pre-alpha (v0.x).** morie is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift, datasets may move, and findings may be refined between minor versions.
 
-## Easiest: the click-through installer
+## Start here: which method should I use?
 
-If you just want morie working with no setup — no Python, no pip, no
-winget — download the installer for your system from the
-**[latest release](https://github.com/hadesllm/morie/releases/latest)**
-and run it:
+morie is a Python (and R) package. Every method below ends with morie
+installed and working — they differ only in what you need to have
+*first*.
 
-| System | File | How |
-|---|---|---|
-| **Windows** | `morie-*-windows-x64-setup.exe` | Double-click, follow the wizard. Unsigned — at the SmartScreen prompt click **More info → Run anyway**. The x64 build also runs on Windows on ARM via emulation. |
-| **macOS** | `morie-*-macos-arm64.pkg` | Double-click, follow the installer (Apple Silicon). Intel Macs: use `pip install morie` or the one-liner below. |
-| **Linux** | `morie_*_amd64.deb` / `morie_*_arm64.deb`, or `morie-*.x86_64.rpm` / `morie-*.aarch64.rpm` | `sudo apt install ./morie_*.deb` or `sudo dnf install ./morie-*.rpm` |
+- **Windows, nothing installed** — you only need a web browser. Install
+  Python from [python.org](https://www.python.org/downloads/) (one
+  click — walkthrough in [section 2](#2-windows)), then
+  `pip install morie`. Windows has no `curl` or `bash`, so the
+  one-liner does not apply there.
+- **macOS or Linux, comfortable with a terminal** — the
+  [curl one-liner](#1-curl-one-liner-linux--macos--wsl) sets everything
+  up. It needs `curl` and `bash`, which macOS has built in and most
+  Linux ships.
+- **You already have Python ≥3.10** — `pip install morie`
+  ([section 4](#4-pypi-manual-pip)).
 
-On Linux, pick the file matching your CPU architecture
-(`amd64`/`x86_64` for Intel/AMD, `arm64`/`aarch64` for ARM).
-The installer wraps a self-contained Python bundle. When it finishes,
-open a terminal — on Windows, the **"morie Console"** Start Menu
-shortcut opens one ready to go — and run `morie --help`.
+If you have *nothing* — no Python, no `pip`, no `curl`, no `bash`, no
+`winget` — read the next section first. It shows, per operating
+system, how to get the one tool each path needs, using only a web
+browser.
 
-This installs the morie **command-line tool**. To use morie as a
-Python library (`import morie`) in your own scripts, use one of the
-manual channels below instead.
+## Before you start: getting the basic tools (from scratch)
 
-## Manual install channels
+You do not need to be technical for this. Each install path needs
+**one** thing present beforehand; here is how to get it with nothing
+but a web browser.
 
-For more control, or to use morie as a Python/R library, morie also
-ships across six manual channels. Pick the one that matches your
-environment.
+### Windows — from scratch
+
+Windows ships without `python`, `pip`, and `bash`, and often without
+`winget`. The one tool you need is **Python**, and a browser is enough
+to get it:
+
+1. Open <https://www.python.org/downloads/> in Edge (or any browser).
+2. Click the big **"Download Python 3.x"** button.
+3. Run the file it downloads. **On the very first screen, tick
+   "Add python.exe to PATH"**, then click **Install Now**.
+4. Done — you now have `python` and `pip`. Continue at
+   [section 2](#2-windows).
+
+`winget` (Microsoft's package manager) is **optional** — you do not
+need it. If you want it anyway: open the **Microsoft Store**, search
+for **"App Installer"**, and install it; that provides `winget`. The
+python.org steps above do not need `winget` at all.
+
+### macOS — from scratch
+
+macOS already includes `curl`, `bash`, and `zsh` — you are not missing
+anything. You only need to open a terminal:
+
+1. Press `Cmd+Space`, type `Terminal`, and press `Enter`.
+2. Continue at [section 1](#1-curl-one-liner-linux--macos--wsl).
+
+(macOS does not ship `python3` by default, but the one-liner installs
+its own managed Python — you do not have to install Python yourself.)
+
+### Linux — from scratch
+
+Every Linux ships `bash`; most ship `curl`. Open a terminal
+(`Ctrl+Alt+T` on most desktops) and check:
+
+```bash
+curl --version
+```
+
+If that prints a version, continue at
+[section 1](#1-curl-one-liner-linux--macos--wsl). If it reports
+"command not found", install `curl` first — your distro's package
+manager already works with no extra setup:
+
+```bash
+sudo apt install -y curl     # Debian / Ubuntu / Raspberry Pi OS
+sudo dnf install -y curl     # Fedora / RHEL
+sudo apk add curl            # Alpine
+```
+
+## Install channels
+
+morie ships across six channels. Pick the one that matches your
+environment — the comparison table first, then full steps for each.
 
 | | Channel | When to use | Needs |
 |---|---|---|---|
@@ -42,7 +96,24 @@ environment.
 
 ## 1. Curl one-liner (Linux / macOS / WSL)
 
-The simplest path. Bootstraps everything you need — `uv` for managed Python, a venv at `~/.venvs/morie`, the morie wheel.
+This is the simplest path **once you have a terminal with `curl` and
+`bash`** — it then bootstraps everything else for you (`uv` for managed
+Python, a venv at `~/.venvs/morie`, the morie wheel). You do **not**
+need Python, `pip`, or Homebrew first; you **do** need `curl` and
+`bash`, which this command cannot install for you. Check them first:
+
+- **macOS** — `curl` and `bash` are both built in. Open **Terminal**
+  (press `Cmd+Space`, type `Terminal`, press **Enter**). Nothing else
+  to install.
+- **Linux** — `bash` is always present. Open a terminal (`Ctrl+Alt+T`
+  on most desktops). If `curl --version` fails, install it:
+  `sudo apt install -y curl` (Debian/Ubuntu),
+  `sudo dnf install -y curl` (Fedora/RHEL), or
+  `sudo apk add curl` (Alpine).
+- **Windows** — Windows has **no `bash`**, so this one-liner cannot run
+  here at all. Use [section 2 (Windows)](#2-windows) instead — install
+  Python from python.org, then `pip install morie`. (WSL counts as
+  Linux — follow the Linux note inside your WSL shell.)
 
 ```bash
 curl -fsSL https://hadesllm.github.io/morie/install.sh | bash

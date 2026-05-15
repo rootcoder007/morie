@@ -22,23 +22,15 @@ A multi-domain scientific computing toolkit (Python and R) for observational inf
 
 > Full step-by-step install guide with platform-specific notes (PEP 668 on Debian, python 3.13 segfault on Raspberry Pi OS, etc.) is at **[INSTALLATION.md](https://github.com/hadesllm/morie/blob/main/INSTALLATION.md)**.
 
-### Easiest — click-through installer (no Python needed)
+morie is a Python (and R) package — once Python is present it is `pip install morie`. If you are starting with **nothing installed**, INSTALLATION.md has a from-scratch, browser-only walkthrough for each OS ([Before you start](https://github.com/hadesllm/morie/blob/main/INSTALLATION.md#before-you-start-getting-the-basic-tools-from-scratch)). The short version:
 
-If you just want morie working with no setup, download the installer for your system from the **[latest release](https://github.com/hadesllm/morie/releases/latest)** and run it:
+- **Windows** — install Python from [python.org](https://www.python.org/downloads/) (on the first screen tick **Add python.exe to PATH**), then `pip install morie`. Full walkthrough: [Windows](#recommended--windows) below. Windows has no `curl`/`bash`, so the one-liner does not apply there.
+- **macOS / Linux** — the one-liner below sets up everything. It needs `curl` and `bash`, which macOS has built in and most Linux ships.
+- **Already have Python ≥3.10** — just `pip install morie`.
 
-| System | File | How |
-|---|---|---|
-| **Windows** | `morie-*-windows-x64-setup.exe` | Double-click, follow the wizard. Unsigned — at the SmartScreen prompt click **More info → Run anyway**. The x64 build also runs on Windows on ARM via emulation. |
-| **macOS** | `morie-*-macos-arm64.pkg` | Double-click, follow the installer (Apple Silicon). Intel Macs: use `pip install morie` or the one-liner below. |
-| **Linux** | `morie_*_amd64.deb` / `morie_*_arm64.deb`, or `morie-*.x86_64.rpm` / `morie-*.aarch64.rpm` | `sudo apt install ./morie_*.deb` or `sudo dnf install ./morie-*.rpm` |
+### For terminal users — one-liner (Linux / macOS / WSL)
 
-On Linux, pick the file matching your CPU architecture (`amd64`/`x86_64` for Intel/AMD, `arm64`/`aarch64` for ARM). The installer bundles everything — no Python, no pip, no winget. When it finishes, open a terminal (on Windows, the **"morie Console"** Start Menu shortcut) and run `morie --help`.
-
-> This installs the morie **command-line tool**. To use morie as a Python library (`import morie`) in your own scripts, use one of the channels below instead.
-
-### Recommended — one-liner (Linux / macOS / WSL)
-
-The simplest path. Bootstraps everything you need (Python via `uv`, a managed venv, the morie wheel) — works even if you have **no Python and no `pip` installed**.
+The simplest path **if you have a terminal with `curl` and `bash`** — both are built into macOS and preinstalled on most Linux (**Windows has no `bash`**, so use the installer above instead). It then bootstraps everything else for you: Python via `uv`, a managed venv, and the morie wheel. No pre-existing Python or `pip` needed.
 
 ```bash
 curl -fsSL https://hadesllm.github.io/morie/install.sh | bash
