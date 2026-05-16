@@ -87,3 +87,33 @@ def test_neg_loglik_jit_routes_weibull_through_core():
     got = neg_loglik_jit(theta, t, T, "weibull", "constant")
     ref = float(_ll_weibull_const(t, T, -1.0, 0.4, 1.5, 2.0))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
+
+
+@pytest.mark.parametrize("a0,eta,alpha,c", [
+    (-1.0, 0.30, 2.0, 1.0),
+    (0.5, 0.60, 3.5, 0.5),
+    (-2.0, 0.10, 1.5, 2.0),
+])
+def test_hawkes_ll_lomax_const_parity(a0, eta, alpha, c):
+    from morie.tps_hawkes_jit import _ll_lomax_const
+    t = _event_times(250, rate=2.0, seed=17)
+    T = float(t[-1]) + 1.0
+    got = core.hawkes_ll_lomax_const(t, T, a0, eta, alpha, c)
+    ref = float(_ll_lomax_const(t, T, a0, eta, alpha, c))
+    assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
+
+
+def test_neg_loglik_jit_routes_lomax_through_core():
+    from morie.tps_hawkes_jit import _ll_lomax_const, has_jit_path
+    from morie.tps_hawkes_jit import neg_loglik_jit
+    assert has_jit_path("lomax", "constant") is True
+    t = _event_times(180, rate=1.5, seed=21)
+    T = float(t[-1]) + 1.0
+    theta = np.array([-1.0, 0.4, 2.0, 1.0])
+    got = neg_loglik_jit(theta, t, T, "lomax", "constant")
+    ref = float(_ll_lomax_const(t, T, -1.0, 0.4, 2.0, 1.0))
+    assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
+    # alpha <= 1.001 -> the dispatch returns the infeasible sentinel
+    bad = neg_loglik_jit(np.array([0.0, 0.3, 1.0, 1.0]), t, T,
+                         "lomax", "constant")
+    assert bad == 1e12

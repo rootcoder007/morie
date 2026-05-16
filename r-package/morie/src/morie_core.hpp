@@ -198,4 +198,38 @@ inline double hawkes_ll_weibull_const(const double *t, std::size_t n, double T,
     return -(log_sum - integral);
 }
 
+// Negative log-likelihood: Lomax (Omori-type power-law) triggering
+// kernel, constant baseline. Like the Weibull kernel this is not
+// memoryless -- exact O(n^2). The caller is responsible for the
+// parameter bounds (alpha > 1 so log(alpha-1) is finite, c > 0).
+inline double hawkes_ll_lomax_const(const double *t, std::size_t n, double T,
+                                    double a0, double eta, double alpha,
+                                    double c) {
+    const double nu = std::exp(a0);
+    const double log_const =
+        std::log(alpha - 1.0) + (alpha - 1.0) * std::log(c);
+
+    double log_sum = 0.0;
+    for (std::size_t i = 0; i < n; ++i) {
+        double s = 0.0;
+        for (std::size_t j = 0; j < i; ++j) {
+            const double u = t[i] - t[j];
+            const double log_d = log_const - alpha * std::log(u + c);
+            s += std::exp(log_d);
+        }
+        const double lam_i = nu + eta * s;
+        if (lam_i <= 0.0) return kBig;
+        log_sum += std::log(lam_i);
+    }
+
+    double integral = nu * T;
+    for (std::size_t i = 0; i < n; ++i) {
+        const double u = T - t[i];
+        if (u > 0.0) {
+            integral += eta * (1.0 - std::pow(c / (u + c), alpha - 1.0));
+        }
+    }
+    return -(log_sum - integral);
+}
+
 }  // namespace morie::core

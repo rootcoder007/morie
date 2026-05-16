@@ -31,6 +31,12 @@ double hawkes_ll_weibull_const(Vec t, double T, double a0, double eta,
                                                 eta, alpha, lam);
 }
 
+double hawkes_ll_lomax_const(Vec t, double T, double a0, double eta,
+                             double alpha, double c) {
+    return morie::core::hawkes_ll_lomax_const(t.data(), t.shape(0), T, a0,
+                                              eta, alpha, c);
+}
+
 }  // namespace
 
 void register_hawkes(nb::module_ &m) {
@@ -44,4 +50,9 @@ void register_hawkes(nb::module_ &m) {
           "Hawkes negative log-likelihood -- Weibull triggering kernel, "
           "constant baseline. Returns 1e12 for an infeasible parameter "
           "vector.");
+    m.def("hawkes_ll_lomax_const", &hawkes_ll_lomax_const, "t"_a, "T"_a,
+          "a0"_a, "eta"_a, "alpha"_a, "c"_a,
+          "Hawkes negative log-likelihood -- Lomax (power-law) triggering "
+          "kernel, constant baseline. The caller enforces alpha > 1 and "
+          "c > 0.");
 }
