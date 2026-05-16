@@ -34,7 +34,11 @@ import numpy as np
 
 from morie.fn._richresult import RichResult
 
-__all__ = ["predpol_aggregate_areas", "predpol_calibration_audit"]
+__all__ = [
+    "predpol_aggregate_areas",
+    "predpol_calibration_audit",
+    "predpol_score_disparity",
+]
 
 
 def _ordered_unique(arr: np.ndarray) -> list:
@@ -296,5 +300,155 @@ def predpol_calibration_audit(
             "group_rank_gap": per_group,
             "worst_group": worst_group,
             "rank_gap": dict(zip([str(a) for a in areas], rank_gap.tolist())),
+        },
+    )
+
+
+def predpol_score_disparity(
+    score: Any,
+    group: Any,
+    *,
+    reference: Any = None,
+) -> RichResult:
+    """Descriptive disparity in a risk score across groups.
+
+    The *first* step of the SSL-style audit: before comparing predicted
+    risk to realised outcomes, describe how the risk score itself
+    differs across groups.  Reports per-group n / mean / median / sd, a
+    one-way ANOVA for whether group membership relates to the score, and
+    each group's mean-score gap from a reference group.
+
+    A statistically significant score gap is **not** by itself proof of
+    bias — it may reflect genuine base-rate differences.  That is
+    exactly why morie pairs this descriptive step with
+    :func:`predpol_calibration_audit`, which brings realised outcomes
+    into the comparison.
+
+    Parameters
+    ----------
+    score : array-like
+        Continuous risk score, one per individual.
+    group : array-like
+        Protected attribute, one per individual.
+    reference : optional
+        Reference group for the mean-score gaps.  Defaults to the
+        lowest-scoring group, so gaps read as "extra points".
+
+    Returns
+    -------
+    RichResult
+        Headline value is the spread (max − min) of group mean scores.
+
+    Examples
+    --------
+    >>> import morie
+    >>> score = [9, 10, 11, 19, 20, 21]
+    >>> race  = ["A", "A", "A", "B", "B", "B"]
+    >>> res = morie.predpol_score_disparity(score, race)
+    >>> round(float(res), 1)   # group means 10 and 20
+    10.0
+    """
+    from scipy.stats import f_oneway
+
+    score = np.asarray(list(score), dtype=float)
+    group = np.asarray(list(group), dtype=object)
+    if len(score) != len(group):
+        raise ValueError("score and group must be the same length")
+    if len(_ordered_unique(group)) < 2:
+        raise ValueError("need at least two groups to measure disparity")
+
+    warnings: list[str] = []
+    finite = np.isfinite(score)
+    if not finite.all():
+        warnings.append(
+            f"{int((~finite).sum())} non-finite score value(s) dropped."
+        )
+        score, group = score[finite], group[finite]
+    groups = _ordered_unique(group)
+    if len(groups) < 2:
+        raise ValueError("fewer than two groups remain after dropping NaNs")
+
+    stats: dict[Any, dict] = {}
+    for g in groups:
+        gv = score[group == g]
+        stats[g] = {
+            "n": int(gv.size),
+            "mean": float(np.mean(gv)) if gv.size else float("nan"),
+            "median": float(np.median(gv)) if gv.size else float("nan"),
+            "sd": float(np.std(gv, ddof=1)) if gv.size > 1 else float("nan"),
+        }
+
+    samples = [score[group == g] for g in groups]
+    usable = [s for s in samples if s.size >= 2]
+    if len(usable) >= 2:
+        fstat, pval = f_oneway(*usable)
+        fstat, pval = float(fstat), float(pval)
+    else:
+        fstat, pval = float("nan"), float("nan")
+        warnings.append("ANOVA skipped: fewer than two groups with n >= 2.")
+
+    means = {g: stats[g]["mean"] for g in groups}
+    if reference is None:
+        ref = min(means, key=lambda k: means[k])
+    else:
+        ref = reference
+        if ref not in means:
+            raise ValueError(f"reference group {ref!r} not found")
+    base = means[ref]
+    gaps = {g: means[g] - base for g in groups}
+    spread = max(means.values()) - min(means.values())
+    significant = bool(np.isfinite(pval) and pval < 0.05)
+
+    table = [
+        [str(g) + (" (ref)" if g == ref else ""), stats[g]["n"],
+         round(stats[g]["mean"], 3), round(stats[g]["median"], 3),
+         round(stats[g]["sd"], 3),
+         "—" if g == ref else round(gaps[g], 3)]
+        for g in groups
+    ]
+
+    if np.isfinite(pval):
+        anova_line = (
+            f"A one-way ANOVA finds the between-group difference "
+            f"{'statistically significant' if significant else 'not significant'} "
+            f"(F = {fstat:.2f}, p = {pval:.4f}). "
+        )
+    else:
+        anova_line = ""
+
+    interp = (
+        f"Group mean risk scores span {spread:.2f} points "
+        f"(reference '{ref}'). " + anova_line
+        + "Note: a score gap is not itself evidence of bias — it can "
+        "reflect genuine base-rate differences. Pair this with "
+        "`predpol_calibration_audit`, which compares the score against "
+        "realised outcomes."
+    )
+
+    return RichResult(
+        title="Predictive-Policing Score Disparity (descriptive)",
+        summary_lines=[
+            ("Group-mean spread", spread),
+            ("ANOVA F", fstat),
+            ("ANOVA p-value", pval),
+            ("Reference group", ref),
+        ],
+        tables=[{
+            "title": "Per-group risk-score summary:",
+            "headers": ["group", "n", "mean", "median", "sd", "gap vs ref"],
+            "rows": table,
+        }],
+        warnings=warnings,
+        interpretation=interp,
+        payload={
+            "value": spread,
+            "spread": spread,
+            "group_means": means,
+            "gaps": gaps,
+            "anova_f": fstat,
+            "anova_pvalue": pval,
+            "significant": significant,
+            "reference": ref,
+            "per_group": stats,
         },
     )

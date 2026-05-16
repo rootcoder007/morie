@@ -34,7 +34,11 @@ from .metrics import (
     fairness_equalized_odds,
     fairness_gini,
 )
-from .predpol import predpol_aggregate_areas, predpol_calibration_audit
+from .predpol import (
+    predpol_aggregate_areas,
+    predpol_calibration_audit,
+    predpol_score_disparity,
+)
 
 __all__ = [
     # disparity metrics
@@ -47,6 +51,7 @@ __all__ = [
     # predictive-policing calibration audit
     "predpol_calibration_audit",
     "predpol_aggregate_areas",
+    "predpol_score_disparity",
     # city-agnostic data layer
     "CityProfile",
     "register_city",

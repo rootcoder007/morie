@@ -20,6 +20,7 @@ from morie.fairness.cityprofile import (
 from morie.fairness.predpol import (
     predpol_aggregate_areas,
     predpol_calibration_audit,
+    predpol_score_disparity,
 )
 
 
@@ -105,6 +106,32 @@ def test_audit_drops_non_finite_with_warning():
         ["d1", "d2", "d3"], [10.0, 20.0, np.nan], [1.0, 2.0, 3.0],
         ["X", "X", "Y"])
     assert any("non-finite" in w for w in res.warnings)
+
+
+# ── predpol_score_disparity (descriptive) ───────────────────────────
+
+def test_score_disparity_known_answer():
+    score = [9, 10, 11, 19, 20, 21]   # group means 10 and 20
+    grp = ["A", "A", "A", "B", "B", "B"]
+    res = predpol_score_disparity(score, grp)
+    assert float(res) == pytest.approx(10.0)        # mean spread
+    assert res.payload["reference"] == "A"          # lowest-scoring
+    assert res.payload["gaps"]["B"] == pytest.approx(10.0)
+    assert res.payload["significant"] is True       # ANOVA p < 0.05
+
+
+def test_score_disparity_null_no_difference():
+    rng = np.random.default_rng(3)
+    grp = np.array(["A"] * 200 + ["B"] * 200)
+    score = rng.normal(50, 5, size=400)             # identical dists
+    res = predpol_score_disparity(score, grp)
+    assert res.payload["significant"] is False
+    assert abs(float(res)) < 2.0
+
+
+def test_score_disparity_requires_two_groups():
+    with pytest.raises(ValueError):
+        predpol_score_disparity([1, 2, 3], ["A", "A", "A"])
 
 
 # ── CityProfile ─────────────────────────────────────────────────────
