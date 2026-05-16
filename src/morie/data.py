@@ -620,6 +620,8 @@ DATASET_CATALOG: dict[str, dict] = {
         "local_path": "data/datasets/TPS/Assault/CSV",
         "table_name": "tpsassault",
         "ckan_resource_id": "",
+        "fetcher": "morie.tps_fetch:fetch_tps_dataframe",
+        "fetcher_args": {"category": "Assault"},
     },
     "tpshomicides": {
         "name": "TPS Homicides open-data events 2014-present",
@@ -632,6 +634,8 @@ DATASET_CATALOG: dict[str, dict] = {
         "local_path": "data/datasets/TPS/Homicides/CSV",
         "table_name": "tpshomicides",
         "ckan_resource_id": "",
+        "fetcher": "morie.tps_fetch:fetch_tps_dataframe",
+        "fetcher_args": {"category": "Homicides"},
     },
     "tpsshootings": {
         "name": "TPS Shootings and Firearm Discharges 2014-present",
@@ -644,6 +648,8 @@ DATASET_CATALOG: dict[str, dict] = {
         "local_path": "data/datasets/TPS/ShootingAndFirearmDiscarges/CSV",
         "table_name": "tpsshootings",
         "ckan_resource_id": "",
+        "fetcher": "morie.tps_fetch:fetch_tps_dataframe",
+        "fetcher_args": {"category": "ShootingAndFirearmDiscarges"},
     },
     # ── NAPS (Environment Canada National Air Pollution Surveillance) ─────
     # Fetched on demand via morie.earth.fetch_naps (no auth; Open-Canada CKAN).
