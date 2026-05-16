@@ -18,6 +18,7 @@
 #include <nanobind/ndarray.h>
 
 #include "kernels.h"
+#include "hawkes.h"
 
 namespace nb = nanobind;
 using namespace nb::literals;
@@ -55,4 +56,6 @@ NB_MODULE(_core, m) {
 
     // Numeric kernels (ports of the former morie/_jit.py functions).
     register_kernels(m);
+    // Hawkes-process likelihood kernels.
+    register_hawkes(m);
 }

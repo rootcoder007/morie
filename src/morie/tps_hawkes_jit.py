@@ -41,6 +41,17 @@ except ImportError:  # pragma: no cover -- env without numba
         return _wrap
 
 
+# Phase 2 (v0.9.1): the compiled C++ core (morie._core) provides the
+# exponential-kernel / constant-baseline likelihood -- no numba needed
+# for that path.
+try:
+    from . import _core as _core_ext
+
+    HAS_CORE = True
+except ImportError:  # pragma: no cover -- source checkout w/o built ext
+    HAS_CORE = False
+
+
 # ── Exponential kernel, constant baseline (Mohler 2011) ─────────────
 
 
@@ -387,6 +398,8 @@ _SUPPORTED = {
 
 
 def has_jit_path(kernel: str, baseline: str) -> bool:
+    if HAS_CORE and (kernel, baseline) == ("exponential", "constant"):
+        return True
     return HAS_NUMBA and (kernel, baseline) in _SUPPORTED
 
 
@@ -405,6 +418,15 @@ def _sin_grid(T: float, a0: float, a1: float, a2: float, a3: float
 def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float,
                     kernel: str, baseline: str) -> float:
     """JIT-routed negative log-likelihood.  Caller must check has_jit_path()."""
+    # Phase 2 (v0.9.1): the exponential-kernel / constant-baseline case
+    # runs on the compiled C++ core when available -- no numba needed.
+    if HAS_CORE and kernel == "exponential" and baseline == "constant":
+        a0, eta, beta = float(theta[0]), float(theta[1]), float(theta[2])
+        if eta <= 1e-6 or eta >= 0.999 or beta <= 1e-6:
+            return 1e12
+        return _core_ext.hawkes_ll_exp_const(
+            np.ascontiguousarray(t, dtype=np.float64), float(T),
+            a0, eta, beta)
     if not HAS_NUMBA:
         raise RuntimeError("neg_loglik_jit called without Numba available")
 

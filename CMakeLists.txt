@@ -26,7 +26,8 @@ find_package(nanobind CONFIG REQUIRED)
 # extension, no separate shared nanobind dependency in the wheel.
 nanobind_add_module(_core NB_STATIC
   libmorie/_core.cpp
-  libmorie/kernels.cpp)
+  libmorie/kernels.cpp
+  libmorie/hawkes.cpp)
 
 # Land the compiled module inside the morie package: morie/_core*.so,
 # importable as ``morie._core``.
