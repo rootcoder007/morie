@@ -145,3 +145,33 @@ def test_neg_loglik_jit_routes_gamma_through_core():
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
     # alpha outside (0.05, 20) -> infeasible sentinel
     assert core.hawkes_ll_gamma_const(t, T, 0.0, 0.3, 50.0, 1.5) == 1e12
+
+
+@pytest.mark.parametrize("a0,a1,a2,a3,eta,beta", [
+    (-1.0, 0.2, 0.3, -0.1, 0.30, 1.5),
+    (0.0, -0.5, 0.1, 0.4, 0.55, 0.8),
+])
+def test_hawkes_ll_exp_sin_parity(a0, a1, a2, a3, eta, beta):
+    from morie.tps_hawkes_jit import _ll_exp_sin, _sin_grid
+    t = _event_times(250, rate=2.0, seed=31)
+    T = float(t[-1]) + 1.0
+    grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
+    got = core.hawkes_ll_exp_sin(t, T, a0, a1, a2, a3, eta, beta,
+                                 grid, grid_vals)
+    ref = float(_ll_exp_sin(t, T, a0, a1, a2, a3, eta, beta,
+                            grid, grid_vals))
+    assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
+
+
+def test_neg_loglik_jit_routes_exp_sin_through_core():
+    from morie.tps_hawkes_jit import _ll_exp_sin, _sin_grid, has_jit_path
+    from morie.tps_hawkes_jit import neg_loglik_jit
+    assert has_jit_path("exponential", "sinusoidal") is True
+    t = _event_times(180, rate=1.5, seed=33)
+    T = float(t[-1]) + 1.0
+    theta = np.array([-1.0, 0.2, 0.3, -0.1, 0.4, 1.2])
+    got = neg_loglik_jit(theta, t, T, "exponential", "sinusoidal")
+    grid, grid_vals = _sin_grid(T, -1.0, 0.2, 0.3, -0.1)
+    ref = float(_ll_exp_sin(t, T, -1.0, 0.2, 0.3, -0.1, 0.4, 1.2,
+                            grid, grid_vals))
+    assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)

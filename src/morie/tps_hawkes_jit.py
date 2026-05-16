@@ -401,6 +401,8 @@ def has_jit_path(kernel: str, baseline: str) -> bool:
     if HAS_CORE and baseline == "constant" and kernel in (
             "exponential", "weibull", "lomax", "gamma"):
         return True
+    if HAS_CORE and baseline == "sinusoidal" and kernel == "exponential":
+        return True
     return HAS_NUMBA and (kernel, baseline) in _SUPPORTED
 
 
@@ -449,6 +451,18 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float,
                 return 1e12
             return _core_ext.hawkes_ll_gamma_const(
                 t_c, float(T), a0, eta, alpha, beta)
+    if HAS_CORE and baseline == "sinusoidal" and kernel == "exponential":
+        a0, a1, a2, a3 = (float(theta[0]), float(theta[1]),
+                          float(theta[2]), float(theta[3]))
+        eta, beta = float(theta[4]), float(theta[5])
+        if eta <= 1e-6 or eta >= 0.999 or beta <= 1e-6:
+            return 1e12
+        grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
+        return _core_ext.hawkes_ll_exp_sin(
+            np.ascontiguousarray(t, dtype=np.float64), float(T),
+            a0, a1, a2, a3, eta, beta,
+            np.ascontiguousarray(grid, dtype=np.float64),
+            np.ascontiguousarray(grid_vals, dtype=np.float64))
     if not HAS_NUMBA:
         raise RuntimeError("neg_loglik_jit called without Numba available")
 

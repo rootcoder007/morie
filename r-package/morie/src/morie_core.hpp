@@ -306,4 +306,51 @@ inline double hawkes_ll_gamma_const(const double *t, std::size_t n, double T,
     return -(log_sum - integral);
 }
 
+// Negative log-likelihood: exponential triggering kernel, sinusoidal
+// (time-varying) baseline. The baseline integral is supplied as a
+// pre-built grid (grid / grid_vals, length n_grid) and integrated by
+// the trapezoidal rule; the caller builds the grid. The O(n) recursion
+// on the exponential kernel still applies. Returns kBig if infeasible.
+inline double hawkes_ll_exp_sin(const double *t, std::size_t n, double T,
+                                double a0, double a1, double a2, double a3,
+                                double eta, double beta, const double *grid,
+                                const double *grid_vals, std::size_t n_grid) {
+    if (!(1e-6 < eta && eta < 0.999)) return kBig;
+    if (!(0.05 < beta && beta < 30.0)) return kBig;
+    if (!(-20.0 < a0 && a0 < 20.0)) return kBig;
+
+    const double two_pi_y = 2.0 * kPi / 365.25;
+    const double T_safe = (T > 1.0) ? T : 1.0;
+
+    double log_sum = 0.0;
+    double A = 0.0;
+    for (std::size_t i = 0; i < n; ++i) {
+        const double nu_i = std::exp(a0 + a1 * (t[i] / T_safe) +
+                                     a2 * std::sin(two_pi_y * t[i]) +
+                                     a3 * std::cos(two_pi_y * t[i]));
+        double lam_i;
+        if (i == 0) {
+            lam_i = nu_i;
+        } else {
+            const double dt = t[i] - t[i - 1];
+            A = std::exp(-beta * dt) * (A + beta);
+            lam_i = nu_i + eta * A;
+        }
+        if (lam_i <= 0.0) return kBig;
+        log_sum += std::log(lam_i);
+    }
+
+    // baseline integral: trapezoidal rule over the supplied grid
+    double g_int = 0.0;
+    for (std::size_t k = 0; k + 1 < n_grid; ++k) {
+        g_int += 0.5 * (grid_vals[k] + grid_vals[k + 1]) *
+                 (grid[k + 1] - grid[k]);
+    }
+    double integral = g_int;
+    for (std::size_t i = 0; i < n; ++i) {
+        integral += eta * (1.0 - std::exp(-beta * (T - t[i])));
+    }
+    return -(log_sum - integral);
+}
+
 }  // namespace morie::core
