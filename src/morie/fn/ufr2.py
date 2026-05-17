@@ -1,4 +1,4 @@
-"""Unfolding R-squared. 'Super Saiyan Blue.' -- Goku, Dragon Ball Z"""
+"""Compute R-squared for an unfolding model."""
 
 from __future__ import annotations
 
@@ -36,4 +36,4 @@ ufr2 = unfolding_r_squared
 
 
 def cheatsheet() -> str:
-    return "unfolding_r_squared({}) -> Unfolding R-squared. 'Super Saiyan Blue.' -- Goku, Dragon Ba"
+    return 'unfolding_r_squared({}) -> Unfolding R-squared.'

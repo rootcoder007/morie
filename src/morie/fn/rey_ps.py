@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Poisson regression. 'Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius'"""
+"""Poisson regression via maximum likelihood (scipy.optimize)."""
 
 from __future__ import annotations
 
@@ -81,4 +81,4 @@ rey_ps = poisson_regression
 
 
 def cheatsheet() -> str:
-    return "poisson_regression({}) -> Poisson regression. 'Patience you must have, my young Padawa"
+    return 'poisson_regression({}) -> Poisson regression.'

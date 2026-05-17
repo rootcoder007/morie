@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Dark energy equation of state. 'I am the end of all things.' -- Darkseid"""
+"""CPL dark energy equation of state and Hubble parameter as a function of redshift."""
 
 from __future__ import annotations
 
@@ -81,4 +81,4 @@ darks = dark_energy_eos
 
 
 def cheatsheet() -> str:
-    return "dark_energy_eos({}) -> Dark energy equation of state. 'I am the end of all things.'"
+    return 'dark_energy_eos({}) -> Dark energy equation of state.'

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Mastering others is strength; mastering yourself is true power. -- Lao Tzu"""
+"""Convolve a 1-D signal with a Green's function kernel."""
 
 from __future__ import annotations
 
@@ -75,4 +75,4 @@ grnln = greens_convolve
 
 
 def cheatsheet() -> str:
-    return "greens_convolve({}) -> Green's function convolution. 'In brightest day, in blackest"
+    return "greens_convolve({}) -> Green's function convolution."

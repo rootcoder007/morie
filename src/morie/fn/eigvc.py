@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Extract top eigenvectors. 'Gear Fifth!' -- Luffy, One Piece"""
+"""Return top *n_dims* eigenvectors of symmetric matrix B."""
 
 from __future__ import annotations
 
@@ -39,4 +39,4 @@ eigvc = extract_eigenvectors
 
 
 def cheatsheet() -> str:
-    return "extract_eigenvectors({}) -> Extract top eigenvectors. 'Gear Fifth!' -- Luffy, One Piece"
+    return 'extract_eigenvectors({}) -> Extract top eigenvectors.'

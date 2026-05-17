@@ -1,5 +1,5 @@
 # morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
-"""System availability. 'The garbage will do!' -- Rey"""
+"""Compute steady-state system availability."""
 
 from __future__ import annotations
 
@@ -67,4 +67,4 @@ avail = availability
 
 
 def cheatsheet() -> str:
-    return "availability({}) -> System availability. 'The garbage will do!' -- Rey"
+    return 'availability({}) -> System availability.'

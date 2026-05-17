@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Pairwise agreement scores. 'Destructo Disc!' -- Krillin, Dragon Ball Z"""
+"""Compute pairwise agreement matrix from vote/preference matrix."""
 
 from __future__ import annotations
 
@@ -35,4 +35,4 @@ rcagr = agreement_scores
 
 
 def cheatsheet() -> str:
-    return "agreement_scores({}) -> Pairwise agreement scores. 'Destructo Disc!' -- Krillin, Dra"
+    return 'agreement_scores({}) -> Pairwise agreement scores.'

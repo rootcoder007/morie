@@ -1,4 +1,4 @@
-"""Unfolding outlier detection. 'Big Bang Attack!' -- Vegeta, Dragon Ball Z"""
+"""Identify outliers in unfolding residuals."""
 
 from __future__ import annotations
 
@@ -44,4 +44,4 @@ ufout = unfolding_outliers
 
 
 def cheatsheet() -> str:
-    return "unfolding_outliers({}) -> Unfolding outlier detection. 'Big Bang Attack!' -- Vegeta, D"
+    return 'unfolding_outliers({}) -> Unfolding outlier detection.'

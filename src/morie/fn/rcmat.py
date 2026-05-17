@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Rectangular matrix formatter. 'Spirit Gun!' -- Yusuke, Yu Yu Hakusho"""
+"""Format a rectangular preference matrix (respondents x stimuli)."""
 
 from __future__ import annotations
 
@@ -38,4 +38,4 @@ rcmat = rectangular_matrix
 
 
 def cheatsheet() -> str:
-    return "rectangular_matrix({}) -> Rectangular matrix formatter. 'Spirit Gun!' -- Yusuke, Yu Yu"
+    return 'rectangular_matrix({}) -> Rectangular matrix formatter.'

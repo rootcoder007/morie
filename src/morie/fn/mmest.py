@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""MM-estimator for robust regression. 'So this is how liberty dies.' -- Padme Amidala"""
+"""MM-estimator for robust regression."""
 
 from __future__ import annotations
 
@@ -100,4 +100,4 @@ mmest = mm_estimator
 
 
 def cheatsheet() -> str:
-    return "_tukey_bisquare({}) -> MM-estimator for robust regression. 'So this is how liberty "
+    return '_tukey_bisquare({}) -> MM-estimator for robust regression.'

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Regression discontinuity design. 'There has been an awakening.' -- Snoke"""
+"""Sharp RDD: local linear regression around the cutoff."""
 
 from __future__ import annotations
 
@@ -70,4 +70,4 @@ rdd = reg_discontinuity
 
 
 def cheatsheet() -> str:
-    return "reg_discontinuity({}) -> Regression discontinuity design. 'There has been an awakenin"
+    return 'reg_discontinuity({}) -> Regression discontinuity design.'

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""All models are wrong, but some are useful. -- George E. P. Box"""
+"""Per-region descriptive statistics for geographic mapping."""
 
 from __future__ import annotations
 
@@ -59,4 +59,4 @@ holo_g = geo_summary
 
 
 def cheatsheet() -> str:
-    return "geo_summary({}) -> Geographic / choropleth summary helper. 'I've been waiting f"
+    return 'geo_summary({}) -> Geographic / choropleth summary helper.'

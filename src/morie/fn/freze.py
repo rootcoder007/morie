@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Freeze-thaw cycle degradation model. 'Tonight, hell freezes over.' -- Mr. Freeze"""
+"""Model material strength degradation under freeze-thaw cycling."""
 
 from __future__ import annotations
 
@@ -73,4 +73,4 @@ freze = freeze_thaw
 
 
 def cheatsheet() -> str:
-    return "freeze_thaw({}) -> Freeze-thaw cycle degradation model. 'Tonight, hell freezes "
+    return 'freeze_thaw({}) -> Freeze-thaw cycle degradation model.'

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""We are what we repeatedly do. Excellence is a habit. -- Aristotle"""
+"""Compute the Highest Density Interval (HDI) from posterior samples."""
 
 from __future__ import annotations
 
@@ -50,4 +50,4 @@ hdint = hdi
 
 
 def cheatsheet() -> str:
-    return "hdi({}) -> Highest Density Interval (Bayesian). 'Let go of your hate.' "
+    return 'hdi({}) -> Highest Density Interval (Bayesian).'

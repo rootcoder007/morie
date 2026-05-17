@@ -52,4 +52,4 @@ mahal = mahalanobis_dist
 
 
 def cheatsheet() -> str:
-    return "mahalanobis_dist({}) -> Mahalanobis distance. 'Judge me by my size, do you?'"
+    return 'mahalanobis_dist({}) -> Mahalanobis distance.'

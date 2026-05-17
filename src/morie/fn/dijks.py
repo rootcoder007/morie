@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""When I let go of what I am, I become what I might be. -- Lao Tzu"""
+"""Dijkstra's algorithm for single-source shortest paths."""
 
 from __future__ import annotations
 
@@ -75,4 +75,4 @@ dijks = dijkstra
 
 
 def cheatsheet() -> str:
-    return "When I let go of what I am, I become what I might be. -- Lao Tzu"
+    return "dijks() -> Dijkstra's algorithm for single-source shortest paths"

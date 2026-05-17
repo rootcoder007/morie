@@ -68,4 +68,4 @@ boxmm = box_m_test
 
 
 def cheatsheet() -> str:
-    return "box_m_test({}) -> Box's M test for covariance equality. 'I have a bad feeling "
+    return "box_m_test({}) -> Box's M test for covariance equality."

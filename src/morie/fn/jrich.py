@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Formant extraction from speech signal. 'Actions speak louder than words.' -- Jericho"""
+"""Extract formant frequencies from a speech signal via LPC analysis."""
 
 from __future__ import annotations
 
@@ -85,4 +85,4 @@ jrich = formant_extract
 
 
 def cheatsheet() -> str:
-    return "formant_extract({}) -> Formant extraction from speech signal. 'Actions speak louder"
+    return 'formant_extract({}) -> Formant extraction from speech signal.'

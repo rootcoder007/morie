@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Floyd-Warshall all-pairs shortest paths. 'I have spoken.' -- Kuiil"""
+"""Floyd-Warshall algorithm for all-pairs shortest paths."""
 
 from __future__ import annotations
 
@@ -59,4 +59,4 @@ floyd = floyd_warshall
 
 
 def cheatsheet() -> str:
-    return "floyd_warshall({}) -> Floyd-Warshall all-pairs shortest paths. 'I have spoken.' --"
+    return 'floyd_warshall({}) -> Floyd-Warshall all-pairs shortest paths.'

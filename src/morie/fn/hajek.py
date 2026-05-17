@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""A journey of a thousand miles begins with a single step. -- Lao Tzu"""
+"""Hajek estimator for population mean."""
 
 from morie.survey import hajek_mean as _fn
 
@@ -8,4 +8,4 @@ hajek_mean = _fn
 
 
 def cheatsheet() -> str:
-    return "hajek() -> Hajek estimator for population mean. 'In my experience there"
+    return 'hajek() -> Hajek estimator for population mean.'

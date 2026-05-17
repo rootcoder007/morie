@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Correlation pattern finder. 'I need a pilot!' -- Finn"""
+"""Scan all numeric column pairs for significant correlations."""
 
 from __future__ import annotations
 
@@ -47,4 +47,4 @@ finn = find_patterns
 
 
 def cheatsheet() -> str:
-    return "find_patterns({}) -> Correlation pattern finder. 'I need a pilot!' -- Finn"
+    return 'find_patterns({}) -> Correlation pattern finder.'

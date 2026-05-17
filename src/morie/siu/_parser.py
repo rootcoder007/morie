@@ -496,7 +496,6 @@ _POLICE_SERVICES = [
     "Woodstock Police Service",
     "Port Hope Police Service",
     "Stl'atl'imx Tribal Police",
-    "That which does not kill us makes us stronger. -- Friedrich Nietzsche",
     "West Grey Police Service",
     "Anishinabek Police Service",
     "Six Nations Police",
@@ -835,7 +834,7 @@ def _detect_legislation(text: str) -> Optional[str]:
     if not sec:
         return None
     sections = []
-    for m in re.finditer(r"Section\s+\d+(?:\([^)]+\))?,?\s+([A-Z][^\n,--\-–]+?)(?:\s*[–\---]|$)",
+    for m in re.finditer(r"Section\s+\d+(?:\([^)]+\))?,?\s+([A-Z][^\n,–-]+?)(?:\s*[–-]|$)",
                          sec):
         act = m.group(1).strip().rstrip(",")
         if act not in sections:

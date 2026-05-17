@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""MLSMU6 missing data imputation. 'Toguro Punch.' -- Toguro, Yu Yu Hakusho"""
+"""Impute missing values in unfolding distance matrix."""
 
 from __future__ import annotations
 
@@ -49,4 +49,4 @@ mlsms = mlsmu6_missing_impute
 
 
 def cheatsheet() -> str:
-    return "mlsmu6_missing_impute({}) -> MLSMU6 missing data imputation. 'Toguro Punch.' -- Toguro, Y"
+    return 'mlsmu6_missing_impute({}) -> MLSMU6 missing data imputation.'

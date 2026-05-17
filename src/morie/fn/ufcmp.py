@@ -1,4 +1,4 @@
-"""Compare unfolding methods. 'Kamehameha!' -- Goku, Dragon Ball Z"""
+"""Compare two unfolding results by stress and correlation."""
 
 from __future__ import annotations
 
@@ -43,4 +43,4 @@ ufcmp = compare_unfolding_methods
 
 
 def cheatsheet() -> str:
-    return "compare_unfolding_methods({}) -> Compare unfolding methods. 'Kamehameha!' -- Goku, Dragon Bal"
+    return 'compare_unfolding_methods({}) -> Compare unfolding methods.'

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""All models are wrong, but some are useful. -- George E. P. Box"""
+"""Hermite interpolation using both function values and derivatives."""
 
 from __future__ import annotations
 
@@ -82,4 +82,4 @@ short = hermite_interp
 
 
 def cheatsheet() -> str:
-    return "hermite_interp({}) -> Hermite interpolation. 'Impressive. Most impressive.' -- Dar"
+    return 'hermite_interp({}) -> Hermite interpolation.'

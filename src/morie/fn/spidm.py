@@ -1,4 +1,4 @@
-"""He who is brave is free. -- Seneca"""
+"""Detect communities in a graph using spectral partitioning on the."""
 
 from __future__ import annotations
 
@@ -89,4 +89,4 @@ spidm = web_graph_communities
 
 
 def cheatsheet() -> str:
-    return "web_graph_communities({}) -> Web graph community detection. 'With great power comes great"
+    return 'web_graph_communities({}) -> Web graph community detection.'

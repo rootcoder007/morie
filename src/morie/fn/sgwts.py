@@ -38,8 +38,8 @@ def spatial_weights_matrix(
 
     .. epigraph::
 
-        "Keep your expectations low and you'll never be disappointed."
-        -- Kratos, God of War
+        Measure what is measurable, and make measurable what is not.
+        -- Galileo Galilei
     """
     coords = np.asarray(coords, dtype=np.float64)
     n = len(coords)

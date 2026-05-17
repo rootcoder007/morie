@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "Errors using inadequate data are much less than those using no data at all. -- Charles Babbage"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u28() -> GeneralStatistics expression (auto-extracted; see ref)'

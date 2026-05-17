@@ -1,5 +1,5 @@
 # morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
-"""An unexamined life is not worth living. -- Socrates"""
+"""Find best decision stump (feature, threshold, polarity)."""
 
 from __future__ import annotations
 
@@ -92,4 +92,4 @@ ada = adaboost
 
 
 def cheatsheet() -> str:
-    return "_best_stump({}) -> AdaBoost with decision stumps (pure numpy). 'Power! Unlimite"
+    return '_best_stump({}) -> AdaBoost with decision stumps (pure numpy).'

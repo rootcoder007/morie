@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""It is the mark of an educated mind to entertain a thought without accepting it. -- Aristotle"""
+"""Horn's parallel analysis: how many factors to retain?."""
 
 from __future__ import annotations
 
@@ -59,4 +59,4 @@ palps = parallel_analysis
 
 
 def cheatsheet() -> str:
-    return "parallel_analysis({}) -> Parallel analysis for factor analysis. 'Everything is procee"
+    return 'parallel_analysis({}) -> Parallel analysis for factor analysis.'

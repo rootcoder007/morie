@@ -1,8 +1,13 @@
-# describe('swdb') — load_sw_dataset
+# describe('swdb') — load_solar_system
 
 ## WHAT IT DOES
 
-Star Wars dataset loader. 'Do. Or do not. There is no try.'The whole is greater than the sum of its parts. — Aristotle's source for the canonical
+Solar System dataset loader.
+
+## WHEN TO USE
+
+This callable applies when you have inputs of the appropriate shape and
+want the documented output. Read the function's source for the canonical
 signature and assumptions.
 
 ## WHEN NOT TO USE

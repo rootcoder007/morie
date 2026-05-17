@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "The art of doing mathematics consists in finding that special case which contains all the germs of generality. -- David Hilbert"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u9() -> GeneralStatistics expression (auto-extracted; see ref)'

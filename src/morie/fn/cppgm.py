@@ -73,4 +73,4 @@ cppgm = changepoint_poisson
 
 
 def cheatsheet() -> str:
-    return "changepoint_poisson({}) -> Poisson change-point model. 'I sense great fear in you.' -- "
+    return 'changepoint_poisson({}) -> Poisson change-point model.'

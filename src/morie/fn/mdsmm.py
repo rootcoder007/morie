@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""MDS with missing data (weighted stress). 'Shoot Style.' -- Deku, My Hero Academia"""
+"""Classical MDS with weighted stress for missing data."""
 
 from __future__ import annotations
 
@@ -67,4 +67,4 @@ mdsmm = mds_missing_data
 
 
 def cheatsheet() -> str:
-    return "mds_missing_data({}) -> MDS with missing data (weighted stress). 'Shoot Style.' -- D"
+    return 'mds_missing_data({}) -> MDS with missing data (weighted stress).'

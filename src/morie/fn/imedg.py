@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Edge detection via Sobel or Prewitt operators. 'Your focus determines your reality.' -- Qui-Gon Jinn"""
+"""Detect edges in a grayscale image using Sobel or Prewitt operators."""
 
 from __future__ import annotations
 
@@ -58,4 +58,4 @@ imedg = edge_detect
 
 
 def cheatsheet() -> str:
-    return "edge_detect({}) -> Edge detection via Sobel or Prewitt operators. 'Your focus d"
+    return 'edge_detect({}) -> Edge detection via Sobel or Prewitt operators.'

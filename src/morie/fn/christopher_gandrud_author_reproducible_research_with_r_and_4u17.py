@@ -46,4 +46,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "Hope in reality is the worst of all evils because it prolongs the torments of man. -- Friedrich Nietzsche"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u17() -> CentralTendency expression (auto-extracted; see ref)'

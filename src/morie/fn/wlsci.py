@@ -1,4 +1,4 @@
-"""Wilson score interval for binomial proportion. 'Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius' -- General usage"""
+"""Wilson score confidence interval for a binomial proportion."""
 
 from __future__ import annotations
 
@@ -57,4 +57,4 @@ wlsci = wilson_ci
 
 
 def cheatsheet() -> str:
-    return "wilson_ci({}) -> Wilson score interval for binomial proportion. 'May the Forc"
+    return 'wilson_ci({}) -> Wilson score interval for binomial proportion.'

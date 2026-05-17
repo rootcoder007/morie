@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Knowing yourself is the beginning of all wisdom. -- Aristotle"""
+"""Rangayyan isometric contraction."""
 import numpy as np
 from ._richresult import RichResult
 
@@ -7,7 +7,7 @@ __all__ = ["rangayyan_isometric_contraction"]
 
 
 def rangayyan_isometric_contraction(emg, force, fs):
-    """Knowing yourself is the beginning of all wisdom. -- Aristotle"""
+    """Rangayyan isometric contraction."""
     emg = np.asarray(emg, dtype=float)
     n = int(emg) if emg.ndim == 0 else len(emg)
     result = float(np.mean(emg))
@@ -16,4 +16,4 @@ def rangayyan_isometric_contraction(emg, force, fs):
 
 
 def cheatsheet():
-    return "Knowing yourself is the beginning of all wisdom. -- Aristotle"
+    return 'rgisint() -> Rangayyan isometric contraction'

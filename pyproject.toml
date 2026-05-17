@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["scikit-build-core>=0.10", "nanobind>=2.0"]
+build-backend = "scikit_build_core.build"
 
 [project]
 name = "morie"
-version = "0.9.0"
+version = "0.9.1"
 description = "Multi-domain Open Research and Inferential Estimation. Multi-domain scientific computing toolkit hosting the MRM framework for Canadian carceral, police, and oversight data, with general-purpose causal inference, signal processing, cryptography, spatial statistics, statistical physics, and psychometrics modules. (Renamed from MOIRAIS in v0.1.3.)"
 authors = [
   { name="Vansh Singh Ruhela", email="hadesllm@proton.me" }
@@ -119,17 +119,13 @@ ml = [
     # SMOTE oversampling for sensitivity analysis.
     "imbalanced-learn>=0.11",
 ]
-fast = [
-    # v0.6.0 opt-in JIT extra.  morie's existing _jit.py kernels
-    # (normal_pdf, mean_jit, cor_pearson_jit, euclid_dist_jit, ...)
-    # are decorated with @njit(cache=True, parallel=True) and no-op
-    # when numba isn't importable.  Installing this extra activates
-    # the JIT path: 5-10x speedup on small-array kernels once
-    # compiled, comparable on large arrays.
-    #
-    # numba wheels max out at Python 3.14 today; on 3.15+ this extra
-    # fails to install and morie falls back to pure-numpy at runtime
-    # (numerically identical, just slower).
+callbacks = [
+    # OPTIONAL -- only for the numba @cfunc user-callback bridge
+    # (morie.hawkes_loglik_custom / morie._core.hawkes_ll_custom): a
+    # user JITs a custom Python triggering kernel into a native
+    # function pointer that morie's C++ hot loops call GIL-free.
+    # numba is NOT used to accelerate morie's own kernels -- that is
+    # the C++ core's job. numba wheels max out at Python 3.14 today.
     "numba>=0.59 ; python_version < '3.15'",
 ]
 carbon = [
@@ -164,12 +160,21 @@ docs = [
 [project.scripts]
 morie = "morie.runner:main"
 
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["morie*"]
+[tool.scikit-build]
+# scikit-build-core drives the CMake build of libmorie -> morie._core.
+minimum-version = "build-system.requires"
+build-dir = "build/{wheel_tag}"
+# The pure-Python package. scikit-build-core copies the whole tree, so
+# data files inside it (data/*, ollama_json/*, fn/_lazy_map.json, ...)
+# ship in the wheel without a separate package-data declaration.
+wheel.packages = ["src/morie"]
+sdist.include = ["libmorie/", "CMakeLists.txt"]
 
-[tool.setuptools.package-data]
-morie = ["data/*.db", "data/*.json", "data/*.csv", "data/*.txt", "data/*.md", "data/2016/*.json", "data/2023/*.json", "ollama_json/*.json", "fn/_lazy_map.json"]
+[tool.cibuildwheel]
+# Build CPython wheels for the supported range; skip musl, 32-bit, PyPy.
+build = "cp310-* cp311-* cp312-* cp313-* cp314-*"
+skip = "*-musllinux* *_i686 *-win32 pp*"
+build-frontend = "build"
 
 [tool.ruff]
 target-version = "py310"

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Statistics is the grammar of science. -- Karl Pearson"""
+"""Determine whether a point lies inside a polygon using the ray-casting."""
 
 from __future__ import annotations
 
@@ -52,4 +52,4 @@ ptinp = point_in_polygon
 
 
 def cheatsheet() -> str:
-    return "point_in_polygon({}) -> Point-in-polygon test via ray casting. 'I find your lack of "
+    return 'point_in_polygon({}) -> Point-in-polygon test via ray casting.'

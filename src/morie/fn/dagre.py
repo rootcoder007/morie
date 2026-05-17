@@ -67,4 +67,4 @@ dagre = diagnostic_agreement
 
 
 def cheatsheet() -> str:
-    return "diagnostic_agreement({}) -> Diagnostic agreement (Cohen's kappa). 'Judge me by my size, "
+    return "diagnostic_agreement({}) -> Diagnostic agreement (Cohen's kappa)."

@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "Everything flows. -- Heraclitus"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u15() -> GeneralStatistics expression (auto-extracted; see ref)'

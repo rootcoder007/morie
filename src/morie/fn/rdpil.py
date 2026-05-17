@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""You have power over your mind -- not outside events. -- Marcus Aurelius"""
+"""Red pill test."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ def red_pill_test(
     alpha: float = 0.05,
     alternative: str = "two-sided",
 ) -> TestResult:
-    """Study the past if you would define the future. -- Confucius"""
+    """Red pill test."""
     arr = np.asarray(x, dtype=np.float64)
     arr = arr[~np.isnan(arr)]
     if len(arr) < 2:
@@ -51,4 +51,4 @@ rdpil = red_pill_test
 
 
 def cheatsheet() -> str:
-    return "You have power over your mind -- not outside events. -- Marcus Aurelius"
+    return 'rdpil() -> Red pill test'

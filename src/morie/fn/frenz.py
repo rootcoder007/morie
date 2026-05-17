@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Lyapunov exponent. 'Chaos! More chaos!' -- Frenzy"""
+"""Estimate the maximal Lyapunov exponent from a time series."""
 
 from __future__ import annotations
 
@@ -103,4 +103,4 @@ frenz = lyapunov_exponent
 
 
 def cheatsheet() -> str:
-    return "lyapunov_exponent({}) -> Lyapunov exponent. 'Chaos! More chaos!' -- Frenzy"
+    return 'lyapunov_exponent({}) -> Lyapunov exponent.'

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Ensemble stacking. 'Devastator, merge!' -- Scrapper"""
+"""Stacked generalization (Wolpert, 1992) ensemble."""
 
 from __future__ import annotations
 
@@ -96,4 +96,4 @@ dvstr = ensemble_stack
 
 
 def cheatsheet() -> str:
-    return "ensemble_stack({}) -> Ensemble stacking. 'Devastator, merge!' -- Scrapper"
+    return 'ensemble_stack({}) -> Ensemble stacking.'

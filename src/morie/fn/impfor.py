@@ -1,0 +1,65 @@
+"""Model collision impact force using impulse-momentum theorem."""
+from __future__ import annotations
+
+from ._containers import DescriptiveResult
+
+
+def impact_force(
+    mass: float,
+    velocity: float,
+    *,
+    duration: float | None = None,
+    restitution: float = 0.0,
+    deformation: float | None = None,
+) -> DescriptiveResult:
+    """Model collision impact force using impulse-momentum theorem.
+
+    If ``duration`` is given:  F = m * v * (1 + e) / dt
+    If ``deformation`` is given:  F = m * v^2 / (2 * d)  (energy method)
+
+    Parameters
+    ----------
+    mass : float
+        Mass of impacting object (kg).
+    velocity : float
+        Impact velocity (m/s).
+    duration : float, optional
+        Contact duration (seconds).
+    restitution : float
+        Coefficient of restitution (0 = perfectly inelastic, 1 = elastic).
+    deformation : float, optional
+        Deformation distance (meters). Used if duration not given.
+
+    Returns
+    -------
+    DescriptiveResult
+        With ``value`` = peak force in Newtons.
+    """
+    if mass <= 0:
+        raise ValueError("mass must be positive")
+    if velocity < 0:
+        raise ValueError("velocity must be non-negative")
+
+    ke = 0.5 * mass * velocity**2
+
+    if duration is not None and duration > 0:
+        force = mass * abs(velocity) * (1 + restitution) / duration
+        method = "impulse-momentum"
+    elif deformation is not None and deformation > 0:
+        force = mass * velocity**2 / (2 * deformation)
+        method = "energy-deformation"
+    else:
+        raise ValueError("Provide either duration > 0 or deformation > 0")
+
+    return DescriptiveResult(
+        name="impact_force",
+        value=float(force),
+        extra={"method": method, "kinetic_energy_J": ke, "mass_kg": mass, "velocity_ms": velocity},
+    )
+
+
+impfor = impact_force
+
+
+def cheatsheet() -> str:
+    return 'impact_force({}) -> Impact force modeling.'

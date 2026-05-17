@@ -1,4 +1,4 @@
-"""Simulate feeling thermometer data. 'Mastered Ultra Instinct.' -- Goku, Dragon Ball Z"""
+"""Generate synthetic feeling thermometer data."""
 
 from __future__ import annotations
 
@@ -42,4 +42,4 @@ simth = simulate_thermometer
 
 
 def cheatsheet() -> str:
-    return "simulate_thermometer({}) -> Simulate feeling thermometer data. 'Mastered Ultra Instinct."
+    return 'simulate_thermometer({}) -> Simulate feeling thermometer data.'

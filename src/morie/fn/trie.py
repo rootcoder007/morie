@@ -1,4 +1,4 @@
-"""Prefix trie operations. 'Hope is like the sun.' -- Poe Dameron"""
+"""Build a prefix trie and optionally search by prefix."""
 
 from __future__ import annotations
 
@@ -81,4 +81,4 @@ short = trie_operations
 
 
 def cheatsheet() -> str:
-    return "trie_operations({}) -> Prefix trie operations. 'Hope is like the sun.' -- Poe Damer"
+    return 'trie_operations({}) -> Prefix trie operations.'

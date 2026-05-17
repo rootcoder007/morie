@@ -1,5 +1,5 @@
 # morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
-"""Constraint satisfaction solver. 'No one gets through.' -- Barricade"""
+"""Solve a constraint satisfaction problem via backtracking."""
 
 from __future__ import annotations
 
@@ -74,4 +74,4 @@ barcd = csp_backtrack
 
 
 def cheatsheet() -> str:
-    return "csp_backtrack({}) -> Constraint satisfaction solver. 'No one gets through.' -- Ba"
+    return 'csp_backtrack({}) -> Constraint satisfaction solver.'

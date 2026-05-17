@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "Study the past if you would define the future. -- Confucius"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u12() -> GeneralStatistics expression (auto-extracted; see ref)'

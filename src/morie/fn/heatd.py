@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""2D kernel density for heatmaps. 'The belonging you seek is ahead.' -- Maz Kanata"""
+"""2D Gaussian kernel density estimation for geographic heatmaps."""
 
 from __future__ import annotations
 
@@ -94,4 +94,4 @@ heatd = heat_density
 
 
 def cheatsheet() -> str:
-    return "heat_density({}) -> 2D kernel density for heatmaps. 'The belonging you seek is a"
+    return 'heat_density({}) -> 2D kernel density for heatmaps.'

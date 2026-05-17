@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""All models are wrong, but some are useful. -- George E. P. Box"""
+"""Sample from a VAE latent space using the reparameterization trick."""
 
 from __future__ import annotations
 
@@ -77,4 +77,4 @@ prmsc = vae_sample
 
 
 def cheatsheet() -> str:
-    return "All models are wrong, but some are useful. -- George E. P. Box"
+    return 'prmsc() -> Sample from a VAE latent space using the reparameterization trick'

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Hawking radiation temperature model. 'History is about to be rewritten.' -- Hawkgirl"""
+"""Compute Hawking radiation temperature for a Schwarzschild black hole."""
 
 from __future__ import annotations
 
@@ -67,4 +67,4 @@ hkgrl = hawking_temperature
 
 
 def cheatsheet() -> str:
-    return "hawking_temperature({}) -> Hawking radiation temperature model. 'History is about to be"
+    return 'hawking_temperature({}) -> Hawking radiation temperature model.'

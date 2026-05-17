@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Lexicon-based sentiment analysis. 'There is always a bigger fish.' -- Qui-Gon Jinn"""
+"""Lexicon-based sentiment scoring."""
 
 from __future__ import annotations
 
@@ -146,4 +146,4 @@ def sentiment_lexicon(
 
 
 def cheatsheet() -> str:
-    return "sentiment_lexicon({}) -> Lexicon-based sentiment analysis. 'There is always a bigger "
+    return 'sentiment_lexicon({}) -> Lexicon-based sentiment analysis.'

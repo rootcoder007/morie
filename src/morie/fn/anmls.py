@@ -1,5 +1,5 @@
 # morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
-"""Multi-view learning (CCA fusion). 'The Final Flight of the Osiris.' -- Animatrix"""
+"""Canonical Correlation Analysis between two views."""
 
 from __future__ import annotations
 
@@ -92,4 +92,4 @@ anmls = multiview_cca
 
 
 def cheatsheet() -> str:
-    return "multiview_cca({}) -> Multi-view learning (CCA fusion). 'The Final Flight of the O"
+    return 'multiview_cca({}) -> Multi-view learning (CCA fusion).'

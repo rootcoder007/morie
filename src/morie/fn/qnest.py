@@ -54,4 +54,4 @@ qnest = qn_estimator
 
 
 def cheatsheet() -> str:
-    return "qn_estimator({}) -> Qn scale estimator. 'Judge me by my size, do you?'"
+    return 'qn_estimator({}) -> Qn scale estimator.'

@@ -150,7 +150,7 @@ class EmissionsData:
             "cpu_energy,gpu_energy,ram_energy,energy_consumed,water_consumed,"
             "country_name,country_iso_code,region,os,python_version,"
             "codecarbon_version,cpu_count,cpu_model,gpu_count,gpu_model,"
-            "longitude,latitude,ram_total_size,tracking_mode,"
+            "ram_total_size,tracking_mode,"
             "cpu_utilization_percent,gpu_utilization_percent,"
             "ram_utilization_percent,ram_used_gb,on_cloud,pue,wue,"
             "cloud_provider,cloud_region"
@@ -191,8 +191,6 @@ class EmissionsData:
                 self.cpu_model,
                 self.gpu_count,
                 self.gpu_model,
-                self.longitude,
-                self.latitude,
                 self.ram_total_size,
                 self.tracking_mode,
                 self.cpu_utilization_percent,

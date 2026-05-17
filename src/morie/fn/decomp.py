@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""We suffer more often in imagination than in reality. -- Seneca"""
+"""Classical seasonal decomposition (moving average)."""
 
 from __future__ import annotations
 
@@ -68,4 +68,4 @@ decomp = seasonal_decompose
 
 
 def cheatsheet() -> str:
-    return "seasonal_decompose({}) -> Seasonal decomposition. 'The circle is now complete.' -- Dar"
+    return 'seasonal_decompose({}) -> Seasonal decomposition.'

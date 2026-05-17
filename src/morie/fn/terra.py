@@ -1,4 +1,4 @@
-"""Terrain analysis. 'I was never on your side.' -- Terra"""
+"""Compute slope, aspect, and curvature from a digital elevation model."""
 
 from __future__ import annotations
 
@@ -71,4 +71,4 @@ terra = terrain_analysis
 
 
 def cheatsheet() -> str:
-    return "terrain_analysis({}) -> Terrain analysis. 'I was never on your side.' -- Terra"
+    return 'terrain_analysis({}) -> Terrain analysis.'

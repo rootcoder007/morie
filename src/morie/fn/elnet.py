@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Elastic net regression. 'Everything flows. -- Heraclitus'"""
+"""Soft-thresholding operator."""
 from __future__ import annotations
 
 import numpy as np
@@ -92,4 +92,4 @@ elnet = elastic_net
 
 
 def cheatsheet() -> str:
-    return "_soft_threshold({}) -> Elastic net regression. 'In my experience, there is no such "
+    return '_soft_threshold({}) -> Elastic net regression.'

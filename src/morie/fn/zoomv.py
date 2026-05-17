@@ -1,4 +1,4 @@
-"""Velocity profile estimation. 'You can't lock up the darkness.' -- Zoom"""
+"""Estimate velocity, acceleration, and jerk from a position time series."""
 
 from __future__ import annotations
 
@@ -72,4 +72,4 @@ zoomv = velocity_profile
 
 
 def cheatsheet() -> str:
-    return "velocity_profile({}) -> Velocity profile estimation. 'You can't lock up the darkness"
+    return 'velocity_profile({}) -> Velocity profile estimation.'

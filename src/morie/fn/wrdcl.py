@@ -1,4 +1,4 @@
-"""Patience is bitter, but its fruit is sweet. -- Aristotle"""
+"""Compute word frequencies suitable for word cloud visualization."""
 
 from __future__ import annotations
 
@@ -149,4 +149,4 @@ def word_cloud_data(
 
 
 def cheatsheet() -> str:
-    return "word_cloud_data({}) -> Word frequency data for cloud visualization. 'Never tell me "
+    return 'word_cloud_data({}) -> Word frequency data for cloud visualization.'

@@ -76,4 +76,4 @@ short = longest_common_subseq
 
 
 def cheatsheet() -> str:
-    return "longest_common_subseq({}) -> Longest common subsequence. 'Patience you must have.' -- Yod"
+    return 'longest_common_subseq({}) -> Longest common subsequence.'

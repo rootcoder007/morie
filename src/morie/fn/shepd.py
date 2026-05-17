@@ -1,4 +1,4 @@
-"""Shepard diagram data. 'Plus Ultra!' -- All Might, My Hero Academia"""
+"""Generate data for a Shepard diagram (observed vs fitted distances)."""
 
 from __future__ import annotations
 
@@ -40,4 +40,4 @@ shepd = shepard_diagram
 
 
 def cheatsheet() -> str:
-    return "shepard_diagram({}) -> Shepard diagram data. 'Plus Ultra!' -- All Might, My Hero Ac"
+    return 'shepard_diagram({}) -> Shepard diagram data.'

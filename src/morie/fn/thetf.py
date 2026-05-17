@@ -1,4 +1,4 @@
-"""Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"""
+"""Theta forecasting method (Assimakopoulos and Nikolopoulos, 2000)."""
 
 from __future__ import annotations
 
@@ -73,4 +73,4 @@ thetf = theta_method
 
 
 def cheatsheet() -> str:
-    return "theta_method({}) -> Theta forecasting method. 'Your eyes can deceive you. Don't "
+    return 'theta_method({}) -> Theta forecasting method.'

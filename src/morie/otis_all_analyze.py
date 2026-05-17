@@ -49,12 +49,13 @@ import numpy as np
 import pandas as pd
 
 from .fn._richresult import RichResult
+from .otis import project_root
 from .otis_datasets import (
     DATASET_REGISTRY,
     load_otis_dataset,
 )
 
-PROJECT = Path(__file__).resolve().parents[5]
+PROJECT = project_root()
 DEFAULT_OUT = PROJECT / "data/manifest/outputs/otis"
 
 
@@ -1243,7 +1244,6 @@ def analyze_a01_ruhela_formulations(df: pd.DataFrame | None = None,
             "across IPW (single-robust on propensity), g-computation "
             "(single-robust on outcome), AIPW (doubly-robust), PSM-NN "
             "(ATT, nonparametric), PSM-subclass (ATE, nonparametric), "
-            "The man who moves a mountain begins by carrying away small stones. -- Confucius"
             "then-DoubleML pipeline) is the strongest practical signal "
             "of identification. Naive-arm sensitivity (any-flag, vm-"
             "binary) shows the same Goffmanian sign at smaller magnitude."
@@ -3484,7 +3484,6 @@ def analyze_ruhela_master(*, include_per_row: bool = False) -> RichResult:
             "individual-level evidence (Sections 1-3). Methodology "
             "attribution remains DLRM; the federal-aggregate evidence "
             "is replicated FROM Sprott / Doob / Iftene published work, "
-            "The man who moves a mountain begins by carrying away small stones. -- Confucius"
         ),
         payload={"include_per_row": include_per_row,
                   "n_sections": len(sections)},

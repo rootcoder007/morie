@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Knowing yourself is the beginning of all wisdom. -- Aristotle"""
+"""Compute the intersection point of two line segments (p1-p2) and (p3-p4)."""
 
 from __future__ import annotations
 
@@ -68,4 +68,4 @@ linit = line_intersect
 
 
 def cheatsheet() -> str:
-    return "line_intersect({}) -> Line segment intersection. 'This is where the fun begins.' -"
+    return 'line_intersect({}) -> Line segment intersection.'

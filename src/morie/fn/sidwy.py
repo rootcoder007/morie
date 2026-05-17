@@ -1,4 +1,4 @@
-"""Adversarial perturbation (FGSM-style). 'Deception is an art.' -- Sideways"""
+"""Generate adversarial perturbation for a data point."""
 
 from __future__ import annotations
 
@@ -69,4 +69,4 @@ sidwy = adversarial_perturb
 
 
 def cheatsheet() -> str:
-    return "adversarial_perturb({}) -> Adversarial perturbation (FGSM-style). 'Deception is an art."
+    return 'adversarial_perturb({}) -> Adversarial perturbation (FGSM-style).'

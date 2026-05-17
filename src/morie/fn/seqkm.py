@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""K-mer frequency counting. 'There is always a bigger fish.' -- Qui-Gon Jinn"""
+"""Count k-mer frequencies in a sequence."""
 
 from __future__ import annotations
 
@@ -63,4 +63,4 @@ short = kmer_frequency
 
 
 def cheatsheet() -> str:
-    return "kmer_frequency({}) -> K-mer frequency counting. 'There is always a bigger fish.' -"
+    return 'kmer_frequency({}) -> K-mer frequency counting.'

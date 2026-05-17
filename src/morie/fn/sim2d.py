@@ -1,4 +1,4 @@
-"""Simulate 2D unfolding data. 'Ultra Instinct.' -- Goku, Dragon Ball Z"""
+"""Generate synthetic 2D unfolding data (ideal points + stimuli + preferences)."""
 
 from __future__ import annotations
 
@@ -46,4 +46,4 @@ sim2d = simulate_2d_unfolding
 
 
 def cheatsheet() -> str:
-    return "simulate_2d_unfolding({}) -> Simulate 2D unfolding data. 'Ultra Instinct.' -- Goku, Drago"
+    return 'simulate_2d_unfolding({}) -> Simulate 2D unfolding data.'

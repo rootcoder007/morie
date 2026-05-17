@@ -1,4 +1,4 @@
-"""The man who moves a mountain begins by carrying away small stones. -- Confucius"""
+"""Compute standardized mean differences (SMD) for covariate balance."""
 
 from __future__ import annotations
 
@@ -92,4 +92,4 @@ smbln = smd_balance
 
 
 def cheatsheet() -> str:
-    return "smd_balance({}) -> Standardized mean difference balance check. 'Great shot, kid"
+    return 'smd_balance({}) -> Standardized mean difference balance check.'

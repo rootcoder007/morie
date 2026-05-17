@@ -1,4 +1,4 @@
-"""Spatial distance buffer zones. 'Stay on target!' -- Gold Five"""
+"""Identify points within a distance buffer zone."""
 
 from __future__ import annotations
 
@@ -86,4 +86,4 @@ smpbf = spatial_buffer
 
 
 def cheatsheet() -> str:
-    return "spatial_buffer({}) -> Spatial distance buffer zones. 'Stay on target!' -- Gold Fiv"
+    return 'spatial_buffer({}) -> Spatial distance buffer zones.'

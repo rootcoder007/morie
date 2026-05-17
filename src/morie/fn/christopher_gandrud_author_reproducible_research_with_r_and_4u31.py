@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "It is the mark of an educated mind to entertain a thought without accepting it. -- Aristotle"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u31() -> GeneralStatistics expression (auto-extracted; see ref)'

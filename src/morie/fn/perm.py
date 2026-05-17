@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Permutation test. 'The unexamined life is not worth living. -- Socrates'"""
+"""Permutation test for difference in means."""
 from __future__ import annotations
 
 import numpy as np
@@ -50,4 +50,4 @@ perm = permutation_test
 
 
 def cheatsheet() -> str:
-    return "permutation_test({}) -> Permutation test. 'The Force is what gives a Jedi his power."
+    return 'permutation_test({}) -> Permutation test.'

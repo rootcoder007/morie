@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Lasso regression (L1). 'Your focus determines your reality.' -- Qui-Gon Jinn"""
+"""Soft-thresholding operator for L1 penalty."""
 
 from __future__ import annotations
 
@@ -93,4 +93,4 @@ lasso = lasso_regression
 
 
 def cheatsheet() -> str:
-    return "_soft_threshold({}) -> Lasso regression (L1). 'Your focus determines your reality.'"
+    return '_soft_threshold({}) -> Lasso regression (L1).'

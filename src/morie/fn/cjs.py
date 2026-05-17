@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""CJS flow / attrition calculation. 'Real knowledge is to know the extent of one's ignorance. -- Confucius'"""
+"""Criminal justice system flow and attrition rates."""
 from __future__ import annotations
 
 from ._containers import DescriptiveResult
@@ -50,4 +50,4 @@ cjs = cjs_flow
 
 
 def cheatsheet() -> str:
-    return "cjs_flow({}) -> CJS flow / attrition calculation. 'The Force will be with yo"
+    return 'cjs_flow({}) -> CJS flow / attrition calculation.'

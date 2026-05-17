@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""General recidivism rate. 'There is always a bigger fish.' -- Qui-Gon Jinn"""
+"""Recidivism rate as a proportion with Wilson CI."""
 
 from __future__ import annotations
 
@@ -50,4 +50,4 @@ recid = recidivism_rate
 
 
 def cheatsheet() -> str:
-    return "recidivism_rate({}) -> General recidivism rate. 'There is always a bigger fish.' --"
+    return 'recidivism_rate({}) -> General recidivism rate.'

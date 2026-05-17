@@ -2,6 +2,8 @@
 
 **Multi-domain Open Research and Inferential Estimation**
 
+<sub>*Pronounced /ˈmɔɪraɪ/ — "MOY-rye", like the Greek Moirai (the Fates).*</sub>
+
 A multi-domain scientific computing toolkit (Python and R) for observational inference, with sociolegal, signal-processing, cryptographic, spatial-statistics, statistical-physics, and psychometrics modules. Hosts the MRM framework as a primary application for Canadian carceral, police, and oversight data analysis.
 
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg)](https://github.com/hadesllm/morie/blob/main/LICENSE)
@@ -94,7 +96,7 @@ pip install morie
 docker run --rm ghcr.io/hadesllm/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/hadesllm/morie:0.9.0 morie --help
+docker run --rm ghcr.io/hadesllm/morie:0.9.1 morie --help
 ```
 
 Multi-arch image published on every release with both versioned and `:latest` tags. Requires only Docker — no Python, no pip.
@@ -128,6 +130,14 @@ from morie.otis_all_analyze import analyze_a01_mrm
 result = analyze_a01_mrm(df)
 print(result)
 ```
+
+## What's new in v0.9.1
+
+- **C/C++ computational backend** — the hot numerical kernels (formerly `_jit.py`) are ported to a shared C++ core (`libmorie`), exposed to Python via nanobind and to R via Rcpp. One compiled core now serves both language sides.
+- **Hawkes-process engine** — a self-exciting point-process suite in the C++ core: sum-of-exponentials and complex-pole SoE engines, a matrix-pencil exponential fitter, sub-quadratic truncated Weibull / Lomax / gamma kernels, sinusoidal-baseline variants, and a hybrid gamma-tail kernel. An R-side Hawkes fitter with Poisson-degeneracy detection and multi-start restarts is included.
+- **Wheels via cibuildwheel** — the PyPI wheel matrix is now built with `cibuildwheel` for the compiled extension.
+- **IP / licensing cleanup** — the bundled demo dataset was replaced with public-domain Solar System data; copyrighted pop-culture quotes throughout `fn/` were replaced with public-domain ones; 85 franchise-derived function codes were renamed to neutral names and four themed categories merged into `AtomicPrimitives`.
+- **OTIS data resolution fix** — `load_otis()` and the OTIS analysis modules resolve their data directory robustly (a `pyproject.toml` marker walk) instead of a hard-coded path depth.
 
 ## What's new in v0.9.0
 
@@ -199,12 +209,12 @@ and the **empirical applications paper**.
 ```
 # Software paper — R (also the R package source on Zenodo)
 Ruhela, V. S. (2026). morie: Multi-domain Open Research and Inferential
-Estimation in R (v0.9.0). Zenodo.
+Estimation in R (v0.9.1). Zenodo.
 https://doi.org/10.5281/zenodo.20111233
 
 # Software paper — Python (also the Python package source on Zenodo)
 Ruhela, V. S. (2026). morie: Multi-domain Open Research and Inferential
-Estimation in Python (v0.9.0). Zenodo.
+Estimation in Python (v0.9.1). Zenodo.
 https://doi.org/10.5281/zenodo.20096350
 
 # MRM framework paper (theoretical foundations)

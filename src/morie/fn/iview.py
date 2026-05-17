@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Image viewer and info. 'The garbage'll do!' -- Rey"""
+"""Open an image in the system viewer."""
 
 from __future__ import annotations
 
@@ -81,4 +81,4 @@ iview = image_info_result
 
 
 def cheatsheet() -> str:
-    return "view_image({}) -> Image viewer and info. 'The garbage'll do!' -- Rey"
+    return 'view_image({}) -> Image viewer and info.'

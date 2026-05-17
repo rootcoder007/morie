@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""MLSMU6 single ALS iteration. 'Territory.' -- Yusuke, Yu Yu Hakusho"""
+"""One alternating least-squares step for unfolding."""
 
 from __future__ import annotations
 
@@ -77,4 +77,4 @@ mlsit = mlsmu6_single_iteration
 
 
 def cheatsheet() -> str:
-    return "mlsmu6_single_iteration({}) -> MLSMU6 single ALS iteration. 'Territory.' -- Yusuke, Yu Yu H"
+    return 'mlsmu6_single_iteration({}) -> MLSMU6 single ALS iteration.'

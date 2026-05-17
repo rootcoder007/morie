@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Drop influential votes. 'Hellzone Grenade!' -- Piccolo, Dragon Ball Z"""
+"""Filter out votes where a single option exceeds threshold agreement."""
 
 from __future__ import annotations
 
@@ -45,4 +45,4 @@ rcdrp = drop_influential_votes
 
 
 def cheatsheet() -> str:
-    return "drop_influential_votes({}) -> Drop influential votes. 'Hellzone Grenade!' -- Piccolo, Drag"
+    return 'drop_influential_votes({}) -> Drop influential votes.'

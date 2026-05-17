@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""That which does not kill us makes us stronger. -- Friedrich Nietzsche"""
+"""Compute the 2-D convex hull of a point set using the gift-wrapping."""
 
 from __future__ import annotations
 
@@ -66,4 +66,4 @@ cvxhl = convex_hull
 
 
 def cheatsheet() -> str:
-    return "convex_hull({}) -> 2-D convex hull via gift wrapping. 'Impressive. Most impress"
+    return 'convex_hull({}) -> 2-D convex hull via gift wrapping.'

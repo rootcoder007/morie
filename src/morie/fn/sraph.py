@@ -1,4 +1,4 @@
-"""Input validation / sanitization metrics. 'I protect that which matters most.' -- Seraph"""
+"""Score data quality by checking common sanitization issues."""
 
 from __future__ import annotations
 
@@ -110,4 +110,4 @@ sraph = validate_inputs
 
 
 def cheatsheet() -> str:
-    return "validate_inputs({}) -> Input validation / sanitization metrics. 'I protect that whi"
+    return 'validate_inputs({}) -> Input validation / sanitization metrics.'

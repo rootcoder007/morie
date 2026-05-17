@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""The man who moves a mountain begins by carrying away small stones. -- Confucius"""
+"""Test whether the causal direction X->Y is more plausible than Y->X."""
 
 from __future__ import annotations
 
@@ -88,4 +88,4 @@ rvflh = causal_reversal_test
 
 
 def cheatsheet() -> str:
-    return "causal_reversal_test({}) -> Causal reversal test. 'It was me, Barry. It was me all along"
+    return 'causal_reversal_test({}) -> Causal reversal test.'

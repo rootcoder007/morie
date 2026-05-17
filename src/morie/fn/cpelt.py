@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Luck is what happens when preparation meets opportunity. -- Seneca"""
+"""Pruned Exact Linear Time (PELT) algorithm for change-point detection."""
 
 from __future__ import annotations
 
@@ -94,4 +94,4 @@ cpelt = pelt_changepoint
 
 
 def cheatsheet() -> str:
-    return "pelt_changepoint({}) -> PELT change-point detection. 'Power! Unlimited power!' -- Da"
+    return 'pelt_changepoint({}) -> PELT change-point detection.'

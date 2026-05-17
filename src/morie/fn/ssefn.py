@@ -1,4 +1,4 @@
-"""Sum of squared distance errors for MDS. 'Ora ora ora!' -- Jotaro, JoJo's Bizarre Adventure"""
+"""Sum of squared errors between reconstructed and target distances."""
 
 from __future__ import annotations
 
@@ -37,4 +37,4 @@ ssefn = sse_mds
 
 
 def cheatsheet() -> str:
-    return "sse_mds({}) -> Sum of squared distance errors for MDS. 'Ora ora ora!' -- Jo"
+    return 'sse_mds({}) -> Sum of squared distance errors for MDS.'

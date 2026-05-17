@@ -1,4 +1,4 @@
-"""You have power over your mind -- not outside events. -- Marcus Aurelius"""
+"""Compute the Type-Token Ratio (TTR) as a measure of lexical diversity."""
 
 from __future__ import annotations
 
@@ -47,4 +47,4 @@ typtr = type_token_ratio
 
 
 def cheatsheet() -> str:
-    return "type_token_ratio({}) -> Type-token ratio (lexical diversity). 'Never tell me the odd"
+    return 'type_token_ratio({}) -> Type-token ratio (lexical diversity).'

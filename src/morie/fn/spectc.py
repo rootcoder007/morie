@@ -1,4 +1,4 @@
-"""Spectral clustering. 'Be with me.' -- Rey"""
+"""Spectral clustering via the normalised graph Laplacian."""
 
 from __future__ import annotations
 
@@ -79,4 +79,4 @@ spectc = spectral_cluster
 
 
 def cheatsheet() -> str:
-    return "spectral_cluster({}) -> Spectral clustering. 'Be with me.' -- Rey"
+    return 'spectral_cluster({}) -> Spectral clustering.'

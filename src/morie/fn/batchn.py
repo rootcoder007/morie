@@ -60,4 +60,4 @@ short = batch_norm
 
 
 def cheatsheet() -> str:
-    return "batch_norm({}) -> Batch normalization. 'Truly wonderful, the mind of a child i"
+    return 'batch_norm({}) -> Batch normalization.'

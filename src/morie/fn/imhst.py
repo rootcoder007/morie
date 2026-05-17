@@ -43,4 +43,4 @@ imhst = image_histogram
 
 
 def cheatsheet() -> str:
-    return "image_histogram({}) -> Image histogram computation. 'The greatest teacher, failure "
+    return 'image_histogram({}) -> Image histogram computation.'

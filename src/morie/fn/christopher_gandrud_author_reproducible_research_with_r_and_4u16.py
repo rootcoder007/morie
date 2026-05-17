@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "The man who moves a mountain begins by carrying away small stones. -- Confucius"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u16() -> GeneralStatistics expression (auto-extracted; see ref)'

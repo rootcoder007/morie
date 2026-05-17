@@ -53,4 +53,4 @@ stck = stacking
 
 
 def cheatsheet() -> str:
-    return "stacking({}) -> Model stacking / super learner (OLS combiner). 'We are what "
+    return 'stacking({}) -> Model stacking / super learner (OLS combiner).'

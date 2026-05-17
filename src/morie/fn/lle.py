@@ -83,4 +83,4 @@ def lle(
 
 
 def cheatsheet() -> str:
-    return "lle({}) -> Locally Linear Embedding. 'Luminous beings are we, not this "
+    return 'lle({}) -> Locally Linear Embedding.'

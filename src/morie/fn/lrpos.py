@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Likelihood ratios (LR+ / LR-). 'So this is how liberty dies.' -- Padme Amidala"""
+"""Compute positive (LR+) and negative (LR-) likelihood ratios."""
 
 from __future__ import annotations
 
@@ -57,4 +57,4 @@ lrpos = likelihood_ratio
 
 
 def cheatsheet() -> str:
-    return "likelihood_ratio({}) -> Likelihood ratios (LR+ / LR-). 'So this is how liberty dies."
+    return 'likelihood_ratio({}) -> Likelihood ratios (LR+ / LR-).'

@@ -1,5 +1,5 @@
 # morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
-"""Shape analysis (morphometrics). 'Dude, I can turn into a T-Rex.' -- Beast Boy"""
+"""Ordinary Procrustes analysis: align shape Y to reference shape X."""
 
 from __future__ import annotations
 
@@ -69,4 +69,4 @@ bbeas = procrustes_shape
 
 
 def cheatsheet() -> str:
-    return "procrustes_shape({}) -> Shape analysis (morphometrics). 'Dude, I can turn into a T-R"
+    return 'procrustes_shape({}) -> Shape analysis (morphometrics).'

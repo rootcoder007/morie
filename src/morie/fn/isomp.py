@@ -87,4 +87,4 @@ def isomap(
 
 
 def cheatsheet() -> str:
-    return "isomap({}) -> Isomap embedding. 'Truly wonderful the mind of a child is.' "
+    return 'isomap({}) -> Isomap embedding.'

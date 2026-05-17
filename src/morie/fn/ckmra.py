@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Patience is bitter, but its fruit is sweet. -- Aristotle"""
+"""Cochran-Mantel-Haenszel (CMH) test for conditional independence."""
 
 from __future__ import annotations
 
@@ -74,4 +74,4 @@ ckmra = cochran_mantel
 
 
 def cheatsheet() -> str:
-    return "cochran_mantel({}) -> Cochran-Mantel-Haenszel test. 'I am the Senate.' -- Chancell"
+    return 'cochran_mantel({}) -> Cochran-Mantel-Haenszel test.'
