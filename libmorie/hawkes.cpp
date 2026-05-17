@@ -108,6 +108,14 @@ double hawkes_ll_soe_cplx(Vec t, double T, double nu, double eta, CVec w,
                                            w.shape(0));
 }
 
+double hawkes_ll_gamma_hybrid(Vec t, double T, double a0, double eta,
+                              double alpha, double beta, double u_split,
+                              CVec w_soe, CVec beta_soe) {
+    return morie::core::hawkes_ll_gamma_hybrid(
+        t.data(), t.shape(0), T, a0, eta, alpha, beta, u_split,
+        w_soe.data(), beta_soe.data(), w_soe.shape(0));
+}
+
 }  // namespace
 
 void register_hawkes(nb::module_ &m) {
@@ -176,4 +184,10 @@ void register_hawkes(nb::module_ &m) {
           "matrix-pencil fit; conjugate poles must be passed in pairs "
           "so the likelihood is real. Identical to hawkes_ll_soe for "
           "purely real poles.");
+    m.def("hawkes_ll_gamma_hybrid", &hawkes_ll_gamma_hybrid, "t"_a, "T"_a,
+          "a0"_a, "eta"_a, "alpha"_a, "beta"_a, "u_split"_a, "w_soe"_a,
+          "beta_soe"_a,
+          "Hybrid gamma-kernel Hawkes negative log-likelihood: exact "
+          "kernel on lags [0, u_split], complex SoE (from "
+          "soe_fit_gamma_tail) beyond. O(n*w + M*n).");
 }

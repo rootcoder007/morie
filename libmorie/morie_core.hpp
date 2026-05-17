@@ -739,4 +739,88 @@ inline double hawkes_ll_soe_cplx(const double *t, std::size_t n, double T,
     return -(log_sum - integral);
 }
 
+// Hybrid gamma-kernel Hawkes likelihood (task #73).
+//
+// The gamma kernel (shape alpha > 1) is not completely monotone, so it
+// has no global sum-of-exponentials form. This splits the lag axis at
+// u_split: lags in [0, u_split] (the rising/peak region) use the EXACT
+// kernel via a sliding window; lags beyond u_split use the SoE fitted
+// by soe_fit_gamma_tail (w_soe, beta_soe -- complex, shifted so the
+// modes describe g(u_split + s)).
+//
+// Events sorted => two monotone pointers. j_grad counts events whose
+// lag has crossed u_split; as it advances, each graduating event is
+// folded into the SoE state S_m (a "graduation" recursion). Events in
+// [j_grad, i) are still inside the exact window. Cost O(n*w + M*n),
+// w = events within u_split. The compensator splits the same way: the
+// exact part is the regularized incomplete gamma, the tail part the
+// closed-form SoE integral.
+inline double hawkes_ll_gamma_hybrid(
+    const double *t, std::size_t n, double T, double a0, double eta,
+    double alpha, double beta, double u_split,
+    const std::complex<double> *w_soe,
+    const std::complex<double> *beta_soe, std::size_t M) {
+    if (!(1e-6 < eta && eta < 0.999)) return kBig;
+    if (!(0.05 < alpha && alpha < 20.0)) return kBig;
+    if (!(0.05 < beta && beta < 30.0)) return kBig;
+    if (!(-20.0 < a0 && a0 < 20.0)) return kBig;
+    if (!(u_split > 0.0)) return kBig;
+
+    const double nu = std::exp(a0);
+    const double log_const = alpha * std::log(beta) - std::lgamma(alpha);
+
+    std::vector<std::complex<double>> S(M, std::complex<double>(0.0, 0.0));
+    double log_sum = 0.0;
+    std::size_t j_grad = 0;
+    for (std::size_t i = 0; i < n; ++i) {
+        if (i > 0) {
+            const double dt = t[i] - t[i - 1];
+            for (std::size_t m = 0; m < M; ++m)
+                S[m] *= std::exp(-beta_soe[m] * dt);
+        }
+        // graduate events whose lag has just crossed u_split
+        while (j_grad < i && (t[i] - t[j_grad]) > u_split) {
+            const double s = t[i] - t[j_grad] - u_split;
+            for (std::size_t m = 0; m < M; ++m)
+                S[m] += std::exp(-beta_soe[m] * s);
+            ++j_grad;
+        }
+        // tail excitation (SoE) ...
+        std::complex<double> tail(0.0, 0.0);
+        for (std::size_t m = 0; m < M; ++m) tail += w_soe[m] * S[m];
+        double excite = tail.real();
+        // ... plus window excitation (exact kernel)
+        for (std::size_t j = j_grad; j < i; ++j) {
+            const double u = t[i] - t[j];
+            if (u > 1e-300) {
+                const double log_d =
+                    log_const + (alpha - 1.0) * std::log(u) - beta * u;
+                excite += std::exp(log_d);
+            }
+        }
+        const double lam_i = nu + eta * excite;
+        if (!std::isfinite(lam_i) || lam_i <= 0.0) return kBig;
+        log_sum += std::log(lam_i);
+    }
+
+    double integral = nu * T;
+    for (std::size_t i = 0; i < n; ++i) {
+        const double X = T - t[i];
+        if (X <= 0.0) continue;
+        if (X <= u_split) {
+            integral += eta * gamma_cdf_regularized(alpha, beta * X);
+        } else {
+            integral += eta * gamma_cdf_regularized(alpha, beta * u_split);
+            const double x_tail = X - u_split;
+            std::complex<double> csum(0.0, 0.0);
+            for (std::size_t m = 0; m < M; ++m)
+                csum += (w_soe[m] / beta_soe[m]) *
+                        (1.0 - std::exp(-beta_soe[m] * x_tail));
+            integral += eta * csum.real();
+        }
+    }
+    if (!std::isfinite(log_sum) || !std::isfinite(integral)) return kBig;
+    return -(log_sum - integral);
+}
+
 }  // namespace morie::core

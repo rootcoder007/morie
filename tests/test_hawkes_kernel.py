@@ -454,3 +454,19 @@ def test_soe_fit_gamma_tail_accuracy(alpha, beta):
     s = np.array([0.0, 1.0 / beta, 5.0 / beta])
     val = (w[None, :] * np.exp(-beta_soe[None, :] * s[:, None])).sum(axis=1)
     assert np.max(np.abs(val.imag)) < 1e-8 * np.max(np.abs(val.real)) + 1e-12
+
+
+@pytest.mark.parametrize("alpha,beta", [(1.5, 1.0), (2.5, 1.0), (4.0, 2.0)])
+def test_hawkes_ll_gamma_hybrid_matches_exact(alpha, beta):
+    # the hybrid (exact peak window + SoE tail) must reproduce the
+    # exact O(n^2) gamma likelihood within the tail-fit tolerance
+    from morie.tps_hawkes_jit import soe_fit_gamma_tail
+    t = _event_times(400, rate=2.0, seed=29)
+    T = float(t[-1]) + 1.0
+    a0, eta = -1.0, 0.4
+    u_split = 2.0 * (alpha - 1.0) / beta
+    w, beta_soe, err = soe_fit_gamma_tail(alpha, beta, u_split)
+    exact = core.hawkes_ll_gamma_const(t, T, a0, eta, alpha, beta)
+    hybrid = core.hawkes_ll_gamma_hybrid(t, T, a0, eta, alpha, beta,
+                                         u_split, w, beta_soe)
+    assert np.isclose(hybrid, exact, rtol=1e-4)
