@@ -33,8 +33,8 @@ def normal_score_transform(Z: np.ndarray) -> SpatialResult:
 
     .. epigraph::
 
-        "Had to be me. Someone else might have gotten it wrong."
-        -- Mordin, Mass Effect
+        We must know. We will know.
+        -- David Hilbert
     """
     from scipy.stats import norm, shapiro
 

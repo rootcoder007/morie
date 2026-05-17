@@ -41,8 +41,8 @@ def simple_kriging_variance(
 
     .. epigraph::
 
-        "Even the smallest person can change the course of the future."
-        -- Galadriel, LOTR
+        He who has a why to live can bear almost any how.
+        -- Friedrich Nietzsche
     """
     coords = np.asarray(coords, dtype=np.float64)
     target = np.asarray(target, dtype=np.float64).ravel()

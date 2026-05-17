@@ -44,8 +44,8 @@ def conditional_cdf_indicator(
 
     .. epigraph::
 
-        "Master Chief? Mind telling me what you're doing?"
-        -- Lord Hood, Halo
+        Statistics is the grammar of science.
+        -- Karl Pearson
     """
     Z = np.asarray(Z, dtype=np.float64).ravel()
     coords = np.asarray(coords, dtype=np.float64)
