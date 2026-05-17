@@ -373,3 +373,21 @@ def test_neg_loglik_jit_lomax_small_n_stays_exact():
     routed = neg_loglik_jit(theta, t, T, "lomax", "constant")
     exact = core.hawkes_ll_lomax_const(t, T, a0, eta, alpha, c)
     assert routed == exact   # same code path, bit-identical
+
+
+# --- matrix-pencil exponential fitter, task #73 (gamma hybrid) --------
+
+def test_soe_fit_matrix_pencil_recovers_known_soe():
+    # the pencil must recover an exact 3-term SoE from its samples
+    from morie.tps_hawkes_jit import _soe_fit_matrix_pencil
+    beta_true = np.array([0.3, 1.2, 4.0])
+    r_true = np.array([1.0, 0.6, 0.25])
+    dt = 0.05
+    k = np.arange(80)
+    y = (r_true[None, :] *
+         np.exp(-beta_true[None, :] * k[:, None] * dt)).sum(axis=1)
+    beta, res = _soe_fit_matrix_pencil(y, dt)
+    assert np.max(np.abs(beta.imag)) < 1e-6          # all poles real
+    order = np.argsort(beta.real)
+    assert np.allclose(beta.real[order], beta_true, atol=1e-6)
+    assert np.allclose(res.real[order], r_true, atol=1e-6)

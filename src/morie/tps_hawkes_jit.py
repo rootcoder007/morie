@@ -729,3 +729,62 @@ def soe_fit_lomax(alpha, c, horizon, *, tol=1.0e-7, m_max=256):
     return (np.ascontiguousarray(w, dtype=np.float64),
             np.ascontiguousarray(beta, dtype=np.float64),
             err)
+
+
+# --- matrix-pencil exponential fitter, task #73 (gamma hybrid) -------------
+#
+# The gamma kernel (shape alpha > 1) is not completely monotone and has
+# no clean Bernstein mixing measure, so its tail cannot be quadratured
+# the way the Lomax kernel is. Instead the tail is fitted empirically:
+# the matrix-pencil method (Hua & Sarkar) recovers the exponential
+# modes of uniformly-sampled data directly, by an eigen-decomposition
+# -- no fixed grid of rates, so none of the collinearity that wrecked
+# the earlier least-squares attempt.
+#
+# A completely monotone function's exponential modes are all real; if
+# the pencil returns COMPLEX poles, that is a diagnostic -- the sample
+# window still covers non-monotone (near-peak) curvature -- not modes
+# to keep. The caller responds by moving the window, never by feeding
+# oscillatory modes into the real-only SoE engine.
+
+
+def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
+    """Matrix-pencil (Hua-Sarkar) fit of uniformly-sampled data to a
+    sum of exponentials:  y[k] ~= sum_m residue[m] * exp(-beta[m]*k*dt).
+
+    y         uniformly-spaced samples y[k], k = 0 .. N-1
+    dt        sample spacing
+    order     model order M (number of exponentials); if None, taken
+              from the numerical rank of the Hankel matrix
+    rank_tol  singular values below rank_tol * sigma_max are dropped
+
+    Returns (beta, residue) as complex arrays. A real decaying mode
+    gives real beta > 0; a complex entry is an oscillatory mode and
+    signals the fit window is not yet in the monotone tail.
+    """
+    y = np.asarray(y, dtype=np.float64)
+    n = y.size
+    if n < 4:
+        raise ValueError("matrix pencil needs at least 4 samples")
+
+    pencil = n // 2                       # pencil parameter L
+    rows = n - pencil
+    hankel = np.empty((rows, pencil + 1))
+    for i in range(rows):
+        hankel[i] = y[i:i + pencil + 1]
+
+    _, sv, vh = np.linalg.svd(hankel, full_matrices=False)
+    if order is None:
+        order = int(np.count_nonzero(sv > rank_tol * sv[0]))
+    order = max(1, min(order, pencil))
+
+    v = vh[:order].conj().T               # (pencil+1) x order
+    z = np.linalg.eigvals(np.linalg.pinv(v[:-1]) @ v[1:])
+
+    k = np.arange(n)
+    vander = z[None, :] ** k[:, None]     # n x order
+    residue, *_ = np.linalg.lstsq(vander, y, rcond=None)
+
+    with np.errstate(divide="ignore", invalid="ignore"):
+        beta = -np.log(z) / dt
+    return beta, residue
