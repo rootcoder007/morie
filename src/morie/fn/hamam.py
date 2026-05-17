@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Brownian motion simulation. 'I have survived your predecessors.' -- The Merovingian"""
+"""Simulate geometric or arithmetic Brownian motion paths."""
 
 from __future__ import annotations
 
@@ -86,4 +86,4 @@ hamam = brownian_motion
 
 
 def cheatsheet() -> str:
-    return "brownian_motion({}) -> Brownian motion simulation. 'I have survived your predecesso"
+    return 'brownian_motion({}) -> Brownian motion simulation.'

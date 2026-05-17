@@ -1,4 +1,4 @@
-"""When I let go of what I am, I become what I might be. -- Lao Tzu"""
+"""FlashAttention IO-aware block-tiled attention."""
 import numpy as np
 from scipy import stats
 from ._richresult import RichResult
@@ -42,4 +42,4 @@ def flash_attention_block(y, Q, K, V, block_size):
 
 
 def cheatsheet():
-    return "When I let go of what I am, I become what I might be. -- Lao Tzu"
+    return 'atfla() -> FlashAttention IO-aware block-tiled attention'

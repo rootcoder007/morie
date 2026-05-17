@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""L1/Elastic net regularization path. 'If you're guilty, you're dead.' -- Punisher"""
+"""Fit elastic net regression via coordinate descent."""
 
 from __future__ import annotations
 
@@ -120,4 +120,4 @@ punsh = penalty_regression
 
 
 def cheatsheet() -> str:
-    return "penalty_regression({}) -> L1/Elastic net regularization path. 'If you're guilty, you'r"
+    return 'penalty_regression({}) -> L1/Elastic net regularization path.'

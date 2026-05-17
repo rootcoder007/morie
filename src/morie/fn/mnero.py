@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Study the past if you would define the future. -- Confucius"""
+"""Run a 2-D cellular automaton simulation."""
 
 from __future__ import annotations
 
@@ -97,4 +97,4 @@ mnero = cellular_automaton
 
 
 def cheatsheet() -> str:
-    return "cellular_automaton({}) -> Cellular automata urban growth model. 'Welcome to the real w"
+    return 'cellular_automaton({}) -> Cellular automata urban growth model.'

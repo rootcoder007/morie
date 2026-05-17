@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Time series structural break detection + recovery. 'I am fire and life incarnate.' -- Phoenix"""
+"""Detect structural breaks in a time series and characterise recovery."""
 
 from __future__ import annotations
 
@@ -120,4 +120,4 @@ phoen = phoenix_break
 
 
 def cheatsheet() -> str:
-    return "phoenix_break({}) -> Time series structural break detection + recovery. 'I am fir"
+    return 'phoenix_break({}) -> Time series structural break detection + recovery.'

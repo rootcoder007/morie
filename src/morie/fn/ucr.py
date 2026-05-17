@@ -1,4 +1,4 @@
-"""No man ever steps in the same river twice. -- Heraclitus"""
+"""Classify offense descriptions into UCR Part I / Part II categories."""
 
 from __future__ import annotations
 
@@ -81,4 +81,4 @@ ucr = ucr_classify
 
 
 def cheatsheet() -> str:
-    return "ucr_classify({}) -> UCR offense classification. 'I find your lack of faith distu"
+    return 'ucr_classify({}) -> UCR offense classification.'

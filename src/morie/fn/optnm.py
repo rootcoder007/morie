@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Nelder-Mead MDS optimisation. 'Yare yare daze.' -- Jotaro, JoJo's Bizarre Adventure"""
+"""Optimize MDS coordinates via Nelder-Mead (scipy)."""
 
 from __future__ import annotations
 
@@ -53,4 +53,4 @@ optnm = nelder_mead_mds
 
 
 def cheatsheet() -> str:
-    return "nelder_mead_mds({}) -> Nelder-Mead MDS optimisation. 'Yare yare daze.' -- Jotaro, J"
+    return 'nelder_mead_mds({}) -> Nelder-Mead MDS optimisation.'

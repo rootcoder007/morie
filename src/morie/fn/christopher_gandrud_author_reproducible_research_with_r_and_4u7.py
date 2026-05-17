@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "Luck is what happens when preparation meets opportunity. -- Seneca"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u7() -> GeneralStatistics expression (auto-extracted; see ref)'

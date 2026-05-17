@@ -1,4 +1,4 @@
-"""Hope in reality is the worst of all evils because it prolongs the torments of man. -- Friedrich Nietzsche"""
+"""Compute required sample size for estimating a proportion."""
 
 from __future__ import annotations
 
@@ -59,4 +59,4 @@ srsiz = sample_size_proportion
 
 
 def cheatsheet() -> str:
-    return "sample_size_proportion({}) -> Sample size for a proportion. 'I find your lack of faith dis"
+    return 'sample_size_proportion({}) -> Sample size for a proportion.'

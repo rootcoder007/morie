@@ -1,4 +1,4 @@
-"""Victimization survey rate. 'Stay on target.' -- Gold Five"""
+"""Victimization rate per *per* surveyed, optionally weighted."""
 
 from __future__ import annotations
 
@@ -61,4 +61,4 @@ vctm = victimization_rate
 
 
 def cheatsheet() -> str:
-    return "victimization_rate({}) -> Victimization survey rate. 'Stay on target.' -- Gold Five"
+    return 'victimization_rate({}) -> Victimization survey rate.'

@@ -39,4 +39,4 @@ aicc = corrected_aic
 
 
 def cheatsheet() -> str:
-    return "corrected_aic({}) -> Corrected AIC. 'The greatest teacher, failure is.'"
+    return 'corrected_aic({}) -> Corrected AIC.'

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Combinatorial probability (card counting). 'The name is Gambit. Remember it.' -- Gambit"""
+"""Compute the probability of drawing at least *at_least* target cards."""
 
 from __future__ import annotations
 
@@ -77,4 +77,4 @@ gambt = card_probability
 
 
 def cheatsheet() -> str:
-    return "card_probability({}) -> Combinatorial probability (card counting). 'The name is Gamb"
+    return 'card_probability({}) -> Combinatorial probability (card counting).'

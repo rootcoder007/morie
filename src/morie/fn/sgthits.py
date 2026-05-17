@@ -1,4 +1,4 @@
-"""Truth comes out of error more readily than out of confusion. -- Francis Bacon"""
+"""HITS algorithm hubs + authorities."""
 import numpy as np
 from scipy import stats
 from ._richresult import RichResult
@@ -38,4 +38,4 @@ def sgt_hits_kleinberg(A, max_iter, tol):
 
 
 def cheatsheet():
-    return "Truth comes out of error more readily than out of confusion. -- Francis Bacon"
+    return 'sgthits() -> HITS algorithm hubs + authorities'

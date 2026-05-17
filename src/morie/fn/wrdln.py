@@ -1,4 +1,4 @@
-"""Word length distribution statistics. 'The whole is greater than the sum of its parts. -- Aristotle' -- Chirrut Imwe"""
+"""Compute descriptive statistics of word lengths in *text*."""
 
 from __future__ import annotations
 
@@ -49,4 +49,4 @@ wrdln = word_length_stats
 
 
 def cheatsheet() -> str:
-    return "word_length_stats({}) -> Word length distribution statistics. 'I am one with the Forc"
+    return 'word_length_stats({}) -> Word length distribution statistics.'

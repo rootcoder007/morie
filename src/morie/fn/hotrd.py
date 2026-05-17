@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Newton's method convergence. 'Faster! Faster!' -- Hot Rod"""
+"""Newton-Raphson root finding with convergence rate analysis."""
 
 from __future__ import annotations
 
@@ -100,4 +100,4 @@ hotrd = newton_convergence
 
 
 def cheatsheet() -> str:
-    return "newton_convergence({}) -> Newton's method convergence. 'Faster! Faster!' -- Hot Rod"
+    return "newton_convergence({}) -> Newton's method convergence."

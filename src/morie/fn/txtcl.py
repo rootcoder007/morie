@@ -1,4 +1,4 @@
-"""Naive Bayes text classifier. 'We are what we repeatedly do. Excellence is not an act, but a habit. -- Aristotle'"""
+"""Classify documents using Multinomial Naive Bayes on TF-IDF features."""
 
 from __future__ import annotations
 
@@ -85,4 +85,4 @@ def text_classify(
 
 
 def cheatsheet() -> str:
-    return "text_classify({}) -> Naive Bayes text classifier. 'Do. Or do not. There is no try"
+    return 'text_classify({}) -> Naive Bayes text classifier.'

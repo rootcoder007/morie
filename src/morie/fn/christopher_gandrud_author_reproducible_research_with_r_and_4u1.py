@@ -46,4 +46,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "That which does not kill us makes us stronger. -- Friedrich Nietzsche"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u1() -> CentralTendency expression (auto-extracted; see ref)'

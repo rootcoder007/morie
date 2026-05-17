@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "Patience is bitter, but its fruit is sweet. -- Aristotle"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u39() -> GeneralStatistics expression (auto-extracted; see ref)'

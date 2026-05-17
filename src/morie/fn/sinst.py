@@ -1,4 +1,4 @@
-"""Volatility of volatility (VIX-like). 'In blackest night, you will fear me.' -- Sinestro"""
+"""Volatility of volatility: rolling standard deviation of rolling volatility."""
 
 from __future__ import annotations
 
@@ -60,4 +60,4 @@ sinst = vol_of_vol
 
 
 def cheatsheet() -> str:
-    return "vol_of_vol({}) -> Volatility of volatility (VIX-like). 'In blackest night, you"
+    return 'vol_of_vol({}) -> Volatility of volatility (VIX-like).'

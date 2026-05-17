@@ -1,5 +1,5 @@
 # morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
-"""Bayesian prior elicitation. 'The wisdom of ages.' -- Alpha Trion"""
+"""Elicit Bayesian prior parameters from expert quantile judgments."""
 
 from __future__ import annotations
 
@@ -115,4 +115,4 @@ alpht = prior_elicit
 
 
 def cheatsheet() -> str:
-    return "prior_elicit({}) -> Bayesian prior elicitation. 'The wisdom of ages.' -- Alpha T"
+    return 'prior_elicit({}) -> Bayesian prior elicitation.'

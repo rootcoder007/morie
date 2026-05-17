@@ -94,4 +94,4 @@ short = blosum_score
 
 
 def cheatsheet() -> str:
-    return "blosum_score({}) -> Simplified BLOSUM62 alignment score. 'Judge me by my size, d"
+    return 'blosum_score({}) -> Simplified BLOSUM62 alignment score.'

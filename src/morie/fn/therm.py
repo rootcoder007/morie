@@ -1,4 +1,4 @@
-"""Feeling thermometer standardization. 'Dragon of the Darkness Flame!' -- Hiei, Yu Yu Hakusho"""
+"""Standardize feeling thermometer ratings to [0, 1] range."""
 
 from __future__ import annotations
 
@@ -38,4 +38,4 @@ therm = feeling_thermometer_scale
 
 
 def cheatsheet() -> str:
-    return "feeling_thermometer_scale({}) -> Feeling thermometer standardization. 'Dragon of the Darkness"
+    return 'feeling_thermometer_scale({}) -> Feeling thermometer standardization.'

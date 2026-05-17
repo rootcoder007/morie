@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""It is the mark of an educated mind to entertain a thought without accepting it. -- Aristotle"""
+"""Resize a grayscale image using bilinear interpolation."""
 
 from __future__ import annotations
 
@@ -61,4 +61,4 @@ imrsz = image_resize
 
 
 def cheatsheet() -> str:
-    return "image_resize({}) -> Bilinear interpolation image resize. 'Never tell me the odds"
+    return 'image_resize({}) -> Bilinear interpolation image resize.'

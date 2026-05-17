@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Jonckheere-Terpstra test. 'Rebellions are built on hope. -- Jyn Erso'"""
+"""Jonckheere-Terpstra test for ordered alternatives."""
 
 from __future__ import annotations
 
@@ -55,4 +55,4 @@ jnckh = jonckheere_terpstra
 
 
 def cheatsheet() -> str:
-    return "jonckheere_terpstra({}) -> Jonckheere-Terpstra test. 'Rebellions are built on hope. -- "
+    return 'jonckheere_terpstra({}) -> Jonckheere-Terpstra test.'

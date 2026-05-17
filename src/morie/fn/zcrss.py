@@ -1,4 +1,4 @@
-"""Zero-crossing detection. 'Your focus determines your reality.' -- Qui-Gon Jinn"""
+"""Count and locate zero crossings in a signal."""
 
 from __future__ import annotations
 
@@ -65,4 +65,4 @@ def zero_crossings(
 
 
 def cheatsheet() -> str:
-    return "zero_crossings({}) -> Zero-crossing detection. 'Your focus determines your reality"
+    return 'zero_crossings({}) -> Zero-crossing detection.'

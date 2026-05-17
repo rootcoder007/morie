@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Disparity fit via isotonic regression. 'Detroit Smash!' -- All Might, My Hero Academia"""
+"""Compute disparities from observed and model distances using isotonic regression."""
 
 from __future__ import annotations
 
@@ -48,4 +48,4 @@ dispr = disparity_fit
 
 
 def cheatsheet() -> str:
-    return "disparity_fit({}) -> Disparity fit via isotonic regression. 'Detroit Smash!' -- A"
+    return 'disparity_fit({}) -> Disparity fit via isotonic regression.'

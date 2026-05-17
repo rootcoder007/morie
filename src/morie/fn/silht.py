@@ -1,4 +1,4 @@
-"""Confine yourself to the present. -- Marcus Aurelius"""
+"""Compute silhouette coefficients for each sample and the mean score."""
 
 from __future__ import annotations
 
@@ -81,4 +81,4 @@ silht = silhouette_score
 
 
 def cheatsheet() -> str:
-    return "silhouette_score({}) -> Silhouette score. 'You underestimate my power.' -- Anakin Sk"
+    return 'silhouette_score({}) -> Silhouette score.'

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""CPI and inflation rate. 'So this is how liberty dies, with thunderous applause.' -- Padme"""
+"""Compute Consumer Price Index and inflation rate."""
 
 from __future__ import annotations
 
@@ -75,4 +75,4 @@ short = cpi_inflation
 
 
 def cheatsheet() -> str:
-    return "cpi_inflation({}) -> CPI and inflation rate. 'So this is how liberty dies, with t"
+    return 'cpi_inflation({}) -> CPI and inflation rate.'

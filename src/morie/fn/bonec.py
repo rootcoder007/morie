@@ -1,5 +1,5 @@
 # morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
-"""Weibull failure analysis. 'I will crush you!' -- Bonecrusher"""
+"""Weibull failure/reliability analysis via MLE."""
 
 from __future__ import annotations
 
@@ -87,4 +87,4 @@ bonec = weibull_analysis
 
 
 def cheatsheet() -> str:
-    return "weibull_analysis({}) -> Weibull failure analysis. 'I will crush you!' -- Bonecrusher"
+    return 'weibull_analysis({}) -> Weibull failure analysis.'

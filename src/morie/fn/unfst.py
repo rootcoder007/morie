@@ -1,4 +1,4 @@
-"""Unfolding stress diagnostic. 'Shotgun!' -- Yusuke, Yu Yu Hakusho"""
+"""Compute unfolding stress between ideal points and stimuli."""
 
 from __future__ import annotations
 
@@ -48,4 +48,4 @@ unfst = unfolding_stress_diagnostic
 
 
 def cheatsheet() -> str:
-    return "unfolding_stress_diagnostic({}) -> Unfolding stress diagnostic. 'Shotgun!' -- Yusuke, Yu Yu Hak"
+    return 'unfolding_stress_diagnostic({}) -> Unfolding stress diagnostic.'

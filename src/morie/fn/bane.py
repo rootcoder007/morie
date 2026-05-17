@@ -1,5 +1,5 @@
 # morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
-"""No man ever steps in the same river twice. -- Heraclitus"""
+"""Chow-type structural break test using maximum F-statistic."""
 
 from __future__ import annotations
 
@@ -77,4 +77,4 @@ bane = structural_break
 
 
 def cheatsheet() -> str:
-    return "No man ever steps in the same river twice. -- Heraclitus"
+    return 'bane() -> Chow-type structural break test using maximum F-statistic'

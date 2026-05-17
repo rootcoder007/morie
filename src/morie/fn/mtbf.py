@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Mean Time Between Failures. 'Real knowledge is to know the extent of one's ignorance. -- Confucius'"""
+"""Estimate Mean Time Between Failures (MTBF)."""
 from __future__ import annotations
 
 import numpy as np
@@ -76,4 +76,4 @@ def mtbf_estimate(
 
 
 def cheatsheet() -> str:
-    return "mtbf_estimate({}) -> Mean Time Between Failures. 'Never underestimate a droid.' -"
+    return 'mtbf_estimate({}) -> Mean Time Between Failures.'

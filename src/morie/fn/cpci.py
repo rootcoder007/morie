@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Clopper-Pearson exact binomial CI. 'We have hope. Rebellions are built on hope.' -- Jyn Erso"""
+"""Clopper-Pearson exact binomial confidence interval."""
 
 from __future__ import annotations
 
@@ -55,4 +55,4 @@ cpci = clopper_pearson
 
 
 def cheatsheet() -> str:
-    return "clopper_pearson({}) -> Clopper-Pearson exact binomial CI. 'We have hope. Rebellions"
+    return 'clopper_pearson({}) -> Clopper-Pearson exact binomial CI.'

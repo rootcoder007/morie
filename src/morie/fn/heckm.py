@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Heckman two-step selection model. 'This is the way.' -- The Mandalorian"""
+"""Heckman two-step correction for sample selection bias."""
 
 from __future__ import annotations
 
@@ -85,4 +85,4 @@ heckm = heckman_correction
 
 
 def cheatsheet() -> str:
-    return "heckman_correction({}) -> Heckman two-step selection model. 'This is the way.' -- The "
+    return 'heckman_correction({}) -> Heckman two-step selection model.'

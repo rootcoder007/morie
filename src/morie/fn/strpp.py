@@ -1,4 +1,4 @@
-"""Stress per point. 'Domain Expansion!' -- Gojo, Jujutsu Kaisen"""
+"""Compute stress contribution per object."""
 
 from __future__ import annotations
 
@@ -40,4 +40,4 @@ strpp = stress_per_point
 
 
 def cheatsheet() -> str:
-    return "stress_per_point({}) -> Stress per point. 'Domain Expansion!' -- Gojo, Jujutsu Kaise"
+    return 'stress_per_point({}) -> Stress per point.'

@@ -1,5 +1,5 @@
 # morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
-"""Agresti-Coull interval for binomial proportion. 'Rebellions are built on hope.' -- Cassian Andor"""
+"""Agresti-Coull confidence interval for a binomial proportion."""
 
 from __future__ import annotations
 
@@ -64,4 +64,4 @@ agci = agresti_coull
 
 
 def cheatsheet() -> str:
-    return "agresti_coull({}) -> Agresti-Coull interval for binomial proportion. 'Rebellions "
+    return 'agresti_coull({}) -> Agresti-Coull interval for binomial proportion.'

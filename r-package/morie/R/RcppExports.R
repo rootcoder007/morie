@@ -17,3 +17,19 @@ morie_cor_pearson_cpp <- function(x, y) {
     .Call(`_morie_morie_cor_pearson_cpp`, x, y)
 }
 
+morie_hawkes_ll_exp_const_cpp <- function(t, T, a0, eta, beta) {
+    .Call(`_morie_morie_hawkes_ll_exp_const_cpp`, t, T, a0, eta, beta)
+}
+
+morie_hawkes_ll_weibull_const_cpp <- function(t, T, a0, eta, alpha, lam) {
+    .Call(`_morie_morie_hawkes_ll_weibull_const_cpp`, t, T, a0, eta, alpha, lam)
+}
+
+morie_hawkes_ll_lomax_const_cpp <- function(t, T, a0, eta, alpha, c) {
+    .Call(`_morie_morie_hawkes_ll_lomax_const_cpp`, t, T, a0, eta, alpha, c)
+}
+
+morie_hawkes_ll_gamma_const_cpp <- function(t, T, a0, eta, alpha, beta) {
+    .Call(`_morie_morie_hawkes_ll_gamma_const_cpp`, t, T, a0, eta, alpha, beta)
+}
+

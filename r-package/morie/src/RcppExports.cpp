@@ -58,12 +58,79 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// morie_hawkes_ll_exp_const_cpp
+double morie_hawkes_ll_exp_const_cpp(NumericVector t, double T, double a0, double eta, double beta);
+RcppExport SEXP _morie_morie_hawkes_ll_exp_const_cpp(SEXP tSEXP, SEXP TSEXP, SEXP a0SEXP, SEXP etaSEXP, SEXP betaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type t(tSEXP);
+    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    Rcpp::traits::input_parameter< double >::type a0(a0SEXP);
+    Rcpp::traits::input_parameter< double >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_hawkes_ll_exp_const_cpp(t, T, a0, eta, beta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_hawkes_ll_weibull_const_cpp
+double morie_hawkes_ll_weibull_const_cpp(NumericVector t, double T, double a0, double eta, double alpha, double lam);
+RcppExport SEXP _morie_morie_hawkes_ll_weibull_const_cpp(SEXP tSEXP, SEXP TSEXP, SEXP a0SEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP lamSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type t(tSEXP);
+    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    Rcpp::traits::input_parameter< double >::type a0(a0SEXP);
+    Rcpp::traits::input_parameter< double >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type lam(lamSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_hawkes_ll_weibull_const_cpp(t, T, a0, eta, alpha, lam));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_hawkes_ll_lomax_const_cpp
+double morie_hawkes_ll_lomax_const_cpp(NumericVector t, double T, double a0, double eta, double alpha, double c);
+RcppExport SEXP _morie_morie_hawkes_ll_lomax_const_cpp(SEXP tSEXP, SEXP TSEXP, SEXP a0SEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP cSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type t(tSEXP);
+    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    Rcpp::traits::input_parameter< double >::type a0(a0SEXP);
+    Rcpp::traits::input_parameter< double >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_hawkes_ll_lomax_const_cpp(t, T, a0, eta, alpha, c));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_hawkes_ll_gamma_const_cpp
+double morie_hawkes_ll_gamma_const_cpp(NumericVector t, double T, double a0, double eta, double alpha, double beta);
+RcppExport SEXP _morie_morie_hawkes_ll_gamma_const_cpp(SEXP tSEXP, SEXP TSEXP, SEXP a0SEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP betaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type t(tSEXP);
+    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    Rcpp::traits::input_parameter< double >::type a0(a0SEXP);
+    Rcpp::traits::input_parameter< double >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_hawkes_ll_gamma_const_cpp(t, T, a0, eta, alpha, beta));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_morie_morie_normal_pdf_cpp", (DL_FUNC) &_morie_morie_normal_pdf_cpp, 3},
     {"_morie_morie_mean_cpp", (DL_FUNC) &_morie_morie_mean_cpp, 1},
     {"_morie_morie_var_cpp", (DL_FUNC) &_morie_morie_var_cpp, 2},
     {"_morie_morie_cor_pearson_cpp", (DL_FUNC) &_morie_morie_cor_pearson_cpp, 2},
+    {"_morie_morie_hawkes_ll_exp_const_cpp", (DL_FUNC) &_morie_morie_hawkes_ll_exp_const_cpp, 5},
+    {"_morie_morie_hawkes_ll_weibull_const_cpp", (DL_FUNC) &_morie_morie_hawkes_ll_weibull_const_cpp, 6},
+    {"_morie_morie_hawkes_ll_lomax_const_cpp", (DL_FUNC) &_morie_morie_hawkes_ll_lomax_const_cpp, 6},
+    {"_morie_morie_hawkes_ll_gamma_const_cpp", (DL_FUNC) &_morie_morie_hawkes_ll_gamma_const_cpp, 6},
     {NULL, NULL, 0}
 };
 

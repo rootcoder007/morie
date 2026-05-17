@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Procrustes reflection and rotation. 'Cleave.' -- Sukuna, Jujutsu Kaisen"""
+"""Align X to Y via Procrustes (rotation + reflection)."""
 
 from __future__ import annotations
 
@@ -45,4 +45,4 @@ prref = procrustes_reflection
 
 
 def cheatsheet() -> str:
-    return "procrustes_reflection({}) -> Procrustes reflection and rotation. 'Cleave.' -- Sukuna, Juj"
+    return 'procrustes_reflection({}) -> Procrustes reflection and rotation.'

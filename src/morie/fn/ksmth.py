@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Nadaraya-Watson kernel regression. 'We are what we repeatedly do. Excellence is not an act, but a habit. -- Aristotle'"""
+"""Nadaraya-Watson kernel regression with Gaussian kernel."""
 
 from __future__ import annotations
 
@@ -73,4 +73,4 @@ ksmth = kernel_smooth
 
 
 def cheatsheet() -> str:
-    return "kernel_smooth({}) -> Nadaraya-Watson kernel regression. 'The dark side clouds eve"
+    return 'kernel_smooth({}) -> Nadaraya-Watson kernel regression.'

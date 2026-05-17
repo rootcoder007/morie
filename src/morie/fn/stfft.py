@@ -94,4 +94,4 @@ def stft(
 
 
 def cheatsheet() -> str:
-    return "stft({}) -> Short-time Fourier Transform. 'In a dark place we find ourse"
+    return 'stft({}) -> Short-time Fourier Transform.'

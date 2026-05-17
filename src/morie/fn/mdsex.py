@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Convex hull per group in MDS space. 'Cursed Energy.' -- Gojo, Jujutsu Kaisen"""
+"""Compute convex hull vertices per group in 2D MDS space."""
 
 from __future__ import annotations
 
@@ -44,4 +44,4 @@ mdsex = convex_hull_mds
 
 
 def cheatsheet() -> str:
-    return "convex_hull_mds({}) -> Convex hull per group in MDS space. 'Cursed Energy.' -- Gojo"
+    return 'convex_hull_mds({}) -> Convex hull per group in MDS space.'

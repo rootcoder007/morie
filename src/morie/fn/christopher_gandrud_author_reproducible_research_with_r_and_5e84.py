@@ -1,4 +1,4 @@
-"""Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"""
+"""GeneralStatistics equation extracted from Christopher Gandrud (Author) - Reproducible Research with R and RStudio."""
 import numpy as np
 from scipy import stats
 
@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_5_equat
 
 
 def cheatsheet():
-    return "Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_5e84() -> GeneralStatistics equation extracted from Christopher Gandrud (Author) - Reproducible Research with R and RStudio'

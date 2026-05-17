@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""All models are wrong, but some are useful. -- George E. P. Box"""
+"""Binary segmentation algorithm for multiple change-point detection."""
 
 from __future__ import annotations
 
@@ -73,4 +73,4 @@ cpbbs = bbs_changepoint
 
 
 def cheatsheet() -> str:
-    return "bbs_changepoint({}) -> Binary segmentation for change-point detection. 'I have the "
+    return 'bbs_changepoint({}) -> Binary segmentation for change-point detection.'

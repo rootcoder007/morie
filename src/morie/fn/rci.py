@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Jacobson-Truax Reliable Change Index. 'Hope is like the sun.' -- Poe Dameron"""
+"""Jacobson-Truax Reliable Change Index (RCI)."""
 
 from __future__ import annotations
 
@@ -72,4 +72,4 @@ rci = reliable_change
 
 
 def cheatsheet() -> str:
-    return "reliable_change({}) -> Jacobson-Truax Reliable Change Index. 'Hope is like the sun."
+    return 'reliable_change({}) -> Jacobson-Truax Reliable Change Index.'

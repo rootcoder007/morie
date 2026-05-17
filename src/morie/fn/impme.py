@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Impute missing with mean. 'Full Cowling.' -- Deku, My Hero Academia"""
+"""Replace NaN values in distance matrix with mean of observed values."""
 
 from __future__ import annotations
 
@@ -38,4 +38,4 @@ impme = impute_missing_mean
 
 
 def cheatsheet() -> str:
-    return "impute_missing_mean({}) -> Impute missing with mean. 'Full Cowling.' -- Deku, My Hero A"
+    return 'impute_missing_mean({}) -> Impute missing with mean.'

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""LOESS/LOWESS smoother. 'Rebellions are built on hope.' -- Jyn Erso"""
+"""Locally weighted scatterplot smoothing (LOWESS)."""
 
 from __future__ import annotations
 
@@ -91,4 +91,4 @@ lssmo = loess_smooth
 
 
 def cheatsheet() -> str:
-    return "loess_smooth({}) -> LOESS/LOWESS smoother. 'Rebellions are built on hope.' -- Jy"
+    return 'loess_smooth({}) -> LOESS/LOWESS smoother.'

@@ -49,4 +49,4 @@ short = sigmoid
 
 
 def cheatsheet() -> str:
-    return "sigmoid({}) -> Sigmoid activation with gradient. 'Luminous beings are we, n"
+    return 'sigmoid({}) -> Sigmoid activation with gradient.'

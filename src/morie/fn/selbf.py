@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Everything flows. -- Heraclitus"""
+"""Quantify selection bias as a multiplicative factor."""
 
 from __future__ import annotations
 
@@ -64,4 +64,4 @@ selbf = selection_bias_factor
 
 
 def cheatsheet() -> str:
-    return "selection_bias_factor({}) -> Selection bias factor. 'Look well into thyself; there is a source which will always spring up. -- Marcus Aurelius' -- "
+    return 'selection_bias_factor({}) -> Selection bias factor.'

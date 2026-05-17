@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Hope in reality is the worst of all evils because it prolongs the torments of man. -- Friedrich Nietzsche"""
+"""Cross-tabulate two categorical variables and compute Pearson's."""
 
 from __future__ import annotations
 
@@ -60,4 +60,4 @@ ctabl = contingency_table
 
 
 def cheatsheet() -> str:
-    return "contingency_table({}) -> Contingency table with chi-squared test. 'You were the chose"
+    return 'contingency_table({}) -> Contingency table with chi-squared test.'

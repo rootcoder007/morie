@@ -1,5 +1,5 @@
 # morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
-"""Our greatest glory is not in never falling, but in rising every time we fall. -- Confucius"""
+"""Build a binary heap and return the sorted extraction order."""
 
 from __future__ import annotations
 
@@ -92,4 +92,4 @@ short = binary_heap
 
 
 def cheatsheet() -> str:
-    return "binary_heap({}) -> Binary heap operations. 'You were the chosen one!' -- Obi-Wa"
+    return 'binary_heap({}) -> Binary heap operations.'

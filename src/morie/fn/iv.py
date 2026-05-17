@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Instrumental variables (2SLS). 'Real knowledge is to know the extent of one's ignorance. -- Confucius'"""
+"""Two-stage least squares (2SLS) IV estimation."""
 from __future__ import annotations
 
 import numpy as np
@@ -91,4 +91,4 @@ iv = iv_2sls
 
 
 def cheatsheet() -> str:
-    return "iv_2sls({}) -> Instrumental variables (2SLS). 'Your eyes can deceive you. D"
+    return 'iv_2sls({}) -> Instrumental variables (2SLS).'

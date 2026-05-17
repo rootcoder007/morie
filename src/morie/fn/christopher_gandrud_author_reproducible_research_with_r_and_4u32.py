@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "Confine yourself to the present. -- Marcus Aurelius"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u32() -> GeneralStatistics expression (auto-extracted; see ref)'

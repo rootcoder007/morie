@@ -1,4 +1,4 @@
-"""The man who moves a mountain begins by carrying away small stones. -- Confucius"""
+"""Compute Term Frequency-Inverse Document Frequency matrix."""
 
 from __future__ import annotations
 
@@ -89,4 +89,4 @@ def tfidf(
 
 
 def cheatsheet() -> str:
-    return "tfidf({}) -> TF-IDF vectorization. 'In my experience there is no such thi"
+    return 'tfidf({}) -> TF-IDF vectorization.'

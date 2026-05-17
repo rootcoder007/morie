@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""He who would learn to fly one day must first learn to stand and walk. -- Friedrich Nietzsche"""
+"""LDL^T decomposition for symmetric matrices."""
 
 from __future__ import annotations
 
@@ -70,4 +70,4 @@ short = ldlt_factorize
 
 
 def cheatsheet() -> str:
-    return "ldlt_factorize({}) -> LDL^T factorization for symmetric matrices. 'The circle is n"
+    return 'ldlt_factorize({}) -> LDL^T factorization for symmetric matrices.'

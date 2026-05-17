@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u14() -> GeneralStatistics expression (auto-extracted; see ref)'

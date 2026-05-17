@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Reconstruct distances from MDS coordinates. 'ZA WARUDO!' -- DIO, JoJo's Bizarre Adventure"""
+"""Compute pairwise Euclidean distance matrix from coordinate matrix X."""
 
 from __future__ import annotations
 
@@ -36,4 +36,4 @@ mdsrk = mds_reconstruct_distances
 
 
 def cheatsheet() -> str:
-    return "mds_reconstruct_distances({}) -> Reconstruct distances from MDS coordinates. 'ZA WARUDO!' -- "
+    return 'mds_reconstruct_distances({}) -> Reconstruct distances from MDS coordinates.'

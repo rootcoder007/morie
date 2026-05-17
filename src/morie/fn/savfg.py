@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""It is the mark of an educated mind to entertain a thought without accepting it. -- Aristotle"""
+"""Save a matplotlib figure to disk."""
 
 from __future__ import annotations
 
@@ -54,4 +54,4 @@ savfg = save_figure
 
 
 def cheatsheet() -> str:
-    return "save_figure({}) -> Save figure helper. 'Great shot kid, that was one in a milli"
+    return 'save_figure({}) -> Save figure helper.'

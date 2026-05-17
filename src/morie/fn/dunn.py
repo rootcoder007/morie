@@ -81,4 +81,4 @@ dunn = dunn_test
 
 
 def cheatsheet() -> str:
-    return "dunn_test({}) -> Dunn's post-hoc test. 'There is another.'"
+    return "dunn_test({}) -> Dunn's post-hoc test."

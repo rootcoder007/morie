@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "Look well into thyself; there is a source which will always spring up. -- Marcus Aurelius"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u5() -> GeneralStatistics expression (auto-extracted; see ref)'

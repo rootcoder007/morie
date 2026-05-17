@@ -1,4 +1,4 @@
-"""Confine yourself to the present. -- Marcus Aurelius"""
+"""HITS hubs + authorities scores."""
 import numpy as np
 from scipy import stats
 from ._richresult import RichResult
@@ -38,4 +38,4 @@ def hits_hubs_authorities(y, A, tol):
 
 
 def cheatsheet():
-    return "Confine yourself to the present. -- Marcus Aurelius"
+    return 'hubsa() -> HITS hubs + authorities scores'

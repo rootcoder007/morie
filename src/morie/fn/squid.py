@@ -1,4 +1,4 @@
-"""That which does not kill us makes us stronger. -- Friedrich Nietzsche"""
+"""Compute composite threat scores from multiple risk indicators."""
 
 from __future__ import annotations
 
@@ -85,4 +85,4 @@ squid = threat_score
 
 
 def cheatsheet() -> str:
-    return "threat_score({}) -> Threat scoring model. 'They are everywhere and they are no o"
+    return 'threat_score({}) -> Threat scoring model.'

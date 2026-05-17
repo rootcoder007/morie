@@ -1,4 +1,4 @@
-"""Xavier/Glorot weight initialization. 'By all means, marry. If you get a good wife, you'll become happy; if you get a bad one, you'll become a philosopher. -- Socrates' -- Various"""
+"""Generate Xavier/Glorot weight initialization matrix."""
 
 from __future__ import annotations
 
@@ -72,4 +72,4 @@ short = xavier_init
 
 
 def cheatsheet() -> str:
-    return "Nature does not hurry, yet everything is accomplished. -- Lao Tzu"
+    return 'xavir() -> Generate Xavier/Glorot weight initialization matrix'

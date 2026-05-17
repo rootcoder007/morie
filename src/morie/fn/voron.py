@@ -1,4 +1,4 @@
-"""Voronoi tessellation areas. 'I have spoken.' -- Kuiil"""
+"""Compute Voronoi tessellation and region areas."""
 
 from __future__ import annotations
 
@@ -86,4 +86,4 @@ voron = voronoi_areas
 
 
 def cheatsheet() -> str:
-    return "voronoi_areas({}) -> Voronoi tessellation areas. 'I have spoken.' -- Kuiil"
+    return 'voronoi_areas({}) -> Voronoi tessellation areas.'

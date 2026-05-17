@@ -1,5 +1,5 @@
 # morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
-"""Birth-death process. 'The prophecy was true.' -- Councillor Hamann"""
+"""Simulate a continuous-time birth-death (Markov) process."""
 
 from __future__ import annotations
 
@@ -95,4 +95,4 @@ bneop = birth_death_process
 
 
 def cheatsheet() -> str:
-    return "birth_death_process({}) -> Birth-death process. 'The prophecy was true.' -- Councillor "
+    return 'birth_death_process({}) -> Birth-death process.'

@@ -1,4 +1,4 @@
-"""Knowledge itself is power. -- Francis Bacon"""
+"""Estimate a statistic and its variance via repeated random half-sampling."""
 
 from __future__ import annotations
 
@@ -83,4 +83,4 @@ thnsm = snap_estimator
 
 
 def cheatsheet() -> str:
-    return "snap_estimator({}) -> Random half-sampling estimator. 'Perfectly balanced, as all "
+    return 'snap_estimator({}) -> Random half-sampling estimator.'

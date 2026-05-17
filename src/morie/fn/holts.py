@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Holt. 'Patience and perseverance have a magical effect. -- Adams'"""
+"""Holt's linear trend (double exponential smoothing)."""
 from __future__ import annotations
 
 import numpy as np
@@ -69,4 +69,4 @@ holts = holts_method
 
 
 def cheatsheet() -> str:
-    return "holts_method({}) -> Holt's linear trend method. 'I love you.' 'I know.' -- Leia "
+    return "holts_method({}) -> Holt's linear trend method."

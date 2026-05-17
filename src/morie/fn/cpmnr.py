@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Mean change-point detection via CUSUM. 'In time, the suffering of your people will persuade you.' -- Count Dooku"""
+"""Detect a single mean shift in a time series using CUSUM."""
 
 from __future__ import annotations
 
@@ -59,4 +59,4 @@ cpmnr = mean_changepoint
 
 
 def cheatsheet() -> str:
-    return "mean_changepoint({}) -> Mean change-point detection via CUSUM. 'In time, the sufferi"
+    return 'mean_changepoint({}) -> Mean change-point detection via CUSUM.'

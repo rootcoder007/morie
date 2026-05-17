@@ -53,4 +53,4 @@ expsm = exponential_smooth
 
 
 def cheatsheet() -> str:
-    return "exponential_smooth({}) -> Simple exponential smoothing. 'Much to learn, you still have"
+    return 'exponential_smooth({}) -> Simple exponential smoothing.'

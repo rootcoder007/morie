@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Firth penalized logistic regression. 'Statistics is the grammar of science. -- Karl Pearson'"""
+"""Firth penalized logistic regression for rare events."""
 
 from __future__ import annotations
 
@@ -88,4 +88,4 @@ firth = firth_logistic
 
 
 def cheatsheet() -> str:
-    return "firth_logistic({}) -> Firth penalized logistic regression. 'Do or do not. There is"
+    return 'firth_logistic({}) -> Firth penalized logistic regression.'

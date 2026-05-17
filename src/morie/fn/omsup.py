@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Minimax optimization. 'Omega Supreme: defend.' -- Omega Supreme"""
+"""Solve a two-player zero-sum game via minimax / linear programming."""
 
 from __future__ import annotations
 
@@ -89,4 +89,4 @@ omsup = minimax_solve
 
 
 def cheatsheet() -> str:
-    return "minimax_solve({}) -> Minimax optimization. 'Omega Supreme: defend.' -- Omega Supr"
+    return 'minimax_solve({}) -> Minimax optimization.'

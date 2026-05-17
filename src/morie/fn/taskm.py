@@ -1,4 +1,4 @@
-"""Dynamic time warping pattern matching. 'I can do anything you can do.' -- Taskmaster"""
+"""Compute the dynamic time warping (DTW) distance and alignment path."""
 
 from __future__ import annotations
 
@@ -76,4 +76,4 @@ taskm = dtw_match
 
 
 def cheatsheet() -> str:
-    return "dtw_match({}) -> Dynamic time warping pattern matching. 'I can do anything yo"
+    return 'dtw_match({}) -> Dynamic time warping pattern matching.'

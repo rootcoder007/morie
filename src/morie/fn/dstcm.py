@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Distance comparison stats. 'Blackwhip.' -- Deku, My Hero Academia"""
+"""Compare observed and model distances: correlation and RMSE."""
 
 from __future__ import annotations
 
@@ -37,4 +37,4 @@ dstcm = distance_comparison
 
 
 def cheatsheet() -> str:
-    return "distance_comparison({}) -> Distance comparison stats. 'Blackwhip.' -- Deku, My Hero Aca"
+    return 'distance_comparison({}) -> Distance comparison stats.'

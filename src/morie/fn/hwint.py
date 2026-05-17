@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Holt-Winters additive seasonal method. 'The belonging you seek is ahead of you.' -- Maz Kanata"""
+"""Holt-Winters additive seasonal smoothing."""
 
 from __future__ import annotations
 
@@ -78,4 +78,4 @@ hwint = holt_winters
 
 
 def cheatsheet() -> str:
-    return "holt_winters({}) -> Holt-Winters additive seasonal method. 'The belonging you se"
+    return 'holt_winters({}) -> Holt-Winters additive seasonal method.'

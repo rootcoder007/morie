@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Isotonic regression. 'One Punch!' -- Saitama, One Punch Man"""
+"""Pool-adjacent-violators (PAV) isotonic regression."""
 
 from __future__ import annotations
 
@@ -65,4 +65,4 @@ isorg = isotonic_regression
 
 
 def cheatsheet() -> str:
-    return "isotonic_regression({}) -> Isotonic regression. 'One Punch!' -- Saitama, One Punch Man"
+    return 'isotonic_regression({}) -> Isotonic regression.'

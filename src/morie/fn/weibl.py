@@ -1,4 +1,4 @@
-"""Mastering others is strength; mastering yourself is true power. -- Lao Tzu"""
+"""Maximum likelihood estimation of Weibull distribution parameters."""
 
 from __future__ import annotations
 
@@ -93,4 +93,4 @@ weibl = weibull_fit
 
 
 def cheatsheet() -> str:
-    return "weibull_fit({}) -> Weibull distribution MLE fit. 'Power! Unlimited power!' -- D"
+    return 'weibull_fit({}) -> Weibull distribution MLE fit.'

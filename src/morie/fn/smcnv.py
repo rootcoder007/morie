@@ -1,4 +1,4 @@
-"""SMACOF convergence check. 'Serious Series.' -- Saitama, One Punch Man"""
+"""Check if SMACOF has converged."""
 
 from __future__ import annotations
 
@@ -35,4 +35,4 @@ smcnv = smacof_convergence
 
 
 def cheatsheet() -> str:
-    return "smacof_convergence({}) -> SMACOF convergence check. 'Serious Series.' -- Saitama, One "
+    return 'smacof_convergence({}) -> SMACOF convergence check.'

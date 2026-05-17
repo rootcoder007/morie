@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Look well into thyself; there is a source which will always spring up. -- Marcus Aurelius"""
+"""Apply Gaussian blur to a grayscale image."""
 
 from __future__ import annotations
 
@@ -51,4 +51,4 @@ imblr = gaussian_blur
 
 
 def cheatsheet() -> str:
-    return "gaussian_blur({}) -> Gaussian blur via convolution. 'In my experience there is no"
+    return 'gaussian_blur({}) -> Gaussian blur via convolution.'

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"""
+"""Lagrange polynomial interpolation."""
 
 from __future__ import annotations
 
@@ -67,4 +67,4 @@ short = lagrange_interp
 
 
 def cheatsheet() -> str:
-    return "lagrange_interp({}) -> Lagrange interpolation. 'Your eyes can deceive you. Don't tr"
+    return 'lagrange_interp({}) -> Lagrange interpolation.'

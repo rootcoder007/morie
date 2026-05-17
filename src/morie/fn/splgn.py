@@ -1,4 +1,4 @@
-"""We suffer more often in imagination than in reality. -- Seneca"""
+"""Compute NASA Task Load Index (NASA-TLX) score."""
 
 from __future__ import annotations
 
@@ -74,4 +74,4 @@ splgn = nasa_tlx
 
 
 def cheatsheet() -> str:
-    return "nasa_tlx({}) -> NASA-TLX cognitive load metric. 'You have the look of a man "
+    return 'nasa_tlx({}) -> NASA-TLX cognitive load metric.'

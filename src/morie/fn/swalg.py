@@ -1,4 +1,4 @@
-"""The man who moves a mountain begins by carrying away small stones. -- Confucius"""
+"""Perform local pairwise alignment via Smith-Waterman."""
 
 from __future__ import annotations
 
@@ -93,4 +93,4 @@ short = smith_waterman
 
 
 def cheatsheet() -> str:
-    return "smith_waterman({}) -> Smith-Waterman local sequence alignment. 'Great, kid. Don't "
+    return 'smith_waterman({}) -> Smith-Waterman local sequence alignment.'

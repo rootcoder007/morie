@@ -1,4 +1,4 @@
-"""Label / one-hot encoding. 'Not like this. Not like this.' -- Switch"""
+"""Encode categorical column as numeric labels or one-hot dummies."""
 
 from __future__ import annotations
 
@@ -74,4 +74,4 @@ swtch = encode_labels
 
 
 def cheatsheet() -> str:
-    return "encode_labels({}) -> Label / one-hot encoding. 'Not like this. Not like this.' --"
+    return 'encode_labels({}) -> Label / one-hot encoding.'

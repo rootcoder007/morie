@@ -1,4 +1,4 @@
-"""Real knowledge is to know the extent of one's ignorance. -- Confucius"""
+"""FlashAttention IO-aware exact attention."""
 import numpy as np
 from scipy import stats
 from ._richresult import RichResult
@@ -38,4 +38,4 @@ def flash_attention(Q, K, V):
 
 
 def cheatsheet():
-    return "Real knowledge is to know the extent of one's ignorance. -- Confucius"
+    return 'flsh2() -> FlashAttention IO-aware exact attention'

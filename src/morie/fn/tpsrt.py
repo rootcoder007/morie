@@ -1,4 +1,4 @@
-"""Our greatest glory is not in never falling, but in rising every time we fall. -- Confucius"""
+"""Kahn's algorithm for topological ordering of a directed acyclic graph."""
 
 from __future__ import annotations
 
@@ -61,4 +61,4 @@ tpsrt = topological_sort
 
 
 def cheatsheet() -> str:
-    return "topological_sort({}) -> Topological sort of a DAG. 'Your eyes can deceive you; don't"
+    return 'topological_sort({}) -> Topological sort of a DAG.'

@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Anomaly removal via IQR. 'I'm a nasty piece of work.' -- John Constantine"""
+"""Remove anomalies (exorcise outliers) using the IQR fence method."""
 
 from __future__ import annotations
 
@@ -69,4 +69,4 @@ cnstr = iqr_exorcise
 
 
 def cheatsheet() -> str:
-    return "iqr_exorcise({}) -> Anomaly removal via IQR. 'I'm a nasty piece of work.' -- Joh"
+    return 'iqr_exorcise({}) -> Anomaly removal via IQR.'

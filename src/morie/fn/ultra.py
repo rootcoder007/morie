@@ -1,4 +1,4 @@
-"""Ensemble model aggregation. 'I am Ultra Magnus, and I will lead.' -- Ultra Magnus"""
+"""Aggregate predictions from multiple models."""
 
 from __future__ import annotations
 
@@ -75,4 +75,4 @@ ultra = ensemble_aggregate
 
 
 def cheatsheet() -> str:
-    return "ensemble_aggregate({}) -> Ensemble model aggregation. 'I am Ultra Magnus, and I will l"
+    return 'ensemble_aggregate({}) -> Ensemble model aggregation.'

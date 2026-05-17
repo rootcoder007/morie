@@ -1,4 +1,4 @@
-"""The happiness of your life depends upon the quality of your thoughts. -- Marcus Aurelius"""
+"""Generate a spectral window function of length *n*."""
 
 from __future__ import annotations
 
@@ -63,4 +63,4 @@ wndwm = window_function
 
 
 def cheatsheet() -> str:
-    return "window_function({}) -> Window functions. 'I will fight for those who cannot fight f"
+    return 'window_function({}) -> Window functions.'

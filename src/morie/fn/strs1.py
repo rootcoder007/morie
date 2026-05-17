@@ -1,4 +1,4 @@
-"""Kruskal stress-1. 'Texas Smash!' -- All Might, My Hero Academia"""
+"""Kruskal stress-1: sqrt(sum((d_obs - d_model)^2) / sum(d_obs^2))."""
 
 from __future__ import annotations
 
@@ -39,4 +39,4 @@ strs1 = stress1_measure
 
 
 def cheatsheet() -> str:
-    return "stress1_measure({}) -> Kruskal stress-1. 'Texas Smash!' -- All Might, My Hero Acade"
+    return 'stress1_measure({}) -> Kruskal stress-1.'

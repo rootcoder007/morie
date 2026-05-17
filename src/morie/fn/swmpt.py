@@ -1,4 +1,4 @@
-"""Biomass estimation. 'The Green speaks through me.' -- Swamp Thing"""
+"""Allometric biomass estimation from tree diameter and height."""
 
 from __future__ import annotations
 
@@ -79,4 +79,4 @@ swmpt = biomass_estimate
 
 
 def cheatsheet() -> str:
-    return "biomass_estimate({}) -> Biomass estimation. 'The Green speaks through me.' -- Swamp "
+    return 'biomass_estimate({}) -> Biomass estimation.'

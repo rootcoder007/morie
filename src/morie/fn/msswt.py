@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Missing data weight matrix. '200% Power.' -- Deku, My Hero Academia"""
+"""Create weight matrix: 0 for NaN, 1 for observed."""
 
 from __future__ import annotations
 
@@ -31,4 +31,4 @@ msswt = missing_data_weights
 
 
 def cheatsheet() -> str:
-    return "missing_data_weights({}) -> Missing data weight matrix. '200% Power.' -- Deku, My Hero A"
+    return 'missing_data_weights({}) -> Missing data weight matrix.'

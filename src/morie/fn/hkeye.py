@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Precision-recall at top-k. 'You and I see things differently.' -- Hawkeye"""
+"""Compute precision and recall at top-k ranked predictions."""
 
 from __future__ import annotations
 
@@ -65,4 +65,4 @@ hkeye = precision_recall_at_k
 
 
 def cheatsheet() -> str:
-    return "precision_recall_at_k({}) -> Precision-recall at top-k. 'You and I see things differently"
+    return 'precision_recall_at_k({}) -> Precision-recall at top-k.'

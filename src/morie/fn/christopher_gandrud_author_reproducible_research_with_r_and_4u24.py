@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "All models are wrong, but some are useful. -- George E. P. Box"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u24() -> GeneralStatistics expression (auto-extracted; see ref)'

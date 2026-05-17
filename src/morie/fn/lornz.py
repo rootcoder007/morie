@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Lorenz curve coordinates. 'Knowledge itself is power. -- Bacon'"""
+"""Compute Lorenz curve coordinates for income distribution."""
 from __future__ import annotations
 
 import numpy as np
@@ -61,4 +61,4 @@ short = lorenz_curve
 
 
 def cheatsheet() -> str:
-    return "lorenz_curve({}) -> Lorenz curve coordinates. 'Never tell me the odds.' -- Han S"
+    return 'lorenz_curve({}) -> Lorenz curve coordinates.'

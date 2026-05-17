@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Nadaraya-Watson kernel regression. 'Knowing yourself is true wisdom. -- Lao Tzu'"""
+"""Nadaraya-Watson kernel regression with Gaussian kernel."""
 from __future__ import annotations
 
 import numpy as np
@@ -56,4 +56,4 @@ kreg = kernel_regression
 
 
 def cheatsheet() -> str:
-    return "kernel_regression({}) -> Nadaraya-Watson kernel regression. 'I have the high ground.'"
+    return 'kernel_regression({}) -> Nadaraya-Watson kernel regression.'

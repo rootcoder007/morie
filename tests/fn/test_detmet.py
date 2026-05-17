@@ -1,0 +1,23 @@
+"""Tests for morie.fn.detmet -- detection metrics."""
+
+import numpy as np
+from morie.fn.detmet import detection_metrics, detmet
+from morie.fn._containers import DescriptiveResult
+
+
+class TestDetmet:
+    def test_alias(self):
+        assert detmet is detection_metrics
+
+    def test_perfect(self):
+        y_true = [1, 1, 0, 0]
+        y_pred = [0.9, 0.8, 0.1, 0.2]
+        result = detection_metrics(y_true, y_pred)
+        assert isinstance(result, DescriptiveResult)
+        assert result.value == 1.0
+
+    def test_all_wrong(self):
+        y_true = [1, 1, 0, 0]
+        y_pred = [0.1, 0.2, 0.9, 0.8]
+        result = detection_metrics(y_true, y_pred)
+        assert result.value == 0.0

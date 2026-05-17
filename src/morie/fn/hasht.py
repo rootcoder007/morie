@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Hash table with chaining. 'This is the way.' -- Din Djarin"""
+"""Build a hash table with separate chaining for collision resolution."""
 
 from __future__ import annotations
 
@@ -74,4 +74,4 @@ short = hash_table
 
 
 def cheatsheet() -> str:
-    return "hash_table({}) -> Hash table with chaining. 'This is the way.' -- Din Djarin"
+    return 'hash_table({}) -> Hash table with chaining.'

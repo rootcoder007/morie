@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Truth comes out of error more readily than out of confusion. -- Francis Bacon"""
+"""Deming regression for errors-in-variables."""
 
 from __future__ import annotations
 
@@ -70,4 +70,4 @@ demin = deming_regression
 
 
 def cheatsheet() -> str:
-    return "deming_regression({}) -> Deming (errors-in-variables) regression. 'The circle is now "
+    return 'deming_regression({}) -> Deming (errors-in-variables) regression.'
