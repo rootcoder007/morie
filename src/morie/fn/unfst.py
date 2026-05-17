@@ -48,4 +48,4 @@ unfst = unfolding_stress_diagnostic
 
 
 def cheatsheet() -> str:
-    return "unfolding_stress_diagnostic({}) -> Unfolding stress diagnostic. 'Shotgun!' -- Yusuke, Yu Yu Hak"
+    return 'unfolding_stress_diagnostic({}) -> Unfolding stress diagnostic.'

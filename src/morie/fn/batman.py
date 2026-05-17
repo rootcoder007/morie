@@ -73,4 +73,4 @@ def robust_m_estimator(
 
 
 def cheatsheet() -> str:
-    return "robust_m_estimator({}) -> Robust M-estimator. 'I am vengeance. I am the night. I am Ba"
+    return 'robust_m_estimator({}) -> Robust M-estimator.'

@@ -45,4 +45,4 @@ gofmd = gof_mds_interpret
 
 
 def cheatsheet() -> str:
-    return "gof_mds_interpret({}) -> MDS goodness-of-fit interpretation. 'Infinite Void.' -- Gojo"
+    return 'gof_mds_interpret({}) -> MDS goodness-of-fit interpretation.'

@@ -81,4 +81,4 @@ drstr = multiverse_bootstrap
 
 
 def cheatsheet() -> str:
-    return "multiverse_bootstrap({}) -> Parallel universes bootstrap. 'I went forward in time to vie"
+    return 'multiverse_bootstrap({}) -> Parallel universes bootstrap.'

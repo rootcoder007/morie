@@ -59,4 +59,4 @@ srsiz = sample_size_proportion
 
 
 def cheatsheet() -> str:
-    return "sample_size_proportion({}) -> Sample size for a proportion. 'I find your lack of faith dis"
+    return 'sample_size_proportion({}) -> Sample size for a proportion.'

@@ -88,4 +88,4 @@ mirag = dp_laplace
 
 
 def cheatsheet() -> str:
-    return "dp_laplace({}) -> Differential privacy (Laplace mechanism). 'Now you see me..."
+    return 'dp_laplace({}) -> Differential privacy (Laplace mechanism).'

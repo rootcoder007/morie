@@ -69,4 +69,4 @@ holts = holts_method
 
 
 def cheatsheet() -> str:
-    return "holts_method({}) -> Holt's linear trend method. 'I love you.' 'I know.' -- Leia "
+    return "holts_method({}) -> Holt's linear trend method."

@@ -63,4 +63,4 @@ jazz = markov_generate
 
 
 def cheatsheet() -> str:
-    return "markov_generate({}) -> Stochastic sequence generation (Markov chain). 'Do I at leas"
+    return 'markov_generate({}) -> Stochastic sequence generation (Markov chain).'

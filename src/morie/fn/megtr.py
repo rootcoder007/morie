@@ -87,4 +87,4 @@ megtr = kronecker_decompose
 
 
 def cheatsheet() -> str:
-    return "Knowing yourself is the beginning of all wisdom. -- Aristotle"
+    return 'megtr() -> Approximate nearest Kronecker product decomposition'

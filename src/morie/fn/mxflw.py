@@ -97,4 +97,4 @@ mxflw = max_flow
 
 
 def cheatsheet() -> str:
-    return "He who has a why to live can bear almost any how. -- Friedrich Nietzsche"
+    return 'mxflw() -> Compute maximum flow using Edmonds-Karp (BFS-based Ford-Fulkerson)'

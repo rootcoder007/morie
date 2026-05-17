@@ -75,4 +75,4 @@ ultra = ensemble_aggregate
 
 
 def cheatsheet() -> str:
-    return "ensemble_aggregate({}) -> Ensemble model aggregation. 'I am Ultra Magnus, and I will l"
+    return 'ensemble_aggregate({}) -> Ensemble model aggregation.'

@@ -49,4 +49,4 @@ hotsp = hot_spots
 
 
 def cheatsheet() -> str:
-    return "hot_spots({}) -> Repeat-address / hot-spot analysis. 'It's a trap!' -- Admira"
+    return 'hot_spots({}) -> Repeat-address / hot-spot analysis.'

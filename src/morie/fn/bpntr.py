@@ -78,4 +78,4 @@ bpntr = vibranium_damping
 
 
 def cheatsheet() -> str:
-    return "When I let go of what I am, I become what I might be. -- Lao Tzu"
+    return 'bpntr() -> Model signal attenuation through a second-order damped system'

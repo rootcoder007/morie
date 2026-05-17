@@ -58,4 +58,4 @@ short = relu
 
 
 def cheatsheet() -> str:
-    return "A journey of a thousand miles begins with a single step. -- Lao Tzu"
+    return 'relu() -> Compute ReLU or Leaky ReLU activation function'

@@ -94,4 +94,4 @@ neom = decision_split
 
 
 def cheatsheet() -> str:
-    return "decision_split({}) -> Decision tree split criterion. 'There is no spoon.' -- Spoon"
+    return 'decision_split({}) -> Decision tree split criterion.'

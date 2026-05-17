@@ -40,4 +40,4 @@ elpd = expected_log_pred
 
 
 def cheatsheet() -> str:
-    return "expected_log_pred({}) -> Expected Log Predictive Density. 'Pass on what you have lear"
+    return 'expected_log_pred({}) -> Expected Log Predictive Density.'

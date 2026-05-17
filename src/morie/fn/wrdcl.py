@@ -149,4 +149,4 @@ def word_cloud_data(
 
 
 def cheatsheet() -> str:
-    return "word_cloud_data({}) -> Word frequency data for cloud visualization. 'Never tell me "
+    return 'word_cloud_data({}) -> Word frequency data for cloud visualization.'

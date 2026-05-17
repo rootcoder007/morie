@@ -76,4 +76,4 @@ stscm = byzantine_detect
 
 
 def cheatsheet() -> str:
-    return "byzantine_detect({}) -> Byzantine fault detection. 'I am the true leader!' -- Starsc"
+    return 'byzantine_detect({}) -> Byzantine fault detection.'

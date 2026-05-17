@@ -16,4 +16,4 @@ def rangayyan_emg_fractal_dim(emg, force, fs, kmax):
 
 
 def cheatsheet():
-    return "A journey of a thousand miles begins with a single step. -- Lao Tzu"
+    return 'rgemgfd() -> Rangayyan EMG fractal dim'

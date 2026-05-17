@@ -75,4 +75,4 @@ short = karnaugh_map
 
 
 def cheatsheet() -> str:
-    return "He who would learn to fly one day must first learn to stand and walk. -- Friedrich Nietzsche"
+    return 'karnm() -> Generate Karnaugh map layout and identify minterms'

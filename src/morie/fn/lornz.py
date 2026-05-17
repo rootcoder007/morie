@@ -61,4 +61,4 @@ short = lorenz_curve
 
 
 def cheatsheet() -> str:
-    return "lorenz_curve({}) -> Lorenz curve coordinates. 'Never tell me the odds.' -- Han S"
+    return 'lorenz_curve({}) -> Lorenz curve coordinates.'

@@ -99,4 +99,4 @@ trnty = cvss_base
 
 
 def cheatsheet() -> str:
-    return "The whole is greater than the sum of its parts. -- Aristotle"
+    return 'trnty() -> Compute CVSS v3.1 base score from metric values'

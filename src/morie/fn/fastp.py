@@ -93,4 +93,4 @@ def fast_pca(
 
 
 def cheatsheet() -> str:
-    return "fast_pca({}) -> Randomized PCA. 'This is the way.' -- Din Djarin"
+    return 'fast_pca({}) -> Randomized PCA.'

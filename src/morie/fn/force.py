@@ -45,4 +45,4 @@ force = ate_diff
 
 
 def cheatsheet() -> str:
-    return "ate_diff({}) -> ATE difference-in-means. 'The Force is strong with this one."
+    return 'ate_diff({}) -> ATE difference-in-means.'

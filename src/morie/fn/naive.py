@@ -65,4 +65,4 @@ naive = naive_forecast
 
 
 def cheatsheet() -> str:
-    return "All models are wrong, but some are useful. -- George E. P. Box"
+    return 'naive() -> Naive forecasting methods'

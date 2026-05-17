@@ -46,4 +46,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "Truth comes out of error more readily than out of confusion. -- Francis Bacon"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u10() -> CentralTendency expression (auto-extracted; see ref)'

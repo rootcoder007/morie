@@ -67,4 +67,4 @@ hkgrl = hawking_temperature
 
 
 def cheatsheet() -> str:
-    return "hawking_temperature({}) -> Hawking radiation temperature model. 'History is about to be"
+    return 'hawking_temperature({}) -> Hawking radiation temperature model.'

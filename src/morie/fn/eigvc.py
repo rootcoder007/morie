@@ -39,4 +39,4 @@ eigvc = extract_eigenvectors
 
 
 def cheatsheet() -> str:
-    return "extract_eigenvectors({}) -> Extract top eigenvectors. 'Gear Fifth!' -- Luffy, One Piece"
+    return 'extract_eigenvectors({}) -> Extract top eigenvectors.'

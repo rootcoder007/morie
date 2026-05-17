@@ -67,4 +67,4 @@ logln = loglinear_model
 
 
 def cheatsheet() -> str:
-    return "loglinear_model({}) -> Log-linear model for multi-way tables. 'Truly wonderful, the"
+    return 'loglinear_model({}) -> Log-linear model for multi-way tables.'

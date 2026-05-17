@@ -82,4 +82,4 @@ krus = kruskal_mst
 
 
 def cheatsheet() -> str:
-    return "kruskal_mst({}) -> Kruskal minimum spanning tree. 'We are the spark that will l"
+    return 'kruskal_mst({}) -> Kruskal minimum spanning tree.'

@@ -89,4 +89,4 @@ ircnh = robust_covariance_mcd
 
 
 def cheatsheet() -> str:
-    return "robust_covariance_mcd({}) -> Robust covariance (MCD). 'Ironhide reporting.' -- Ironhide"
+    return 'robust_covariance_mcd({}) -> Robust covariance (MCD).'

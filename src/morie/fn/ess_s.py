@@ -10,4 +10,4 @@ effective_sample_size = _fn
 
 
 def cheatsheet() -> str:
-    return "ess_s() -> Kish effective sample size from survey weights. 'In a dark p"
+    return 'ess_s() -> Kish effective sample size from survey weights.'

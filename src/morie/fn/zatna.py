@@ -91,4 +91,4 @@ zatna = palindrome_detect
 
 
 def cheatsheet() -> str:
-    return "palindrome_detect({}) -> Palindrome detection in sequences. 'Erif!' -- Zatanna (speak"
+    return 'palindrome_detect({}) -> Palindrome detection in sequences.'

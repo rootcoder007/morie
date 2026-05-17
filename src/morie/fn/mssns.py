@@ -82,4 +82,4 @@ mssns = missing_sensitivity_analysis
 
 
 def cheatsheet() -> str:
-    return "Patience is bitter, but its fruit is sweet. -- Aristotle"
+    return 'mssns() -> Assess MDS stress across different missing data percentages'

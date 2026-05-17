@@ -59,4 +59,4 @@ floyd = floyd_warshall
 
 
 def cheatsheet() -> str:
-    return "floyd_warshall({}) -> Floyd-Warshall all-pairs shortest paths. 'I have spoken.' --"
+    return 'floyd_warshall({}) -> Floyd-Warshall all-pairs shortest paths.'

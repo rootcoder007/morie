@@ -85,4 +85,4 @@ kymkr = information_gain
 
 
 def cheatsheet() -> str:
-    return "information_gain({}) -> Information gain / mutual information. 'One door, one key.' "
+    return 'information_gain({}) -> Information gain / mutual information.'

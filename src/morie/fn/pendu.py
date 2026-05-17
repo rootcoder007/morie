@@ -89,4 +89,4 @@ short = pendulum
 
 
 def cheatsheet() -> str:
-    return "We suffer more often in imagination than in reality. -- Seneca"
+    return 'pendu() -> Simulate a simple pendulum using the nonlinear ODE'

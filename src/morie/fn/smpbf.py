@@ -86,4 +86,4 @@ smpbf = spatial_buffer
 
 
 def cheatsheet() -> str:
-    return "spatial_buffer({}) -> Spatial distance buffer zones. 'Stay on target!' -- Gold Fiv"
+    return 'spatial_buffer({}) -> Spatial distance buffer zones.'

@@ -70,4 +70,4 @@ simul = simulation_gof
 
 
 def cheatsheet() -> str:
-    return "simulation_gof({}) -> Goodness of fit to simulation. 'What is real? How do you def"
+    return 'simulation_gof({}) -> Goodness of fit to simulation.'

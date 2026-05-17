@@ -70,4 +70,4 @@ lpflt = lowpass_filter
 
 
 def cheatsheet() -> str:
-    return "lowpass_filter({}) -> Butterworth lowpass filter. 'When I let go of what I am, I become what I might be. -- Lao Tzu' -- Ch"
+    return 'lowpass_filter({}) -> Butterworth lowpass filter.'

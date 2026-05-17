@@ -76,4 +76,4 @@ mouse = monte_carlo
 
 
 def cheatsheet() -> str:
-    return "monte_carlo({}) -> Monte Carlo simulation engine. 'To deny our own impulses is "
+    return 'monte_carlo({}) -> Monte Carlo simulation engine.'

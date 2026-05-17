@@ -68,4 +68,4 @@ xvr = partial_corr_matrix
 
 
 def cheatsheet() -> str:
-    return "partial_corr_matrix({}) -> Brain connectivity via partial correlation matrix. 'To me, m"
+    return 'partial_corr_matrix({}) -> Brain connectivity via partial correlation matrix.'

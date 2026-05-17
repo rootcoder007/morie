@@ -93,4 +93,4 @@ short = smith_waterman
 
 
 def cheatsheet() -> str:
-    return "smith_waterman({}) -> Smith-Waterman local sequence alignment. 'Great, kid. Don't "
+    return 'smith_waterman({}) -> Smith-Waterman local sequence alignment.'

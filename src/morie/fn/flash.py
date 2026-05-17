@@ -80,4 +80,4 @@ flash = fast_ann
 
 
 def cheatsheet() -> str:
-    return "fast_ann({}) -> Fast approximate nearest neighbor search. 'My name is Barry "
+    return 'fast_ann({}) -> Fast approximate nearest neighbor search.'

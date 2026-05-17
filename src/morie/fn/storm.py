@@ -90,4 +90,4 @@ storm = markov_weather
 
 
 def cheatsheet() -> str:
-    return "markov_weather({}) -> Markov chain weather model. 'Do you know what happens to a t"
+    return 'markov_weather({}) -> Markov chain weather model.'

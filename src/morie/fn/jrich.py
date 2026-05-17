@@ -85,4 +85,4 @@ jrich = formant_extract
 
 
 def cheatsheet() -> str:
-    return "formant_extract({}) -> Formant extraction from speech signal. 'Actions speak louder"
+    return 'formant_extract({}) -> Formant extraction from speech signal.'

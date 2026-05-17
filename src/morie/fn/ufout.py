@@ -44,4 +44,4 @@ ufout = unfolding_outliers
 
 
 def cheatsheet() -> str:
-    return "unfolding_outliers({}) -> Unfolding outlier detection. 'Big Bang Attack!' -- Vegeta, D"
+    return 'unfolding_outliers({}) -> Unfolding outlier detection.'

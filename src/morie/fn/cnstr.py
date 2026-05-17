@@ -69,4 +69,4 @@ cnstr = iqr_exorcise
 
 
 def cheatsheet() -> str:
-    return "iqr_exorcise({}) -> Anomaly removal via IQR. 'I'm a nasty piece of work.' -- Joh"
+    return 'iqr_exorcise({}) -> Anomaly removal via IQR.'

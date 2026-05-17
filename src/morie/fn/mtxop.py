@@ -72,4 +72,4 @@ mtxop = matrix_function
 
 
 def cheatsheet() -> str:
-    return "You have power over your mind -- not outside events. -- Marcus Aurelius"
+    return 'mtxop() -> Compute a matrix function f(A) via eigendecomposition'

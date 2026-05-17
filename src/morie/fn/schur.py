@@ -54,4 +54,4 @@ short = schur_decompose
 
 
 def cheatsheet() -> str:
-    return "schur_decompose({}) -> Schur decomposition. 'You underestimate my power.' -- Anakin"
+    return 'schur_decompose({}) -> Schur decomposition.'

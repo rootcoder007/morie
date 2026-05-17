@@ -89,4 +89,4 @@ def tfidf(
 
 
 def cheatsheet() -> str:
-    return "tfidf({}) -> TF-IDF vectorization. 'In my experience there is no such thi"
+    return 'tfidf({}) -> TF-IDF vectorization.'

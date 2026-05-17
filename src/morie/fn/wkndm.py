@@ -90,4 +90,4 @@ wkndm = pareto_optimize
 
 
 def cheatsheet() -> str:
-    return "Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"
+    return 'wkndm() -> Identify the Pareto-optimal front from a set of multi-objective'

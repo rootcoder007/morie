@@ -91,4 +91,4 @@ tblxt = extract_tables_result
 
 
 def cheatsheet() -> str:
-    return "Mastering others is strength; mastering yourself is true power. -- Lao Tzu"
+    return 'tblxt() -> Parse all ``<table>`` elements from HTML into DataFrames'

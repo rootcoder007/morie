@@ -81,4 +81,4 @@ dstke = hazard_kernel
 
 
 def cheatsheet() -> str:
-    return "hazard_kernel({}) -> Hazard function estimation. 'I keep my promises.' -- Deathst"
+    return 'hazard_kernel({}) -> Hazard function estimation.'

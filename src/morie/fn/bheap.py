@@ -92,4 +92,4 @@ short = binary_heap
 
 
 def cheatsheet() -> str:
-    return "binary_heap({}) -> Binary heap operations. 'You were the chosen one!' -- Obi-Wa"
+    return 'binary_heap({}) -> Binary heap operations.'

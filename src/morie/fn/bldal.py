@@ -69,4 +69,4 @@ bldal = bland_altman
 
 
 def cheatsheet() -> str:
-    return "bland_altman({}) -> Bland-Altman agreement analysis. 'You were the chosen one!' "
+    return 'bland_altman({}) -> Bland-Altman agreement analysis.'

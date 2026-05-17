@@ -74,4 +74,4 @@ shkwv = wave_equation_1d
 
 
 def cheatsheet() -> str:
-    return "wave_equation_1d({}) -> 1-D wave equation solver. 'Shockwave calculates.' -- Shockwa"
+    return 'wave_equation_1d({}) -> 1-D wave equation solver.'

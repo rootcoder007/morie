@@ -64,4 +64,4 @@ short = elasticity
 
 
 def cheatsheet() -> str:
-    return "elasticity({}) -> Price elasticity of demand. 'The ability to speak does not m"
+    return 'elasticity({}) -> Price elasticity of demand.'

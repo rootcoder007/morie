@@ -123,4 +123,4 @@ dormm = recurrence_quantification
 
 
 def cheatsheet() -> str:
-    return "recurrence_quantification({}) -> Recurrence quantification analysis. 'Dormammu, I have come t"
+    return 'recurrence_quantification({}) -> Recurrence quantification analysis.'

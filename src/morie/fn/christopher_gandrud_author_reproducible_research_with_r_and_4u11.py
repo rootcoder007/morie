@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "When I let go of what I am, I become what I might be. -- Lao Tzu"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u11() -> GeneralStatistics expression (auto-extracted; see ref)'

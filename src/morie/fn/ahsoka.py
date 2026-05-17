@@ -75,4 +75,4 @@ ahsoka = anova_twoway
 
 
 def cheatsheet() -> str:
-    return "anova_twoway({}) -> Two-way ANOVA. 'Knowing others is intelligence; knowing yourself is true wisdom. -- Lao Tzu' -- Ahsoka Tano"
+    return 'anova_twoway({}) -> Two-way ANOVA.'

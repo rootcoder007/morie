@@ -43,4 +43,4 @@ ufcmp = compare_unfolding_methods
 
 
 def cheatsheet() -> str:
-    return "compare_unfolding_methods({}) -> Compare unfolding methods. 'Kamehameha!' -- Goku, Dragon Bal"
+    return 'compare_unfolding_methods({}) -> Compare unfolding methods.'

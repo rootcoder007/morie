@@ -103,4 +103,4 @@ cyph = detect_leakage
 
 
 def cheatsheet() -> str:
-    return "Difficulties strengthen the mind, as labor does the body. -- Seneca"
+    return 'cyph() -> Detect potential data leakage by identifying features with'

@@ -54,4 +54,4 @@ short = gdp_growth
 
 
 def cheatsheet() -> str:
-    return "gdp_growth({}) -> GDP growth rate and trend. 'Power! Unlimited power!' -- Dart"
+    return 'gdp_growth({}) -> GDP growth rate and trend.'

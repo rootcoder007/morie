@@ -123,4 +123,4 @@ niobi = astar_path
 
 
 def cheatsheet() -> str:
-    return "astar_path({}) -> A* pathfinding algorithm. 'Lock and load.' -- Niobe"
+    return 'astar_path({}) -> A* pathfinding algorithm.'

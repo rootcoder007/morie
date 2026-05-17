@@ -62,4 +62,4 @@ sidsw = impact_force
 
 
 def cheatsheet() -> str:
-    return "impact_force({}) -> Impact force modeling. 'Let me at em!' -- Sideswipe"
+    return 'impact_force({}) -> Impact force modeling.'

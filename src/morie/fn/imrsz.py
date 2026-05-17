@@ -61,4 +61,4 @@ imrsz = image_resize
 
 
 def cheatsheet() -> str:
-    return "image_resize({}) -> Bilinear interpolation image resize. 'Never tell me the odds"
+    return 'image_resize({}) -> Bilinear interpolation image resize.'

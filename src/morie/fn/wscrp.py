@@ -82,4 +82,4 @@ wscrp = web_scrape_result
 
 
 def cheatsheet() -> str:
-    return "web_scrape({}) -> Web page fetch + text extraction. 'Punch it, Chewie!' -- Han"
+    return 'web_scrape({}) -> Web page fetch + text extraction.'

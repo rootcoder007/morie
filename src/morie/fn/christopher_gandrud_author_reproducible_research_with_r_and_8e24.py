@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_8_equat
 
 
 def cheatsheet():
-    return "Knowledge itself is power. -- Francis Bacon"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_8e24() -> GeneralStatistics equation extracted from Christopher Gandrud (Author) - Reproducible Research with R and RStudio'

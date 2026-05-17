@@ -72,4 +72,4 @@ rci = reliable_change
 
 
 def cheatsheet() -> str:
-    return "reliable_change({}) -> Jacobson-Truax Reliable Change Index. 'Hope is like the sun."
+    return 'reliable_change({}) -> Jacobson-Truax Reliable Change Index.'

@@ -61,4 +61,4 @@ atoms = james_stein
 
 
 def cheatsheet() -> str:
-    return "james_stein({}) -> James-Stein shrinkage estimator. 'It's a small world after a"
+    return 'james_stein({}) -> James-Stein shrinkage estimator.'

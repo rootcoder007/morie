@@ -49,4 +49,4 @@ han = handle_missing
 
 
 def cheatsheet() -> str:
-    return "handle_missing({}) -> Missing data handler. 'Never tell me the odds.' -- Han Solo"
+    return 'handle_missing({}) -> Missing data handler.'

@@ -86,4 +86,4 @@ pscal = ps_calibrate
 
 
 def cheatsheet() -> str:
-    return "An unexamined life is not worth living. -- Socrates"
+    return 'pscal() -> Calibrate propensity scores using Platt scaling'

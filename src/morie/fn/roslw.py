@@ -86,4 +86,4 @@ roslw = wind_rose
 
 
 def cheatsheet() -> str:
-    return "wind_rose({}) -> Wind rose / rose plot construction. 'I make my own choices.'"
+    return 'wind_rose({}) -> Wind rose / rose plot construction.'

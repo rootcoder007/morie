@@ -64,4 +64,4 @@ short = boolean_eval
 
 
 def cheatsheet() -> str:
-    return "boolean_eval({}) -> Boolean expression evaluator. 'Let the Wookiee win.' -- C-3P"
+    return 'boolean_eval({}) -> Boolean expression evaluator.'

@@ -74,4 +74,4 @@ nblam = cloud_mass_function
 
 
 def cheatsheet() -> str:
-    return "cloud_mass_function({}) -> Molecular cloud mass function (Schechter). 'I was disassembl"
+    return 'cloud_mass_function({}) -> Molecular cloud mass function (Schechter).'

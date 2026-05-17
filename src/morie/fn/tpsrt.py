@@ -61,4 +61,4 @@ tpsrt = topological_sort
 
 
 def cheatsheet() -> str:
-    return "topological_sort({}) -> Topological sort of a DAG. 'Your eyes can deceive you; don't"
+    return 'topological_sort({}) -> Topological sort of a DAG.'

@@ -38,4 +38,4 @@ def hits_hubs_authorities(y, A, tol):
 
 
 def cheatsheet():
-    return "Confine yourself to the present. -- Marcus Aurelius"
+    return 'hubsa() -> HITS hubs + authorities scores'

@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "A journey of a thousand miles begins with a single step. -- Lao Tzu"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u8() -> GeneralStatistics expression (auto-extracted; see ref)'

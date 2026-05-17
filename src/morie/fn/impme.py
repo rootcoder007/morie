@@ -38,4 +38,4 @@ impme = impute_missing_mean
 
 
 def cheatsheet() -> str:
-    return "impute_missing_mean({}) -> Impute missing with mean. 'Full Cowling.' -- Deku, My Hero A"
+    return 'impute_missing_mean({}) -> Impute missing with mean.'

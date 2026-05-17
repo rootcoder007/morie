@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "Mastering others is strength; mastering yourself is true power. -- Lao Tzu"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u19() -> GeneralStatistics expression (auto-extracted; see ref)'

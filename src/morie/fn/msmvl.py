@@ -76,4 +76,4 @@ msmvl = elastic_deformation
 
 
 def cheatsheet() -> str:
-    return "elastic_deformation({}) -> Elastic deformation field computation. 'I'm Ms. Marvel!' -- "
+    return 'elastic_deformation({}) -> Elastic deformation field computation.'

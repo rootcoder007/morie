@@ -99,4 +99,4 @@ ridlr = cipher_frequency
 
 
 def cheatsheet() -> str:
-    return "cipher_frequency({}) -> Enigma cipher / substitution cipher analysis. 'Riddle me thi"
+    return 'cipher_frequency({}) -> Enigma cipher / substitution cipher analysis.'

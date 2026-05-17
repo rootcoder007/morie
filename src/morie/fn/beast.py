@@ -77,4 +77,4 @@ beast = jukes_cantor_rate
 
 
 def cheatsheet() -> str:
-    return "jukes_cantor_rate({}) -> Mutation rate estimation (Jukes-Cantor). 'Oh my stars and ga"
+    return 'jukes_cantor_rate({}) -> Mutation rate estimation (Jukes-Cantor).'

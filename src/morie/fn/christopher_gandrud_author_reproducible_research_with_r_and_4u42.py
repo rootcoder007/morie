@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "It does not matter how slowly you go as long as you do not stop. -- Confucius"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u42() -> GeneralStatistics expression (auto-extracted; see ref)'

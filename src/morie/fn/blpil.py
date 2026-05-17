@@ -83,4 +83,4 @@ blpil = naive_baseline
 
 
 def cheatsheet() -> str:
-    return "It is the mark of an educated mind to entertain a thought without accepting it. -- Aristotle"
+    return 'blpil() -> Naive baseline predictor for benchmarking ML models'

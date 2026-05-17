@@ -31,4 +31,4 @@ eigvl = extract_eigenvalues
 
 
 def cheatsheet() -> str:
-    return "extract_eigenvalues({}) -> Extract sorted eigenvalues. 'Rasengan!' -- Naruto, Naruto"
+    return 'extract_eigenvalues({}) -> Extract sorted eigenvalues.'

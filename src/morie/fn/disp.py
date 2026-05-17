@@ -43,4 +43,4 @@ disp = disparity_index
 
 
 def cheatsheet() -> str:
-    return "disparity_index({}) -> Disparity index. 'Your focus determines your reality.' -- Qu"
+    return 'disparity_index({}) -> Disparity index.'

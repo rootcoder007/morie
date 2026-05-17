@@ -72,4 +72,4 @@ short = xavier_init
 
 
 def cheatsheet() -> str:
-    return "Nature does not hurry, yet everything is accomplished. -- Lao Tzu"
+    return 'xavir() -> Generate Xavier/Glorot weight initialization matrix'

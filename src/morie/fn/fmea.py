@@ -84,4 +84,4 @@ fmea = fmea_rpn
 
 
 def cheatsheet() -> str:
-    return "fmea_rpn({}) -> FMEA Risk Priority Number scoring. 'I have a bad feeling abo"
+    return 'fmea_rpn({}) -> FMEA Risk Priority Number scoring.'

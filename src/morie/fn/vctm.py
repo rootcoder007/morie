@@ -61,4 +61,4 @@ vctm = victimization_rate
 
 
 def cheatsheet() -> str:
-    return "victimization_rate({}) -> Victimization survey rate. 'Stay on target.' -- Gold Five"
+    return 'victimization_rate({}) -> Victimization survey rate.'

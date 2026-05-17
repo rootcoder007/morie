@@ -63,4 +63,4 @@ mardm = mardia_test
 
 
 def cheatsheet() -> str:
-    return "Without music, life would be a mistake. -- Friedrich Nietzsche"
+    return "mardm() -> Mardia's test for multivariate normality"

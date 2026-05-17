@@ -62,4 +62,4 @@ strfr = luminosity_function
 
 
 def cheatsheet() -> str:
-    return "luminosity_function({}) -> Stellar luminosity function. 'I am not from your planet.' --"
+    return 'luminosity_function({}) -> Stellar luminosity function.'

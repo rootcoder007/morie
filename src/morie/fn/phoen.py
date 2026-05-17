@@ -120,4 +120,4 @@ phoen = phoenix_break
 
 
 def cheatsheet() -> str:
-    return "phoenix_break({}) -> Time series structural break detection + recovery. 'I am fir"
+    return 'phoenix_break({}) -> Time series structural break detection + recovery.'

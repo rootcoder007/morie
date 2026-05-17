@@ -46,4 +46,4 @@ pages = page_trend_test
 
 
 def cheatsheet() -> str:
-    return "page_trend_test({}) -> Page's L trend test. 'Hope is not lost today. It is found. -"
+    return "page_trend_test({}) -> Page's L trend test."

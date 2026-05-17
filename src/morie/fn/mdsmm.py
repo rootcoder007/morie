@@ -67,4 +67,4 @@ mdsmm = mds_missing_data
 
 
 def cheatsheet() -> str:
-    return "mds_missing_data({}) -> MDS with missing data (weighted stress). 'Shoot Style.' -- D"
+    return 'mds_missing_data({}) -> MDS with missing data (weighted stress).'

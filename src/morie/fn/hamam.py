@@ -86,4 +86,4 @@ hamam = brownian_motion
 
 
 def cheatsheet() -> str:
-    return "brownian_motion({}) -> Brownian motion simulation. 'I have survived your predecesso"
+    return 'brownian_motion({}) -> Brownian motion simulation.'

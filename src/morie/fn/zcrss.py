@@ -65,4 +65,4 @@ def zero_crossings(
 
 
 def cheatsheet() -> str:
-    return "zero_crossings({}) -> Zero-crossing detection. 'Your focus determines your reality"
+    return 'zero_crossings({}) -> Zero-crossing detection.'

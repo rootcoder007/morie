@@ -96,4 +96,4 @@ nb_ = naive_bayes
 
 
 def cheatsheet() -> str:
-    return "naive_bayes_fit({}) -> Gaussian Naive Bayes (pure numpy). 'These blast points... to"
+    return 'naive_bayes_fit({}) -> Gaussian Naive Bayes (pure numpy).'

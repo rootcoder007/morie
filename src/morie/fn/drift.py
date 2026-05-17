@@ -81,4 +81,4 @@ drift = adwin_drift
 
 
 def cheatsheet() -> str:
-    return "adwin_drift({}) -> Concept drift detection (ADWIN). 'Things are changing...' --"
+    return 'adwin_drift({}) -> Concept drift detection (ADWIN).'

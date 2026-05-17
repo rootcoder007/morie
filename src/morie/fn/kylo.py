@@ -52,4 +52,4 @@ kylo = kfold_cv
 
 
 def cheatsheet() -> str:
-    return "kfold_cv({}) -> K-fold cross-validation. 'Let the past die. Kill it, if you "
+    return 'kfold_cv({}) -> K-fold cross-validation.'

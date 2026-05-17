@@ -67,4 +67,4 @@ whttk = whittaker_smooth
 
 
 def cheatsheet() -> str:
-    return "whittaker_smooth({}) -> Whittaker smoother. 'Character is destiny. -- Heraclitus' -- General "
+    return 'whittaker_smooth({}) -> Whittaker smoother.'

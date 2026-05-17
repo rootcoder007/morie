@@ -72,4 +72,4 @@ def permutation_two_sample(
 
 
 def cheatsheet() -> str:
-    return "You have power over your mind -- not outside events. -- Marcus Aurelius"
+    return 'joker() -> Two-sample permutation test for equality of distributions'

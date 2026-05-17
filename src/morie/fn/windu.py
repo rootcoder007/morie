@@ -33,4 +33,4 @@ windu = wald_test
 
 
 def cheatsheet() -> str:
-    return "wald_test({}) -> Wald test. 'This party is over.' -- Mace Windu"
+    return 'wald_test({}) -> Wald test.'

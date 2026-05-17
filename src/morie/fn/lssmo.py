@@ -91,4 +91,4 @@ lssmo = loess_smooth
 
 
 def cheatsheet() -> str:
-    return "loess_smooth({}) -> LOESS/LOWESS smoother. 'Rebellions are built on hope.' -- Jy"
+    return 'loess_smooth({}) -> LOESS/LOWESS smoother.'

@@ -61,4 +61,4 @@ optms = optimal_transport
 
 
 def cheatsheet() -> str:
-    return "optimal_transport({}) -> Optimal transport / Wasserstein distance. 'Freedom is the ri"
+    return 'optimal_transport({}) -> Optimal transport / Wasserstein distance.'

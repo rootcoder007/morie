@@ -70,4 +70,4 @@ magnm = biot_savart
 
 
 def cheatsheet() -> str:
-    return "biot_savart({}) -> Biot-Savart magnetic field computation. 'You are all beneath"
+    return 'biot_savart({}) -> Biot-Savart magnetic field computation.'

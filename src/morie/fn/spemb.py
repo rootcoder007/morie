@@ -91,4 +91,4 @@ spemb = spectral_embed
 
 
 def cheatsheet() -> str:
-    return "spectral_embed({}) -> Spectral embedding via Laplacian eigenmaps. 'Hope is not los"
+    return 'spectral_embed({}) -> Spectral embedding via Laplacian eigenmaps.'

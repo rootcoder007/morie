@@ -44,4 +44,4 @@ sent = sentence_stats
 
 
 def cheatsheet() -> str:
-    return "sentence_stats({}) -> Sentence length distribution stats. 'Who's the more foolish?"
+    return 'sentence_stats({}) -> Sentence length distribution stats.'

@@ -8,4 +8,4 @@ pps_sample = _fn
 
 
 def cheatsheet() -> str:
-    return "Patience is bitter, but its fruit is sweet. -- Aristotle"
+    return 'ppssmp() -> Ppssmp'

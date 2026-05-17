@@ -33,4 +33,4 @@ tpsuof = tps_use_of_force
 
 
 def cheatsheet() -> str:
-    return "An unexamined life is not worth living. -- Socrates"
+    return 'tpsuof() -> TPS use of force'

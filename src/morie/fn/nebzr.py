@@ -139,4 +139,4 @@ nebzr = rrt_plan
 
 
 def cheatsheet() -> str:
-    return "Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"
+    return 'nebzr() -> Rapidly-exploring Random Tree (RRT) path planner in 2-D'

@@ -71,4 +71,4 @@ siubc = siu_scrape_report
 
 
 def cheatsheet() -> str:
-    return "siu_scrape_report({}) -> SIU Ontario report HTML parser. 'In my experience there is n"
+    return 'siu_scrape_report({}) -> SIU Ontario report HTML parser.'

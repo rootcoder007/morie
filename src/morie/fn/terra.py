@@ -71,4 +71,4 @@ terra = terrain_analysis
 
 
 def cheatsheet() -> str:
-    return "terrain_analysis({}) -> Terrain analysis. 'I was never on your side.' -- Terra"
+    return 'terrain_analysis({}) -> Terrain analysis.'

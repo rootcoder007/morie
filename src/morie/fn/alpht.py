@@ -115,4 +115,4 @@ alpht = prior_elicit
 
 
 def cheatsheet() -> str:
-    return "prior_elicit({}) -> Bayesian prior elicitation. 'The wisdom of ages.' -- Alpha T"
+    return 'prior_elicit({}) -> Bayesian prior elicitation.'

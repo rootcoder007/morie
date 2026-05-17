@@ -98,4 +98,4 @@ cybrg = pid_simulate
 
 
 def cheatsheet() -> str:
-    return "pid_simulate({}) -> Cybernetic control system simulation. 'Booyah!' -- Cyborg"
+    return 'pid_simulate({}) -> Cybernetic control system simulation.'

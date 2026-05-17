@@ -93,4 +93,4 @@ lasso = lasso_regression
 
 
 def cheatsheet() -> str:
-    return "_soft_threshold({}) -> Lasso regression (L1). 'Your focus determines your reality.'"
+    return '_soft_threshold({}) -> Lasso regression (L1).'

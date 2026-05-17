@@ -101,4 +101,4 @@ short = needleman_wunsch
 
 
 def cheatsheet() -> str:
-    return "Mastering others is strength; mastering yourself is true power. -- Lao Tzu"
+    return 'nwalg() -> Perform global pairwise alignment via Needleman-Wunsch'

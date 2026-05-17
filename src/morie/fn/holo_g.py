@@ -59,4 +59,4 @@ holo_g = geo_summary
 
 
 def cheatsheet() -> str:
-    return "geo_summary({}) -> Geographic / choropleth summary helper. 'I've been waiting f"
+    return 'geo_summary({}) -> Geographic / choropleth summary helper.'

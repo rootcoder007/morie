@@ -94,4 +94,4 @@ vctrs = weight_init
 
 
 def cheatsheet() -> str:
-    return "Knowledge itself is power. -- Francis Bacon"
+    return 'vctrs() -> Generate neural network weight initialization matrices'

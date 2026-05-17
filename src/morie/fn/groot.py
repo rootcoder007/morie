@@ -76,4 +76,4 @@ groot = logistic_growth
 
 
 def cheatsheet() -> str:
-    return "logistic_growth({}) -> Logistic growth model. 'I am Groot.' -- Groot"
+    return 'logistic_growth({}) -> Logistic growth model.'

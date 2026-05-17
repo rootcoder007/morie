@@ -16,4 +16,4 @@ def rangayyan_isometric_contraction(emg, force, fs):
 
 
 def cheatsheet():
-    return "Knowing yourself is the beginning of all wisdom. -- Aristotle"
+    return 'rgisint() -> Rangayyan isometric contraction'

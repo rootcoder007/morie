@@ -72,4 +72,4 @@ havsn = haversine_distance
 
 
 def cheatsheet() -> str:
-    return "haversine_distance({}) -> Haversine great-circle distance. 'Punch it, Chewie!' -- Han "
+    return 'haversine_distance({}) -> Haversine great-circle distance.'

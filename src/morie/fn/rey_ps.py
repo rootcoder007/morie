@@ -81,4 +81,4 @@ rey_ps = poisson_regression
 
 
 def cheatsheet() -> str:
-    return "poisson_regression({}) -> Poisson regression. 'Patience you must have, my young Padawa"
+    return 'poisson_regression({}) -> Poisson regression.'

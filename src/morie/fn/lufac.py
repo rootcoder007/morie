@@ -69,4 +69,4 @@ short = lu_factorize
 
 
 def cheatsheet() -> str:
-    return "lu_factorize({}) -> LU factorization with partial pivoting. 'Now, young Skywalke"
+    return 'lu_factorize({}) -> LU factorization with partial pivoting.'

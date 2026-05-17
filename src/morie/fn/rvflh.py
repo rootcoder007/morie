@@ -88,4 +88,4 @@ rvflh = causal_reversal_test
 
 
 def cheatsheet() -> str:
-    return "causal_reversal_test({}) -> Causal reversal test. 'It was me, Barry. It was me all along"
+    return 'causal_reversal_test({}) -> Causal reversal test.'

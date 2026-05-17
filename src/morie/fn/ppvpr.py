@@ -61,4 +61,4 @@ ppvpr = ppv_prevalence
 
 
 def cheatsheet() -> str:
-    return "Knowledge itself is power. -- Francis Bacon"
+    return 'ppvpr() -> Compute positive and negative predictive values from prevalence'

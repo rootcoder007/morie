@@ -48,4 +48,4 @@ luke = summarize
 
 
 def cheatsheet() -> str:
-    return "summarize({}) -> Per-column summary stats. 'I've got a bad feeling about this"
+    return 'summarize({}) -> Per-column summary stats.'

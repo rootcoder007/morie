@@ -50,4 +50,4 @@ cjs = cjs_flow
 
 
 def cheatsheet() -> str:
-    return "cjs_flow({}) -> CJS flow / attrition calculation. 'The Force will be with yo"
+    return 'cjs_flow({}) -> CJS flow / attrition calculation.'

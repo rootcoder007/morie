@@ -68,4 +68,4 @@ srcod = ast_depth
 
 
 def cheatsheet() -> str:
-    return "ast_depth({}) -> AST depth analysis. 'Everything begins with choice.' -- The "
+    return 'ast_depth({}) -> AST depth analysis.'

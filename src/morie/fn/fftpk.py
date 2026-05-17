@@ -78,4 +78,4 @@ def fft_peaks(
 
 
 def cheatsheet() -> str:
-    return "It does not matter how slowly you go as long as you do not stop. -- Confucius"
+    return 'fftpk() -> Identify dominant frequency peaks in a signal using the FFT'

@@ -41,4 +41,4 @@ swchr = sw_character_summary
 
 
 def cheatsheet() -> str:
-    return "The art of doing mathematics consists in finding that special case which contains all the germs of generality. -- David Hilbert"
+    return 'swchr() -> Summary statistics for Star Wars character data'

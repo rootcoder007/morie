@@ -93,4 +93,4 @@ weibl = weibull_fit
 
 
 def cheatsheet() -> str:
-    return "weibull_fit({}) -> Weibull distribution MLE fit. 'Power! Unlimited power!' -- D"
+    return 'weibull_fit({}) -> Weibull distribution MLE fit.'

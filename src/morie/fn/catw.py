@@ -75,4 +75,4 @@ catw = catenary_fit
 
 
 def cheatsheet() -> str:
-    return "_catenary({}) -> Catenary curve fitting. 'Meow.' -- Catwoman"
+    return '_catenary({}) -> Catenary curve fitting.'

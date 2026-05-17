@@ -55,4 +55,4 @@ jnckh = jonckheere_terpstra
 
 
 def cheatsheet() -> str:
-    return "jonckheere_terpstra({}) -> Jonckheere-Terpstra test. 'Rebellions are built on hope. -- "
+    return 'jonckheere_terpstra({}) -> Jonckheere-Terpstra test.'

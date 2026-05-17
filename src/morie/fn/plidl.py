@@ -36,4 +36,4 @@ plidl = plot_ideal_and_stimuli
 
 
 def cheatsheet() -> str:
-    return "plot_ideal_and_stimuli({}) -> Plot ideal points and stimuli. 'Spirit Bomb!' -- Goku, Drago"
+    return 'plot_ideal_and_stimuli({}) -> Plot ideal points and stimuli.'

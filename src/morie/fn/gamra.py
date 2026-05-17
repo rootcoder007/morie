@@ -112,4 +112,4 @@ gamra = aft_model
 
 
 def cheatsheet() -> str:
-    return "aft_model({}) -> Accelerated failure time (AFT) model. 'I have lived most of "
+    return 'aft_model({}) -> Accelerated failure time (AFT) model.'

@@ -32,4 +32,4 @@ gdlbr = gdlbr
 
 
 def cheatsheet() -> str:
-    return "In God we trust; all others must bring data. -- W. Edwards Deming"
+    return 'gdlbr() -> Gdlbr'

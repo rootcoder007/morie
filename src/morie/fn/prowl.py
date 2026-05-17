@@ -99,4 +99,4 @@ prowl = anomaly_isolation
 
 
 def cheatsheet() -> str:
-    return "anomaly_isolation({}) -> Anomaly detection (isolation-forest style). 'Logic is the ul"
+    return 'anomaly_isolation({}) -> Anomaly detection (isolation-forest style).'

@@ -63,4 +63,4 @@ short = kmer_frequency
 
 
 def cheatsheet() -> str:
-    return "kmer_frequency({}) -> K-mer frequency counting. 'There is always a bigger fish.' -"
+    return 'kmer_frequency({}) -> K-mer frequency counting.'

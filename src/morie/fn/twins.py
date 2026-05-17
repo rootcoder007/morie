@@ -101,4 +101,4 @@ twins = phase_locking_value
 
 
 def cheatsheet() -> str:
-    return "phase_locking_value({}) -> Phase locking value (PLV). 'We are not here because we are f"
+    return 'phase_locking_value({}) -> Phase locking value (PLV).'

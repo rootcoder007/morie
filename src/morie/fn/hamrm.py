@@ -75,4 +75,4 @@ hamrm = impact_energy
 
 
 def cheatsheet() -> str:
-    return "impact_energy({}) -> Impact testing energy (Charpy/Izod). 'I want everything.' --"
+    return 'impact_energy({}) -> Impact testing energy (Charpy/Izod).'

@@ -43,4 +43,4 @@ ksamp = k_sample_anderson_darling
 
 
 def cheatsheet() -> str:
-    return "k_sample_anderson_darling({}) -> K-sample Anderson-Darling test. 'We are brave. -- Rose Tico'"
+    return 'k_sample_anderson_darling({}) -> K-sample Anderson-Darling test.'

@@ -81,4 +81,4 @@ skwrp = levy_flight
 
 
 def cheatsheet() -> str:
-    return "levy_flight({}) -> Levy flight random walk. 'Surprise!' -- Skywarp"
+    return 'levy_flight({}) -> Levy flight random walk.'

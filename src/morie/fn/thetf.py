@@ -73,4 +73,4 @@ thetf = theta_method
 
 
 def cheatsheet() -> str:
-    return "theta_method({}) -> Theta forecasting method. 'Your eyes can deceive you. Don't "
+    return 'theta_method({}) -> Theta forecasting method.'

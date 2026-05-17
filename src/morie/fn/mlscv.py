@@ -36,4 +36,4 @@ mlscv = mlsmu6_convergence_check
 
 
 def cheatsheet() -> str:
-    return "mlsmu6_convergence_check({}) -> MLSMU6 convergence check. 'Jagan Eye.' -- Hiei, Yu Yu Hakush"
+    return 'mlsmu6_convergence_check({}) -> MLSMU6 convergence check.'

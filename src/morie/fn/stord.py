@@ -71,4 +71,4 @@ stord = stuart_ord
 
 
 def cheatsheet() -> str:
-    return "stuart_ord({}) -> Stuart's tau-c for ordinal association. 'We are what they gr"
+    return "stuart_ord({}) -> Stuart's tau-c for ordinal association."

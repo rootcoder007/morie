@@ -67,4 +67,4 @@ short = lagrange_interp
 
 
 def cheatsheet() -> str:
-    return "lagrange_interp({}) -> Lagrange interpolation. 'Your eyes can deceive you. Don't tr"
+    return 'lagrange_interp({}) -> Lagrange interpolation.'

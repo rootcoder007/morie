@@ -80,4 +80,4 @@ doom = failure_cascade
 
 
 def cheatsheet() -> str:
-    return "failure_cascade({}) -> System failure cascade / reliability. 'We are the Doom Patro"
+    return 'failure_cascade({}) -> System failure cascade / reliability.'

@@ -80,4 +80,4 @@ alfrd = cooks_distance
 
 
 def cheatsheet() -> str:
-    return "cooks_distance({}) -> Cook's distance diagnostic. 'I shall endeavour to satisfy, s"
+    return "cooks_distance({}) -> Cook's distance diagnostic."

@@ -96,4 +96,4 @@ snarl = resonance_q
 
 
 def cheatsheet() -> str:
-    return "resonance_q({}) -> Mechanical resonance / Q-factor. 'Feel the vibration!' -- Sn"
+    return 'resonance_q({}) -> Mechanical resonance / Q-factor.'

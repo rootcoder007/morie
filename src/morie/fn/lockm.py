@@ -59,4 +59,4 @@ lockm = sha256_hash
 
 
 def cheatsheet() -> str:
-    return "sha256_hash({}) -> Cryptographic hash (SHA-256). 'Some doors are meant to stay "
+    return 'sha256_hash({}) -> Cryptographic hash (SHA-256).'

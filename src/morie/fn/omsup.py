@@ -89,4 +89,4 @@ omsup = minimax_solve
 
 
 def cheatsheet() -> str:
-    return "minimax_solve({}) -> Minimax optimization. 'Omega Supreme: defend.' -- Omega Supr"
+    return 'minimax_solve({}) -> Minimax optimization.'

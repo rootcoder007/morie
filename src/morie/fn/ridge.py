@@ -86,4 +86,4 @@ ridge = ridge_regression
 
 
 def cheatsheet() -> str:
-    return "ridge_regression({}) -> Ridge regression (L2). 'Stay on target.' -- Gold Five"
+    return 'ridge_regression({}) -> Ridge regression (L2).'

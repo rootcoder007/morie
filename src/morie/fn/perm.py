@@ -50,4 +50,4 @@ perm = permutation_test
 
 
 def cheatsheet() -> str:
-    return "permutation_test({}) -> Permutation test. 'The Force is what gives a Jedi his power."
+    return 'permutation_test({}) -> Permutation test.'

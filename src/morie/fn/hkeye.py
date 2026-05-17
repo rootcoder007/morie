@@ -65,4 +65,4 @@ hkeye = precision_recall_at_k
 
 
 def cheatsheet() -> str:
-    return "precision_recall_at_k({}) -> Precision-recall at top-k. 'You and I see things differently"
+    return 'precision_recall_at_k({}) -> Precision-recall at top-k.'

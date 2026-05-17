@@ -91,4 +91,4 @@ short = cubic_spline_interp
 
 
 def cheatsheet() -> str:
-    return "cubic_spline_interp({}) -> Natural cubic spline interpolation. 'Stay on target.' -- Gol"
+    return 'cubic_spline_interp({}) -> Natural cubic spline interpolation.'

@@ -89,4 +89,4 @@ slag = newton_cooling
 
 
 def cheatsheet() -> str:
-    return "newton_cooling({}) -> Newton's law of cooling. 'Hot stuff!' -- Slag"
+    return "newton_cooling({}) -> Newton's law of cooling."

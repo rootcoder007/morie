@@ -95,4 +95,4 @@ ratch = repair_pipeline
 
 
 def cheatsheet() -> str:
-    return "repair_pipeline({}) -> Data cleaning / denoising pipeline. 'I can fix that!' -- Rat"
+    return 'repair_pipeline({}) -> Data cleaning / denoising pipeline.'

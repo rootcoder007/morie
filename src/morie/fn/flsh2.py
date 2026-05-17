@@ -38,4 +38,4 @@ def flash_attention(Q, K, V):
 
 
 def cheatsheet():
-    return "Real knowledge is to know the extent of one's ignorance. -- Confucius"
+    return 'flsh2() -> FlashAttention IO-aware exact attention'

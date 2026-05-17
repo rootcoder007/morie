@@ -70,4 +70,4 @@ rdd = reg_discontinuity
 
 
 def cheatsheet() -> str:
-    return "reg_discontinuity({}) -> Regression discontinuity design. 'There has been an awakenin"
+    return 'reg_discontinuity({}) -> Regression discontinuity design.'

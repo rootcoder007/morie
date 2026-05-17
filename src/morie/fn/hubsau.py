@@ -34,4 +34,4 @@ def hits_hub_authority(G):
 
 
 def cheatsheet():
-    return "The only true wisdom is in knowing you know nothing. -- Socrates"
+    return 'hubsau() -> HITS hub + authority scores'

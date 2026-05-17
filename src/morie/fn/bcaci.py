@@ -77,4 +77,4 @@ bcaci = bca_ci
 
 
 def cheatsheet() -> str:
-    return "bca_ci({}) -> BCa bootstrap confidence interval. 'Do. Or do not. There is "
+    return 'bca_ci({}) -> BCa bootstrap confidence interval.'

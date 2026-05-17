@@ -8,4 +8,4 @@ bootstrap_ci = _boot
 
 
 def cheatsheet() -> str:
-    return "bb8() -> Bootstrap CI. 'Bee-boop!' -- BB-8"
+    return 'bb8() -> Bootstrap CI.'

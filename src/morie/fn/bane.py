@@ -77,4 +77,4 @@ bane = structural_break
 
 
 def cheatsheet() -> str:
-    return "No man ever steps in the same river twice. -- Heraclitus"
+    return 'bane() -> Chow-type structural break test using maximum F-statistic'

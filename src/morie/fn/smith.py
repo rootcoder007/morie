@@ -85,4 +85,4 @@ smith = bootstrap_resample
 
 
 def cheatsheet() -> str:
-    return "bootstrap_resample({}) -> Bootstrap resampling with replacement. 'Me, me, me.' -- Agen"
+    return 'bootstrap_resample({}) -> Bootstrap resampling with replacement.'

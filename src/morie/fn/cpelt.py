@@ -94,4 +94,4 @@ cpelt = pelt_changepoint
 
 
 def cheatsheet() -> str:
-    return "pelt_changepoint({}) -> PELT change-point detection. 'Power! Unlimited power!' -- Da"
+    return 'pelt_changepoint({}) -> PELT change-point detection.'

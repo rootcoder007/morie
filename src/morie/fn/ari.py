@@ -52,4 +52,4 @@ ari = automated_readability
 
 
 def cheatsheet() -> str:
-    return "automated_readability({}) -> Automated Readability Index. 'In my experience there is no s"
+    return 'automated_readability({}) -> Automated Readability Index.'

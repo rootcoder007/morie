@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_3_equat
 
 
 def cheatsheet():
-    return "Everything flows. -- Heraclitus"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_3e20() -> GeneralStatistics equation extracted from Christopher Gandrud (Author) - Reproducible Research with R and RStudio'

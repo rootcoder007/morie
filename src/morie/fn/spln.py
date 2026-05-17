@@ -74,4 +74,4 @@ spln = spline_regression
 
 
 def cheatsheet() -> str:
-    return "spline_regression({}) -> Cubic spline regression. 'An elegant weapon for a more civil"
+    return 'spline_regression({}) -> Cubic spline regression.'

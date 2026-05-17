@@ -40,4 +40,4 @@ swplt = sw_planet_summary
 
 
 def cheatsheet() -> str:
-    return "We suffer more often in imagination than in reality. -- Seneca"
+    return 'swplt() -> Summary statistics for Star Wars planet data'

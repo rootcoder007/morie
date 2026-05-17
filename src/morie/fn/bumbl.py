@@ -56,4 +56,4 @@ bumbl = spectral_centroid
 
 
 def cheatsheet() -> str:
-    return "spectral_centroid({}) -> Spectral centroid (buzz frequency). 'I sting like a bee.' --"
+    return 'spectral_centroid({}) -> Spectral centroid (buzz frequency).'

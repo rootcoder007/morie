@@ -80,4 +80,4 @@ gam = fit_gam
 
 
 def cheatsheet() -> str:
-    return "_bspline_basis({}) -> Generalized additive model (B-spline basis + OLS). 'Size mat"
+    return '_bspline_basis({}) -> Generalized additive model (B-spline basis + OLS).'

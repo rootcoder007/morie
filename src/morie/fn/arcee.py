@@ -66,4 +66,4 @@ arcee = arc_length
 
 
 def cheatsheet() -> str:
-    return "arc_length({}) -> Arc length computation. 'Speed is my weapon.' -- Arcee"
+    return 'arc_length({}) -> Arc length computation.'

@@ -55,4 +55,4 @@ cpci = clopper_pearson
 
 
 def cheatsheet() -> str:
-    return "clopper_pearson({}) -> Clopper-Pearson exact binomial CI. 'We have hope. Rebellions"
+    return 'clopper_pearson({}) -> Clopper-Pearson exact binomial CI.'

@@ -98,4 +98,4 @@ hound = kalman_filter
 
 
 def cheatsheet() -> str:
-    return "kalman_filter({}) -> Kalman filter tracking. 'I never lose a trail.' -- Hound"
+    return 'kalman_filter({}) -> Kalman filter tracking.'

@@ -92,4 +92,4 @@ ada = adaboost
 
 
 def cheatsheet() -> str:
-    return "_best_stump({}) -> AdaBoost with decision stumps (pure numpy). 'Power! Unlimite"
+    return '_best_stump({}) -> AdaBoost with decision stumps (pure numpy).'

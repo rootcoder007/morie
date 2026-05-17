@@ -87,4 +87,4 @@ bonec = weibull_analysis
 
 
 def cheatsheet() -> str:
-    return "weibull_analysis({}) -> Weibull failure analysis. 'I will crush you!' -- Bonecrusher"
+    return 'weibull_analysis({}) -> Weibull failure analysis.'

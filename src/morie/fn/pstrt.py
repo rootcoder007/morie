@@ -61,4 +61,4 @@ pstrt = ps_stratify
 
 
 def cheatsheet() -> str:
-    return "ps_stratify({}) -> Propensity score stratification. 'You must unlearn what you "
+    return 'ps_stratify({}) -> Propensity score stratification.'

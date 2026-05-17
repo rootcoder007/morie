@@ -50,4 +50,4 @@ canbs = canberra_dist
 
 
 def cheatsheet() -> str:
-    return "canberra_dist({}) -> Canberra distance. 'Hope is like the sun.' -- Vice Admiral H"
+    return 'canberra_dist({}) -> Canberra distance.'

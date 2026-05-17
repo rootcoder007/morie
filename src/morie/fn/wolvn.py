@@ -120,4 +120,4 @@ wolvn = mice_impute
 
 
 def cheatsheet() -> str:
-    return "mice_impute({}) -> Missing data imputation via chained equations. 'I'm the best"
+    return 'mice_impute({}) -> Missing data imputation via chained equations.'

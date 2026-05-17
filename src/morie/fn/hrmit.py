@@ -82,4 +82,4 @@ short = hermite_interp
 
 
 def cheatsheet() -> str:
-    return "hermite_interp({}) -> Hermite interpolation. 'Impressive. Most impressive.' -- Dar"
+    return 'hermite_interp({}) -> Hermite interpolation.'

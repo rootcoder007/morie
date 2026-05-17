@@ -83,4 +83,4 @@ galct = depletion_model
 
 
 def cheatsheet() -> str:
-    return "depletion_model({}) -> Resource depletion model. 'I hunger.' -- Galactus"
+    return 'depletion_model({}) -> Resource depletion model.'

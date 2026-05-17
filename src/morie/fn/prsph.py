@@ -96,4 +96,4 @@ prsph = ssim
 
 
 def cheatsheet() -> str:
-    return "ssim({}) -> Fidelity metric (SSIM). 'Tell me, is the woman worth it?' --"
+    return 'ssim({}) -> Fidelity metric (SSIM).'

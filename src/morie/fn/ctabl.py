@@ -60,4 +60,4 @@ ctabl = contingency_table
 
 
 def cheatsheet() -> str:
-    return "contingency_table({}) -> Contingency table with chi-squared test. 'You were the chose"
+    return 'contingency_table({}) -> Contingency table with chi-squared test.'

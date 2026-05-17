@@ -103,4 +103,4 @@ frenz = lyapunov_exponent
 
 
 def cheatsheet() -> str:
-    return "lyapunov_exponent({}) -> Lyapunov exponent. 'Chaos! More chaos!' -- Frenzy"
+    return 'lyapunov_exponent({}) -> Lyapunov exponent.'

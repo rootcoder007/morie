@@ -120,4 +120,4 @@ punsh = penalty_regression
 
 
 def cheatsheet() -> str:
-    return "penalty_regression({}) -> L1/Elastic net regularization path. 'If you're guilty, you'r"
+    return 'penalty_regression({}) -> L1/Elastic net regularization path.'

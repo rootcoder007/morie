@@ -46,4 +46,4 @@ cheby = chebyshev_dist
 
 
 def cheatsheet() -> str:
-    return "chebyshev_dist({}) -> Chebyshev (L-infinity) distance. 'Luck is what happens when preparation meets opportunity. -- Seneca' -- Ahsoka T"
+    return 'chebyshev_dist({}) -> Chebyshev (L-infinity) distance.'

@@ -38,4 +38,4 @@ therm = feeling_thermometer_scale
 
 
 def cheatsheet() -> str:
-    return "feeling_thermometer_scale({}) -> Feeling thermometer standardization. 'Dragon of the Darkness"
+    return 'feeling_thermometer_scale({}) -> Feeling thermometer standardization.'

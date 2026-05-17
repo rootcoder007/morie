@@ -76,4 +76,4 @@ antmn = allometric_regression
 
 
 def cheatsheet() -> str:
-    return "allometric_regression({}) -> Allometric scaling regression. 'I know a guy.' -- Ant-Man"
+    return 'allometric_regression({}) -> Allometric scaling regression.'

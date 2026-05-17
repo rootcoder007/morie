@@ -34,4 +34,4 @@ grogu = grouped_stats
 
 
 def cheatsheet() -> str:
-    return "grouped_stats({}) -> Grouped summary statistics. 'The Child' -- Grogu"
+    return 'grouped_stats({}) -> Grouped summary statistics.'

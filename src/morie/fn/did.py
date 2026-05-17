@@ -67,4 +67,4 @@ did = diff_in_diff
 
 
 def cheatsheet() -> str:
-    return "diff_in_diff({}) -> Difference-in-differences. 'I have the high ground!' -- Obi-"
+    return 'diff_in_diff({}) -> Difference-in-differences.'

@@ -35,4 +35,4 @@ ufres = unfolding_residuals
 
 
 def cheatsheet() -> str:
-    return "unfolding_residuals({}) -> Unfolding residuals. 'Galick Gun!' -- Vegeta, Dragon Ball Z"
+    return 'unfolding_residuals({}) -> Unfolding residuals.'

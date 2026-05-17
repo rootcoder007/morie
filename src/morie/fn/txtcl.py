@@ -85,4 +85,4 @@ def text_classify(
 
 
 def cheatsheet() -> str:
-    return "text_classify({}) -> Naive Bayes text classifier. 'Do. Or do not. There is no try"
+    return 'text_classify({}) -> Naive Bayes text classifier.'

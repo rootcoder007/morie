@@ -91,4 +91,4 @@ iv = iv_2sls
 
 
 def cheatsheet() -> str:
-    return "iv_2sls({}) -> Instrumental variables (2SLS). 'Your eyes can deceive you. D"
+    return 'iv_2sls({}) -> Instrumental variables (2SLS).'

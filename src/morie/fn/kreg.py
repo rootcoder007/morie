@@ -56,4 +56,4 @@ kreg = kernel_regression
 
 
 def cheatsheet() -> str:
-    return "kernel_regression({}) -> Nadaraya-Watson kernel regression. 'I have the high ground.'"
+    return 'kernel_regression({}) -> Nadaraya-Watson kernel regression.'

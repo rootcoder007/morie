@@ -69,4 +69,4 @@ zionm = defense_allocation
 
 
 def cheatsheet() -> str:
-    return "Real knowledge is to know the extent of one's ignorance. -- Confucius"
+    return 'zionm() -> Allocate defense resources across threats proportional to risk'

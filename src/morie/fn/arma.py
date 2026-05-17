@@ -73,4 +73,4 @@ arma = arima_fit
 
 
 def cheatsheet() -> str:
-    return "arima_fit({}) -> ARIMA model fitting. 'The happiness of your life depends upon the quality of your thoughts. -- Marcus Aurelius' -- Maz Kana"
+    return 'arima_fit({}) -> ARIMA model fitting.'

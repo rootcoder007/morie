@@ -52,4 +52,4 @@ sunst = surface_roughness
 
 
 def cheatsheet() -> str:
-    return "surface_roughness({}) -> Surface roughness metrics. 'Looking good is half the battle."
+    return 'surface_roughness({}) -> Surface roughness metrics.'

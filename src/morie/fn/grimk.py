@@ -64,4 +64,4 @@ grimk = power_law_fit
 
 
 def cheatsheet() -> str:
-    return "power_law_fit({}) -> Power law scaling. 'Me Grimlock strongest!' -- Grimlock"
+    return 'power_law_fit({}) -> Power law scaling.'

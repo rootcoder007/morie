@@ -100,4 +100,4 @@ lothr = template_match
 
 
 def cheatsheet() -> str:
-    return "template_match({}) -> Template matching (NCC). 'All our lives we fought this war.'"
+    return 'template_match({}) -> Template matching (NCC).'

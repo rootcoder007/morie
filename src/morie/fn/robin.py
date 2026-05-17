@@ -61,4 +61,4 @@ robin = winsorized_mean
 
 
 def cheatsheet() -> str:
-    return "Hope in reality is the worst of all evils because it prolongs the torments of man. -- Friedrich Nietzsche"
+    return 'robin() -> Winsorized mean: replace extreme values at both tails then average'

@@ -80,4 +80,4 @@ rogue = absorption_features
 
 
 def cheatsheet() -> str:
-    return "absorption_features({}) -> Transfer learning feature extraction. 'Don't touch me.' -- R"
+    return 'absorption_features({}) -> Transfer learning feature extraction.'

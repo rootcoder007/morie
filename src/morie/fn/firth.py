@@ -88,4 +88,4 @@ firth = firth_logistic
 
 
 def cheatsheet() -> str:
-    return "firth_logistic({}) -> Firth penalized logistic regression. 'Do or do not. There is"
+    return 'firth_logistic({}) -> Firth penalized logistic regression.'

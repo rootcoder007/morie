@@ -40,4 +40,4 @@ strpp = stress_per_point
 
 
 def cheatsheet() -> str:
-    return "stress_per_point({}) -> Stress per point. 'Domain Expansion!' -- Gojo, Jujutsu Kaise"
+    return 'stress_per_point({}) -> Stress per point.'

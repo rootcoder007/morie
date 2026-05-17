@@ -103,4 +103,4 @@ gclus = geo_cluster
 
 
 def cheatsheet() -> str:
-    return "geo_cluster({}) -> Geographic k-means clustering. 'Rebellions are built on hope"
+    return 'geo_cluster({}) -> Geographic k-means clustering.'

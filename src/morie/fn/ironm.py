@@ -127,4 +127,4 @@ ironm = armor_optimize
 
 
 def cheatsheet() -> str:
-    return "That which does not kill us makes us stronger. -- Friedrich Nietzsche"
+    return 'ironm() -> Solve a linear program via the revised simplex (Phase I / Phase II)'

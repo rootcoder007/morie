@@ -86,4 +86,4 @@ bostr = naive_forecast
 
 
 def cheatsheet() -> str:
-    return "naive_forecast({}) -> Naive time series forecasting. 'I am from the future.' -- Bo"
+    return 'naive_forecast({}) -> Naive time series forecasting.'

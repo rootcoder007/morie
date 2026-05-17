@@ -100,4 +100,4 @@ hotrd = newton_convergence
 
 
 def cheatsheet() -> str:
-    return "newton_convergence({}) -> Newton's method convergence. 'Faster! Faster!' -- Hot Rod"
+    return "newton_convergence({}) -> Newton's method convergence."

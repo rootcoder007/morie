@@ -32,4 +32,4 @@ mdslb = label_mds_points
 
 
 def cheatsheet() -> str:
-    return "Statistics is the grammar of science. -- Karl Pearson"
+    return 'mdslb() -> Attach labels to MDS coordinate matrix'

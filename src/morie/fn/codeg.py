@@ -88,4 +88,4 @@ codeg = wigner_semicircle
 
 
 def cheatsheet() -> str:
-    return "wigner_semicircle({}) -> Random matrix theory (Wigner semicircle). 'It is the questio"
+    return 'wigner_semicircle({}) -> Random matrix theory (Wigner semicircle).'

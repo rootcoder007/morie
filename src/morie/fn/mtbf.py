@@ -76,4 +76,4 @@ def mtbf_estimate(
 
 
 def cheatsheet() -> str:
-    return "mtbf_estimate({}) -> Mean Time Between Failures. 'Never underestimate a droid.' -"
+    return 'mtbf_estimate({}) -> Mean Time Between Failures.'

@@ -76,4 +76,4 @@ raven = raven_score
 
 
 def cheatsheet() -> str:
-    return "raven_score({}) -> Raven's progressive matrices scoring. 'Azarath Metrion Zinth"
+    return "raven_score({}) -> Raven's progressive matrices scoring."

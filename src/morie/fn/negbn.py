@@ -78,4 +78,4 @@ negbn = negative_binomial_reg
 
 
 def cheatsheet() -> str:
-    return "negative_binomial_reg({}) -> Negative binomial regression. 'Always in motion is the futur"
+    return 'negative_binomial_reg({}) -> Negative binomial regression.'

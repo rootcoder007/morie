@@ -67,4 +67,4 @@ cyclo = gaussian_beam
 
 
 def cheatsheet() -> str:
-    return "gaussian_beam({}) -> Gaussian beam optics. 'I could never control it.' -- Cyclops"
+    return 'gaussian_beam({}) -> Gaussian beam optics.'

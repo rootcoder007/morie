@@ -79,4 +79,4 @@ swmpt = biomass_estimate
 
 
 def cheatsheet() -> str:
-    return "biomass_estimate({}) -> Biomass estimation. 'The Green speaks through me.' -- Swamp "
+    return 'biomass_estimate({}) -> Biomass estimation.'

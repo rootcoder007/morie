@@ -58,4 +58,4 @@ aggcl = agglomerative
 
 
 def cheatsheet() -> str:
-    return "agglomerative({}) -> Agglomerative hierarchical clustering. 'Let the past die.' -"
+    return 'agglomerative({}) -> Agglomerative hierarchical clustering.'

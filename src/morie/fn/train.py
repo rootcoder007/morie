@@ -97,4 +97,4 @@ train = mmd_distance
 
 
 def cheatsheet() -> str:
-    return "mmd_distance({}) -> Domain adaptation via MMD. 'I can take you anywhere, but you"
+    return 'mmd_distance({}) -> Domain adaptation via MMD.'

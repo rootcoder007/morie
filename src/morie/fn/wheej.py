@@ -72,4 +72,4 @@ wheej = polynomial_features
 
 
 def cheatsheet() -> str:
-    return "polynomial_features({}) -> Feature engineering (polynomial expansion). 'I have an idea!"
+    return 'polynomial_features({}) -> Feature engineering (polynomial expansion).'

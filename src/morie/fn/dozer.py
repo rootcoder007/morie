@@ -92,4 +92,4 @@ dozer = pid_tune
 
 
 def cheatsheet() -> str:
-    return "pid_tune({}) -> PID controller tuning. 'Everyone falls the first time.' -- C"
+    return 'pid_tune({}) -> PID controller tuning.'

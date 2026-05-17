@@ -36,4 +36,4 @@ ufr2 = unfolding_r_squared
 
 
 def cheatsheet() -> str:
-    return "unfolding_r_squared({}) -> Unfolding R-squared. 'Super Saiyan Blue.' -- Goku, Dragon Ba"
+    return 'unfolding_r_squared({}) -> Unfolding R-squared.'

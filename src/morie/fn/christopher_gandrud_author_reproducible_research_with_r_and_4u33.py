@@ -69,4 +69,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return "Real knowledge is to know the extent of one's ignorance. -- Confucius"
+    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u33() -> GeneralStatistics expression (auto-extracted; see ref)'

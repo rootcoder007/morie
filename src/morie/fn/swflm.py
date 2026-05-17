@@ -38,4 +38,4 @@ swflm = sw_film_summary
 
 
 def cheatsheet() -> str:
-    return "Confine yourself to the present. -- Marcus Aurelius"
+    return 'swflm() -> Summary statistics for Star Wars film data'

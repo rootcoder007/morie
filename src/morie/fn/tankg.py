@@ -109,4 +109,4 @@ tankg = nn_train
 
 
 def cheatsheet() -> str:
-    return "He who has a why to live can bear almost any how. -- Friedrich Nietzsche"
+    return 'tankg() -> Train a single-hidden-layer neural network (binary classification)'

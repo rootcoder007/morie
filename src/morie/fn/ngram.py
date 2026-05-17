@@ -74,4 +74,4 @@ def ngram_freq(
 
 
 def cheatsheet() -> str:
-    return "ngram_freq({}) -> N-gram frequency analysis. 'I find your lack of faith distur"
+    return 'ngram_freq({}) -> N-gram frequency analysis.'

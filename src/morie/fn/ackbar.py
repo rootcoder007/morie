@@ -50,4 +50,4 @@ ackbar = detect_outliers
 
 
 def cheatsheet() -> str:
-    return "detect_outliers({}) -> Outlier detection. 'It's a trap!' -- Admiral Ackbar"
+    return 'detect_outliers({}) -> Outlier detection.'

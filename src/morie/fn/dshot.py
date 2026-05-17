@@ -69,4 +69,4 @@ dshot = precision_at_k
 
 
 def cheatsheet() -> str:
-    return "precision_at_k({}) -> Precision at K metric. 'I never miss.' -- Deadshot"
+    return 'precision_at_k({}) -> Precision at K metric.'

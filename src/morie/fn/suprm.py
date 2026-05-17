@@ -61,4 +61,4 @@ suprm = ks_supremum
 
 
 def cheatsheet() -> str:
-    return "ks_supremum({}) -> Supremum test / KS statistic. 'Up, up, and away!' -- Superma"
+    return 'ks_supremum({}) -> Supremum test / KS statistic.'

@@ -73,4 +73,4 @@ uncr = entropy_production
 
 
 def cheatsheet() -> str:
-    return "entropy_production({}) -> Entropy production rate. 'I hunger.' -- Unicron"
+    return 'entropy_production({}) -> Entropy production rate.'

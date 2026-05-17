@@ -85,4 +85,4 @@ harqn = harrells_c
 
 
 def cheatsheet() -> str:
-    return "Out of chaos, comes order. -- Friedrich Nietzsche"
+    return "harqn() -> Harrell's C concordance index for survival predictions"

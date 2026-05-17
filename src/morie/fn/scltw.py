@@ -92,4 +92,4 @@ scltw = probability_resample
 
 
 def cheatsheet() -> str:
-    return "probability_resample({}) -> Probability manipulation via resampling. 'No more.' -- Scarl"
+    return 'probability_resample({}) -> Probability manipulation via resampling.'

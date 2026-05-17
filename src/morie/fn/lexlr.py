@@ -64,4 +64,4 @@ lexlr = lexico_rank
 
 
 def cheatsheet() -> str:
-    return "lexico_rank({}) -> Lexicographic rank aggregation. 'Some people can read War an"
+    return 'lexico_rank({}) -> Lexicographic rank aggregation.'

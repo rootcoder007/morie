@@ -81,4 +81,4 @@ trunc = truncated_regression
 
 
 def cheatsheet() -> str:
-    return "truncated_regression({}) -> Truncated regression. 'All who gain power are afraid to lose"
+    return 'truncated_regression({}) -> Truncated regression.'

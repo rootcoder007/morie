@@ -74,4 +74,4 @@ splgn = nasa_tlx
 
 
 def cheatsheet() -> str:
-    return "nasa_tlx({}) -> NASA-TLX cognitive load metric. 'You have the look of a man "
+    return 'nasa_tlx({}) -> NASA-TLX cognitive load metric.'

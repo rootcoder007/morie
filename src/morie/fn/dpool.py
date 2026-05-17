@@ -96,4 +96,4 @@ dpool = jackknife_delete_d
 
 
 def cheatsheet() -> str:
-    return "jackknife_delete_d({}) -> Jackknife delete-d estimator. 'Maximum effort!' -- Deadpool"
+    return 'jackknife_delete_d({}) -> Jackknife delete-d estimator.'

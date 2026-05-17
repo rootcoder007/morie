@@ -79,4 +79,4 @@ swoop = lift_drag_polar
 
 
 def cheatsheet() -> str:
-    return "lift_drag_polar({}) -> Lift-drag polar. 'From above!' -- Swoop"
+    return 'lift_drag_polar({}) -> Lift-drag polar.'

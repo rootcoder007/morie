@@ -72,4 +72,4 @@ zoomv = velocity_profile
 
 
 def cheatsheet() -> str:
-    return "velocity_profile({}) -> Velocity profile estimation. 'You can't lock up the darkness"
+    return 'velocity_profile({}) -> Velocity profile estimation.'

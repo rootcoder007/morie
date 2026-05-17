@@ -87,4 +87,4 @@ apoc = articulation_points
 
 
 def cheatsheet() -> str:
-    return "articulation_points({}) -> Graph articulation points. 'I am afraid of the truth.' -- Ap"
+    return 'articulation_points({}) -> Graph articulation points.'

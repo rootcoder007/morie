@@ -37,4 +37,4 @@ ssefn = sse_mds
 
 
 def cheatsheet() -> str:
-    return "sse_mds({}) -> Sum of squared distance errors for MDS. 'Ora ora ora!' -- Jo"
+    return 'sse_mds({}) -> Sum of squared distance errors for MDS.'

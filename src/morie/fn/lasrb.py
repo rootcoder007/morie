@@ -66,4 +66,4 @@ lasrb = iou_metric
 
 
 def cheatsheet() -> str:
-    return "iou_metric({}) -> IoU tracking metric. 'Eyes in the sky.' -- Laserbeak"
+    return 'iou_metric({}) -> IoU tracking metric.'

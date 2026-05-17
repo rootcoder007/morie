@@ -71,4 +71,4 @@ draxm = destroyer_decompose
 
 
 def cheatsheet() -> str:
-    return "destroyer_decompose({}) -> Matrix decomposition (destructive rank reduction). 'Nothing "
+    return 'destroyer_decompose({}) -> Matrix decomposition (destructive rank reduction).'

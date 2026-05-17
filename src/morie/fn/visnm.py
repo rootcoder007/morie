@@ -90,4 +90,4 @@ visnm = mind_stone_cluster
 
 
 def cheatsheet() -> str:
-    return "mind_stone_cluster({}) -> Spectral clustering variant. 'I was born yesterday.' -- Visi"
+    return 'mind_stone_cluster({}) -> Spectral clustering variant.'

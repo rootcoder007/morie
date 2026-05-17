@@ -39,4 +39,4 @@ strs2 = stress2_measure
 
 
 def cheatsheet() -> str:
-    return "stress2_measure({}) -> Stress-2 measure. 'United States of Smash!' -- All Might, My"
+    return 'stress2_measure({}) -> Stress-2 measure.'

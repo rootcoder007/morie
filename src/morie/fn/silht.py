@@ -81,4 +81,4 @@ silht = silhouette_score
 
 
 def cheatsheet() -> str:
-    return "silhouette_score({}) -> Silhouette score. 'You underestimate my power.' -- Anakin Sk"
+    return 'silhouette_score({}) -> Silhouette score.'

@@ -31,4 +31,4 @@ rotmt = rotation_matrix_2d
 
 
 def cheatsheet() -> str:
-    return "rotation_matrix_2d({}) -> 2D rotation matrix. 'Dismantle.' -- Sukuna, Jujutsu Kaisen"
+    return 'rotation_matrix_2d({}) -> 2D rotation matrix.'

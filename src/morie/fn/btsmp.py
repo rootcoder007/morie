@@ -8,4 +8,4 @@ bootstrap_sample = _fn
 
 
 def cheatsheet() -> str:
-    return "btsmp() -> Bootstrap resampling for any scalar statistic. 'Truly wonder"
+    return 'btsmp() -> Bootstrap resampling for any scalar statistic.'

@@ -80,4 +80,4 @@ venmm = cooccurrence_matrix
 
 
 def cheatsheet() -> str:
-    return "cooccurrence_matrix({}) -> Co-occurrence matrix analysis. 'We are Venom.' -- Venom"
+    return 'cooccurrence_matrix({}) -> Co-occurrence matrix analysis.'

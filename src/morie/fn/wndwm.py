@@ -63,4 +63,4 @@ wndwm = window_function
 
 
 def cheatsheet() -> str:
-    return "window_function({}) -> Window functions. 'I will fight for those who cannot fight f"
+    return 'window_function({}) -> Window functions.'

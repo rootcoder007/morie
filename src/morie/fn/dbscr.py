@@ -86,4 +86,4 @@ dbscr = dbscan_dr
 
 
 def cheatsheet() -> str:
-    return "dbscan_dr({}) -> DBSCAN clustering (DescriptiveResult). 'I've got a good feel"
+    return 'dbscan_dr({}) -> DBSCAN clustering (DescriptiveResult).'

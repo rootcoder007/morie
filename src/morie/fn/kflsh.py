@@ -74,4 +74,4 @@ kflsh = acceleration_profile
 
 
 def cheatsheet() -> str:
-    return "acceleration_profile({}) -> Acceleration profile analysis. 'Fastest kid alive.' -- Kid F"
+    return 'acceleration_profile({}) -> Acceleration profile analysis.'

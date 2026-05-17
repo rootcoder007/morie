@@ -106,4 +106,4 @@ kngpn = crime_network_centrality
 
 
 def cheatsheet() -> str:
-    return "crime_network_centrality({}) -> Network centrality measures. 'When I was a boy...' -- Kingpi"
+    return 'crime_network_centrality({}) -> Network centrality measures.'

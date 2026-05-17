@@ -78,4 +78,4 @@ sentl = detection_metrics
 
 
 def cheatsheet() -> str:
-    return "detection_metrics({}) -> Object detection precision/recall. 'They are coming.' -- Mor"
+    return 'detection_metrics({}) -> Object detection precision/recall.'

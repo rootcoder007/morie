@@ -35,4 +35,4 @@ rcagr = agreement_scores
 
 
 def cheatsheet() -> str:
-    return "agreement_scores({}) -> Pairwise agreement scores. 'Destructo Disc!' -- Krillin, Dra"
+    return 'agreement_scores({}) -> Pairwise agreement scores.'

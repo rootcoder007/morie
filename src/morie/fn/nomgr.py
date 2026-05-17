@@ -59,4 +59,4 @@ nomgr = fagan_nomogram
 
 
 def cheatsheet() -> str:
-    return "fagan_nomogram({}) -> Fagan nomogram (post-test probability). 'There is always a b"
+    return 'fagan_nomogram({}) -> Fagan nomogram (post-test probability).'

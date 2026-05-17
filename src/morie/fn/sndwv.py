@@ -70,4 +70,4 @@ sndwv = cepstral_analysis
 
 
 def cheatsheet() -> str:
-    return "cepstral_analysis({}) -> Cepstral analysis. 'Soundwave superior.' -- Soundwave"
+    return 'cepstral_analysis({}) -> Cepstral analysis.'

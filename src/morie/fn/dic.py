@@ -32,4 +32,4 @@ dic = deviance_info_criterion
 
 
 def cheatsheet() -> str:
-    return "deviance_info_criterion({}) -> Deviance Information Criterion. 'Powerful you have become. -"
+    return 'deviance_info_criterion({}) -> Deviance Information Criterion.'

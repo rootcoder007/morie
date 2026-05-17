@@ -78,4 +78,4 @@ gls = generalized_ls
 
 
 def cheatsheet() -> str:
-    return "Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"
+    return 'gls() -> GLS via Cochrane-Orcutt for AR(1) errors. Dataset-agnostic'

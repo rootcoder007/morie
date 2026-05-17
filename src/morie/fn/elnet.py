@@ -92,4 +92,4 @@ elnet = elastic_net
 
 
 def cheatsheet() -> str:
-    return "_soft_threshold({}) -> Elastic net regression. 'In my experience, there is no such "
+    return '_soft_threshold({}) -> Elastic net regression.'

@@ -7,4 +7,4 @@ complex_survey_glm = _fn
 
 
 def cheatsheet() -> str:
-    return "svyglm() -> Complex survey GLM with weights, clustering, and strata. 'Ne"
+    return 'svyglm() -> Complex survey GLM with weights, clustering, and strata.'

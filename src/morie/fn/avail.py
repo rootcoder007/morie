@@ -67,4 +67,4 @@ avail = availability
 
 
 def cheatsheet() -> str:
-    return "availability({}) -> System availability. 'The garbage will do!' -- Rey"
+    return 'availability({}) -> System availability.'

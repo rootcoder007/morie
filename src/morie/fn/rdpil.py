@@ -51,4 +51,4 @@ rdpil = red_pill_test
 
 
 def cheatsheet() -> str:
-    return "You have power over your mind -- not outside events. -- Marcus Aurelius"
+    return 'rdpil() -> Red pill test'

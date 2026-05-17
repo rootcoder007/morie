@@ -115,4 +115,4 @@ swdb = load_sw_result
 
 
 def cheatsheet() -> str:
-    return "load_sw_dataset({}) -> Star Wars dataset loader. 'It does not matter how slowly you go as long as you do not stop. -- Confucius' "
+    return 'load_sw_dataset({}) -> Star Wars dataset loader.'

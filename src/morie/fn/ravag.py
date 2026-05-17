@@ -91,4 +91,4 @@ ravag = lsb_embed
 
 
 def cheatsheet() -> str:
-    return "lsb_embed({}) -> LSB steganography. 'Silent but deadly.' -- Ravage"
+    return 'lsb_embed({}) -> LSB steganography.'

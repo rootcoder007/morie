@@ -72,4 +72,4 @@ rlms = lms_regression
 
 
 def cheatsheet() -> str:
-    return "Nature does not hurry, yet everything is accomplished. -- Lao Tzu"
+    return 'rlms() -> Least Median of Squares (LMS) regression'

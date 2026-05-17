@@ -68,4 +68,4 @@ short = qr_factorize
 
 
 def cheatsheet() -> str:
-    return "qr_factorize({}) -> QR factorization via Householder. 'I am your father.' -- Dar"
+    return 'qr_factorize({}) -> QR factorization via Householder.'

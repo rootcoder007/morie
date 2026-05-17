@@ -71,4 +71,4 @@ cancc = canonical_correlation
 
 
 def cheatsheet() -> str:
-    return "He who would learn to fly one day must first learn to stand and walk. -- Friedrich Nietzsche"
+    return 'cancc() -> Canonical Correlation Analysis (CCA)'

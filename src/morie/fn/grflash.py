@@ -40,4 +40,4 @@ def geron_flash_attention_tile(Q, K, V, block_size):
 
 
 def cheatsheet():
-    return "Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"
+    return 'grflash() -> FlashAttention tiled softmax(QK^T)V via online normalization'

@@ -7,4 +7,4 @@ simple_random_sample = _fn
 
 
 def cheatsheet() -> str:
-    return "srs() -> Simple random sample from a DataFrame. 'Do or do not, there "
+    return 'srs() -> Simple random sample from a DataFrame.'

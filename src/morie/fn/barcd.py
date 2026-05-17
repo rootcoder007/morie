@@ -74,4 +74,4 @@ barcd = csp_backtrack
 
 
 def cheatsheet() -> str:
-    return "csp_backtrack({}) -> Constraint satisfaction solver. 'No one gets through.' -- Ba"
+    return 'csp_backtrack({}) -> Constraint satisfaction solver.'
