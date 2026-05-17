@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""A journey of a thousand miles begins with a single step. -- Lao Tzu"""
+"""Rangayyan EMG fractal dim."""
 import numpy as np
 from ._richresult import RichResult
 
@@ -7,7 +7,7 @@ __all__ = ["rangayyan_emg_fractal_dim"]
 
 
 def rangayyan_emg_fractal_dim(emg, force, fs, kmax):
-    """A journey of a thousand miles begins with a single step. -- Lao Tzu"""
+    """Rangayyan EMG fractal dim."""
     emg = np.asarray(emg, dtype=float)
     n = int(emg) if emg.ndim == 0 else len(emg)
     result = float(np.mean(emg))

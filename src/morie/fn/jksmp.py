@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Delete-1 jackknife variance estimate. 'The happiness of your life depends upon the quality of your thoughts. -- Marcus Aurelius'."""
+"""Delete-1 jackknife variance estimate."""
 
 from morie.sampling import jackknife_estimate as _fn
 

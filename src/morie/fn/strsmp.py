@@ -1,4 +1,4 @@
-"""Stratified random sample. 'Your focus determines your reality.' -- Qui-Gon Jinn."""
+"""Stratified random sample."""
 
 from morie.sampling import stratified_sample as _fn
 

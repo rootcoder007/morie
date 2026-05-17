@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""Double ML. 'Twice the pride, double the fall.' -- Count Dooku"""
+"""Double ML."""
 
 from morie.fn.dml import estimate_double_ml
 

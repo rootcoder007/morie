@@ -1,5 +1,5 @@
 # morie.fn -- function file (hadesllm/morie)
-"""It does not matter how slowly you go as long as you do not stop. -- Confucius"""
+"""Rangayyan EMG force."""
 import numpy as np
 from ._richresult import RichResult
 
@@ -7,7 +7,7 @@ __all__ = ["rangayyan_emg_force"]
 
 
 def rangayyan_emg_force(emg, force, fs, window):
-    """It does not matter how slowly you go as long as you do not stop. -- Confucius"""
+    """Rangayyan EMG force."""
     emg = np.asarray(emg, dtype=float)
     n = int(emg) if emg.ndim == 0 else len(emg)
     result = float(np.mean(emg))

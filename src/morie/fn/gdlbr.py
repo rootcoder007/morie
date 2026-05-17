@@ -1,11 +1,11 @@
 # morie.fn -- function file (hadesllm/morie)
-"""In God we trust; all others must bring data. -- W. Edwards Deming"""
+"""Gdlbr."""
 
 import numpy as np
 
 
 def gdlbr(population=None, births=None, deaths=None, coords=None, n=50):
-    """In God we trust; all others must bring data. -- W. Edwards Deming"""
+    """Gdlbr."""
     from ._containers import DescriptiveResult
 
     if population is None:
