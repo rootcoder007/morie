@@ -466,7 +466,8 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float,
             alpha, beta = float(theta[2]), float(theta[3])
             if eta <= 1e-6 or eta >= 0.999 or alpha <= 1e-6 or beta <= 1e-6:
                 return 1e12
-            return _core_ext.hawkes_ll_gamma_const(
+            # the sliding-window form is bit-identical and sub-quadratic
+            return _core_ext.hawkes_ll_gamma_const_trunc(
                 t_c, float(T), a0, eta, alpha, beta)
     if HAS_CORE and baseline == "sinusoidal" and kernel in (
             "exponential", "weibull", "lomax"):

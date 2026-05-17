@@ -51,6 +51,12 @@ double hawkes_ll_gamma_const(Vec t, double T, double a0, double eta,
                                               eta, alpha, beta);
 }
 
+double hawkes_ll_gamma_const_trunc(Vec t, double T, double a0, double eta,
+                                   double alpha, double beta) {
+    return morie::core::hawkes_ll_gamma_const_trunc(
+        t.data(), t.shape(0), T, a0, eta, alpha, beta);
+}
+
 double hawkes_ll_exp_sin(Vec t, double T, double a0, double a1, double a2,
                          double a3, double eta, double beta, Vec grid,
                          Vec grid_vals) {
@@ -121,6 +127,11 @@ void register_hawkes(nb::module_ &m) {
           "Hawkes negative log-likelihood -- gamma triggering kernel, "
           "constant baseline. Returns 1e12 for an infeasible parameter "
           "vector.");
+    m.def("hawkes_ll_gamma_const_trunc", &hawkes_ll_gamma_const_trunc,
+          "t"_a, "T"_a, "a0"_a, "eta"_a, "alpha"_a, "beta"_a,
+          "Sliding-window O(n*w) form of hawkes_ll_gamma_const -- "
+          "bit-identical to the O(n^2) version (the truncated terms "
+          "underflow to exactly zero).");
     m.def("hawkes_ll_exp_sin", &hawkes_ll_exp_sin, "t"_a, "T"_a, "a0"_a,
           "a1"_a, "a2"_a, "a3"_a, "eta"_a, "beta"_a, "grid"_a, "grid_vals"_a,
           "Hawkes negative log-likelihood -- exponential triggering "

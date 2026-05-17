@@ -576,6 +576,67 @@ inline double hawkes_ll_weibull_const_trunc(const double *t, std::size_t n,
     return -(log_sum - integral);
 }
 
+// Truncated / sliding-window form of hawkes_ll_gamma_const. The gamma
+// kernel's log-density  log_d = log_const + (alpha-1)*log(u) - beta*u
+// falls monotonically past the peak; beyond the cutoff below it is
+// < -745, so exp(log_d) underflows to exactly 0. The exact O(n^2)
+// version already adds those zeros, so cutting the inner loop there is
+// bit-for-bit identical -- not an approximation, cannot bias the MLE.
+//
+// No closed form solves log_d = -745 (the mixed log(u)-beta*u term),
+// so the cutoff uses a guaranteed upper bound on (alpha-1)*log(u):
+// for alpha > 1, (alpha-1)log(u) <= (beta/2)u + K with K the bound's
+// maximum; for alpha <= 1 the term is <= 0 once u >= 1. The cutoff is
+// thus a little wider than the true underflow point -- conservative
+// but always correct. For a slowly decaying kernel the window -> n and
+// it degrades gracefully to exact O(n^2).
+inline double hawkes_ll_gamma_const_trunc(const double *t, std::size_t n,
+                                          double T, double a0, double eta,
+                                          double alpha, double beta) {
+    if (!(1e-6 < eta && eta < 0.999)) return kBig;
+    if (!(0.05 < alpha && alpha < 20.0)) return kBig;
+    if (!(0.05 < beta && beta < 30.0)) return kBig;
+    if (!(-20.0 < a0 && a0 < 20.0)) return kBig;
+
+    const double nu = std::exp(a0);
+    const double log_const = alpha * std::log(beta) - std::lgamma(alpha);
+
+    double cutoff;
+    if (alpha > 1.0 + 1e-12) {
+        const double K = (alpha - 1.0) *
+                             std::log(2.0 * (alpha - 1.0) / beta) -
+                         (alpha - 1.0);
+        cutoff = 2.0 * (log_const + K + 745.2) / beta;
+    } else {
+        cutoff = (log_const + 745.2) / beta;
+        if (cutoff < 1.0) cutoff = 1.0;
+    }
+
+    double log_sum = 0.0;
+    std::size_t lo = 0;
+    for (std::size_t i = 0; i < n; ++i) {
+        while (lo < i && (t[i] - t[lo]) > cutoff) ++lo;
+        double s = 0.0;
+        for (std::size_t j = lo; j < i; ++j) {
+            const double u = t[i] - t[j];
+            if (u > 1e-300) {
+                const double log_d =
+                    log_const + (alpha - 1.0) * std::log(u) - beta * u;
+                s += std::exp(log_d);
+            }
+        }
+        const double lam_i = nu + eta * s;
+        if (lam_i <= 0.0) return kBig;
+        log_sum += std::log(lam_i);
+    }
+
+    double integral = nu * T;
+    for (std::size_t i = 0; i < n; ++i) {
+        integral += eta * gamma_cdf_regularized(alpha, beta * (T - t[i]));
+    }
+    return -(log_sum - integral);
+}
+
 // --- sum-of-exponentials (SoE) Hawkes likelihood (task #73) ------------------
 //
 // Hawkes negative log-likelihood with a sum-of-exponentials triggering

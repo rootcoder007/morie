@@ -105,6 +105,23 @@ def test_hawkes_weibull_trunc_is_exact(a0, eta, alpha, lam):
     assert trunc == exact
 
 
+@pytest.mark.parametrize("a0,eta,alpha,beta", [
+    (-1.0, 0.30, 1.5, 2.0),
+    (0.5, 0.60, 0.8, 5.0),
+    (-2.0, 0.10, 3.0, 1.0),
+    (0.0, 0.40, 5.0, 4.0),
+    (-1.0, 0.40, 1.0, 3.0),
+])
+def test_hawkes_gamma_trunc_is_exact(a0, eta, alpha, beta):
+    # the O(n*w) sliding-window form is BIT-IDENTICAL to the O(n^2)
+    # gamma version -- the truncated terms underflow to exactly zero.
+    t = _event_times(400, rate=2.0, seed=13)
+    T = float(t[-1]) + 1.0
+    exact = core.hawkes_ll_gamma_const(t, T, a0, eta, alpha, beta)
+    trunc = core.hawkes_ll_gamma_const_trunc(t, T, a0, eta, alpha, beta)
+    assert trunc == exact
+
+
 @pytest.mark.parametrize("a0,eta,alpha,c", [
     (-1.0, 0.30, 2.0, 1.0),
     (0.5, 0.60, 3.5, 0.5),
