@@ -3,6 +3,11 @@
 \name{mrm_doe}
 \alias{mrm_doe}
 \title{Design-of-Experiments toolkit (R parity)}
+\value{
+Each design-of-experiments callable returns a named \code{list}
+holding the constructed design or the analysis result and a
+plain-language \code{interpretation}.
+}
 \description{
 R parity of \code{morie.mrm_doe}.  Closes the Chapter-3/4/5 coverage
 gap from designexptr.org.

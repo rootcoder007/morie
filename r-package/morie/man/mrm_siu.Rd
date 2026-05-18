@@ -3,6 +3,11 @@
 \name{mrm_siu}
 \alias{mrm_siu}
 \title{MRM-framework analyses on Ontario SIU (Special Investigations Unit) data}
+\value{
+Each \code{mrm_siu_*()} callable returns a named \code{list} with
+the survival, per-service rate, or outcome-classification result and a
+plain-language \code{interpretation}.
+}
 \description{
 Three callables for SIU case-level CSVs. Unlike OTIS (no placement
 dates) and TPS (no per-person ID), SIU exposes per-case dates with a

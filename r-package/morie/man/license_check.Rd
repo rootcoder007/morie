@@ -3,6 +3,12 @@
 \name{license_check}
 \alias{license_check}
 \title{Runtime license-compatibility guard for morie}
+\value{
+\code{morie_gpl_compatible_licenses()} returns a character vector
+of GPL-compatible SPDX identifiers; \code{check_plugin_license()} returns
+a logical (invisibly), signalling a warning or error when the supplied
+licence is not GPL-compatible.
+}
 \description{
 R parity of \code{morie._license_check}.  Exposes the
 FSF GPL-compatible licence list and a

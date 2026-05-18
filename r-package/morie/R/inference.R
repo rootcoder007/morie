@@ -466,7 +466,7 @@ omega_squared <- function(f_stat, df_between, df_within, n) {
 #' Cramer's V for categorical association
 #'
 #' @param contingency_table A numeric matrix of observed counts.
-#' @return Numeric Cramer's V in [0, 1].
+#' @return Numeric Cramer's V in the interval \[0, 1\].
 #' @examples
 #' \dontrun{
 #'   # See the package vignettes for usage examples:

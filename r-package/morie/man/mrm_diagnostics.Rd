@@ -3,6 +3,11 @@
 \name{mrm_diagnostics}
 \alias{mrm_diagnostics}
 \title{Causal-inference diagnostics (R parity)}
+\value{
+Each diagnostic callable returns a named \code{list} of balance
+and overlap statistics (or the estimated effect) together with a
+plain-language \code{interpretation}.
+}
 \description{
 Balance, overlap, SUTVA-style assumption checks, and the median
 causal effect estimator.  R parity of \code{morie.mrm_diagnostics}.

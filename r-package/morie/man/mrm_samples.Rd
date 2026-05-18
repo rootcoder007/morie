@@ -3,6 +3,12 @@
 \name{mrm_samples}
 \alias{mrm_samples}
 \title{Bundled reference data samples and dataset fetchers}
+\value{
+The on-demand fetchers (\code{morie_fetch_tps()},
+\code{morie_fetch_siu()}) return the file path to the downloaded or
+cached CSV; \code{morie_load_dataset()} returns the loaded
+\code{data.frame}.
+}
 \description{
 MORIE ships a small set of reference CSVs in \verb{inst/extdata/} so that
 the \verb{mrm_otis_*()} and \verb{mrm_tps_*()} callables can be exercised

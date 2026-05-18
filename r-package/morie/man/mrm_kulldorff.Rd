@@ -3,6 +3,12 @@
 \name{mrm_kulldorff}
 \alias{mrm_kulldorff}
 \title{Kulldorff space-time scan statistic on TPS event data}
+\value{
+\code{mrm_tps_kulldorff_scan()} returns a named \code{list} with
+the most likely cluster, its Poisson log-likelihood-ratio statistic,
+the Monte-Carlo permutation p-value, and a plain-language
+\code{interpretation}.
+}
 \description{
 R parity of \code{morie.mrm_kulldorff.mrm_tps_kulldorff_scan()}.
 Implements Kulldorff's 1997 Poisson log-likelihood-ratio space-time

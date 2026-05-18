@@ -3,6 +3,11 @@
 \name{mrm_otis}
 \alias{mrm_otis}
 \title{MRM-framework analyses on Ontario OTIS data}
+\value{
+Each \code{mrm_otis_*()} callable returns a named \code{list} with
+the computed statistics (concentration indices, survival curves, or
+association measures) and a plain-language \code{interpretation}.
+}
 \description{
 Five callables for the OTIS (Offender Tracking Information System)
 public-release datasets, used in the MRM (Multilevel Reconciliation

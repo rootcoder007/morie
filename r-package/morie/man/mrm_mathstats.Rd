@@ -3,6 +3,10 @@
 \name{mrm_mathstats}
 \alias{mrm_mathstats}
 \title{Mathematical-statistics / simulation / computation toolkit (R parity)}
+\value{
+Each callable returns a named \code{list} with the computed
+statistic(s) and a plain-language \code{interpretation}.
+}
 \description{
 R parity of \code{morie.mrm_mathstats}.  Closes the Chapter-2
 coverage gap from designexptr.org/mathematical-statistics-

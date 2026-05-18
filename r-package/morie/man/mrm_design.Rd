@@ -3,6 +3,10 @@
 \name{mrm_design}
 \alias{mrm_design}
 \title{Experimental-design callables (designexptr-inspired)}
+\value{
+Each design callable returns a named \code{list} of estimates,
+test statistics, p-values, and a plain-language \code{interpretation}.
+}
 \description{
 R parity of \code{morie.mrm_design} (Python).  Four general-
 purpose statistical-design entry points covering the

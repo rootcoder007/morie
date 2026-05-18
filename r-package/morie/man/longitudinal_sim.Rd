@@ -3,6 +3,12 @@
 \name{longitudinal_sim}
 \alias{longitudinal_sim}
 \title{Synchronised longitudinal-panel simulation (R parity)}
+\value{
+The simulation callables return tidy longitudinal-panel
+\code{data.frame}s; \code{morie_sync_rng()} returns an environment
+exposing synchronised \code{rnorm}, \code{runif}, and \code{sample}
+methods.
+}
 \description{
 Clean-room R parity of \code{morie.longitudinal_sim} for synchronised
 multivariate longitudinal-panel simulation.  Implements SyncRNG,

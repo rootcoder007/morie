@@ -3,6 +3,11 @@
 \name{frns_metrics}
 \alias{frns_metrics}
 \title{Group-disparity metrics for auditing classification and risk systems}
+\value{
+Each callable in this module returns a named \code{list} with the
+metric \code{value}, a per-group breakdown, advisory \code{warnings}, and
+a plain-language \code{interpretation}.
+}
 \description{
 R parity for the Python \code{morie.fairness.metrics} module. Every
 callable here is an \emph{audit} measure: given the decisions a system

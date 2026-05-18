@@ -3,6 +3,11 @@
 \name{frns_temporal}
 \alias{frns_temporal}
 \title{Multi-city temporal disparity audit}
+\value{
+The module's audit callable returns a named \code{list} with the
+worst per-city Disparate Impact Ratio range, per-city and per-cell
+breakdowns, and a plain-language \code{interpretation}.
+}
 \description{
 R parity for the Python \code{morie.fairness.temporal} module. The four
 disparity metrics — Disparate Impact Ratio, Demographic Parity Gap,

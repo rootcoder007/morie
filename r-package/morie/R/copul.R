@@ -9,7 +9,7 @@
 #' @param x,y numeric marginal samples.
 #' @param family "gaussian", "clayton", or "gumbel".
 #' @return list: estimate, kendall_tau, se_tau, u, v, family, n, method.
-#' @importFrom stats cor.test rank
+#' @importFrom stats cor.test
 #' @keywords internal
 copul <- function(x, y, family = c("gaussian", "clayton", "gumbel")) {
   family <- match.arg(family)

@@ -3,6 +3,13 @@
 \name{frns_predpol}
 \alias{frns_predpol}
 \title{Generalised predictive-policing disparity audit}
+\value{
+\code{predpol_aggregate_areas()} returns a per-area
+\code{data.frame}; \code{predpol_calibration_audit()} and
+\code{predpol_score_disparity()} return named \code{list}s of audit
+statistics, per-group breakdowns, and a plain-language
+\code{interpretation}.
+}
 \description{
 R parity for the Python \code{morie.fairness.predpol} module. A
 clean-room, city-agnostic reimplementation of the district-level

@@ -49,8 +49,8 @@
 #' @references
 #' United Nations General Assembly (2015). United Nations Standard
 #' Minimum Rules for the Treatment of Prisoners (the Nelson Mandela
-#' Rules). A/RES/70/175. Rule 43 = prolonged (>15 days). Rule 44 =
-#' >=22 hours/day, no meaningful human contact.
+#' Rules). A/RES/70/175. Rule 43 = prolonged (more than 15 days).
+#' Rule 44 = at least 22 hours/day, no meaningful human contact.
 #'
 #' @export
 #' @examples
