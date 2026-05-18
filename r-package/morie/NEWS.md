@@ -1,3 +1,25 @@
+# morie 0.9.5 — 2026-05-18
+
+Fix: Toronto Police Service open-data ingestion correctness and
+reliability.
+
+* **TPS dataset catalog** — the `tpshomicides` and `tpsshootings`
+  entries in `dataset_catalog.R` advertised a `2014-present` date
+  range. The Public Safety Data Portal publishes the Homicides and
+  Shootings & Firearm Discharges series from **2004**; the catalog
+  metadata is corrected to `2004-present`.
+* **`morie_fetch_tps()` pagination** — the ArcGIS paging loop stopped
+  as soon as a page returned fewer rows than the requested page size.
+  A layer whose server-side `maxRecordCount` is below that size
+  returns short pages on every call, so the download was silently
+  truncated to the first page. The loop now pages on the server's
+  `exceededTransferLimit` flag, and a failed request aborts with an
+  error instead of caching a partial download.
+* **Occurrence-date time zone** — TPS `OCC_DATE` is converted to UTC
+  by the ArcGIS platform; daily-resolution Hawkes fits now build the
+  date from the local-time `OCC_YEAR`/`OCC_MONTH`/`OCC_DAY` integer
+  fields so events near local midnight are binned to the correct day.
+
 # morie 0.9.4 — 2026-05-18
 
 Fix: CRAN source-package compliance for the vendored C++ core header.

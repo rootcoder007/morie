@@ -96,7 +96,7 @@ pip install morie
 docker run --rm ghcr.io/hadesllm/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/hadesllm/morie:0.9.4 morie --help
+docker run --rm ghcr.io/hadesllm/morie:0.9.5 morie --help
 ```
 
 Multi-arch image published on every release with both versioned and `:latest` tags. Requires only Docker — no Python, no pip.
@@ -130,6 +130,10 @@ from morie.otis_all_analyze import analyze_a01_mrm
 result = analyze_a01_mrm(df)
 print(result)
 ```
+
+## What's new in v0.9.5
+
+- **TPS open-data ingestion fixes.** Corrected the Homicides and Shootings date ranges in the dataset catalog (`2004-present`, not `2014`); rewrote `morie_fetch_tps()` ArcGIS paging to follow the server's `exceededTransferLimit` flag so large layers are no longer silently truncated to the first page; and made daily-resolution Hawkes fits build the occurrence date from the local-time `OCC_YEAR`/`OCC_MONTH`/`OCC_DAY` fields rather than the UTC-converted `OCC_DATE`. No public-API change.
 
 ## What's new in v0.9.4
 
@@ -223,12 +227,12 @@ and the **empirical applications paper**.
 ```
 # Software paper — R (also the R package source on Zenodo)
 Ruhela, V. S. (2026). morie: Multi-domain Open Research and Inferential
-Estimation in R (v0.9.4). Zenodo.
+Estimation in R (v0.9.5). Zenodo.
 https://doi.org/10.5281/zenodo.20111233
 
 # Software paper — Python (also the Python package source on Zenodo)
 Ruhela, V. S. (2026). morie: Multi-domain Open Research and Inferential
-Estimation in Python (v0.9.4). Zenodo.
+Estimation in Python (v0.9.5). Zenodo.
 https://doi.org/10.5281/zenodo.20096350
 
 # MRM framework paper (theoretical foundations)

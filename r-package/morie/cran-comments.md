@@ -1,6 +1,6 @@
 ## Submission
 
-This is morie 0.9.4.
+This is morie 0.9.5.
 
 morie is a multi-domain toolkit for observational inference and
 intervention analysis, hosting the MRM (Multilevel Reconciliation
@@ -10,6 +10,16 @@ data as its primary application.
 morie is not currently on CRAN. This submission brings the package to
 CRAN in line with the releases already published on PyPI (the Python
 companion), the `hadesllm` r-universe, and GHCR.
+
+## Changes in 0.9.5
+
+0.9.5 is a patch release over 0.9.4. It corrects the Toronto Police
+Service open-data ingestion layer: the dataset-catalog date ranges
+for the Homicides and Shootings series (now `2004-present`, matching
+the Public Safety Data Portal), the `morie_fetch_tps()` ArcGIS
+pagination (which could silently truncate large layers to the first
+page), and the occurrence-date time-zone handling for daily-resolution
+Hawkes fits. There is no public API change. See `NEWS.md` for details.
 
 ## Test environments
 
@@ -23,7 +33,7 @@ companion), the `hadesllm` r-universe, and GHCR.
 
 ## R CMD check results
 
-`R CMD check --as-cran` on the 0.9.4 source tarball (local macOS 26,
+`R CMD check --as-cran` on the 0.9.5 source tarball (local macOS 26,
 R 4.6.0):
 
 Status: 0 ERROR, 0 WARNING, 1 NOTE.

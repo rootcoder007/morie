@@ -38,7 +38,7 @@ from typing import Any
 import httpx
 import pandas as pd
 
-DEFAULT_USER_AGENT = "morie/0.8.0 (+https://github.com/hadesllm/morie)"
+DEFAULT_USER_AGENT = "morie/0.9.4 (+https://github.com/hadesllm/morie)"
 DEFAULT_TIMEOUT_SECONDS = 60.0
 
 # Canonical TPS open-data layer endpoints.  These IDs are stable
@@ -106,6 +106,11 @@ def _arcgis_query(
         "where": where,
         "outFields": out_fields,
         "returnGeometry": str(return_geometry).lower(),
+        # The TPS layers are stored in WGS 1984 Web Mercator (auxiliary
+        # sphere).  Without an explicit outSR, an f=json query returns
+        # geometry in that projection (metres), not degrees -- so force
+        # EPSG:4326 to get geom_x/geom_y as longitude/latitude.
+        "outSR": 4326,
         "resultOffset": result_offset,
         "resultRecordCount": result_record_count,
         "f": "json",

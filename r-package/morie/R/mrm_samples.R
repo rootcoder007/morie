@@ -135,14 +135,20 @@ morie_fetch_tps <- function(
   base <- urls[[category]]
   offset <- 0L
   rows <- list()
-  while (TRUE) {
+  repeat {
     url <- sprintf(
       "%s/query?where=%s&outFields=*&returnGeometry=true&f=geojson&resultRecordCount=%d&resultOffset=%d",
       base, utils::URLencode(where, reserved = TRUE), max_per_page, offset
     )
     page <- tryCatch(jsonlite::fromJSON(url, simplifyVector = FALSE),
                      error = function(e) NULL)
-    if (is.null(page)) break
+    if (is.null(page)) {
+      # Abort loudly rather than silently caching a partial download:
+      # a transient failure mid-paging must not be written to disk and
+      # then returned as if it were the complete layer.
+      stop("morie_fetch_tps(): TPS ArcGIS request failed at offset ",
+           offset, " for category '", category, "'.")
+    }
     feats <- page$features
     if (length(feats) == 0L) break
     for (f in feats) {
@@ -153,8 +159,12 @@ morie_fetch_tps <- function(
       }
       rows[[length(rows) + 1L]] <- r
     }
-    if (length(feats) < max_per_page) break
     offset <- offset + length(feats)
+    # Page on the server's exceededTransferLimit flag, NOT on a short
+    # page: a layer whose server-side maxRecordCount is below
+    # max_per_page returns short pages on every call, so breaking on a
+    # short page would silently truncate the download to page one.
+    if (!isTRUE(page$exceededTransferLimit)) break
   }
   if (length(rows) == 0L) stop("No features returned for ", category)
   df <- do.call(rbind, lapply(rows, function(r) as.data.frame(r, stringsAsFactors = FALSE)))
