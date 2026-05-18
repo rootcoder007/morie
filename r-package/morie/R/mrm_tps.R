@@ -15,6 +15,10 @@
 #'   precomputed per-category Hawkes (Markovian + Weibull/sin)
 #'   fits from the `paper_hawkes_refit.json` manifest if available.
 #'
+#' @return Each \code{mrm_tps_*()} callable returns a named \code{list} with
+#'   the computed statistic (Pareto exponent, Moran's I, or survival curve)
+#'   and a plain-language \code{interpretation}; \code{mrm_tps_load_hawkes_refit()}
+#'   returns the parsed Hawkes-refit manifest as a \code{list}.
 #' @name mrm_tps
 NULL
 

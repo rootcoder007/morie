@@ -14,6 +14,9 @@
 #' Cole, S. R., & Hernan, M. A. (2008). Constructing inverse probability
 #'   weights for marginal structural models. AJE, 168(6), 656-664.
 #'
+#' @return Each diagnostic callable returns a named \code{list} of balance
+#'   and overlap statistics (or the estimated effect) together with a
+#'   plain-language \code{interpretation}.
 #' @name mrm_diagnostics
 NULL
 

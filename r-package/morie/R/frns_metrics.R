@@ -27,6 +27,9 @@
 #' (Lacherade, Szabo, Krikava & Aeby, 2021); and Barman & Barman,
 #' arXiv:2603.18987 (the Bias Amplification Score).
 #'
+#' @return Each callable in this module returns a named \code{list} with the
+#'   metric \code{value}, a per-group breakdown, advisory \code{warnings}, and
+#'   a plain-language \code{interpretation}.
 #' @name frns_metrics
 NULL
 

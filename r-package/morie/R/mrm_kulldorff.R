@@ -15,6 +15,10 @@
 #' Kulldorff, M. (1997). A spatial scan statistic. Communications in
 #' Statistics: Theory and Methods, 26(6), 1481--1496.
 #'
+#' @return \code{mrm_tps_kulldorff_scan()} returns a named \code{list} with
+#'   the most likely cluster, its Poisson log-likelihood-ratio statistic,
+#'   the Monte-Carlo permutation p-value, and a plain-language
+#'   \code{interpretation}.
 #' @name mrm_kulldorff
 NULL
 

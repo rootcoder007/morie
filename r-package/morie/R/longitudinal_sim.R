@@ -17,6 +17,10 @@
 #' from Hamilton (1994) and Diggle, Liang, Zeger (1994), implemented
 #' here independently.
 #'
+#' @return The simulation callables return tidy longitudinal-panel
+#'   \code{data.frame}s; \code{morie_sync_rng()} returns an environment
+#'   exposing synchronised \code{rnorm}, \code{runif}, and \code{sample}
+#'   methods.
 #' @name longitudinal_sim
 NULL
 

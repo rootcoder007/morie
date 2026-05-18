@@ -14,6 +14,9 @@
 #'   optimum conditions. JRSS-B, 13(1), 1-45.
 #' Cohen, J. (1988). Statistical Power Analysis for the Behavioral Sciences.
 #'
+#' @return Each design-of-experiments callable returns a named \code{list}
+#'   holding the constructed design or the analysis result and a
+#'   plain-language \code{interpretation}.
 #' @name mrm_doe
 NULL
 

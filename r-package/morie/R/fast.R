@@ -83,11 +83,10 @@ morie_cor_pearson <- function(x, y) {
 #' Returns TRUE when the Rcpp .so was built and loaded; FALSE when
 #' falling back to base-R implementations.
 #'
+#' @return A logical scalar: \code{TRUE} when the compiled Rcpp backend was
+#'   built and loaded, \code{FALSE} when falling back to base-R kernels.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_fast_available()
 #' @export
 morie_fast_available <- function() {
   .cpp_available()

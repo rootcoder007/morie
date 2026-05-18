@@ -11,6 +11,8 @@
 #' Casella, G. & Berger, R. L. (2002). Statistical Inference. Duxbury.
 #' Lehmann, E. L. & Romano, J. P. (2005). Testing Statistical Hypotheses.
 #'
+#' @return Each callable returns a named \code{list} with the computed
+#'   statistic(s) and a plain-language \code{interpretation}.
 #' @name mrm_mathstats
 NULL
 

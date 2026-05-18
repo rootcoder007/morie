@@ -13,6 +13,8 @@
 #' Box, G. E. P., Hunter, J. S., & Hunter, W. G. (2005).
 #'   Statistics for Experimenters. Wiley.
 #'
+#' @return Each design callable returns a named \code{list} of estimates,
+#'   test statistics, p-values, and a plain-language \code{interpretation}.
 #' @name mrm_design
 NULL
 

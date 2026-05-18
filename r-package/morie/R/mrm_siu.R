@@ -17,6 +17,9 @@
 #'   categories (`charges_laid`, `no_charges`, etc.) by service and
 #'   by year, reporting both raw counts and shares.
 #'
+#' @return Each \code{mrm_siu_*()} callable returns a named \code{list} with
+#'   the survival, per-service rate, or outcome-classification result and a
+#'   plain-language \code{interpretation}.
 #' @name mrm_siu
 NULL
 

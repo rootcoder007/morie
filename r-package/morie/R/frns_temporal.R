@@ -12,6 +12,9 @@
 #' from one deployment cycle to the next and must be recomputed per
 #' period and per city.
 #'
+#' @return The module's audit callable returns a named \code{list} with the
+#'   worst per-city Disparate Impact Ratio range, per-city and per-cell
+#'   breakdowns, and a plain-language \code{interpretation}.
 #' @name frns_temporal
 NULL
 

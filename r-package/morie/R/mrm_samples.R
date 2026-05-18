@@ -17,6 +17,10 @@
 #'   demand (per-user, since redistribution of the scraped corpus is
 #'   not clearly licensed).
 #'
+#' @return The on-demand fetchers (\code{morie_fetch_tps()},
+#'   \code{morie_fetch_siu()}) return the file path to the downloaded or
+#'   cached CSV; \code{morie_load_dataset()} returns the loaded
+#'   \code{data.frame}.
 #' @name mrm_samples
 NULL
 

@@ -13,6 +13,9 @@
 #' Anselin, L. (1995). Local indicators of spatial association --
 #' LISA. \emph{Geographical Analysis}, 27(2), 93--115.
 #'
+#' @return The LISA callables return named \code{list}s with per-polygon
+#'   local Moran's I, permutation p-values, cluster classifications, and
+#'   (for the per-year wrapper) the time series of global Moran's I.
 #' @name mrm_lisa
 NULL
 

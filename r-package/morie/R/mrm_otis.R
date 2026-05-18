@@ -25,6 +25,9 @@
 #' is randomly reassigned every fiscal year. Cross-year tracking is
 #' therefore invalid; all analyses below operate within fiscal year.
 #'
+#' @return Each \code{mrm_otis_*()} callable returns a named \code{list} with
+#'   the computed statistics (concentration indices, survival curves, or
+#'   association measures) and a plain-language \code{interpretation}.
 #' @name mrm_otis
 NULL
 
