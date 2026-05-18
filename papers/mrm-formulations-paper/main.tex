@@ -7,7 +7,7 @@
 \usepackage{lmodern}
 \usepackage{microtype}
 \usepackage{orcidlink}
-\newcommand{\R}{\mathbb{R}}
+\providecommand{\R}{\mathbb{R}}
 
 %% --- overflow tolerance ---
 \setlength{\emergencystretch}{4em}
@@ -53,11 +53,11 @@ most analyses either single-source and coverage-limited or
 multi-source and under-using available estimators.  MRM
 addresses this gap by coupling a ten-estimator per-individual
 causal ensemble (IPW, AIPW, IRM-DML, PSM, PLR, and
-AIPW-SuperLearner variants) with a $\chi^{2}$ family for
+PLR-SuperLearner variants) with a $\chi^{2}$ family for
 aggregate contingency tables, a Mandela Rules classifier
 operating at both federal and provincial level, and a Hawkes
 self-exciting process for spatio-temporal modelling.
-Implementation lives in the open-source MORIE toolkit
+Implementation lives in the open-source \pkg{morie} toolkit
 \citep{Ruhela2026MorieR, Ruhela2026MoriePy}.  Empirical
 contribution: a duration-only Mandela-prolonged proxy applied to
 the Ontario restrictive-confinement microdata rises from
@@ -77,10 +77,10 @@ Mandela Rules, MRM framework, sociolegal statistics, \proglang{R},
 carceral data, OTIS, Special Investigations Unit, Hawkes process,
 Mandela Rules, MRM framework, sociolegal statistics, R, Python}
 % --- morie version stamp -----------------------------------------------------
-% This paper documents \pkg{morie} v0.6.1 (released 2026-05-13).  Specific
+% This paper documents \pkg{morie} v0.9.5 (released 2026-05-18).  Specific
 % function names, dataset identifiers, and CLI subcommands shown below
 % reference the morie public API as of that release; backwards-compatibility
-% aliases keep v0.x code references resolving across the v0.4.x series.
+% aliases keep v0.x code references resolving across the v0.x series.
 % -----------------------------------------------------------------------------
 
 
@@ -142,7 +142,7 @@ combine sources must reconcile incompatible schemas before any
 estimator can be applied. The result is a literature in which
 methodologically careful single-source work coexists with
 multi-source descriptive work that under-uses available estimators
-\citep{Doob2023, ZorroMedina2023JMP, SprottDoob2023}.
+\citep{Doob2023, ZorroMedina2023JMP, SprottDoob2021}.
 
 This paper introduces the MRM framework,
 a multi-source statistical foundation that brings these data streams
@@ -157,7 +157,7 @@ inequality-effects-of-criminal-law framing --- is established in
 lineage and extends it to a Canadian carceral setting.
 
 The framework is implemented as a curated set of MRM modules in
-MORIE\footnote{\textit{morie} is pronounced ``MOY-rye'',
+\pkg{morie}\footnote{\textit{morie} is pronounced ``MOY-rye'',
 like the Greek \textit{Moirai}, the Fates.}
 \citep{Ruhela2026MorieR, Ruhela2026MoriePy}, a dual-language
 (\proglang{R} and \proglang{Python}) toolkit.  The \proglang{R}
@@ -180,7 +180,7 @@ Mandela Rules classifier (Section~\ref{sec:mandela}) that operates
 at both the federal and provincial level. The aggregate family is
 exercised empirically to reproduce every published $\chi^{2}$
 statistic from the Sprott--Doob--Iftene record to within $0.01$
-\citep{SprottDoob2023, SprottDoobIftene2021}. Third, the framework is
+\citep{SprottDoob2021, SprottDoobIftene2021}. Third, the framework is
 extended into the spatio-temporal domain through a self-exciting
 Hawkes process specification (Section~\ref{sec:hawkes}) applied to
 Toronto Police Service open data.
@@ -190,7 +190,7 @@ Section~\ref{sec:mandela}: the provincial Ontario Mandela
 ``torture''-classified proportion rises from $12.5\%$ in fiscal
 2023 to $20.6\%$ in fiscal 2025, exceeding by $10.7$ percentage
 points at peak the federal $\SIU$ rate of $9.9\%$ that
-\citet{SprottDoob2023} report for fiscal 2019--2020. Under the
+\citet{SprottDoob2021} report for fiscal 2019--2020. Under the
 broader restrictive-confinement classification advanced in
 Section~\ref{sec:mandela}, the 2025 rate reaches $40.9\%$.
 
@@ -205,7 +205,7 @@ specifies the Hawkes self-exciting process for TPS data, after
 which Section~\ref{sec:mechanism} maps the
 deterrence / routine-activities / certainty mechanism
 categorisation onto the now-defined estimator family.
-Section~\ref{sec:morie} summarises the implementation in MORIE,
+Section~\ref{sec:morie} summarises the implementation in \pkg{morie},
 and Section~\ref{sec:worked-example} walks through a complete
 reproducible analysis end-to-end.  Section~\ref{sec:conclusion}
 concludes.
@@ -220,7 +220,7 @@ Let $i \in \{1, \dots, n\}$ index individuals (in OTIS) or events
 points (fiscal quarters for OTIS, calendar days for TPS, fiscal
 years for the aggregate sources). Each unit $i$ at time $t$
 carries covariates $X_{it} \in \Rset^{p}$, a binary treatment
-indicator $D_{it} \in \{0,1\}$, and an outcome $Y_{it} \in \R$.
+indicator $D_{it} \in \{0,1\}$, and an outcome $Y_{it} \in \Rset$.
 The treatment indicator denotes the presence of the analytical
 treatment under study, such as a Mandela-classified placement, a
 $\SIU$ Section~34 trigger, or a TPS major-crime category.
@@ -249,6 +249,7 @@ summarised in Table~\ref{tab:sources}.
 \caption{The five Canadian carceral, police, and oversight data
 sources integrated by MRM.}
 \label{tab:sources}
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{lllll}
 \toprule
 Source & Producer & Unit & Period & Access \\
@@ -259,7 +260,8 @@ Ontario $\SIU$   & Ontario SIU     & investigation report   & 2009--present & op
 $\TPS$           & Toronto Police   & event--day            & 2014--present & open \\
 $\CCRSO$         & Public Safety CA & annual aggregate      & 2007--present & open \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 \OTIS{} A01-RCDD is the Ontario Ministry of the Solicitor General (formerly the
@@ -272,7 +274,7 @@ schema is published with each annual release.
 $\SIU$~$\IAP$ comprises the four quarterly reports of the federal
 Structured Intervention Unit Implementation Advisory Panel
 (2019--2022) and the parallel Sprott--Doob--Iftene academic
-replication corpus \citep{SprottDoob2023, SprottDoobIftene2021}, which
+replication corpus \citep{SprottDoob2021, SprottDoobIftene2021}, which
 includes contingency tables that report the federal Mandela rate
 of $9.9\%$ used as the reference point in
 Section~\ref{sec:mandela}.
@@ -562,7 +564,7 @@ Section~\ref{sec:mandela-comparison}).
 \subsection{Federal operationalisation}
 
 At the federal level, the Sprott--Doob--Iftene record
-\citep{SprottDoob2023} classifies a Section~34 Structured
+\citep{SprottDoob2021} classifies a Section~34 Structured
 Intervention Unit placement as Mandela-torture when the recorded
 placement duration exceeds fifteen days and one or more of the
 ``meaningful contact'' criteria is unmet. Their published rate for
@@ -587,7 +589,7 @@ spectrum, not a single number}
 \label{sec:mandela-comparison}
 
 Direct comparison of the federal $9.9\%$
-\citep{SprottDoob2023} with a single provincial rate is
+\citep{SprottDoob2021} with a single provincial rate is
 methodologically delicate for two reasons: (i) the federal rate
 is computed under both Rule 43 (duration) and Rule 44 (meaningful
 contact), whereas $\OTIS{}$ public release does not expose
@@ -626,10 +628,11 @@ classification using OTIS alert fields as a contact proxy: $B$
 includes only placements with any alert (lower bound on a
 strict Rule 43 $\cap$ Rule 44), $C$ includes only placements
 without any alert (upper bound on the same).  The federal cell
-shows the Sprott--Doob--Iftene 2021/2023 published rates; an
+shows the Sprott--Doob--Iftene 2021 published rates; an
 exact federal duration-only sub-rate is not separately
 published in that series, so we bound it below by the published
-$10\%$ torture rate (Rule 43 $\cap$ Rule 44) and report the
+$9.9\%$ Rule 43 $\cap$ Rule 44 torture rate (a strict subset of
+Rule 43, hence a valid lower bound on the Rule 43-only rate) and report the
 $28\%$ contact-only rate (Rule 44 alone) as the analogue of our
 broader-RC column.}
 \label{tab:mandela}
@@ -639,7 +642,7 @@ broader-RC column.}
  & Rule 43 only & Rule 43 $\cap$ & Rule 43 $\cap$ & RC & \\
 Jurisdiction (period) & ($A$) & alerted ($B$) & no-alert ($C$) & broader & Source \\
 \midrule
-Federal $\SIU$ 2019--2020 & $\geq 10\%$ & --- & --- & $\approx 28\%$ & $9.9\%$ \citep{SprottDoob2023} \\
+Federal $\SIU$ 2019--2020 & $\geq 9.9\%$ & --- & --- & $\approx 28\%$ & \citep{SprottDoob2021} \\
 Provincial Ontario 2023 & $12.5\%$ & $0.072\%$ & $0.003\%$ & $31.5\%$ & MRM \\
 Provincial Ontario 2024 & $16.5\%$ & $0.463\%$ & $0.194\%$ & $36.0\%$ & MRM \\
 Provincial Ontario 2025 & $20.6\%$ & $0.905\%$ & $0.387\%$ & $40.9\%$ & MRM \\
@@ -659,14 +662,15 @@ duration-long-with-alert placements) and above by $A$ (which
 imposes only the duration condition).  Pending a c11-level
 linkage to b01 alert flags (queued for the next release of
 \code{mrm\_classify\_mandela()}), we report this spectrum rather
-than a single number.  On the federal side, the Sprott--Doob 2023
+than a single number.  On the federal side, the Sprott--Doob 2021
 single headline of $9.9\%$ can be bracketed against the underlying
 Sprott--Doob--Iftene 2021 cohort ($N=1{,}979$): the federal
-Rule 43-only sub-rate is bounded below by $10\%$ (since the
-published $9.9\%$ Rule 43 $\cap$ Rule 44 torture rate is a strict
-subset of Rule 43), and the federal Rule 44-only sub-rate is
+Rule 43-only sub-rate is bounded below by $9.9\%$ (the published
+$9.9\%$ Rule 43 $\cap$ Rule 44 torture rate counts a strict subset
+of Rule 43 placements, so the Rule 43-only rate can only be
+larger), and the federal Rule 44-only sub-rate is
 $28\%$.  The provincial 2025 Rule 43 cell ($20.6\%$) sits above
-the federal Rule 43 lower bound by approximately $+10.6$
+the federal Rule 43 lower bound by approximately $+10.7$
 percentage points.  The substantive implication for the
 \emph{Jahn}-settlement oversight framework is that the published
 duration-only metrics under-state the structural problem on the
@@ -762,8 +766,8 @@ likelihood, the Ogata thinning algorithm for simulation, and a
 branching-ratio diagnostic for stationarity \citep{Ruhela2026Hawkes}.
 Since \pkg{morie}~v0.9.1 the likelihood evaluations run on a shared
 compiled C++ core used identically by the \proglang{Python} and
-\proglang{R} sides, so the two language implementations cannot
-diverge; the non-Markovian kernels are evaluated either by exact
+\proglang{R} sides, so the two language implementations evaluate an
+identical likelihood; the non-Markovian kernels are evaluated either by exact
 sub-quadratic truncation of the excitation sum or by a
 sum-of-exponentials engine, rather than the dense $O(n^2)$ sum.
 Goodness-of-fit is assessed through the time-rescaling theorem of
@@ -813,11 +817,11 @@ estimand: by matching on the covariates that drive selection
 into treatment, the matched comparison estimates the effect under
 a common conditional probability of treatment given covariates.
 
-\section{Implementation in MORIE}
+\section{Implementation in morie}
 \label{sec:morie}
 
 The framework is implemented as a curated set of MRM modules in
-MORIE, a dual-language (\proglang{R} and \proglang{Python})
+\pkg{morie}, a dual-language (\proglang{R} and \proglang{Python})
 toolkit.  The \proglang{R} and \proglang{Python} surfaces are both released
 under \code{AGPL-3.0-or-later}.  The
 companion software papers
@@ -850,12 +854,12 @@ are shown with the JSS \code{R>} and \code{>>>} prompts and
 representative output blocks.  Both the \proglang{R} and
 \proglang{Python} surfaces are shown side by side; users may
 adopt whichever they prefer.  The example uses functions
-exported by MORIE v0.6.1
+exported by morie v0.9.5
 \citep{Ruhela2026MorieR, Ruhela2026MoriePy}.
 
 \subsection{Loading the data}
 
-In \proglang{R}, OTIS A01-RCDD is reached either through MORIE's
+In \proglang{R}, OTIS A01-RCDD is reached either through \pkg{morie}'s
 dataset catalog (which resolves to the maintained CKAN endpoint)
 or from a local CSV.  Either path returns the placement-record
 data frame whose columns
@@ -1046,7 +1050,7 @@ under the MRM's standard $\chi^{2}$ variant
 (Eq.~\ref{eq:chi-sq} formulation in
 Section~\ref{sec:aggregate}).  For example, to replicate the
 SIU placement $\times$ Indigenous-status cross-tabulation
-reported in \citet{SprottDoob2023}, one loads the published
+reported in \citet{SprottDoob2021}, one loads the published
 table from the package's data directory and runs:
 
 \begin{CodeChunk}
@@ -1077,7 +1081,7 @@ under \code{tests/testthat/test-sprott-doob.R}.
 
 The Hawkes specifications of Section~\ref{sec:hawkes} are fit
 offline against the maintained Hawkes-refit manifest distributed
-with MORIE.  Fitted-parameter retrieval is exposed as
+with \pkg{morie}.  Fitted-parameter retrieval is exposed as
 \code{mrm\_tps\_load\_hawkes\_refit()}, which returns the per-
 neighbourhood power-law and exponential-kernel fits with their
 likelihoods, AIC/BIC scores, and time-rescaling-test statistics:
@@ -1085,7 +1089,7 @@ likelihoods, AIC/BIC scores, and time-rescaling-test statistics:
 \begin{CodeChunk}
 \begin{CodeInput}
 R> refit <- mrm_tps_load_hawkes_refit(
-+    system.file("extdata", "tps_hawkes_refit_v0.6.1.json",
++    system.file("extdata", "tps_hawkes_refit.json",
 +                 package = "morie")
 +  )
 R> subset(refit$summary,
@@ -1142,7 +1146,7 @@ are revised in future releases.
 \section{Group-disparity auditing}
 \label{sec:fairness}
 
-MORIE's accountability mission extends naturally from estimating
+\pkg{morie}'s accountability mission extends naturally from estimating
 intervention effects to \emph{auditing} the algorithmic systems that
 allocate carceral and police attention.  Version~0.8.0 adds a
 disparity-audit subsystem that measures whether a risk-assessment,
@@ -1154,7 +1158,7 @@ does not build or deploy such systems; it quantifies their bias.
 For a binary system decision $\hat{y}\in\{0,1\}$ and a protected
 attribute $g$, write $r_g = P(\hat{y}=1\mid g)$ for the
 favourable-outcome rate of group $g$ and let $p$ denote the privileged
-reference group.  MORIE computes the Disparate Impact Ratio
+reference group.  \pkg{morie} computes the Disparate Impact Ratio
 $\text{DIR} = r_g / r_p$ (the EEOC four-fifths rule:\ $\text{DIR}<0.8$
 flags adverse impact) and the Demographic Parity Gap
 $\Delta_{\text{parity}} = r_g - r_p$.  When ground truth is available,
@@ -1169,7 +1173,7 @@ directional disparity coincides with high inequality.
 \subsection{Predictive-policing calibration audit}
 
 Generalising the Strategic Subjects List analysis of
-\citet{Lacherade2021PredPolChicago}, MORIE ranks geographic areas by
+\citet{Lacherade2021PredPolChicago}, \pkg{morie} ranks geographic areas by
 the risk an algorithm \emph{predicts} and by their \emph{realised}
 outcome rate, then tests whether the rank disagreement tracks the
 areas' demographic composition.  An area ranked far more dangerous
@@ -1185,7 +1189,7 @@ re-audited each period --- and cross-city divergence.
 
 \subsection{Explainability}
 
-For model-level audits, MORIE reimplements the explainer suite of the
+For model-level audits, \pkg{morie} reimplements the explainer suite of the
 COMPAS case study in \citet{Biecek2021XAIStories}: permutation
 importance, partial dependence, accumulated local effects, ceteris
 paribus, and Shapley attributions.  These surface \emph{which}
@@ -1231,7 +1235,7 @@ Professor Angela Zorro Medina, Centre for Criminology and
 Sociolegal Studies, University of Toronto, for the methodological
 lineage adopted by the framework's identification strategy. The
 author thanks Jeroen Ooms for maintaining the r-universe
-infrastructure on which the MORIE \proglang{R} binaries are built,
+infrastructure on which the \pkg{morie} \proglang{R} binaries are built,
 and the DoubleML team (Philipp Bach, Malte~S.\ Kurz, Victor
 Chernozhukov, Martin Spindler, Sven Klaassen) for the BSD-3-Clause
 double-machine-learning library on which the framework's IRM and

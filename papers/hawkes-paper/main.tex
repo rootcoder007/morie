@@ -35,10 +35,10 @@
 \newtheorem{definition}[theorem]{Definition}
 
 %% --- title / author block (jss conventions) ---
-\title{Criminological Hawkes Process via MORIE: Markovian and
+\title{Criminological Hawkes Process via morie: Markovian and
        Non-Markovian Self-Exciting Point Processes for Toronto Crime}
-\Plaintitle{Criminological Hawkes Processes via MORIE}
-\Shorttitle{Criminological Hawkes Process via MORIE}
+\Plaintitle{Criminological Hawkes Processes via morie}
+\Shorttitle{Criminological Hawkes Process via morie}
 
 \author{Vansh Singh Ruhela~\orcidlink{0009-0004-1750-3592}\\University of Toronto}
 \Plainauthor{Vansh Singh Ruhela}
@@ -55,7 +55,7 @@ ORCID: \orcidlink{0009-0004-1750-3592}
 \Abstract{
 This is a likelihood-based inference study for Hawkes self-exciting
 point processes applied to incident-level open data from the Toronto
-Police Service.  The classical Mohler--Bertozzi--Brantingham model
+Police Service.  The classical Mohler--Short--Brantingham model
 \citep{Mohler2011,mohler2014marked}
 assumes a constant baseline $\nu$ and an exponential excitation
 kernel $g(t)=\beta e^{-\beta t}$; under those assumptions the
@@ -69,11 +69,11 @@ power-law, all of which make the resulting intensity process
 information for the general model, summarise the
 asymptotic-ergodicity argument that secures strong consistency and
 asymptotic normality of the MLE, and implement all of it as the new
-\code{morie.tps\_hawkes\_advanced} module of the MORIE package
+\code{morie.tps\_hawkes\_advanced} module of the \pkg{morie} package
 \citep{Ruhela2026MorieR}, where the fitted comparators are also
 exposed as MRM modules within the MRM framework
 \citep{Ruhela2026MRM}. Eight (kernel $\times$ baseline) combinations
-are fit to each TPS incident category and ranked by AIC and
+are fit to the TPS Assault incident series and ranked by AIC and
 time-rescaling goodness-of-fit. For Toronto Assault data, the
 non-Markovian Weibull-kernel $\times$ sinusoidal-baseline model is
 preferred over the Markovian classical Hawkes by $\Delta\mathrm{AIC} > 0$
@@ -87,10 +87,10 @@ maximum likelihood estimation, time-rescaling theorem, \proglang{R},
 non-Markovian kernel, criminology, Toronto Police Service,
 maximum likelihood estimation, time-rescaling theorem, R, Python}
 % --- morie version stamp -----------------------------------------------------
-% This paper documents \pkg{morie} v0.6.1 (released 2026-05-13).  Specific
+% This paper documents \pkg{morie} v0.9.5 (released 2026-05-18).  Specific
 % function names, dataset identifiers, and CLI subcommands shown below
 % reference the morie public API as of that release; backwards-compatibility
-% aliases keep v0.x code references resolving across the v0.4.x series.
+% aliases keep v0.x code references resolving across the v0.x series.
 % -----------------------------------------------------------------------------
 
 
@@ -143,8 +143,8 @@ machinery to Toronto Police Service open data.
 \section{Setup and notation}\label{sec:setup}
 
 Let $0 \le t_1 < t_2 < \cdots < t_n \le T$ be the observed event
-times of a simple point process $N$ on $[0,T]$ with $\mathcal{F}_t =
-\sigma\{N_s : 0 \le s \le t\}$-conditional intensity
+times of a simple point process $N$ on $[0,T]$, with $\mathcal{F}_t =
+\sigma\{N_s : 0 \le s \le t\}$ the natural filtration.
 Decompose the kernel as $g(u) = \eta\,\tilde g(u; \psi)$ with
 $\eta \in (0,1)$ the branching ratio and $\tilde g(\cdot;\psi)$
 a parametric density on $[0,\infty)$.  Then
@@ -385,8 +385,8 @@ events after $\mathrm{U}(0,1)$-day jitter and clipping to
 $[0,\,T)$), fit at full sample under the compiled C++ likelihood
 core that this release ships ($O(n)$ recursive evaluation for the
 exponential kernel; sub-quadratic truncated and sum-of-exponentials
-paths for the non-Markovian kernels).  Section~\ref{sec:application}.B retains the original
-$n=2{,}000$ sub-sample for backwards comparability with the prior sub-sampled analyses; readers seeking the canonical post-v0.2.1 Hawkes
+paths for the non-Markovian kernels).  Section~\ref{sec:application-8way} retains the original
+$n=2{,}000$ sub-sample for backwards comparability with the prior sub-sampled analyses; readers seeking the canonical post-v0.9.1 Hawkes
 characterisation of TPS Assault should rely on
 Table~\ref{tab:tps-fit-2019}.
 
@@ -491,7 +491,7 @@ Markovian classical Hawkes by $\Delta\mathrm{AIC} = 141.1$, a very
 substantial margin even after the four extra parameters of the
 sinusoidal baseline.  By contrast, switching only the kernel
 (holding the baseline constant) gains essentially nothing
-($\Delta\mathrm{AIC} \le 1.0$).  The substantive conclusion is
+($\Delta\mathrm{AIC} \le 2$).  The substantive conclusion is
 that for Toronto Assault data the dominant departure from the
 classical model is the time-varying baseline, not the kernel
 shape --- but the KCD framework remains the inferential engine that
@@ -504,8 +504,10 @@ longer memoryless ($\hat\alpha_{\text{wb}}>1$ shifts the kernel
 mode away from $u=0$) and the baseline is no longer constant
 ($\hat\alpha_2,\hat\alpha_3$ encode an annual-cycle modulation of
 $\nu(t)$).  All four sinusoidal-baseline fits dominate the
-Markovian classical, and the within-baseline gap between kernels
-is small ($\le 50$ AIC), so for these data the time-varying
+Markovian classical, and although the kernels do separate under
+the sinusoidal baseline (a within-baseline spread of about $50$
+AIC), that spread is still far below the $\approx 141$-AIC gain
+from the baseline switch itself, so for these data the time-varying
 baseline is the dominant non-Markovian feature.
 
 \paragraph{Branching ratio and explosivity.}  Across all eight
@@ -520,7 +522,7 @@ component is the formal way to score that.
 \subsection[Reproducibility code]{Reproducibility: code for Tables~\ref{tab:tps-fit} and~\ref{tab:tps-fit-2019}}
 \label{sec:application-reproducibility}
 
-Both tables are reproducible end-to-end from a fresh install of MORIE
+Both tables are reproducible end-to-end from a fresh install of \pkg{morie}
 \citep{Ruhela2026MoriePy} against the public TPS Assault feed.
 
 \paragraph{Table~\ref{tab:tps-fit}: 8-way grid on $n=2{,}000$ sub-sample.}
@@ -634,7 +636,7 @@ applying coordinate-wise.
 We have given a self-contained derivation of the likelihood, score,
 and information for a non-stationary, non-Markovian Hawkes process,
 summarised the asymptotic guarantees of Kwan-Chen-Dunsmuir, and
-implemented the full machinery in MORIE.  Markovian and
+implemented the full machinery in \pkg{morie}.  Markovian and
 non-Markovian fits are now comparable on the same footing, both
 on synthetic stress-tests and on Toronto Police Service incident
 feeds.  The classical Mohler model is no longer the only Hawkes
@@ -642,7 +644,7 @@ model in the toolbox.
 
 \section*{Acknowledgements}
 The Toronto Police Service open-data programme
-(\texttt{data.torontopolice.on.ca}) provides the incident-level
+(\url{https://data.torontopolice.on.ca}) provides the incident-level
 feeds analysed here.
 
 \paragraph*{AI assistance.}
