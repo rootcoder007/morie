@@ -10,7 +10,11 @@
   sigma2 <- as.numeric(sum(e ^ 2)) / n
   A <- I - rho * W
   det_sign <- determinant(A, logarithm = TRUE)
-  if (det_sign$sign <= 0 || sigma2 <= 0) return(1e12)
+  # !is.finite(modulus) catches a singular A (det == 0), for which
+  # determinant() still reports sign = +1; without it the -logdetA term
+  # below would be +Inf rather than the intended penalty.
+  if (det_sign$sign <= 0 || sigma2 <= 0 || !is.finite(det_sign$modulus))
+    return(1e12)
   logdetA <- as.numeric(det_sign$modulus)
   0.5 * n * log(2 * pi * sigma2) - logdetA + 0.5 * n
 }

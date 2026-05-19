@@ -14,7 +14,9 @@
   sigma2 <- as.numeric(sum(e ^ 2)) / n
   if (sigma2 <= 0) return(1e12)
   det_sign <- determinant(A, logarithm = TRUE)
-  if (det_sign$sign <= 0) return(1e12)
+  # !is.finite(modulus) catches a singular A (det == 0), for which
+  # determinant() still reports sign = +1.
+  if (det_sign$sign <= 0 || !is.finite(det_sign$modulus)) return(1e12)
   logdetA <- as.numeric(det_sign$modulus)
   0.5 * n * log(2 * pi * sigma2) - logdetA + 0.5 * n
 }

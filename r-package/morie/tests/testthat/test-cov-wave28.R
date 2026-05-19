@@ -26,11 +26,14 @@ test_that("MIDAS SSE objective: theta guard + non-finite guard + valid", {
   expect_true(is.finite(morie:::.midas_sse(c(0, 1, 1.5, 2), X, Y, 4L)))
 })
 
-test_that("SAR-lag objective: negative-determinant guard + valid path", {
+test_that("SAR-lag objective: negative-det + singular guards + valid path", {
   e0 <- rnorm(4); e1 <- rnorm(4); I4 <- diag(4)
   # W = diag(2,0,0,0), rho = 1  ->  A = diag(-1,1,1,1), det = -1 (sign -1)
   expect_equal(
     morie:::.sarla_negll(1, e0, e1, 4L, I4, diag(c(2, 0, 0, 0))), 1e12)
+  # W = I, rho = 1  ->  A = 0, singular: determinant() reports sign +1 but
+  # modulus -Inf -- the !is.finite(modulus) guard must catch it.
+  expect_equal(morie:::.sarla_negll(1, e0, e1, 4L, I4, I4), 1e12)
   expect_true(is.finite(
     morie:::.sarla_negll(0.2, e0, e1, 4L, I4, diag(c(0.5, 0.5, 0.5, 0.5)))))
 })
@@ -74,6 +77,10 @@ test_that("DCC objective: parameter guard + indefinite-correlation guard", {
   expect_equal(
     morie:::.dccmd_negll(c(0.02, 0.95), matrix(c(1, 2, 2, 1), 2, 2), 1L, Z2),
     1e10)
+  # Q_bar = all-ones is rank-1 -> running correlation is singular (det 0);
+  # the !is.finite(modulus) guard must catch it before solve(R) errors.
+  expect_equal(
+    morie:::.dccmd_negll(c(0.02, 0.95), matrix(1, 2, 2), 1L, Z2), 1e10)
 })
 
 test_that("Horowitz objectives: zero-norm guard + valid path", {

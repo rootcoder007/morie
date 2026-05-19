@@ -1,4 +1,20 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Internal: generalised-Pareto per-exceedance log-density. Lifted from
+# the gpfit() optimiser closure so the xi ~ 0 (exponential) and
+# out-of-support branches are directly unit-testable.
+.gpfit_log_gp <- function(par, y) {
+  sigma <- exp(par[1]); xi <- par[2]
+  if (abs(xi) < 1e-8) {
+    ll <- -log(sigma) - y / sigma
+  } else {
+    arg <- 1 + xi * y / sigma
+    if (any(arg <= 0)) return(rep(-1e10, length(y)))
+    ll <- -log(sigma) - (1 + 1 / xi) * log(arg)
+  }
+  ll
+}
+
 #' Generalised Pareto fit (POT) by ML (Pickands 1975)
 #'
 #' Fits F(x) = 1 - (1 + xi x/sigma)^(-1/xi) to threshold exceedances.
@@ -18,18 +34,7 @@ gpfit <- function(x, threshold = NULL) {
   if (n < 5L)
     return(list(estimate = NA_real_, n = n,
                 method = "GP (too few exceedances)"))
-  log_gp <- function(par, y) {
-    sigma <- exp(par[1]); xi <- par[2]
-    if (abs(xi) < 1e-8) {
-      ll <- -log(sigma) - y / sigma
-    } else {
-      arg <- 1 + xi * y / sigma
-      if (any(arg <= 0)) return(rep(-1e10, length(y)))
-      ll <- -log(sigma) - (1 + 1/xi) * log(arg)
-    }
-    ll
-  }
-  nll <- function(par) -sum(log_gp(par, excess))
+  nll <- function(par) -sum(.gpfit_log_gp(par, excess))
   fit <- stats::optim(c(log(stats::sd(excess)), 0.1), nll,
                        method = "BFGS", hessian = TRUE)
   sigma <- exp(fit$par[1]); xi <- fit$par[2]

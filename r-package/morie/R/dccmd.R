@@ -13,7 +13,10 @@
     d <- sqrt(pmax(diag(Q), 1e-12))
     R <- Q / outer(d, d)
     ld <- determinant(R, logarithm = TRUE)
-    if (ld$sign <= 0) return(1e10)
+    # determinant() reports sign = +1 for a singular matrix (det == 0),
+    # so a sign test alone misses it; modulus == -Inf catches singularity
+    # and prevents the solve(R) below from erroring on a non-invertible R.
+    if (ld$sign <= 0 || !is.finite(ld$modulus)) return(1e10)
     Rinv <- solve(R)
     zt <- Z[t, ]
     ll <- ll + 0.5 * (ld$modulus + sum(zt * (Rinv %*% zt)) - sum(zt^2))
