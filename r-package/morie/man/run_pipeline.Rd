@@ -29,3 +29,9 @@ Data frame of step statuses.
 \description{
 Run multiple workflow steps
 }
+\examples{
+\dontrun{
+  # Runs the workflow scripts end to end in a morie project tree:
+  run_pipeline(project_root = ".")
+}
+}

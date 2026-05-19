@@ -3,6 +3,8 @@
 #' Returns the default named map of workflow steps to project script paths.
 #'
 #' @return Named character vector.
+#' @examples
+#' default_workflow_map()
 #' @export
 default_workflow_map <- function() {
   c(
@@ -100,6 +102,11 @@ run_workflow_step <- function(
 #' @param stop_on_error If `TRUE`, stop at first failure.
 #' @param verbose If `TRUE`, streams command output.
 #' @return Data frame of step statuses.
+#' @examples
+#' \dontrun{
+#'   # Runs the workflow scripts end to end in a morie project tree:
+#'   run_pipeline(project_root = ".")
+#' }
 #' @export
 run_pipeline <- function(
   steps = NULL,

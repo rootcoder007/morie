@@ -289,6 +289,12 @@ compute_design_weights <- function(df, strata_col, population_sizes) {
 #' @param max_iter Maximum IPF iterations.
 #' @param tol Convergence tolerance.
 #' @return Numeric vector of calibrated weights.
+#' @examples
+#' \dontrun{
+#'   # Raking a sample to known population margins:
+#'   calibration_weights(df, aux_vars = c("region", "sex"),
+#'                       population_totals = totals)
+#' }
 #' @export
 calibration_weights <- function(df, aux_vars, population_totals,
                                  initial_weights = NULL,

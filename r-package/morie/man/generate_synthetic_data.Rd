@@ -35,3 +35,7 @@ and demos. The generator uses a canonical variable set and allows output
 column renaming through \code{name_map} so it can be adapted to multiple studies.
 Synthetic data should not be used for final inferential reporting.
 }
+\examples{
+df <- generate_synthetic_data(n = 200, seed = 1)
+nrow(df)
+}

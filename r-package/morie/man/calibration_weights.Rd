@@ -34,3 +34,10 @@ Numeric vector of calibrated weights.
 Adjusts initial design weights so that weighted marginal totals match
 known population totals for each auxiliary variable.
 }
+\examples{
+\dontrun{
+  # Raking a sample to known population margins:
+  calibration_weights(df, aux_vars = c("region", "sex"),
+                      population_totals = totals)
+}
+}

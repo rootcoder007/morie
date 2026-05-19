@@ -63,6 +63,8 @@ resolve_synthetic_name_map <- function(name_map, profile) {
 #' @param profile Name profile. `"generic"` is recommended for new projects.
 #'   `"morie_legacy"` reproduces previous EML legacy column names.
 #' @return Named character vector.
+#' @examples
+#' default_synthetic_name_map("generic")
 #' @export
 default_synthetic_name_map <- function(profile = c("generic", "morie_legacy")) {
   profile <- match.arg(profile)
@@ -122,6 +124,9 @@ default_synthetic_name_map <- function(profile = c("generic", "morie_legacy")) {
 #' @param name_map Optional named character vector mapping canonical keys to
 #'   output column names. Use [default_synthetic_name_map()] as a template.
 #' @return A data.frame with synthetic records.
+#' @examples
+#' df <- generate_synthetic_data(n = 200, seed = 1)
+#' nrow(df)
 #' @export
 generate_synthetic_data <- function(
   n = 5000L,
@@ -247,6 +252,9 @@ generate_synthetic_data <- function(
 #' @param name_map Optional custom variable name map.
 #' @param overwrite If `TRUE`, overwrite existing file.
 #' @return Normalized output path.
+#' @examples
+#' out <- write_synthetic_data(tempfile(fileext = ".csv"), n = 200, seed = 1)
+#' file.exists(out)
 #' @export
 write_synthetic_data <- function(
   path,

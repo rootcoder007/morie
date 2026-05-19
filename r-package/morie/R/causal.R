@@ -161,6 +161,10 @@ estimate_att <- function(data, treatment, outcome, covariates,
 #'
 #' @inheritParams estimate_ate
 #' @return Named list: `atc`, `se`, `ci_lower`, `ci_upper`, `n_control`.
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
+#' estimate_atc(df, "t", "y", "x")
 #' @export
 estimate_atc <- function(data, treatment, outcome, covariates,
                          propensity_col = NULL) {
@@ -199,6 +203,10 @@ estimate_atc <- function(data, treatment, outcome, covariates,
 #' @inheritParams estimate_ate
 #' @param outcome_model Family for the outcome model: `"linear"` or `"logistic"`.
 #' @return Named list: `ate`, `se`, `ci_lower`, `ci_upper`, `n`.
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
+#' estimate_aipw(df, "t", "y", "x")
 #' @export
 estimate_aipw <- function(data, treatment, outcome, covariates,
                           propensity_col = NULL,
@@ -364,6 +372,13 @@ estimate_cate <- function(data, treatment, outcome, covariates,
 #' @references
 #'   Imbens GW, Angrist JD (1994). Identification and estimation of local
 #'   average treatment effects. *Econometrica*, 62(2), 467-475.
+#' @examples
+#' set.seed(1)
+#' n <- 300L
+#' z <- rbinom(n, 1, 0.5)
+#' t <- rbinom(n, 1, plogis(-0.2 + 1.5 * z))
+#' y <- 0.8 * t + rnorm(n)
+#' estimate_late(data.frame(t = t, y = y, z = z), "t", "y", "z")
 estimate_late <- function(data, treatment, outcome, instrument,
                           covariates = NULL) {
   t <- as.numeric(data[[treatment]])
@@ -521,6 +536,10 @@ sensitivity_rosenbaum <- function(treated, control,
 #'
 #' @inheritParams estimate_aipw
 #' @return Named list: `ate`, `se`, `ci_lower`, `ci_upper`.
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
+#' estimate_g_computation(df, "t", "y", "x")
 #' @export
 estimate_g_computation <- function(data, treatment, outcome, covariates,
                                    outcome_model = c("linear", "logistic")) {

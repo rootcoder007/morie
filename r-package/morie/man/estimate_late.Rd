@@ -30,6 +30,14 @@ With covariates, uses two-stage OLS (Wald within residuals).
 Requires \code{ivreg::ivreg()} if available; otherwise falls back to the
 closed-form Wald estimator.
 }
+\examples{
+set.seed(1)
+n <- 300L
+z <- rbinom(n, 1, 0.5)
+t <- rbinom(n, 1, plogis(-0.2 + 1.5 * z))
+y <- 0.8 * t + rnorm(n)
+estimate_late(data.frame(t = t, y = y, z = z), "t", "y", "z")
+}
 \references{
 Imbens GW, Angrist JD (1994). Identification and estimation of local
 average treatment effects. \emph{Econometrica}, 62(2), 467-475.

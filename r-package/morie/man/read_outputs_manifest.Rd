@@ -23,3 +23,9 @@ Manifest data frame.
 \description{
 Read outputs manifest from a project
 }
+\examples{
+\dontrun{
+  # Reads outputs_manifest.csv from a morie project tree:
+  read_outputs_manifest(project_root = ".")
+}
+}

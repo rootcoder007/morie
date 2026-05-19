@@ -144,6 +144,11 @@ canonicalize_cpads_data <- function(data) {
 #'
 #' @param cpads_csv Path to the CPADS CSV.
 #' @return Canonicalized CPADS data frame.
+#' @examples
+#' \dontrun{
+#'   # Reads and canonicalises the CPADS PUMF CSV from a project tree:
+#'   load_cpads_data()
+#' }
 #' @export
 load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
   cpads_csv <- .resolve_cpads_csv(cpads_csv)

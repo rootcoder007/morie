@@ -24,3 +24,8 @@ Named list: \code{atc}, \code{se}, \code{ci_lower}, \code{ci_upper}, \code{n_con
 Control units receive weight 1; treated units receive
 \eqn{w_i = (1-\hat{e}(X_i))/\hat{e}(X_i)}.
 }
+\examples{
+set.seed(1)
+df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
+estimate_atc(df, "t", "y", "x")
+}

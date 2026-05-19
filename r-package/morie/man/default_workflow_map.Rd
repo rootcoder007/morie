@@ -12,3 +12,6 @@ Named character vector.
 \description{
 Returns the default named map of workflow steps to project script paths.
 }
+\examples{
+default_workflow_map()
+}

@@ -35,3 +35,7 @@ Normalized output path.
 \description{
 Write synthetic epidemiology-style data to CSV
 }
+\examples{
+out <- write_synthetic_data(tempfile(fileext = ".csv"), n = 200, seed = 1)
+file.exists(out)
+}

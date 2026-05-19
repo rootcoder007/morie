@@ -17,3 +17,6 @@ Named character vector.
 Returns a named character vector mapping canonical variable keys used by
 \code{\link[=generate_synthetic_data]{generate_synthetic_data()}} to output column names.
 }
+\examples{
+default_synthetic_name_map("generic")
+}

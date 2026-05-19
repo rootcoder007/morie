@@ -30,3 +30,8 @@ Named list: \code{ate}, \code{se}, \code{ci_lower}, \code{ci_upper}.
 Estimates the ATE by:
 \deqn{\widehat{ATE} = \frac{1}{n}\sum_i \bigl[\hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)\bigr]}
 }
+\examples{
+set.seed(1)
+df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
+estimate_g_computation(df, "t", "y", "x")
+}

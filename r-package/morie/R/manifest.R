@@ -44,6 +44,11 @@ validate_outputs_manifest <- function(manifest, strict = TRUE) {
 #' @param manifest_path Optional explicit manifest path.
 #' @param validate If `TRUE`, validate schema.
 #' @return Manifest data frame.
+#' @examples
+#' \dontrun{
+#'   # Reads outputs_manifest.csv from a morie project tree:
+#'   read_outputs_manifest(project_root = ".")
+#' }
 #' @export
 read_outputs_manifest <- function(project_root = NULL, manifest_path = NULL, validate = TRUE) {
   # When an explicit manifest_path is supplied, do not require a project
@@ -126,6 +131,11 @@ build_outputs_manifest <- function(
 #' @param project_root Project root directory.
 #' @param manifest Manifest data frame. If `NULL`, loaded from disk.
 #' @return Data frame containing declared and observed output status.
+#' @examples
+#' \dontrun{
+#'   # Audits declared vs. observed outputs in a morie project tree:
+#'   audit_public_outputs(project_root = ".")
+#' }
 #' @export
 audit_public_outputs <- function(project_root = NULL, manifest = NULL) {
   paths <- morie_paths(project_root)

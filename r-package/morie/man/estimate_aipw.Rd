@@ -34,3 +34,8 @@ Combines IPW and outcome regression corrections. Consistent if
 \strong{either} the propensity model \strong{or} the outcome model is correctly
 specified.
 }
+\examples{
+set.seed(1)
+df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
+estimate_aipw(df, "t", "y", "x")
+}

@@ -33,3 +33,9 @@ Named list of output tables and the analysis data.
 \description{
 Mirrors the core outputs of the old \verb{07_propensity.R} workflow.
 }
+\examples{
+\dontrun{
+  # Full propensity-weighted analysis on a canonical CPADS frame:
+  run_propensity_ipw_analysis(load_cpads_data())
+}
+}

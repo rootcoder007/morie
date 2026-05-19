@@ -27,3 +27,9 @@ Named list of output tables and the observed-domain analysis frame.
 \description{
 Mirrors the core outputs of the old \verb{07_ebac_ipw.R} workflow.
 }
+\examples{
+\dontrun{
+  # eBAC selection-adjusted IPW analysis on a canonical CPADS frame:
+  run_ebac_selection_ipw_analysis(load_cpads_data())
+}
+}

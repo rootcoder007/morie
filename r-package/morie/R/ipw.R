@@ -67,6 +67,11 @@ validate_cpads_data <- function(data, strict = TRUE) {
 #' @param outcome Binary outcome column.
 #' @param covariates Covariate names for the propensity model.
 #' @return Named list of output tables and the analysis data.
+#' @examples
+#' \dontrun{
+#'   # Full propensity-weighted analysis on a canonical CPADS frame:
+#'   run_propensity_ipw_analysis(load_cpads_data())
+#' }
 #' @export
 run_propensity_ipw_analysis <- function(
   data,
@@ -141,6 +146,11 @@ run_propensity_ipw_analysis <- function(
 #' @param treatment Treatment column name.
 #' @param covariates Covariate names used in the observation model.
 #' @return Named list of output tables and the observed-domain analysis frame.
+#' @examples
+#' \dontrun{
+#'   # eBAC selection-adjusted IPW analysis on a canonical CPADS frame:
+#'   run_ebac_selection_ipw_analysis(load_cpads_data())
+#' }
 #' @export
 run_ebac_selection_ipw_analysis <- function(
   data,

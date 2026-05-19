@@ -17,3 +17,9 @@ Data frame containing declared and observed output status.
 \description{
 Audit declared outputs against files on disk
 }
+\examples{
+\dontrun{
+  # Audits declared vs. observed outputs in a morie project tree:
+  audit_public_outputs(project_root = ".")
+}
+}
