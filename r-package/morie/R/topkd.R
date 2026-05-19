@@ -4,11 +4,11 @@
 #'
 #' @param x Numeric vector of logits.
 #' @param k Integer truncation rank (default 5).
-#' @param T Numeric softmax temperature (default 1).
+#' @param temperature Numeric softmax temperature (default 1).
 #' @return Named list with tensor, topk_indices, topk_logits, k, method.
 #' @keywords internal
-top_k_decoding <- function(x, k = 5L, T = 1) {
-  z <- as.numeric(x) / T
+top_k_decoding <- function(x, k = 5L, temperature = 1) {
+  z <- as.numeric(x) / temperature
   Vlen <- length(z)
   k <- max(1L, min(as.integer(k), Vlen))
   thresh <- sort(z, decreasing = TRUE)[k]

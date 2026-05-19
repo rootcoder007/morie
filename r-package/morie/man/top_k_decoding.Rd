@@ -4,14 +4,14 @@
 \alias{top_k_decoding}
 \title{Top-k filtered softmax (Fan 2018)}
 \usage{
-top_k_decoding(x, k = 5L, T = 1)
+top_k_decoding(x, k = 5L, temperature = 1)
 }
 \arguments{
 \item{x}{Numeric vector of logits.}
 
 \item{k}{Integer truncation rank (default 5).}
 
-\item{T}{Numeric softmax temperature (default 1).}
+\item{temperature}{Numeric softmax temperature (default 1).}
 }
 \value{
 Named list with tensor, topk_indices, topk_logits, k, method.

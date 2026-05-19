@@ -26,7 +26,7 @@ eg_coint <- function(y1, y2, max_lag = NULL) {
     stat <- as.numeric(adf@teststat[1])
   } else {
     # Plain ADF-style t-stat on residuals.
-    dr <- diff(resid); T <- length(dr) - max_lag
+    dr <- diff(resid); n_eff <- length(dr) - max_lag
     dep <- dr[(max_lag + 1):length(dr)]
     # Level regressor resid[t], aligned to dep; indexing to length(dr)
     # (not length(resid)) keeps Xr the same length as dep.
@@ -38,7 +38,7 @@ eg_coint <- function(y1, y2, max_lag = NULL) {
     }
     b <- lsfit(Xr, dep, intercept = FALSE)
     e <- dep - Xr %*% b$coef
-    sig2 <- sum(e^2) / (T - ncol(Xr))
+    sig2 <- sum(e^2) / (n_eff - ncol(Xr))
     se <- sqrt(sig2 * solve(crossprod(Xr))[1, 1])
     stat <- b$coef[1] / se
   }

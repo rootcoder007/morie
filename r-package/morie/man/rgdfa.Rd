@@ -17,7 +17,7 @@ rangayyan_dfa(x, scales = NULL, order = 1L)
 \item{order}{Detrending polynomial order (default 1 = DFA-1).}
 }
 \value{
-Named list \code{alpha}, \code{scales}, \code{F}, \code{log_scales}, \code{log_F}.
+Named list \code{alpha}, \code{scales}, \code{fluct}, \code{log_scales}, \code{log_F}.
 }
 \description{
 DFA-alpha scaling exponent (Peng et al. 1994).

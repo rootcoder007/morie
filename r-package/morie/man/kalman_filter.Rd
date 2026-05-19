@@ -4,12 +4,20 @@
 \alias{kalman_filter}
 \title{Kalman filter predict-update for a linear-Gaussian state-space model}
 \usage{
-kalman_filter(x, F = NULL, H = NULL, Q = NULL, R = NULL, x0 = NULL, P0 = NULL)
+kalman_filter(
+  x,
+  transition = NULL,
+  H = NULL,
+  Q = NULL,
+  R = NULL,
+  x0 = NULL,
+  P0 = NULL
+)
 }
 \arguments{
 \item{x}{Numeric vector or matrix of observations.}
 
-\item{F}{Transition matrix (default identity).}
+\item{transition}{Transition matrix (default identity).}
 
 \item{H}{Observation matrix (default identity).}
 

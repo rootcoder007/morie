@@ -5,7 +5,7 @@
 #' Defaults to a univariate local-level model when matrices are omitted.
 #'
 #' @param x Numeric vector or matrix of observations.
-#' @param F Transition matrix (default identity).
+#' @param transition Transition matrix (default identity).
 #' @param H Observation matrix (default identity).
 #' @param Q State-innovation covariance (default sigma^2 I).
 #' @param R Observation covariance (default sigma^2 I).
@@ -19,17 +19,17 @@
 #'   #   vignette(package = "morie")
 #' }
 #' @export
-kalman_filter <- function(x, F = NULL, H = NULL, Q = NULL, R = NULL,
+kalman_filter <- function(x, transition = NULL, H = NULL, Q = NULL, R = NULL,
                           x0 = NULL, P0 = NULL) {
   Y <- as.matrix(x); n <- nrow(Y); m <- ncol(Y)
   if (n < 2) stop("Need >=2 obs.")
-  if (is.null(F)) F <- diag(m)
+  if (is.null(transition)) transition <- diag(m)
   if (is.null(H)) H <- diag(m)
   v0 <- var(diff(Y)) * 0.5
   if (is.null(Q)) Q <- if (is.matrix(v0)) v0 else diag(as.numeric(v0), m)
   if (is.null(R)) R <- if (is.matrix(v0)) v0 else diag(as.numeric(v0), m)
-  F <- as.matrix(F); H <- as.matrix(H); Q <- as.matrix(Q); R <- as.matrix(R)
-  p <- nrow(F)
+  transition <- as.matrix(transition); H <- as.matrix(H); Q <- as.matrix(Q); R <- as.matrix(R)
+  p <- nrow(transition)
   if (is.null(x0)) { x0 <- numeric(p); x0[seq_len(min(p, m))] <- Y[1, seq_len(min(p, m))] }
   if (is.null(P0)) P0 <- diag(1e6, p)
   x_hat <- matrix(0, n, p)
@@ -38,8 +38,8 @@ kalman_filter <- function(x, F = NULL, H = NULL, Q = NULL, R = NULL,
   Sv <- array(0, c(n, m, m))
   xc <- as.numeric(x0); Pc <- P0; ll <- 0
   for (t in seq_len(n)) {
-    xp <- F %*% xc
-    Pp <- F %*% Pc %*% t(F) + Q
+    xp <- transition %*% xc
+    Pp <- transition %*% Pc %*% t(transition) + Q
     v <- Y[t, ] - H %*% xp
     S <- H %*% Pp %*% t(H) + R
     Sinv <- tryCatch(solve(S), error = function(e) {

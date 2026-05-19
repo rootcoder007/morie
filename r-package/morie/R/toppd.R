@@ -4,12 +4,12 @@
 #'
 #' @param x Numeric vector of logits.
 #' @param p Numeric nucleus mass cutoff in (0, 1] (default 0.9).
-#' @param T Numeric softmax temperature (default 1).
+#' @param temperature Numeric softmax temperature (default 1).
 #' @return Named list with tensor, keep_mask, n_kept, p, method.
 #' @keywords internal
-top_p_nucleus <- function(x, p = 0.9, T = 1) {
+top_p_nucleus <- function(x, p = 0.9, temperature = 1) {
   if (p <= 0 || p > 1) stop("p must be in (0, 1]")
-  z <- as.numeric(x) / T; z <- z - max(z)
+  z <- as.numeric(x) / temperature; z <- z - max(z)
   probs <- exp(z); probs <- probs / sum(probs)
   ord <- order(-probs)
   cs <- cumsum(probs[ord])

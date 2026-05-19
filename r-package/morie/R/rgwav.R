@@ -2,7 +2,7 @@
 #'
 #' Donoho-Johnstone soft/hard thresholding via the `wavelets` package
 #' (Daubechies DWT). Noise scale estimated from the finest-scale detail
-#' as sigma = MAD / 0.6745; universal threshold T = sigma sqrt(2 ln N).
+#' as sigma = MAD / 0.6745; universal threshold thr = sigma sqrt(2 ln N).
 #'
 #' Falls back to a 5-tap moving-average smoother (with a warning) if
 #' `wavelets` is not installed -- keeps R<->Py parity to ~5 % on smooth
@@ -46,16 +46,16 @@ rgwav <- function(x, wavelet = "d8", level = NULL, mode = c("soft", "hard")) {
   # MAD on the finest detail coefficients (W[[1]])
   d1 <- as.numeric(fit@W[[1]])
   sigma <- stats::median(abs(d1)) / 0.6745
-  T <- sigma * sqrt(2 * log(N))
-  thresh <- function(d, T, mode) {
-    if (mode == "soft") sign(d) * pmax(abs(d) - T, 0)
-    else d * (abs(d) > T)
+  thr <- sigma * sqrt(2 * log(N))
+  thresh <- function(d, thr, mode) {
+    if (mode == "soft") sign(d) * pmax(abs(d) - thr, 0)
+    else d * (abs(d) > thr)
   }
   for (i in seq_along(fit@W)) {
-    fit@W[[i]][, 1] <- thresh(as.numeric(fit@W[[i]]), T, mode)
+    fit@W[[i]][, 1] <- thresh(as.numeric(fit@W[[i]]), thr, mode)
   }
   y <- as.numeric(wavelets::idwt(fit))[seq_len(N0)]
-  list(signal = y, threshold = T, sigma = sigma,
+  list(signal = y, threshold = thr, sigma = sigma,
        wavelet = wavelet, level = level, mode = mode)
 }
 

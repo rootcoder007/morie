@@ -15,7 +15,7 @@ Named list: statistic, p_value, z, n, m.
 }
 \description{
 Replaces pooled ranks with Blom-approximated normal scores
-a_i = qnorm((R_i - 3/8) / (N + 1/4)).  Statistic T = sum of
+a_i = qnorm((R_i - 3/8) / (N + 1/4)).  Statistic stat_t = sum of
 scores from the first sample.
 }
 \examples{

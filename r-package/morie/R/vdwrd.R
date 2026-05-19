@@ -26,12 +26,12 @@ van_der_waerden_test <- function(x, y) {
   pooled <- c(x, y)
   ranks <- rank(pooled)
   s <- stats::qnorm(ranks / (N + 1))
-  T <- sum(s[1:m])
+  stat_t <- sum(s[1:m])
   Var_T <- (m * n / (N * (N - 1))) * sum(s^2)
-  z <- T / sqrt(Var_T)
+  z <- stat_t / sqrt(Var_T)
   p <- 2 * (1 - stats::pnorm(abs(z)))
   list(
-    statistic = T,
+    statistic = stat_t,
     p_value = p,
     z = z,
     n = N,

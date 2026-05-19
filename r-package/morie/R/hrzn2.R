@@ -18,17 +18,17 @@ hrzn2 <- function(y, sigma_u = 0.5, bandwidth = NULL, grid = NULL,
        else as.numeric(bandwidth)
   if (is.null(grid)) grid <- seq(min(y), max(y), length.out = 51)
   grid <- as.numeric(grid)
-  T <- seq(-15, 15, length.out = 2049) / max(h, 1e-3)
-  dt <- T[2] - T[1]
-  phi_Y <- colMeans(exp(1i * outer(y, T)))
-  phi_U <- if (noise == "normal") exp(-0.5 * (sigma_u * T)^2)
-          else 1 / (1 + (sigma_u * T)^2)
-  th <- T * h
+  t_grid <- seq(-15, 15, length.out = 2049) / max(h, 1e-3)
+  dt <- t_grid[2] - t_grid[1]
+  phi_Y <- colMeans(exp(1i * outer(y, t_grid)))
+  phi_U <- if (noise == "normal") exp(-0.5 * (sigma_u * t_grid)^2)
+          else 1 / (1 + (sigma_u * t_grid)^2)
+  th <- t_grid * h
   phi_K <- ifelse(abs(th) <= 1, (1 - th^2)^3, 0)
   integrand <- phi_K * phi_Y / ifelse(abs(phi_U) > 1e-10, phi_U, complex(real = Inf))
   f_hat <- numeric(length(grid))
   for (i in seq_along(grid)) {
-    f_hat[i] <- Re(sum(exp(-1i * T * grid[i]) * integrand)) * dt / (2 * pi)
+    f_hat[i] <- Re(sum(exp(-1i * t_grid * grid[i]) * integrand)) * dt / (2 * pi)
   }
   f_hat <- pmax(f_hat, 0)
   list(estimate = f_hat, grid = grid, bandwidth = h,

@@ -4,7 +4,7 @@
 #' (Gibbons Ch 8.3.1)
 #'
 #' Replaces pooled ranks with Blom-approximated normal scores
-#' a_i = qnorm((R_i - 3/8) / (N + 1/4)).  Statistic T = sum of
+#' a_i = qnorm((R_i - 3/8) / (N + 1/4)).  Statistic stat_t = sum of
 #' scores from the first sample.
 #'
 #' @param x,y Numeric vectors.
@@ -27,13 +27,13 @@ terry_hoeffding_test <- function(x, y) {
   pooled <- c(x, y)
   ranks <- rank(pooled)
   a <- stats::qnorm((ranks - 3/8) / (N + 1/4))
-  T <- sum(a[1:m])
+  stat_t <- sum(a[1:m])
   sum_a2 <- sum(a^2)
   Var_T <- (m * n / (N * (N - 1))) * sum_a2
-  z <- T / sqrt(Var_T)
+  z <- stat_t / sqrt(Var_T)
   p <- 2 * (1 - stats::pnorm(abs(z)))
   list(
-    statistic = T,
+    statistic = stat_t,
     p_value = p,
     z = z,
     n = N,

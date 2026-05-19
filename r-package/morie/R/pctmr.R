@@ -31,12 +31,12 @@ percentile_modified_rank <- function(x, y, q = 0.25) {
   upper_cut <- (1 - q) * (N + 1)
   lower_cut <- q * (N + 1)
   a <- pmax(R - upper_cut, 0) - pmax(lower_cut - R, 0)
-  T <- sum(a[1:m])
+  stat_t <- sum(a[1:m])
   Var_T <- (m * n / (N * (N - 1))) * sum(a^2)
-  z <- T / sqrt(Var_T)
+  z <- stat_t / sqrt(Var_T)
   p <- 2 * (1 - stats::pnorm(abs(z)))
   list(
-    statistic = T,
+    statistic = stat_t,
     p_value = p,
     z = z,
     n = N,

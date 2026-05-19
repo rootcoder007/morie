@@ -11,7 +11,7 @@ dynamic_wnominate(x, sigma_w = 0.1)
 }
 \arguments{
 \item{x}{Numeric vector (per-period ideal points) or matrix
-(n_legislators by T).}
+(n_legislators by n_t).}
 
 \item{sigma_w}{Random-walk innovation SD.}
 }
