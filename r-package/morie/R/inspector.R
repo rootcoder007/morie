@@ -51,10 +51,12 @@ inspect_output <- function(path) {
       return(result)
     }
   }, error = function(e) {
-    result$status <- paste0("read-error: ", conditionMessage(e))
+    # <<- so the read-error status reaches the enclosing `result`;
+    # a plain <- would assign only in this handler's environment.
+    result$status <<- paste0("read-error: ", conditionMessage(e))
     NULL
   })
-  result$status <- "ok"
+  if (is.null(result$status)) result$status <- "ok"
   result
 }
 
