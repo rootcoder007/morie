@@ -1,5 +1,21 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# Internal: EGARCH(1,1) Gaussian negative log-likelihood. Extracted from
+# the egarch_model() base-R optimiser closure so the |beta| >= 1
+# stationarity guard is directly unit-testable. `r` is the centred
+# series, `n` its length, `EZ` = E|Z| for a standard normal.
+.egrch_negll <- function(p, r, n, EZ) {
+  omega <- p[1]; alpha <- p[2]; gamma <- p[3]; beta <- p[4]
+  if (abs(beta) >= 1) return(1e10)
+  log_s2 <- numeric(n); log_s2[1] <- log(var(r) + 1e-12)
+  for (t in 2:n) {
+    z <- r[t - 1] / sqrt(exp(log_s2[t - 1]) + 1e-12)
+    log_s2[t] <- omega + beta * log_s2[t - 1] + alpha * (abs(z) - EZ) + gamma * z
+  }
+  s2 <- exp(log_s2)
+  0.5 * sum(log(2 * pi * s2) + r^2 / s2)
+}
+
 #' EGARCH(1,1) asymmetric volatility model
 #'
 #' @inheritParams garch_fit
@@ -31,17 +47,7 @@ egarch_model <- function(x) {
                 method = "EGARCH(1,1) via rugarch"))
   }
   EZ <- sqrt(2 / pi)
-  neg_ll <- function(p) {
-    omega <- p[1]; alpha <- p[2]; gamma <- p[3]; beta <- p[4]
-    if (abs(beta) >= 1) return(1e10)
-    log_s2 <- numeric(n); log_s2[1] <- log(var(r) + 1e-12)
-    for (t in 2:n) {
-      z <- r[t - 1] / sqrt(exp(log_s2[t - 1]) + 1e-12)
-      log_s2[t] <- omega + beta * log_s2[t - 1] + alpha * (abs(z) - EZ) + gamma * z
-    }
-    s2 <- exp(log_s2)
-    0.5 * sum(log(2 * pi * s2) + r^2 / s2)
-  }
+  neg_ll <- function(p) .egrch_negll(p, r, n, EZ)
   opt <- nlminb(c(0, 0.1, 0, 0.9), neg_ll,
                 lower = c(-5, -1, -1, -0.999),
                 upper = c(5, 1, 1, 0.999))

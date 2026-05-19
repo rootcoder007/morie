@@ -1,5 +1,27 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# Internal: DCC(1,1) two-step Gaussian negative log-likelihood for the
+# base-R fallback path. Extracted from the dcc_multivariate_garch()
+# optimiser closure so the parameter-domain and non-positive-determinant
+# guards are directly unit-testable. `Q_bar` is the unconditional
+# correlation, `n` the sample size, `Z` the standardised residuals.
+.dccmd_negll <- function(p, Q_bar, n, Z) {
+  a <- p[1]; b <- p[2]
+  if (a < 0 || b < 0 || a + b >= 0.9999) return(1e10)
+  Q <- Q_bar; ll <- 0
+  for (t in seq_len(n)) {
+    d <- sqrt(pmax(diag(Q), 1e-12))
+    R <- Q / outer(d, d)
+    ld <- determinant(R, logarithm = TRUE)
+    if (ld$sign <= 0) return(1e10)
+    Rinv <- solve(R)
+    zt <- Z[t, ]
+    ll <- ll + 0.5 * (ld$modulus + sum(zt * (Rinv %*% zt)) - sum(zt^2))
+    Q <- (1 - a - b) * Q_bar + a * tcrossprod(zt) + b * Q
+  }
+  as.numeric(ll)
+}
+
 #' DCC multivariate GARCH (Engle 2002)
 #'
 #' Two-step DCC(1,1) on a panel of return series.
@@ -53,22 +75,7 @@ dcc_multivariate_garch <- function(x) {
     Z[, j] <- rj / sqrt(H[, j] + 1e-12)
   }
   Q_bar <- crossprod(Z) / n
-  neg_ll <- function(p) {
-    a <- p[1]; b <- p[2]
-    if (a < 0 || b < 0 || a + b >= 0.9999) return(1e10)
-    Q <- Q_bar; ll <- 0
-    for (t in seq_len(n)) {
-      d <- sqrt(pmax(diag(Q), 1e-12))
-      R <- Q / outer(d, d)
-      ld <- determinant(R, logarithm = TRUE)
-      if (ld$sign <= 0) return(1e10)
-      Rinv <- solve(R)
-      zt <- Z[t, ]
-      ll <- ll + 0.5 * (ld$modulus + sum(zt * (Rinv %*% zt)) - sum(zt^2))
-      Q <- (1 - a - b) * Q_bar + a * tcrossprod(zt) + b * Q
-    }
-    as.numeric(ll)
-  }
+  neg_ll <- function(p) .dccmd_negll(p, Q_bar, n, Z)
   opt <- nlminb(c(0.02, 0.95), neg_ll,
                 lower = c(1e-6, 1e-6),
                 upper = c(0.5, 0.999))

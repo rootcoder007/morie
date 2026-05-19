@@ -1,5 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# Internal: smoothed maximum-score loss. Extracted from the hrzb2()
+# optimiser closure so the zero-norm guard is directly unit-testable.
+.hrzb2_loss <- function(b, X, ys, h) {
+  nb <- sqrt(sum(b^2)); if (nb < 1e-12) return(1e12)
+  bn <- b / nb; z <- (X %*% bn) / h
+  -mean(ys * stats::pnorm(z))
+}
+
 #' Horowitz (1992) smoothed maximum-score estimator
 #'
 #' @param x Numeric covariate vector or design matrix.
@@ -17,11 +25,7 @@ hrzb2 <- function(x, y, bandwidth = NULL) {
   ys <- 2 * y - 1
   h <- if (is.null(bandwidth)) max(.hrz_silverman(X %*% rep(1 / sqrt(p), p)), 1e-3)
        else as.numeric(bandwidth)
-  loss <- function(b) {
-    nb <- sqrt(sum(b^2)); if (nb < 1e-12) return(1e12)
-    bn <- b / nb; z <- (X %*% bn) / h
-    -mean(ys * stats::pnorm(z))
-  }
+  loss <- function(b) .hrzb2_loss(b, X, ys, h)
   beta0 <- as.numeric(stats::coef(stats::lm.fit(X, ys)))
   nrm <- sqrt(sum(beta0^2)); if (nrm > 1e-12) beta0 <- beta0 / nrm
   if (beta0[1] < 0) beta0 <- -beta0

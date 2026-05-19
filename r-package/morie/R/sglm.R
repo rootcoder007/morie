@@ -1,4 +1,23 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Internal: spatial-GLM profile negative log-likelihood in log(phi).
+# Extracted from the sglm() optimiser closure so the non-positive-
+# -definite-covariance guard is directly unit-testable. `D` is the
+# distance matrix, `n` the sample size, `X`/`y` the design and response.
+.sglm_negll <- function(log_phi, D, n, X, y) {
+  phi <- exp(log_phi)
+  R <- exp(-D / phi) + 1e-8 * diag(n)
+  L <- tryCatch(chol(R), error = function(e) NULL)
+  if (is.null(L)) return(1e12)
+  Xw <- backsolve(L, X, transpose = TRUE)
+  yw <- backsolve(L, y, transpose = TRUE)
+  beta <- solve(crossprod(Xw), crossprod(Xw, yw))
+  resid <- yw - Xw %*% beta
+  sigma2 <- sum(resid ^ 2) / n
+  logdet_R <- 2 * sum(log(diag(L)))
+  0.5 * (n * log(2 * pi * sigma2) + logdet_R + n)
+}
+
 #' Spatial GLM (Gaussian-identity case via profile ML).
 #'
 #' Y = X beta + delta + eps, delta ~ GP(0, sigma2 R_phi), R_phi exponential.
@@ -27,19 +46,7 @@ sglm <- function(x, y, coords, family = "gaussian") {
     stop("shape mismatch among x, y, coords")
   D <- as.matrix(stats::dist(coords))
   h_max <- max(D)
-  neg_ll <- function(log_phi) {
-    phi <- exp(log_phi)
-    R <- exp(-D / phi) + 1e-8 * diag(n)
-    L <- tryCatch(chol(R), error = function(e) NULL)
-    if (is.null(L)) return(1e12)
-    Xw <- backsolve(L, X, transpose = TRUE)
-    yw <- backsolve(L, y, transpose = TRUE)
-    beta <- solve(crossprod(Xw), crossprod(Xw, yw))
-    resid <- yw - Xw %*% beta
-    sigma2 <- sum(resid ^ 2) / n
-    logdet_R <- 2 * sum(log(diag(L)))
-    0.5 * (n * log(2 * pi * sigma2) + logdet_R + n)
-  }
+  neg_ll <- function(log_phi) .sglm_negll(log_phi, D, n, X, y)
   res <- stats::optimize(neg_ll, interval = c(log(max(h_max / 100, 1e-3)),
                                               log(max(h_max * 3, 1))))
   phi <- exp(res$minimum)

@@ -1,4 +1,24 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Internal: SAR-error concentrated negative log-likelihood in lambda.
+# Extracted from the sarre() optimiser closure so the singular-GLS,
+# non-positive-variance and non-positive-determinant guards are all
+# directly unit-testable.
+.sarre_negll <- function(lam, I, W, X, y, n) {
+  A <- I - lam * W
+  AX <- A %*% X; Ay <- A %*% y
+  beta <- tryCatch(solve(crossprod(AX), crossprod(AX, Ay)),
+                   error = function(e) NULL)
+  if (is.null(beta)) return(1e12)
+  e <- Ay - AX %*% beta
+  sigma2 <- as.numeric(sum(e ^ 2)) / n
+  if (sigma2 <= 0) return(1e12)
+  det_sign <- determinant(A, logarithm = TRUE)
+  if (det_sign$sign <= 0) return(1e12)
+  logdetA <- as.numeric(det_sign$modulus)
+  0.5 * n * log(2 * pi * sigma2) - logdetA + 0.5 * n
+}
+
 #' Spatial autoregressive error model (SAR error, ML).
 #'
 #' Y = X beta + u,  u = lambda W u + eps,  eps ~ N(0, sigma2 I).
@@ -22,20 +42,7 @@ sarre <- function(x, y, w) {
   if (nrow(X) != n || any(dim(W) != c(n, n)))
     stop("shape mismatch among x, y, w")
   I <- diag(n)
-  neg_ll <- function(lam) {
-    A <- I - lam * W
-    AX <- A %*% X; Ay <- A %*% y
-    beta <- tryCatch(solve(crossprod(AX), crossprod(AX, Ay)),
-                     error = function(e) NULL)
-    if (is.null(beta)) return(1e12)
-    e <- Ay - AX %*% beta
-    sigma2 <- as.numeric(sum(e ^ 2)) / n
-    if (sigma2 <= 0) return(1e12)
-    det_sign <- determinant(A, logarithm = TRUE)
-    if (det_sign$sign <= 0) return(1e12)
-    logdetA <- as.numeric(det_sign$modulus)
-    0.5 * n * log(2 * pi * sigma2) - logdetA + 0.5 * n
-  }
+  neg_ll <- function(lam) .sarre_negll(lam, I, W, X, y, n)
   res <- stats::optimize(neg_ll, interval = c(-0.99, 0.99))
   lam <- res$minimum
   A <- I - lam * W

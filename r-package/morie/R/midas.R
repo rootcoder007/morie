@@ -1,5 +1,18 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# Internal: MIDAS sum-of-squared-errors objective. Extracted from the
+# midas_regression() optimiser closure so the theta-domain guard and the
+# non-finite-SSE guard are directly unit-testable. `X` is the lag-matrix,
+# `Y` the target, `K` the number of high-frequency lags.
+.midas_sse <- function(p, X, Y, K) {
+  b0 <- p[1]; b1 <- p[2]; t1 <- p[3]; t2 <- p[4]
+  if (t1 <= 0 || t2 <= 0) return(1e10)
+  w <- .morie_beta_weights(t1, t2, K)
+  yhat <- b0 + b1 * (X %*% w)
+  sse <- sum((Y - yhat)^2)
+  if (!is.finite(sse)) 1e10 else sse
+}
+
 #' MIDAS regression with Beta-polynomial weights
 #'
 #' @param x High-frequency regressor matrix (n_t x K) or flat vector.
@@ -30,14 +43,7 @@ midas_regression <- function(x, y, K = NULL) {
   }
   if (nrow(X) != nT) stop("Dim mismatch.")
   if (nT < 4) stop("Need >=4 obs.")
-  neg_ll <- function(p) {
-    b0 <- p[1]; b1 <- p[2]; t1 <- p[3]; t2 <- p[4]
-    if (t1 <= 0 || t2 <= 0) return(1e10)
-    w <- .morie_beta_weights(t1, t2, K)
-    yhat <- b0 + b1 * (X %*% w)
-    sse <- sum((Y - yhat)^2)
-    if (!is.finite(sse)) 1e10 else sse
-  }
+  neg_ll <- function(p) .midas_sse(p, X, Y, K)
   opt <- nlminb(c(mean(Y), 1, 1.5, 2), neg_ll,
                 lower = c(-1e3, -1e3, 0.1, 0.1),
                 upper = c( 1e3,  1e3, 50,  50))

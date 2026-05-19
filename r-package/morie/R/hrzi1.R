@@ -1,5 +1,18 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# Internal: Ichimura single-index leave-one-out objective. Extracted
+# from the hrzi1() optimiser closure so the zero-norm guard is directly
+# unit-testable. `h0` is the kernel bandwidth.
+.hrzi1_obj <- function(b, X, y, h0) {
+  nb <- sqrt(sum(b^2)); if (nb < 1e-12) return(1e12)
+  bn <- b / nb; idx <- as.numeric(X %*% bn)
+  u <- outer(idx, idx, `-`) / h0
+  w <- exp(-0.5 * u^2); diag(w) <- 0
+  wsum <- rowSums(w); safe <- ifelse(wsum > 0, wsum, 1)
+  g_hat <- as.numeric((w %*% y) / safe)
+  mean((y - g_hat)^2)
+}
+
 #' Ichimura (1993) single-index model
 #'
 #' @param x Numeric covariate vector or design matrix.
@@ -20,15 +33,7 @@ hrzi1 <- function(x, y, bandwidth = NULL) {
   if (beta0[1] < 0) beta0 <- -beta0
   h0 <- if (is.null(bandwidth)) .hrz_silverman(X %*% beta0) else as.numeric(bandwidth)
 
-  obj <- function(b) {
-    nb <- sqrt(sum(b^2)); if (nb < 1e-12) return(1e12)
-    bn <- b / nb; idx <- as.numeric(X %*% bn)
-    u <- outer(idx, idx, `-`) / h0
-    w <- exp(-0.5 * u^2); diag(w) <- 0
-    wsum <- rowSums(w); safe <- ifelse(wsum > 0, wsum, 1)
-    g_hat <- as.numeric((w %*% y) / safe)
-    mean((y - g_hat)^2)
-  }
+  obj <- function(b) .hrzi1_obj(b, X, y, h0)
   res <- stats::optim(beta0, obj, method = "Nelder-Mead",
                        control = list(maxit = 200, reltol = 1e-5))
   bh <- res$par; bh <- bh / max(sqrt(sum(bh^2)), 1e-12)
