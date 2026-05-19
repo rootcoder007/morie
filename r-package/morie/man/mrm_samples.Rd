@@ -24,8 +24,8 @@ CKAN fetcher.
 \item TPS: Toronto Police Open Data ArcGIS REST. Use
 \code{morie_fetch_tps(category = "Assault")}.
 \item SIU: Ontario SIU Director's Reports site. Use
-\code{morie_fetch_siu()} which scrapes the public reports site on
-demand (per-user, since redistribution of the scraped corpus is
+\code{morie_fetch_siu()} which parses the public reports site on
+demand (per-user, since redistribution of the parsed corpus is
 not clearly licensed).
 }
 }

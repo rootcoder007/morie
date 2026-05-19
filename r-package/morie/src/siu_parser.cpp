@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
-// siu_scrape.cpp -- C/C++ scraper for the Ontario Special Investigations
+// siu_parser.cpp -- C/C++ parser for the Ontario Special Investigations
 // Unit (SIU) corpus: director's reports and news releases.
 //
 // HTTP(S) transport is libcurl (linked via src/Makevars). This file is
@@ -43,7 +43,7 @@ size_t write_cb(char* ptr, size_t size, size_t nmemb, void* userdata) {
 
 //' Fetch a single URL over HTTP(S) via libcurl
 //'
-//' Internal building block of the SIU scraper. Returns the response
+//' Internal building block of the SIU parser. Returns the response
 //' body, or an empty string on any transport-level failure.
 //'
 //' @param url URL to fetch.
@@ -358,6 +358,47 @@ std::string first_date(const std::string& text) {
   return rx1(text, "([A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4})");
 }
 
+// Every "Month D, YYYY" date in `text`, in order of appearance.
+std::vector<std::string> all_dates(const std::string& text) {
+  std::vector<std::string> v;
+  try {
+    const std::regex re("[A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4}");
+    for (auto it = std::sregex_iterator(text.begin(), text.end(), re);
+         it != std::sregex_iterator(); ++it)
+      v.push_back(it->str());
+  } catch (...) {}
+  return v;
+}
+
+// Modal police-service name in `text`: the most-mentioned "X Police"
+// / "X Police Service" (ties broken toward the longer, more complete
+// name), with SIU self-references and a leading "The " dropped. Far
+// more robust than the first regex hit, which is often truncated.
+std::string modal_service(const std::string& text) {
+  std::map<std::string, int> counts;
+  try {
+    const std::regex re("[A-Z][A-Za-z.'\\-]+(?: [A-Z][A-Za-z.'\\-]+){0,4} "
+                        "Police(?: Service)?");
+    for (auto it = std::sregex_iterator(text.begin(), text.end(), re);
+         it != std::sregex_iterator(); ++it) {
+      std::string s = it->str();
+      if (s.find("SIU") != std::string::npos) continue;
+      if (s.rfind("The ", 0) == 0) s = s.substr(4);
+      ++counts[s];
+    }
+  } catch (...) {}
+  std::string best;
+  int best_n = 0;
+  for (const auto& kv : counts) {
+    if (kv.second > best_n ||
+        (kv.second == best_n && kv.first.size() > best.size())) {
+      best_n = kv.second;
+      best = kv.first;
+    }
+  }
+  return best;
+}
+
 }  // namespace
 
 //' Parse one SIU director's-report HTML page into the 64-column schema
@@ -416,23 +457,24 @@ Rcpp::CharacterVector siu_parse_report(std::string html, int drid,
     f["date_siu_notified_raw"] = notif_date;
     f["date_siu_notified_iso"] = to_iso(notif_date);
   }
-  std::string service = rx1(
-    investigation,
-    "([A-Z][A-Za-z.'\\-]*(?: [A-Z][A-Za-z.'\\-]*){0,4} Police(?: Service)?)"
-    "\\s*\\(");
-  if (service.empty())
-    service = rx1(full,
-      "([A-Z][A-Za-z.'\\-]*(?: [A-Z][A-Za-z.'\\-]*){0,4} "
-      "Police(?: Service)?) \\(");
-  if (service.rfind("the ", 0) == 0 || service.rfind("The ", 0) == 0)
-    service = service.substr(4);
+  std::string service = modal_service(investigation);
+  if (service.empty()) service = modal_service(full);
   if (!service.empty()) {
     f["police_service"] = service;
     f["notifying_party"] = service;
   }
 
-  // Incident date: first date in the Analysis section.
-  const std::string inc_date = first_date(analysis);
+  // Incident date: in "The Investigation" the first date is the SIU
+  // notification and the second is the incident itself; fall back to
+  // the Incident Narrative, then the Analysis section.
+  std::string inc_date;
+  {
+    const std::vector<std::string> idates = all_dates(investigation);
+    if (idates.size() >= 2) inc_date = idates[1];
+    if (inc_date.empty()) inc_date = first_date(narrative);
+    if (inc_date.empty()) inc_date = first_date(analysis);
+    if (inc_date.empty() && !idates.empty()) inc_date = idates[0];
+  }
   if (!inc_date.empty()) {
     f["date_of_incident_raw"] = inc_date;
     f["date_of_incident_iso"] = to_iso(inc_date);
@@ -447,6 +489,12 @@ Rcpp::CharacterVector siu_parse_report(std::string html, int drid,
   }
   std::string dname = rx1(
     full, "(?:approved by|signed by)\\s+([A-Z][A-Za-z.'\\- ]+?)\\s+Director");
+  if (dname.empty())
+    dname = rx1(full, "([A-Z][a-z]+(?: [A-Z]\\.?)? [A-Z][a-z]+),?\\s+"
+                      "Director\\s+Special Investigations Unit");
+  if (dname.empty())
+    dname = rx1(full, "Director,?\\s+Special Investigations Unit\\s+"
+                      "([A-Z][a-z]+(?: [A-Z]\\.?)? [A-Z][a-z]+)");
   f["directors_name"] = dname;
 
   // Official / witness counts.
@@ -476,9 +524,22 @@ Rcpp::CharacterVector siu_parse_report(std::string html, int drid,
       } catch (...) {}
       return c;
     };
-    const int male = count("he") + count("his") + count("him");
-    const int female = count("she") + count("her");
-    if (male + female >= 3)
+    const int male = count("he") + count("his") + count("him") +
+                     count("man") + count("boy") + count("male");
+    const int female = count("she") + count("her") + count("woman") +
+                       count("girl") + count("female");
+    const std::string lc = n;  // narrative + analysis
+    const bool nonbinary =
+      lc.find("non-binary") != std::string::npos ||
+      lc.find("nonbinary") != std::string::npos ||
+      lc.find("transgender") != std::string::npos ||
+      lc.find("two-spirit") != std::string::npos;
+    // Sex/gender is not binary: an explicit non-binary / transgender /
+    // two-spirit signal wins; otherwise the dominant gendered-term
+    // count decides; an indeterminate page is left blank.
+    if (nonbinary)
+      f["sex_gender_affected"] = "Non-binary";
+    else if (male + female >= 3)
       f["sex_gender_affected"] = (male >= female) ? "Male" : "Female";
   }
   f["location_of_call"] = squeeze(rx1(full,

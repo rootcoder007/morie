@@ -13,8 +13,8 @@
 #' * TPS: Toronto Police Open Data ArcGIS REST. Use
 #'   `morie_fetch_tps(category = "Assault")`.
 #' * SIU: Ontario SIU Director's Reports site. Use
-#'   `morie_fetch_siu()` which scrapes the public reports site on
-#'   demand (per-user, since redistribution of the scraped corpus is
+#'   `morie_fetch_siu()` which parses the public reports site on
+#'   demand (per-user, since redistribution of the parsed corpus is
 #'   not clearly licensed).
 #'
 #' @return The on-demand fetchers (\code{morie_fetch_tps()},
@@ -182,49 +182,5 @@ morie_fetch_tps <- function(
 }
 
 
-# ---------------------------------------------------------------------------
-# SIU on-demand scraper (placeholder wrapper around the Python implementation)
-# ---------------------------------------------------------------------------
-
-#' Fetch Ontario SIU Director's Reports into a local CSV
-#'
-#' R wrapper around the Python `morie.siu_fetch.fetch_siu_cases()`
-#' on-demand scraper. The R version delegates via `reticulate` so the
-#' regex / HTML parsing lives in a single canonical location.
-#'
-#' The scraped corpus is NOT shipped with the package; each user runs
-#' the scraper themselves, which is unambiguously fair use of public
-#' oversight reports.
-#'
-#' @param years Optional integer vector of years to scrape. `NULL`
-#'   (default) scrapes the full unfiltered index.
-#' @param cache_dir Output directory (default `"~/.cache/morie/siu"`).
-#' @param overwrite Logical; if `FALSE` and `SIU.csv` exists, returns
-#'   its path without rescraping.
-#' @return Path to the populated SIU.csv.
-#' @examples
-#' \dontrun{
-#'   # Network: scrapes the Ontario SIU Director's Reports site.
-#'   csv <- morie_fetch_siu(years = 2023:2024,
-#'                          cache_dir = tempdir())
-#'   siu <- utils::read.csv(csv)
-#'   table(siu$year)
-#' }
-#' @export
-morie_fetch_siu <- function(
-  years = NULL,
-  cache_dir = "~/.cache/morie/siu",
-  overwrite = FALSE
-) {
-  if (!requireNamespace("reticulate", quietly = TRUE)) {
-    stop("reticulate required for morie_fetch_siu().")
-  }
-  py <- reticulate::import("morie.siu_fetch", convert = FALSE)
-  out <- py$fetch_siu_cases(
-    years = if (is.null(years)) NULL else as.integer(years),
-    cache_dir = path.expand(cache_dir),
-    overwrite = overwrite,
-    progress = TRUE
-  )
-  as.character(out)
-}
+# morie_fetch_siu() now lives in R/siu.R -- it drives the all-C/C++
+# SIU parser (src/siu_parser.cpp) instead of the Python module.

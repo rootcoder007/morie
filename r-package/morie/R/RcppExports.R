@@ -35,7 +35,7 @@ morie_hawkes_ll_gamma_const_cpp <- function(t, T, a0, eta, alpha, beta) {
 
 #' Fetch a single URL over HTTP(S) via libcurl
 #'
-#' Internal building block of the SIU scraper. Returns the response
+#' Internal building block of the SIU parser. Returns the response
 #' body, or an empty string on any transport-level failure.
 #'
 #' @param url URL to fetch.

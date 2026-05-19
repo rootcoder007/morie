@@ -378,6 +378,7 @@ Collate:
   'sglm.R'
   'sgnpw.R'
   'signal.R'
+  'siu.R'
   'smixd.R'
   'sobls.R'
   'spblk.R'
