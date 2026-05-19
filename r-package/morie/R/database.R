@@ -537,11 +537,13 @@ morie_userguide <- function(name = NULL) {
 #' }
 #' @export
 morie_download_bootstrap <- function(survey = "all", limit = 32000L, db_path = NULL) {
+  # Current short catalog keys (see morie_dataset_catalog()); the older
+  # oc_<survey>_<year>_bootstrap long keys are no longer in the catalog.
   bootstrap_keys <- list(
-    csads_2021 = "oc_csads_2021_bootstrap",
-    csads_2023 = "oc_csads_2023_bootstrap",
-    csus_2019  = "oc_csus_2019_bootstrap",
-    csus_2023  = "oc_csus_2023_bootstrap"
+    csads_2021 = "ocs22bt",
+    csads_2023 = "ocs24bt",
+    csus_2019  = "cu20bt",
+    csus_2023  = "cu23bt"
   )
   if (survey == "all") {
     targets <- unlist(bootstrap_keys, use.names = FALSE)
