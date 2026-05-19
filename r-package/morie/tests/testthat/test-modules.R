@@ -3,11 +3,13 @@ test_that("list_morie_modules exposes implemented module names", {
   expect_true(all(c("power-design", "propensity-scores", "ebac-selection-adjustment-ipw") %in% mods$name))
 })
 
-test_that("morie_load_dataset loads CPADS from built-in DB", {
-  skip_if_not(requireNamespace("DBI", quietly = TRUE), "DBI not installed")
-  skip_if_not(requireNamespace("RSQLite", quietly = TRUE), "RSQLite not installed")
+test_that("morie_load_dataset resolves CPADS via the catalog", {
+  # Resolution tiers: cache -> local file -> CKAN API (catalog-driven,
+  # no built-in DB required). On an offline machine with no local copy
+  # the dataset is genuinely unavailable, so this is a legitimate skip.
   dat <- tryCatch(morie_load_dataset("cpads_2021"), error = function(e) NULL)
-  skip_if(is.null(dat), "Built-in DB not available")
+  skip_if(is.null(dat),
+          "CPADS dataset not available (no cache / local file / network)")
   expect_true(nrow(dat) > 0)
   expect_true("SEQID" %in% names(dat) || "weight" %in% names(dat))
 })
