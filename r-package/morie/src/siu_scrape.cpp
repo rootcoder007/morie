@@ -9,8 +9,14 @@
 
 #include <Rcpp.h>
 #include <curl/curl.h>
+#include <algorithm>
+#include <map>
+#include <regex>
 #include <string>
 #include <vector>
+
+// parser_version stamped into every emitted row.
+#define MORIE_SIU_PARSER_VERSION "0.2.0"
 
 namespace {
 
@@ -169,5 +175,347 @@ Rcpp::CharacterVector siu_http_get_many(Rcpp::CharacterVector urls,
 
   curl_multi_cleanup(multi);
   for (Req* r : reqs) delete r;
+  return out;
+}
+
+// ===========================================================================
+// HTML parsing -- SIU director's-report pages -> the 64-column schema.
+// ===========================================================================
+
+namespace {
+
+// Canonical 64-column order of the SIU dataset.
+const std::vector<std::string> kSiuCols = {
+  "case_number", "drid", "nrid", "source_url_report", "source_url_news",
+  "scraped_at_utc", "parser_version", "date_of_incident_iso",
+  "date_of_incident_raw", "time_of_incident_raw", "date_of_injury_iso",
+  "date_of_injury_raw", "incident_to_injury_raw", "date_siu_notified_iso",
+  "date_siu_notified_raw", "time_of_notification_raw", "notifying_party",
+  "notifying_party_other_text", "date_of_director_decision_iso",
+  "date_of_director_decision_raw", "time_of_director_decision_raw",
+  "siu_investigators", "siu_forensics_investigators", "police_service",
+  "number_of_officers_involved", "location_of_call",
+  "type_of_building_or_scene", "reason_for_interaction", "injuries_sustained",
+  "injuries_other_text", "specific_injuries", "location_of_treatment",
+  "number_of_affected_persons", "sex_gender_affected", "age_affected",
+  "affected_interviewed", "date_of_affected_interview_iso",
+  "date_of_affected_interview_raw", "number_of_civilian_witnesses",
+  "date_of_witness_interview_raw", "number_of_subject_officials",
+  "subject_official_interviewed_or_notes", "date_of_subject_interview_raw",
+  "number_of_witness_officials", "date_of_witness_official_interview_raw",
+  "evidence_types", "evidence_other_text", "evidence_features",
+  "narrative_summary", "relevant_legislation", "legislation_other_text",
+  "weapons_or_force_used", "weapons_other_text", "charges_recommended",
+  "directors_decision_reasonable", "supplemental_materials",
+  "news_links_extra", "mental_health_or_race_indications", "_language",
+  "news_release_title", "news_release_date_iso", "news_release_date_raw",
+  "news_release_summary", "directors_name"
+};
+
+// Decode the HTML entities that occur in SIU pages.
+std::string decode_entities(std::string s) {
+  struct E { const char* k; const char* v; };
+  static const E named[] = {
+    {"&amp;", "&"}, {"&lt;", "<"}, {"&gt;", ">"}, {"&quot;", "\""},
+    {"&apos;", "'"}, {"&nbsp;", " "}, {"&rsquo;", "'"}, {"&lsquo;", "'"},
+    {"&ldquo;", "\""}, {"&rdquo;", "\""}, {"&ndash;", "-"}, {"&mdash;", "-"},
+    {"&hellip;", "..."}, {"&eacute;", "\xC3\xA9"}, {"&egrave;", "\xC3\xA8"},
+    {"&agrave;", "\xC3\xA0"}, {"&ccedil;", "\xC3\xA7"}, {"&acirc;", "\xC3\xA2"}
+  };
+  for (const E& e : named) {
+    std::string::size_type p = 0;
+    while ((p = s.find(e.k, p)) != std::string::npos) {
+      s.replace(p, std::string(e.k).size(), e.v);
+      p += std::string(e.v).size();
+    }
+  }
+  // Numeric entities &#NN; / &#xNN; -- decode the ASCII range; map a few
+  // common Unicode punctuation points to their ASCII equivalents.
+  static const std::regex num_re("&#(x?[0-9A-Fa-f]+);");
+  std::string out;
+  out.reserve(s.size());
+  auto begin = std::sregex_iterator(s.begin(), s.end(), num_re);
+  auto end = std::sregex_iterator();
+  std::string::size_type last = 0;
+  for (auto it = begin; it != end; ++it) {
+    out.append(s, last, it->position() - last);
+    std::string tok = (*it)[1].str();
+    long cp = (tok[0] == 'x') ? std::strtol(tok.c_str() + 1, nullptr, 16)
+                              : std::strtol(tok.c_str(), nullptr, 10);
+    if (cp == 8217 || cp == 8216 || cp == 8242) out.push_back('\'');
+    else if (cp == 8220 || cp == 8221) out.push_back('"');
+    else if (cp == 8211 || cp == 8212) out.push_back('-');
+    else if (cp >= 32 && cp < 127) out.push_back(static_cast<char>(cp));
+    else out.push_back(' ');
+    last = it->position() + it->length();
+  }
+  out.append(s, last, std::string::npos);
+  return out;
+}
+
+// Collapse runs of whitespace to single spaces and trim.
+std::string squeeze(const std::string& s) {
+  std::string out;
+  out.reserve(s.size());
+  bool sp = false;
+  for (char c : s) {
+    const bool ws = (c == ' ' || c == '\t' || c == '\n' || c == '\r' ||
+                     c == '\f' || c == '\v');
+    if (ws) { sp = true; continue; }
+    if (sp && !out.empty()) out.push_back(' ');
+    sp = false;
+    out.push_back(c);
+  }
+  return out;
+}
+
+// Strip all HTML markup from a fragment and return decoded plain text.
+std::string html_to_text(std::string h) {
+  h = std::regex_replace(h, std::regex("<script[^>]*>.*?</script>",
+                                       std::regex::icase), " ");
+  h = std::regex_replace(h, std::regex("<style[^>]*>.*?</style>",
+                                       std::regex::icase), " ");
+  h = std::regex_replace(h, std::regex("<[^>]+>"), " ");
+  return squeeze(decode_entities(h));
+}
+
+// Plain text of the report section whose <h2> carries id="section_<n>".
+std::string section_text(const std::string& html, int n) {
+  const std::string anchor = "id=\"section_" + std::to_string(n) + "\"";
+  std::string::size_type a = html.find(anchor);
+  if (a == std::string::npos) return std::string();
+  std::string::size_type body = html.find('>', a);
+  if (body == std::string::npos) return std::string();
+  ++body;
+  std::string::size_type b = html.find("<h2", body);
+  if (b == std::string::npos) b = html.size();
+  return html_to_text(html.substr(body, b - body));
+}
+
+// First capture group of `pat` in `text`, or "" when there is no match.
+std::string rx1(const std::string& text, const std::string& pat) {
+  try {
+    std::smatch m;
+    const std::regex re(pat, std::regex::icase);
+    if (std::regex_search(text, m, re) && m.size() > 1) return m[1].str();
+  } catch (...) {}
+  return std::string();
+}
+
+// Highest N among "<label> #N" tokens; 1 if the bare label occurs; else "".
+std::string label_count(const std::string& text, const std::string& label) {
+  int hi = 0;
+  try {
+    const std::regex re(label + "\\s*#\\s*(\\d+)");
+    auto begin = std::sregex_iterator(text.begin(), text.end(), re);
+    for (auto it = begin; it != std::sregex_iterator(); ++it) {
+      const int v = std::atoi((*it)[1].str().c_str());
+      if (v > hi) hi = v;
+    }
+  } catch (...) {}
+  if (hi > 0) return std::to_string(hi);
+  try {
+    if (std::regex_search(text, std::regex("\\b" + label + "\\b")))
+      return "1";
+  } catch (...) {}
+  return std::string();
+}
+
+const char* kMonths[] = {"january", "february", "march", "april", "may",
+                         "june", "july", "august", "september", "october",
+                         "november", "december"};
+
+// "May 8, 2026" -> "2026-05-08"; "" when the input is not a month-day-year.
+std::string to_iso(const std::string& raw) {
+  std::smatch m;
+  if (!std::regex_search(raw, m,
+        std::regex("([A-Za-z]+)\\s+(\\d{1,2}),?\\s+(\\d{4})")))
+    return std::string();
+  std::string mon = m[1].str();
+  std::transform(mon.begin(), mon.end(), mon.begin(), ::tolower);
+  int mi = 0;
+  for (int i = 0; i < 12; ++i) if (mon == kMonths[i]) { mi = i + 1; break; }
+  if (mi == 0) return std::string();
+  char buf[16];
+  std::snprintf(buf, sizeof(buf), "%s-%02d-%02d", m[3].str().c_str(), mi,
+                std::atoi(m[2].str().c_str()));
+  return std::string(buf);
+}
+
+// First "Month D, YYYY" date appearing in `text`.
+std::string first_date(const std::string& text) {
+  return rx1(text, "([A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4})");
+}
+
+}  // namespace
+
+//' Parse one SIU director's-report HTML page into the 64-column schema
+//'
+//' @param html The report page HTML.
+//' @param drid The director's-report id.
+//' @param url The source URL of the report page.
+//' @return A named character vector with the 64 SIU dataset columns;
+//'   report-derived fields are populated, news fields left empty.
+//' @keywords internal
+// [[Rcpp::export(.siu_parse_report)]]
+Rcpp::CharacterVector siu_parse_report(std::string html, int drid,
+                                       std::string url) {
+  std::map<std::string, std::string> f;
+  f["drid"] = std::to_string(drid);
+  f["source_url_report"] = url;
+  f["parser_version"] = MORIE_SIU_PARSER_VERSION;
+  {
+    std::time_t t = std::time(nullptr);
+    std::tm gm;
+#ifdef _WIN32
+    gmtime_s(&gm, &t);
+#else
+    gmtime_r(&t, &gm);
+#endif
+    char buf[32];
+    std::strftime(buf, sizeof(buf), "%Y-%m-%dT%H:%M:%SZ", &gm);
+    f["scraped_at_utc"] = buf;
+  }
+
+  // Language: English vs French boilerplate header.
+  if (html.find("Mandate of the SIU") != std::string::npos)
+    f["_language"] = "en";
+  else if (html.find("Mandat de l'UES") != std::string::npos ||
+           html.find("Mandat de l\xE2\x80\x99UES") != std::string::npos)
+    f["_language"] = "fr";
+  else
+    f["_language"] = "unknown";
+
+  const std::string full = html_to_text(html);
+  f["case_number"] = rx1(full, "Case #\\s*([0-9A-Za-z]+-[0-9A-Za-z]+-[0-9]+)");
+
+  const std::string investigation = section_text(html, 4);
+  const std::string narrative = section_text(html, 6);
+  const std::string legislation = section_text(html, 7);
+  std::string analysis = section_text(html, 8);
+  if (analysis.empty()) analysis = section_text(html, 7);  // older layout
+
+  f["narrative_summary"] = narrative;
+  if (!legislation.empty()) f["relevant_legislation"] = legislation;
+
+  // SIU notification: first date in "The Investigation"; the notifying
+  // service is the police service named before "contacted the SIU".
+  const std::string notif_date = first_date(investigation);
+  if (!notif_date.empty()) {
+    f["date_siu_notified_raw"] = notif_date;
+    f["date_siu_notified_iso"] = to_iso(notif_date);
+  }
+  std::string service = rx1(
+    investigation,
+    "([A-Z][A-Za-z.'\\-]*(?: [A-Z][A-Za-z.'\\-]*){0,4} Police(?: Service)?)"
+    "\\s*\\(");
+  if (service.empty())
+    service = rx1(full,
+      "([A-Z][A-Za-z.'\\-]*(?: [A-Z][A-Za-z.'\\-]*){0,4} "
+      "Police(?: Service)?) \\(");
+  if (service.rfind("the ", 0) == 0 || service.rfind("The ", 0) == 0)
+    service = service.substr(4);
+  if (!service.empty()) {
+    f["police_service"] = service;
+    f["notifying_party"] = service;
+  }
+
+  // Incident date: first date in the Analysis section.
+  const std::string inc_date = first_date(analysis);
+  if (!inc_date.empty()) {
+    f["date_of_incident_raw"] = inc_date;
+    f["date_of_incident_iso"] = to_iso(inc_date);
+  }
+
+  // Director's decision date + name from the signature block.
+  const std::string dec_date = rx1(
+    full, "Date:\\s*([A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4})");
+  if (!dec_date.empty()) {
+    f["date_of_director_decision_raw"] = dec_date;
+    f["date_of_director_decision_iso"] = to_iso(dec_date);
+  }
+  std::string dname = rx1(
+    full, "(?:approved by|signed by)\\s+([A-Z][A-Za-z.'\\- ]+?)\\s+Director");
+  f["directors_name"] = dname;
+
+  // Official / witness counts.
+  const std::string so = label_count(investigation + " " + narrative, "SO");
+  const std::string wo = label_count(investigation + " " + narrative, "WO");
+  const std::string cw = label_count(investigation + " " + narrative, "CW");
+  f["number_of_subject_officials"] = so;
+  f["number_of_witness_officials"] = wo;
+  f["number_of_civilian_witnesses"] = cw;
+  if (!so.empty()) {
+    int tot = std::atoi(so.c_str());
+    if (!wo.empty()) tot += std::atoi(wo.c_str());
+    f["number_of_officers_involved"] = std::to_string(tot);
+  }
+
+  // Affected-person attributes from the narrative.
+  const std::string age = rx1(full, "(\\d{1,3})[ -]year[ -]old");
+  if (!age.empty()) f["age_affected"] = age;
+  {
+    const std::string n = narrative + " " + analysis;
+    auto count = [&](const std::string& w) {
+      int c = 0;
+      try {
+        const std::regex re("\\b" + w + "\\b", std::regex::icase);
+        for (auto it = std::sregex_iterator(n.begin(), n.end(), re);
+             it != std::sregex_iterator(); ++it) ++c;
+      } catch (...) {}
+      return c;
+    };
+    const int male = count("he") + count("his") + count("him");
+    const int female = count("she") + count("her");
+    if (male + female >= 3)
+      f["sex_gender_affected"] = (male >= female) ? "Male" : "Female";
+  }
+  f["location_of_call"] = squeeze(rx1(full,
+    "in the area of (.{5,110}?,\\s*[A-Z][a-z]+)"));
+
+  // Director's decision outcome.
+  if (analysis.find("no reasonable grounds") != std::string::npos)
+    f["directors_decision_reasonable"] = "No";
+  else if (analysis.find("reasonable grounds to believe") != std::string::npos)
+    f["directors_decision_reasonable"] = "Yes";
+  {
+    const std::string ch = rx1(analysis,
+      "(no charges?[^.]{0,60}|charges? (?:will|would|have|has|were|was)"
+      "[^.]{0,60}|the charge of [^.]{0,60})");
+    if (!ch.empty()) f["charges_recommended"] = squeeze(ch);
+  }
+
+  // Mental-health / race indications mentioned in the narrative.
+  {
+    const std::string n = full;
+    std::string tags;
+    const char* kw[] = {"mental health", "Black", "Indigenous",
+                        "First Nation", "racializ", "racial", "in crisis"};
+    for (const char* k : kw) {
+      if (n.find(k) != std::string::npos) {
+        if (!tags.empty()) tags += "; ";
+        tags += k;
+      }
+    }
+    f["mental_health_or_race_indications"] = tags;
+  }
+
+  // News release linked from the report page.
+  {
+    std::smatch m;
+    if (std::regex_search(html, m, std::regex(
+          "News Releases for this Case:.*?<a[^>]*>(.*?)</a>",
+          std::regex::icase)))
+      f["news_release_title"] = squeeze(html_to_text(m[1].str()));
+  }
+
+  Rcpp::CharacterVector out(kSiuCols.size());
+  Rcpp::CharacterVector nm(kSiuCols.size());
+  for (std::size_t i = 0; i < kSiuCols.size(); ++i) {
+    nm[i] = kSiuCols[i];
+    const auto it = f.find(kSiuCols[i]);
+    out[i] = (it == f.end()) ? "" : it->second;
+  }
+  out.attr("names") = nm;
   return out;
 }

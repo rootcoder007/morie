@@ -68,3 +68,15 @@ morie_hawkes_ll_gamma_const_cpp <- function(t, T, a0, eta, alpha, beta) {
     .Call(`_morie_siu_http_get_many`, urls, concurrency, timeout_s)
 }
 
+#' Parse one SIU director's-report HTML page into the 64-column schema
+#'
+#' @param html The report page HTML.
+#' @param drid The director's-report id.
+#' @param url The source URL of the report page.
+#' @return A named character vector with the 64 SIU dataset columns;
+#'   report-derived fields are populated, news fields left empty.
+#' @keywords internal
+.siu_parse_report <- function(html, drid, url) {
+    .Call(`_morie_siu_parse_report`, html, drid, url)
+}
+

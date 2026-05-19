@@ -156,6 +156,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// siu_parse_report
+Rcpp::CharacterVector siu_parse_report(std::string html, int drid, std::string url);
+RcppExport SEXP _morie_siu_parse_report(SEXP htmlSEXP, SEXP dridSEXP, SEXP urlSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type html(htmlSEXP);
+    Rcpp::traits::input_parameter< int >::type drid(dridSEXP);
+    Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
+    rcpp_result_gen = Rcpp::wrap(siu_parse_report(html, drid, url));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_morie_morie_normal_pdf_cpp", (DL_FUNC) &_morie_morie_normal_pdf_cpp, 3},
@@ -169,6 +182,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_morie_siu_http_get", (DL_FUNC) &_morie_siu_http_get, 2},
     {"_morie_siu_curl_version", (DL_FUNC) &_morie_siu_curl_version, 0},
     {"_morie_siu_http_get_many", (DL_FUNC) &_morie_siu_http_get_many, 3},
+    {"_morie_siu_parse_report", (DL_FUNC) &_morie_siu_parse_report, 3},
     {NULL, NULL, 0}
 };
 
