@@ -27,6 +27,12 @@ gradient_boosting_genomic <- function(x, y, markers, n_estimators = 100,
   M <- as.matrix(markers)
   feats <- if (is.null(x) || (is.numeric(x) && length(x) == 0)) M
            else cbind(as.matrix(x), M)
+  # A zero-variance predictor carries no signal and makes gbm warn
+  # ("variable has no variation"); drop any constant columns first.
+  if (ncol(feats) > 1L) {
+    keep <- apply(feats, 2L, function(col) stats::var(col) > 0)
+    if (any(keep) && !all(keep)) feats <- feats[, keep, drop = FALSE]
+  }
   if (requireNamespace("gbm", quietly = TRUE)) {
     df <- data.frame(y = y, feats); colnames(df)[-1] <- paste0("V", seq_len(ncol(feats)))
     gb <- gbm::gbm(y ~ ., data = df, distribution = "gaussian",

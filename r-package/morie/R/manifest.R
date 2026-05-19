@@ -46,8 +46,11 @@ validate_outputs_manifest <- function(manifest, strict = TRUE) {
 #' @return Manifest data frame.
 #' @export
 read_outputs_manifest <- function(project_root = NULL, manifest_path = NULL, validate = TRUE) {
-  paths <- morie_paths(project_root)
-  path <- manifest_path %||% paths$outputs_manifest
+  # When an explicit manifest_path is supplied, do not require a project
+  # root (find_project_root() fails under R CMD check / covr where the
+  # working directory is a temporary install tree).  `%||%` is lazy, so
+  # morie_paths() is only consulted when manifest_path is NULL.
+  path <- manifest_path %||% morie_paths(project_root)$outputs_manifest
 
   if (!file.exists(path)) {
     stop("Outputs manifest not found: ", path, call. = FALSE)

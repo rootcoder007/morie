@@ -29,7 +29,8 @@ nbeats_basis <- function(x, horizon = 1, n_trend = 3, n_season = 5,
   coef <- lsfit(Xmat, y, intercept = FALSE)$coef
   fitted_y <- as.numeric(Xmat %*% coef)
   tf <- seq(n, n + horizon - 1)
-  Tf <- sapply(0:n_trend, function(k) tf^k)
+  Tf <- matrix(vapply(0:n_trend, function(k) tf^k, numeric(length(tf))),
+               nrow = length(tf))
   Sf <- do.call(cbind, lapply(seq_len(n_season), function(j)
     cbind(sin(2 * pi * j * tf / period),
           cos(2 * pi * j * tf / period))))

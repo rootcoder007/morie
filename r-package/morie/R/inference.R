@@ -105,7 +105,11 @@ chi_square_test <- function(observed, expected = NULL) {
     result <- stats::chisq.test(observed)
     v <- cramers_v(as.matrix(observed))
   } else {
-    result <- stats::chisq.test(observed, p = expected)
+    result <- if (is.null(expected)) {
+      stats::chisq.test(observed)
+    } else {
+      stats::chisq.test(observed, p = expected)
+    }
     v <- NA_real_
   }
   list(

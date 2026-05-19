@@ -226,6 +226,10 @@ morie_load_cpads <- function(db_path = NULL, use_ckan = TRUE) {
 #' @param dataset_key One of \code{"cpads"}, \code{"csads"}, \code{"csus"}.
 #' @param limit Max records to fetch.
 #' @param db_path Optional override for the database path.
+#' @param resource_id Optional CKAN datastore resource id. When supplied
+#'   (e.g. from \code{morie_dataset_catalog()$ckan_resource_id}) it is used
+#'   directly, so any catalogued dataset can be fetched without a built-in
+#'   database; \code{dataset_key} then only labels the cache table.
 #' @return A data.frame.
 #' @examples
 #' \dontrun{
@@ -236,7 +240,8 @@ morie_load_cpads <- function(db_path = NULL, use_ckan = TRUE) {
 #'   nrow(cpads)
 #' }
 #' @export
-morie_fetch_ckan <- function(dataset_key = "cpads", limit = 32000L, db_path = NULL) {
+morie_fetch_ckan <- function(dataset_key = "cpads", limit = 32000L, db_path = NULL,
+                             resource_id = NULL) {
   ckan_base <- "https://open.canada.ca/data/en/api/3/action/datastore_search"
 
   resource_ids <- list(
@@ -251,11 +256,15 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = 32000L, db_path = NU
     csus  = "https://open.canada.ca/data/api/action/package_show?id=65e2d45e-efc6-4c29-9a9b-db59bc96aa0e"
   )
 
-  rid <- resource_ids[[dataset_key]]
-  if (is.null(rid)) {
+  # A catalog-supplied resource id is used directly; otherwise fall back
+  # to the survey-keyed lookup, then to package-metadata resolution.
+  rid <- if (!is.null(resource_id) && nzchar(resource_id)) resource_id
+         else resource_ids[[dataset_key]]
+  if (is.null(rid) || !nzchar(rid)) {
     # Resolve from package metadata.
     meta_url <- metadata_urls[[dataset_key]]
-    if (is.null(meta_url)) stop("Unknown dataset: ", dataset_key, call. = FALSE)
+    if (is.null(meta_url))
+      stop("Unknown dataset / no CKAN resource id: ", dataset_key, call. = FALSE)
     meta_raw <- readLines(url(meta_url), warn = FALSE)
     meta <- jsonlite::fromJSON(paste(meta_raw, collapse = ""))
     resources <- meta$result$resources
@@ -372,10 +381,14 @@ morie_load_dataset <- function(key, db_path = NULL) {
     return(data)
   }
 
-  # 3. CKAN API.
+  # 3. CKAN API -- resolved directly from the catalog resource id, matching
+  #    the Python load_dataset() design (no built-in database required).
   if (nzchar(entry$ckan_resource_id)) {
     message("Fetching ", matched, " from CKAN API...")
-    data <- morie_fetch_ckan(entry$survey, db_path = db_path)
+    data <- morie_fetch_ckan(dataset_key = matched,
+                             resource_id = entry$ckan_resource_id,
+                             db_path = db_path)
+    morie_cache_store(data, entry$table_name, db_path)
     return(data)
   }
 

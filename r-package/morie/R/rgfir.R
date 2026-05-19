@@ -40,9 +40,9 @@ rgfir <- function(x, cutoff, order = 51L, fs = 1.0, window = "hamming") {
     taps <- signal::fir1(order - 1L, fc, type = "low", window = win_fn)
     padlen <- 3L * order
     if (length(x) > padlen) {
-      y <- as.numeric(signal::filtfilt(taps, 1, x))
+      y <- as.numeric(signal::filtfilt(taps, x))
     } else {
-      y <- as.numeric(signal::filter(taps, 1, x))
+      y <- as.numeric(signal::filter(taps, x))
     }
     return(list(signal = y, taps = taps, order = order,
                 cutoff = cutoff, fs = fs, window = window))

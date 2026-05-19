@@ -46,11 +46,45 @@ NULL
 morie_sync_rng <- function(seed) {
   stopifnot(is.numeric(seed), length(seed) == 1L, seed >= 0,
             seed == as.integer(seed))
-  set.seed(as.integer(seed), kind = "L'Ecuyer-CMRG")
   env <- new.env(parent = emptyenv())
-  env$rnorm  <- function(n, mean = 0, sd = 1) stats::rnorm(n, mean, sd)
-  env$runif  <- function(n, min = 0, max = 1) stats::runif(n, min, max)
-  env$sample <- function(x, size, replace = FALSE) base::sample(x, size, replace)
+
+  # The synchronised L'Ecuyer-CMRG stream is kept privately in
+  # `env$.state` and swapped into the global RNG only for the duration
+  # of a single draw, so morie_sync_rng() never leaves the caller's
+  # global RNG kind or seed mutated.
+  .restore <- function(kind, seed_val) {
+    RNGkind(kind[1L], kind[2L], kind[3L])
+    if (is.null(seed_val)) {
+      if (exists(".Random.seed", globalenv(), inherits = FALSE))
+        rm(".Random.seed", envir = globalenv())
+    } else {
+      assign(".Random.seed", seed_val, envir = globalenv())
+    }
+  }
+  old_kind <- RNGkind()
+  old_seed <- if (exists(".Random.seed", globalenv(), inherits = FALSE))
+    get(".Random.seed", globalenv()) else NULL
+  set.seed(as.integer(seed), kind = "L'Ecuyer-CMRG")
+  env$.state <- get(".Random.seed", globalenv())
+  .restore(old_kind, old_seed)
+
+  .draw <- function(fun) {
+    cur_kind <- RNGkind()
+    cur_seed <- if (exists(".Random.seed", globalenv(), inherits = FALSE))
+      get(".Random.seed", globalenv()) else NULL
+    on.exit(.restore(cur_kind, cur_seed), add = TRUE)
+    RNGkind("L'Ecuyer-CMRG")
+    assign(".Random.seed", env$.state, envir = globalenv())
+    out <- fun()
+    env$.state <- get(".Random.seed", globalenv())
+    out
+  }
+  env$rnorm  <- function(n, mean = 0, sd = 1)
+    .draw(function() stats::rnorm(n, mean, sd))
+  env$runif  <- function(n, min = 0, max = 1)
+    .draw(function() stats::runif(n, min, max))
+  env$sample <- function(x, size, replace = FALSE)
+    .draw(function() base::sample(x, size, replace))
   env
 }
 

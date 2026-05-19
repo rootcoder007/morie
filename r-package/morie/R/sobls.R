@@ -16,8 +16,12 @@ sobls <- function(N = 128L, d = 1L, f = NULL, scramble = TRUE, seed = 42L) {
   sample <- NULL
   if (requireNamespace("randtoolbox", quietly = TRUE)) {
     sobol_fn <- getFromNamespace("sobol", "randtoolbox")
+    # randtoolbox's Owen scrambling is disabled upstream in current
+    # releases; requesting it (scrambling = 1) only emits a spurious
+    # "scrambling is currently disabled" warning while returning the
+    # unscrambled sequence anyway, so request 0 unconditionally.
     sample <- sobol_fn(n = as.integer(N), dim = as.integer(d),
-                       scrambling = if (scramble) 1L else 0L, seed = seed)
+                       scrambling = 0L, seed = seed)
     if (!is.matrix(sample)) sample <- matrix(sample, ncol = d)
   } else {
     # Halton sequence fallback (pure R)

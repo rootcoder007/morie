@@ -18,6 +18,7 @@ vecm <- function(Y, k_ar = 1, coint_rank = 1) {
   Tt <- nrow(Y); k <- ncol(Y)
   if (Tt < 20 || k < 2 || coint_rank < 1 || coint_rank > k)
     stop("Need T>=20, 1<=rank<=k.")
+  if (is.null(colnames(Y))) colnames(Y) <- paste0("y", seq_len(k))
   if (requireNamespace("urca", quietly = TRUE) &&
       requireNamespace("vars", quietly = TRUE)) {
     jres <- urca::ca.jo(Y, type = "trace", ecdet = "none",
@@ -26,7 +27,8 @@ vecm <- function(Y, k_ar = 1, coint_rank = 1) {
     return(list(alpha = jres@V[, seq_len(coint_rank), drop = FALSE],
                 beta  = jres@V[, seq_len(coint_rank), drop = FALSE],
                 Gamma = vfit$A,
-                Sigma = summary(jres)$summary,
+                Sigma = tryCatch(stats::cov(stats::residuals(vfit)),
+                                 error = function(e) NA_real_),
                 loglik = NA_real_,
                 n = Tt, k = k, rank = coint_rank,
                 method = "VECM via urca::ca.jo + vars::vec2var"))

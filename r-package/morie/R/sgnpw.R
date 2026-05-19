@@ -31,9 +31,9 @@ sign_test_power <- function(x, mu0 = 0, p_alt = 0.7, alpha = 0.05) {
   ord <- order(null_pmf)
   cum <- 0; reject <- logical(n + 1)
   for (k in ord) {
-    if (cum + null_pmf[k + 1] <= alpha) {
-      reject[k + 1] <- TRUE
-      cum <- cum + null_pmf[k + 1]
+    if (cum + null_pmf[k] <= alpha) {
+      reject[k] <- TRUE
+      cum <- cum + null_pmf[k]
     } else break
   }
   size <- cum

@@ -28,8 +28,12 @@ cokrg <- function(x, y, coords, target,
   x <- as.numeric(x); y <- as.numeric(y); n <- length(x)
   coords <- if (is.matrix(coords)) coords else
     matrix(as.numeric(unlist(coords)), nrow = n)
-  target <- if (is.matrix(target)) target else
-    matrix(as.numeric(unlist(target)), ncol = ncol(coords))
+  if (!is.matrix(target)) {
+    tv <- as.numeric(unlist(target))
+    if (length(tv) %% ncol(coords) != 0L)
+      stop("target/coords dim mismatch")
+    target <- matrix(tv, ncol = ncol(coords), byrow = TRUE)
+  }
   if (length(y) != n || nrow(coords) != n)
     stop("x, y, and coords must have matching n")
   if (ncol(target) != ncol(coords)) stop("target/coords dim mismatch")

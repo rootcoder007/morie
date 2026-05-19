@@ -39,7 +39,7 @@ fwpas_forward_pass_dense <- function(x, w, b, activation = "sigmoid") {
     "none"     = z,
     "sigmoid"  = 1 / (1 + exp(-z)),
     "tanh"     = tanh(z),
-    "relu"     = pmax(0, z),
+    "relu"     = pmax(z, 0),
     "softmax"  = {
       ez <- exp(z - apply(z, 1L, max))
       sweep(ez, 1L, rowSums(ez), "/")

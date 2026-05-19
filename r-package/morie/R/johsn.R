@@ -16,6 +16,7 @@ johansen_cointegration <- function(x, k_ar_diff = 1) {
   Y <- as.matrix(x); if (nrow(Y) < ncol(Y)) Y <- t(Y)
   Tt <- nrow(Y); k <- ncol(Y)
   if (Tt < 20 || k < 2) stop("Need T>=20, k>=2.")
+  if (is.null(colnames(Y))) colnames(Y) <- paste0("y", seq_len(k))
   if (requireNamespace("urca", quietly = TRUE)) {
     jres <- urca::ca.jo(Y, type = "trace", ecdet = "none",
                         K = max(k_ar_diff + 1, 2))

@@ -26,8 +26,9 @@ mixture_of_experts <- function(x, W_gate = NULL, experts = NULL,
     v <- v - max(v); e <- exp(v); e / sum(e)
   }))
   k <- max(1L, min(as.integer(top_k), n_experts))
-  topk_idx <- t(apply(gate, 1L, function(g)
-    order(-g)[seq_len(k)]))
+  topk_idx <- matrix(0L, B, k)
+  for (b in seq_len(B))
+    topk_idx[b, ] <- order(-gate[b, ])[seq_len(k)]
   sparse <- matrix(0, B, n_experts)
   for (b in seq_len(B))
     sparse[b, topk_idx[b, ]] <- gate[b, topk_idx[b, ]]
