@@ -399,7 +399,12 @@
 }
 
 .legacy_reference_root <- function() {
-  file.path(find_project_root(), "migration_files", "one")
+  # The legacy migration tree exists only in a source checkout; an
+  # installed package has no project root. Degrade to NA so callers
+  # (.copy_legacy_artifacts) simply copy nothing rather than erroring.
+  root <- tryCatch(find_project_root(), error = function(e) NA_character_)
+  if (is.na(root)) return(NA_character_)
+  file.path(root, "migration_files", "one")
 }
 
 .copy_legacy_artifacts <- function(relative_paths, output_dir, root = file.path(.legacy_reference_root(), "six", "outputs")) {
@@ -576,10 +581,17 @@
     "Exposure: cannabis_any_use.",
     "See docs/source/modules/20212022-cpads-pumf-user-guide.pdf for source coding notes."
   )
+  # The user-guide PDF lives in a source checkout only; tolerate its
+  # absence (and a missing project root) when run from an installed
+  # package rather than letting the whole report module error out.
+  proj_root <- tryCatch(find_project_root(), error = function(e) NA_character_)
+  user_guide_present <- !is.na(proj_root) && file.exists(file.path(
+    proj_root, "docs", "source", "modules",
+    "20212022-cpads-pumf-user-guide.pdf"))
   audit_tbl <- data.frame(
     check_name = c("outputs_present", "user_guide_reference_present", "cpads_required_variables_present"),
-    value = c(length(output_files), file.exists(file.path(find_project_root(), "docs", "source", "modules", "20212022-cpads-pumf-user-guide.pdf")), all(cpads_contract()$required_variables %in% names(data))),
-    pass = c(length(output_files) > 0, file.exists(file.path(find_project_root(), "docs", "source", "modules", "20212022-cpads-pumf-user-guide.pdf")), all(cpads_contract()$required_variables %in% names(data))),
+    value = c(length(output_files), user_guide_present, all(cpads_contract()$required_variables %in% names(data))),
+    pass = c(length(output_files) > 0, user_guide_present, all(cpads_contract()$required_variables %in% names(data))),
     stringsAsFactors = FALSE
   )
   list(
