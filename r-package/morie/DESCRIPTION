@@ -145,6 +145,7 @@ Collate:
   'ctmed.R'
   'ctrlc.R'
   'data.R'
+  'data_access.R'
   'database.R'
   'dataset_catalog.R'
   'dataset_profile.R'
