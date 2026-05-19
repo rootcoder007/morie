@@ -4,14 +4,26 @@
 \alias{morie_fetch_ckan}
 \title{Fetch data from the CKAN API and cache it}
 \usage{
-morie_fetch_ckan(dataset_key = "cpads", limit = 32000L, db_path = NULL)
+morie_fetch_ckan(
+  dataset_key = "cpads",
+  limit = Inf,
+  db_path = NULL,
+  resource_id = NULL
+)
 }
 \arguments{
 \item{dataset_key}{One of \code{"cpads"}, \code{"csads"}, \code{"csus"}.}
 
-\item{limit}{Max records to fetch.}
+\item{limit}{Maximum records to fetch. The CKAN datastore caps a
+single request at 32000 rows, so larger resources are paged through
+with \code{offset}; the default reads the entire resource.}
 
 \item{db_path}{Optional override for the database path.}
+
+\item{resource_id}{Optional CKAN datastore resource id. When supplied
+(e.g. from \code{morie_dataset_catalog()$ckan_resource_id}) it is used
+directly, so any catalogued dataset can be fetched without a built-in
+database; \code{dataset_key} then only labels the cache table.}
 }
 \value{
 A data.frame.

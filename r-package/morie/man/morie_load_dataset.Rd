@@ -15,7 +15,8 @@ morie_load_dataset(key, db_path = NULL)
 A data.frame.
 }
 \description{
-Resolution: SQLite cache -> local file ingest -> CKAN API -> error.
+Resolution: built-in DB -> user cache -> local file -> CKAN API ->
+direct download URL -> error.
 Supports fuzzy matching: \code{morie_load_dataset("cpads_2021")} resolves
 to \code{oc_cpads_2021}.
 }

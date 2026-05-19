@@ -7,9 +7,11 @@
 morie_dataset_catalog()
 }
 \value{
-A data.frame with 36 rows (one per dataset) and columns:
+A data.frame with 44 rows (one per dataset) and columns:
 key, name, source, survey, year, format, type, large_file,
-local_path, table_name, ckan_resource_id.
+local_path, table_name, ckan_resource_id, download_url, zip_member.
+The \code{download_url} / \code{zip_member} columns are empty for
+datasets reachable through the SQLite cache or the CKAN datastore.
 }
 \description{
 Returns a data.frame describing every dataset available through the

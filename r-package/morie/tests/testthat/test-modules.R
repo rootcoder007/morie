@@ -32,3 +32,39 @@ test_that("dataset catalog has expected structure", {
   expect_true(nrow(cat) >= 20)
   expect_true(all(c("key", "name", "source", "survey", "table_name") %in% names(cat)))
 })
+
+test_that("catalog exposes download-url columns with well-formed entries", {
+  cat <- morie_dataset_catalog()
+  expect_true(all(c("download_url", "zip_member") %in% names(cat)))
+  dl <- cat[nzchar(cat$download_url), ]
+  expect_true(nrow(dl) > 0)
+  # Every zip download must name a member to extract from the archive.
+  zips <- dl[grepl("\\.zip$", dl$download_url, ignore.case = TRUE), ]
+  expect_true(all(nzchar(zips$zip_member)))
+  # An entry is reachable by at most one remote tier (CKAN xor direct URL).
+  expect_false(any(nzchar(cat$ckan_resource_id) & nzchar(cat$download_url)))
+})
+
+test_that(".morie_fetch_download_url reads direct and zip-bundled files", {
+  skip_on_cran()
+  skip_if(Sys.which("zip") == "", "zip utility not available")
+  csv <- tempfile("morie-dl-", fileext = ".csv")
+  utils::write.csv(data.frame(a = 1:3, b = letters[1:3]), csv,
+                   row.names = FALSE)
+  on.exit(unlink(csv), add = TRUE)
+  direct <- morie:::.morie_fetch_download_url(paste0("file://", csv))
+  expect_s3_class(direct, "data.frame")
+  expect_equal(nrow(direct), 3L)
+  # Bundle the same CSV inside a .zip and round-trip it by member name.
+  zp <- tempfile("morie-dl-", fileext = ".zip")
+  on.exit(unlink(zp), add = TRUE)
+  owd <- getwd()
+  setwd(dirname(csv))
+  on.exit(setwd(owd), add = TRUE)
+  utils::zip(zp, basename(csv), flags = "-q")
+  zipped <- morie:::.morie_fetch_download_url(
+    paste0("file://", zp), zip_member = basename(csv))
+  expect_equal(nrow(zipped), 3L)
+  # A zip download with no member named is an error.
+  expect_error(morie:::.morie_fetch_download_url(paste0("file://", zp)))
+})

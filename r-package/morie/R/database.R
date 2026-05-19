@@ -343,9 +343,50 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
   NULL
 }
 
+# Download a dataset from a direct file URL. Handles plain .csv / .xlsx
+# resources, and a CSV/XLSX member bundled inside a .zip archive (used
+# for open-data files that are not exposed through the CKAN datastore).
+.morie_fetch_download_url <- function(url, zip_member = "") {
+  is_zip <- grepl("\\.zip$", url, ignore.case = TRUE)
+  tmp <- tempfile(fileext = if (is_zip) ".zip" else
+    paste0(".", tools::file_ext(url)))
+  on.exit(unlink(tmp), add = TRUE)
+  utils::download.file(url, tmp, mode = "wb", quiet = TRUE)
+  path <- tmp
+  if (is_zip) {
+    if (!nzchar(zip_member)) {
+      stop("zip_member required to extract from a .zip download",
+           call. = FALSE)
+    }
+    exdir <- tempfile("morie-unzip-")
+    dir.create(exdir)
+    on.exit(unlink(exdir, recursive = TRUE), add = TRUE)
+    members <- utils::unzip(tmp, list = TRUE)$Name
+    hit <- members[basename(members) == zip_member]
+    if (length(hit) == 0L) {
+      hit <- members[grepl(zip_member, members, fixed = TRUE)]
+    }
+    if (length(hit) == 0L) {
+      stop("zip member '", zip_member, "' not found in ", url, call. = FALSE)
+    }
+    utils::unzip(tmp, files = hit[1L], exdir = exdir, junkpaths = TRUE)
+    path <- file.path(exdir, basename(hit[1L]))
+  }
+  ext <- tolower(tools::file_ext(path))
+  if (ext %in% c("xlsx", "xls")) {
+    if (!requireNamespace("readxl", quietly = TRUE)) {
+      stop("readxl required to read ", ext, " downloads", call. = FALSE)
+    }
+    as.data.frame(readxl::read_excel(path))
+  } else {
+    utils::read.csv(path, stringsAsFactors = FALSE, check.names = FALSE)
+  }
+}
+
 #' Load a dataset by catalog key
 #'
-#' Resolution: SQLite cache -> local file ingest -> CKAN API -> error.
+#' Resolution: built-in DB -> user cache -> local file -> CKAN API ->
+#' direct download URL -> error.
 #' Supports fuzzy matching: \code{morie_load_dataset("cpads_2021")} resolves
 #' to \code{oc_cpads_2021}.
 #'
@@ -415,7 +456,19 @@ morie_load_dataset <- function(key, db_path = NULL) {
     return(data)
   }
 
-  stop("Dataset '", matched, "' not found locally, in cache, or via CKAN.\n",
+  # 4. Direct download URL -- open-data files not exposed through the CKAN
+  #    datastore (direct CSV/XLSX, or a CSV bundled inside a .zip archive).
+  if (nzchar(entry$download_url)) {
+    message("Downloading ", matched, " from ", entry$download_url, " ...")
+    data <- .morie_fetch_download_url(
+      entry$download_url,
+      zip_member = if ("zip_member" %in% names(entry)) entry$zip_member else "")
+    morie_cache_store(data, entry$table_name, db_path)
+    return(data)
+  }
+
+  stop("Dataset '", matched, "' not found locally, in cache, via CKAN, ",
+       "or via a direct download URL.\n",
        "Run: Rscript data-raw/ingest_datasets.R --only ", matched, call. = FALSE)
 }
 
