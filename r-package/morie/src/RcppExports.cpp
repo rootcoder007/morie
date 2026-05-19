@@ -121,6 +121,41 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// siu_http_get
+std::string siu_http_get(std::string url, int timeout_s);
+RcppExport SEXP _morie_siu_http_get(SEXP urlSEXP, SEXP timeout_sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
+    Rcpp::traits::input_parameter< int >::type timeout_s(timeout_sSEXP);
+    rcpp_result_gen = Rcpp::wrap(siu_http_get(url, timeout_s));
+    return rcpp_result_gen;
+END_RCPP
+}
+// siu_curl_version
+std::string siu_curl_version();
+RcppExport SEXP _morie_siu_curl_version() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(siu_curl_version());
+    return rcpp_result_gen;
+END_RCPP
+}
+// siu_http_get_many
+Rcpp::CharacterVector siu_http_get_many(Rcpp::CharacterVector urls, int concurrency, int timeout_s);
+RcppExport SEXP _morie_siu_http_get_many(SEXP urlsSEXP, SEXP concurrencySEXP, SEXP timeout_sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type urls(urlsSEXP);
+    Rcpp::traits::input_parameter< int >::type concurrency(concurrencySEXP);
+    Rcpp::traits::input_parameter< int >::type timeout_s(timeout_sSEXP);
+    rcpp_result_gen = Rcpp::wrap(siu_http_get_many(urls, concurrency, timeout_s));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_morie_morie_normal_pdf_cpp", (DL_FUNC) &_morie_morie_normal_pdf_cpp, 3},
@@ -131,6 +166,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_morie_morie_hawkes_ll_weibull_const_cpp", (DL_FUNC) &_morie_morie_hawkes_ll_weibull_const_cpp, 6},
     {"_morie_morie_hawkes_ll_lomax_const_cpp", (DL_FUNC) &_morie_morie_hawkes_ll_lomax_const_cpp, 6},
     {"_morie_morie_hawkes_ll_gamma_const_cpp", (DL_FUNC) &_morie_morie_hawkes_ll_gamma_const_cpp, 6},
+    {"_morie_siu_http_get", (DL_FUNC) &_morie_siu_http_get, 2},
+    {"_morie_siu_curl_version", (DL_FUNC) &_morie_siu_curl_version, 0},
+    {"_morie_siu_http_get_many", (DL_FUNC) &_morie_siu_http_get_many, 3},
     {NULL, NULL, 0}
 };
 

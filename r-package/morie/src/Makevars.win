@@ -1,3 +1,5 @@
-# The shared numeric core (morie_core.h) uses C++17 features
-# (inline variables, nested namespaces).
+# The shared numeric core (morie_core.h) uses C++17 features.
 CXX_STD = CXX17
+# The SIU scraper (siu_scrape.cpp) links libcurl for HTTP(S).
+PKG_CPPFLAGS = $(shell pkg-config --cflags libcurl 2>/dev/null)
+PKG_LIBS = $(shell pkg-config --libs libcurl 2>/dev/null || echo -lcurl)

@@ -43,6 +43,7 @@ Imports:
   utils,
   Rcpp
 LinkingTo: Rcpp
+SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
 Suggests:
   digest,
   openssl,

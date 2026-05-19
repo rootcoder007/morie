@@ -33,3 +33,38 @@ morie_hawkes_ll_gamma_const_cpp <- function(t, T, a0, eta, alpha, beta) {
     .Call(`_morie_morie_hawkes_ll_gamma_const_cpp`, t, T, a0, eta, alpha, beta)
 }
 
+#' Fetch a single URL over HTTP(S) via libcurl
+#'
+#' Internal building block of the SIU scraper. Returns the response
+#' body, or an empty string on any transport-level failure.
+#'
+#' @param url URL to fetch.
+#' @param timeout_s Request timeout in seconds.
+#' @return The response body as a length-1 character vector.
+#' @keywords internal
+.siu_http_get <- function(url, timeout_s = 60L) {
+    .Call(`_morie_siu_http_get`, url, timeout_s)
+}
+
+#' libcurl version string morie was built against
+#' @return A length-1 character vector.
+#' @keywords internal
+.siu_curl_version <- function() {
+    .Call(`_morie_siu_curl_version`)
+}
+
+#' Fetch many URLs concurrently via the libcurl multi interface
+#'
+#' Drives up to \code{concurrency} simultaneous transfers; as each
+#' finishes the next URL is started, so the connection pool stays
+#' saturated. Failed transfers yield an empty string at their slot.
+#'
+#' @param urls Character vector of URLs.
+#' @param concurrency Maximum simultaneous transfers.
+#' @param timeout_s Per-request timeout in seconds.
+#' @return A character vector of response bodies, parallel to \code{urls}.
+#' @keywords internal
+.siu_http_get_many <- function(urls, concurrency = 16L, timeout_s = 60L) {
+    .Call(`_morie_siu_http_get_many`, urls, concurrency, timeout_s)
+}
+
