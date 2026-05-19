@@ -72,31 +72,6 @@ test_that("morie_fetch extracts a member from a zip over file://", {
   expect_error(morie_fetch(paste0("file://", zp), format = "zip"))
 })
 
-test_that(".morie_parse_siu_rows parses director's-report fragments", {
-  frag <- paste0(
-    '<tr class="dr-item" id="5080">',
-    '<td class=""><nobr>26-TCI-052</nobr></td>',
-    '<td class="">May 8, 2026</td>',
-    '<td class=""><a href="/en/directors_report_details.php?drid=5080">',
-    'Read Full Text</a></td></tr>',
-    '<tr class="dr-item" id="5094">',
-    '<td class=""><nobr>26-OCI-039</nobr></td>',
-    '<td class="">May 15, 2026</td>',
-    '<td class=""><a href="/en/directors_report_details.php?drid=5094">',
-    'x</a></td></tr>')
-  rows <- morie:::.morie_parse_siu_rows(frag)
-  expect_equal(nrow(rows), 2L)
-  expect_equal(rows$drid, c(5080L, 5094L))
-  expect_equal(rows$case_number, c("26-TCI-052", "26-OCI-039"))
-  expect_equal(rows$incident_type, c("TCI", "OCI"))
-  expect_equal(rows$date_signed[1], "May 8, 2026")
-  expect_true(grepl("drid=5080", rows$report_url[1]))
-  # An empty fragment yields a zero-row frame with the right columns.
-  empty <- morie:::.morie_parse_siu_rows("")
-  expect_equal(nrow(empty), 0L)
-  expect_true(all(c("drid", "case_number", "report_url") %in% names(empty)))
-})
-
 test_that("TPS catalog entries carry verified ArcGIS layer URLs", {
   cat <- morie_dataset_catalog()
   tps <- cat[cat$source == "tps", ]
@@ -127,15 +102,4 @@ test_that("morie_fetch_arcgis paginates a FeatureServer layer (network)", {
   skip_if(is.null(df), "ArcGIS layer unreachable")
   expect_s3_class(df, "data.frame")
   expect_true(nrow(df) > 0 && nrow(df) <= 30)
-})
-
-test_that("morie_siu_directors_reports harvests the director's-reports index (network)", {
-  skip_on_cran()
-  testthat::skip_if_offline("www.siu.on.ca")
-  idx <- tryCatch(morie_siu_directors_reports(max_reports = 20),
-                  error = function(e) NULL)
-  skip_if(is.null(idx) || nrow(idx) == 0, "SIU site unreachable")
-  expect_true(all(c("drid", "case_number", "report_url") %in% names(idx)))
-  expect_true(nrow(idx) <= 20)
-  expect_true(all(grepl("^https?://", idx$report_url)))
 })

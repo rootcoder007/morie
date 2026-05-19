@@ -14,9 +14,6 @@ catalog.
   `resource_id` to feed into `morie_fetch_ckan()`.
 * **`morie_fetch_arcgis()`** — query any ArcGIS FeatureServer /
   MapServer layer, paginating through the server transfer limit.
-* **`morie_siu_directors_reports()`** — harvest the Ontario SIU
-  director's-reports index (case number, signing date, incident type,
-  report link) directly from `siu.on.ca`, with no Python dependency.
 * **Dataset catalog** — `morie_dataset_catalog()` gains `download_url`,
   `zip_member`, and `arcgis_url` columns and a six-tier
   `morie_load_dataset()` resolver. CKAN resource ids were added for the
