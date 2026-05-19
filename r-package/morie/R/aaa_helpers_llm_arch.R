@@ -14,9 +14,9 @@ NULL
     e <- exp(x)
     return(e / sum(e))
   }
-  apply(x, seq_len(nd - 1L), function(v) {
+  out <- apply(x, seq_len(nd - 1L), function(v) {
     v <- v - max(v); e <- exp(v); e / sum(e)
-  }) -> out
+  })
   # apply collapses last axis to first; transpose back
   aperm(out, c(seq.int(2L, nd), 1L))
 }

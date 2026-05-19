@@ -55,7 +55,8 @@ tps <- morie_sample("tps_assault")
 
 # Schema sanity
 str(b01, max.level = 1)
-nrow(b09); nrow(c11)
+nrow(b09)
+nrow(c11)
 ncol(tps)
 ```
 

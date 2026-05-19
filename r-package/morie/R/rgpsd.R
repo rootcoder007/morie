@@ -40,7 +40,7 @@ rgpsd <- function(x, fs = 1.0, nperseg = NULL, window = "hann") {
   for (s in starts) {
     seg <- x[s:(s + nperseg - 1)] - mean(x[s:(s + nperseg - 1)])
     seg <- seg * w
-    X <- stats::fft(seg)[1:length(freqs)]
+    X <- stats::fft(seg)[seq_along(freqs)]
     pxx <- (Mod(X)^2) / (fs * W)
     # one-sided scaling: double interior bins
     if (length(pxx) > 2) pxx[2:(length(pxx) - 1)] <- 2 * pxx[2:(length(pxx) - 1)]
