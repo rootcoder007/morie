@@ -16,3 +16,5 @@
 ^\.RData\$
 ^PI_HANDOFF\.md\$
 ^src/\.clangd$
+^src/Makevars$
+^src/Makevars\.win$
