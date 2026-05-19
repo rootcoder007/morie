@@ -80,3 +80,16 @@ morie_hawkes_ll_gamma_const_cpp <- function(t, T, a0, eta, alpha, beta) {
     .Call(`_morie_siu_parse_report`, html, drid, url)
 }
 
+#' Parse one SIU news-release HTML page
+#'
+#' @param html The news-release page HTML.
+#' @param nrid The news-release id.
+#' @param url The source URL of the news-release page.
+#' @return A named character vector: nrid, source_url_news,
+#'   news_release_title, news_release_date_iso, news_release_date_raw,
+#'   news_release_summary.
+#' @keywords internal
+.siu_parse_news <- function(html, nrid, url) {
+    .Call(`_morie_siu_parse_news`, html, nrid, url)
+}
+

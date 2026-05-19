@@ -220,7 +220,12 @@ std::string decode_entities(std::string s) {
     {"&apos;", "'"}, {"&nbsp;", " "}, {"&rsquo;", "'"}, {"&lsquo;", "'"},
     {"&ldquo;", "\""}, {"&rdquo;", "\""}, {"&ndash;", "-"}, {"&mdash;", "-"},
     {"&hellip;", "..."}, {"&eacute;", "\xC3\xA9"}, {"&egrave;", "\xC3\xA8"},
-    {"&agrave;", "\xC3\xA0"}, {"&ccedil;", "\xC3\xA7"}, {"&acirc;", "\xC3\xA2"}
+    {"&agrave;", "\xC3\xA0"}, {"&ccedil;", "\xC3\xA7"}, {"&acirc;", "\xC3\xA2"},
+    {"&ecirc;", "\xC3\xAA"}, {"&icirc;", "\xC3\xAE"}, {"&ocirc;", "\xC3\xB4"},
+    {"&ucirc;", "\xC3\xBB"}, {"&iuml;", "\xC3\xAF"}, {"&euml;", "\xC3\xAB"},
+    {"&ugrave;", "\xC3\xB9"}, {"&igrave;", "\xC3\xAC"}, {"&Eacute;", "\xC3\x89"},
+    {"&oelig;", "\xC5\x93"}, {"&laquo;", "\xC2\xAB"}, {"&raquo;", "\xC2\xBB"},
+    {"&#39;", "'"}
   };
   for (const E& e : named) {
     std::string::size_type p = 0;
@@ -325,20 +330,26 @@ const char* kMonths[] = {"january", "february", "march", "april", "may",
                          "june", "july", "august", "september", "october",
                          "november", "december"};
 
-// "May 8, 2026" -> "2026-05-08"; "" when the input is not a month-day-year.
+// "May 8, 2026" or "8 May, 2026" -> "2026-05-08"; "" when unparseable.
 std::string to_iso(const std::string& raw) {
   std::smatch m;
-  if (!std::regex_search(raw, m,
-        std::regex("([A-Za-z]+)\\s+(\\d{1,2}),?\\s+(\\d{4})")))
+  std::string mon, day, year;
+  if (std::regex_search(raw, m,
+        std::regex("([A-Za-z]+)\\s+(\\d{1,2}),?\\s+(\\d{4})"))) {
+    mon = m[1].str(); day = m[2].str(); year = m[3].str();
+  } else if (std::regex_search(raw, m,
+        std::regex("(\\d{1,2})\\s+([A-Za-z]+),?\\s+(\\d{4})"))) {
+    day = m[1].str(); mon = m[2].str(); year = m[3].str();
+  } else {
     return std::string();
-  std::string mon = m[1].str();
+  }
   std::transform(mon.begin(), mon.end(), mon.begin(), ::tolower);
   int mi = 0;
   for (int i = 0; i < 12; ++i) if (mon == kMonths[i]) { mi = i + 1; break; }
   if (mi == 0) return std::string();
   char buf[16];
-  std::snprintf(buf, sizeof(buf), "%s-%02d-%02d", m[3].str().c_str(), mi,
-                std::atoi(m[2].str().c_str()));
+  std::snprintf(buf, sizeof(buf), "%s-%02d-%02d", year.c_str(), mi,
+                std::atoi(day.c_str()));
   return std::string(buf);
 }
 
@@ -500,13 +511,21 @@ Rcpp::CharacterVector siu_parse_report(std::string html, int drid,
     f["mental_health_or_race_indications"] = tags;
   }
 
-  // News release linked from the report page.
+  // News release linked from the report page: capture both the title
+  // and the nrid, so the news page can be fetched and joined later.
   {
     std::smatch m;
     if (std::regex_search(html, m, std::regex(
-          "News Releases for this Case:.*?<a[^>]*>(.*?)</a>",
-          std::regex::icase)))
-      f["news_release_title"] = squeeze(html_to_text(m[1].str()));
+          "News Releases for this Case:.*?<a[^>]*href=\"([^\"]+)\"[^>]*>"
+          "(.*?)</a>", std::regex::icase))) {
+      f["news_release_title"] = squeeze(html_to_text(m[2].str()));
+      const std::string nrid = rx1(m[1].str(), "nrid=(\\d+)");
+      if (!nrid.empty()) {
+        f["nrid"] = nrid;
+        f["source_url_news"] =
+          "https://www.siu.on.ca/en/news_template.php?nrid=" + nrid;
+      }
+    }
   }
 
   Rcpp::CharacterVector out(kSiuCols.size());
@@ -516,6 +535,63 @@ Rcpp::CharacterVector siu_parse_report(std::string html, int drid,
     const auto it = f.find(kSiuCols[i]);
     out[i] = (it == f.end()) ? "" : it->second;
   }
+  out.attr("names") = nm;
+  return out;
+}
+
+//' Parse one SIU news-release HTML page
+//'
+//' @param html The news-release page HTML.
+//' @param nrid The news-release id.
+//' @param url The source URL of the news-release page.
+//' @return A named character vector: nrid, source_url_news,
+//'   news_release_title, news_release_date_iso, news_release_date_raw,
+//'   news_release_summary.
+//' @keywords internal
+// [[Rcpp::export(.siu_parse_news)]]
+Rcpp::CharacterVector siu_parse_news(std::string html, int nrid,
+                                     std::string url) {
+  std::string title;
+  try {
+    const std::regex hre("<h[1-4][^>]*>(.*?)</h[1-4]>",
+                         std::regex::icase);
+    for (auto it = std::sregex_iterator(html.begin(), html.end(), hre);
+         it != std::sregex_iterator(); ++it) {
+      const std::string t = squeeze(html_to_text((*it)[1].str()));
+      if (t.size() > title.size() &&
+          t.find("News Release") == std::string::npos &&
+          t != "The Unit")
+        title = t;
+    }
+  } catch (...) {}
+
+  // Dateline: "<strong>City, ON</strong> ( DD Month, YYYY ) ---".
+  std::string draw = rx1(html, "</strong>\\s*\\(([^)]{6,32})\\)\\s*-");
+  if (draw.empty())
+    draw = rx1(html_to_text(html),
+               "\\(([0-9]{1,2} [A-Za-z]+,? [0-9]{4})\\)");
+
+  const std::string txt = html_to_text(html);
+  std::string summary = rx1(
+    txt, "\\)\\s*-+\\s*(.{20,700}?)(?:Full Director|If you or someone)");
+  if (summary.empty())
+    summary = rx1(txt, "\\)\\s*-+\\s*(.{20,400})");
+
+  std::map<std::string, std::string> f;
+  f["nrid"] = std::to_string(nrid);
+  f["source_url_news"] = url;
+  f["news_release_title"] = title;
+  f["news_release_date_raw"] = squeeze(draw);
+  f["news_release_date_iso"] = to_iso(draw);
+  f["news_release_summary"] = squeeze(summary);
+
+  static const char* cols[] = {
+    "nrid", "source_url_news", "news_release_title",
+    "news_release_date_iso", "news_release_date_raw",
+    "news_release_summary"};
+  Rcpp::CharacterVector out(6);
+  Rcpp::CharacterVector nm(6);
+  for (int i = 0; i < 6; ++i) { nm[i] = cols[i]; out[i] = f[cols[i]]; }
   out.attr("names") = nm;
   return out;
 }
