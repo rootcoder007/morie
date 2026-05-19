@@ -224,7 +224,9 @@ morie_load_cpads <- function(db_path = NULL, use_ckan = TRUE) {
 #' Fetch data from the CKAN API and cache it
 #'
 #' @param dataset_key One of \code{"cpads"}, \code{"csads"}, \code{"csus"}.
-#' @param limit Max records to fetch.
+#' @param limit Maximum records to fetch. The CKAN datastore caps a
+#'   single request at 32000 rows, so larger resources are paged through
+#'   with `offset`; the default reads the entire resource.
 #' @param db_path Optional override for the database path.
 #' @param resource_id Optional CKAN datastore resource id. When supplied
 #'   (e.g. from \code{morie_dataset_catalog()$ckan_resource_id}) it is used
@@ -240,8 +242,8 @@ morie_load_cpads <- function(db_path = NULL, use_ckan = TRUE) {
 #'   nrow(cpads)
 #' }
 #' @export
-morie_fetch_ckan <- function(dataset_key = "cpads", limit = 32000L, db_path = NULL,
-                             resource_id = NULL) {
+morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
+                             db_path = NULL, resource_id = NULL) {
   ckan_base <- "https://open.canada.ca/data/en/api/3/action/datastore_search"
 
   resource_ids <- list(
@@ -272,13 +274,34 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = 32000L, db_path = NU
     rid <- if (length(csv_idx) > 0) resources$id[csv_idx[1]] else resources$id[1]
   }
 
-  api_url <- sprintf("%s?resource_id=%s&limit=%d", ckan_base, rid, as.integer(limit))
-  message("Fetching from: ", api_url)
-  raw <- readLines(url(api_url), warn = FALSE)
-  payload <- jsonlite::fromJSON(paste(raw, collapse = ""))
-  records <- payload$result$records
+  # CKAN datastore_search caps a single request at 32000 rows, so page
+  # through with `offset` until the whole resource (or `limit`) is read.
+  cap      <- as.integer(min(limit, .Machine$integer.max))
+  page     <- min(cap, 32000L)
+  message("Fetching from CKAN datastore: resource_id=", rid)
+  pages    <- list()
+  fetched  <- 0L
+  total    <- NA_real_
+  repeat {
+    api_url <- sprintf("%s?resource_id=%s&limit=%d&offset=%d",
+                       ckan_base, rid, page, fetched)
+    raw <- readLines(url(api_url), warn = FALSE)
+    payload <- jsonlite::fromJSON(paste(raw, collapse = ""))
+    recs <- payload$result$records
+    if (is.null(recs) || NROW(recs) == 0L) break
+    pages[[length(pages) + 1L]] <- recs
+    fetched <- fetched + NROW(recs)
+    if (is.na(total)) {
+      total <- if (!is.null(payload$result$total))
+        as.numeric(payload$result$total) else fetched
+    }
+    if (fetched >= total || fetched >= cap) break
+  }
+  records <- if (length(pages) == 0L) NULL
+             else if (length(pages) == 1L) pages[[1L]]
+             else do.call(rbind, pages)
 
-  if (is.null(records) || nrow(records) == 0L) {
+  if (is.null(records) || NROW(records) == 0L) {
     stop("CKAN returned 0 records for ", dataset_key, call. = FALSE)
   }
 

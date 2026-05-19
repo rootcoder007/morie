@@ -13,8 +13,13 @@ make_canonical_cpads <- function(n = 1200L, seed = 101L) {
   mental_health   <- sample(1:5, n, replace = TRUE)
   physical_health <- sample(1:5, n, replace = TRUE)
   weight          <- round(stats::rgamma(n, shape = 2.4, scale = 45), 1)
-  cannabis_any_use <- stats::rbinom(n, 1L, 0.30)
-  alcohol_past12m  <- stats::rbinom(n, 1L, 0.82)
+  # Marginals anchored to published CPADS national prevalence:
+  # alcohol past-12m ~75% (female 78 / male 71); cannabis ~39%,
+  # age-graded (17-19: 32, 20-22: 45, 23-25: 42).
+  cannabis_any_use <- stats::rbinom(n, 1L,
+                                    c(0.32, 0.45, 0.42, 0.40)[age_group])
+  alcohol_past12m  <- stats::rbinom(
+    n, 1L, ifelse(gender == 2, 0.78, ifelse(gender == 1, 0.71, 0.75)))
   lp_hd <- -1.0 + 0.7 * cannabis_any_use + 0.15 * (mental_health >= 4) +
     0.10 * (gender == 2)
   heavy_drinking_30d <- stats::rbinom(n, 1L, 1 / (1 + exp(-lp_hd)))
@@ -40,13 +45,13 @@ make_canonical_cpads <- function(n = 1200L, seed = 101L) {
 
 make_raw_cpads <- function(n = 900L, seed = 202L) {
   set.seed(seed)
-  cannabis <- stats::rbinom(n, 1L, 0.30)
+  cannabis <- stats::rbinom(n, 1L, 0.39)   # CPADS national prevalence
   hd       <- stats::rbinom(n, 1L, 0.30)
   ebac     <- round(pmax(0, pmin(0.35, 0.04 + 0.03 * hd +
                                    stats::rnorm(n, 0, 0.02))), 3)
   data.frame(
     wtpumf = round(stats::rgamma(n, 2.4, scale = 45), 1),
-    alc05 = sample(c(1L, 2L), n, replace = TRUE, prob = c(0.82, 0.18)),
+    alc05 = sample(c(1L, 2L), n, replace = TRUE, prob = c(0.75, 0.25)),
     alc12_30d_prev_total = sample(c(0L, 1L), n, replace = TRUE),
     alc12_30d_prev = sample(c(0L, 1L), n, replace = TRUE),
     can05 = ifelse(cannabis == 1L, 1L, 2L),
