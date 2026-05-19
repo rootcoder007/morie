@@ -28,7 +28,9 @@ eg_coint <- function(y1, y2, max_lag = NULL) {
     # Plain ADF-style t-stat on residuals.
     dr <- diff(resid); T <- length(dr) - max_lag
     dep <- dr[(max_lag + 1):length(dr)]
-    Xr <- resid[(max_lag + 1):length(resid) - 1]
+    # Level regressor resid[t], aligned to dep; indexing to length(dr)
+    # (not length(resid)) keeps Xr the same length as dep.
+    Xr <- resid[(max_lag + 1):length(dr)]
     Xr <- cbind(Xr)
     if (max_lag >= 1) {
       for (i in seq_len(max_lag))
