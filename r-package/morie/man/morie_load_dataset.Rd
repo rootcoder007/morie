@@ -4,25 +4,33 @@
 \alias{morie_load_dataset}
 \title{Load a dataset by catalog key}
 \usage{
-morie_load_dataset(key, db_path = NULL)
+morie_load_dataset(key, db_path = NULL, refresh = FALSE)
 }
 \arguments{
 \item{key}{Dataset catalog key (or fuzzy match).}
 
 \item{db_path}{Optional override for the database path.}
+
+\item{refresh}{If \code{TRUE}, bypass the built-in database and the
+user cache (and, for remotely-backed datasets, the local file) and
+re-fetch from the remote source, overwriting the cached copy. Use
+this to pick up time-to-time updates to a dataset.}
 }
 \value{
 A data.frame.
 }
 \description{
-Resolution: built-in DB -> user cache -> local file -> CKAN API ->
-direct download URL -> error.
-Supports fuzzy matching: \code{morie_load_dataset("cpads_2021")} resolves
-to \code{oc_cpads_2021}.
+Resolution tiers, tried in order: built-in DB -> user cache -> local
+file -> CKAN datastore -> direct download URL -> ArcGIS layer ->
+error. Supports fuzzy matching: \code{morie_load_dataset("cpads_2021")}
+resolves to \code{ocp21}.
 }
 \examples{
 \dontrun{
-  df <- morie_load_dataset("ocp21")  # CPADS 2021-2022
-  nrow(df)
+  df <- morie_load_dataset("ocp21")                  # CPADS 2021-2022
+  df <- morie_load_dataset("ocp21", refresh = TRUE)  # force re-fetch
 }
+}
+\seealso{
+\code{\link{morie_fetch}}, \code{\link{morie_ckan_search}}
 }

@@ -1,4 +1,32 @@
-# morie 0.9.5 — 2026-05-18
+# morie 0.9.5 — 2026-05-19
+
+New: a generic open-data access layer, and a much wider dataset
+catalog.
+
+* **`morie_fetch()`** — a universal URL fetcher. It auto-detects the
+  resource format from the HTTP `Content-Type` header (falling back to
+  the URL extension) and parses CSV, TSV, JSON, XML, HTML, XLSX, and
+  ZIP-bundled files. Every step is overridable: pass an explicit
+  `format`, extra query `params`, or a `zip_member` to extract.
+* **`morie_ckan_search()`** — discover datasets on any CKAN open-data
+  portal (`open.canada.ca`, `data.ontario.ca`, `open.toronto.ca`, or a
+  custom base URL). Returns one row per resource, with the
+  `resource_id` to feed into `morie_fetch_ckan()`.
+* **`morie_fetch_arcgis()`** — query any ArcGIS FeatureServer /
+  MapServer layer, paginating through the server transfer limit.
+* **`morie_siu_directors_reports()`** — harvest the Ontario SIU
+  director's-reports index (case number, signing date, incident type,
+  report link) directly from `siu.on.ca`, with no Python dependency.
+* **Dataset catalog** — `morie_dataset_catalog()` gains `download_url`,
+  `zip_member`, and `arcgis_url` columns and a six-tier
+  `morie_load_dataset()` resolver. CKAN resource ids were added for the
+  CCS 2018-2022/2023/2024 and CSUS 2023 PUMFs; direct-download URLs for
+  23 further datasets (CIHI indicator tables, StatCan and
+  Health-Infobase zip bundles); and verified ArcGIS layer URLs for the
+  three TPS crime series.
+* **`morie_load_dataset(refresh = TRUE)`** — bypass the built-in
+  database and user cache to re-fetch a dataset from its remote
+  source, picking up time-to-time updates.
 
 Fix: Toronto Police Service open-data ingestion correctness and
 reliability.

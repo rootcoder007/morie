@@ -343,92 +343,65 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
   NULL
 }
 
-# Download a dataset from a direct file URL. Handles plain .csv / .xlsx
-# resources, and a CSV/XLSX member bundled inside a .zip archive (used
-# for open-data files that are not exposed through the CKAN datastore).
-.morie_fetch_download_url <- function(url, zip_member = "") {
-  is_zip <- grepl("\\.zip$", url, ignore.case = TRUE)
-  tmp <- tempfile(fileext = if (is_zip) ".zip" else
-    paste0(".", tools::file_ext(url)))
-  on.exit(unlink(tmp), add = TRUE)
-  utils::download.file(url, tmp, mode = "wb", quiet = TRUE)
-  path <- tmp
-  if (is_zip) {
-    if (!nzchar(zip_member)) {
-      stop("zip_member required to extract from a .zip download",
-           call. = FALSE)
-    }
-    exdir <- tempfile("morie-unzip-")
-    dir.create(exdir)
-    on.exit(unlink(exdir, recursive = TRUE), add = TRUE)
-    members <- utils::unzip(tmp, list = TRUE)$Name
-    hit <- members[basename(members) == zip_member]
-    if (length(hit) == 0L) {
-      hit <- members[grepl(zip_member, members, fixed = TRUE)]
-    }
-    if (length(hit) == 0L) {
-      stop("zip member '", zip_member, "' not found in ", url, call. = FALSE)
-    }
-    utils::unzip(tmp, files = hit[1L], exdir = exdir, junkpaths = TRUE)
-    path <- file.path(exdir, basename(hit[1L]))
-  }
-  ext <- tolower(tools::file_ext(path))
-  if (ext %in% c("xlsx", "xls")) {
-    if (!requireNamespace("readxl", quietly = TRUE)) {
-      stop("readxl required to read ", ext, " downloads", call. = FALSE)
-    }
-    as.data.frame(readxl::read_excel(path))
-  } else {
-    utils::read.csv(path, stringsAsFactors = FALSE, check.names = FALSE)
-  }
-}
-
 #' Load a dataset by catalog key
 #'
-#' Resolution: built-in DB -> user cache -> local file -> CKAN API ->
-#' direct download URL -> error.
-#' Supports fuzzy matching: \code{morie_load_dataset("cpads_2021")} resolves
-#' to \code{oc_cpads_2021}.
+#' Resolution tiers, tried in order: built-in DB -> user cache -> local
+#' file -> CKAN datastore -> direct download URL -> ArcGIS layer ->
+#' error. Supports fuzzy matching: \code{morie_load_dataset("cpads_2021")}
+#' resolves to \code{ocp21}.
 #'
 #' @param key Dataset catalog key (or fuzzy match).
 #' @param db_path Optional override for the database path.
+#' @param refresh If \code{TRUE}, bypass the built-in database and the
+#'   user cache (and, for remotely-backed datasets, the local file) and
+#'   re-fetch from the remote source, overwriting the cached copy. Use
+#'   this to pick up time-to-time updates to a dataset.
 #' @return A data.frame.
 #' @examples
 #' \dontrun{
-#'   df <- morie_load_dataset("ocp21")  # CPADS 2021-2022
-#'   nrow(df)
+#'   df <- morie_load_dataset("ocp21")                  # CPADS 2021-2022
+#'   df <- morie_load_dataset("ocp21", refresh = TRUE)  # force re-fetch
 #' }
+#' @seealso \code{\link{morie_fetch}}, \code{\link{morie_ckan_search}}
 #' @export
-morie_load_dataset <- function(key, db_path = NULL) {
+morie_load_dataset <- function(key, db_path = NULL, refresh = FALSE) {
   matched <- .fuzzy_match_key(key)
   if (is.null(matched)) {
     stop("Unknown dataset key: '", key, "'. See morie_dataset_catalog().", call. = FALSE)
   }
   catalog <- morie_dataset_catalog()
   entry <- catalog[catalog$key == matched, ]
+  has <- function(col) col %in% names(entry) && nzchar(entry[[col]])
+  has_remote <- has("ckan_resource_id") || has("download_url") ||
+    has("arcgis_url")
 
-  # 1. Built-in database (ships with package).
-  builtin_path <- tryCatch(morie_builtin_db(), error = function(e) NULL)
-  if (!is.null(builtin_path) && requireNamespace("DBI", quietly = TRUE) &&
-      requireNamespace("RSQLite", quietly = TRUE)) {
-    bcon <- DBI::dbConnect(RSQLite::SQLite(), dbname = builtin_path)
-    on.exit(DBI::dbDisconnect(bcon), add = TRUE)
-    if (DBI::dbExistsTable(bcon, entry$table_name)) {
-      data <- DBI::dbReadTable(bcon, entry$table_name)
-      message("Loaded ", matched, " from built-in DB (", nrow(data), " rows)")
-      return(data)
+  if (!refresh) {
+    # 1. Built-in database (ships with package).
+    builtin_path <- tryCatch(morie_builtin_db(), error = function(e) NULL)
+    if (!is.null(builtin_path) && requireNamespace("DBI", quietly = TRUE) &&
+        requireNamespace("RSQLite", quietly = TRUE)) {
+      bcon <- DBI::dbConnect(RSQLite::SQLite(), dbname = builtin_path)
+      on.exit(DBI::dbDisconnect(bcon), add = TRUE)
+      if (DBI::dbExistsTable(bcon, entry$table_name)) {
+        data <- DBI::dbReadTable(bcon, entry$table_name)
+        message("Loaded ", matched, " from built-in DB (", nrow(data),
+                " rows)")
+        return(data)
+      }
+    }
+
+    # 2. User cache.
+    cached <- morie_cache_load(entry$table_name, db_path)
+    if (!is.null(cached)) {
+      message("Loaded ", matched, " from cache (", nrow(cached), " rows)")
+      return(cached)
     }
   }
 
-  # 2. User cache.
-  cached <- morie_cache_load(entry$table_name, db_path)
-  if (!is.null(cached)) {
-    message("Loaded ", matched, " from cache (", nrow(cached), " rows)")
-    return(cached)
-  }
-
-  # 2. Local file.
-  if (file.exists(entry$local_path)) {
+  # 3. Local file. Skipped on refresh when a remote source exists, so a
+  #    refresh re-pulls from the authoritative remote rather than a stale
+  #    on-disk copy; for local-only datasets the file remains the source.
+  if (file.exists(entry$local_path) && !(refresh && has_remote)) {
     message("Ingesting ", matched, " from local: ", entry$local_path)
     ext <- tolower(tools::file_ext(entry$local_path))
     data <- if (ext == "csv") {
@@ -445,10 +418,10 @@ morie_load_dataset <- function(key, db_path = NULL) {
     return(data)
   }
 
-  # 3. CKAN API -- resolved directly from the catalog resource id, matching
-  #    the Python load_dataset() design (no built-in database required).
-  if (nzchar(entry$ckan_resource_id)) {
-    message("Fetching ", matched, " from CKAN API...")
+  # 4. CKAN datastore -- resolved directly from the catalog resource id,
+  #    matching the Python load_dataset() design (no built-in DB needed).
+  if (has("ckan_resource_id")) {
+    message("Fetching ", matched, " from the CKAN datastore ...")
     data <- morie_fetch_ckan(dataset_key = matched,
                              resource_id = entry$ckan_resource_id,
                              db_path = db_path)
@@ -456,19 +429,29 @@ morie_load_dataset <- function(key, db_path = NULL) {
     return(data)
   }
 
-  # 4. Direct download URL -- open-data files not exposed through the CKAN
-  #    datastore (direct CSV/XLSX, or a CSV bundled inside a .zip archive).
-  if (nzchar(entry$download_url)) {
+  # 5. Direct download URL -- open-data files not exposed through the CKAN
+  #    datastore (direct CSV/XLSX, or a file bundled inside a .zip archive).
+  if (has("download_url")) {
     message("Downloading ", matched, " from ", entry$download_url, " ...")
-    data <- .morie_fetch_download_url(
-      entry$download_url,
-      zip_member = if ("zip_member" %in% names(entry)) entry$zip_member else "")
+    zm <- if ("zip_member" %in% names(entry)) entry$zip_member else ""
+    is_zip <- grepl("\\.zip$", entry$download_url, ignore.case = TRUE)
+    data <- morie_fetch(entry$download_url,
+                        format = if (is_zip) "zip" else "auto",
+                        zip_member = zm)
+    morie_cache_store(data, entry$table_name, db_path)
+    return(data)
+  }
+
+  # 6. ArcGIS FeatureServer / MapServer layer (e.g. TPS crime open data).
+  if (has("arcgis_url")) {
+    message("Querying ", matched, " from the ArcGIS layer ...")
+    data <- morie_fetch_arcgis(entry$arcgis_url)
     morie_cache_store(data, entry$table_name, db_path)
     return(data)
   }
 
   stop("Dataset '", matched, "' not found locally, in cache, via CKAN, ",
-       "or via a direct download URL.\n",
+       "via a direct download URL, or via an ArcGIS layer.\n",
        "Run: Rscript data-raw/ingest_datasets.R --only ", matched, call. = FALSE)
 }
 

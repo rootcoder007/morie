@@ -45,26 +45,6 @@ test_that("catalog exposes download-url columns with well-formed entries", {
   expect_false(any(nzchar(cat$ckan_resource_id) & nzchar(cat$download_url)))
 })
 
-test_that(".morie_fetch_download_url reads direct and zip-bundled files", {
-  skip_on_cran()
-  skip_if(Sys.which("zip") == "", "zip utility not available")
-  csv <- tempfile("morie-dl-", fileext = ".csv")
-  utils::write.csv(data.frame(a = 1:3, b = letters[1:3]), csv,
-                   row.names = FALSE)
-  on.exit(unlink(csv), add = TRUE)
-  direct <- morie:::.morie_fetch_download_url(paste0("file://", csv))
-  expect_s3_class(direct, "data.frame")
-  expect_equal(nrow(direct), 3L)
-  # Bundle the same CSV inside a .zip and round-trip it by member name.
-  zp <- tempfile("morie-dl-", fileext = ".zip")
-  on.exit(unlink(zp), add = TRUE)
-  owd <- getwd()
-  setwd(dirname(csv))
-  on.exit(setwd(owd), add = TRUE)
-  utils::zip(zp, basename(csv), flags = "-q")
-  zipped <- morie:::.morie_fetch_download_url(
-    paste0("file://", zp), zip_member = basename(csv))
-  expect_equal(nrow(zipped), 3L)
-  # A zip download with no member named is an error.
-  expect_error(morie:::.morie_fetch_download_url(paste0("file://", zp)))
-})
+# The direct-download / zip extraction path is exercised by morie_fetch()
+# in test-data-access.R (the .morie_fetch_download_url helper was folded
+# into the universal morie_fetch() entry point).
