@@ -1,0 +1,14 @@
+#!/bin/sh
+# morie configure.win -- detect libcurl (via pkg-config, provided by
+# Rtools) for the SIU parser and write src/Makevars.win.
+
+CURL_CFLAGS=`pkg-config --cflags libcurl 2>/dev/null`
+CURL_LIBS=`pkg-config --libs libcurl 2>/dev/null`
+if [ -z "${CURL_LIBS}" ]; then
+  CURL_LIBS="-lcurl"
+fi
+
+sed -e "s|@cflags@|${CURL_CFLAGS}|" -e "s|@libs@|${CURL_LIBS}|" \
+  src/Makevars.win.in > src/Makevars.win
+
+exit 0

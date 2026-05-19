@@ -1,0 +1,15 @@
+#!/bin/sh
+# morie configure -- detect libcurl for the SIU parser (src/siu_parser.cpp)
+# and write src/Makevars from src/Makevars.in. Generating Makevars here
+# keeps non-portable $(shell ...) GNU make extensions out of the package.
+
+CURL_CFLAGS=`curl-config --cflags 2>/dev/null`
+CURL_LIBS=`curl-config --libs 2>/dev/null`
+if [ -z "${CURL_LIBS}" ]; then
+  CURL_LIBS="-lcurl"
+fi
+
+sed -e "s|@cflags@|${CURL_CFLAGS}|" -e "s|@libs@|${CURL_LIBS}|" \
+  src/Makevars.in > src/Makevars
+
+exit 0
