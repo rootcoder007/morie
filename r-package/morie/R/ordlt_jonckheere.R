@@ -36,7 +36,7 @@ ordered_alternatives_test <- function(groups) {
       J <- J + lt + 0.5 * eq
     }
   }
-  ns <- sapply(arrs, length)
+  ns <- vapply(arrs, length, integer(1))
   N <- sum(ns)
   E_J <- (N^2 - sum(ns^2)) / 4
   Var_J <- (N^2 * (2 * N + 3) - sum(ns^2 * (2 * ns + 3))) / 72

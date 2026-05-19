@@ -127,7 +127,7 @@ mrm_siu_case_to_decision_km <- function(
     if (length(idx) < min_n) return(NULL)
     summarise(gap[idx], censored[idx], unique(svc[idx]))
   }, simplify = FALSE)
-  by_svc <- do.call(rbind, by_svc[!sapply(by_svc, is.null)])
+  by_svc <- do.call(rbind, by_svc[!vapply(by_svc, is.null, logical(1))])
   if (!is.null(by_svc)) rownames(by_svc) <- NULL
 
   list(pooled = pooled, by_service = by_svc)

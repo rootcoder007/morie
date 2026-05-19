@@ -27,8 +27,8 @@ NULL
   if (is.null(ev)) ev <- rep(1L, n)
   if (is.null(lam0)) lam0 <- 1 / max(mean(t), 1e-6)
   uniq <- sort(unique(t))
-  Y <- sapply(uniq, function(tk) sum(t >= tk))
-  dN <- sapply(uniq, function(tk) sum(t == tk & ev == 1))
+  Y <- vapply(uniq, function(tk) sum(t >= tk), numeric(1))
+  dN <- vapply(uniq, function(tk) sum(t == tk & ev == 1), numeric(1))
   dH0 <- diff(c(0, uniq)) * lam0
   dHp <- (c * dH0 + dN) / (c + Y)
   S <- cumprod(1 - pmin(dHp, 1 - 1e-12))

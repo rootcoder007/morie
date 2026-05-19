@@ -32,7 +32,7 @@ ghosal_log_density <- function(x, K = 5, grid = NULL) {
   m <- mean(x); s <- max(sd(x), 1e-6); z <- (x - m) / s
   if (is.null(grid)) gz <- seq(min(z) - 1, max(z) + 1, length.out = 401)
   else gz <- (grid - m) / s
-  basis <- function(u) sapply(seq_len(K), function(k) u^k)
+  basis <- function(u) vapply(seq_len(K), function(k) u^k, numeric(length(u)))
   Bx <- basis(z); Bg <- basis(gz)
   neg_ll <- function(theta) .ghlgd_negll(theta, Bx, Bg, gz, n)
   opt <- stats::optim(rep(0, K), neg_ll, method = "BFGS")

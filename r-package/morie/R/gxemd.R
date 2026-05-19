@@ -18,8 +18,8 @@ gxe_interaction_model <- function(x, y, env) {
   g_levels <- unique(g_id); e_levels <- unique(e_id)
   G <- length(g_levels); E <- length(e_levels)
   mu <- mean(yv)
-  g_eff <- sapply(g_levels, function(lv) mean(yv[g_id == lv]) - mu)
-  e_eff <- sapply(e_levels, function(lv) mean(yv[e_id == lv]) - mu)
+  g_eff <- vapply(g_levels, function(lv) mean(yv[g_id == lv]) - mu, numeric(1))
+  e_eff <- vapply(e_levels, function(lv) mean(yv[e_id == lv]) - mu, numeric(1))
   cell_mean <- matrix(NA_real_, G, E)
   cell_count <- matrix(0L, G, E)
   for (i in seq_along(g_levels)) for (j in seq_along(e_levels)) {

@@ -21,7 +21,7 @@ nbeats_basis <- function(x, horizon = 1, n_trend = 3, n_season = 5,
   if (n < n_trend + 2 * n_season + 2)
     stop("Series too short for chosen basis.")
   t <- seq(0, n - 1)
-  Tmat <- sapply(0:n_trend, function(k) t^k)
+  Tmat <- vapply(0:n_trend, function(k) t^k, numeric(length(t)))
   Smat <- do.call(cbind, lapply(seq_len(n_season), function(j)
     cbind(sin(2 * pi * j * t / period),
           cos(2 * pi * j * t / period))))

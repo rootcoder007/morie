@@ -20,7 +20,8 @@ hrzp1 <- function(x, y, z, bandwidth = NULL) {
   if (h <= 0) h <- max(.hrz_silverman(Z[, 1]), 1e-6)
   Zs <- if (ncol(Z) == 1) Z[, 1] else Z
   mY <- .hrz_nw_loo(Zs, y, h)
-  mX <- sapply(seq_len(ncol(X)), function(j) .hrz_nw_loo(Zs, X[, j], h))
+  mX <- vapply(seq_len(ncol(X)), function(j) .hrz_nw_loo(Zs, X[, j], h),
+               numeric(nrow(Zs)))
   if (is.null(dim(mX))) mX <- matrix(mX, ncol = ncol(X))
   rY <- y - mY; rX <- X - mX
   beta <- tryCatch(MASS::ginv(t(rX) %*% rX) %*% (t(rX) %*% rY),

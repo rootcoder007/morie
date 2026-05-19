@@ -408,8 +408,8 @@ test_that("rgqrs detects R-peaks on a synthetic ECG", {
   set.seed(29)
   fs <- 360
   tt <- seq(0, 5, length.out = 5 * fs)
-  ecg <- rowSums(sapply(seq(0.5, 4.5, by = 1.0),
-                        function(tk) exp(-((tt - tk) * 30)^2)))
+  ecg <- rowSums(vapply(seq(0.5, 4.5, by = 1.0),
+                        function(tk) exp(-((tt - tk) * 30)^2), numeric(length(tt))))
   r <- rgqrs(ecg, fs = fs)
   expect_type(r, "list")
   expect_named(r, c("r_peaks", "rr_intervals_ms", "heart_rate_bpm",
@@ -424,8 +424,8 @@ test_that("rgqrs default fs argument path runs", {
   skip_if_not_installed("signal")
   set.seed(30)
   tt <- seq(0, 3, length.out = 3 * 360)
-  ecg <- rowSums(sapply(seq(0.5, 2.5, by = 1.0),
-                        function(tk) exp(-((tt - tk) * 30)^2)))
+  ecg <- rowSums(vapply(seq(0.5, 2.5, by = 1.0),
+                        function(tk) exp(-((tt - tk) * 30)^2), numeric(length(tt))))
   r <- rgqrs(ecg)
   expect_equal(r$fs, 360.0)
   expect_true(is.na(r$heart_rate_bpm) || is.finite(r$heart_rate_bpm))

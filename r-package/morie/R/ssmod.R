@@ -24,8 +24,8 @@ state_space_model <- function(x) {
     f <- dlm::dlmFilter(y, mod)
     s <- dlm::dlmSmooth(f)
     return(list(filtered_state = as.numeric(f$m)[-1],
-                filtered_state_variance = sapply(dlm::dlmSvd2var(f$U.C, f$D.C),
-                                                  function(x) x[1, 1])[-1],
+                filtered_state_variance = vapply(dlm::dlmSvd2var(f$U.C, f$D.C),
+                                                  function(x) x[1, 1], numeric(1))[-1],
                 smoothed_state = as.numeric(s$s)[-1],
                 loglik = -fit$value,
                 Q = exp(fit$par[2]),

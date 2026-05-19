@@ -29,7 +29,7 @@ ghosal_dirichlet_posterior <- function(x, alpha = 1.0, base_mean = 0,
   }
   alpha_post <- alpha + n
   G0_t <- stats::pnorm(grid, mean = base_mean, sd = base_sd)
-  emp_t <- if (n > 0) sapply(grid, function(t) sum(x <= t)) else rep(0, length(grid))
+  emp_t <- if (n > 0) vapply(grid, function(t) sum(x <= t), numeric(1)) else rep(0, length(grid))
   F_post <- (alpha * G0_t + emp_t) / alpha_post
   var_post <- F_post * (1 - F_post) / (alpha_post + 1)
   t0 <- if (n > 0) mean(x) else base_mean

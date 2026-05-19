@@ -36,8 +36,8 @@ regime_switching <- function(x, k_regimes = 2) {
   pi <- rep(1 / k_regimes, k_regimes)
   ll_prev <- -Inf
   for (it in seq_len(200)) {
-    emit <- t(sapply(y,
-      function(yt) dnorm(yt, mean = mu, sd = sig)))
+    emit <- t(vapply(y,
+      function(yt) dnorm(yt, mean = mu, sd = sig), numeric(length(mu))))
     emit <- pmax(emit, 1e-300)
     alpha <- matrix(0, n, k_regimes); cv <- numeric(n)
     alpha[1, ] <- pi * emit[1, ]; cv[1] <- sum(alpha[1, ])

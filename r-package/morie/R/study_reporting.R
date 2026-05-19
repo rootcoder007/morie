@@ -210,7 +210,7 @@
         stringsAsFactors = FALSE
       )
     }
-    target_required <- max(sapply(pair_rows, function(x) if (is.data.frame(x)) x$n_eq[1] else NA_real_), na.rm = TRUE)
+    target_required <- max(vapply(pair_rows, function(x) if (is.data.frame(x)) x$n_eq[1] else NA_real_, numeric(1)), na.rm = TRUE)
     if (!is.finite(target_required)) target_required <- NA_real_
     target_rows[[length(target_rows) + 1L]] <- data.frame(
       endpoint = endpoint_name,

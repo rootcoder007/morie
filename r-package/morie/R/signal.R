@@ -231,13 +231,13 @@ pcg_filter <- function(x, fs = 2000, low = 25, high = 400) {
 
 .morie_py_call <- function(fn_name, ...) {
   args <- list(...)
-  arg_str <- paste(sapply(args, function(a) {
+  arg_str <- paste(vapply(args, function(a) {
     if (is.numeric(a) && length(a) > 1) {
       paste0("[", paste(a, collapse = ","), "]")
     } else {
       as.character(a)
     }
-  }), collapse = " ")
+  }, character(1)), collapse = " ")
   cmd <- paste(fn_name, arg_str)
   out <- system2("python3", c("-m", "morie.stat_bridge", "exec", cmd), stdout = TRUE, stderr = TRUE)
   paste(out, collapse = "\n")

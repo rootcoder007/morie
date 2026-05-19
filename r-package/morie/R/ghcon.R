@@ -24,7 +24,7 @@ ghosal_posterior_consistency <- function(x, ref_loc = NULL, ref_scale = NULL,
   xs <- sort(x)
   grid <- seq(xs[1] - 1, xs[n] + 1, length.out = 200)
   if (is.null(ref_loc) || is.null(ref_scale)) {
-    F_ref <- sapply(grid, function(t) sum(xs <= t)) / n
+    F_ref <- vapply(grid, function(t) sum(xs <= t), numeric(1)) / n
   } else {
     F_ref <- stats::pnorm(grid, ref_loc, ref_scale)
   }

@@ -105,7 +105,7 @@ mrm_classify_mandela <- function(
   if (broader_rc) {
     stopifnot(all(alert_cols %in% names(data)))
     alerts_count <- rowSums(
-      sapply(alert_cols, function(c) as.integer(data[[c]] > 0))
+      vapply(alert_cols, function(c) as.integer(data[[c]] > 0), integer(nrow(data)))
     )
     broader_row <- strict_row | (alerts_count >= 2L & !is.na(dur) &
                                   dur > threshold_days)

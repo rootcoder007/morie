@@ -18,7 +18,7 @@ test_that("Dirichlet-process / log-spline objectives are finite + valid", {
   expect_true(is.finite(morie:::.ghebp_negll(1.5, 5L, 40L)))
   expect_true(is.finite(morie:::.ghebp_negll(0.01, 8L, 100L)))
   gz <- seq(-3, 3, length.out = 41)
-  basis <- function(u) sapply(seq_len(3), function(k) u^k)
+  basis <- function(u) vapply(seq_len(3), function(k) u^k, numeric(length(u)))
   Bx <- basis(rnorm(30)); Bg <- basis(gz)
   expect_true(is.finite(morie:::.ghlgd_negll(rep(0, 3), Bx, Bg, gz, 30L)))
 })

@@ -266,8 +266,8 @@ mrm_tps_neighbourhood_recurrence_km <- function(
       p75_gap_days = stats::quantile(gaps, 0.75, names = FALSE)
     )
   }, simplify = FALSE)
-  out <- do.call(rbind, Map(cbind, hood = names(rows[!sapply(rows, is.null)]),
-                            rows[!sapply(rows, is.null)]))
+  out <- do.call(rbind, Map(cbind, hood = names(rows[!vapply(rows, is.null, logical(1))]),
+                            rows[!vapply(rows, is.null, logical(1))]))
   rownames(out) <- NULL
   out
 }

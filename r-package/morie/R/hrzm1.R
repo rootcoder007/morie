@@ -20,7 +20,7 @@ hrzm1 <- function(y, k = 2, maxit = 200, tol = 1e-6, seed = 0) {
   pii <- rep(1 / k, k)
   ll_prev <- -Inf; it <- 0
   for (it in 1:maxit) {
-    comps <- sapply(1:k, function(j) pii[j] * stats::dnorm(y, mu[j], sigma[j]))
+    comps <- vapply(1:k, function(j) pii[j] * stats::dnorm(y, mu[j], sigma[j]), numeric(length(y)))
     denom <- rowSums(comps); denom <- ifelse(denom > 0, denom, 1e-12)
     gamma_w <- comps / denom
     Nk <- colSums(gamma_w); Nk <- ifelse(Nk > 0, Nk, 1e-12)

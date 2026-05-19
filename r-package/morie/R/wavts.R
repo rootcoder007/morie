@@ -23,7 +23,7 @@ wavelet_time_series <- function(x, wavelet = "haar", level = NULL) {
     fit <- wavelets::dwt(y, filter = wavelet, n.levels = level)
     cA <- as.numeric(fit@V[[level]])
     cDs <- lapply(rev(fit@W), as.numeric)
-    energies <- c(sum(cA^2), sapply(cDs, function(c) sum(c^2)))
+    energies <- c(sum(cA^2), vapply(cDs, function(c) sum(c^2), numeric(1)))
     return(list(approximation = cA,
                 details = cDs,
                 energies = energies,
@@ -41,7 +41,7 @@ wavelet_time_series <- function(x, wavelet = "haar", level = NULL) {
     cA <- (even + odd) / sqrt(2)
     cDs <- c(list(cD), cDs)
   }
-  energies <- c(sum(cA^2), sapply(cDs, function(c) sum(c^2)))
+  energies <- c(sum(cA^2), vapply(cDs, function(c) sum(c^2), numeric(1)))
   list(approximation = cA, details = cDs, energies = energies,
        level = level, n = n, wavelet = "haar",
        method = "Haar DWT (base R fallback)")

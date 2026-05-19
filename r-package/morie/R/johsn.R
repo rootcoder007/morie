@@ -44,7 +44,7 @@ johansen_cointegration <- function(x, k_ar_diff = 1) {
   M <- solve(S11) %*% t(S01) %*% solve(S00) %*% S01
   eig <- sort(Re(eigen(M, only.values = TRUE)$values), decreasing = TRUE)
   eig <- pmax(pmin(eig, 1 - 1e-12), 0)
-  trace_stat <- sapply(0:(k - 1), function(r) -rows * sum(log(1 - eig[(r + 1):k])))
+  trace_stat <- vapply(0:(k - 1), function(r) -rows * sum(log(1 - eig[(r + 1):k])), numeric(1))
   crit_table <- list(
     `1` = c(2.7055, 3.8415, 6.6349), `2` = c(13.4294, 15.4943, 19.9349),
     `3` = c(27.0669, 29.7961, 35.4628), `4` = c(44.4929, 47.8545, 54.6815),

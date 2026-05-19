@@ -29,7 +29,7 @@ ghosal_empirical_bayes <- function(x, alpha_grid = NULL) {
     opt <- stats::optimize(neg_ll, interval = c(1e-3, 1e3))
     a_hat <- opt$minimum; ll <- -opt$objective
   } else {
-    ll_grid <- -sapply(alpha_grid, neg_ll)
+    ll_grid <- -vapply(alpha_grid, neg_ll, numeric(1))
     idx <- which.max(ll_grid); a_hat <- alpha_grid[idx]; ll <- ll_grid[idx]
   }
   list(estimate = a_hat, K_n = K_n, log_lik_at_estimate = ll, n = n,
