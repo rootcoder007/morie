@@ -33,8 +33,10 @@ from __future__ import annotations
 import csv
 import re
 import time
+from collections import Counter
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Iterable, Optional
 
@@ -54,8 +56,9 @@ SIU_INDEX_URL = "https://www.siu.on.ca/en/directors_reports.php"
 SIU_AJAX_URL = "https://www.siu.on.ca/ssi/get_more_drs.php"
 SIU_DETAIL_URL = "https://www.siu.on.ca/en/directors_report_details.php"
 USER_AGENT = "morie/0.9.5 (+https://github.com/hadesllm/morie)"
-RATE_LIMIT_SECONDS = 2.0
-_INDEX_PAGE_SIZE = 15  # rows returned per get_more_drs.php call
+RATE_LIMIT_SECONDS = 2.0    # delay between sequential index-page calls
+_POLITE_DELAY = 0.6         # per-request delay inside each detail worker
+_INDEX_PAGE_SIZE = 15       # rows returned per get_more_drs.php call
 
 
 def _http_get(url: str, *, timeout: int = 60) -> str:
@@ -153,6 +156,22 @@ _DECISION_FIELD = re.compile(
     re.I)
 
 
+def _best_service(html: str) -> str:
+    """Best-effort notifying police service from a SIU report page.
+
+    A report names the involved service many times; we take the modal
+    match (breaking ties toward the longer, more complete name) and
+    drop SIU self-references, which is far more robust than the first
+    regex hit -- the first hit is often a truncated or generic phrase.
+    """
+    cands = [c.strip() for c in _SERVICE_FIELD.findall(html)
+             if "SIU" not in c]
+    if not cands:
+        return ""
+    counts = Counter(cands)
+    return max(counts, key=lambda c: (counts[c], len(c)))
+
+
 def _parse_case_page(html: str, row: dict) -> dict:
     """Best-effort parsing of a SIU report page into a flat dict.
 
@@ -170,11 +189,25 @@ def _parse_case_page(html: str, row: dict) -> dict:
     for key, pat in _DATE_FIELDS.items():
         m = pat.search(html)
         record[key] = _to_iso(m.group(1)) if m else ""
-    m = _SERVICE_FIELD.search(html)
-    record["police_service"] = m.group(1).strip() if m else ""
+    record["police_service"] = _best_service(html)
     m = _DECISION_FIELD.search(html)
     record["director_decision_text"] = m.group(0).strip() if m else ""
     return record
+
+
+def _fetch_one(row: dict) -> Optional[dict]:
+    """Fetch and parse a single SIU report page (parallel worker task).
+
+    The scrape is network-bound, so several reports are fetched
+    concurrently; each worker still pauses ``_POLITE_DELAY`` seconds per
+    request so the aggregate request rate stays modest.
+    """
+    time.sleep(_POLITE_DELAY)
+    try:
+        html = _http_get(row["url"])
+    except Exception:  # noqa: BLE001 - skip an unreachable report
+        return None
+    return _parse_case_page(html, row)
 
 
 _MONTHS = {m: i for i, m in enumerate(
@@ -213,6 +246,7 @@ def fetch_siu_cases(
     overwrite: bool = False,
     progress: bool = True,
     max_cases: Optional[int] = None,
+    workers: int = 4,
 ) -> Path:
     """Scrape SIU Director's Reports into a single CSV.
 
@@ -224,6 +258,11 @@ def fetch_siu_cases(
         progress: Print scrape progress when True.
         max_cases: Optional cap on the number of reports fetched
             (useful for a quick smoke test).
+        workers: Number of concurrent detail-page fetchers (default 4).
+            The scrape is network-bound, so concurrency -- not a faster
+            language -- is what reduces wall-clock time; each worker
+            still pauses between requests to keep the load on the SIU
+            site modest. ``workers=1`` fetches strictly sequentially.
 
     Returns:
         Path to the populated SIU.csv.
@@ -253,15 +292,16 @@ def fetch_siu_cases(
             unique_rows.append(r)
 
     records: list[dict] = []
-    for i, row in enumerate(unique_rows, 1):
-        if progress and i % 25 == 0:
-            print(f"[siu] case {i}/{len(unique_rows)}")
-        try:
-            html = _http_get(row["url"])
-        except Exception:  # noqa: BLE001 - skip an unreachable report
-            continue
-        records.append(_parse_case_page(html, row))
-        time.sleep(RATE_LIMIT_SECONDS)
+    n_workers = max(1, int(workers))
+    if progress:
+        print(f"[siu] fetching {len(unique_rows)} report pages "
+              f"with {n_workers} worker(s)")
+    with ThreadPoolExecutor(max_workers=n_workers) as ex:
+        for i, rec in enumerate(ex.map(_fetch_one, unique_rows), 1):
+            if rec is not None:
+                records.append(rec)
+            if progress and i % 100 == 0:
+                print(f"[siu] case {i}/{len(unique_rows)}")
 
     if not records:
         raise RuntimeError(
