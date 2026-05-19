@@ -91,6 +91,8 @@
 #' @aliases morie-package
 #' @importFrom stats aggregate ave deviance median na.omit plogis
 #'   setNames update weighted.mean
+#' @importFrom Rcpp sourceCpp
+#' @useDynLib morie, .registration = TRUE
 "_PACKAGE"
 
 # `weight` is referenced as a data-frame column name inside
