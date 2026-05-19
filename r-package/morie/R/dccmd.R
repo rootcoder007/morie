@@ -48,12 +48,6 @@ dcc_multivariate_garch <- function(x) {
     # dispatch and slot layout vary across rmgarch versions.  Wrap it so
     # that any API mismatch degrades gracefully to the base-R DCC below
     # rather than hard-failing.
-    # nocov start
-    # -- covr exclusion: this optional-dependency branch is environment
-    # -- conditional. Whether rmgarch::dccfit() succeeds depends on the
-    # -- installed rmgarch's S4 layout; on a covr run it errors into the
-    # -- base-R fallback, so its lines are unreachable under measurement.
-    # -- The fallback below carries the package's tested DCC path.
     res <- tryCatch({
       uspec <- rugarch::multispec(replicate(k, rugarch::ugarchspec(
         variance.model = list(model = "sGARCH", garchOrder = c(1, 1)),
@@ -74,7 +68,6 @@ dcc_multivariate_garch <- function(x) {
            method = "DCC(1,1) via rmgarch")
     }, error = function(e) NULL)
     if (!is.null(res)) return(res)
-    # nocov end
   }
   # Fallback: two-step EWMA-marginal + closed-form DCC update.
   H <- matrix(NA_real_, n, k); Z <- matrix(NA_real_, n, k)
