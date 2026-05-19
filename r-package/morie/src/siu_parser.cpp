@@ -528,7 +528,7 @@ Rcpp::CharacterVector siu_parse_report(std::string html, int drid,
                      count("man") + count("boy") + count("male");
     const int female = count("she") + count("her") + count("woman") +
                        count("girl") + count("female");
-    const std::string lc = n;  // narrative + analysis
+    const std::string lc = full;  // a non-binary signal anywhere counts
     const bool nonbinary =
       lc.find("non-binary") != std::string::npos ||
       lc.find("nonbinary") != std::string::npos ||
