@@ -38,13 +38,19 @@ test_that("SAR-lag objective: negative-det + singular guards + valid path", {
     morie:::.sarla_negll(0.2, e0, e1, 4L, I4, diag(c(0.5, 0.5, 0.5, 0.5)))))
 })
 
-test_that("SAR-error objective: null-beta and det-sign guards", {
+test_that("SAR-error objective: null-beta, det-sign and zero-variance guards", {
   I4 <- diag(4); X <- matrix(rnorm(8), 4, 2); y <- rnorm(4)
   # A = 0  ->  crossprod(AX) singular  ->  solve() errors  ->  beta NULL
   expect_equal(morie:::.sarre_negll(1, I4, I4, X, y, 4L), 1e12)
   # A = diag(-1,1,1,1): full rank, det = -1  ->  the det-sign guard
   expect_equal(
     morie:::.sarre_negll(1, I4, diag(c(2, 0, 0, 0)), X, y, 4L), 1e12)
+  # lambda = 0 -> A = I; y = 2 * X exactly. The normal equations give
+  # beta = 28/14 = 2 (an exact IEEE division), so the residual is the
+  # exact zero vector and sigma2 == 0 -- the zero-variance guard.
+  expect_equal(
+    morie:::.sarre_negll(0, diag(3), diag(3),
+                         matrix(c(1, 2, 3), 3, 1), c(2, 4, 6), 3L), 1e12)
 })
 
 test_that("spatial-GLM objective: non-PD covariance guard + valid path", {
@@ -66,6 +72,11 @@ test_that("spatial-mixed REML objective: covariance + information guards", {
   # a zero design column -> crossprod(Xw) singular -> chol(XtSiX) fails
   expect_equal(morie:::.smixd_negreml(c(0, 0), Dok, 6L, cbind(1:6, 0),
                                       rnorm(6), 2L), 1e12)
+  # single-column X with y = 2 * X: whitening is linear, so yw = 2 * Xw
+  # exactly and the residual is the exact zero vector -> sigma2 == 0.
+  expect_equal(
+    morie:::.smixd_negreml(c(0, 0), as.matrix(dist(c(0, 1, 2))), 3L,
+                           matrix(c(1, 2, 3), 3, 1), c(2, 4, 6), 1L), 1e12)
 })
 
 test_that("DCC objective: parameter guard + indefinite-correlation guard", {

@@ -17,12 +17,7 @@
   beta <- as.numeric(solve(XtSiX, crossprod(Xw, yw)))
   resid <- yw - Xw %*% beta
   sigma2 <- as.numeric(sum(resid ^ 2)) / max(n - p, 1)
-  # nocov start
-  # -- sigma2 is a sum of squares / df: mathematically >= 0, and exactly
-  # -- 0 only for a perfect (zero-residual) fit, which IEEE arithmetic
-  # -- does not produce. Defensive guard, unreachable under measurement.
   if (sigma2 <= 0) return(1e12)
-  # nocov end
   logdet_S <- 2 * sum(log(diag(L)))
   logdet_K <- 2 * sum(log(diag(L2)))
   0.5 * (logdet_S + logdet_K + (n - p) * log(2 * pi * sigma2) + (n - p))

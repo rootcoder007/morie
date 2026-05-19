@@ -12,12 +12,7 @@
   if (is.null(beta)) return(1e12)
   e <- Ay - AX %*% beta
   sigma2 <- as.numeric(sum(e ^ 2)) / n
-  # nocov start
-  # -- sigma2 is a sum of squares / n: mathematically >= 0, and exactly 0
-  # -- only for a perfect (zero-residual) fit, which IEEE arithmetic does
-  # -- not produce. Defensive guard, unreachable under measurement.
   if (sigma2 <= 0) return(1e12)
-  # nocov end
   det_sign <- determinant(A, logarithm = TRUE)
   # !is.finite(modulus) catches a singular A (det == 0), for which
   # determinant() still reports sign = +1.
