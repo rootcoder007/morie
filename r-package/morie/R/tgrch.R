@@ -1,5 +1,21 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# Internal: GJR-GARCH(1,1) Gaussian negative log-likelihood for the
+# base-R fallback. Extracted from the tgarch_model() optimiser closure
+# so the parameter-domain guard is directly unit-testable.
+.tgarch_negll <- function(p, r, n) {
+  omega <- p[1]; alpha <- p[2]; gamma <- p[3]; beta <- p[4]
+  if (omega <= 0 || alpha < 0 || beta < 0 || alpha + 0.5 * gamma + beta >= 1)
+    return(1e10)
+  s2 <- numeric(n); s2[1] <- var(r) + 1e-10
+  for (t in 2:n) {
+    I <- if (r[t - 1] < 0) 1 else 0
+    s2[t] <- max(omega + (alpha + gamma * I) * r[t - 1]^2 + beta * s2[t - 1],
+                 1e-12)
+  }
+  0.5 * sum(log(2 * pi * s2) + r^2 / s2)
+}
+
 #' GJR-GARCH(1,1) threshold GARCH
 #'
 #' @inheritParams garch_fit
@@ -31,18 +47,7 @@ tgarch_model <- function(x) {
                 n = n,
                 method = "GJR-GARCH(1,1) via rugarch"))
   }
-  neg_ll <- function(p) {
-    omega <- p[1]; alpha <- p[2]; gamma <- p[3]; beta <- p[4]
-    if (omega <= 0 || alpha < 0 || beta < 0 || alpha + 0.5 * gamma + beta >= 1)
-      return(1e10)
-    s2 <- numeric(n); s2[1] <- var(r) + 1e-10
-    for (t in 2:n) {
-      I <- if (r[t - 1] < 0) 1 else 0
-      s2[t] <- max(omega + (alpha + gamma * I) * r[t - 1]^2 + beta * s2[t - 1],
-                   1e-12)
-    }
-    0.5 * sum(log(2 * pi * s2) + r^2 / s2)
-  }
+  neg_ll <- function(p) .tgarch_negll(p, r, n)
   var_r <- var(r)
   opt <- nlminb(c(var_r * 0.05, 0.05, 0.05, 0.85), neg_ll,
                 lower = c(1e-8, 1e-8, -0.5, 1e-8),

@@ -1,4 +1,24 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Internal: parametric variogram model value at distance h. Extracted
+# from the vrgft() optimiser closure so the model switch (including the
+# unknown-model stop) is directly unit-testable.
+.vrgft_model <- function(h, c0, c1, a, model) {
+  switch(model,
+         exponential = c0 + c1 * (1 - exp(-h / a)),
+         gaussian    = c0 + c1 * (1 - exp(-(h ^ 2) / (a ^ 2))),
+         spherical   = ifelse(h <= a,
+                              c0 + c1 * (1.5 * h / a - 0.5 * (h / a) ^ 3),
+                              c0 + c1),
+         stop("unknown model"))
+}
+
+# Internal: variogram weighted-least-squares objective.
+.vrgft_obj <- function(p, mids, gammas, weights, model) {
+  pred <- .vrgft_model(mids, p[1], p[2], p[3], model)
+  sum(weights * (gammas - pred) ^ 2)
+}
+
 #' Variogram model fit by weighted least squares.
 #'
 #' Models: exponential, gaussian, spherical.
@@ -36,20 +56,8 @@ vrgft <- function(x, coords, model = "exponential",
   if (length(mids) < 3) stop("need at least 3 non-empty bins")
   g_max <- max(gammas); h_max <- max(mids)
   p0 <- c(0, g_max, max(h_max / 3, 1e-6))
-  model_fn <- function(h, c0, c1, a) {
-    switch(model,
-           exponential = c0 + c1 * (1 - exp(-h / a)),
-           gaussian    = c0 + c1 * (1 - exp(-(h ^ 2) / (a ^ 2))),
-           spherical   = ifelse(h <= a,
-                                c0 + c1 * (1.5 * h / a - 0.5 * (h / a) ^ 3),
-                                c0 + c1),
-           stop("unknown model"))
-  }
   weights <- pmax(npairs, 1) / pmax(gammas, 1e-12) ^ 2
-  obj <- function(p) {
-    pred <- model_fn(mids, p[1], p[2], p[3])
-    sum(weights * (gammas - pred) ^ 2)
-  }
+  obj <- function(p) .vrgft_obj(p, mids, gammas, weights, model)
   res <- tryCatch(
     stats::optim(p0, obj, method = "L-BFGS-B",
                  lower = c(0, 1e-12, 1e-12),

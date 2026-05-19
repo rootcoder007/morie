@@ -1,5 +1,17 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# Internal: penalised log-spline density negative log-likelihood.
+# Extracted from the ghosal_log_density() optimiser closure for direct
+# unit-testing. `Bx`/`Bg` are the data and grid basis matrices, `gz` the
+# standardised evaluation grid, `n` the sample size.
+.ghlgd_negll <- function(theta, Bx, Bg, gz, n) {
+  eta_x <- Bx %*% theta; eta_g <- Bg %*% theta
+  M <- max(eta_g)
+  Z <- M + log(sum(diff(gz) * (utils::head(exp(eta_g - M), -1) +
+                                utils::tail(exp(eta_g - M), -1))) / 2)
+  -(sum(eta_x) - n * Z) + 1e-4 * sum(theta^2)
+}
+
 #' Log-spline density estimator (Stone 1990, Ghosal Ch 8).
 #'
 #' @param x Numeric data vector.
@@ -22,13 +34,7 @@ ghosal_log_density <- function(x, K = 5, grid = NULL) {
   else gz <- (grid - m) / s
   basis <- function(u) sapply(seq_len(K), function(k) u^k)
   Bx <- basis(z); Bg <- basis(gz)
-  neg_ll <- function(theta) {
-    eta_x <- Bx %*% theta; eta_g <- Bg %*% theta
-    M <- max(eta_g)
-    Z <- M + log(sum(diff(gz) * (head(exp(eta_g - M), -1) +
-                                  tail(exp(eta_g - M), -1))) / 2)
-    -(sum(eta_x) - n * Z) + 1e-4 * sum(theta^2)
-  }
+  neg_ll <- function(theta) .ghlgd_negll(theta, Bx, Bg, gz, n)
   opt <- stats::optim(rep(0, K), neg_ll, method = "BFGS")
   theta <- opt$par
   eta_g <- Bg %*% theta; M <- max(eta_g)

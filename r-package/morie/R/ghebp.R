@@ -1,5 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# Internal: Antoniak DP empirical-Bayes negative log-likelihood in the
+# concentration parameter alpha. Extracted from the
+# ghosal_empirical_bayes() optimiser closure for direct unit-testing.
+.ghebp_negll <- function(a, K_n, n) {
+  -(K_n * log(a) + lgamma(a) - lgamma(a + n))
+}
+
 #' Empirical-Bayes alpha MLE for a DP, given the observed K_n.
 #'
 #' @param x Numeric data vector.
@@ -17,7 +24,7 @@ ghosal_empirical_bayes <- function(x, alpha_grid = NULL) {
                           method = "Empirical Bayes (n<2)"))
   K_n <- length(unique(x))
   if (K_n == n) K_n <- max(2, ceiling(log2(n) + 1))
-  neg_ll <- function(a) -(K_n * log(a) + lgamma(a) - lgamma(a + n))
+  neg_ll <- function(a) .ghebp_negll(a, K_n, n)
   if (is.null(alpha_grid)) {
     opt <- stats::optimize(neg_ll, interval = c(1e-3, 1e3))
     a_hat <- opt$minimum; ll <- -opt$objective

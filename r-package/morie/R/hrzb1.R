@@ -1,5 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# Internal: Manski maximum-score objective (negative average concordance
+# of the sign of the index with the +-1 response). Extracted from the
+# hrzb1() optimiser closures so it can be unit-tested directly.
+.hrzb1_score <- function(b, ys, X) {
+  -mean(ys * (X %*% b > 0))
+}
+
 #' Manski (1975) maximum-score estimator
 #'
 #' @param x Numeric covariate vector or design matrix.
@@ -14,7 +21,7 @@ hrzb1 <- function(x, y) {
     return(list(estimate = rep(NA_real_, p), se = rep(NA_real_, p),
                 n = n, method = "maximum-score (insufficient data)"))
   ys <- 2 * y - 1
-  score <- function(b) -mean(ys * (X %*% b > 0))
+  score <- function(b) .hrzb1_score(b, ys, X)
   beta0 <- as.numeric(stats::coef(stats::lm.fit(X, ys)))
   nrm <- sqrt(sum(beta0^2)); if (nrm > 1e-12) beta0 <- beta0 / nrm
   if (beta0[1] < 0) beta0 <- -beta0
@@ -35,7 +42,7 @@ hrzb1 <- function(x, y) {
   for (b_idx in 1:B) {
     idx <- sample.int(n, m, replace = FALSE)
     Xb <- X[idx, , drop = FALSE]; yb <- ys[idx]
-    sc <- function(b) -mean(yb * (Xb %*% b > 0))
+    sc <- function(b) .hrzb1_score(b, yb, Xb)
     r <- stats::optim(best + 0.05 * stats::rnorm(p), sc, method = "Nelder-Mead",
                        control = list(maxit = 150))
     bb <- r$par / max(sqrt(sum(r$par^2)), 1e-12)
