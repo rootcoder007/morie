@@ -17,6 +17,12 @@
 #' @return Each design-of-experiments callable returns a named \code{list}
 #'   holding the constructed design or the analysis result and a
 #'   plain-language \code{interpretation}.
+#' @examples
+#' set.seed(2026)
+#' n <- 30L
+#' df <- data.frame(y = c(rnorm(n, 0), rnorm(n, 0.5), rnorm(n, 1)),
+#'                  g = rep(c("A", "B", "C"), each = n))
+#' mrm_anova_bonferroni(df, response_col = "y", group_col = "g")$alpha_per_pair
 #' @name mrm_doe
 NULL
 

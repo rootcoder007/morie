@@ -19,6 +19,11 @@
 #'   the computed statistic (Pareto exponent, Moran's I, or survival curve)
 #'   and a plain-language \code{interpretation}; \code{mrm_tps_load_hawkes_refit()}
 #'   returns the parsed Hawkes-refit manifest as a \code{list}.
+#' @examples
+#' if (FALSE) {
+#'   tps <- read.csv("Assault_Open_Data.csv")
+#'   mrm_tps_levy_scaling(tps)
+#' }
 #' @name mrm_tps
 NULL
 

@@ -12,6 +12,13 @@ plain-language \code{interpretation}.
 R parity of \code{morie.mrm_doe}.  Closes the Chapter-3/4/5 coverage
 gap from designexptr.org.
 }
+\examples{
+set.seed(2026)
+n <- 30L
+df <- data.frame(y = c(rnorm(n, 0), rnorm(n, 0.5), rnorm(n, 1)),
+                 g = rep(c("A", "B", "C"), each = n))
+mrm_anova_bonferroni(df, response_col = "y", group_col = "g")$alpha_per_pair
+}
 \references{
 Box, G. E. P., Hunter, J. S., & Hunter, W. G. (2005). Statistics for
 Experimenters (2nd ed.). Wiley.

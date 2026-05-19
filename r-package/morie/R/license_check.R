@@ -16,6 +16,8 @@
 #'   of GPL-compatible SPDX identifiers; \code{check_plugin_license()} returns
 #'   a logical (invisibly), signalling a warning or error when the supplied
 #'   licence is not GPL-compatible.
+#' @examples
+#' morie_gpl_compatible_licenses()
 #' @name license_check
 NULL
 

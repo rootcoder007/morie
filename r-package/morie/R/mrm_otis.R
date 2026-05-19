@@ -28,6 +28,11 @@
 #' @return Each \code{mrm_otis_*()} callable returns a named \code{list} with
 #'   the computed statistics (concentration indices, survival curves, or
 #'   association measures) and a plain-language \code{interpretation}.
+#' @examples
+#' if (FALSE) {
+#'   b09 <- read.csv("b09_individuals_in_segregation.csv")
+#'   mrm_otis_placement_concentration(b09)
+#' }
 #' @name mrm_otis
 NULL
 

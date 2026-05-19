@@ -15,6 +15,12 @@ one-way ANOVA with Tukey HSD, 2^k factorial design, and a
 designed-experiment convenience wrapper around the morie causal
 estimator family.
 }
+\examples{
+set.seed(2026)
+a <- rnorm(40, mean = 5,   sd = 1.2)
+b <- rnorm(40, mean = 5.5, sd = 1.5)
+mrm_two_treatment_test(a, b)$p_welch
+}
 \references{
 Box, G. E. P., Hunter, J. S., & Hunter, W. G. (2005).
 Statistics for Experimenters. Wiley.

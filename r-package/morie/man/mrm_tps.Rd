@@ -27,3 +27,9 @@ precomputed per-category Hawkes (Markovian + Weibull/sin)
 fits from the \code{paper_hawkes_refit.json} manifest if available.
 }
 }
+\examples{
+if (FALSE) {
+  tps <- read.csv("Assault_Open_Data.csv")
+  mrm_tps_levy_scaling(tps)
+}
+}

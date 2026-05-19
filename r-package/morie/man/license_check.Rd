@@ -20,3 +20,6 @@ stronger guarantees see the companion userspace LSM-style daemon
 (\code{daemon/morie_lsm.py}) and the kernel companion module
 (\code{kernel-module/morie.c}).
 }
+\examples{
+morie_gpl_compatible_licenses()
+}

@@ -16,6 +16,12 @@
 #' @return The LISA callables return named \code{list}s with per-polygon
 #'   local Moran's I, permutation p-values, cluster classifications, and
 #'   (for the per-year wrapper) the time series of global Moran's I.
+#' @examples
+#' if (FALSE) {
+#'   ncr <- read.csv("Neighbourhood_Crime_Rates_Open_Data.csv")
+#'   mrm_tps_lisa(ncr, count_col = "ASSAULT_2024",
+#'                lat_col = "lat", lon_col = "lon")
+#' }
 #' @name mrm_lisa
 NULL
 

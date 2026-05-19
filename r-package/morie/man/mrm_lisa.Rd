@@ -16,6 +16,13 @@ polygon centroid with 999-permutation MC significance, plus a
 convenience wrapper for the per-year time series used by the morie
 empirical paper Section 7.11.
 }
+\examples{
+if (FALSE) {
+  ncr <- read.csv("Neighbourhood_Crime_Rates_Open_Data.csv")
+  mrm_tps_lisa(ncr, count_col = "ASSAULT_2024",
+               lat_col = "lat", lon_col = "lon")
+}
+}
 \references{
 Anselin, L. (1995). Local indicators of spatial association --
 LISA. \emph{Geographical Analysis}, 27(2), 93--115.

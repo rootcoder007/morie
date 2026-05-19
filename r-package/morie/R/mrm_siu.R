@@ -20,6 +20,11 @@
 #' @return Each \code{mrm_siu_*()} callable returns a named \code{list} with
 #'   the survival, per-service rate, or outcome-classification result and a
 #'   plain-language \code{interpretation}.
+#' @examples
+#' if (FALSE) {
+#'   siu <- read.csv("SIU.csv")
+#'   mrm_siu_case_to_decision_km(siu)
+#' }
 #' @name mrm_siu
 NULL
 

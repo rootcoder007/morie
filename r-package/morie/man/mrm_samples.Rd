@@ -29,3 +29,9 @@ demand (per-user, since redistribution of the scraped corpus is
 not clearly licensed).
 }
 }
+\examples{
+if (FALSE) {
+  b01 <- morie_load_dataset("otisb01")
+  head(b01)
+}
+}

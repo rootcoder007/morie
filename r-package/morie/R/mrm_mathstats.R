@@ -13,6 +13,8 @@
 #'
 #' @return Each callable returns a named \code{list} with the computed
 #'   statistic(s) and a plain-language \code{interpretation}.
+#' @examples
+#' mrm_oneprop_test(x = 58, n = 100, p0 = 0.5)
 #' @name mrm_mathstats
 NULL
 

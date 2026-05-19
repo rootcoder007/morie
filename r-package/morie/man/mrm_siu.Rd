@@ -28,3 +28,9 @@ categories (\code{charges_laid}, \code{no_charges}, etc.) by service and
 by year, reporting both raw counts and shares.
 }
 }
+\examples{
+if (FALSE) {
+  siu <- read.csv("SIU.csv")
+  mrm_siu_case_to_decision_km(siu)
+}
+}

@@ -21,6 +21,11 @@
 #'   \code{morie_fetch_siu()}) return the file path to the downloaded or
 #'   cached CSV; \code{morie_load_dataset()} returns the loaded
 #'   \code{data.frame}.
+#' @examples
+#' if (FALSE) {
+#'   b01 <- morie_load_dataset("otisb01")
+#'   head(b01)
+#' }
 #' @name mrm_samples
 NULL
 

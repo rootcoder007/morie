@@ -30,6 +30,10 @@
 #' @return Each callable in this module returns a named \code{list} with the
 #'   metric \code{value}, a per-group breakdown, advisory \code{warnings}, and
 #'   a plain-language \code{interpretation}.
+#' @examples
+#' pred <- c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0)
+#' race <- c(rep("A", 5), rep("B", 5))
+#' fairness_disparate_impact(pred, race, privileged = "A")$value
 #' @name frns_metrics
 NULL
 

@@ -15,6 +15,11 @@
 #'
 #' @return Each design callable returns a named \code{list} of estimates,
 #'   test statistics, p-values, and a plain-language \code{interpretation}.
+#' @examples
+#' set.seed(2026)
+#' a <- rnorm(40, mean = 5,   sd = 1.2)
+#' b <- rnorm(40, mean = 5.5, sd = 1.5)
+#' mrm_two_treatment_test(a, b)$p_welch
 #' @name mrm_design
 NULL
 

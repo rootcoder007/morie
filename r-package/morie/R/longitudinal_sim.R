@@ -21,6 +21,8 @@
 #'   \code{data.frame}s; \code{morie_sync_rng()} returns an environment
 #'   exposing synchronised \code{rnorm}, \code{runif}, and \code{sample}
 #'   methods.
+#' @examples
+#' rng <- morie_sync_rng(42)
 #' @name longitudinal_sim
 NULL
 

@@ -26,3 +26,6 @@ Toeplitz / compound-symmetric covariance --- are standard methods
 from Hamilton (1994) and Diggle, Liang, Zeger (1994), implemented
 here independently.
 }
+\examples{
+rng <- morie_sync_rng(42)
+}

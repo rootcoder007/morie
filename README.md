@@ -6,6 +6,9 @@
 
 A multi-domain scientific computing toolkit (Python and R) for observational inference, with sociolegal, signal-processing, cryptographic, spatial-statistics, statistical-physics, and psychometrics modules. Hosts the MRM framework as a primary application for Canadian carceral, police, and oversight data analysis.
 
+[![R CMD check](https://github.com/hadesllm/morie/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/hadesllm/morie/actions/workflows/r-cmd-check.yml)
+[![CI](https://github.com/hadesllm/morie/actions/workflows/ci.yml/badge.svg)](https://github.com/hadesllm/morie/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/hadesllm/morie/actions/workflows/codeql.yml/badge.svg)](https://github.com/hadesllm/morie/actions/workflows/codeql.yml)
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg)](https://github.com/hadesllm/morie/blob/main/LICENSE)
 [![PyPI version](https://img.shields.io/pypi/v/morie.svg)](https://pypi.org/project/morie/)
 [![r-universe](https://img.shields.io/badge/r--universe-hadesllm-276DC3)](https://hadesllm.r-universe.dev/morie)

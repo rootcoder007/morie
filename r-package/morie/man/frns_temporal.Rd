@@ -21,3 +21,10 @@ arXiv:2603.18987. Its central lesson: bias metrics are not stable
 from one deployment cycle to the next and must be recomputed per
 period and per city.
 }
+\examples{
+period <- c(rep("p1", 10), rep("p2", 10))
+city <- rep("A", 20)
+pred <- rep(c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0), 2)
+grp <- rep(c(rep("X", 5), rep("Y", 5)), 2)
+predpol_temporal_audit(period, city, pred, grp, privileged = "X")
+}

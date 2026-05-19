@@ -17,6 +17,13 @@
 #' @return Each diagnostic callable returns a named \code{list} of balance
 #'   and overlap statistics (or the estimated effect) together with a
 #'   plain-language \code{interpretation}.
+#' @examples
+#' set.seed(2026)
+#' n <- 200L
+#' df <- data.frame(D = rbinom(n, 1, 0.4),
+#'                  age = rnorm(n, 50, 10), bmi = rnorm(n, 27, 4))
+#' mrm_standardised_difference(df, treatment_col = "D",
+#'                             covariates = c("age", "bmi"))
 #' @name mrm_diagnostics
 NULL
 

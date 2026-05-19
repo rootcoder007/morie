@@ -36,3 +36,9 @@ The OTIS \code{UniqueIndividual_ID} column has format \code{YYYY-XXXXX-SG} and
 is randomly reassigned every fiscal year. Cross-year tracking is
 therefore invalid; all analyses below operate within fiscal year.
 }
+\examples{
+if (FALSE) {
+  b09 <- read.csv("b09_individuals_in_segregation.csv")
+  mrm_otis_placement_concentration(b09)
+}
+}

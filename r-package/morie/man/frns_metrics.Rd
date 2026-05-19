@@ -38,3 +38,8 @@ Fairness 360 metric definitions; the COMPAS audit in pbiecek's
 (Lacherade, Szabo, Krikava & Aeby, 2021); and Barman & Barman,
 arXiv:2603.18987 (the Bias Amplification Score).
 }
+\examples{
+pred <- c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0)
+race <- c(rep("A", 5), rep("B", 5))
+fairness_disparate_impact(pred, race, privileged = "A")$value
+}
