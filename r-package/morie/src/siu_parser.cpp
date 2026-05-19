@@ -24,7 +24,11 @@ namespace {
 // any handle is created when the program is multi-threaded).
 struct CurlGlobal {
   CurlGlobal()  { curl_global_init(CURL_GLOBAL_DEFAULT); }
+  // # nocov start
+  // -- the destructor runs only at process teardown (static-storage
+  // -- object); gcov does not reliably attribute exit-time execution.
   ~CurlGlobal() { curl_global_cleanup(); }
+  // # nocov end
 };
 const CurlGlobal kCurlGlobal;
 
