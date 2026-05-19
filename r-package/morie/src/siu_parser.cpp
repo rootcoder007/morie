@@ -18,12 +18,6 @@
 // parser_version stamped into every emitted row.
 #define MORIE_SIU_PARSER_VERSION "0.2.0"
 
-// # nocov start
-// The libcurl HTTP-transport layer below (write_cb, siu_http_get,
-// setup_handle, siu_http_get_many) is network code: it is exercised by
-// the network-gated tests in test-siu.R, but cannot run under covr /
-// R CMD check, which execute offline. Excluded from coverage rather
-// than counted as permanently-uncovered.
 namespace {
 
 // One-time libcurl global initialisation (libcurl requires this before
@@ -183,7 +177,6 @@ Rcpp::CharacterVector siu_http_get_many(Rcpp::CharacterVector urls,
   for (Req* r : reqs) delete r;
   return out;
 }
-// # nocov end
 
 // ===========================================================================
 // HTML parsing -- SIU director's-report pages -> the 64-column schema.
