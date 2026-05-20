@@ -192,7 +192,7 @@ test_that("kalman_filter runs a default local-level model", {
 test_that("kalman_filter accepts explicit system matrices", {
   set.seed(42)
   x <- cumsum(rnorm(25))
-  res <- kalman_filter(x, F = matrix(1), H = matrix(1),
+  res <- kalman_filter(x, transition = matrix(1), H = matrix(1),
                        Q = matrix(0.5), R = matrix(1),
                        x0 = 0, P0 = matrix(10))
   expect_equal(res$n, 25L)

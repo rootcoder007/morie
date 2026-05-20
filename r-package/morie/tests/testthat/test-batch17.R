@@ -122,7 +122,7 @@ test_that("rgdfa returns alpha exponent and scaling vectors", {
   set.seed(10)
   r <- rgdfa(rnorm(400))
   expect_type(r, "list")
-  expect_named(r, c("alpha", "scales", "F", "log_scales", "log_F"))
+  expect_named(r, c("alpha", "scales", "fluct", "log_scales", "log_F"))
   expect_true(is.finite(r$alpha))
   expect_equal(length(r$log_scales), length(r$log_F))
 })

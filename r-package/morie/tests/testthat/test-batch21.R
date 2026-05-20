@@ -107,23 +107,23 @@ test_that("bpe_tokenizer handles empty input", {
 test_that("temperature_scaling returns a normalised softmax tensor", {
   res <- morie:::temperature_scaling(c(1, 2, 3, 4))
   expect_type(res, "list")
-  expect_named(res, c("tensor", "entropy", "T", "method"))
+  expect_named(res, c("tensor", "entropy", "temperature", "method"))
   expect_length(res$tensor, 4L)
   expect_equal(sum(res$tensor), 1, tolerance = 1e-8)
   expect_true(all(res$tensor >= 0))
   expect_true(is.finite(res$entropy) && res$entropy >= 0)
-  expect_equal(res$T, 1)
+  expect_equal(res$temperature, 1)
 })
 
 test_that("temperature_scaling with high temperature flattens the tensor", {
-  hot <- morie:::temperature_scaling(c(0, 5, 10), T = 100)
-  cold <- morie:::temperature_scaling(c(0, 5, 10), T = 0.1)
+  hot <- morie:::temperature_scaling(c(0, 5, 10), temperature = 100)
+  cold <- morie:::temperature_scaling(c(0, 5, 10), temperature = 0.1)
   expect_gt(hot$entropy, cold$entropy)
-  expect_equal(hot$T, 100)
+  expect_equal(hot$temperature, 100)
 })
 
 test_that("temperature_scaling errors on a non-positive temperature", {
-  expect_error(morie:::temperature_scaling(1:3, T = 0),
+  expect_error(morie:::temperature_scaling(1:3, temperature = 0),
                "Temperature", ignore.case = TRUE)
 })
 
@@ -171,7 +171,7 @@ test_that("top_k_decoding clamps k to the vocabulary length", {
 })
 
 test_that("top_k_decoding honours the temperature argument", {
-  res <- morie:::top_k_decoding(c(1, 2, 3, 4), k = 3L, T = 2)
+  res <- morie:::top_k_decoding(c(1, 2, 3, 4), k = 3L, temperature = 2)
   expect_equal(sum(res$tensor), 1, tolerance = 1e-8)
 })
 
@@ -187,7 +187,7 @@ test_that("top_p_nucleus performs nucleus filtering on the default path", {
 })
 
 test_that("top_p_nucleus honours custom p and temperature", {
-  res <- morie:::top_p_nucleus(c(1, 2, 3, 4), p = 0.5, T = 2)
+  res <- morie:::top_p_nucleus(c(1, 2, 3, 4), p = 0.5, temperature = 2)
   expect_equal(res$p, 0.5)
   expect_equal(sum(res$tensor), 1, tolerance = 1e-8)
 })
