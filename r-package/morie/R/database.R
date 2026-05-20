@@ -212,9 +212,11 @@ morie_cache_list <- function(db_path = NULL, con = NULL) {
   }
   # Quote identifiers per the backend's own conventions so this works on
   # SQLite ([tbl]), PostgreSQL ("tbl"), MariaDB (`tbl`), DuckDB ("tbl"), ...
+  # COUNT(*) returns integer on SQLite/PostgreSQL but double on DuckDB; cast
+  # so the vapply FUN.VALUE matches across backends.
   counts <- vapply(tables, function(t) {
     q <- DBI::dbQuoteIdentifier(h$con, t)
-    DBI::dbGetQuery(h$con, sprintf("SELECT COUNT(*) AS n FROM %s", q))$n
+    as.integer(DBI::dbGetQuery(h$con, sprintf("SELECT COUNT(*) AS n FROM %s", q))$n)
   }, integer(1))
   data.frame(table = tables, rows = counts, stringsAsFactors = FALSE)
 }
