@@ -25,6 +25,8 @@ with \code{offset}; the default reads the entire resource.}
 (e.g. from \code{morie_dataset_catalog()$ckan_resource_id}) it is used
 directly, so any catalogued dataset can be fetched without a built-in
 database; \code{dataset_key} then only labels the cache table.}
+
+\item{con}{Optional pre-opened DBI connection (overrides \code{db_path}).}
 }
 \value{
 A data.frame.

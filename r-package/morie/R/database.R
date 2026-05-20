@@ -317,6 +317,7 @@ morie_load_cpads <- function(db_path = NULL, use_ckan = TRUE, con = NULL) {
 #'   (e.g. from \code{morie_dataset_catalog()$ckan_resource_id}) it is used
 #'   directly, so any catalogued dataset can be fetched without a built-in
 #'   database; \code{dataset_key} then only labels the cache table.
+#' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return A data.frame.
 #' @examples
 #' \dontrun{
