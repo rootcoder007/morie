@@ -2,6 +2,10 @@ name: R CMD check
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  # Parallel compile for source-installed dependencies (notably duckdb,
+  # which has ~50 MB of C++ source and otherwise takes 20-25 min single-
+  # threaded). GitHub-hosted runners are 4-vCPU / 16 GB RAM so -j4 fits.
+  MAKEFLAGS: "-j4"
 
 
 # Run R CMD check across the supported OS x R-version matrix. Required
@@ -38,7 +42,9 @@ jobs:
       matrix:
         config:
           - { os: macos-latest,   r: 'release' }
-          - { os: windows-latest, r: 'release' }
+          # Pin Windows runner explicitly (windows-latest auto-redirects to
+          # windows-2025-vs2026 by 2026-06-15; pre-pin removes ambiguity).
+          - { os: windows-2025,   r: 'release' }
           - { os: ubuntu-latest,  r: 'release' }
           - { os: ubuntu-latest,  r: 'devel'   }
           - { os: ubuntu-latest,  r: 'oldrel-1' }

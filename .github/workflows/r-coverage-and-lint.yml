@@ -23,6 +23,10 @@ env:
   # to use Node.js 24 instead of the deprecated Node.js 20.
   # Node 20 is scheduled for removal from runners on 2026-09-16.
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  # Parallel compile for source-installed Suggests (notably duckdb,
+  # which has ~50 MB of C++ source). 4-vCPU runners + -j4 cuts the
+  # dependency-install step from ~25 min single-threaded to ~5 min.
+  MAKEFLAGS: "-j4"
 
 permissions:
   contents: read
