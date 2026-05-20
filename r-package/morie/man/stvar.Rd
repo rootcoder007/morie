@@ -2,7 +2,7 @@
 % Please edit documentation in R/stvar.R
 \name{stvar}
 \alias{stvar}
-\alias{spatiotemporal_variogram}
+\alias{morie_spatiotemporal_variogram}
 \title{Empirical spatiotemporal semivariogram gamma(h, u).}
 \usage{
 stvar(
@@ -15,7 +15,7 @@ stvar(
   max_temporal = NULL
 )
 
-spatiotemporal_variogram(
+morie_spatiotemporal_variogram(
   x,
   coords,
   times,

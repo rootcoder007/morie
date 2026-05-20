@@ -15,9 +15,9 @@
 #'   (= \code{a}), \code{activation}, \code{method}.
 #' @references Goodfellow, Bengio & Courville (2016), Deep Learning, Ch 6.
 #' @examples
-#' fwpas_forward_pass_dense(x = rnorm(50), w = rnorm(3), b = rnorm(3))
+#' morie_fwpas_forward_pass_dense(x = rnorm(50), w = rnorm(3), b = rnorm(3))
 #' @export
-fwpas_forward_pass_dense <- function(x, w, b, activation = "sigmoid") {
+morie_fwpas_forward_pass_dense <- function(x, w, b, activation = "sigmoid") {
   x <- as.matrix(x)
   w <- as.matrix(w)
   b <- as.numeric(b)
@@ -49,7 +49,7 @@ fwpas_forward_pass_dense <- function(x, w, b, activation = "sigmoid") {
   )
 }
 
-#' @rdname fwpas_forward_pass_dense
+#' @rdname morie_fwpas_forward_pass_dense
 #' @keywords internal
 #' @export
-forward_pass_dense <- fwpas_forward_pass_dense
+morie_forward_pass_dense <- morie_fwpas_forward_pass_dense

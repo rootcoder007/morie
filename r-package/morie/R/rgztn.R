@@ -16,10 +16,11 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-regularization_path <- function(x, y, penalty = c("ridge", "lasso", "elasticnet"),
+morie_regularization_path <- function(x, y, penalty = c("ridge", "lasso", "elasticnet"),
                                 alphas = NULL, l1_ratio = 0.5) {
+  x <- .morie_ensure_design_matrix(x)
   if (!requireNamespace("glmnet", quietly = TRUE)) {
-    stop("Function 'regularization_path' requires package 'glmnet'. Install with install.packages('glmnet').")
+    stop("Function 'morie_regularization_path' requires package 'glmnet'. Install with install.packages('glmnet').")
   }
   penalty <- match.arg(penalty)
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)

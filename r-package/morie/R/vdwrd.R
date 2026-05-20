@@ -10,9 +10,9 @@
 #' @return Named list: statistic, p_value, z, n, m.
 #' @importFrom stats qnorm pnorm
 #' @examples
-#' van_der_waerden_test(x = rnorm(50), y = rnorm(50))
+#' morie_van_der_waerden_test(x = rnorm(50), y = rnorm(50))
 #' @export
-van_der_waerden_test <- function(x, y) {
+morie_van_der_waerden_test <- function(x, y) {
   x <- as.numeric(x)
   y <- as.numeric(y)
   m <- length(x)

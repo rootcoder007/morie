@@ -7,9 +7,9 @@
 #' @return Named list with \code{trend, seasonal, residual, slope,
 #'   intercept, fourier_terms, period, n, method}.
 #' @examples
-#' prophet_components(x = rnorm(50))
+#' morie_prophet_components(x = rnorm(50))
 #' @export
-prophet_components <- function(x, period = 12) {
+morie_prophet_components <- function(x, period = 12) {
   y <- as.numeric(x)
   n <- length(y)
   if (n < max(2 * period, 6)) stop("Series too short.")

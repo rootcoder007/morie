@@ -38,4 +38,4 @@ latnh <- function(N = 100L, d = 1L, f = NULL, seed = 42L) {
 #' @rdname latnh
 #' @keywords internal
 #' @export
-latin_hypercube <- latnh
+morie_latin_hypercube <- latnh

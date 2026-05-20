@@ -19,21 +19,21 @@ test_that("optional-package guards stop() when the package is absent", {
   )
   x <- matrix(rnorm(40), 20, 2)
   y <- rbinom(20, 1, 0.5)
-  expect_error(dbscan_clustering(x))
-  expect_error(decision_tree_split(x, y))
+  expect_error(morie_dbscan_clustering(x))
+  expect_error(morie_decision_tree_split(x, y))
   expect_error(morie_grid_search_cv(x, y))
-  expect_error(random_forest_ensemble(x, y))
-  expect_error(regularization_path(x, y))
-  expect_error(random_search_cv(x, y))
-  expect_error(roc_auc_score(y, runif(20)))
-  expect_error(svm_hinge_primal(x, y))
-  expect_error(svm_kernel_trick(x, y))
-  expect_error(tsne_reduction(x))
+  expect_error(morie_random_forest_ensemble(x, y))
+  expect_error(morie_regularization_path(x, y))
+  expect_error(morie_random_search_cv(x, y))
+  expect_error(morie_roc_auc_score(y, runif(20)))
+  expect_error(morie_svm_hinge_primal(x, y))
+  expect_error(morie_svm_kernel_trick(x, y))
+  expect_error(morie_tsne_reduction(x))
   expect_error(rgfir(rnorm(64), cutoff = 0.2))
   expect_error(rgiir(rnorm(64), cutoff = 0.2))
   expect_error(rgqrs(rnorm(360)))
-  expect_error(gradient_boosting_ensemble(x, y))
-  expect_error(xgboost_objective(x, y))
+  expect_error(morie_gradient_boosting_ensemble(x, y))
+  expect_error(morie_xgboost_objective(x, y))
 })
 
 test_that(".morie_sha256_hex falls back to openssl, then stops", {
@@ -63,9 +63,9 @@ test_that("jsonlite-dependent entrypoints stop without jsonlite", {
   expect_error(mrm_tps_load_hawkes_refit(mf), "jsonlite")
   jf <- tempfile(fileext = ".json")
   writeLines("{}", jf)
-  ir <- inspect_output(jf)
+  ir <- morie_inspect_output(jf)
   expect_true(is.list(ir)) # jsonlite-unavailable
-  expect_error(verify_statistical_output(jf), "jsonlite")
+  expect_error(morie_verify_statistical_output(jf), "jsonlite")
 })
 
 # ---- internal helpers: Horowitz / Ghosal / time-series -------------------
@@ -83,8 +83,8 @@ test_that(".gh_haar_dwt zero-pads a non-power-of-two input", {
     is.numeric(morie:::.gh_haar_dwt(c(1, 2, 3))))
 })
 
-test_that("grm_vanraden guards a zero allele-variance denominator", {
-  g <- morie:::grm_vanraden(matrix(0L, 6, 4)) # denom <= 0
+test_that("morie_grm_vanraden guards a zero allele-variance denominator", {
+  g <- morie:::morie_grm_vanraden(matrix(0L, 6, 4)) # denom <= 0
   expect_false(is.null(g))
 })
 
@@ -169,63 +169,63 @@ test_that("morie_download_bootstrap covers the unknown-key + CKAN-error path", {
 
 test_that("fairness metrics cover the remaining interpretation branches", {
   # no adverse impact -> the >= 0.80 interpretation line
-  ok <- fairness_disparate_impact(c(1, 1, 1, 0, 1, 1, 1, 0),
+  ok <- morie_fairness_disparate_impact(c(1, 1, 1, 0, 1, 1, 1, 0),
     c(rep("A", 4), rep("B", 4)),
     privileged = "A"
   )
   expect_match(ok$interpretation, "No adverse impact")
   # equalized odds with inferred privileged + a close-rates interpretation
-  eo <- fairness_equalized_odds(
+  eo <- morie_fairness_equalized_odds(
     y_true = c(1, 0, 1, 0, 1, 0, 1, 0),
     y_pred = c(1, 0, 1, 0, 1, 0, 1, 0),
     group  = c(rep("A", 4), rep("B", 4))
   )
   expect_match(eo$interpretation, "close across groups")
   expect_error(
-    fairness_average_odds_difference(c(1, 0), c(1, 0), c("a", "a")),
+    morie_fairness_average_odds_difference(c(1, 0), c(1, 0), c("a", "a")),
     "two groups"
   )
-  expect_error(fairness_bias_amplification(c(1, 0), c("a", "a")), "two groups")
+  expect_error(morie_fairness_bias_amplification(c(1, 0), c("a", "a")), "two groups")
 })
 
 test_that(".frns_worst_abs_named returns NA on an all-non-finite input", {
   expect_true(is.na(morie:::.frns_worst_abs_named(c(a = NA, b = Inf))))
 })
 
-test_that("predpol_calibration_audit covers drop-to-<2, calibration tiers", {
+test_that("morie_predpol_calibration_audit covers drop-to-<2, calibration tiers", {
   set.seed(20)
   ar <- paste0("A", 1:14)
   g <- rep(c("x", "y"), 7)
   # only one finite area remains -> the <2-areas stop
   expect_error(
-    predpol_calibration_audit(ar, c(1, rep(NA, 13)), runif(14), g),
+    morie_predpol_calibration_audit(ar, c(1, rep(NA, 13)), runif(14), g),
     "fewer than two areas"
   )
   # well-calibrated: risk and outcome strongly concordant -> rho >= 0.7
   rk <- 1:14
   oc <- 1:14 + rnorm(14, 0, 0.3)
-  wc <- predpol_calibration_audit(ar, rk, oc, g)
+  wc <- morie_predpol_calibration_audit(ar, rk, oc, g)
   expect_match(wc$interpretation, "well calibrated")
   # weak calibration: moderate concordance
   oc2 <- c(1:7, sample(8:14))
   expect_true(is.character(
-    predpol_calibration_audit(ar, rk, oc2, g)$interpretation
+    morie_predpol_calibration_audit(ar, rk, oc2, g)$interpretation
   ))
 })
 
-test_that("predpol_score_disparity covers the single-group-after-drop stop", {
+test_that("morie_predpol_score_disparity covers the single-group-after-drop stop", {
   sc <- c(rnorm(10, 3), rep(NaN, 10))
   gp <- c(rep("hi", 10), rep("lo", 10))
-  expect_error(predpol_score_disparity(sc, gp), "two groups")
+  expect_error(morie_predpol_score_disparity(sc, gp), "two groups")
 })
 
-test_that("predpol_temporal_audit produces its instability interpretation", {
+test_that("morie_predpol_temporal_audit produces its instability interpretation", {
   set.seed(21)
   periods <- rep(1:4, each = 20)
   city <- rep(rep(c("C1", "C2"), each = 10), 4)
   pred <- rbinom(80, 1, 0.5)
   grp <- rep(c("a", "b"), 40)
-  res <- tryCatch(predpol_temporal_audit(periods, city, pred, grp),
+  res <- tryCatch(morie_predpol_temporal_audit(periods, city, pred, grp),
     error = function(e) NULL
   )
   expect_true(is.null(res) || is.list(res))
@@ -276,8 +276,8 @@ test_that("Rcpp kernels hit their argument guards", {
 
 # ---- inference / inspector ----------------------------------------------
 
-test_that("chi_square_test runs with an explicit expected vector", {
-  r <- chi_square_test(c(20, 30, 50), expected = c(0.2, 0.3, 0.5))
+test_that("morie_chi_square_test runs with an explicit expected vector", {
+  r <- morie_chi_square_test(c(20, 30, 50), expected = c(0.2, 0.3, 0.5))
   expect_true(is.list(r) || inherits(r, "htest") || is.numeric(r$statistic))
 })
 
@@ -298,47 +298,47 @@ test_that("long-tail degenerate-input guard branches execute", {
   m <- matrix(rnorm(80), 40, 2)
   coords <- matrix(runif(80), 40, 2)
 
-  call(party_alignment <- morie:::party_alignment)
-  call(anisotropy_test(rnorm(3), coords[1:3, ])) # insufficient pairs
-  call(arch_in_mean(v))
-  call(cokriging(coords, m, coords))
-  call(cutting_plane_sphere(matrix(rnorm(20), 10, 2)))
-  call(infer_measurement_level(factor(sample(letters[1:3], 30, TRUE))))
-  call(suggest_analysis_plan(profile_dataset(
+  call(morie_party_alignment <- morie:::morie_party_alignment)
+  call(morie_anisotropy_test(rnorm(3), coords[1:3, ])) # insufficient pairs
+  call(morie_arch_in_mean(v))
+  call(morie_cokriging(coords, m, coords))
+  call(morie_cutting_plane_sphere(matrix(rnorm(20), 10, 2)))
+  call(morie_infer_measurement_level(factor(sample(letters[1:3], 30, TRUE))))
+  call(morie_suggest_analysis_plan(morie_profile_dataset(
     data.frame(a = rbinom(30, 1, .5), b = rbinom(30, 1, .5))
   )))
-  call(egarch_model(v))
+  call(morie_egarch_model(v))
   call(extvm(vpos))
-  call(fwpas_forward_pass_dense(v, matrix(rnorm(40), 40, 1), 0))
+  call(morie_fwpas_forward_pass_dense(v, matrix(rnorm(40), 40, 1), 0))
   call(fzlst(v))
   call(fzmis(rep(2, 20)))
   call(fzmrb(v))
   call(gpfit(vpos))
-  call(gradient_boosting_genomic(m, rbinom(40, 1, .5), markers = 1:2))
-  call(genomic_cross_validation(m, v, K = 3))
-  call(ghosal_np_classification(v, rbinom(40, 1, .5)))
-  call(ghosal_posterior_consistency(v))
-  call(ghosal_empirical_bayes(v))
-  call(ghosal_gp_matern(v, v, x_star = 0.5))
-  call(ghosal_gp_squared_exponential(v, v, x_star = 0.5))
-  call(ghosal_hierarchical_bayes(v))
-  call(ghosal_sieve_prior(v))
-  call(estimate_irm(
+  call(morie_gradient_boosting_genomic(m, rbinom(40, 1, .5), markers = 1:2))
+  call(morie_genomic_cross_validation(m, v, K = 3))
+  call(morie_ghosal_np_classification(v, rbinom(40, 1, .5)))
+  call(morie_ghosal_posterior_consistency(v))
+  call(morie_ghosal_empirical_bayes(v))
+  call(morie_ghosal_gp_matern(v, v, x_star = 0.5))
+  call(morie_ghosal_gp_squared_exponential(v, v, x_star = 0.5))
+  call(morie_ghosal_hierarchical_bayes(v))
+  call(morie_ghosal_sieve_prior(v))
+  call(morie_estimate_irm(
     data.frame(t = rbinom(40, 1, .5), y = v, x = letters[1:2]),
     "t", "y", "x"
   ))
   call(irtsp(matrix(rbinom(120, 1, .5), 30, 4)))
   call(morie_kalman_filter(v))
-  call(ksr10_kosorok_m_estimator(v, v))
-  call(ksr19_kosorok_cox_partial_likelihood(m, vpos, rbinom(40, 1, .5)))
-  call(midas_regression(v, v[1:8], K = 4))
-  call(marker_variance(m, v, markers = 1:2))
+  call(morie_ksr10_kosorok_m_estimator(v, v))
+  call(morie_ksr19_kosorok_cox_partial_likelihood(m, vpos, rbinom(40, 1, .5)))
+  call(morie_midas_regression(v, v[1:8], K = 4))
+  call(morie_marker_variance(m, v, markers = 1:2))
   call(nstat(v, coords))
-  call(ordinary_kriging(v, coords))
+  call(morie_ordinary_kriging(v, coords))
   call(polrz(rep(5, 20)))
   call(quntf(v))
   call(morie_return_level(vpos))
-  call(rkhs_full(m, v, markers = 1:2))
+  call(morie_rkhs_full(m, v, markers = 1:2))
   call(rgcoh(v, v))
   call(rgcrl(v))
   call(rgdfa(v))
@@ -347,22 +347,22 @@ test_that("long-tail degenerate-input guard branches execute", {
   call(rglyp(v))
   call(rgpsd(v))
   call(rgstf(v))
-  call(spatial_ar_lag(v, coords))
-  call(spatial_ar_error(v, coords))
-  call(spatial_glm(rbinom(40, 1, .5), coords))
-  call(spatial_mixed_model(v, coords))
+  call(morie_spatial_ar_lag(v, coords))
+  call(morie_spatial_ar_error(v, coords))
+  call(morie_spatial_glm(rbinom(40, 1, .5), coords))
+  call(morie_spatial_mixed_model(v, coords))
   call(spblk(v, coords, blocks = 3))
   call(sptau(v, matrix(runif(1600), 40)))
-  call(svm_genomic(m, v, markers = 1:2))
-  call(threshold_autoregression(v))
+  call(morie_svm_genomic(m, v, markers = 1:2))
+  call(morie_threshold_autoregression(v))
   call(bpe_tokenizer("a b c a b c a b"))
-  call(universal_kriging(v, coords, trend_order = 3))
-  call(vecm(matrix(rnorm(80), 40, 2)))
+  call(morie_universal_kriging(v, coords, trend_order = 3))
+  call(morie_vecm(matrix(rnorm(80), 40, 2)))
   call(vines(m))
   call(vrgft(v, coords, model = "nonsense"))
-  call(wavelet_time_series(v))
-  call(unfolding_analysis(matrix(rbinom(160, 1, .5), 40, 4)))
-  call(threshold_autoregression(v, p = 1))
+  call(morie_wavelet_time_series(v))
+  call(morie_unfolding_analysis(matrix(rbinom(160, 1, .5), 40, 4)))
+  call(morie_threshold_autoregression(v, p = 1))
   expect_true(TRUE)
 })
 
@@ -376,7 +376,7 @@ test_that("workflow + synthetic + module-resolver guard branches execute", {
   expect_error(
     morie:::resolve_synthetic_name_map(list(x = ""), profile = "default")
   )
-  call(morie:::run_workflow_step(list(step = "s", script = tempfile())))
+  call(morie:::morie_run_workflow_step(list(step = "s", script = tempfile())))
   call(morie:::.resolve_cpads_csv(tempfile(fileext = ".csv")))
   call(morie:::.cpads_default_csv())
 })

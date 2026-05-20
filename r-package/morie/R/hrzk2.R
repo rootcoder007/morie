@@ -41,4 +41,4 @@ hrzk2 <- function(x, y, bandwidth = NULL, grid = NULL) {
 #' @rdname hrzk2
 #' @keywords internal
 #' @export
-horowitz_kernel_regression <- hrzk2
+morie_horowitz_kernel_regression <- hrzk2

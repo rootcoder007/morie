@@ -14,9 +14,9 @@
 #' @return Named list with estimate (alpha post mean), alpha_se,
 #'   alpha_draws, K_n, n, method.
 #' @examples
-#' ghosal_hierarchical_bayes(x = rnorm(50))
+#' morie_ghosal_hierarchical_bayes(x = rnorm(50))
 #' @export
-ghosal_hierarchical_bayes <- function(x, a_prior = 1.0, b_prior = 1.0,
+morie_ghosal_hierarchical_bayes <- function(x, a_prior = 1.0, b_prior = 1.0,
                                       M = 400, seed = 0,
                                       deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {

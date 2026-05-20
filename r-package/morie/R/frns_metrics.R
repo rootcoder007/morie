@@ -9,12 +9,12 @@
 #' only measure disparity in predictions that already exist.
 #'
 #' Functions:
-#' * `fairness_disparate_impact()`: the EEOC four-fifths rule.
-#' * `fairness_demographic_parity()`: favourable-rate gap.
-#' * `fairness_equalized_odds()`: TPR/FPR gaps (needs ground truth).
-#' * `fairness_average_odds_difference()`: mean TPR+FPR gap.
-#' * `fairness_gini()`: concentration of a score distribution.
-#' * `fairness_bias_amplification()`: composite `Delta_parity * G`.
+#' * `morie_fairness_disparate_impact()`: the EEOC four-fifths rule.
+#' * `morie_fairness_demographic_parity()`: favourable-rate gap.
+#' * `morie_fairness_equalized_odds()`: TPR/FPR gaps (needs ground truth).
+#' * `morie_fairness_average_odds_difference()`: mean TPR+FPR gap.
+#' * `morie_fairness_gini()`: concentration of a score distribution.
+#' * `morie_fairness_bias_amplification()`: composite `Delta_parity * G`.
 #'
 #' Each returns a named `list` with the metric value, a per-group
 #' breakdown, any advisory `warnings`, and a plain-language
@@ -33,7 +33,7 @@
 #' @examples
 #' pred <- c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0)
 #' race <- c(rep("A", 5), rep("B", 5))
-#' fairness_disparate_impact(pred, race, privileged = "A")$value
+#' morie_fairness_disparate_impact(pred, race, privileged = "A")$value
 #' @name frns_metrics
 NULL
 
@@ -157,10 +157,10 @@ NULL
 #' @examples
 #' pred <- c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0)
 #' race <- c(rep("A", 5), rep("B", 5))
-#' res <- fairness_disparate_impact(pred, race, privileged = "A")
+#' res <- morie_fairness_disparate_impact(pred, race, privileged = "A")
 #' res$value # 0.6  (group B rate 0.6 / group A rate 1.0)
 #' res$adverse_impact # TRUE
-fairness_disparate_impact <- function(y_pred, group, privileged = NULL,
+morie_fairness_disparate_impact <- function(y_pred, group, privileged = NULL,
                                       favorable = 1) {
   .frns_check_aligned(list("y_pred", y_pred), list("group", group))
   rates <- .frns_favorable_rates(y_pred, group, favorable)
@@ -235,16 +235,16 @@ fairness_disparate_impact <- function(y_pred, group, privileged = NULL,
 #' `rate(group) - rate(privileged)`. Demographic parity holds when every
 #' group receives favourable outcomes at the same rate.
 #'
-#' @inheritParams fairness_disparate_impact
+#' @inheritParams morie_fairness_disparate_impact
 #' @return A named list: `value` (largest absolute gap), `gaps`, `rates`,
 #'   `privileged`, `warnings`, `interpretation`.
 #' @export
 #' @examples
 #' pred <- c(1, 1, 1, 1, 0, 0, 0, 1, 0, 0)
 #' race <- c(rep("A", 5), rep("B", 5))
-#' res <- fairness_demographic_parity(pred, race, privileged = "A")
+#' res <- morie_fairness_demographic_parity(pred, race, privileged = "A")
 #' res$value # -0.6  (group B rate 0.2 minus group A rate 0.8)
-fairness_demographic_parity <- function(y_pred, group, privileged = NULL,
+morie_fairness_demographic_parity <- function(y_pred, group, privileged = NULL,
                                         favorable = 1) {
   .frns_check_aligned(list("y_pred", y_pred), list("group", group))
   rates <- .frns_favorable_rates(y_pred, group, favorable)
@@ -308,9 +308,9 @@ fairness_demographic_parity <- function(y_pred, group, privileged = NULL,
 #' truth <- c(1, 0, 1, 0, 1, 0, 1, 0)
 #' pred <- c(1, 0, 1, 0, 1, 1, 0, 1)
 #' race <- c(rep("A", 4), rep("B", 4))
-#' res <- fairness_equalized_odds(truth, pred, race, privileged = "A")
+#' res <- morie_fairness_equalized_odds(truth, pred, race, privileged = "A")
 #' res$violation # TRUE
-fairness_equalized_odds <- function(y_true, y_pred, group,
+morie_fairness_equalized_odds <- function(y_true, y_pred, group,
                                     privileged = NULL, favorable = 1) {
   .frns_check_aligned(
     list("y_true", y_true), list("y_pred", y_pred),
@@ -385,7 +385,7 @@ fairness_equalized_odds <- function(y_true, y_pred, group,
 #' parity of errors. This is the single-number summary used in IBM
 #' AIF360 and the COMPAS *XAI Stories* audit.
 #'
-#' @inheritParams fairness_equalized_odds
+#' @inheritParams morie_fairness_equalized_odds
 #' @return A named list: `value` (largest absolute AOD),
 #'   `average_odds_difference`, `rates`, `privileged`, `warnings`,
 #'   `interpretation`.
@@ -394,11 +394,11 @@ fairness_equalized_odds <- function(y_true, y_pred, group,
 #' truth <- c(1, 0, 1, 0, 1, 0, 1, 0)
 #' pred <- c(1, 0, 1, 0, 1, 1, 0, 1)
 #' race <- c(rep("A", 4), rep("B", 4))
-#' res <- fairness_average_odds_difference(truth, pred, race,
+#' res <- morie_fairness_average_odds_difference(truth, pred, race,
 #'   privileged = "A"
 #' )
 #' res$value # 0.25
-fairness_average_odds_difference <- function(y_true, y_pred, group,
+morie_fairness_average_odds_difference <- function(y_true, y_pred, group,
                                              privileged = NULL,
                                              favorable = 1) {
   .frns_check_aligned(
@@ -465,9 +465,9 @@ fairness_average_odds_difference <- function(y_true, y_pred, group,
 #'   `warnings`, `interpretation`.
 #' @export
 #' @examples
-#' fairness_gini(c(5, 5, 5, 5))$value # 0
-#' fairness_gini(c(0, 0, 0, 100))$value # 0.75
-fairness_gini <- function(values, group = NULL) {
+#' morie_fairness_gini(c(5, 5, 5, 5))$value # 0
+#' morie_fairness_gini(c(0, 0, 0, 100))$value # 0.75
+morie_fairness_gini <- function(values, group = NULL) {
   if (length(values) == 0L) stop("values is empty", call. = FALSE)
   vals <- as.numeric(values)
   warnings <- character(0)
@@ -518,7 +518,7 @@ fairness_gini <- function(values, group = NULL) {
 #' Reimplemented from Barman & Barman, "Unmasking Algorithmic Bias in
 #' Predictive Policing" (arXiv:2603.18987).
 #'
-#' @inheritParams fairness_disparate_impact
+#' @inheritParams morie_fairness_disparate_impact
 #' @return A named list: `value` (BAS), `bias_amplification_score`,
 #'   `demographic_parity_gap`, `gini`, `rates`, `privileged`,
 #'   `warnings`, `interpretation`.
@@ -526,9 +526,9 @@ fairness_gini <- function(values, group = NULL) {
 #' @examples
 #' pred <- c(1, 1, 1, 1, 0, 0, 0, 0)
 #' race <- c(rep("A", 4), rep("B", 4))
-#' res <- fairness_bias_amplification(pred, race, privileged = "A")
+#' res <- morie_fairness_bias_amplification(pred, race, privileged = "A")
 #' res$value # -0.5  (parity gap -1.0 times Gini 0.5)
-fairness_bias_amplification <- function(y_pred, group, privileged = NULL,
+morie_fairness_bias_amplification <- function(y_pred, group, privileged = NULL,
                                         favorable = 1) {
   .frns_check_aligned(list("y_pred", y_pred), list("group", group))
   rates <- .frns_favorable_rates(y_pred, group, favorable)

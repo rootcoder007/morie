@@ -78,4 +78,4 @@ fzcvm <- function(x, cdf = "norm", args = NULL, h = NULL) {
 #' @rdname fzcvm
 #' @keywords internal
 #' @export
-fauzi_cvm_smoothed <- fzcvm
+morie_fauzi_cvm_smoothed <- fzcvm

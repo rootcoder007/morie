@@ -10,9 +10,9 @@
 #' @return Named list with estimate, n, method.
 #' @references Kosorok (2008), Ch 6.
 #' @examples
-#' ksr12_kosorok_information_bound(x = rnorm(50), y = rnorm(50))
+#' morie_ksr12_kosorok_information_bound(x = rnorm(50), y = rnorm(50))
 #' @export
-ksr12_kosorok_information_bound <- function(x, y) {
+morie_ksr12_kosorok_information_bound <- function(x, y) {
   x <- as.numeric(x)
   y <- as.numeric(y)
   n <- length(x)
@@ -31,9 +31,9 @@ ksr12_kosorok_information_bound <- function(x, y) {
 
 # CANONICAL TEST
 # set.seed(0); xs <- rnorm(200); ys <- 1.5*xs + rnorm(200)
-# ksr12_kosorok_information_bound(xs, ys)
+# morie_ksr12_kosorok_information_bound(xs, ys)
 
-#' @rdname ksr12_kosorok_information_bound
+#' @rdname morie_ksr12_kosorok_information_bound
 #' @keywords internal
 #' @export
-kosorok_information_bound <- ksr12_kosorok_information_bound
+morie_kosorok_information_bound <- morie_ksr12_kosorok_information_bound

@@ -16,8 +16,6 @@ Named list: \code{F}, \code{p_value}.
 Levene test for equality of variances
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }

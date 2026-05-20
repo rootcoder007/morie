@@ -1,5 +1,5 @@
-test_that("list_morie_modules exposes implemented module names", {
-  mods <- list_morie_modules()
+test_that("morie_list_morie_modules exposes implemented module names", {
+  mods <- morie_list_morie_modules()
   expect_true(all(c("power-design", "propensity-scores", "ebac-selection-adjustment-ipw") %in% mods$name))
 })
 

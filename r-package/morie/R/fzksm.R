@@ -60,4 +60,4 @@ fzksm <- function(x, cdf = "norm", args = NULL, h = NULL, n_grid = 512L) {
 #' @rdname fzksm
 #' @keywords internal
 #' @export
-fauzi_ks_smoothed <- fzksm
+morie_fauzi_ks_smoothed <- fzksm

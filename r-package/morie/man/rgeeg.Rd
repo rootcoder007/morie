@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgeeg.R
 \name{rgeeg}
 \alias{rgeeg}
-\alias{rangayyan_eeg_bands}
+\alias{morie_rangayyan_eeg_bands}
 \title{EEG band power (delta theta alpha beta gamma) via Welch -- Rangayyan Ch 9}
 \usage{
 rgeeg(x, fs, bands = NULL, nperseg = NULL)
 
-rangayyan_eeg_bands(x, fs, bands = NULL, nperseg = NULL)
+morie_rangayyan_eeg_bands(x, fs, bands = NULL, nperseg = NULL)
 }
 \arguments{
 \item{x}{Numeric EEG vector.}

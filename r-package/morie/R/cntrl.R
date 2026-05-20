@@ -43,4 +43,4 @@ cntrl_estimator <- function(y, c_var, mu_c) {
 #' @rdname cntrl_estimator
 #' @keywords internal
 #' @export
-control_variates <- cntrl_estimator
+morie_control_variates <- cntrl_estimator

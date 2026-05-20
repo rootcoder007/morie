@@ -54,4 +54,4 @@ spcrs <- function(x, coords, nugget = 0, sill = 1, range_ = 1) {
 #' @rdname spcrs
 #' @keywords internal
 #' @export
-spatial_cross_validation <- spcrs
+morie_spatial_cross_validation <- spcrs

@@ -20,8 +20,6 @@ Numeric Cohen's d.
 Cohen's d effect size
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }

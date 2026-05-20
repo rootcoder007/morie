@@ -25,7 +25,7 @@ dimrd <- function(x, threshold = 1) {
       return(list(
         n_dims = 0L, eigenvalues = numeric(0),
         threshold = threshold, scree_gap = NA_integer_,
-        method = "dimensionality_test"
+        method = "morie_dimensionality_test"
       ))
     }
     S0 <- suppressWarnings(stats::cor(M))
@@ -43,11 +43,11 @@ dimrd <- function(x, threshold = 1) {
   list(
     n_dims = as.integer(n_dims), eigenvalues = ev,
     threshold = threshold, scree_gap = as.integer(scree),
-    method = "dimensionality_test"
+    method = "morie_dimensionality_test"
   )
 }
 
 #' @keywords internal
 #' @rdname dimrd
 #' @export
-dimensionality_test <- dimrd
+morie_dimensionality_test <- dimrd

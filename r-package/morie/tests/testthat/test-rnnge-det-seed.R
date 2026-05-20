@@ -16,15 +16,15 @@ rnnge_fixture <- function() {
 test_that("rnnge deterministic_seed is reproducible", {
   skip_if_no_hash()
   fx <- rnnge_fixture()
-  r1 <- rnn_genomic(fx$x, fx$y, fx$M,
+  r1 <- morie_rnn_genomic(fx$x, fx$y, fx$M,
     n_epochs = 20,
     deterministic_seed = 42L
   )
-  r2 <- rnn_genomic(fx$x, fx$y, fx$M,
+  r2 <- morie_rnn_genomic(fx$x, fx$y, fx$M,
     n_epochs = 20,
     deterministic_seed = 42L
   )
-  r3 <- rnn_genomic(fx$x, fx$y, fx$M,
+  r3 <- morie_rnn_genomic(fx$x, fx$y, fx$M,
     n_epochs = 20,
     deterministic_seed = 999L
   )
@@ -35,8 +35,8 @@ test_that("rnnge deterministic_seed is reproducible", {
 
 test_that("rnnge default (deterministic_seed = NULL) path is unchanged", {
   fx <- rnnge_fixture()
-  r1 <- rnn_genomic(fx$x, fx$y, fx$M, n_epochs = 20, seed = 42)
-  r2 <- rnn_genomic(fx$x, fx$y, fx$M, n_epochs = 20, seed = 42)
+  r1 <- morie_rnn_genomic(fx$x, fx$y, fx$M, n_epochs = 20, seed = 42)
+  r2 <- morie_rnn_genomic(fx$x, fx$y, fx$M, n_epochs = 20, seed = 42)
   expect_equal(r1$estimate, r2$estimate)
   expect_equal(r1$W_h, r2$W_h)
 })

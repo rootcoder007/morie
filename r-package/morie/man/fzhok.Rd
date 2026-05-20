@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzhok.R
 \name{fzhok}
 \alias{fzhok}
-\alias{fauzi_higher_order_kernel}
+\alias{morie_fauzi_higher_order_kernel}
 \title{Fauzi: Higher-order (order-4) Gaussian-based kernel (Ch 1)}
 \usage{
 fzhok(x, t = NULL, h = NULL, order = 4L)
 
-fauzi_higher_order_kernel(x, t = NULL, h = NULL, order = 4L)
+morie_fauzi_higher_order_kernel(x, t = NULL, h = NULL, order = 4L)
 }
 \arguments{
 \item{x}{Numeric vector.}

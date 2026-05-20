@@ -38,7 +38,7 @@ morie_load_dataset("ocp21", con = con)
 \donttest{
 # DuckDB (default when 'duckdb' is installed); pass a '.db' path for SQLite.
 if (requireNamespace("duckdb", quietly = TRUE) &&
-    requireNamespace("DBI", quietly = TRUE)) {
+  requireNamespace("DBI", quietly = TRUE)) {
   tmp <- tempfile(fileext = ".duckdb")
   con <- morie_db_connect(db_path = tmp)
   DBI::dbListTables(con)

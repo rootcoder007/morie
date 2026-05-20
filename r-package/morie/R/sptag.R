@@ -18,7 +18,7 @@ sptag <- function(x) {
   if (n < 2L) {
     return(list(
       agreement = diag(n), mean_agreement = NA_real_,
-      n = n, m = m, method = "spatial_agreement"
+      n = n, m = m, method = "morie_spatial_agreement"
     ))
   }
   A <- diag(n)
@@ -38,11 +38,11 @@ sptag <- function(x) {
   iu <- upper.tri(A)
   list(
     agreement = A, mean_agreement = mean(A[iu], na.rm = TRUE),
-    n = n, m = m, method = "spatial_agreement"
+    n = n, m = m, method = "morie_spatial_agreement"
   )
 }
 
 #' @keywords internal
 #' @rdname sptag
 #' @export
-spatial_agreement <- sptag
+morie_spatial_agreement <- sptag

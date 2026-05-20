@@ -41,4 +41,4 @@ impsm <- function(x, h = NULL, p = NULL, q = NULL) {
 #' @rdname impsm
 #' @keywords internal
 #' @export
-importance_sampling <- impsm
+morie_importance_sampling <- impsm

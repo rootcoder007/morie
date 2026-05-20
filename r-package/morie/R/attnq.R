@@ -14,9 +14,9 @@
 #' @return Named list \code{(output, estimate, attn, logits, d_k, method)}.
 #' @references Vaswani et al. (2017), NeurIPS.
 #' @examples
-#' attnq_scaled_dot_product_attention(Q = matrix(rnorm(150), 50,      3))
+#' morie_attnq_scaled_dot_product_attention(Q = matrix(rnorm(150), 50, 3))
 #' @export
-attnq_scaled_dot_product_attention <- function(Q, K = NULL, V = NULL,
+morie_attnq_scaled_dot_product_attention <- function(Q, K = NULL, V = NULL,
                                                mask = NULL) {
   Q <- as.matrix(Q)
   if (is.null(K)) K <- Q else K <- as.matrix(K)
@@ -36,7 +36,7 @@ attnq_scaled_dot_product_attention <- function(Q, K = NULL, V = NULL,
   )
 }
 
-#' @rdname attnq_scaled_dot_product_attention
+#' @rdname morie_attnq_scaled_dot_product_attention
 #' @keywords internal
 #' @export
-scaled_dot_product_attention <- attnq_scaled_dot_product_attention
+morie_scaled_dot_product_attention <- morie_attnq_scaled_dot_product_attention

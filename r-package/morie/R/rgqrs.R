@@ -70,4 +70,4 @@ rgqrs <- function(x, fs = 360.0) {
 #' @rdname rgqrs
 #' @keywords internal
 #' @export
-rangayyan_qrs_detect <- rgqrs
+morie_rangayyan_qrs_detect <- rgqrs

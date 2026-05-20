@@ -55,4 +55,4 @@ rgstf <- function(x, fs = 1.0, nperseg = 256L, noverlap = NULL,
 #' @rdname rgstf
 #' @keywords internal
 #' @export
-rangayyan_stft <- rgstf
+morie_rangayyan_stft <- rgstf

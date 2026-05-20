@@ -2,11 +2,11 @@
 # Tests for batch08: ghreg, ghsrv, ghstk, ghsve, ghtst, ghwav, gmatv,
 # gpfit, grdcl, grdds, grpqa, grucl, gsrch, gwreg, gxemd.
 
-test_that("ghosal_np_regression returns a well-formed GP posterior list", {
+test_that("morie_ghosal_np_regression returns a well-formed GP posterior list", {
   set.seed(1)
   x <- sort(rnorm(40))
   y <- sin(x) + rnorm(40, sd = 0.1)
-  res <- ghosal_np_regression(x, y)
+  res <- morie_ghosal_np_regression(x, y)
   expect_true(is.list(res))
   expect_true(all(c(
     "estimate", "se", "mu", "sd", "ci_lower", "ci_upper",
@@ -27,11 +27,11 @@ test_that("ghosal_np_regression returns a well-formed GP posterior list", {
   expect_type(res$method, "character")
 })
 
-test_that("ghosal_np_regression honours explicit hyperparameters", {
+test_that("morie_ghosal_np_regression honours explicit hyperparameters", {
   set.seed(2)
   x <- sort(rnorm(30))
   y <- 2 * x + rnorm(30, sd = 0.2)
-  res <- ghosal_np_regression(x, y,
+  res <- morie_ghosal_np_regression(x, y,
     length_scale = 0.8, sigma_f = 1.5,
     noise = 0.25
   )
@@ -42,21 +42,21 @@ test_that("ghosal_np_regression honours explicit hyperparameters", {
   expect_true(all(is.finite(res$ci_lower)))
 })
 
-test_that("ghosal_np_regression accepts a matrix of inputs", {
+test_that("morie_ghosal_np_regression accepts a matrix of inputs", {
   set.seed(3)
   X <- matrix(rnorm(60), ncol = 2)
   y <- X[, 1] - X[, 2] + rnorm(30, sd = 0.1)
-  res <- ghosal_np_regression(X, y)
+  res <- morie_ghosal_np_regression(X, y)
   expect_true(is.list(res))
   expect_equal(res$n, 30L)
   expect_length(res$mu, 30L)
 })
 
-test_that("ghosal_survival_beta_process returns a posterior survival list", {
+test_that("morie_ghosal_survival_beta_process returns a posterior survival list", {
   set.seed(10)
   time <- rexp(50, rate = 0.5)
   event <- rbinom(50, 1, 0.7)
-  res <- ghosal_survival_beta_process(time, event)
+  res <- morie_ghosal_survival_beta_process(time, event)
   expect_true(is.list(res))
   expect_true(all(c(
     "estimate", "times", "S_post", "H_post", "c", "lam0",
@@ -72,28 +72,28 @@ test_that("ghosal_survival_beta_process returns a posterior survival list", {
   expect_type(res$method, "character")
 })
 
-test_that("ghosal_survival_beta_process works without an event vector", {
+test_that("morie_ghosal_survival_beta_process works without an event vector", {
   set.seed(11)
   time <- rexp(40, rate = 1)
-  res <- ghosal_survival_beta_process(time, c = 2.0)
+  res <- morie_ghosal_survival_beta_process(time, c = 2.0)
   expect_true(is.list(res))
   expect_equal(res$n, 40L)
   expect_equal(res$c, 2.0)
 })
 
-test_that("ghosal_survival_beta_process handles an explicit baseline hazard", {
+test_that("morie_ghosal_survival_beta_process handles an explicit baseline hazard", {
   set.seed(12)
   time <- rexp(30, rate = 0.8)
   event <- rep(1L, 30)
-  res <- ghosal_survival_beta_process(time, event, c = 1.5, lam0 = 0.5)
+  res <- morie_ghosal_survival_beta_process(time, event, c = 1.5, lam0 = 0.5)
   expect_true(is.list(res))
   expect_true(is.finite(res$estimate) || is.na(res$estimate))
 })
 
-test_that("ghosal_stick_breaking_trunc returns a truncated DP draw", {
+test_that("morie_ghosal_stick_breaking_trunc returns a truncated DP draw", {
   set.seed(20)
   x <- rnorm(60)
-  res <- ghosal_stick_breaking_trunc(x, alpha = 1.0, K = 30, seed = 7)
+  res <- morie_ghosal_stick_breaking_trunc(x, alpha = 1.0, K = 30, seed = 7)
   expect_true(is.list(res))
   expect_true(all(c(
     "estimate", "weights", "atoms", "effective_K",
@@ -112,10 +112,10 @@ test_that("ghosal_stick_breaking_trunc returns a truncated DP draw", {
   expect_gte(res$effective_K, 0)
 })
 
-test_that("ghosal_stick_breaking_trunc honours explicit base measure", {
+test_that("morie_ghosal_stick_breaking_trunc honours explicit base measure", {
   set.seed(21)
   x <- rnorm(40, mean = 5)
-  res <- ghosal_stick_breaking_trunc(x,
+  res <- morie_ghosal_stick_breaking_trunc(x,
     alpha = 2.0, K = 20, seed = 1,
     base_mean = 5, base_sd = 1.5
   )
@@ -123,26 +123,26 @@ test_that("ghosal_stick_breaking_trunc honours explicit base measure", {
   expect_length(res$weights, 20L)
 })
 
-test_that("ghosal_stick_breaking_trunc handles an empty input", {
-  res <- ghosal_stick_breaking_trunc(numeric(0), K = 10)
+test_that("morie_ghosal_stick_breaking_trunc handles an empty input", {
+  res <- morie_ghosal_stick_breaking_trunc(numeric(0), K = 10)
   expect_true(is.list(res))
   expect_equal(res$n, 0L)
   expect_length(res$weights, 10L)
 })
 
-test_that("ghosal_stick_breaking_trunc supports deterministic_seed", {
+test_that("morie_ghosal_stick_breaking_trunc supports deterministic_seed", {
   skip_if_not_installed("digest")
   set.seed(22)
   x <- rnorm(30)
-  res <- ghosal_stick_breaking_trunc(x, K = 15, deterministic_seed = 99L)
+  res <- morie_ghosal_stick_breaking_trunc(x, K = 15, deterministic_seed = 99L)
   expect_true(is.list(res))
   expect_length(res$weights, 15L)
 })
 
-test_that("ghosal_sieve_prior fits a Bernstein-polynomial sieve density", {
+test_that("morie_ghosal_sieve_prior fits a Bernstein-polynomial sieve density", {
   set.seed(30)
   x <- rbeta(80, 2, 3)
-  res <- ghosal_sieve_prior(x)
+  res <- morie_ghosal_sieve_prior(x)
   expect_true(is.list(res))
   expect_true(all(c(
     "estimate", "log_lik_per_obs", "weights", "K", "n",
@@ -157,26 +157,26 @@ test_that("ghosal_sieve_prior fits a Bernstein-polynomial sieve density", {
   expect_equal(sum(res$weights), 1, tolerance = 1e-6)
 })
 
-test_that("ghosal_sieve_prior accepts an explicit sieve degree", {
+test_that("morie_ghosal_sieve_prior accepts an explicit sieve degree", {
   set.seed(31)
   x <- rbeta(50, 1, 1)
-  res <- ghosal_sieve_prior(x, K = 6)
+  res <- morie_ghosal_sieve_prior(x, K = 6)
   expect_true(is.list(res))
   expect_equal(res$K, 6)
   expect_length(res$weights, 6L)
 })
 
-test_that("ghosal_sieve_prior short-circuits when n < 3", {
-  res <- ghosal_sieve_prior(c(0.2, 0.8))
+test_that("morie_ghosal_sieve_prior short-circuits when n < 3", {
+  res <- morie_ghosal_sieve_prior(c(0.2, 0.8))
   expect_true(is.list(res))
   expect_equal(res$n, 2L)
   expect_true(is.na(res$estimate))
 })
 
-test_that("ghosal_np_testing returns a Polya-tree Bayes factor", {
+test_that("morie_ghosal_np_testing returns a Polya-tree Bayes factor", {
   set.seed(40)
   x <- rnorm(100)
-  res <- ghosal_np_testing(x)
+  res <- morie_ghosal_np_testing(x)
   expect_true(is.list(res))
   expect_true(all(c(
     "statistic", "p_value", "BF10", "log_BF10", "n",
@@ -192,28 +192,28 @@ test_that("ghosal_np_testing returns a Polya-tree Bayes factor", {
   expect_equal(res$log_BF10, res$statistic)
 })
 
-test_that("ghosal_np_testing honours reference and depth arguments", {
+test_that("morie_ghosal_np_testing honours reference and depth arguments", {
   set.seed(41)
   x <- rnorm(60, mean = 3, sd = 2)
-  res <- ghosal_np_testing(x, ref_loc = 3, ref_scale = 2, depth = 4, c = 2.0)
+  res <- morie_ghosal_np_testing(x, ref_loc = 3, ref_scale = 2, depth = 4, c = 2.0)
   expect_true(is.list(res))
   expect_equal(res$depth, 4)
   expect_true(is.finite(res$statistic))
 })
 
-test_that("ghosal_np_testing short-circuits when n < 2", {
-  res <- ghosal_np_testing(c(0.5))
+test_that("morie_ghosal_np_testing short-circuits when n < 2", {
+  res <- morie_ghosal_np_testing(c(0.5))
   expect_true(is.list(res))
   expect_equal(res$n, 1L)
   expect_true(is.na(res$statistic))
   expect_true(is.na(res$p_value))
 })
 
-test_that("ghosal_wavelet_prior denoises a signal via Haar wavelets", {
+test_that("morie_ghosal_wavelet_prior denoises a signal via Haar wavelets", {
   set.seed(50)
   n <- 64
   x <- sin(seq(0, 2 * pi, length.out = n)) + rnorm(n, sd = 0.2)
-  res <- ghosal_wavelet_prior(x)
+  res <- morie_ghosal_wavelet_prior(x)
   expect_true(is.list(res))
   expect_true(all(c(
     "estimate", "fitted", "noise", "sigma", "inclusion",
@@ -229,26 +229,26 @@ test_that("ghosal_wavelet_prior denoises a signal via Haar wavelets", {
   expect_lte(res$inclusion, 1)
 })
 
-test_that("ghosal_wavelet_prior honours explicit sigma and noise", {
+test_that("morie_ghosal_wavelet_prior honours explicit sigma and noise", {
   set.seed(51)
   x <- rnorm(32)
-  res <- ghosal_wavelet_prior(x, pi = 0.3, sigma = 0.5, noise = 0.4)
+  res <- morie_ghosal_wavelet_prior(x, pi = 0.3, sigma = 0.5, noise = 0.4)
   expect_true(is.list(res))
   expect_equal(res$n, 32L)
   expect_length(res$fitted, 32L)
 })
 
-test_that("ghosal_wavelet_prior short-circuits when n < 4", {
-  res <- ghosal_wavelet_prior(c(1, 2, 3))
+test_that("morie_ghosal_wavelet_prior short-circuits when n < 4", {
+  res <- morie_ghosal_wavelet_prior(c(1, 2, 3))
   expect_true(is.list(res))
   expect_equal(res$n, 3L)
   expect_true(is.finite(res$estimate))
 })
 
-test_that("generalized_pareto fits a GP to threshold exceedances", {
+test_that("morie_generalized_pareto fits a GP to threshold exceedances", {
   set.seed(60)
   x <- rexp(2000, rate = 1)
-  res <- generalized_pareto(x, threshold = 0.5)
+  res <- morie_generalized_pareto(x, threshold = 0.5)
   expect_true(is.list(res))
   expect_true(all(c(
     "scale", "shape", "threshold", "n_exceedances",
@@ -265,34 +265,34 @@ test_that("generalized_pareto fits a GP to threshold exceedances", {
   expect_lt(abs(res$shape), 0.3)
 })
 
-test_that("generalized_pareto uses the 90th percentile by default", {
+test_that("morie_generalized_pareto uses the 90th percentile by default", {
   set.seed(61)
   x <- rexp(500, rate = 2)
-  res <- generalized_pareto(x)
+  res <- morie_generalized_pareto(x)
   expect_true(is.list(res))
   expect_true(is.finite(res$threshold))
 })
 
-test_that("generalized_pareto short-circuits on tiny samples", {
-  res <- generalized_pareto(c(1, 2, 3))
+test_that("morie_generalized_pareto short-circuits on tiny samples", {
+  res <- morie_generalized_pareto(c(1, 2, 3))
   expect_true(is.list(res))
   expect_true(is.na(res$estimate))
   expect_equal(res$n, 3L)
 })
 
-test_that("generalized_pareto short-circuits with too few exceedances", {
+test_that("morie_generalized_pareto short-circuits with too few exceedances", {
   set.seed(62)
   x <- c(rep(0.1, 50), 100, 101)
-  res <- generalized_pareto(x, threshold = 50)
+  res <- morie_generalized_pareto(x, threshold = 50)
   expect_true(is.list(res))
   expect_true(is.na(res$estimate))
 })
 
-test_that("gradient_descent_vanilla recovers OLS coefficients", {
+test_that("morie_gradient_descent_vanilla recovers OLS coefficients", {
   set.seed(70)
   x <- matrix(rnorm(200), ncol = 2)
   y <- 1 + 2 * x[, 1] - 1.5 * x[, 2] + rnorm(100, sd = 0.05)
-  res <- gradient_descent_vanilla(x, y, lr = 0.05, n_iter = 5000)
+  res <- morie_gradient_descent_vanilla(x, y, lr = 0.05, n_iter = 5000)
   expect_true(is.list(res))
   expect_true(all(c(
     "estimate", "reference_ols", "n_iter", "loss", "n",
@@ -308,21 +308,21 @@ test_that("gradient_descent_vanilla recovers OLS coefficients", {
   expect_equal(res$estimate, res$reference_ols, tolerance = 1e-2)
 })
 
-test_that("gradient_descent_vanilla accepts a plain vector predictor", {
+test_that("morie_gradient_descent_vanilla accepts a plain vector predictor", {
   set.seed(71)
   x <- rnorm(50)
   y <- 3 + 0.5 * x + rnorm(50, sd = 0.05)
-  res <- gradient_descent_vanilla(x, y, lr = 0.05, n_iter = 3000)
+  res <- morie_gradient_descent_vanilla(x, y, lr = 0.05, n_iter = 3000)
   expect_true(is.list(res))
   expect_length(res$estimate, 2L)
   expect_equal(res$n, 50L)
 })
 
-test_that("gradient_descent_vanilla stops early on tight tolerance", {
+test_that("morie_gradient_descent_vanilla stops early on tight tolerance", {
   set.seed(72)
   x <- matrix(rnorm(60), ncol = 2)
   y <- x[, 1] + x[, 2]
-  res <- gradient_descent_vanilla(x, y, lr = 0.01, n_iter = 100, tol = 1e-1)
+  res <- morie_gradient_descent_vanilla(x, y, lr = 0.01, n_iter = 100, tol = 1e-1)
   expect_true(is.list(res))
   expect_lte(res$n_iter, 100L)
 })
@@ -354,7 +354,7 @@ test_that("gwreg supports the bisquare kernel and explicit bandwidth", {
   coords <- matrix(runif(2 * n), ncol = 2)
   X <- cbind(1, rnorm(n))
   y <- X[, 2] + rnorm(n, sd = 0.1)
-  res <- geographically_weighted_regression(X, y, coords,
+  res <- morie_geographically_weighted_regression(X, y, coords,
     bandwidth = 0.5,
     kernel = "bisquare"
   )
@@ -371,11 +371,11 @@ test_that("gwreg canonical 1-D example yields finite fits", {
   expect_true(all(is.finite(res$estimate)))
 })
 
-test_that("gxe_interaction_model computes GxE variance components", {
+test_that("morie_gxe_interaction_model computes GxE variance components", {
   x <- c(1, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 3)
   env <- c(1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2)
   y <- c(1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7)
-  res <- gxe_interaction_model(x, y, env)
+  res <- morie_gxe_interaction_model(x, y, env)
   expect_true(is.list(res))
   expect_true(all(c(
     "estimate", "g", "e", "ge", "var_g", "var_e", "var_ge",
@@ -395,12 +395,12 @@ test_that("gxe_interaction_model computes GxE variance components", {
   expect_equal(res$se, sqrt(res$var_eps), tolerance = 1e-8)
 })
 
-test_that("gxe_interaction_model handles a larger replicated design", {
+test_that("morie_gxe_interaction_model handles a larger replicated design", {
   set.seed(90)
   g <- rep(1:4, each = 6)
   env <- rep(rep(1:3, each = 2), times = 4)
   y <- 2 + g * 0.3 + env * 0.2 + rnorm(24, sd = 0.5)
-  res <- gxe_interaction_model(g, y, env)
+  res <- morie_gxe_interaction_model(g, y, env)
   expect_true(is.list(res))
   expect_equal(res$n, 24L)
   expect_length(res$g, 4L)
@@ -409,10 +409,10 @@ test_that("gxe_interaction_model handles a larger replicated design", {
   expect_true(all(is.finite(c(res$var_g, res$var_e, res$var_ge, res$var_eps))))
 })
 
-test_that("grucl_gru_cell runs a forward pass with default weights", {
+test_that("morie_grucl_gru_cell runs a forward pass with default weights", {
   set.seed(100)
   x <- rnorm(5)
-  res <- grucl_gru_cell(x, hidden_size = 4L, seed = 1L)
+  res <- morie_grucl_gru_cell(x, hidden_size = 4L, seed = 1L)
   expect_true(is.list(res))
   expect_true(all(c("h", "estimate", "z", "r", "n", "method") %in%
     names(res)))
@@ -427,7 +427,7 @@ test_that("grucl_gru_cell runs a forward pass with default weights", {
   expect_identical(res$h, res$estimate)
 })
 
-test_that("gru_cell alias accepts supplied weights and previous state", {
+test_that("morie_gru_cell alias accepts supplied weights and previous state", {
   set.seed(101)
   n_in <- 3L
   H <- 4L
@@ -436,26 +436,26 @@ test_that("gru_cell alias accepts supplied weights and previous state", {
   W <- matrix(rnorm(3 * H * n_in, 0, 0.1), 3 * H, n_in)
   U <- matrix(rnorm(3 * H * H, 0, 0.1), 3 * H, H)
   b <- rep(0, 3 * H)
-  res <- gru_cell(x, h_prev = h_prev, W = W, U = U, b = b, hidden_size = H)
+  res <- morie_gru_cell(x, h_prev = h_prev, W = W, U = U, b = b, hidden_size = H)
   expect_true(is.list(res))
   expect_length(res$h, H)
   expect_true(all(is.finite(res$h)))
 })
 
-test_that("grucl_gru_cell infers hidden size from h_prev", {
+test_that("morie_grucl_gru_cell infers hidden size from h_prev", {
   set.seed(102)
   x <- rnorm(3)
   h_prev <- rnorm(6)
-  res <- grucl_gru_cell(x, h_prev = h_prev, seed = 2L)
+  res <- morie_grucl_gru_cell(x, h_prev = h_prev, seed = 2L)
   expect_true(is.list(res))
   expect_length(res$h, 6L)
 })
 
-test_that("grucl_gru_cell supports deterministic_seed", {
+test_that("morie_grucl_gru_cell supports deterministic_seed", {
   skip_if_not_installed("digest")
   set.seed(103)
   x <- rnorm(4)
-  res <- grucl_gru_cell(x, hidden_size = 4L, deterministic_seed = 55L)
+  res <- morie_grucl_gru_cell(x, hidden_size = 4L, deterministic_seed = 55L)
   expect_true(is.list(res))
   expect_length(res$h, 4L)
 })

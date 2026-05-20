@@ -59,65 +59,65 @@ BEGIN_RCPP
 END_RCPP
 }
 // morie_hawkes_ll_exp_const_cpp
-double morie_hawkes_ll_exp_const_cpp(NumericVector t, double T, double a0, double eta, double beta);
-RcppExport SEXP _morie_morie_hawkes_ll_exp_const_cpp(SEXP tSEXP, SEXP TSEXP, SEXP a0SEXP, SEXP etaSEXP, SEXP betaSEXP) {
+double morie_hawkes_ll_exp_const_cpp(NumericVector t, double T_horizon, double a0, double eta, double beta);
+RcppExport SEXP _morie_morie_hawkes_ll_exp_const_cpp(SEXP tSEXP, SEXP T_horizonSEXP, SEXP a0SEXP, SEXP etaSEXP, SEXP betaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type t(tSEXP);
-    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    Rcpp::traits::input_parameter< double >::type T_horizon(T_horizonSEXP);
     Rcpp::traits::input_parameter< double >::type a0(a0SEXP);
     Rcpp::traits::input_parameter< double >::type eta(etaSEXP);
     Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
-    rcpp_result_gen = Rcpp::wrap(morie_hawkes_ll_exp_const_cpp(t, T, a0, eta, beta));
+    rcpp_result_gen = Rcpp::wrap(morie_hawkes_ll_exp_const_cpp(t, T_horizon, a0, eta, beta));
     return rcpp_result_gen;
 END_RCPP
 }
 // morie_hawkes_ll_weibull_const_cpp
-double morie_hawkes_ll_weibull_const_cpp(NumericVector t, double T, double a0, double eta, double alpha, double lam);
-RcppExport SEXP _morie_morie_hawkes_ll_weibull_const_cpp(SEXP tSEXP, SEXP TSEXP, SEXP a0SEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP lamSEXP) {
+double morie_hawkes_ll_weibull_const_cpp(NumericVector t, double T_horizon, double a0, double eta, double alpha, double lam);
+RcppExport SEXP _morie_morie_hawkes_ll_weibull_const_cpp(SEXP tSEXP, SEXP T_horizonSEXP, SEXP a0SEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP lamSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type t(tSEXP);
-    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    Rcpp::traits::input_parameter< double >::type T_horizon(T_horizonSEXP);
     Rcpp::traits::input_parameter< double >::type a0(a0SEXP);
     Rcpp::traits::input_parameter< double >::type eta(etaSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< double >::type lam(lamSEXP);
-    rcpp_result_gen = Rcpp::wrap(morie_hawkes_ll_weibull_const_cpp(t, T, a0, eta, alpha, lam));
+    rcpp_result_gen = Rcpp::wrap(morie_hawkes_ll_weibull_const_cpp(t, T_horizon, a0, eta, alpha, lam));
     return rcpp_result_gen;
 END_RCPP
 }
 // morie_hawkes_ll_lomax_const_cpp
-double morie_hawkes_ll_lomax_const_cpp(NumericVector t, double T, double a0, double eta, double alpha, double c);
-RcppExport SEXP _morie_morie_hawkes_ll_lomax_const_cpp(SEXP tSEXP, SEXP TSEXP, SEXP a0SEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP cSEXP) {
+double morie_hawkes_ll_lomax_const_cpp(NumericVector t, double T_horizon, double a0, double eta, double alpha, double c);
+RcppExport SEXP _morie_morie_hawkes_ll_lomax_const_cpp(SEXP tSEXP, SEXP T_horizonSEXP, SEXP a0SEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP cSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type t(tSEXP);
-    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    Rcpp::traits::input_parameter< double >::type T_horizon(T_horizonSEXP);
     Rcpp::traits::input_parameter< double >::type a0(a0SEXP);
     Rcpp::traits::input_parameter< double >::type eta(etaSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< double >::type c(cSEXP);
-    rcpp_result_gen = Rcpp::wrap(morie_hawkes_ll_lomax_const_cpp(t, T, a0, eta, alpha, c));
+    rcpp_result_gen = Rcpp::wrap(morie_hawkes_ll_lomax_const_cpp(t, T_horizon, a0, eta, alpha, c));
     return rcpp_result_gen;
 END_RCPP
 }
 // morie_hawkes_ll_gamma_const_cpp
-double morie_hawkes_ll_gamma_const_cpp(NumericVector t, double T, double a0, double eta, double alpha, double beta);
-RcppExport SEXP _morie_morie_hawkes_ll_gamma_const_cpp(SEXP tSEXP, SEXP TSEXP, SEXP a0SEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP betaSEXP) {
+double morie_hawkes_ll_gamma_const_cpp(NumericVector t, double T_horizon, double a0, double eta, double alpha, double beta);
+RcppExport SEXP _morie_morie_hawkes_ll_gamma_const_cpp(SEXP tSEXP, SEXP T_horizonSEXP, SEXP a0SEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP betaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type t(tSEXP);
-    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    Rcpp::traits::input_parameter< double >::type T_horizon(T_horizonSEXP);
     Rcpp::traits::input_parameter< double >::type a0(a0SEXP);
     Rcpp::traits::input_parameter< double >::type eta(etaSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
-    rcpp_result_gen = Rcpp::wrap(morie_hawkes_ll_gamma_const_cpp(t, T, a0, eta, alpha, beta));
+    rcpp_result_gen = Rcpp::wrap(morie_hawkes_ll_gamma_const_cpp(t, T_horizon, a0, eta, alpha, beta));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -144,15 +144,32 @@ BEGIN_RCPP
 END_RCPP
 }
 // siu_http_get_many
-Rcpp::CharacterVector siu_http_get_many(Rcpp::CharacterVector urls, int concurrency, int timeout_s);
-RcppExport SEXP _morie_siu_http_get_many(SEXP urlsSEXP, SEXP concurrencySEXP, SEXP timeout_sSEXP) {
+Rcpp::CharacterVector siu_http_get_many(Rcpp::CharacterVector urls, int concurrency, int timeout_s, double rate_rps, int max_retries);
+RcppExport SEXP _morie_siu_http_get_many(SEXP urlsSEXP, SEXP concurrencySEXP, SEXP timeout_sSEXP, SEXP rate_rpsSEXP, SEXP max_retriesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type urls(urlsSEXP);
     Rcpp::traits::input_parameter< int >::type concurrency(concurrencySEXP);
     Rcpp::traits::input_parameter< int >::type timeout_s(timeout_sSEXP);
-    rcpp_result_gen = Rcpp::wrap(siu_http_get_many(urls, concurrency, timeout_s));
+    Rcpp::traits::input_parameter< double >::type rate_rps(rate_rpsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_retries(max_retriesSEXP);
+    rcpp_result_gen = Rcpp::wrap(siu_http_get_many(urls, concurrency, timeout_s, rate_rps, max_retries));
+    return rcpp_result_gen;
+END_RCPP
+}
+// siu_http_get_many_with_status
+Rcpp::List siu_http_get_many_with_status(Rcpp::CharacterVector urls, int concurrency, int timeout_s, double rate_rps, int max_retries);
+RcppExport SEXP _morie_siu_http_get_many_with_status(SEXP urlsSEXP, SEXP concurrencySEXP, SEXP timeout_sSEXP, SEXP rate_rpsSEXP, SEXP max_retriesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type urls(urlsSEXP);
+    Rcpp::traits::input_parameter< int >::type concurrency(concurrencySEXP);
+    Rcpp::traits::input_parameter< int >::type timeout_s(timeout_sSEXP);
+    Rcpp::traits::input_parameter< double >::type rate_rps(rate_rpsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_retries(max_retriesSEXP);
+    rcpp_result_gen = Rcpp::wrap(siu_http_get_many_with_status(urls, concurrency, timeout_s, rate_rps, max_retries));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -194,7 +211,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_morie_morie_hawkes_ll_gamma_const_cpp", (DL_FUNC) &_morie_morie_hawkes_ll_gamma_const_cpp, 6},
     {"_morie_siu_http_get", (DL_FUNC) &_morie_siu_http_get, 2},
     {"_morie_siu_curl_version", (DL_FUNC) &_morie_siu_curl_version, 0},
-    {"_morie_siu_http_get_many", (DL_FUNC) &_morie_siu_http_get_many, 3},
+    {"_morie_siu_http_get_many", (DL_FUNC) &_morie_siu_http_get_many, 5},
+    {"_morie_siu_http_get_many_with_status", (DL_FUNC) &_morie_siu_http_get_many_with_status, 5},
     {"_morie_siu_parse_report", (DL_FUNC) &_morie_siu_parse_report, 3},
     {"_morie_siu_parse_news", (DL_FUNC) &_morie_siu_parse_news, 3},
     {NULL, NULL, 0}

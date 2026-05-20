@@ -58,4 +58,4 @@ fzmrl <- function(x, t = NULL, h = NULL) {
 #' @rdname fzmrl
 #' @keywords internal
 #' @export
-fauzi_mrl_asymptotic <- fzmrl
+morie_fauzi_mrl_asymptotic <- fzmrl

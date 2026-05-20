@@ -9,9 +9,9 @@
 #' @param d Integer dimension (default 1).
 #' @return Named list with estimate, log_rate_correction, parametric_rate, n, beta, d, method.
 #' @examples
-#' ghosal_contraction_rate(x = rnorm(50))
+#' morie_ghosal_contraction_rate(x = rnorm(50))
 #' @export
-ghosal_contraction_rate <- function(x, beta = 1.0, d = 1) {
+morie_ghosal_contraction_rate <- function(x, beta = 1.0, d = 1) {
   n <- length(x)
   if (n <= 1) {
     return(list(

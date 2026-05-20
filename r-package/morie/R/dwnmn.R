@@ -24,7 +24,7 @@ dwnmn <- function(x, sigma_w = 0.1) {
     return(list(
       smoothed = out, raw = x, sigma_w = sigma_w,
       n_periods = n_t, n_units = n,
-      method = "dynamic_wnominate"
+      method = "morie_dynamic_wnominate"
     ))
   }
   raw <- as.numeric(x)
@@ -33,7 +33,7 @@ dwnmn <- function(x, sigma_w = 0.1) {
     return(list(
       smoothed = numeric(0), raw = numeric(0),
       sigma_w = sigma_w, n_periods = 0L,
-      method = "dynamic_wnominate"
+      method = "morie_dynamic_wnominate"
     ))
   }
   s2_obs <- stats::var(raw) + 1e-6
@@ -60,11 +60,11 @@ dwnmn <- function(x, sigma_w = 0.1) {
   }
   list(
     smoothed = ms, raw = raw, P_smoothed = Ps, sigma_w = sigma_w,
-    n_periods = n_t, method = "dynamic_wnominate"
+    n_periods = n_t, method = "morie_dynamic_wnominate"
   )
 }
 
 #' @keywords internal
 #' @rdname dwnmn
 #' @export
-dynamic_wnominate <- dwnmn
+morie_dynamic_wnominate <- dwnmn

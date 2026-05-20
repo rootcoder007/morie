@@ -21,9 +21,7 @@ Character scalar prompt.
 Build a Perseus agent prompt
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }
 \keyword{internal}

@@ -8,7 +8,7 @@
 #     and the empty-year / empty-stratum returns.
 #   * R/frns_predpol.R    -- non-finite-row drop warnings + calibration
 #     and score-disparity interpretation branches.
-#   * R/dccmd.R           -- dcc_multivariate_garch end to end.
+#   * R/dccmd.R           -- morie_dcc_multivariate_garch end to end.
 
 # ---- entheo_analysis.R ----------------------------------------------------
 
@@ -93,40 +93,40 @@ test_that("mrm_otis_seg_duration_km handles an all-missing stratum", {
 
 # ---- frns_predpol.R -------------------------------------------------------
 
-test_that("predpol_calibration_audit drops non-finite rows and interprets", {
+test_that("morie_predpol_calibration_audit drops non-finite rows and interprets", {
   set.seed(4)
   areas <- paste0("A", 1:14)
   risk <- c(runif(13), NA) # one non-finite row
   outcome <- runif(14)
   grp <- rep(c("x", "y"), 7)
-  res <- predpol_calibration_audit(areas, risk, outcome, grp)
+  res <- morie_predpol_calibration_audit(areas, risk, outcome, grp)
   expect_true(any(grepl("non-finite", res$warnings)))
   expect_true(is.character(res$interpretation))
 })
 
-test_that("predpol_score_disparity drops NaNs, needs two groups, runs ANOVA", {
+test_that("morie_predpol_score_disparity drops NaNs, needs two groups, runs ANOVA", {
   expect_error(
-    predpol_score_disparity(c(1, 2, 3), c("a", "a", "a")),
+    morie_predpol_score_disparity(c(1, 2, 3), c("a", "a", "a")),
     "two groups"
   )
   set.seed(5)
   score <- c(rnorm(20, 3), rnorm(20, 5), NaN)
   grp <- c(rep("low", 20), rep("high", 20), "low")
-  res <- predpol_score_disparity(score, grp)
+  res <- morie_predpol_score_disparity(score, grp)
   expect_true(any(grepl("non-finite", res$warnings)))
   expect_true(is.finite(res$spread))
 })
 
 # ---- dccmd.R --------------------------------------------------------------
 
-test_that("dcc_multivariate_garch fits a multivariate GARCH model", {
+test_that("morie_dcc_multivariate_garch fits a multivariate GARCH model", {
   set.seed(6)
   X <- matrix(rnorm(150 * 3, sd = 0.4), ncol = 3) # >=100 rows: no rugarch notice
-  res <- dcc_multivariate_garch(X)
+  res <- morie_dcc_multivariate_garch(X)
   expect_true(is.list(res))
   expect_true(all(c("unconditional_correlation", "n", "k") %in% names(res)))
   expect_error(
-    dcc_multivariate_garch(matrix(rnorm(20), ncol = 2)),
+    morie_dcc_multivariate_garch(matrix(rnorm(20), ncol = 2)),
     "n>=30"
   )
 })

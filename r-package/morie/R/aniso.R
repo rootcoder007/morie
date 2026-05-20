@@ -75,4 +75,4 @@ morie_aniso <- function(x, coords, n_dirs = 4, tol_deg = 22.5) {
 #' @rdname morie_aniso
 #' @keywords internal
 #' @export
-anisotropy_test <- morie_aniso
+morie_anisotropy_test <- morie_aniso

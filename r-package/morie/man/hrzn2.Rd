@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzn2.R
 \name{hrzn2}
 \alias{hrzn2}
-\alias{horowitz_deconvolution}
+\alias{morie_horowitz_deconvolution}
 \title{Stefanski-Carroll Fourier-deconvolution density estimator}
 \usage{
 hrzn2(y, sigma_u = 0.5, bandwidth = NULL, grid = NULL, noise = "laplace")
 
-horowitz_deconvolution(
+morie_horowitz_deconvolution(
   y,
   sigma_u = 0.5,
   bandwidth = NULL,

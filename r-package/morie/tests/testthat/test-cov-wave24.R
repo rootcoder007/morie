@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Coverage wave 24 -- three surgical targets:
 #   * R/causal.R       -- the propensity_col-supplied branches of
-#     estimate_att / estimate_atc / estimate_aipw, and estimate_late's
+#     morie_estimate_att / morie_estimate_atc / morie_estimate_aipw, and morie_estimate_late's
 #     covariate-adjusted 2SLS path (ivreg branch + manual fallback).
 #   * R/study_core.R   -- internal module runners + the alc06-absent
 #     branch of .cpads_labeled_data.
@@ -11,20 +11,20 @@
 
 # ---- causal.R -------------------------------------------------------------
 
-test_that("estimate_att/atc/aipw accept a supplied propensity column", {
+test_that("morie_estimate_att/atc/aipw accept a supplied propensity column", {
   set.seed(11)
   n <- 240L
   df <- data.frame(t = rbinom(n, 1, 0.45), y = rnorm(n), x = rnorm(n))
   df$ps <- pmin(0.95, pmax(0.05, plogis(0.3 * df$x)))
-  att <- estimate_att(df, "t", "y", "x", propensity_col = "ps")
+  att <- morie_estimate_att(df, "t", "y", "x", propensity_col = "ps")
   expect_true(is.finite(att$att))
-  atc <- estimate_atc(df, "t", "y", "x", propensity_col = "ps")
+  atc <- morie_estimate_atc(df, "t", "y", "x", propensity_col = "ps")
   expect_true(is.finite(atc$atc))
-  aipw <- estimate_aipw(df, "t", "y", "x", propensity_col = "ps")
+  aipw <- morie_estimate_aipw(df, "t", "y", "x", propensity_col = "ps")
   expect_true(is.finite(aipw$ate))
 })
 
-test_that("estimate_late runs the covariate-adjusted 2SLS path", {
+test_that("morie_estimate_late runs the covariate-adjusted 2SLS path", {
   set.seed(12)
   n <- 400L
   z <- rbinom(n, 1, 0.5)
@@ -32,7 +32,7 @@ test_that("estimate_late runs the covariate-adjusted 2SLS path", {
   t <- rbinom(n, 1, plogis(-0.2 + 1.4 * z + 0.3 * x))
   y <- 0.8 * t + 0.5 * x + rnorm(n)
   df <- data.frame(t = t, y = y, z = z, x = x)
-  iv <- estimate_late(df, "t", "y", "z", covariates = "x")
+  iv <- morie_estimate_late(df, "t", "y", "z", covariates = "x")
   expect_true(is.finite(iv$late))
   # force the manual 2SLS fallback by hiding ivreg
   testthat::local_mocked_bindings(
@@ -41,7 +41,7 @@ test_that("estimate_late runs the covariate-adjusted 2SLS path", {
     },
     .package = "base"
   )
-  man <- estimate_late(df, "t", "y", "z", covariates = "x")
+  man <- morie_estimate_late(df, "t", "y", "z", covariates = "x")
   expect_true(is.finite(man$late))
 })
 

@@ -81,4 +81,4 @@ unfdl <- function(x, k = 2L, n_iter = 100L, tol = 1e-6) {
 #' @keywords internal
 #' @rdname unfdl
 #' @export
-unfolding_analysis <- unfdl
+morie_unfolding_analysis <- unfdl

@@ -50,14 +50,14 @@ wnom <- function(votes, x, z_yea, z_nay, beta = 15, w = NULL) {
   GMP <- if (n_total > 0L) n_correct / n_total else 0
   list(
     loglik = ll, GMP = GMP, n_correct = n_correct,
-    n_total = n_total, method = "wnominate_estimate"
+    n_total = n_total, method = "morie_wnominate_estimate"
   )
 }
 
 #' @keywords internal
 #' @rdname wnom
 #' @export
-wnominate_estimate <- wnom
+morie_wnominate_estimate <- wnom
 
 #' @rdname wnom
 #' @keywords internal

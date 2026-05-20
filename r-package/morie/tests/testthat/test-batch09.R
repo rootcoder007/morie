@@ -106,8 +106,8 @@ test_that("internal hawkes likelihood + start helpers behave", {
   expect_true(all(vapply(rs, length, integer(1)) == 3L))
 })
 
-test_that("heinz_he_initialization returns a length-fan_in vector by default", {
-  res <- heinz_he_initialization(8L)
+test_that("morie_heinz_he_initialization returns a length-fan_in vector by default", {
+  res <- morie_heinz_he_initialization(8L)
   expect_type(res, "list")
   expect_named(res, c("W", "estimate", "mean", "std", "shape", "method"))
   expect_length(res$W, 8L)
@@ -117,49 +117,49 @@ test_that("heinz_he_initialization returns a length-fan_in vector by default", {
   expect_match(res$method, "normal")
 })
 
-test_that("heinz_he_initialization builds a matrix when fan_out given", {
-  res <- heinz_he_initialization(6L, fan_out = 4L)
+test_that("morie_heinz_he_initialization builds a matrix when fan_out given", {
+  res <- morie_heinz_he_initialization(6L, fan_out = 4L)
   expect_true(is.matrix(res$W))
   expect_equal(dim(res$W), c(4L, 6L))
   expect_equal(res$shape, c(4L, 6L))
 })
 
-test_that("heinz_he_initialization supports uniform mode", {
-  res <- heinz_he_initialization(10L, mode = "uniform")
+test_that("morie_heinz_he_initialization supports uniform mode", {
+  res <- morie_heinz_he_initialization(10L, mode = "uniform")
   expect_length(res$W, 10L)
   limit <- sqrt(6 / 10)
   expect_true(all(res$W >= -limit & res$W <= limit))
   expect_match(res$method, "uniform")
 })
 
-test_that("heinz_he_initialization is reproducible for a fixed seed", {
-  a <- heinz_he_initialization(12L, seed = 7L)
-  b <- heinz_he_initialization(12L, seed = 7L)
+test_that("morie_heinz_he_initialization is reproducible for a fixed seed", {
+  a <- morie_heinz_he_initialization(12L, seed = 7L)
+  b <- morie_heinz_he_initialization(12L, seed = 7L)
   expect_equal(a$W, b$W)
 })
 
-test_that("heinz_he_initialization rejects bad fan_in and mode", {
-  expect_error(heinz_he_initialization(0L), "fan_in")
-  expect_error(heinz_he_initialization(-3L), "fan_in")
-  expect_error(heinz_he_initialization(5L, mode = "bogus"), "mode")
+test_that("morie_heinz_he_initialization rejects bad fan_in and mode", {
+  expect_error(morie_heinz_he_initialization(0L), "fan_in")
+  expect_error(morie_heinz_he_initialization(-3L), "fan_in")
+  expect_error(morie_heinz_he_initialization(5L, mode = "bogus"), "mode")
 })
 
-test_that("heinz_he_initialization honours deterministic_seed", {
-  res <- heinz_he_initialization(8L, deterministic_seed = 3L)
+test_that("morie_heinz_he_initialization honours deterministic_seed", {
+  res <- morie_heinz_he_initialization(8L, deterministic_seed = 3L)
   expect_length(res$W, 8L)
   expect_true(all(is.finite(res$W)))
 })
 
-test_that("he_initialization alias matches heinz_he_initialization", {
-  expect_identical(he_initialization, heinz_he_initialization)
+test_that("morie_he_initialization alias matches morie_heinz_he_initialization", {
+  expect_identical(morie_he_initialization, morie_heinz_he_initialization)
 })
 
-test_that("horowitz_binary_response fits a maximum-score model", {
+test_that("morie_horowitz_binary_response fits a maximum-score model", {
   set.seed(201)
   n <- 80
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
   y <- as.numeric(X %*% c(1, 0.5) + stats::rnorm(n) > 0)
-  res <- horowitz_binary_response(X, y)
+  res <- morie_horowitz_binary_response(X, y)
   expect_type(res, "list")
   expect_named(res, c("estimate", "se", "score", "n", "method", "warnings"))
   expect_length(res$estimate, 2L)
@@ -169,23 +169,23 @@ test_that("horowitz_binary_response fits a maximum-score model", {
   expect_match(res$method, "Manski")
 })
 
-test_that("horowitz_binary_response returns NA on insufficient data", {
-  res <- horowitz_binary_response(stats::rnorm(6), c(0, 1, 0, 1, 0, 1))
+test_that("morie_horowitz_binary_response returns NA on insufficient data", {
+  res <- morie_horowitz_binary_response(stats::rnorm(6), c(0, 1, 0, 1, 0, 1))
   expect_true(all(is.na(res$estimate)))
   expect_match(res$method, "insufficient data")
 })
 
-test_that("horowitz_binary_response alias is bound to hrzb1", {
-  expect_identical(horowitz_binary_response, morie:::hrzb1)
+test_that("morie_horowitz_binary_response alias is bound to hrzb1", {
+  expect_identical(morie_horowitz_binary_response, morie:::hrzb1)
 })
 
-test_that("horowitz_smoothed_maximum_score fits with the default bandwidth", {
+test_that("morie_horowitz_smoothed_maximum_score fits with the default bandwidth", {
   skip_if_not_installed("MASS")
   set.seed(202)
   n <- 70
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
   y <- as.numeric(X %*% c(1, -0.6) + stats::rnorm(n) > 0)
-  res <- horowitz_smoothed_maximum_score(X, y)
+  res <- morie_horowitz_smoothed_maximum_score(X, y)
   expect_named(res, c("estimate", "se", "bandwidth", "n", "method"))
   expect_length(res$estimate, 2L)
   expect_equal(sqrt(sum(res$estimate^2)), 1, tolerance = 1e-6)
@@ -193,39 +193,39 @@ test_that("horowitz_smoothed_maximum_score fits with the default bandwidth", {
   expect_equal(res$n, n)
 })
 
-test_that("horowitz_smoothed_maximum_score accepts an explicit bandwidth", {
+test_that("morie_horowitz_smoothed_maximum_score accepts an explicit bandwidth", {
   skip_if_not_installed("MASS")
   set.seed(203)
   n <- 60
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
   y <- as.numeric(X %*% c(1, 0.4) + stats::rnorm(n) > 0)
-  res <- horowitz_smoothed_maximum_score(X, y, bandwidth = 0.5)
+  res <- morie_horowitz_smoothed_maximum_score(X, y, bandwidth = 0.5)
   expect_equal(res$bandwidth, 0.5)
 })
 
-test_that("horowitz_smoothed_maximum_score handles a vector covariate", {
+test_that("morie_horowitz_smoothed_maximum_score handles a vector covariate", {
   skip_if_not_installed("MASS")
   set.seed(204)
   x <- stats::rnorm(50)
   y <- as.numeric(x + stats::rnorm(50) > 0)
-  res <- horowitz_smoothed_maximum_score(x, y)
+  res <- morie_horowitz_smoothed_maximum_score(x, y)
   expect_length(res$estimate, 1L)
 })
 
-test_that("horowitz_smoothed_maximum_score returns NA on tiny data", {
-  res <- horowitz_smoothed_maximum_score(stats::rnorm(6), rep(c(0, 1), 3))
+test_that("morie_horowitz_smoothed_maximum_score returns NA on tiny data", {
+  res <- morie_horowitz_smoothed_maximum_score(stats::rnorm(6), rep(c(0, 1), 3))
   expect_true(all(is.na(res$estimate)))
   expect_match(res$method, "insufficient data")
 })
 
-test_that("horowitz_censored_regression fits a censored LAD model", {
+test_that("morie_horowitz_censored_regression fits a censored LAD model", {
   skip_if_not_installed("MASS")
   set.seed(205)
   n <- 80
   X <- cbind(1, stats::rnorm(n))
   ystar <- X %*% c(0.5, 1) + stats::rnorm(n)
   y <- pmax(as.numeric(ystar), 0)
-  res <- horowitz_censored_regression(X, y, censor = 0)
+  res <- morie_horowitz_censored_regression(X, y, censor = 0)
   expect_named(res, c(
     "estimate", "se", "n", "n_uncensored", "censor",
     "method"
@@ -237,41 +237,41 @@ test_that("horowitz_censored_regression fits a censored LAD model", {
   expect_match(res$method, "Powell")
 })
 
-test_that("horowitz_censored_regression uses a custom censor threshold", {
+test_that("morie_horowitz_censored_regression uses a custom censor threshold", {
   skip_if_not_installed("MASS")
   set.seed(206)
   n <- 70
   X <- cbind(1, stats::rnorm(n))
   y <- pmax(as.numeric(X %*% c(1, 0.8) + stats::rnorm(n)), 1)
-  res <- horowitz_censored_regression(X, y, censor = 1)
+  res <- morie_horowitz_censored_regression(X, y, censor = 1)
   expect_equal(res$censor, 1)
 })
 
-test_that("horowitz_censored_regression returns NA on insufficient data", {
-  res <- horowitz_censored_regression(stats::rnorm(6), stats::rnorm(6))
+test_that("morie_horowitz_censored_regression returns NA on insufficient data", {
+  res <- morie_horowitz_censored_regression(stats::rnorm(6), stats::rnorm(6))
   expect_true(all(is.na(res$estimate)))
   expect_match(res$method, "insufficient")
 })
 
-test_that("horowitz_censored_regression flags too few uncensored obs", {
+test_that("morie_horowitz_censored_regression flags too few uncensored obs", {
   skip_if_not_installed("MASS")
   set.seed(207)
   n <- 40
   X <- cbind(1, stats::rnorm(n))
   y <- rep(-5, n)
-  res <- horowitz_censored_regression(X, y, censor = 0)
+  res <- morie_horowitz_censored_regression(X, y, censor = 0)
   expect_true(all(is.na(res$estimate)))
   expect_match(res$method, "too few uncensored")
 })
 
-test_that("horowitz_duration_model fits a Cox proportional-hazards model", {
+test_that("morie_horowitz_duration_model fits a Cox proportional-hazards model", {
   skip_if_not_installed("MASS")
   set.seed(208)
   n <- 80
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
   t <- stats::rexp(n, rate = exp(X %*% c(0.5, -0.3)))
   event <- stats::rbinom(n, 1, 0.8)
-  res <- horowitz_duration_model(t, X, event)
+  res <- morie_horowitz_duration_model(t, X, event)
   expect_named(res, c("estimate", "se", "n", "n_events", "method"))
   expect_length(res$estimate, 2L)
   expect_equal(res$n, n)
@@ -280,19 +280,19 @@ test_that("horowitz_duration_model fits a Cox proportional-hazards model", {
   expect_match(res$method, "Cox")
 })
 
-test_that("horowitz_duration_model handles a single-covariate vector", {
+test_that("morie_horowitz_duration_model handles a single-covariate vector", {
   skip_if_not_installed("MASS")
   set.seed(209)
   n <- 60
   x <- stats::rnorm(n)
   t <- stats::rexp(n, rate = exp(0.4 * x))
   event <- rep(1, n)
-  res <- horowitz_duration_model(t, x, event)
+  res <- morie_horowitz_duration_model(t, x, event)
   expect_length(res$estimate, 1L)
 })
 
-test_that("horowitz_duration_model returns NA on insufficient data", {
-  res <- horowitz_duration_model(
+test_that("morie_horowitz_duration_model returns NA on insufficient data", {
+  res <- morie_horowitz_duration_model(
     stats::rexp(6), stats::rnorm(6),
     rep(1, 6)
   )
@@ -300,13 +300,13 @@ test_that("horowitz_duration_model returns NA on insufficient data", {
   expect_match(res$method, "insufficient")
 })
 
-test_that("horowitz_index_model fits a single-index model", {
+test_that("morie_horowitz_index_model fits a single-index model", {
   skip_if_not_installed("MASS")
   set.seed(210)
   n <- 70
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
   y <- (X %*% c(1, 0.5))^2 + stats::rnorm(n, sd = 0.2)
-  res <- horowitz_index_model(X, y)
+  res <- morie_horowitz_index_model(X, y)
   expect_named(res, c(
     "estimate", "se", "bandwidth", "n", "loss",
     "method"
@@ -318,28 +318,28 @@ test_that("horowitz_index_model fits a single-index model", {
   expect_match(res$method, "Ichimura")
 })
 
-test_that("horowitz_index_model accepts an explicit bandwidth", {
+test_that("morie_horowitz_index_model accepts an explicit bandwidth", {
   skip_if_not_installed("MASS")
   set.seed(211)
   n <- 60
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
   y <- as.numeric(X %*% c(1, -0.3)) + stats::rnorm(n)
-  res <- horowitz_index_model(X, y, bandwidth = 0.7)
+  res <- morie_horowitz_index_model(X, y, bandwidth = 0.7)
   expect_equal(res$bandwidth, 0.7)
 })
 
-test_that("horowitz_index_model returns NA on insufficient data", {
-  res <- horowitz_index_model(stats::rnorm(6), stats::rnorm(6))
+test_that("morie_horowitz_index_model returns NA on insufficient data", {
+  res <- morie_horowitz_index_model(stats::rnorm(6), stats::rnorm(6))
   expect_true(all(is.na(res$estimate)))
   expect_match(res$method, "insufficient")
 })
 
-test_that("horowitz_average_derivative estimates an average derivative", {
+test_that("morie_horowitz_average_derivative estimates an average derivative", {
   set.seed(212)
   n <- 80
   x <- stats::rnorm(n)
   y <- 2 * x + stats::rnorm(n, sd = 0.3)
-  res <- horowitz_average_derivative(x, y)
+  res <- morie_horowitz_average_derivative(x, y)
   expect_named(res, c("estimate", "se", "bandwidth", "n", "method"))
   expect_length(res$estimate, 1L)
   expect_true(is.finite(res$estimate))
@@ -348,26 +348,26 @@ test_that("horowitz_average_derivative estimates an average derivative", {
   expect_match(res$method, "average derivative")
 })
 
-test_that("horowitz_average_derivative handles a multi-column design", {
+test_that("morie_horowitz_average_derivative handles a multi-column design", {
   set.seed(213)
   n <- 80
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
   y <- as.numeric(X %*% c(1, -1)) + stats::rnorm(n, sd = 0.3)
-  res <- horowitz_average_derivative(X, y, bandwidth = 0.8)
+  res <- morie_horowitz_average_derivative(X, y, bandwidth = 0.8)
   expect_length(res$estimate, 2L)
   expect_equal(res$bandwidth, 0.8)
 })
 
-test_that("horowitz_average_derivative returns NA on insufficient data", {
-  res <- horowitz_average_derivative(stats::rnorm(10), stats::rnorm(10))
+test_that("morie_horowitz_average_derivative returns NA on insufficient data", {
+  res <- morie_horowitz_average_derivative(stats::rnorm(10), stats::rnorm(10))
   expect_true(all(is.na(res$estimate)))
   expect_match(res$method, "insufficient")
 })
 
-test_that("horowitz_kernel_density estimates at the sample points", {
+test_that("morie_horowitz_kernel_density estimates at the sample points", {
   set.seed(214)
   x <- stats::rnorm(60)
-  res <- horowitz_kernel_density(x)
+  res <- morie_horowitz_kernel_density(x)
   expect_named(res, c(
     "estimate", "se", "bandwidth", "n", "kernel",
     "method"
@@ -378,32 +378,32 @@ test_that("horowitz_kernel_density estimates at the sample points", {
   expect_equal(res$kernel, "gaussian")
 })
 
-test_that("horowitz_kernel_density evaluates on a separate grid", {
+test_that("morie_horowitz_kernel_density evaluates on a separate grid", {
   set.seed(215)
   samp <- stats::rnorm(80)
   grid <- seq(-2, 2, length.out = 11)
-  res <- horowitz_kernel_density(grid, sample = samp)
+  res <- morie_horowitz_kernel_density(grid, sample = samp)
   expect_length(res$estimate, length(grid))
   expect_true(all(res$estimate >= 0))
 })
 
-test_that("horowitz_kernel_density accepts an explicit bandwidth", {
+test_that("morie_horowitz_kernel_density accepts an explicit bandwidth", {
   set.seed(216)
-  res <- horowitz_kernel_density(stats::rnorm(40), bandwidth = 0.5)
+  res <- morie_horowitz_kernel_density(stats::rnorm(40), bandwidth = 0.5)
   expect_equal(res$bandwidth, 0.5)
 })
 
-test_that("horowitz_kernel_density returns NA on a singleton sample", {
-  res <- horowitz_kernel_density(c(1.0))
+test_that("morie_horowitz_kernel_density returns NA on a singleton sample", {
+  res <- morie_horowitz_kernel_density(c(1.0))
   expect_true(is.na(res$estimate))
   expect_match(res$method, "insufficient")
 })
 
-test_that("horowitz_kernel_regression fits an NW regression", {
+test_that("morie_horowitz_kernel_regression fits an NW regression", {
   set.seed(217)
   x <- stats::rnorm(70)
   y <- sin(x) + stats::rnorm(70, sd = 0.2)
-  res <- horowitz_kernel_regression(x, y)
+  res <- morie_horowitz_kernel_regression(x, y)
   expect_named(res, c("estimate", "se", "bandwidth", "n", "method"))
   expect_length(res$estimate, length(x))
   expect_true(all(is.finite(res$estimate)))
@@ -411,55 +411,55 @@ test_that("horowitz_kernel_regression fits an NW regression", {
   expect_match(res$method, "Nadaraya-Watson")
 })
 
-test_that("horowitz_kernel_regression evaluates on a custom grid", {
+test_that("morie_horowitz_kernel_regression evaluates on a custom grid", {
   set.seed(218)
   x <- stats::rnorm(60)
   y <- 2 * x + stats::rnorm(60, sd = 0.3)
   grid <- seq(-1, 1, length.out = 9)
-  res <- horowitz_kernel_regression(x, y, grid = grid, bandwidth = 0.4)
+  res <- morie_horowitz_kernel_regression(x, y, grid = grid, bandwidth = 0.4)
   expect_length(res$estimate, length(grid))
   expect_equal(res$bandwidth, 0.4)
 })
 
-test_that("horowitz_kernel_regression returns NA on insufficient data", {
-  res <- horowitz_kernel_regression(c(1.0), c(2.0))
+test_that("morie_horowitz_kernel_regression returns NA on insufficient data", {
+  res <- morie_horowitz_kernel_regression(c(1.0), c(2.0))
   expect_true(is.na(res$estimate))
   expect_match(res$method, "insufficient")
 })
 
-test_that("horowitz_local_linear fits a local-linear regression", {
+test_that("morie_horowitz_local_linear fits a local-linear regression", {
   skip_if_not_installed("MASS")
   set.seed(219)
   x <- stats::rnorm(70)
   y <- 1.5 * x + stats::rnorm(70, sd = 0.2)
-  res <- horowitz_local_linear(x, y)
+  res <- morie_horowitz_local_linear(x, y)
   expect_named(res, c("estimate", "se", "bandwidth", "n", "method"))
   expect_length(res$estimate, length(x))
   expect_true(res$bandwidth > 0)
   expect_match(res$method, "Local-linear")
 })
 
-test_that("horowitz_local_linear evaluates on a custom grid", {
+test_that("morie_horowitz_local_linear evaluates on a custom grid", {
   skip_if_not_installed("MASS")
   set.seed(220)
   x <- stats::rnorm(60)
   y <- x^2 + stats::rnorm(60, sd = 0.3)
   grid <- seq(-1, 1, length.out = 7)
-  res <- horowitz_local_linear(x, y, grid = grid, bandwidth = 0.5)
+  res <- morie_horowitz_local_linear(x, y, grid = grid, bandwidth = 0.5)
   expect_length(res$estimate, length(grid))
   expect_equal(res$bandwidth, 0.5)
 })
 
-test_that("horowitz_local_linear returns NA on insufficient data", {
-  res <- horowitz_local_linear(c(1, 2), c(3, 4))
+test_that("morie_horowitz_local_linear returns NA on insufficient data", {
+  res <- morie_horowitz_local_linear(c(1, 2), c(3, 4))
   expect_true(is.na(res$estimate))
   expect_match(res$method, "insufficient")
 })
 
-test_that("horowitz_mixture_model fits a 2-component mixture by default", {
+test_that("morie_horowitz_mixture_model fits a 2-component mixture by default", {
   set.seed(221)
   y <- c(stats::rnorm(40, -3), stats::rnorm(40, 3))
-  res <- horowitz_mixture_model(y)
+  res <- morie_horowitz_mixture_model(y)
   expect_named(res, c(
     "estimate", "log_likelihood", "n", "k", "iters",
     "method"
@@ -474,29 +474,29 @@ test_that("horowitz_mixture_model fits a 2-component mixture by default", {
   expect_true(res$iters >= 1L)
 })
 
-test_that("horowitz_mixture_model supports a 3-component fit", {
+test_that("morie_horowitz_mixture_model supports a 3-component fit", {
   set.seed(222)
   y <- c(stats::rnorm(30, -4), stats::rnorm(30, 0), stats::rnorm(30, 4))
-  res <- horowitz_mixture_model(y, k = 3, maxit = 100, tol = 1e-5)
+  res <- morie_horowitz_mixture_model(y, k = 3, maxit = 100, tol = 1e-5)
   expect_equal(res$k, 3L)
   expect_length(res$estimate$mu, 3L)
   expect_match(res$method, "3-component")
 })
 
-test_that("horowitz_mixture_model returns NA on insufficient data", {
-  res <- horowitz_mixture_model(stats::rnorm(5))
+test_that("morie_horowitz_mixture_model returns NA on insufficient data", {
+  res <- morie_horowitz_mixture_model(stats::rnorm(5))
   expect_true(is.na(res$estimate))
   expect_match(res$method, "insufficient")
 })
 
-test_that("horowitz_nonparametric_iv fits an NPIV model", {
+test_that("morie_horowitz_nonparametric_iv fits an NPIV model", {
   skip_if_not_installed("MASS")
   set.seed(223)
   n <- 120
   z <- stats::rnorm(n)
   x <- 0.7 * z + stats::rnorm(n, sd = 0.5)
   y <- x + stats::rnorm(n, sd = 0.3)
-  res <- horowitz_nonparametric_iv(x, y, z, J = 4, .bootstrap = FALSE)
+  res <- morie_horowitz_nonparametric_iv(x, y, z, J = 4, .bootstrap = FALSE)
   expect_named(res, c(
     "estimate", "se", "grid", "J", "alpha", "n",
     "method"
@@ -508,7 +508,7 @@ test_that("horowitz_nonparametric_iv fits an NPIV model", {
   expect_match(res$method, "Tikhonov")
 })
 
-test_that("horowitz_nonparametric_iv bootstraps SEs when requested", {
+test_that("morie_horowitz_nonparametric_iv bootstraps SEs when requested", {
   skip_if_not_installed("MASS")
   set.seed(224)
   n <- 80
@@ -516,28 +516,28 @@ test_that("horowitz_nonparametric_iv bootstraps SEs when requested", {
   x <- 0.6 * z + stats::rnorm(n, sd = 0.5)
   y <- x + stats::rnorm(n, sd = 0.3)
   grid <- seq(-1, 1, length.out = 5)
-  res <- horowitz_nonparametric_iv(x, y, z, J = 3, grid = grid)
+  res <- morie_horowitz_nonparametric_iv(x, y, z, J = 3, grid = grid)
   expect_length(res$estimate, length(grid))
   expect_length(res$se, length(grid))
   expect_true(all(is.finite(res$se)))
 })
 
-test_that("horowitz_nonparametric_iv falls back to 2SLS for small n", {
+test_that("morie_horowitz_nonparametric_iv falls back to 2SLS for small n", {
   skip_if_not_installed("MASS")
   set.seed(225)
   n <- 30
   z <- stats::rnorm(n)
   x <- 0.5 * z + stats::rnorm(n, sd = 0.4)
   y <- x + stats::rnorm(n, sd = 0.3)
-  res <- horowitz_nonparametric_iv(x, y, z)
+  res <- morie_horowitz_nonparametric_iv(x, y, z)
   expect_length(res$estimate, 1L)
   expect_match(res$method, "2SLS")
 })
 
-test_that("horowitz_deconvolution estimates a density with laplace noise", {
+test_that("morie_horowitz_deconvolution estimates a density with laplace noise", {
   set.seed(226)
   y <- stats::rnorm(80) + stats::rexp(80) - stats::rexp(80)
-  res <- horowitz_deconvolution(y)
+  res <- morie_horowitz_deconvolution(y)
   expect_named(res, c(
     "estimate", "grid", "bandwidth", "sigma_u",
     "noise", "n", "method"
@@ -549,11 +549,11 @@ test_that("horowitz_deconvolution estimates a density with laplace noise", {
   expect_match(res$method, "deconvolution")
 })
 
-test_that("horowitz_deconvolution supports normal noise and custom args", {
+test_that("morie_horowitz_deconvolution supports normal noise and custom args", {
   set.seed(227)
   y <- stats::rnorm(60, sd = 1.5)
   grid <- seq(-3, 3, length.out = 11)
-  res <- horowitz_deconvolution(y,
+  res <- morie_horowitz_deconvolution(y,
     sigma_u = 0.3, bandwidth = 1.2,
     grid = grid, noise = "normal"
   )
@@ -563,20 +563,20 @@ test_that("horowitz_deconvolution supports normal noise and custom args", {
   expect_length(res$estimate, length(grid))
 })
 
-test_that("horowitz_deconvolution returns NA on insufficient data", {
-  res <- horowitz_deconvolution(stats::rnorm(10))
+test_that("morie_horowitz_deconvolution returns NA on insufficient data", {
+  res <- morie_horowitz_deconvolution(stats::rnorm(10))
   expect_true(is.na(res$estimate))
   expect_match(res$method, "insufficient")
 })
 
-test_that("horowitz_plr_estimator fits a partially-linear regression", {
+test_that("morie_horowitz_plr_estimator fits a partially-linear regression", {
   skip_if_not_installed("MASS")
   set.seed(228)
   n <- 80
   x <- stats::rnorm(n)
   z <- stats::rnorm(n)
   y <- 1.5 * x + sin(z) + stats::rnorm(n, sd = 0.2)
-  res <- horowitz_plr_estimator(x, y, z)
+  res <- morie_horowitz_plr_estimator(x, y, z)
   expect_named(res, c("estimate", "se", "bandwidth", "n", "method"))
   expect_length(res$estimate, 1L)
   expect_true(is.finite(res$estimate))
@@ -585,20 +585,20 @@ test_that("horowitz_plr_estimator fits a partially-linear regression", {
   expect_match(res$method, "Robinson")
 })
 
-test_that("horowitz_plr_estimator handles a multi-column parametric part", {
+test_that("morie_horowitz_plr_estimator handles a multi-column parametric part", {
   skip_if_not_installed("MASS")
   set.seed(229)
   n <- 70
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
   z <- stats::rnorm(n)
   y <- as.numeric(X %*% c(1, -0.5)) + cos(z) + stats::rnorm(n, sd = 0.2)
-  res <- horowitz_plr_estimator(X, y, z, bandwidth = 0.6)
+  res <- morie_horowitz_plr_estimator(X, y, z, bandwidth = 0.6)
   expect_length(res$estimate, 2L)
   expect_equal(res$bandwidth, 0.6)
 })
 
-test_that("horowitz_plr_estimator returns NA on insufficient data", {
-  res <- horowitz_plr_estimator(
+test_that("morie_horowitz_plr_estimator returns NA on insufficient data", {
+  res <- morie_horowitz_plr_estimator(
     stats::rnorm(4), stats::rnorm(4),
     stats::rnorm(4)
   )

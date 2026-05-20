@@ -22,7 +22,7 @@ irtsp <- function(x, n_iter = 60L, tol = 1e-6) {
     return(list(
       x_hat = rep(NA_real_, n), alpha = rep(NA_real_, m),
       beta = rep(NA_real_, m), loglik = NA_real_,
-      n_iter = 0L, method = "irt_spatial"
+      n_iter = 0L, method = "morie_irt_spatial"
     ))
   }
   Mc <- M - matrix(colMeans(M, na.rm = TRUE), n, m, byrow = TRUE)
@@ -111,4 +111,4 @@ irtsp <- function(x, n_iter = 60L, tol = 1e-6) {
 #' @keywords internal
 #' @rdname irtsp
 #' @export
-irt_spatial <- irtsp
+morie_irt_spatial <- irtsp

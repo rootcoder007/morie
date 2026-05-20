@@ -31,9 +31,9 @@ test_that("gbens deterministic_seed is reproducible", {
   skip_if_no_hash()
   skip_if_no_gb_backend()
   d <- xy_fixture()
-  r1 <- gradient_boosting_ensemble(d$x, d$y, n_estimators = 20L, deterministic_seed = 42L)
-  r2 <- gradient_boosting_ensemble(d$x, d$y, n_estimators = 20L, deterministic_seed = 42L)
-  r3 <- gradient_boosting_ensemble(d$x, d$y, n_estimators = 20L, deterministic_seed = 999L)
+  r1 <- morie_gradient_boosting_ensemble(d$x, d$y, n_estimators = 20L, deterministic_seed = 42L)
+  r2 <- morie_gradient_boosting_ensemble(d$x, d$y, n_estimators = 20L, deterministic_seed = 42L)
+  r3 <- morie_gradient_boosting_ensemble(d$x, d$y, n_estimators = 20L, deterministic_seed = 999L)
   expect_equal(r1$feature_importances, r2$feature_importances)
   expect_equal(r1$train_score, r2$train_score)
   # Some boosting backends are deterministic w.r.t. seed at full bagging
@@ -47,8 +47,8 @@ test_that("gbens deterministic_seed is reproducible", {
 test_that("gbens default (deterministic_seed = NULL) path is unchanged", {
   skip_if_no_gb_backend()
   d <- xy_fixture()
-  r1 <- gradient_boosting_ensemble(d$x, d$y, n_estimators = 20L, seed = 42L)
-  r2 <- gradient_boosting_ensemble(d$x, d$y, n_estimators = 20L, seed = 42L)
+  r1 <- morie_gradient_boosting_ensemble(d$x, d$y, n_estimators = 20L, seed = 42L)
+  r2 <- morie_gradient_boosting_ensemble(d$x, d$y, n_estimators = 20L, seed = 42L)
   expect_equal(r1$feature_importances, r2$feature_importances)
   expect_equal(r1$train_score, r2$train_score)
 })

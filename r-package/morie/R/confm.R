@@ -12,9 +12,9 @@
 #'   labels, precision, recall, f1, macro_precision, macro_recall,
 #'   macro_f1, weighted_f1, n, method.
 #' @examples
-#' confusion_matrix_metrics(y_true = rbinom(50, 1, 0.5), y_pred = rbinom(50,      1, 0.5))
+#' morie_confusion_matrix_metrics(y_true = rbinom(50, 1, 0.5), y_pred = rbinom(50, 1, 0.5))
 #' @export
-confusion_matrix_metrics <- function(y_true, y_pred, labels = NULL) {
+morie_confusion_matrix_metrics <- function(y_true, y_pred, labels = NULL) {
   yt <- as.character(y_true)
   yp <- as.character(y_pred)
   if (is.null(labels)) labels <- sort(unique(c(yt, yp)))

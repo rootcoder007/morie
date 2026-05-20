@@ -125,17 +125,17 @@ test_that("bpblm: bits_per_byte runs", {
   }
 })
 
-test_that("regms: regime_switching at k = 2 and k = 3", {
+test_that("regms: morie_regime_switching at k = 2 and k = 3", {
   set.seed(41)
   x2 <- c(stats::rnorm(120, 0, 1), stats::rnorm(120, 5, 2))
-  r2 <- tryCatch(suppressWarnings(regime_switching(x2, k_regimes = 2)), error = function(e) e)
+  r2 <- tryCatch(suppressWarnings(morie_regime_switching(x2, k_regimes = 2)), error = function(e) e)
   expect_true(inherits(r2, "error") || is.list(r2))
   set.seed(42)
   x3 <- c(
     stats::rnorm(60, -4, 1), stats::rnorm(60, 0, 1),
     stats::rnorm(60, 6, 1.5)
   )
-  r3 <- tryCatch(suppressWarnings(regime_switching(x3, k_regimes = 3)), error = function(e) e)
+  r3 <- tryCatch(suppressWarnings(morie_regime_switching(x3, k_regimes = 3)), error = function(e) e)
   expect_true(inherits(r3, "error") || is.list(r3))
 })
 
@@ -232,15 +232,15 @@ test_that("rgwav: wavelet denoise soft and hard modes", {
   expect_true(inherits(rh, "error") || is.list(rh))
 })
 
-test_that("ghsrv: ghosal_survival_beta_process runs", {
+test_that("ghsrv: morie_ghosal_survival_beta_process runs", {
   set.seed(91)
   tt <- stats::rexp(60, rate = 0.5)
   ev <- stats::rbinom(60, 1, 0.8)
-  r1 <- tryCatch(ghosal_survival_beta_process(tt, event = ev, c = 1.0),
+  r1 <- tryCatch(morie_ghosal_survival_beta_process(tt, event = ev, c = 1.0),
     error = function(e) e
   )
   expect_true(inherits(r1, "error") || is.list(r1))
-  r2 <- tryCatch(ghosal_survival_beta_process(tt, c = 2.0),
+  r2 <- tryCatch(morie_ghosal_survival_beta_process(tt, c = 2.0),
     error = function(e) e
   )
   expect_true(inherits(r2, "error") || is.list(r2))

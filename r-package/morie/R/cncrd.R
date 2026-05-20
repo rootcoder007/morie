@@ -11,9 +11,9 @@
 #' @return Named list: statistic (W), p_value, df, chi2, n, k.
 #' @importFrom stats pchisq
 #' @examples
-#' concordance_incomplete(x = rnorm(50))
+#' morie_concordance_incomplete(x = rnorm(50))
 #' @export
-concordance_incomplete <- function(x) {
+morie_concordance_incomplete <- function(x) {
   X <- as.matrix(x)
   storage.mode(X) <- "numeric"
   n <- nrow(X)

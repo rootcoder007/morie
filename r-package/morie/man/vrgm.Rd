@@ -2,12 +2,12 @@
 % Please edit documentation in R/vrgm.R
 \name{vrgm}
 \alias{vrgm}
-\alias{variogram_estimation}
+\alias{morie_variogram_estimation}
 \title{Empirical (Matheron) variogram estimation.}
 \usage{
 vrgm(x, coords, n_bins = 10, max_dist = NULL)
 
-variogram_estimation(x, coords, n_bins = 10, max_dist = NULL)
+morie_variogram_estimation(x, coords, n_bins = 10, max_dist = NULL)
 }
 \arguments{
 \item{x}{Numeric vector, length n.}

@@ -71,7 +71,7 @@ test_that("csphr returns zero-weight stub when votes are NULL", {
   X <- matrix(rnorm(50 * 2), 50, 2)
   out <- csphr(X, votes = NULL)
   expect_type(out, "list")
-  expect_equal(out$method, "cutting_plane_sphere")
+  expect_equal(out$method, "morie_cutting_plane_sphere")
   expect_equal(out$n, 50L)
   expect_equal(out$p, 2L)
   expect_equal(out$correct_class, 0L)
@@ -82,7 +82,7 @@ test_that("csphr handles a single-class vote vector via majority stub", {
   set.seed(1)
   X <- matrix(rnorm(40 * 2), 40, 2)
   out <- csphr(X, votes = rep(1L, 40))
-  expect_equal(out$method, "cutting_plane_sphere")
+  expect_equal(out$method, "morie_cutting_plane_sphere")
   expect_equal(out$correct_class, 40L)
   expect_true(all(out$w == 0))
 })
@@ -117,8 +117,10 @@ test_that("mrm_otis_mandela_spectrum returns tidy long-format frame", {
   )
   out <- mrm_otis_mandela_spectrum(df)
   expect_s3_class(out, "data.frame")
-  expect_true(all(c("year", "denominator", "contact_proxy",
-                    "n_eligible", "n_mandela", "rate", "pct") %in% names(out)))
+  expect_true(all(c(
+    "year", "denominator", "contact_proxy",
+    "n_eligible", "n_mandela", "rate", "pct"
+  ) %in% names(out)))
   expect_true("pooled" %in% out$year)
 })
 

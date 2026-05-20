@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgarb.R
 \name{rgarb}
 \alias{rgarb}
-\alias{rangayyan_ar_burg}
+\alias{morie_rangayyan_ar_burg}
 \title{AR(p) Burg estimator -- Rangayyan Ch 4}
 \usage{
 rgarb(x, order = 10L)
 
-rangayyan_ar_burg(x, order = 10L)
+morie_rangayyan_ar_burg(x, order = 10L)
 }
 \arguments{
 \item{x}{Numeric vector.}

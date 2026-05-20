@@ -78,4 +78,4 @@ not represent the views of either agency.
 
 - The `intro` vignette uses `morie_load_dataset()` end-to-end.
 - The `cpads-canonicalization` vignette covers the CPADS column
-  contract and `canonicalize_cpads_data()` helpers.
+  contract and `morie_canonicalize_cpads_data()` helpers.

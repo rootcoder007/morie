@@ -76,4 +76,4 @@ hrzt1 <- function(x, y, treatment, bandwidth = NULL, .bootstrap = TRUE) {
 #' @rdname hrzt1
 #' @keywords internal
 #' @export
-horowitz_treatment_effect <- hrzt1
+morie_horowitz_treatment_effect <- hrzt1

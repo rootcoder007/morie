@@ -37,8 +37,8 @@ test_that("fzkdf handles too-few observations", {
   expect_match(r$method, "too few")
 })
 
-test_that("fzkdf alias fauzi_kdfe_properties is identical", {
-  expect_identical(fauzi_kdfe_properties, fzkdf)
+test_that("fzkdf alias morie_fauzi_kdfe_properties is identical", {
+  expect_identical(morie_fauzi_kdfe_properties, fzkdf)
 })
 
 test_that("fzksm runs the smoothed KS test with named normal cdf", {
@@ -71,8 +71,8 @@ test_that("fzksm errors on non-normal string cdf and handles few obs", {
   expect_match(r$method, "too few")
 })
 
-test_that("fzksm alias fauzi_ks_smoothed is identical", {
-  expect_identical(fauzi_ks_smoothed, fzksm)
+test_that("fzksm alias morie_fauzi_ks_smoothed is identical", {
+  expect_identical(morie_fauzi_ks_smoothed, fzksm)
 })
 
 test_that("fzlst default score recovers the sample mean", {
@@ -101,8 +101,8 @@ test_that("fzlst handles too-few observations", {
   expect_match(r$method, "too few")
 })
 
-test_that("fzlst alias fauzi_l_statistic is identical", {
-  expect_identical(fauzi_l_statistic, fzlst)
+test_that("fzlst alias morie_fauzi_l_statistic is identical", {
+  expect_identical(morie_fauzi_l_statistic, fzlst)
 })
 
 test_that("fzmis returns a MISE decomposition with positive parts", {
@@ -135,8 +135,8 @@ test_that("fzmis handles too-few observations", {
   expect_match(r$method, "too few")
 })
 
-test_that("fzmis alias fauzi_mise_computation is identical", {
-  expect_identical(fauzi_mise_computation, fzmis)
+test_that("fzmis alias morie_fauzi_mise_computation is identical", {
+  expect_identical(morie_fauzi_mise_computation, fzmis)
 })
 
 test_that("fzmrb estimates boundary-free MRL on positive data", {
@@ -171,8 +171,8 @@ test_that("fzmrb handles few obs and the no-x-above-t branch", {
   expect_true(is.na(r2$estimate) || r2$estimate == 0)
 })
 
-test_that("fzmrb alias fauzi_mrl_boundary_free is identical", {
-  expect_identical(fauzi_mrl_boundary_free, fzmrb)
+test_that("fzmrb alias morie_fauzi_mrl_boundary_free is identical", {
+  expect_identical(morie_fauzi_mrl_boundary_free, fzmrb)
 })
 
 test_that("fzmrl estimates kernel MRL with asymptotic se", {
@@ -202,8 +202,8 @@ test_that("fzmrl handles few obs and no-x-above-t branch", {
   expect_true(is.na(r2$estimate) || r2$estimate == 0)
 })
 
-test_that("fzmrl alias fauzi_mrl_asymptotic is identical", {
-  expect_identical(fauzi_mrl_asymptotic, fzmrl)
+test_that("fzmrl alias morie_fauzi_mrl_asymptotic is identical", {
+  expect_identical(morie_fauzi_mrl_asymptotic, fzmrl)
 })
 
 test_that("fzqnt estimates the kernel median", {
@@ -237,8 +237,8 @@ test_that("fzqnt errors on out-of-range p and handles few obs", {
   expect_match(r$method, "too few")
 })
 
-test_that("fzqnt alias fauzi_kernel_quantile_asymptotic is identical", {
-  expect_identical(fauzi_kernel_quantile_asymptotic, fzqnt)
+test_that("fzqnt alias morie_fauzi_kernel_quantile_asymptotic is identical", {
+  expect_identical(morie_fauzi_kernel_quantile_asymptotic, fzqnt)
 })
 
 test_that("fzsgn runs the smoothed sign test two-sided", {
@@ -273,8 +273,8 @@ test_that("fzsgn handles too-few observations", {
   expect_match(r$method, "too few")
 })
 
-test_that("fzsgn alias fauzi_smoothed_sign is identical", {
-  expect_identical(fauzi_smoothed_sign, fzsgn)
+test_that("fzsgn alias morie_fauzi_smoothed_sign is identical", {
+  expect_identical(morie_fauzi_smoothed_sign, fzsgn)
 })
 
 test_that("fzsrv estimates the kernel survival with a 95% CI", {
@@ -307,8 +307,8 @@ test_that("fzsrv handles too-few observations", {
   expect_match(r$method, "too few")
 })
 
-test_that("fzsrv alias fauzi_survival_kernel is identical", {
-  expect_identical(fauzi_survival_kernel, fzsrv)
+test_that("fzsrv alias morie_fauzi_survival_kernel is identical", {
+  expect_identical(morie_fauzi_survival_kernel, fzsrv)
 })
 
 test_that("fzwlc runs the smoothed Wilcoxon signed-rank test", {
@@ -343,15 +343,15 @@ test_that("fzwlc handles too-few observations", {
   expect_match(r$method, "too few")
 })
 
-test_that("fzwlc alias fauzi_smoothed_wilcoxon is identical", {
-  expect_identical(fauzi_smoothed_wilcoxon, fzwlc)
+test_that("fzwlc alias morie_fauzi_smoothed_wilcoxon is identical", {
+  expect_identical(morie_fauzi_smoothed_wilcoxon, fzwlc)
 })
 
-test_that("ganls_gan_loss computes minimax losses", {
+test_that("morie_ganls_gan_loss computes minimax losses", {
   set.seed(22)
   D_real <- runif(50, 0.5, 1)
   D_fake <- runif(50, 0, 0.5)
-  r <- ganls_gan_loss(D_real, D_fake, kind = "minimax")
+  r <- morie_ganls_gan_loss(D_real, D_fake, kind = "minimax")
   expect_type(r, "list")
   expect_named(r, c("d_loss", "g_loss", "v", "estimate", "kind", "method"))
   expect_true(is.finite(r$d_loss))
@@ -360,27 +360,27 @@ test_that("ganls_gan_loss computes minimax losses", {
   expect_equal(r$kind, "minimax")
 })
 
-test_that("ganls_gan_loss supports the non-saturating objective", {
+test_that("morie_ganls_gan_loss supports the non-saturating objective", {
   set.seed(23)
   D_real <- runif(40, 0.5, 1)
   D_fake <- runif(40, 0, 0.5)
-  r <- ganls_gan_loss(D_real, D_fake, kind = "nonsaturating")
+  r <- morie_ganls_gan_loss(D_real, D_fake, kind = "nonsaturating")
   expect_equal(r$kind, "nonsaturating")
   expect_true(is.finite(r$g_loss))
 })
 
-test_that("ganls_gan_loss errors on an unknown kind", {
-  expect_error(ganls_gan_loss(c(0.6, 0.7), c(0.2, 0.3), kind = "bad"))
+test_that("morie_ganls_gan_loss errors on an unknown kind", {
+  expect_error(morie_ganls_gan_loss(c(0.6, 0.7), c(0.2, 0.3), kind = "bad"))
 })
 
-test_that("gan_loss alias is identical to ganls_gan_loss", {
-  expect_identical(gan_loss, ganls_gan_loss)
+test_that("morie_gan_loss alias is identical to morie_ganls_gan_loss", {
+  expect_identical(morie_gan_loss, morie_ganls_gan_loss)
 })
 
-test_that("garch_fit fits a GARCH(1,1) return series", {
+test_that("morie_garch_fit fits a GARCH(1,1) return series", {
   set.seed(24)
   x <- rnorm(300, sd = 0.02)
-  r <- garch_fit(x)
+  r <- morie_garch_fit(x)
   expect_type(r, "list")
   expect_true(all(c(
     "omega", "alpha", "beta", "persistence", "loglik",
@@ -395,16 +395,16 @@ test_that("garch_fit fits a GARCH(1,1) return series", {
   expect_true(all(r$conditional_variance > 0))
 })
 
-test_that("garch_fit errors on too-short series", {
-  expect_error(garch_fit(rnorm(5)), ">=10")
+test_that("morie_garch_fit errors on too-short series", {
+  expect_error(morie_garch_fit(rnorm(5)), ">=10")
 })
 
-test_that("gradient_boosting_ensemble fits a regression task", {
+test_that("morie_gradient_boosting_ensemble fits a regression task", {
   skip_if_not_installed("gbm")
   set.seed(25)
   x <- matrix(rnorm(200), ncol = 4)
   y <- x[, 1] + 0.3 * rnorm(50)
-  r <- gradient_boosting_ensemble(x, y,
+  r <- morie_gradient_boosting_ensemble(x, y,
     n_estimators = 20L, task = "regression",
     seed = 25L
   )
@@ -419,22 +419,22 @@ test_that("gradient_boosting_ensemble fits a regression task", {
   expect_equal(r$n, 50L)
 })
 
-test_that("gradient_boosting_ensemble fits a classification task", {
+test_that("morie_gradient_boosting_ensemble fits a classification task", {
   skip_if_not_installed("gbm")
   set.seed(26)
   x <- matrix(rnorm(200), ncol = 4)
   y <- as.integer(x[, 1] + rnorm(50) > 0)
-  r <- gradient_boosting_ensemble(x, y, n_estimators = 20L, seed = 26L)
+  r <- morie_gradient_boosting_ensemble(x, y, n_estimators = 20L, seed = 26L)
   expect_equal(r$task, "classification")
   expect_gte(r$train_score, 0)
   expect_lte(r$train_score, 1)
 })
 
-test_that("gradient_boosting_genomic predicts from a marker matrix", {
+test_that("morie_gradient_boosting_genomic predicts from a marker matrix", {
   set.seed(14)
   M <- matrix(rnorm(160), 40, 4)
   y <- sign(M[, 1]) + 0.3 * rnorm(40)
-  r <- gradient_boosting_genomic(rep(0, 40), y, M,
+  r <- morie_gradient_boosting_genomic(rep(0, 40), y, M,
     n_estimators = 20,
     seed = 14
   )
@@ -446,20 +446,20 @@ test_that("gradient_boosting_genomic predicts from a marker matrix", {
   expect_equal(r$n, 40L)
 })
 
-test_that("gradient_boosting_genomic works with NULL fixed features", {
+test_that("morie_gradient_boosting_genomic works with NULL fixed features", {
   set.seed(27)
   M <- matrix(rnorm(120), 30, 4)
   y <- M[, 2] + 0.2 * rnorm(30)
-  r <- gradient_boosting_genomic(NULL, y, M, n_estimators = 15, seed = 27)
+  r <- morie_gradient_boosting_genomic(NULL, y, M, n_estimators = 15, seed = 27)
   expect_length(r$y_hat, 30L)
   expect_true(is.finite(r$estimate))
 })
 
-test_that("gblup_full solves the mixed model with default lambda", {
+test_that("morie_gblup_full solves the mixed model with default lambda", {
   set.seed(28)
   M <- matrix(sample(0:2, 200, TRUE), 40, 5)
   y <- M %*% rnorm(5) + rnorm(40)
-  r <- gblup_full(rep(0, 40), as.numeric(y), M)
+  r <- morie_gblup_full(rep(0, 40), as.numeric(y), M)
   expect_type(r, "list")
   expect_true(all(c(
     "estimate", "g_hat", "beta", "se", "y_hat",
@@ -472,11 +472,11 @@ test_that("gblup_full solves the mixed model with default lambda", {
   expect_equal(r$n, 40L)
 })
 
-test_that("gblup_full accepts an explicit lambda and NULL fixed effects", {
+test_that("morie_gblup_full accepts an explicit lambda and NULL fixed effects", {
   set.seed(29)
   M <- matrix(sample(0:2, 150, TRUE), 30, 5)
   y <- as.numeric(M %*% rnorm(5) + rnorm(30))
-  r <- gblup_full(NULL, y, M, lambda_gblup = 2)
+  r <- morie_gblup_full(NULL, y, M, lambda_gblup = 2)
   expect_equal(r$lambda_gblup, 2)
   expect_true(is.finite(r$estimate))
   expect_length(r$g_hat, 30L)

@@ -2,12 +2,12 @@
 % Please edit documentation in R/mnpbt.R
 \name{mnpbt}
 \alias{mnpbt}
-\alias{multinomial_probit_spatial}
+\alias{morie_multinomial_probit_spatial}
 \title{Multinomial probit (spatial choice; Armstrong Ch 9)}
 \usage{
 mnpbt(x, n_draws = 2000L, seed = 0L)
 
-multinomial_probit_spatial(x, n_draws = 2000L, seed = 0L)
+morie_multinomial_probit_spatial(x, n_draws = 2000L, seed = 0L)
 }
 \arguments{
 \item{x}{Utility matrix (n_obs by n_alt).}

@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgwav.R
 \name{rgwav}
 \alias{rgwav}
-\alias{rangayyan_wavelet_denoise}
+\alias{morie_rangayyan_wavelet_denoise}
 \title{Wavelet denoising (universal threshold) -- Rangayyan Ch 10}
 \usage{
 rgwav(x, wavelet = "d8", level = NULL, mode = c("soft", "hard"))
 
-rangayyan_wavelet_denoise(
+morie_rangayyan_wavelet_denoise(
   x,
   wavelet = "d8",
   level = NULL,

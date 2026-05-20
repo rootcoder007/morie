@@ -72,7 +72,8 @@ file in the source distribution):
 \emph{Solitary Confinement, Torture, and Canada's Structured
 Intervention Units.}  Centre for Criminology and Sociolegal
 Studies, University of Toronto.
-\url{https://www.crimsl.utoronto.ca/sites/www.crimsl.utoronto.ca/files/TortureSolitarySIUsSprottDoob23Feb2021_0.pdf}
+\url{https://www.crimsl.utoronto.ca/sites/www.crimsl.utoronto.ca/files/}
+TortureSolitarySIUsSprottDoob23Feb2021_0.pdf
 \item Doob, A. N. and Sprott, J. B. (2020).
 \emph{Understanding the Operation of Correctional Service
 Canada's Structured Intervention Units: Some Preliminary

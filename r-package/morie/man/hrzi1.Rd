@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzi1.R
 \name{hrzi1}
 \alias{hrzi1}
-\alias{horowitz_index_model}
+\alias{morie_horowitz_index_model}
 \title{Ichimura (1993) single-index model}
 \usage{
 hrzi1(x, y, bandwidth = NULL)
 
-horowitz_index_model(x, y, bandwidth = NULL)
+morie_horowitz_index_model(x, y, bandwidth = NULL)
 }
 \arguments{
 \item{x}{Numeric covariate vector or design matrix.}

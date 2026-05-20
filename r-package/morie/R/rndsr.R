@@ -21,11 +21,12 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-random_search_cv <- function(x, y, method = NULL, n_iter = 20L, cv = 5L,
+morie_random_search_cv <- function(x, y, method = NULL, n_iter = 20L, cv = 5L,
                              task = "auto", seed = 0L,
                              deterministic_seed = NULL) {
+  x <- .morie_ensure_design_matrix(x)
   if (!requireNamespace("caret", quietly = TRUE)) {
-    stop("Function 'random_search_cv' requires package 'caret'. Install with install.packages('caret').")
+    stop("Function 'morie_random_search_cv' requires package 'caret'. Install with install.packages('caret').")
   }
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)

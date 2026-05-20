@@ -38,4 +38,4 @@ rgadp <- function(x, reference, mu = 0.01, order = 16L) {
 #' @rdname rgadp
 #' @keywords internal
 #' @export
-rangayyan_adaptive_filter <- rgadp
+morie_rangayyan_adaptive_filter <- rgadp

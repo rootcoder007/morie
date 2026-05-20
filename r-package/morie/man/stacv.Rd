@@ -2,7 +2,7 @@
 % Please edit documentation in R/stacv.R
 \name{stacv}
 \alias{stacv}
-\alias{spatiotemporal_autocovariance}
+\alias{morie_spatiotemporal_autocovariance}
 \title{Empirical spatiotemporal autocovariance.}
 \usage{
 stacv(
@@ -15,7 +15,7 @@ stacv(
   max_temporal = NULL
 )
 
-spatiotemporal_autocovariance(
+morie_spatiotemporal_autocovariance(
   x,
   coords,
   times,

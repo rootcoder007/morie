@@ -12,9 +12,9 @@
 #' @return Named list: estimate, se, n, method.
 #' @references Kosorok (2008), Ch 2.
 #' @examples
-#' ksr01_kosorok_empirical_process(x = rnorm(50))
+#' morie_ksr01_kosorok_empirical_process(x = rnorm(50))
 #' @export
-ksr01_kosorok_empirical_process <- function(x, f = NULL, mu0 = 0) {
+morie_ksr01_kosorok_empirical_process <- function(x, f = NULL, mu0 = 0) {
   x <- as.numeric(x)
   n <- length(x)
   fx <- if (is.null(f)) x else vapply(x, f, numeric(1))
@@ -30,9 +30,9 @@ ksr01_kosorok_empirical_process <- function(x, f = NULL, mu0 = 0) {
 }
 
 # CANONICAL TEST
-# set.seed(0); xs <- rnorm(200); r <- ksr01_kosorok_empirical_process(xs); r
+# set.seed(0); xs <- rnorm(200); r <- morie_ksr01_kosorok_empirical_process(xs); r
 
-#' @rdname ksr01_kosorok_empirical_process
+#' @rdname morie_ksr01_kosorok_empirical_process
 #' @keywords internal
 #' @export
-kosorok_empirical_process <- ksr01_kosorok_empirical_process
+morie_kosorok_empirical_process <- morie_ksr01_kosorok_empirical_process

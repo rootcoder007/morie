@@ -12,11 +12,15 @@ test_that(".siu_parse_report flags a French-language report", {
   expect_equal(r[["_language"]], "fr")
 })
 
-test_that(".siu_parse_report marks an unidentifiable page 'unknown'", {
+test_that(".siu_parse_report defaults unrecognised pages to 'en'", {
+  # The parser fetches via /en/... URLs, so any page lacking an
+  # explicit French marker is treated as English. This replaced
+  # the prior 'unknown' tag (which left 313/4743 real English
+  # reports unclassified in v0.9.4); see v0.9.5 NEWS.
   r <- morie:::.siu_parse_report(
     "<html><body><p>nothing here</p></body></html>", 2L, "u"
   )
-  expect_equal(r[["_language"]], "unknown")
+  expect_equal(r[["_language"]], "en")
   expect_equal(r[["case_number"]], "")
 })
 

@@ -16,8 +16,6 @@ Named list: \code{H}, \code{df}, \code{p_value}.
 Kruskal-Wallis non-parametric ANOVA
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }

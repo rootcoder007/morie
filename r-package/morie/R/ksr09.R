@@ -10,9 +10,9 @@
 #' @return Named list with estimate, se, n, method.
 #' @references Kosorok (2008), Ch 5.
 #' @examples
-#' ksr09_kosorok_z_estimator(x = rnorm(50))
+#' morie_ksr09_kosorok_z_estimator(x = rnorm(50))
 #' @export
-ksr09_kosorok_z_estimator <- function(x, y = NULL) {
+morie_ksr09_kosorok_z_estimator <- function(x, y = NULL) {
   x <- as.numeric(x)
   if (is.null(y)) {
     n <- length(x)
@@ -42,9 +42,9 @@ ksr09_kosorok_z_estimator <- function(x, y = NULL) {
 
 # CANONICAL TEST
 # set.seed(0); xs <- rnorm(200); ys <- 1.5*xs + rnorm(200)
-# ksr09_kosorok_z_estimator(xs, ys)
+# morie_ksr09_kosorok_z_estimator(xs, ys)
 
-#' @rdname ksr09_kosorok_z_estimator
+#' @rdname morie_ksr09_kosorok_z_estimator
 #' @keywords internal
 #' @export
-kosorok_z_estimator <- ksr09_kosorok_z_estimator
+morie_kosorok_z_estimator <- morie_ksr09_kosorok_z_estimator

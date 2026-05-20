@@ -16,8 +16,8 @@
 #' @return Non-negative numeric scalar: estimated BAC.
 #' @export
 #' @examples
-#' calculate_ebac(drinks = 4, weight_lbs = 180, hours = 2, gender_constant = 0.73)
-calculate_ebac <- function(drinks, weight_lbs, hours, gender_constant) {
+#' morie_calculate_ebac(drinks = 4, weight_lbs = 180, hours = 2, gender_constant = 0.73)
+morie_calculate_ebac <- function(drinks, weight_lbs, hours, gender_constant) {
   if (weight_lbs <= 0) {
     return(0.0)
   }
@@ -27,7 +27,7 @@ calculate_ebac <- function(drinks, weight_lbs, hours, gender_constant) {
 
 #' Test whether an eBAC exceeds a legal driving limit
 #'
-#' @param ebac Numeric eBAC value (e.g. from [calculate_ebac()]).
+#' @param ebac Numeric eBAC value (e.g. from [morie_calculate_ebac()]).
 #' @param limit Legal threshold (default 0.08, the per-se limit in most
 #'   Canadian and US jurisdictions).
 #'
@@ -35,8 +35,8 @@ calculate_ebac <- function(drinks, weight_lbs, hours, gender_constant) {
 #'   logical, to match the Python sibling and ease binary-outcome modelling.)
 #' @export
 #' @examples
-#' is_over_legal_limit(0.09)
-#' is_over_legal_limit(0.05, limit = 0.05)
-is_over_legal_limit <- function(ebac, limit = 0.08) {
+#' morie_is_over_legal_limit(0.09)
+#' morie_is_over_legal_limit(0.05, limit = 0.05)
+morie_is_over_legal_limit <- function(ebac, limit = 0.08) {
   if (ebac >= limit) 1L else 0L
 }

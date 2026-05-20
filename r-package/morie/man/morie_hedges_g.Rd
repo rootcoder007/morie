@@ -18,8 +18,6 @@ Numeric Hedges' g.
 Hedges' g (bias-corrected Cohen's d)
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }

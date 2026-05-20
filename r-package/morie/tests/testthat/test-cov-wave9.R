@@ -65,10 +65,10 @@ test_that("bandpass / notch use the signal package when available", {
   expect_equal(dim(morie:::.entheo_notch(m, 250, 60)), dim(m))
 })
 
-test_that("dcc_multivariate_garch runs on a small bivariate series", {
+test_that("morie_dcc_multivariate_garch runs on a small bivariate series", {
   set.seed(4)
   x <- matrix(stats::rnorm(400), 200, 2)
-  res <- tryCatch(suppressWarnings(dcc_multivariate_garch(x)),
+  res <- tryCatch(suppressWarnings(morie_dcc_multivariate_garch(x)),
     error = function(e) e
   )
   expect_true(is.list(res) || inherits(res, "error"))

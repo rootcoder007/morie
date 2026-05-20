@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Batch 11 tests: irm, irtsp, isotn, jkest, johsn, kalmn, kmnsc, ksr01-08
 
-test_that("estimate_irm errors without Suggests packages or returns valid list", {
+test_that("morie_estimate_irm errors without Suggests packages or returns valid list", {
   set.seed(1)
   n <- 60
   X <- matrix(rnorm(n * 3), n, 3)
@@ -16,15 +16,15 @@ test_that("estimate_irm errors without Suggests packages or returns valid list",
 
   if (!have_all) {
     expect_error(
-      estimate_irm(df,
+      morie_estimate_irm(df,
         treatment = "T", outcome = "Y",
         covariates = c("X1", "X2", "X3")
       ),
-      "required for estimate_irm"
+      "required for morie_estimate_irm"
     )
   } else {
     skip_if_not_installed("data.table")
-    res <- estimate_irm(df,
+    res <- morie_estimate_irm(df,
       treatment = "T", outcome = "Y",
       covariates = c("X1", "X2", "X3"),
       n_folds = 2L, random_state = 7L
@@ -62,7 +62,7 @@ test_that("irtsp fits a 2PL spatial model and returns expected structure", {
 
 test_that("irtsp handles too-short input gracefully", {
   res <- irtsp(matrix(1, nrow = 1L, ncol = 3L))
-  expect_identical(res$method, "irt_spatial")
+  expect_identical(res$method, "morie_irt_spatial")
   expect_equal(res$n_iter, 0L)
   expect_true(all(is.na(res$x_hat)))
 })
@@ -79,8 +79,8 @@ test_that("irtsp accepts a plain vector and tolerates NA entries", {
   expect_length(res_na$x_hat, 8L)
 })
 
-test_that("irt_spatial alias is identical to irtsp", {
-  expect_identical(irt_spatial, irtsp)
+test_that("morie_irt_spatial alias is identical to irtsp", {
+  expect_identical(morie_irt_spatial, irtsp)
 })
 
 test_that("isotn produces a monotone increasing fit", {
@@ -145,11 +145,11 @@ test_that("jkest returns NA for too-short input", {
   expect_equal(res$n, 1L)
 })
 
-test_that("jackknife_estimator alias is identical to jkest", {
-  expect_identical(morie:::jackknife_estimator, morie:::jkest)
+test_that("morie_jackknife_estimator alias is identical to jkest", {
+  expect_identical(morie:::morie_jackknife_estimator, morie:::jkest)
 })
 
-test_that("johansen_cointegration runs on a small I(1) system", {
+test_that("morie_johansen_cointegration runs on a small I(1) system", {
   set.seed(31)
   Tt <- 60L
   e1 <- cumsum(rnorm(Tt))
@@ -157,7 +157,7 @@ test_that("johansen_cointegration runs on a small I(1) system", {
   e3 <- cumsum(rnorm(Tt))
   Y <- cbind(e1, e2, e3)
 
-  res <- johansen_cointegration(Y, k_ar_diff = 1)
+  res <- morie_johansen_cointegration(Y, k_ar_diff = 1)
   expect_type(res, "list")
   expect_named(res, c(
     "eigenvalues", "trace_stat", "crit_values",
@@ -169,23 +169,23 @@ test_that("johansen_cointegration runs on a small I(1) system", {
   expect_true(all(is.finite(res$trace_stat)))
 })
 
-test_that("johansen_cointegration errors on too-few rows or columns", {
+test_that("morie_johansen_cointegration errors on too-few rows or columns", {
   expect_error(
-    johansen_cointegration(matrix(rnorm(20), 10, 2)),
+    morie_johansen_cointegration(matrix(rnorm(20), 10, 2)),
     "T>=20"
   )
   set.seed(32)
   oneCol <- matrix(cumsum(rnorm(40)), ncol = 1L)
-  expect_error(johansen_cointegration(oneCol), "k>=2")
+  expect_error(morie_johansen_cointegration(oneCol), "k>=2")
 })
 
-test_that("johansen_cointegration transposes a wide matrix", {
+test_that("morie_johansen_cointegration transposes a wide matrix", {
   set.seed(33)
   wide <- t(cbind(
     cumsum(rnorm(40)), cumsum(rnorm(40)),
     cumsum(rnorm(40))
   ))
-  res <- johansen_cointegration(wide)
+  res <- morie_johansen_cointegration(wide)
   expect_equal(res$n, 40L)
   expect_equal(res$k, 3L)
 })
@@ -222,13 +222,13 @@ test_that("morie_kalman_filter errors with fewer than two observations", {
   expect_error(morie_kalman_filter(c(1)), ">=2 obs")
 })
 
-test_that("kmeans_clustering clusters a small numeric matrix", {
+test_that("morie_kmeans_clustering clusters a small numeric matrix", {
   set.seed(51)
   X <- rbind(
     matrix(rnorm(40, 0), 20, 2),
     matrix(rnorm(40, 6), 20, 2)
   )
-  res <- kmeans_clustering(X,
+  res <- morie_kmeans_clustering(X,
     n_clusters = 2L, n_init = 3L,
     max_iter = 50L, seed = 1L
   )
@@ -245,18 +245,18 @@ test_that("kmeans_clustering clusters a small numeric matrix", {
   expect_identical(res$method, "K-means (Hartigan-Wong)")
 })
 
-test_that("kmeans_clustering coerces a plain vector to a column matrix", {
+test_that("morie_kmeans_clustering coerces a plain vector to a column matrix", {
   set.seed(52)
   v <- c(rnorm(15, 0), rnorm(15, 10))
-  res <- kmeans_clustering(v, n_clusters = 2L, n_init = 2L, seed = 2L)
+  res <- morie_kmeans_clustering(v, n_clusters = 2L, n_init = 2L, seed = 2L)
   expect_equal(res$n, 30L)
   expect_length(res$labels, 30L)
 })
 
-test_that("ksr01_kosorok_empirical_process returns the standardised statistic", {
+test_that("morie_ksr01_kosorok_empirical_process returns the standardised statistic", {
   set.seed(61)
   xs <- rnorm(120)
-  res <- ksr01_kosorok_empirical_process(xs)
+  res <- morie_ksr01_kosorok_empirical_process(xs)
   expect_type(res, "list")
   expect_named(res, c("estimate", "se", "n", "method"))
   expect_equal(res$n, 120L)
@@ -264,37 +264,37 @@ test_that("ksr01_kosorok_empirical_process returns the standardised statistic", 
   expect_true(is.finite(res$se) && res$se >= 0)
 })
 
-test_that("ksr01_kosorok_empirical_process supports f and mu0 arguments", {
+test_that("morie_ksr01_kosorok_empirical_process supports f and mu0 arguments", {
   set.seed(62)
   xs <- rnorm(50)
-  res <- ksr01_kosorok_empirical_process(xs, f = function(z) z^2, mu0 = 1)
+  res <- morie_ksr01_kosorok_empirical_process(xs, f = function(z) z^2, mu0 = 1)
   expect_true(is.finite(res$estimate))
 
-  res1 <- ksr01_kosorok_empirical_process(c(3))
+  res1 <- morie_ksr01_kosorok_empirical_process(c(3))
   expect_equal(res1$n, 1L)
   expect_true(is.na(res1$se))
 })
 
-test_that("kosorok_empirical_process alias matches", {
+test_that("morie_kosorok_empirical_process alias matches", {
   expect_identical(
-    kosorok_empirical_process,
-    ksr01_kosorok_empirical_process
+    morie_kosorok_empirical_process,
+    morie_ksr01_kosorok_empirical_process
   )
 })
 
-test_that("ksr02_kosorok_donsker_class returns a finite bracketing integral", {
-  res <- ksr02_kosorok_donsker_class(1:10)
+test_that("morie_ksr02_kosorok_donsker_class returns a finite bracketing integral", {
+  res <- morie_ksr02_kosorok_donsker_class(1:10)
   expect_type(res, "list")
   expect_named(res, c("estimate", "n", "method"))
   expect_equal(res$n, 10L)
   expect_true(is.finite(res$estimate) && res$estimate > 0)
-  expect_identical(kosorok_donsker_class, ksr02_kosorok_donsker_class)
+  expect_identical(morie_kosorok_donsker_class, morie_ksr02_kosorok_donsker_class)
 })
 
-test_that("ksr03_kosorok_glivenko_cantelli returns a KS statistic", {
+test_that("morie_ksr03_kosorok_glivenko_cantelli returns a KS statistic", {
   set.seed(63)
   xs <- rnorm(150)
-  res <- ksr03_kosorok_glivenko_cantelli(xs)
+  res <- morie_ksr03_kosorok_glivenko_cantelli(xs)
   expect_type(res, "list")
   expect_named(res, c("statistic", "p_value", "n", "method"))
   expect_equal(res$n, 150L)
@@ -302,66 +302,66 @@ test_that("ksr03_kosorok_glivenko_cantelli returns a KS statistic", {
   expect_true(res$p_value >= 0 && res$p_value <= 1)
 })
 
-test_that("ksr03_kosorok_glivenko_cantelli accepts an alternate cdf", {
+test_that("morie_ksr03_kosorok_glivenko_cantelli accepts an alternate cdf", {
   set.seed(64)
   xs <- runif(100)
-  res <- ksr03_kosorok_glivenko_cantelli(xs, cdf = "punif")
+  res <- morie_ksr03_kosorok_glivenko_cantelli(xs, cdf = "punif")
   expect_true(is.finite(res$statistic))
   expect_identical(
-    kosorok_glivenko_cantelli,
-    ksr03_kosorok_glivenko_cantelli
+    morie_kosorok_glivenko_cantelli,
+    morie_ksr03_kosorok_glivenko_cantelli
   )
 })
 
-test_that("ksr04_kosorok_vc_dimension returns d+1 for matrices and vectors", {
-  res_m <- ksr04_kosorok_vc_dimension(matrix(0, 100, 3))
+test_that("morie_ksr04_kosorok_vc_dimension returns d+1 for matrices and vectors", {
+  res_m <- morie_ksr04_kosorok_vc_dimension(matrix(0, 100, 3))
   expect_type(res_m, "list")
   expect_named(res_m, c("estimate", "n", "method"))
   expect_equal(res_m$estimate, 4L)
   expect_equal(res_m$n, 100L)
 
-  res_v <- ksr04_kosorok_vc_dimension(rnorm(20))
+  res_v <- morie_ksr04_kosorok_vc_dimension(rnorm(20))
   expect_equal(res_v$estimate, 2L)
   expect_equal(res_v$n, 20L)
-  expect_identical(kosorok_vc_dimension, ksr04_kosorok_vc_dimension)
+  expect_identical(morie_kosorok_vc_dimension, morie_ksr04_kosorok_vc_dimension)
 })
 
-test_that("ksr05_kosorok_bracketing_number returns ceil(1/e^2)", {
-  res <- ksr05_kosorok_bracketing_number(1:50, e = 0.1)
+test_that("morie_ksr05_kosorok_bracketing_number returns ceil(1/e^2)", {
+  res <- morie_ksr05_kosorok_bracketing_number(1:50, e = 0.1)
   expect_type(res, "list")
   expect_named(res, c("estimate", "n", "method"))
   expect_equal(res$estimate, 100L)
   expect_equal(res$n, 50L)
 
-  res2 <- ksr05_kosorok_bracketing_number(1:5)
+  res2 <- morie_ksr05_kosorok_bracketing_number(1:5)
   expect_equal(res2$estimate, 100L)
   expect_identical(
-    kosorok_bracketing_number,
-    ksr05_kosorok_bracketing_number
+    morie_kosorok_bracketing_number,
+    morie_ksr05_kosorok_bracketing_number
   )
 })
 
-test_that("ksr06_kosorok_maximal_inequality returns a finite RHS bound", {
+test_that("morie_ksr06_kosorok_maximal_inequality returns a finite RHS bound", {
   set.seed(65)
   xs <- rnorm(120)
-  res <- ksr06_kosorok_maximal_inequality(xs)
+  res <- morie_ksr06_kosorok_maximal_inequality(xs)
   expect_type(res, "list")
   expect_named(res, c("estimate", "n", "method"))
   expect_equal(res$n, 120L)
   expect_true(is.finite(res$estimate) && res$estimate >= 0)
 
-  res1 <- ksr06_kosorok_maximal_inequality(c(2))
+  res1 <- morie_ksr06_kosorok_maximal_inequality(c(2))
   expect_true(is.na(res1$estimate))
   expect_identical(
-    kosorok_maximal_inequality,
-    ksr06_kosorok_maximal_inequality
+    morie_kosorok_maximal_inequality,
+    morie_ksr06_kosorok_maximal_inequality
   )
 })
 
-test_that("ksr07_kosorok_bootstrap_empirical returns mean/SD of G_n", {
+test_that("morie_ksr07_kosorok_bootstrap_empirical returns mean/SD of G_n", {
   set.seed(66)
   xs <- rnorm(120)
-  res <- ksr07_kosorok_bootstrap_empirical(xs, B = 80, seed = 42)
+  res <- morie_ksr07_kosorok_bootstrap_empirical(xs, B = 80, seed = 42)
   expect_type(res, "list")
   expect_named(res, c("estimate", "se", "n", "method"))
   expect_equal(res$n, 120L)
@@ -369,9 +369,9 @@ test_that("ksr07_kosorok_bootstrap_empirical returns mean/SD of G_n", {
   expect_true(is.finite(res$se) && res$se >= 0)
 })
 
-test_that("ksr07_kosorok_bootstrap_empirical supports deterministic_seed", {
+test_that("morie_ksr07_kosorok_bootstrap_empirical supports deterministic_seed", {
   if (FALSE) {
-    res <- ksr07_kosorok_bootstrap_empirical(rnorm(50),
+    res <- morie_ksr07_kosorok_bootstrap_empirical(rnorm(50),
       B = 50,
       deterministic_seed = 1L
     )
@@ -379,15 +379,15 @@ test_that("ksr07_kosorok_bootstrap_empirical supports deterministic_seed", {
   }
   expect_true(TRUE)
   expect_identical(
-    kosorok_bootstrap_empirical,
-    ksr07_kosorok_bootstrap_empirical
+    morie_kosorok_bootstrap_empirical,
+    morie_ksr07_kosorok_bootstrap_empirical
   )
 })
 
-test_that("ksr08_kosorok_multiplier_bootstrap returns mean/SD of G_n", {
+test_that("morie_ksr08_kosorok_multiplier_bootstrap returns mean/SD of G_n", {
   set.seed(67)
   xs <- rnorm(120)
-  res <- ksr08_kosorok_multiplier_bootstrap(xs, B = 80, seed = 42)
+  res <- morie_ksr08_kosorok_multiplier_bootstrap(xs, B = 80, seed = 42)
   expect_type(res, "list")
   expect_named(res, c("estimate", "se", "n", "method"))
   expect_equal(res$n, 120L)
@@ -395,9 +395,9 @@ test_that("ksr08_kosorok_multiplier_bootstrap returns mean/SD of G_n", {
   expect_true(is.finite(res$se) && res$se >= 0)
 })
 
-test_that("ksr08_kosorok_multiplier_bootstrap supports deterministic_seed", {
+test_that("morie_ksr08_kosorok_multiplier_bootstrap supports deterministic_seed", {
   if (FALSE) {
-    res <- ksr08_kosorok_multiplier_bootstrap(rnorm(50),
+    res <- morie_ksr08_kosorok_multiplier_bootstrap(rnorm(50),
       B = 50,
       deterministic_seed = 1L
     )
@@ -405,7 +405,7 @@ test_that("ksr08_kosorok_multiplier_bootstrap supports deterministic_seed", {
   }
   expect_true(TRUE)
   expect_identical(
-    kosorok_multiplier_bootstrap,
-    ksr08_kosorok_multiplier_bootstrap
+    morie_kosorok_multiplier_bootstrap,
+    morie_ksr08_kosorok_multiplier_bootstrap
   )
 })

@@ -22,8 +22,8 @@ NULL
 #' @export
 #' @examples
 #' df <- data.frame(x = 1:100)
-#' srs_sample <- simple_random_sample(df, 20)
-simple_random_sample <- function(df, n, replace = FALSE, seed = 42L) {
+#' srs_sample <- morie_simple_random_sample(df, 20)
+morie_simple_random_sample <- function(df, n, replace = FALSE, seed = 42L) {
   set.seed(seed)
   N <- nrow(df)
   if (n > N && !replace) stop("n exceeds population size for SRS WOR.")
@@ -54,7 +54,7 @@ simple_random_sample <- function(df, n, replace = FALSE, seed = 42L) {
 #' df <- data.frame(g = c(rep("A", 60), rep("B", 40)), x = rnorm(100))
 #' morie_stratified_sample(df, "g", n_per_stratum = 10)
 morie_stratified_sample <- function(df, strata_col, n_per_stratum,
-                              proportional = FALSE, seed = 42L) {
+                                    proportional = FALSE, seed = 42L) {
   set.seed(seed)
   strata <- split(seq_len(nrow(df)), df[[strata_col]])
   strata_sizes <- lengths(strata)
@@ -193,7 +193,7 @@ morie_bootstrap_sample <- function(df, statistic, n_bootstrap = 1000L, seed = 42
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-jackknife_estimate <- function(df, statistic) {
+morie_jackknife_estimate <- function(df, statistic) {
   n <- nrow(df)
   theta_full <- statistic(df)
   theta_minus_i <- vapply(seq_len(n), function(i) {
@@ -253,7 +253,7 @@ morie_design_effect <- function(weights) {
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-compute_design_weights <- function(df, strata_col, population_sizes) {
+morie_compute_design_weights <- function(df, strata_col, population_sizes) {
   strata <- df[[strata_col]]
   sample_sizes <- table(strata)
   pop_sizes <- population_sizes[names(sample_sizes)]
@@ -286,12 +286,12 @@ compute_design_weights <- function(df, strata_col, population_sizes) {
 #'   sex = sample(c("M", "F"), 100, TRUE)
 #' )
 #' totals <- list(region_A = 60, region_B = 40, sex_M = 55, sex_F = 45)
-#' calibration_weights(df,
+#' morie_calibration_weights(df,
 #'   aux_vars = c("region", "sex"),
 #'   population_totals = totals
 #' )
 #' @export
-calibration_weights <- function(df, aux_vars, population_totals,
+morie_calibration_weights <- function(df, aux_vars, population_totals,
                                 initial_weights = NULL,
                                 max_iter = 50L, tol = 1e-6) {
   n <- nrow(df)

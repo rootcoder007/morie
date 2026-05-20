@@ -24,6 +24,8 @@ Number of rows written (invisible).
 Writes (or replaces) a table in the shared SQLite cache.
 }
 \examples{
-morie_cache_store(data = data.frame(x = rnorm(50), y = rnorm(50)),
-  table_name = "demo")
+morie_cache_store(
+  data = data.frame(x = rnorm(50), y = rnorm(50)),
+  table_name = "demo"
+)
 }

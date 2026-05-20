@@ -15,12 +15,12 @@
 #'   root_impurity, n_leaves, feature_importances, criterion, n, method.
 #' @importFrom stats predict
 #' @examples
-#' decision_tree_split(x = rnorm(50), y = rnorm(50))
+#' morie_decision_tree_split(x = rnorm(50), y = rnorm(50))
 #' @export
-decision_tree_split <- function(x, y, criterion = "gini", max_depth = 30L,
+morie_decision_tree_split <- function(x, y, criterion = "gini", max_depth = 30L,
                                 seed = 0L) {
   if (!requireNamespace("rpart", quietly = TRUE)) {
-    stop("Function 'decision_tree_split' requires package 'rpart'. Install with install.packages('rpart').")
+    stop("Function 'morie_decision_tree_split' requires package 'rpart'. Install with install.packages('rpart').")
   }
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)

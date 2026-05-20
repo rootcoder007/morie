@@ -54,4 +54,4 @@ sptrn <- function(x, coords, order = 2) {
 #' @rdname sptrn
 #' @keywords internal
 #' @export
-spatial_trend_surface <- sptrn
+morie_spatial_trend_surface <- sptrn

@@ -19,14 +19,15 @@
 #'   n_estimators, task, n, method.
 #' @importFrom stats predict
 #' @examples
-#' random_forest_ensemble(x = rnorm(50), y = rnorm(50))
+#' morie_random_forest_ensemble(x = rnorm(50), y = rnorm(50))
 #' @export
-random_forest_ensemble <- function(x, y, n_estimators = 100L,
+morie_random_forest_ensemble <- function(x, y, n_estimators = 100L,
                                    max_depth = NULL, task = "auto",
                                    seed = 0L,
                                    deterministic_seed = NULL) {
+  x <- .morie_ensure_design_matrix(x)
   if (!requireNamespace("randomForest", quietly = TRUE)) {
-    stop("Function 'random_forest_ensemble' requires package 'randomForest'. Install with install.packages('randomForest').")
+    stop("Function 'morie_random_forest_ensemble' requires package 'randomForest'. Install with install.packages('randomForest').")
   }
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)

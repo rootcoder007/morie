@@ -34,103 +34,103 @@
   r
 }
 
-test_that("garch_fit base-R Gaussian MLE fallback executes", {
+test_that("morie_garch_fit base-R Gaussian MLE fallback executes", {
   .mock_fail("rugarch")
   set.seed(1)
-  .cov_fb(garch_fit(rnorm(300, sd = 0.02)))
+  .cov_fb(morie_garch_fit(rnorm(300, sd = 0.02)))
 })
 
-test_that("tgarch_model base-R GJR-GARCH fallback executes", {
+test_that("morie_tgarch_model base-R GJR-GARCH fallback executes", {
   .mock_fail("rugarch")
   set.seed(2)
-  .cov_fb(tgarch_model(rnorm(200, sd = 0.02)))
+  .cov_fb(morie_tgarch_model(rnorm(200, sd = 0.02)))
 })
 
-test_that("egarch_model base-R EGARCH fallback executes", {
+test_that("morie_egarch_model base-R EGARCH fallback executes", {
   .mock_fail("rugarch")
   set.seed(3)
-  .cov_fb(egarch_model(rnorm(200, sd = 0.02)))
+  .cov_fb(morie_egarch_model(rnorm(200, sd = 0.02)))
 })
 
-test_that("johansen_cointegration base-R fallback executes", {
+test_that("morie_johansen_cointegration base-R fallback executes", {
   .mock_fail("urca")
   set.seed(4)
   trend <- cumsum(rnorm(120))
   Y <- cbind(trend + rnorm(120) * 0.5, 0.8 * trend + rnorm(120) * 0.5)
-  .cov_fb(johansen_cointegration(Y, k_ar_diff = 1))
+  .cov_fb(morie_johansen_cointegration(Y, k_ar_diff = 1))
 })
 
-test_that("eg_coint base-R ADF-style fallback executes", {
+test_that("morie_eg_coint base-R ADF-style fallback executes", {
   .mock_fail("urca")
   set.seed(5)
   trend <- cumsum(rnorm(120))
-  .cov_fb(eg_coint(trend + rnorm(120) * 0.3, trend + rnorm(120) * 0.3,
+  .cov_fb(morie_eg_coint(trend + rnorm(120) * 0.3, trend + rnorm(120) * 0.3,
     max_lag = 2
   ))
 })
 
-test_that("vecm base-R SVD-of-OLS-Pi fallback executes", {
+test_that("morie_vecm base-R SVD-of-OLS-Pi fallback executes", {
   .mock_fail("urca")
   set.seed(6)
   trend <- cumsum(rnorm(120))
   Y <- cbind(trend + rnorm(120) * 0.5, 0.7 * trend + rnorm(120) * 0.5)
-  .cov_fb(vecm(Y, k_ar = 1, coint_rank = 1))
+  .cov_fb(morie_vecm(Y, k_ar = 1, coint_rank = 1))
 })
 
-test_that("gradient_boosting_genomic base-R stumps fallback executes", {
+test_that("morie_gradient_boosting_genomic base-R stumps fallback executes", {
   .mock_fail("gbm")
   set.seed(14)
   M <- matrix(rnorm(120), 30, 4)
   y <- sign(M[, 1]) + 0.3 * rnorm(30)
-  .cov_fb(gradient_boosting_genomic(rep(0, 30), y, M,
+  .cov_fb(morie_gradient_boosting_genomic(rep(0, 30), y, M,
     n_estimators = 10, seed = 14
   ))
 })
 
-test_that("gradient_boosting_ensemble xgboost fallback executes", {
+test_that("morie_gradient_boosting_ensemble xgboost fallback executes", {
   .mock_fail("gbm")
   set.seed(7)
   x <- matrix(rnorm(60), 30, 2)
   y <- x[, 1] + 0.2 * rnorm(30)
-  .cov_fb(gradient_boosting_ensemble(x, y,
+  .cov_fb(morie_gradient_boosting_ensemble(x, y,
     n_estimators = 10L,
     task = "regression", seed = 7L
   ))
 })
 
-test_that("xgboost_objective gbm fallback executes", {
+test_that("morie_xgboost_objective gbm fallback executes", {
   .mock_fail("xgboost")
   set.seed(8)
   x <- matrix(rnorm(60), 30, 2)
   y <- x[, 1] + 0.2 * rnorm(30)
-  .cov_fb(xgboost_objective(x, y,
+  .cov_fb(morie_xgboost_objective(x, y,
     n_estimators = 10L,
     task = "regression", seed = 8L
   ))
 })
 
-test_that("random_forest_genomic base-R bagged-tree fallback executes", {
+test_that("morie_random_forest_genomic base-R bagged-tree fallback executes", {
   .mock_fail("randomForest")
   set.seed(13)
   M <- matrix(rnorm(200), 40, 5)
   y <- M[, 1] + 0.5 * M[, 2]^2 + 0.2 * rnorm(40)
-  .cov_fb(random_forest_genomic(rep(0, 40), y, M, n_trees = 20, seed = 13))
+  .cov_fb(morie_random_forest_genomic(rep(0, 40), y, M, n_trees = 20, seed = 13))
 })
 
-test_that("penalized_regression base-R coordinate-descent fallback executes", {
+test_that("morie_penalized_regression base-R coordinate-descent fallback executes", {
   .mock_fail("glmnet")
   set.seed(10)
   X <- matrix(rnorm(120), 30, 4)
   y <- as.numeric(X %*% c(1, 0, -1, 0)) + 0.1 * rnorm(30)
-  .cov_fb(penalized_regression(X, y, alpha = 1, lam = 0.05))
+  .cov_fb(morie_penalized_regression(X, y, alpha = 1, lam = 0.05))
 })
 
-test_that("svm_genomic base-R kernel-ridge fallback executes", {
+test_that("morie_svm_genomic base-R kernel-ridge fallback executes", {
   .mock_fail("e1071")
   set.seed(12)
   M <- matrix(rnorm(100), 25, 4)
   y <- sin(M[, 1]) + 0.2 * rnorm(25)
-  .cov_fb(svm_genomic(rep(0, 25), y, M))
+  .cov_fb(morie_svm_genomic(rep(0, 25), y, M))
 })
 
 test_that("sobls base-R Halton fallback executes", {
@@ -141,10 +141,10 @@ test_that("sobls base-R Halton fallback executes", {
   ))
 })
 
-test_that("wavelet_time_series base-R Haar DWT fallback executes", {
+test_that("morie_wavelet_time_series base-R Haar DWT fallback executes", {
   .mock_fail("wavelets")
   set.seed(11)
-  .cov_fb(wavelet_time_series(rnorm(64), wavelet = "haar", level = 3))
+  .cov_fb(morie_wavelet_time_series(rnorm(64), wavelet = "haar", level = 3))
 })
 
 test_that("signal filters take the fallback branch", {
@@ -160,13 +160,13 @@ test_that("signal filters take the fallback branch", {
   .cov_fb(buttlp(x, fs = 64, cutoff = 10))
 })
 
-test_that("state_space_model base-R Kalman fallback executes", {
+test_that("morie_state_space_model base-R Kalman fallback executes", {
   .mock_fail("dlm")
   set.seed(9)
-  .cov_fb(state_space_model(cumsum(rnorm(60))))
+  .cov_fb(morie_state_space_model(cumsum(rnorm(60))))
 })
 
-test_that("dcc_multivariate_garch base-R two-step DCC fallback executes", {
+test_that("morie_dcc_multivariate_garch base-R two-step DCC fallback executes", {
   .mock_fail("rmgarch")
   set.seed(15)
   trend <- rnorm(120)
@@ -174,5 +174,5 @@ test_that("dcc_multivariate_garch base-R two-step DCC fallback executes", {
     0.02 * (rnorm(120) + 0.5 * trend),
     0.02 * (rnorm(120) + 0.5 * trend)
   )
-  .cov_fb(dcc_multivariate_garch(X))
+  .cov_fb(morie_dcc_multivariate_garch(X))
 })

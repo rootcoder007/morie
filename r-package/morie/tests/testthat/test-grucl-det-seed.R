@@ -14,16 +14,16 @@ skip_if_no_hash <- function() {
 test_that("grucl deterministic_seed is reproducible", {
   skip_if_no_hash()
   x <- c(0.1, -0.2, 0.3, -0.4)
-  r1 <- grucl_gru_cell(x, hidden_size = 8L, deterministic_seed = 42L)
-  r2 <- grucl_gru_cell(x, hidden_size = 8L, deterministic_seed = 42L)
-  r3 <- grucl_gru_cell(x, hidden_size = 8L, deterministic_seed = 999L)
+  r1 <- morie_grucl_gru_cell(x, hidden_size = 8L, deterministic_seed = 42L)
+  r2 <- morie_grucl_gru_cell(x, hidden_size = 8L, deterministic_seed = 42L)
+  r3 <- morie_grucl_gru_cell(x, hidden_size = 8L, deterministic_seed = 999L)
   expect_equal(r1$h, r2$h)
   expect_false(isTRUE(all.equal(r1$h, r3$h)))
 })
 
 test_that("grucl default (deterministic_seed = NULL) path is unchanged", {
   x <- c(0.1, -0.2, 0.3, -0.4)
-  r1 <- grucl_gru_cell(x, hidden_size = 8L, seed = 0L)
-  r2 <- grucl_gru_cell(x, hidden_size = 8L, seed = 0L)
+  r1 <- morie_grucl_gru_cell(x, hidden_size = 8L, seed = 0L)
+  r2 <- morie_grucl_gru_cell(x, hidden_size = 8L, seed = 0L)
   expect_equal(r1$h, r2$h)
 })

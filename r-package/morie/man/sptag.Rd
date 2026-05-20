@@ -2,12 +2,12 @@
 % Please edit documentation in R/sptag.R
 \name{sptag}
 \alias{sptag}
-\alias{spatial_agreement}
+\alias{morie_spatial_agreement}
 \title{Pairwise vote-agreement matrix (Armstrong Ch 8)}
 \usage{
 sptag(x)
 
-spatial_agreement(x)
+morie_spatial_agreement(x)
 }
 \arguments{
 \item{x}{Vote matrix (n by m); NA = absent.}

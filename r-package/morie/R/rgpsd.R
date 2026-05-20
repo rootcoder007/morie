@@ -60,4 +60,4 @@ rgpsd <- function(x, fs = 1.0, nperseg = NULL, window = "hann") {
 #' @rdname rgpsd
 #' @keywords internal
 #' @export
-rangayyan_psd <- rgpsd
+morie_rangayyan_psd <- rgpsd

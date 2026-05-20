@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzsgn.R
 \name{fzsgn}
 \alias{fzsgn}
-\alias{fauzi_smoothed_sign}
+\alias{morie_fauzi_smoothed_sign}
 \title{Fauzi: Smoothed sign test (Ch 5)}
 \usage{
 fzsgn(x, theta0 = 0, h = NULL, alternative = "two-sided")
 
-fauzi_smoothed_sign(x, theta0 = 0, h = NULL, alternative = "two-sided")
+morie_fauzi_smoothed_sign(x, theta0 = 0, h = NULL, alternative = "two-sided")
 }
 \arguments{
 \item{x}{Numeric vector.}

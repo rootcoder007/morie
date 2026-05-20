@@ -8,9 +8,9 @@
 #' @return Named list with estimate, n, method.
 #' @references Kosorok (2008), Ch 2; Vapnik & Chervonenkis (1971).
 #' @examples
-#' ksr04_kosorok_vc_dimension(x = rnorm(50))
+#' morie_ksr04_kosorok_vc_dimension(x = rnorm(50))
 #' @export
-ksr04_kosorok_vc_dimension <- function(x) {
+morie_ksr04_kosorok_vc_dimension <- function(x) {
   if (is.null(dim(x))) {
     d <- 1L
     n <- length(x)
@@ -26,9 +26,9 @@ ksr04_kosorok_vc_dimension <- function(x) {
 }
 
 # CANONICAL TEST
-# ksr04_kosorok_vc_dimension(matrix(0, 100, 3))
+# morie_ksr04_kosorok_vc_dimension(matrix(0, 100, 3))
 
-#' @rdname ksr04_kosorok_vc_dimension
+#' @rdname morie_ksr04_kosorok_vc_dimension
 #' @keywords internal
 #' @export
-kosorok_vc_dimension <- ksr04_kosorok_vc_dimension
+morie_kosorok_vc_dimension <- morie_ksr04_kosorok_vc_dimension

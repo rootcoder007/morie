@@ -55,6 +55,7 @@ Suggests:
   duckdb,
   RPostgres,
   jsonlite,
+  httr2,
   xml2,
   rvest,
   data.table,
@@ -432,3 +433,4 @@ Collate:
   'wsrpw.R'
   'xavir.R'
   'xgbst.R'
+  'zzz_x_helpers.R'

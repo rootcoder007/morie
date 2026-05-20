@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzmrb.R
 \name{fzmrb}
 \alias{fzmrb}
-\alias{fauzi_mrl_boundary_free}
+\alias{morie_fauzi_mrl_boundary_free}
 \title{Fauzi: Boundary-free MRL via log-bijection (Ch 4)}
 \usage{
 fzmrb(x, t = NULL, h = NULL)
 
-fauzi_mrl_boundary_free(x, t = NULL, h = NULL)
+morie_fauzi_mrl_boundary_free(x, t = NULL, h = NULL)
 }
 \arguments{
 \item{x}{Numeric vector, strictly positive.}
@@ -24,9 +24,7 @@ Avoids boundary bias of the kernel MRL near t=0 by smoothing on
 the log-transformed scale.
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }
 \keyword{internal}

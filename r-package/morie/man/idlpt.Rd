@@ -2,15 +2,15 @@
 % Please edit documentation in R/idlpt.R
 \name{idlpt}
 \alias{idlpt}
-\alias{ideal_point_recovery}
-\alias{ideal_point_model}
+\alias{morie_ideal_point_recovery}
+\alias{morie_ideal_point_model}
 \title{Ideal point recovery from unfolding configuration (Armstrong Ch 2)}
 \usage{
 idlpt(X_r, X_s = NULL)
 
-ideal_point_recovery(X_r, X_s = NULL)
+morie_ideal_point_recovery(X_r, X_s = NULL)
 
-ideal_point_model(X_r, X_s = NULL)
+morie_ideal_point_model(X_r, X_s = NULL)
 }
 \arguments{
 \item{X_r}{Row (respondent) coordinates (n by k matrix or vector).}
@@ -28,9 +28,7 @@ unfolding solution. By the unfolding definition the respondent
 position is the ideal point (Eq 4.36 in Armstrong et al. 2014).
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }
 \keyword{internal}

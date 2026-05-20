@@ -44,12 +44,12 @@ test_that("mnpbt() coerces a non-matrix vector to a single-row matrix", {
   expect_equal(dim(res$probs), c(1L, 3L))
 })
 
-test_that("multinomial_probit_spatial() is an exported alias of mnpbt()", {
-  expect_identical(multinomial_probit_spatial, mnpbt)
+test_that("morie_multinomial_probit_spatial() is an exported alias of mnpbt()", {
+  expect_identical(morie_multinomial_probit_spatial, mnpbt)
 })
 
-test_that("list_morie_modules() returns the documented module surface", {
-  mods <- list_morie_modules()
+test_that("morie_list_morie_modules() returns the documented module surface", {
+  mods <- morie_list_morie_modules()
   expect_s3_class(mods, "data.frame")
   expect_named(mods, c("name", "description"))
   expect_equal(nrow(mods), 21L)
@@ -63,11 +63,11 @@ test_that("list_morie_modules() returns the documented module surface", {
 
 test_that("modules.R CPADS-data callables are exercised offline-safe", {
   if (FALSE) {
-    data <- load_cpads_data()
-    canon <- canonicalize_cpads_data(data)
-    out <- run_morie_module("descriptive-statistics")
-    outs <- run_morie_modules(c("descriptive-statistics"))
-    expect_error(run_morie_module("not-a-module"), "Unknown module")
+    data <- morie_load_cpads_data()
+    canon <- morie_canonicalize_cpads_data(data)
+    out <- morie_run_morie_module("descriptive-statistics")
+    outs <- morie_run_morie_modules(c("descriptive-statistics"))
+    expect_error(morie_run_morie_module("not-a-module"), "Unknown module")
   }
   expect_true(TRUE)
 })
@@ -104,12 +104,12 @@ test_that("mixture_of_experts() clamps top_k to the number of experts", {
   expect_equal(ncol(res$topk_idx), 2L)
 })
 
-test_that("marker_variance() reports the VanRaden / naive split", {
+test_that("morie_marker_variance() reports the VanRaden / naive split", {
   skip_if_not_installed("morie")
   set.seed(16)
   M <- matrix(sample(0:2, 160L, replace = TRUE), nrow = 20L, ncol = 8L)
   y <- as.numeric(M %*% rnorm(8L) + 0.5 * rnorm(20L))
-  res <- marker_variance(rep(0, 20L), y, M)
+  res <- morie_marker_variance(rep(0, 20L), y, M)
   expect_type(res, "list")
   expect_named(res, c(
     "estimate", "sigma_g2", "sigma_e2", "h2",
@@ -127,22 +127,22 @@ test_that("marker_variance() reports the VanRaden / naive split", {
   expect_equal(res$method, "VanRaden + naive marker-variance split")
 })
 
-test_that("marker_variance() accepts a NULL fixed-effect design", {
+test_that("morie_marker_variance() accepts a NULL fixed-effect design", {
   set.seed(19)
   M <- matrix(sample(0:2, 120L, replace = TRUE), nrow = 15L, ncol = 8L)
   y <- as.numeric(M %*% rnorm(8L) + 0.5 * rnorm(15L))
-  res <- marker_variance(NULL, y, M)
+  res <- morie_marker_variance(NULL, y, M)
   expect_equal(res$n, 15L)
   expect_equal(res$p, 8L)
   expect_true(is.finite(res$sigma_m2_naive))
 })
 
-test_that("marker_variance() accepts an explicit fixed-effect design", {
+test_that("morie_marker_variance() accepts an explicit fixed-effect design", {
   set.seed(20)
   M <- matrix(sample(0:2, 96L, replace = TRUE), nrow = 12L, ncol = 8L)
   y <- as.numeric(M %*% rnorm(8L) + 0.5 * rnorm(12L))
   x <- rnorm(12L)
-  res <- marker_variance(x, y, M)
+  res <- morie_marker_variance(x, y, M)
   expect_equal(res$n, 12L)
   expect_true(is.finite(res$estimate))
 })

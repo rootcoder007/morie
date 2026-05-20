@@ -21,9 +21,9 @@ xs_fixture <- function() {
 test_that("ghdpm deterministic_seed is reproducible", {
   skip_if_no_hash()
   xs <- xs_fixture()
-  r1 <- ghosal_dpmixture_density(xs, n_iter = 20, burn = 5, deterministic_seed = 42L)
-  r2 <- ghosal_dpmixture_density(xs, n_iter = 20, burn = 5, deterministic_seed = 42L)
-  r3 <- ghosal_dpmixture_density(xs, n_iter = 20, burn = 5, deterministic_seed = 999L)
+  r1 <- morie_ghosal_dpmixture_density(xs, n_iter = 20, burn = 5, deterministic_seed = 42L)
+  r2 <- morie_ghosal_dpmixture_density(xs, n_iter = 20, burn = 5, deterministic_seed = 42L)
+  r3 <- morie_ghosal_dpmixture_density(xs, n_iter = 20, burn = 5, deterministic_seed = 999L)
   expect_equal(r1$estimate, r2$estimate)
   expect_equal(r1$k_post, r2$k_post)
   expect_false(isTRUE(all.equal(r1$estimate, r3$estimate)))
@@ -31,8 +31,8 @@ test_that("ghdpm deterministic_seed is reproducible", {
 
 test_that("ghdpm default (deterministic_seed = NULL) path is unchanged", {
   xs <- xs_fixture()
-  r1 <- ghosal_dpmixture_density(xs, n_iter = 20, burn = 5, seed = 42L)
-  r2 <- ghosal_dpmixture_density(xs, n_iter = 20, burn = 5, seed = 42L)
+  r1 <- morie_ghosal_dpmixture_density(xs, n_iter = 20, burn = 5, seed = 42L)
+  r2 <- morie_ghosal_dpmixture_density(xs, n_iter = 20, burn = 5, seed = 42L)
   expect_equal(r1$estimate, r2$estimate)
   expect_equal(r1$k_post, r2$k_post)
 })

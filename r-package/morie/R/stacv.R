@@ -71,4 +71,4 @@ stacv <- function(x, coords, times,
 #' @rdname stacv
 #' @keywords internal
 #' @export
-spatiotemporal_autocovariance <- stacv
+morie_spatiotemporal_autocovariance <- stacv

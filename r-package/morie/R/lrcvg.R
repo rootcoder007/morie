@@ -2,7 +2,7 @@
 
 #' Learning curve -- train / val MSE vs training-set size (R parity)
 #'
-#' Manual implementation of the sklearn learning_curve flow: shuffle,
+#' Manual implementation of the sklearn morie_learning_curve flow: shuffle,
 #' split into k folds, for each train-fraction fit on a prefix of the
 #' training fold and score on the held-out fold.
 #'
@@ -14,9 +14,9 @@
 #' @return Named list: estimate (final val MSE), train_sizes, train_scores,
 #'   val_scores, n, method.
 #' @examples
-#' learning_curve(x = rnorm(50), y = rnorm(50))
+#' morie_learning_curve(x = rnorm(50), y = rnorm(50))
 #' @export
-learning_curve <- function(x, y, sizes = NULL, cv = 5L, seed = 0L) {
+morie_learning_curve <- function(x, y, sizes = NULL, cv = 5L, seed = 0L) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)
   y <- as.numeric(y)

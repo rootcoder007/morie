@@ -22,9 +22,9 @@ xs_fixture <- function() {
 test_that("ghhbp deterministic_seed is reproducible", {
   skip_if_no_hash()
   xs <- xs_fixture()
-  r1 <- ghosal_hierarchical_bayes(xs, M = 200, deterministic_seed = 42L)
-  r2 <- ghosal_hierarchical_bayes(xs, M = 200, deterministic_seed = 42L)
-  r3 <- ghosal_hierarchical_bayes(xs, M = 200, deterministic_seed = 999L)
+  r1 <- morie_ghosal_hierarchical_bayes(xs, M = 200, deterministic_seed = 42L)
+  r2 <- morie_ghosal_hierarchical_bayes(xs, M = 200, deterministic_seed = 42L)
+  r3 <- morie_ghosal_hierarchical_bayes(xs, M = 200, deterministic_seed = 999L)
   expect_equal(r1$estimate, r2$estimate)
   expect_equal(r1$alpha_se, r2$alpha_se)
   expect_false(isTRUE(all.equal(r1$estimate, r3$estimate)))
@@ -32,8 +32,8 @@ test_that("ghhbp deterministic_seed is reproducible", {
 
 test_that("ghhbp default (deterministic_seed = NULL) path is unchanged", {
   xs <- xs_fixture()
-  r1 <- ghosal_hierarchical_bayes(xs, M = 200, seed = 42L)
-  r2 <- ghosal_hierarchical_bayes(xs, M = 200, seed = 42L)
+  r1 <- morie_ghosal_hierarchical_bayes(xs, M = 200, seed = 42L)
+  r2 <- morie_ghosal_hierarchical_bayes(xs, M = 200, seed = 42L)
   expect_equal(r1$estimate, r2$estimate)
   expect_equal(r1$alpha_se, r2$alpha_se)
 })

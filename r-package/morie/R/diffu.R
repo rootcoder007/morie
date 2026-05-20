@@ -15,9 +15,9 @@
 #'   r_stability, n_steps, alpha, method)}.
 #' @references Crank (1975), Mathematics of Diffusion.
 #' @examples
-#' diffu_heat_diffusion(T0 = rep(0, 10))
+#' morie_diffu_heat_diffusion(T0 = rep(0, 10))
 #' @export
-diffu_heat_diffusion <- function(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
+morie_diffu_heat_diffusion <- function(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
                                  n_steps = 100L) {
   T0 <- as.numeric(T0)
   if (length(T0) < 3L) stop("T0 must have at least 3 points.")
@@ -65,7 +65,7 @@ diffu_heat_diffusion <- function(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-diffu_diffusion_forward <- function(x0, t, betas = NULL, num_steps = 1000L,
+morie_diffu_diffusion_forward <- function(x0, t, betas = NULL, num_steps = 1000L,
                                     noise = NULL, seed = 0L) {
   x0 <- as.numeric(x0)
   if (is.null(betas)) betas <- seq(1e-4, 0.02, length.out = num_steps)
@@ -88,7 +88,7 @@ diffu_diffusion_forward <- function(x0, t, betas = NULL, num_steps = 1000L,
   )
 }
 
-#' @rdname diffu_heat_diffusion
+#' @rdname morie_diffu_heat_diffusion
 #' @keywords internal
 #' @export
-diffusion_forward <- diffu_heat_diffusion
+morie_diffusion_forward <- morie_diffu_heat_diffusion

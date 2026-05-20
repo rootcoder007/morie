@@ -33,42 +33,43 @@ test_that("hawkes phi<->theta round-trip", {
   expect_equal(morie:::.hawkes_to_theta(phi), th, tolerance = 1e-9)
 })
 
-test_that("random_search_cv runs in regression mode", {
+test_that("morie_random_search_cv runs in regression mode", {
   testthat::skip_if_not_installed("caret")
   testthat::skip_if_not_installed("elasticnet")
   set.seed(1)
   x <- matrix(rnorm(60), 30, 2)
   y <- x %*% c(1, -1) + rnorm(30, sd = 0.1)
-  out <- random_search_cv(x, y, n_iter = 3L, cv = 2L, task = "regression", seed = 1L)
+  out <- morie_random_search_cv(x, y, n_iter = 3L, cv = 2L, task = "regression", seed = 1L)
   expect_equal(out$task, "regression")
   expect_equal(out$n, 30L)
 })
 
-test_that("infer_measurement_level covers main branches", {
-  expect_equal(infer_measurement_level(c(TRUE, FALSE, TRUE)), "binary")
-  expect_equal(infer_measurement_level(c(0L, 1L, 1L, 0L)), "binary")
-  expect_equal(infer_measurement_level(ordered(c("low", "med", "high"))), "ordinal")
-  expect_equal(infer_measurement_level(factor(c("a", "b", "c"))), "nominal")
-  expect_equal(infer_measurement_level(c(1.2, 3.4, 5.6)), "ratio")
+test_that("morie_infer_measurement_level covers main branches", {
+  expect_equal(morie_infer_measurement_level(c(TRUE, FALSE, TRUE)), "binary")
+  expect_equal(morie_infer_measurement_level(c(0L, 1L, 1L, 0L)), "binary")
+  expect_equal(morie_infer_measurement_level(ordered(c("low", "med", "high"))), "ordinal")
+  expect_equal(morie_infer_measurement_level(factor(c("a", "b", "c"))), "nominal")
+  expect_equal(morie_infer_measurement_level(c(1.2, 3.4, 5.6)), "ratio")
 })
 
-test_that("profile_dataset returns per-column profiles and rejects non-frames", {
-  expect_error(profile_dataset(list(a = 1)), "data.frame")
-  p <- profile_dataset(iris)
+test_that("morie_profile_dataset returns per-column profiles and rejects non-frames", {
+  expect_error(morie_profile_dataset(list(a = 1)), "data.frame")
+  p <- morie_profile_dataset(iris)
   expect_equal(p$n_rows, nrow(iris))
   expect_equal(p$n_cols, ncol(iris))
 })
 
-test_that("suggest_analysis_plan errors when no profile given", {
-  expect_error(suggest_analysis_plan(list()), "profile_dataset")
+test_that("morie_suggest_analysis_plan errors when no profile given", {
+  expect_error(morie_suggest_analysis_plan(list()), "morie_profile_dataset")
 })
 
-test_that("marker_variance default path with x = empty", {
+test_that("morie_marker_variance default path with x = empty", {
   set.seed(1)
-  n <- 20; m <- 8
+  n <- 20
+  m <- 8
   M <- matrix(sample(0:2, n * m, TRUE), n, m)
   y <- M %*% rnorm(m) + 0.5 * rnorm(n)
-  out <- marker_variance(x = numeric(0), y = y, markers = M)
+  out <- morie_marker_variance(x = numeric(0), y = y, markers = M)
   expect_true(is.finite(out$sigma_g2))
   expect_equal(out$n, n)
   expect_equal(out$p, m)
@@ -116,7 +117,8 @@ test_that(".morie_cvm_pvalue covers all interpolation regimes", {
 
 test_that("irtsp fits a 2PL model to a binary roll-call matrix", {
   set.seed(1)
-  n <- 30; m <- 8
+  n <- 30
+  m <- 8
   M <- matrix(rbinom(n * m, 1, 0.5), n, m)
   out <- irtsp(M, n_iter = 10L)
   expect_length(out$x_hat, n)
@@ -153,7 +155,8 @@ test_that("stkrg input guards", {
   x <- rnorm(n)
   expect_error(
     stkrg(x, coords[-1, ], times,
-          target = list(s0 = coords[1, , drop = FALSE], t0 = times[1])),
+      target = list(s0 = coords[1, , drop = FALSE], t0 = times[1])
+    ),
     "shape mismatch"
   )
 })

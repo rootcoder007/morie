@@ -1,4 +1,236 @@
-# morie 0.9.5 — 2026-05-19
+# morie 0.9.5 — 2026-05-21
+
+Documentation + CI hardening (added 2026-05-21 to the v0.9.5
+release branch alongside the SIU + rename work):
+
+* **New SIU vignette** (`vignettes/siu-pipeline.Rmd`) — end-to-end
+  walkthrough of `morie_fetch_siu()`, `morie_siu_audit_case()`,
+  `morie_siu_anomaly_check()`, `morie_siu_compare()`,
+  `morie_siu_llm_extract()`, `morie_siu_translate()`, and the
+  canonical-override system. 14 vignettes total now.
+* **Chi-square vignette correction.** `vignettes/chi-square-and-anova.Rmd`
+  previously called the MRM chi-square family the "Doob $\chi^{2}$
+  family", which incorrectly singled out one of the three named
+  authors (Sprott, Doob, Iftene) of the source contingency tables.
+  Renamed to "MRM chi-square family". The Sprott / Doob / Iftene
+  author citation to the source tables is unchanged.
+* **`_pkgdown.yml` shipped** — a minimal pkgdown configuration so
+  contributors can build a local documentation site with
+  `pkgdown::build_site()`. The file is `.Rbuildignore`d so it
+  doesn't ship in the CRAN tarball.
+* **README rewrite** (top-level + R-package) to reflect v0.9.5
+  reality: 559 morie-prefixed exports (not 87), the SIU subsystem,
+  free-first AI helpers (Ollama default), language-aware DRID
+  manifest, canonical-override system, polite-by-default fetcher,
+  and the green 6-cell R CMD check matrix.
+* **pkgcheck workflow: `inconsolata` LaTeX font installed.**
+  pkgcheck's internal rcmdcheck builds the PDF manual, which
+  needs `inconsolata.sty`. Without it pkgcheck reported a spurious
+  "R CMD check found 1 warning" against a package that has 0
+  warnings in the dedicated `r-cmd-check.yml` matrix. The
+  pkgcheck job now installs tinytex + inconsolata before running.
+
+lintr / goodpractice cleanups:
+
+* The Hawkes C++ likelihood functions now use `T_horizon` instead
+  of `T` for the time-horizon parameter, so the auto-generated
+  `R/RcppExports.R` no longer trips R linters that flag `T` as a
+  potential `TRUE` shadow. The math convention is preserved in the
+  C++ docstrings; only the parameter NAME changed.
+* `setwd()` in `morie_run_workflow_step()` replaced with
+  `withr::local_dir()` (goodpractice no-setwd linter).
+* 352+ exported functions renamed to the `morie_*` prefix so they
+  no longer collide with same-named functions in other CRAN
+  packages. Examples: `chi_square_test` → `morie_chi_square_test`,
+  `kmeans_clustering` → `morie_kmeans_clustering`, etc. Names that
+  were already morie-specific cryptic abbreviations (agset, brdgr,
+  fzhdc, …) are unchanged.
+
+SIU harvester: polite by default, manifest-aware, retry-aware, and
+auditable against the original published reports.
+
+* **Persistent HTML cache + per-case audit.** `morie_fetch_siu(cache_html
+  = TRUE)` saves every fetched report and news-release page under
+  `<cache_dir>/html/` (gzipped, ~80-100 MB for a full sweep). The
+  saved HTML is the canonical ground truth for every row in the
+  emitted CSV: any later question of the form "did the parser get
+  this field right?" is decidable by reading the cached page for
+  that case. `morie_siu_audit_case(case_number)` returns the
+  parser's 1-row data frame, the raw report and news HTML, and
+  HTML-stripped plain text for both, all from cache when available.
+* **`morie_siu_compare()`** — line up the parser's output for a
+  case against a user-supplied external table (column map and case
+  key are caller-controlled) and show the surrounding report HTML
+  excerpt for each disagreement. No external source is treated as
+  authoritative; the function exists so the user can adjudicate
+  parser-vs-external mismatches against the actual published
+  report. The published report HTML is the only ground truth morie
+  recognises for SIU fields.
+* **Free by default.** The LLM helpers now default to
+  \code{model = c("ollama", "gemini")} -- a free local Ollama
+  model first, with paid Gemini as fallback only if Ollama is
+  unavailable. Users who install Ollama and pull a free Gemma /
+  Qwen / Llama / Functiongemma variant
+  (\code{ollama pull gemma3:4b}) get the full second-coder /
+  audit / anomaly-check stack at \$0 ongoing cost. \code{OLLAMA_HOST}
+  defaults to \code{http://localhost:11434} when unset, so the
+  zero-config path is just "install ollama, pull a model, done".
+* **AI second-coder (Gemini / Claude / Ollama).**
+  `morie_siu_llm_extract(case_number, model = "gemini")` sends the
+  cached report HTML through a large-language-model endpoint and
+  returns the same 64-column row format as the C++ parser, so it
+  drops straight into `morie_siu_compare(external = ...)` for an
+  independent diff. `model` accepts a character vector for
+  fail-over, e.g. `c("gemini", "ollama")` uses the paid Gemini
+  endpoint when available and silently falls back to a local /
+  free Ollama-compatible model otherwise. Credentials are read
+  from `GOOGLE_API_KEY` / `ANTHROPIC_API_KEY` / `OLLAMA_HOST`;
+  nothing is hard-coded.
+* **`morie_siu_translate_fr_to_en()`** — self-improving SIU.
+  For SIU cases that exist only in French (no English-language
+  paired drid; ~1-2 per year of SIU output), translate the
+  narrative_summary, news_release_summary, news_release_title and
+  relevant_legislation into English via a local Ollama model
+  (default $0 cost, no API key needed) and persist each
+  translation as a canonical override via
+  \code{morie_siu_record_correction()}. Idempotent (skips
+  already-translated cases) and self-improving (every run leaves
+  morie better at returning English content for French-only
+  reports). Maintainers can promote the resulting overrides into
+  the shipped \code{inst/extdata/siu_canonical_overrides.csv.gz}
+  so all users get the English text on the next package update.
+* **French police-service acronyms.** The modal-service detector
+  now also recognises SPT (Service de Police de Toronto), PPO
+  (Police provinciale de l'Ontario), SPRH (Halton), SPRY (York),
+  SPRP (Peel), SPRD (Durham), SPRN (Niagara), SPRW (Waterloo),
+  SPO (Ottawa), SPL (London), SPH (Hamilton), SPW (Windsor), SPG
+  (Guelph), SPK (Kingston) and maps each to the canonical English
+  name. Closes the remaining French-only-case gap; 12-TFD-104 in
+  the 2012 corpus now reports \code{Toronto Police Service}
+  correctly.
+* **99.955% format-clean on the full 2,218-case corpus.**
+  Empirical measurement via `morie_siu_sanity_check()` on the
+  freshly-harvested SIU.csv: 2,217 / 2,218 rows have zero format
+  issues; the lone remaining case is a 2012 French-only report
+  (12-TFD-104) without an English-paired drid. The earlier
+  95.45% baseline ate four further fixes: (a) Unicode apostrophe
+  / quote / dash normalisation in `lower_ascii()` so the title-
+  finder matches "Director's report" (U+2019) cleanly, (b)
+  "Overview" as a section_4 fallback for 2014 reports that
+  retitled "The Investigation", (c) French "L'enquête" / "Aperçu"
+  fallbacks for French-only reports, (d) full SIU police-service
+  acronym table (OPP, TPS, HRPS, NRPS, PRP, YRP, DRPS, WRPS, OPS,
+  LPS, WPS, GPS, KPS, BPS, BPPS, CKPS, PRPS, GSPS, SSMPS, SLPS,
+  SPS, TBPS, BPSB) -- old reports use the acronym throughout and
+  never spell out "Ontario Provincial Police", and the modal-
+  service detector now picks up "OPP" → "Ontario Provincial
+  Police" automatically.
+* **Interleaved report + news fetch.** `morie_fetch_siu()` no longer
+  walks the corpus in two strict phases (fetch all reports, then
+  fetch all news). It now uses a rolling-window batched fetcher:
+  each batch of 250 reports fires in the same rate-limited pool
+  as the previous batch's news pages. While the next 250 reports
+  are downloading, the news pages for the nrids we just parsed
+  are downloading alongside. Roughly halves cold-start corpus
+  wall time (~30 min instead of ~58 min on the full 4,700-drid
+  sweep) without changing the per-second rate the SIU site sees.
+* **Canonical overrides — the parser LEARNS from corrections.**
+  Every verified \code{(case_number, field, value)} tuple recorded
+  via \code{morie_siu_record_correction()} is applied to
+  \code{morie_fetch_siu()}'s output on subsequent runs. The shipped
+  \code{inst/extdata/siu_canonical_overrides.csv.gz} holds the
+  maintainer-confirmed table (starts empty in v0.9.5, populated by
+  the LLM-audit + human-review workflow over time). The
+  user-side \code{<cache_dir>/canonical_overrides.csv} merges in
+  too -- users can fix their local copy without touching the
+  package source. This is morie's "memory": wrong cells get found
+  via \code{morie_siu_sanity_check()} or
+  \code{morie_siu_audit_columns()}, corrected once, and the fix
+  propagates to all users on the next package update -- no C++
+  rebuild needed.
+* **`morie_siu_sanity_check()`** — fast format-validity pass over
+  every row of an emitted SIU table. Flags case_number that
+  doesn't look like an SIU id, date_*_iso that isn't ISO 8601,
+  number_of_* that isn't a positive integer, charges_recommended
+  that isn't "Yes"/"No", page-chrome strings leaked into
+  narrative_summary or other content fields, etc. Returns a data
+  frame ordered worst-first so maintainers can pop the cached
+  HTML for any flagged row and adjudicate. Runs in milliseconds,
+  no network, no LLM, no API key required.
+* **`morie_siu_audit_columns()`** — closed-loop per-column accuracy
+  audit. Runs the anomaly check across many cases and aggregates
+  by field, returning a data frame sorted by agreement rate
+  (worst first) so maintainers can prioritise which regex
+  extraction pattern to fix next. Concrete disagreement examples
+  for each field are attached as the \code{"examples"} attribute.
+  With \code{model = "ollama"} pointed at a local Gemma / Qwen /
+  DeepSeek instance the audit costs zero API spend; chain
+  \code{c("gemini", "ollama")} for paid-first / free-fallback.
+* **`morie_siu_anomaly_check()`** — per-field "does the report
+  support this extraction?" audit. Sends one API call per case
+  (all populated fields batched into a single prompt) and returns
+  a data frame with `field`, `parser_value`, `verdict`
+  (\code{"agree"} / \code{"disagree"} / \code{"unclear"}), and a
+  one-sentence reason. Not authoritative -- the cached HTML is
+  the ground truth -- but a fast way to triage which rows a human
+  should re-read against the report.
+* **Section-text terminator fix (parser correctness).** The
+  `section_text()` helper used to stop only at the next `<h2>`,
+  so the LAST `<h2 id="section_N">` block on a page (typically
+  section_8 -- analysis / decision) silently captured everything
+  to end-of-document, including the site's left-nav and footer.
+  This leaked phrases like "First Nations, Inuit and Métis
+  Liaison Program" and Twitter follow links into every report's
+  `narrative_summary`, `supplemental_materials`, and
+  `mental_health_or_race_indications` -- the latter would have
+  tagged every case in Ontario as "First Nation" regardless of
+  the report's actual content. The terminator now also stops at
+  `<footer`, `<aside`, `<nav`, whichever comes first after the
+  section anchor.
+* **`mental_health_or_race_indications` expansion.** Search scope
+  now includes section_5 (Affected Person), which is where many
+  reports state race / mental-health context. Keyword set
+  expanded with `suicidal`, `psychotic`, `self-harm`,
+  `self harm`, `emotionally disturbed`, `EDP`, `Mental Health Act`,
+  `Inuit` (alongside the existing Black / Indigenous / First
+  Nation / mental health / in crisis / racializ / racial set).
+* **Shipped DRID manifest.** `inst/extdata/siu_drid_manifest.csv.gz`
+  (~46 KB) ships with the package, listing 6,000 verified drids
+  (4,443 with parsed case_number, covering 2,218 unique cases as
+  of 2026-05-20). The harvester reads this floor automatically
+  via `morie_fetch_siu()` -- new cases above the manifest's max
+  are still discovered live.
+* **`html_to_text` segfault fix.** The previous C++ HTML tag stripper
+  used three `std::regex_replace` calls with `.*?` patterns; on at
+  least one drid in the 1..6000 sweep these recursed through the C
+  stack and aborted R with "segfault from C stack overflow",
+  killing the manifest build mid-run. Replaced with a linear single-
+  pass state machine (no recursion, no backtracking risk) plus a
+  defensive 4 MB input cap.
+
+* **Rate-limited multi-fetch.** `.siu_http_get_many()` now drives a
+  token-bucket throttle (default 4 req/s across the whole pool) with
+  exponential backoff on HTTP 429/502/503/504. `morie_fetch_siu()`
+  defaults to `concurrency = 4L, rate_rps = 4.0`. The previous
+  `concurrency = 16-24` default was high enough to trigger WAF
+  interstitials on some networks (most visibly on GitHub Actions
+  Azure egress IPs), which returned short non-report HTML that
+  looked like data but wasn't.
+* **`morie_siu_refresh_manifest()`** — sweeps director's-report ids
+  `1..max_drid` (default 6000), records each id's HTTP status, body
+  size, and parsed case number, and writes a gzipped CSV manifest of
+  known-valid drids. The shipped manifest at
+  `inst/extdata/siu_drid_manifest.csv.gz` lets `morie_fetch_siu()`
+  short-circuit the ~30-50% of drids that have no published report,
+  saving bandwidth and reducing WAF-trigger risk.
+* **Live max discovery, always.** The harvester now always probes
+  past the live SIU index max (`+300` drid margin, up from `+150`),
+  so reports added after the manifest snapshot are still captured.
+  The manifest is a *floor* on the known-valid id space, never a
+  ceiling on what's swept.
+* **`.siu_http_get_many_with_status()`** — new internal export
+  returning body + http_code + attempts in parallel slots, used by
+  the manifest builder and available for diagnostic scripts.
 
 New: a generic open-data access layer, and a much wider dataset
 catalog.

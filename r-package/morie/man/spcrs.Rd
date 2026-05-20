@@ -2,12 +2,12 @@
 % Please edit documentation in R/spcrs.R
 \name{spcrs}
 \alias{spcrs}
-\alias{spatial_cross_validation}
+\alias{morie_spatial_cross_validation}
 \title{Leave-one-out cross-validation for ordinary kriging.}
 \usage{
 spcrs(x, coords, nugget = 0, sill = 1, range_ = 1)
 
-spatial_cross_validation(x, coords, nugget = 0, sill = 1, range_ = 1)
+morie_spatial_cross_validation(x, coords, nugget = 0, sill = 1, range_ = 1)
 }
 \arguments{
 \item{x}{Numeric vector.}

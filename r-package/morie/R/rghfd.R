@@ -40,4 +40,4 @@ rghfd <- function(x, kmax = 10L) {
 #' @rdname rghfd
 #' @keywords internal
 #' @export
-rangayyan_higuchi_fd <- rghfd
+morie_rangayyan_higuchi_fd <- rghfd

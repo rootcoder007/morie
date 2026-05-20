@@ -71,4 +71,4 @@ gpfit <- function(x, threshold = NULL) {
 #' @rdname gpfit
 #' @keywords internal
 #' @export
-generalized_pareto <- gpfit
+morie_generalized_pareto <- gpfit

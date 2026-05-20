@@ -2,12 +2,12 @@
 % Please edit documentation in R/stkrg.R
 \name{stkrg}
 \alias{stkrg}
-\alias{spatiotemporal_kriging}
+\alias{morie_spatiotemporal_kriging}
 \title{Spatiotemporal ordinary kriging with separable exponential covariance.}
 \usage{
 stkrg(x, coords, times, target, sill = 1, nugget = 0, range_s = 1, range_t = 1)
 
-spatiotemporal_kriging(
+morie_spatiotemporal_kriging(
   x,
   coords,
   times,
@@ -37,10 +37,8 @@ C((h, u)) = (sill - nugget) * exp(-h/range_s) * exp(-|u|/range_t)
 + nugget if (h, u) == (0, 0).
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }
 \references{
 Schabenberger & Gotway (2005), Ch 8.

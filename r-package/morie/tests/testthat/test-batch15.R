@@ -107,11 +107,11 @@ test_that("mrm_tps_load_hawkes_refit errors on missing manifest file", {
   expect_true(TRUE)
 })
 
-test_that("multi_trait_gblup runs on a small multi-trait problem", {
+test_that("morie_multi_trait_gblup runs on a small multi-trait problem", {
   set.seed(5)
   M <- matrix(sample(0:2, 48, TRUE), 6, 8)
   Y <- matrix(rnorm(12), 6, 2)
-  r <- multi_trait_gblup(rep(0, 6), Y, M)
+  r <- morie_multi_trait_gblup(rep(0, 6), Y, M)
   expect_type(r, "list")
   expect_named(r, c(
     "estimate", "G_hat", "B_hat", "Sigma_g", "Sigma_e",
@@ -123,29 +123,29 @@ test_that("multi_trait_gblup runs on a small multi-trait problem", {
   expect_true(is.finite(r$estimate))
 })
 
-test_that("multi_trait_gblup handles NULL fixed effects and single trait", {
+test_that("morie_multi_trait_gblup handles NULL fixed effects and single trait", {
   set.seed(6)
   M <- matrix(sample(0:2, 40, TRUE), 5, 8)
   Y <- matrix(rnorm(5), 5, 1)
-  r <- multi_trait_gblup(NULL, Y, M)
+  r <- morie_multi_trait_gblup(NULL, Y, M)
   expect_equal(r$t, 1L)
   expect_equal(dim(r$G_hat), c(5L, 1L))
 })
 
-test_that("multi_trait_gblup accepts supplied covariance matrices", {
+test_that("morie_multi_trait_gblup accepts supplied covariance matrices", {
   set.seed(7)
   M <- matrix(sample(0:2, 48, TRUE), 6, 8)
   Y <- matrix(rnorm(12), 6, 2)
   Sg <- diag(2)
   Se <- diag(2)
-  r <- multi_trait_gblup(rep(0, 6), Y, M, Sigma_g = Sg, Sigma_e = Se)
+  r <- morie_multi_trait_gblup(rep(0, 6), Y, M, Sigma_g = Sg, Sigma_e = Se)
   expect_equal(r$Sigma_g, Sg)
   expect_equal(r$Sigma_e, Se)
 })
 
-test_that("mxpol_maxpool_forward pools a 4x4 matrix with default stride", {
+test_that("morie_mxpol_maxpool_forward pools a 4x4 matrix with default stride", {
   x <- matrix(1:16, 4, 4)
-  r <- mxpol_maxpool_forward(x, kernel_size = 2L)
+  r <- morie_mxpol_maxpool_forward(x, kernel_size = 2L)
   expect_type(r, "list")
   expect_named(r, c("y", "estimate", "argmax", "output_shape", "method"))
   expect_equal(r$output_shape, c(2L, 2L))
@@ -154,27 +154,27 @@ test_that("mxpol_maxpool_forward pools a 4x4 matrix with default stride", {
   expect_true(all(r$argmax >= 0L))
 })
 
-test_that("mxpol_maxpool_forward honours an explicit stride", {
+test_that("morie_mxpol_maxpool_forward honours an explicit stride", {
   x <- matrix(seq_len(25), 5, 5)
-  r <- mxpol_maxpool_forward(x, kernel_size = 2L, stride = 1L)
+  r <- morie_mxpol_maxpool_forward(x, kernel_size = 2L, stride = 1L)
   expect_equal(r$output_shape, c(4L, 4L))
 })
 
-test_that("mxpol_maxpool_forward errors when input smaller than kernel", {
-  expect_error(mxpol_maxpool_forward(matrix(1:4, 2, 2), kernel_size = 3L))
+test_that("morie_mxpol_maxpool_forward errors when input smaller than kernel", {
+  expect_error(morie_mxpol_maxpool_forward(matrix(1:4, 2, 2), kernel_size = 3L))
 })
 
-test_that("maxpool_forward alias matches mxpol_maxpool_forward", {
+test_that("morie_maxpool_forward alias matches morie_mxpol_maxpool_forward", {
   x <- matrix(1:16, 4, 4)
-  expect_equal(maxpool_forward(x, 2L)$y, mxpol_maxpool_forward(x, 2L)$y)
+  expect_equal(morie_maxpool_forward(x, 2L)$y, morie_mxpol_maxpool_forward(x, 2L)$y)
 })
 
-test_that("nbeats_basis forecasts a seasonal series", {
+test_that("morie_nbeats_basis forecasts a seasonal series", {
   set.seed(11)
   n <- 60
   t <- seq_len(n)
   x <- 0.1 * t + 2 * sin(2 * pi * t / 12) + rnorm(n, 0, 0.2)
-  r <- nbeats_basis(x, horizon = 3, n_trend = 2, n_season = 3, period = 12)
+  r <- morie_nbeats_basis(x, horizon = 3, n_trend = 2, n_season = 3, period = 12)
   expect_type(r, "list")
   expect_named(r, c(
     "forecast", "fitted", "trend", "seasonal",
@@ -188,16 +188,16 @@ test_that("nbeats_basis forecasts a seasonal series", {
   expect_true(r$r2 <= 1)
 })
 
-test_that("nbeats_basis works with default arguments", {
+test_that("morie_nbeats_basis works with default arguments", {
   set.seed(12)
   x <- rnorm(50)
-  r <- nbeats_basis(x)
+  r <- morie_nbeats_basis(x)
   expect_length(r$forecast, 1L)
   expect_equal(r$horizon, 1)
 })
 
-test_that("nbeats_basis errors on a too-short series", {
-  expect_error(nbeats_basis(rnorm(5), n_trend = 3, n_season = 5))
+test_that("morie_nbeats_basis errors on a too-short series", {
+  expect_error(morie_nbeats_basis(rnorm(5), n_trend = 3, n_season = 5))
 })
 
 test_that("nstat estimates a non-stationary covariance", {
@@ -226,11 +226,11 @@ test_that("nstat errors when coords rows mismatch length(x)", {
   expect_error(nstat(rnorm(5), cbind(runif(4), runif(4))))
 })
 
-test_that("nonstationary_covariance alias matches nstat", {
+test_that("morie_nonstationary_covariance alias matches nstat", {
   set.seed(23)
   coords <- cbind(runif(8), runif(8))
   x <- rnorm(8)
-  expect_equal(nonstationary_covariance(x, coords)$method, nstat(x, coords)$method)
+  expect_equal(morie_nonstationary_covariance(x, coords)$method, nstat(x, coords)$method)
 })
 
 test_that("okrig predicts at a single target (exponential)", {
@@ -270,11 +270,11 @@ test_that("okrig errors on bad model and dimension mismatch", {
   expect_error(okrig(x, cbind(0:4, 0:4), matrix(2.5, 1, 1)))
 })
 
-test_that("ordinary_kriging alias matches okrig", {
+test_that("morie_ordinary_kriging alias matches okrig", {
   coords <- matrix(0:4, ncol = 1)
   x <- c(1, 2, 3, 4, 5)
   expect_equal(
-    ordinary_kriging(x, coords, matrix(2.5, 1, 1))$estimate,
+    morie_ordinary_kriging(x, coords, matrix(2.5, 1, 1))$estimate,
     okrig(x, coords, matrix(2.5, 1, 1))$estimate
   )
 })
@@ -303,19 +303,19 @@ test_that("optcl finds a separating cut with votes", {
   expect_true(r$polarity %in% c(1L, -1L))
 })
 
-test_that("optimal_classification alias matches optcl", {
+test_that("morie_optimal_classification alias matches optcl", {
   x <- c(-1, 0, 1, 2)
   votes <- c(0L, 0L, 1L, 1L)
-  expect_equal(optimal_classification(x, votes)$cut, optcl(x, votes)$cut)
+  expect_equal(morie_optimal_classification(x, votes)$cut, optcl(x, votes)$cut)
 })
 
-test_that("ordered_categories computes the linear-by-linear statistic", {
+test_that("morie_ordered_categories computes the linear-by-linear statistic", {
   tab <- matrix(c(
     10, 5, 2,
     4, 8, 6,
     1, 3, 11
   ), nrow = 3, byrow = TRUE)
-  r <- ordered_categories(tab)
+  r <- morie_ordered_categories(tab)
   expect_type(r, "list")
   expect_named(r, c("statistic", "p_value", "df", "n", "correlation", "method"))
   expect_equal(r$df, 1L)
@@ -324,22 +324,22 @@ test_that("ordered_categories computes the linear-by-linear statistic", {
   expect_true(abs(r$correlation) <= 1)
 })
 
-test_that("ordered_categories returns NA structure for degenerate tables", {
-  r <- ordered_categories(matrix(1, 1, 1))
+test_that("morie_ordered_categories returns NA structure for degenerate tables", {
+  r <- morie_ordered_categories(matrix(1, 1, 1))
   expect_true(is.na(r$statistic))
   expect_equal(r$df, 1L)
 })
 
-test_that("ordered_categories accepts custom scores", {
+test_that("morie_ordered_categories accepts custom scores", {
   tab <- matrix(c(6, 2, 3, 7), nrow = 2)
-  r <- ordered_categories(tab, row_scores = c(0, 1), col_scores = c(0, 2))
+  r <- morie_ordered_categories(tab, row_scores = c(0, 1), col_scores = c(0, 2))
   expect_true(is.finite(r$statistic))
 })
 
-test_that("ordered_alternatives_test runs on ordered groups", {
+test_that("morie_ordered_alternatives_test runs on ordered groups", {
   set.seed(31)
   groups <- list(rnorm(8, 0), rnorm(8, 1), rnorm(8, 2))
-  r <- ordered_alternatives_test(groups)
+  r <- morie_ordered_alternatives_test(groups)
   expect_type(r, "list")
   expect_true(all(c("statistic", "p_value", "E_J", "Var_J", "n") %in% names(r)))
   expect_equal(r$n, 24)
@@ -348,8 +348,8 @@ test_that("ordered_alternatives_test runs on ordered groups", {
   expect_true(r$p_value >= 0 && r$p_value <= 1)
 })
 
-test_that("ordered_alternatives_test handles a too-short group list", {
-  res <- tryCatch(ordered_alternatives_test(list(1:3)),
+test_that("morie_ordered_alternatives_test handles a too-short group list", {
+  res <- tryCatch(morie_ordered_alternatives_test(list(1:3)),
     error = function(e) "errored"
   )
   if (identical(res, "errored")) {
@@ -359,8 +359,8 @@ test_that("ordered_alternatives_test handles a too-short group list", {
   }
 })
 
-test_that("ordered_alternatives_test works on two groups", {
-  r <- ordered_alternatives_test(list(c(1, 2, 3), c(4, 5, 6)))
+test_that("morie_ordered_alternatives_test works on two groups", {
+  r <- morie_ordered_alternatives_test(list(c(1, 2, 3), c(4, 5, 6)))
   expect_type(r, "list")
   expect_equal(r$n, 6)
   expect_true(is.finite(r$E_J))
@@ -412,10 +412,10 @@ test_that("paths internal helpers behave", {
   expect_false(morie:::is_absolute_path("relative/path"))
 })
 
-test_that("pca_dimension_reduction reduces a numeric matrix", {
+test_that("morie_pca_dimension_reduction reduces a numeric matrix", {
   set.seed(41)
   X <- matrix(rnorm(100), 20, 5)
-  r <- pca_dimension_reduction(X, n_components = 2L)
+  r <- morie_pca_dimension_reduction(X, n_components = 2L)
   expect_type(r, "list")
   expect_named(r, c(
     "estimate", "components", "explained_variance",
@@ -429,21 +429,21 @@ test_that("pca_dimension_reduction reduces a numeric matrix", {
   expect_true(r$estimate >= 0 && r$estimate <= 1)
 })
 
-test_that("pca_dimension_reduction defaults n_components and accepts a vector", {
+test_that("morie_pca_dimension_reduction defaults n_components and accepts a vector", {
   set.seed(42)
   X <- matrix(rnorm(60), 12, 5)
-  r <- pca_dimension_reduction(X)
+  r <- morie_pca_dimension_reduction(X)
   expect_true(r$n_components <= 5L)
 
-  rv <- pca_dimension_reduction(rnorm(15))
+  rv <- morie_pca_dimension_reduction(rnorm(15))
   expect_equal(rv$n, 15L)
 })
 
-test_that("percentile_modified_rank runs a two-sample test", {
+test_that("morie_percentile_modified_rank runs a two-sample test", {
   set.seed(51)
   x <- rnorm(20, 0)
   y <- rnorm(20, 1)
-  r <- percentile_modified_rank(x, y)
+  r <- morie_percentile_modified_rank(x, y)
   expect_type(r, "list")
   expect_true(all(c("statistic", "p_value", "z", "n", "m", "q") %in% names(r)))
   expect_equal(r$n, 40L)
@@ -452,25 +452,25 @@ test_that("percentile_modified_rank runs a two-sample test", {
   expect_true(r$p_value >= 0 && r$p_value <= 1)
 })
 
-test_that("percentile_modified_rank returns NA structure for tiny samples", {
-  r <- percentile_modified_rank(c(1), c(2, 3, 4))
+test_that("morie_percentile_modified_rank returns NA structure for tiny samples", {
+  r <- morie_percentile_modified_rank(c(1), c(2, 3, 4))
   expect_true(is.na(r$statistic))
   expect_equal(r$m, 1L)
 })
 
-test_that("percentile_modified_rank errors on out-of-range q", {
+test_that("morie_percentile_modified_rank errors on out-of-range q", {
   x <- rnorm(10)
   y <- rnorm(10)
-  expect_error(percentile_modified_rank(x, y, q = 0.5))
-  expect_error(percentile_modified_rank(x, y, q = 0))
+  expect_error(morie_percentile_modified_rank(x, y, q = 0.5))
+  expect_error(morie_percentile_modified_rank(x, y, q = 0))
 })
 
-test_that("penalized_regression fits an elastic-net model", {
+test_that("morie_penalized_regression fits an elastic-net model", {
   set.seed(10)
   X <- matrix(rnorm(120), 30, 4)
   b <- c(1, 0, -1, 0)
   y <- X %*% b + 0.1 * rnorm(30)
-  r <- penalized_regression(X, y, alpha = 1, lam = 0.05)
+  r <- morie_penalized_regression(X, y, alpha = 1, lam = 0.05)
   expect_type(r, "list")
   expect_true(all(c(
     "estimate", "beta", "intercept", "se", "alpha",
@@ -483,22 +483,22 @@ test_that("penalized_regression fits an elastic-net model", {
   expect_true(is.finite(r$intercept))
 })
 
-test_that("penalized_regression supports ridge (alpha = 0) and default args", {
+test_that("morie_penalized_regression supports ridge (alpha = 0) and default args", {
   set.seed(13)
   X <- matrix(rnorm(80), 20, 4)
   y <- as.numeric(X %*% c(1, 1, 0, 0) + rnorm(20))
-  rr <- penalized_regression(X, y, alpha = 0, lam = 0.5)
+  rr <- morie_penalized_regression(X, y, alpha = 0, lam = 0.5)
   expect_equal(rr$alpha, 0)
-  rd <- penalized_regression(X, y)
+  rd <- morie_penalized_regression(X, y)
   expect_equal(rd$alpha, 0.5)
   expect_length(rd$beta, 4L)
 })
 
-test_that("permutation_test_general runs a small permutation test", {
+test_that("morie_permutation_test_general runs a small permutation test", {
   set.seed(0)
   x <- rnorm(15)
   y <- rnorm(15)
-  r <- permutation_test_general(x, y, B = 200L, seed = 0L)
+  r <- morie_permutation_test_general(x, y, B = 200L, seed = 0L)
   expect_type(r, "list")
   expect_named(r, c(
     "statistic", "p_value", "n_x", "n_y", "B",
@@ -531,12 +531,12 @@ test_that("permt returns NA structure for empty input", {
   expect_equal(r$n_x, 0L)
 })
 
-test_that("permutation_test_general alias matches permt", {
+test_that("morie_permutation_test_general alias matches permt", {
   set.seed(3)
   x <- rnorm(10)
   y <- rnorm(10)
   expect_equal(
-    permutation_test_general(x, y, B = 100L, seed = 5L)$statistic,
+    morie_permutation_test_general(x, y, B = 100L, seed = 5L)$statistic,
     permt(x, y, B = 100L, seed = 5L)$statistic
   )
 })

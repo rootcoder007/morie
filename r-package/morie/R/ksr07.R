@@ -15,9 +15,9 @@
 #' @return Named list with estimate, se, n, method.
 #' @references Kosorok (2008), Ch 10.
 #' @examples
-#' ksr07_kosorok_bootstrap_empirical(x = rnorm(50))
+#' morie_ksr07_kosorok_bootstrap_empirical(x = rnorm(50))
 #' @export
-ksr07_kosorok_bootstrap_empirical <- function(x, B = 1000, seed = 0,
+morie_ksr07_kosorok_bootstrap_empirical <- function(x, B = 1000, seed = 0,
                                               deterministic_seed = NULL) {
   x <- as.numeric(x)
   n <- length(x)
@@ -38,9 +38,9 @@ ksr07_kosorok_bootstrap_empirical <- function(x, B = 1000, seed = 0,
 }
 
 # CANONICAL TEST
-# set.seed(0); ksr07_kosorok_bootstrap_empirical(rnorm(200), B=500, seed=42)
+# set.seed(0); morie_ksr07_kosorok_bootstrap_empirical(rnorm(200), B=500, seed=42)
 
-#' @rdname ksr07_kosorok_bootstrap_empirical
+#' @rdname morie_ksr07_kosorok_bootstrap_empirical
 #' @keywords internal
 #' @export
-kosorok_bootstrap_empirical <- ksr07_kosorok_bootstrap_empirical
+morie_kosorok_bootstrap_empirical <- morie_ksr07_kosorok_bootstrap_empirical

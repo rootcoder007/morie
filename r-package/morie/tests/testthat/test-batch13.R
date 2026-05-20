@@ -48,11 +48,11 @@ test_that("morie_check_plugin_license handles empty SPDX", {
   expect_error(morie_check_plugin_license("", raise_on_incompatible = TRUE))
 })
 
-test_that("linear_regression_ols fits a matrix of predictors", {
+test_that("morie_linear_regression_ols fits a matrix of predictors", {
   set.seed(11)
   x <- matrix(rnorm(60), ncol = 2)
   y <- 1 + x[, 1] - 0.5 * x[, 2] + rnorm(30, sd = 0.1)
-  res <- linear_regression_ols(x, y)
+  res <- morie_linear_regression_ols(x, y)
   expect_type(res, "list")
   expect_named(res, c("estimate", "se", "n", "method"))
   expect_length(res$estimate, 3L)
@@ -62,11 +62,11 @@ test_that("linear_regression_ols fits a matrix of predictors", {
   expect_true(all(res$se >= 0))
 })
 
-test_that("linear_regression_ols accepts a vector predictor", {
+test_that("morie_linear_regression_ols accepts a vector predictor", {
   set.seed(12)
   x <- rnorm(25)
   y <- 2 * x + rnorm(25, sd = 0.1)
-  res <- linear_regression_ols(x, y)
+  res <- morie_linear_regression_ols(x, y)
   expect_length(res$estimate, 2L)
   expect_equal(res$n, 25L)
 })
@@ -182,11 +182,11 @@ test_that("lr_warmup rejects non-positive warmup_steps", {
   expect_error(morie:::lr_warmup(c(1, 2), warmup_steps = 0L))
 })
 
-test_that("learning_curve returns scores across training sizes", {
+test_that("morie_learning_curve returns scores across training sizes", {
   set.seed(30)
   x <- matrix(rnorm(120), ncol = 2)
   y <- x[, 1] - x[, 2] + rnorm(60, sd = 0.2)
-  res <- learning_curve(x, y, cv = 3L, seed = 1L)
+  res <- morie_learning_curve(x, y, cv = 3L, seed = 1L)
   expect_type(res, "list")
   expect_named(res, c(
     "estimate", "train_sizes", "train_scores",
@@ -199,17 +199,17 @@ test_that("learning_curve returns scores across training sizes", {
   expect_true(all(res$val_scores >= 0))
 })
 
-test_that("learning_curve accepts custom sizes and a vector predictor", {
+test_that("morie_learning_curve accepts custom sizes and a vector predictor", {
   set.seed(31)
   x <- rnorm(50)
   y <- 2 * x + rnorm(50, sd = 0.2)
-  res <- learning_curve(x, y, sizes = c(0.5, 1.0), cv = 2L, seed = 2L)
+  res <- morie_learning_curve(x, y, sizes = c(0.5, 1.0), cv = 2L, seed = 2L)
   expect_length(res$train_sizes, 2L)
   expect_true(is.finite(res$estimate))
 })
 
-test_that("lstmc_lstm_cell forward pass returns gated states", {
-  res <- lstmc_lstm_cell(c(0.1, -0.2, 0.3), hidden_size = 4L, seed = 1L)
+test_that("morie_lstmc_lstm_cell forward pass returns gated states", {
+  res <- morie_lstmc_lstm_cell(c(0.1, -0.2, 0.3), hidden_size = 4L, seed = 1L)
   expect_type(res, "list")
   expect_named(res, c("h", "c", "estimate", "i", "f", "g", "o", "method"))
   expect_length(res$h, 4L)
@@ -221,13 +221,13 @@ test_that("lstmc_lstm_cell forward pass returns gated states", {
   expect_true(all(res$g >= -1 & res$g <= 1))
 })
 
-test_that("lstmc_lstm_cell infers hidden_size from h_prev", {
-  res <- lstmc_lstm_cell(c(1, 2), h_prev = rep(0, 3), seed = 0L)
+test_that("morie_lstmc_lstm_cell infers hidden_size from h_prev", {
+  res <- morie_lstmc_lstm_cell(c(1, 2), h_prev = rep(0, 3), seed = 0L)
   expect_length(res$h, 3L)
 })
 
-test_that("lstmc_lstm_cell accepts deterministic_seed", {
-  res <- lstmc_lstm_cell(c(0.5, 0.5),
+test_that("morie_lstmc_lstm_cell accepts deterministic_seed", {
+  res <- morie_lstmc_lstm_cell(c(0.5, 0.5),
     hidden_size = 2L,
     deterministic_seed = 123L
   )
@@ -235,8 +235,8 @@ test_that("lstmc_lstm_cell accepts deterministic_seed", {
   expect_true(all(is.finite(res$h)))
 })
 
-test_that("lstm_cell alias matches lstmc_lstm_cell", {
-  expect_identical(lstm_cell, lstmc_lstm_cell)
+test_that("morie_lstm_cell alias matches morie_lstmc_lstm_cell", {
+  expect_identical(morie_lstm_cell, morie_lstmc_lstm_cell)
 })
 
 make_mandela_data <- function() {
@@ -306,7 +306,7 @@ test_that("mrm_classify_mandela errors on missing columns", {
   expect_error(mrm_classify_mandela(list(a = 1)))
 })
 
-test_that("validate_outputs_manifest passes on a well-formed manifest", {
+test_that("morie_validate_outputs_manifest passes on a well-formed manifest", {
   m <- data.frame(
     output = c("a.csv", "b.csv"),
     public_path = c("p/a.csv", "p/b.csv"),
@@ -314,26 +314,26 @@ test_that("validate_outputs_manifest passes on a well-formed manifest", {
     modified = c("2024-01-01 00:00:00", "2024-01-02 00:00:00"),
     stringsAsFactors = FALSE
   )
-  expect_true(validate_outputs_manifest(m))
+  expect_true(morie_validate_outputs_manifest(m))
 })
 
-test_that("validate_outputs_manifest errors on a non-data.frame", {
-  expect_error(validate_outputs_manifest(list(a = 1)))
+test_that("morie_validate_outputs_manifest errors on a non-data.frame", {
+  expect_error(morie_validate_outputs_manifest(list(a = 1)))
 })
 
-test_that("validate_outputs_manifest non-strict warns instead of stopping", {
-  expect_warning(res <- validate_outputs_manifest(list(a = 1), strict = FALSE))
+test_that("morie_validate_outputs_manifest non-strict warns instead of stopping", {
+  expect_warning(res <- morie_validate_outputs_manifest(list(a = 1), strict = FALSE))
   expect_false(res)
 })
 
-test_that("validate_outputs_manifest detects missing columns", {
+test_that("morie_validate_outputs_manifest detects missing columns", {
   bad <- data.frame(output = "a.csv", stringsAsFactors = FALSE)
-  expect_error(validate_outputs_manifest(bad))
-  expect_warning(res <- validate_outputs_manifest(bad, strict = FALSE))
+  expect_error(morie_validate_outputs_manifest(bad))
+  expect_warning(res <- morie_validate_outputs_manifest(bad, strict = FALSE))
   expect_false(res)
 })
 
-test_that("validate_outputs_manifest detects duplicate outputs", {
+test_that("morie_validate_outputs_manifest detects duplicate outputs", {
   dup <- data.frame(
     output = c("a.csv", "a.csv"),
     public_path = c("p/a.csv", "p/a2.csv"),
@@ -341,17 +341,17 @@ test_that("validate_outputs_manifest detects duplicate outputs", {
     modified = c("2024-01-01 00:00:00", "2024-01-01 00:00:00"),
     stringsAsFactors = FALSE
   )
-  expect_warning(res <- validate_outputs_manifest(dup, strict = FALSE))
+  expect_warning(res <- morie_validate_outputs_manifest(dup, strict = FALSE))
   expect_false(res)
 })
 
-test_that("build_outputs_manifest builds a manifest from a temp directory", {
+test_that("morie_build_outputs_manifest builds a manifest from a temp directory", {
   out_dir <- file.path(tempdir(), "morie_b13_outputs")
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
   writeLines("hello", file.path(out_dir, "report.txt"))
   writeLines("x,y\n1,2", file.path(out_dir, "data.csv"))
   mpath <- file.path(tempdir(), "morie_b13_manifest.csv")
-  m <- build_outputs_manifest(out_dir, mpath)
+  m <- morie_build_outputs_manifest(out_dir, mpath)
   expect_s3_class(m, "data.frame")
   expect_true(all(c("output", "public_path", "size_kb", "modified") %in% names(m)))
   expect_equal(nrow(m), 2L)
@@ -360,52 +360,52 @@ test_that("build_outputs_manifest builds a manifest from a temp directory", {
   unlink(mpath)
 })
 
-test_that("build_outputs_manifest errors on a missing directory", {
-  expect_error(build_outputs_manifest(
+test_that("morie_build_outputs_manifest errors on a missing directory", {
+  expect_error(morie_build_outputs_manifest(
     file.path(tempdir(), "morie_b13_no_such_dir"),
     file.path(tempdir(), "m.csv")
   ))
 })
 
-test_that("build_outputs_manifest yields an empty manifest with no matches", {
+test_that("morie_build_outputs_manifest yields an empty manifest with no matches", {
   out_dir <- file.path(tempdir(), "morie_b13_empty")
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
   writeLines("x", file.path(out_dir, "ignore.xyz"))
   mpath <- file.path(tempdir(), "morie_b13_empty_manifest.csv")
-  m <- build_outputs_manifest(out_dir, mpath)
+  m <- morie_build_outputs_manifest(out_dir, mpath)
   expect_s3_class(m, "data.frame")
   expect_equal(nrow(m), 0L)
   unlink(out_dir, recursive = TRUE)
   unlink(mpath)
 })
 
-test_that("read_outputs_manifest round-trips a written manifest", {
+test_that("morie_read_outputs_manifest round-trips a written manifest", {
   out_dir <- file.path(tempdir(), "morie_b13_rt")
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
   writeLines("z", file.path(out_dir, "a.txt"))
   mpath <- file.path(tempdir(), "morie_b13_rt_manifest.csv")
-  build_outputs_manifest(out_dir, mpath)
-  m <- read_outputs_manifest(manifest_path = mpath)
+  morie_build_outputs_manifest(out_dir, mpath)
+  m <- morie_read_outputs_manifest(manifest_path = mpath)
   expect_s3_class(m, "data.frame")
   expect_true(nrow(m) >= 1L)
   unlink(out_dir, recursive = TRUE)
   unlink(mpath)
 })
 
-test_that("read_outputs_manifest errors on a missing file", {
-  expect_error(read_outputs_manifest(
+test_that("morie_read_outputs_manifest errors on a missing file", {
+  expect_error(morie_read_outputs_manifest(
     manifest_path = file.path(tempdir(), "morie_b13_no_manifest.csv")
   ))
 })
 
-test_that("summarize_output_audit summarizes an audit table", {
+test_that("morie_summarize_output_audit summarizes an audit table", {
   audit_tbl <- data.frame(
     output = c("a.csv", "b.csv", "c.csv"),
     declared = c(TRUE, TRUE, FALSE),
     exists = c(TRUE, FALSE, TRUE),
     stringsAsFactors = FALSE
   )
-  s <- summarize_output_audit(audit_tbl)
+  s <- morie_summarize_output_audit(audit_tbl)
   expect_type(s, "list")
   expect_named(s, c(
     "total_declared", "declared_present", "declared_missing",
@@ -417,12 +417,12 @@ test_that("summarize_output_audit summarizes an audit table", {
   expect_equal(s$unexpected_files, 1L)
 })
 
-test_that("summarize_output_audit errors on bad input", {
-  expect_error(summarize_output_audit(list(a = 1)))
-  expect_error(summarize_output_audit(data.frame(x = 1)))
+test_that("morie_summarize_output_audit errors on bad input", {
+  expect_error(morie_summarize_output_audit(list(a = 1)))
+  expect_error(morie_summarize_output_audit(data.frame(x = 1)))
 })
 
-test_that("audit_public_outputs runs against a synthetic project tree", {
+test_that("morie_audit_public_outputs runs against a synthetic project tree", {
   proj <- file.path(tempdir(), "morie_b13_proj")
   unlink(proj, recursive = TRUE)
   dir.create(file.path(proj, "data", "manifest"),
@@ -434,8 +434,8 @@ test_that("audit_public_outputs runs against a synthetic project tree", {
   mpath <- file.path(proj, "data", "manifest", "outputs_manifest.csv")
   res <- tryCatch(
     {
-      build_outputs_manifest(out_dir, mpath)
-      a <- audit_public_outputs(project_root = proj)
+      morie_build_outputs_manifest(out_dir, mpath)
+      a <- morie_audit_public_outputs(project_root = proj)
       expect_s3_class(a, "data.frame")
       expect_true(all(c("declared", "exists") %in% names(a)))
       TRUE
@@ -446,11 +446,11 @@ test_that("audit_public_outputs runs against a synthetic project tree", {
   unlink(proj, recursive = TRUE)
 })
 
-test_that("mini_batch_gradient converges toward the OLS reference", {
+test_that("morie_mini_batch_gradient converges toward the OLS reference", {
   set.seed(40)
   x <- matrix(rnorm(80), ncol = 2)
   y <- 1 + 0.5 * x[, 1] - x[, 2] + rnorm(40, sd = 0.05)
-  res <- mini_batch_gradient(x, y,
+  res <- morie_mini_batch_gradient(x, y,
     lr = 0.05, n_epochs = 50,
     batch_size = 8L, seed = 1L
   )
@@ -466,17 +466,17 @@ test_that("mini_batch_gradient converges toward the OLS reference", {
   expect_true(res$loss >= 0)
 })
 
-test_that("mini_batch_gradient accepts a vector predictor", {
+test_that("morie_mini_batch_gradient accepts a vector predictor", {
   set.seed(41)
   x <- rnorm(30)
   y <- 2 * x + rnorm(30, sd = 0.05)
-  res <- mini_batch_gradient(x, y, n_epochs = 20, batch_size = 10L, seed = 2L)
+  res <- morie_mini_batch_gradient(x, y, n_epochs = 20, batch_size = 10L, seed = 2L)
   expect_length(res$estimate, 2L)
   expect_equal(res$n, 30L)
 })
 
-test_that("monte_carlo_integration estimates a definite integral", {
-  res <- monte_carlo_integration(function(u) u^2, 0, 1, N = 4000L, seed = 0L)
+test_that("morie_monte_carlo_integration estimates a definite integral", {
+  res <- morie_monte_carlo_integration(function(u) u^2, 0, 1, N = 4000L, seed = 0L)
   expect_type(res, "list")
   expect_named(res, c("estimate", "se", "N", "method"))
   expect_equal(res$N, 4000L)
@@ -485,13 +485,13 @@ test_that("monte_carlo_integration estimates a definite integral", {
   expect_true(abs(res$estimate - 1 / 3) < 0.05)
 })
 
-test_that("monte_carlo_integration honours custom bounds", {
-  res <- monte_carlo_integration(function(u) 1, 2, 5, N = 1000L, seed = 1L)
+test_that("morie_monte_carlo_integration honours custom bounds", {
+  res <- morie_monte_carlo_integration(function(u) 1, 2, 5, N = 1000L, seed = 1L)
   expect_equal(res$estimate, 3, tolerance = 1e-8)
 })
 
-test_that("monte_carlo_integration alias matches mcint_crude", {
-  expect_identical(monte_carlo_integration, morie:::mcint_crude)
+test_that("morie_monte_carlo_integration alias matches mcint_crude", {
+  expect_identical(morie_monte_carlo_integration, morie:::mcint_crude)
 })
 
 test_that("midranks returns average ranks and a tie correction", {
@@ -542,8 +542,8 @@ test_that("mdspl handles a degenerate single-row input", {
   expect_true(is.na(res$stress))
 })
 
-test_that("mds_spatial_map alias matches mdspl", {
-  expect_identical(mds_spatial_map, mdspl)
+test_that("morie_mds_spatial_map alias matches mdspl", {
+  expect_identical(morie_mds_spatial_map, mdspl)
 })
 
 test_that("mdvtr returns the median ideal point with a CI", {
@@ -581,10 +581,10 @@ test_that("morie_median_voter alias matches mdvtr", {
   expect_identical(morie_median_voter, mdvtr)
 })
 
-test_that("mhatf_multi_head_attention_full runs a multi-head pass", {
+test_that("morie_mhatf_multi_head_attention_full runs a multi-head pass", {
   set.seed(70)
   x <- matrix(rnorm(24), nrow = 6, ncol = 4)
-  res <- mhatf_multi_head_attention_full(x, num_heads = 2L, seed = 1L)
+  res <- morie_mhatf_multi_head_attention_full(x, num_heads = 2L, seed = 1L)
   expect_type(res, "list")
   expect_named(res, c(
     "output", "estimate", "heads", "num_heads",
@@ -598,29 +598,29 @@ test_that("mhatf_multi_head_attention_full runs a multi-head pass", {
   expect_true(all(is.finite(res$output)))
 })
 
-test_that("mhatf_multi_head_attention_full errors when heads do not divide d_model", {
+test_that("morie_mhatf_multi_head_attention_full errors when heads do not divide d_model", {
   x <- matrix(rnorm(15), nrow = 5, ncol = 3)
-  expect_error(mhatf_multi_head_attention_full(x, num_heads = 2L))
+  expect_error(morie_mhatf_multi_head_attention_full(x, num_heads = 2L))
 })
 
-test_that("mhatf_multi_head_attention_full accepts deterministic_seed", {
+test_that("morie_mhatf_multi_head_attention_full accepts deterministic_seed", {
   x <- matrix(rnorm(16), nrow = 4, ncol = 4)
-  res <- mhatf_multi_head_attention_full(x,
+  res <- morie_mhatf_multi_head_attention_full(x,
     num_heads = 2L,
     deterministic_seed = 99L
   )
   expect_equal(dim(res$output), c(4L, 4L))
 })
 
-test_that("multi_head_attention_full alias matches mhatf function", {
-  expect_identical(multi_head_attention_full, mhatf_multi_head_attention_full)
+test_that("morie_multi_head_attention_full alias matches mhatf function", {
+  expect_identical(morie_multi_head_attention_full, morie_mhatf_multi_head_attention_full)
 })
 
-test_that("midas_regression fits a matrix high-frequency regressor", {
+test_that("morie_midas_regression fits a matrix high-frequency regressor", {
   set.seed(80)
   X <- matrix(rnorm(12 * 4), nrow = 12, ncol = 4)
   y <- rowSums(X) + rnorm(12, sd = 0.1)
-  res <- midas_regression(X, y)
+  res <- morie_midas_regression(X, y)
   expect_type(res, "list")
   expect_named(res, c(
     "beta0", "beta1", "theta1", "theta2", "weights",
@@ -633,31 +633,31 @@ test_that("midas_regression fits a matrix high-frequency regressor", {
   expect_true(is.finite(res$beta1))
 })
 
-test_that("midas_regression accepts a flat regressor with K supplied", {
+test_that("morie_midas_regression accepts a flat regressor with K supplied", {
   set.seed(81)
   nT <- 10L
   K <- 3L
   xf <- rnorm(K + nT - 1)
   y <- rnorm(nT)
-  res <- midas_regression(xf, y, K = K)
+  res <- morie_midas_regression(xf, y, K = K)
   expect_equal(res$K, 3L)
   expect_equal(res$n, 10L)
 })
 
-test_that("midas_regression errors on flat input without K", {
-  expect_error(midas_regression(rnorm(20), rnorm(8)))
+test_that("morie_midas_regression errors on flat input without K", {
+  expect_error(morie_midas_regression(rnorm(20), rnorm(8)))
 })
 
-test_that("midas_regression errors on a too-short flat regressor", {
-  expect_error(midas_regression(rnorm(3), rnorm(8), K = 4L))
+test_that("morie_midas_regression errors on a too-short flat regressor", {
+  expect_error(morie_midas_regression(rnorm(3), rnorm(8), K = 4L))
 })
 
-test_that("midas_regression errors on too few observations", {
+test_that("morie_midas_regression errors on too few observations", {
   X <- matrix(rnorm(6), nrow = 3, ncol = 2)
-  expect_error(midas_regression(X, rnorm(3)))
+  expect_error(morie_midas_regression(X, rnorm(3)))
 })
 
-test_that("midas_regression errors on a dimension mismatch", {
+test_that("morie_midas_regression errors on a dimension mismatch", {
   X <- matrix(rnorm(20), nrow = 10, ncol = 2)
-  expect_error(midas_regression(X, rnorm(8)))
+  expect_error(morie_midas_regression(X, rnorm(8)))
 })

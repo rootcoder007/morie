@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzn1.R
 \name{hrzn1}
 \alias{hrzn1}
-\alias{horowitz_nonparametric_iv}
+\alias{morie_horowitz_nonparametric_iv}
 \title{Series-Tikhonov nonparametric instrumental variables}
 \usage{
 hrzn1(x, y, z, J = 5, alpha = 0.001, grid = NULL, .bootstrap = TRUE)
 
-horowitz_nonparametric_iv(
+morie_horowitz_nonparametric_iv(
   x,
   y,
   z,

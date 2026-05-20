@@ -6,9 +6,9 @@
 #' @return Named list with \code{filtered_state, filtered_state_variance,
 #'   smoothed_state, loglik, Q, R, n, method}.
 #' @examples
-#' state_space_model(x = rnorm(50))
+#' morie_state_space_model(x = rnorm(50))
 #' @export
-state_space_model <- function(x) {
+morie_state_space_model <- function(x) {
   y <- as.numeric(x)
   n <- length(y)
   if (n < 4) stop("Need >=4 obs.")

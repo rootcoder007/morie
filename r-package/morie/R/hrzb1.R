@@ -78,4 +78,4 @@ hrzb1 <- function(x, y) {
 #' @rdname hrzb1
 #' @keywords internal
 #' @export
-horowitz_binary_response <- hrzb1
+morie_horowitz_binary_response <- hrzb1

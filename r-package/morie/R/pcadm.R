@@ -11,9 +11,9 @@
 #'   explained_variance_ratio, singular_values, scores, n_components,
 #'   n, method.
 #' @examples
-#' pca_dimension_reduction(x = rnorm(50))
+#' morie_pca_dimension_reduction(x = rnorm(50))
 #' @export
-pca_dimension_reduction <- function(x, n_components = NULL, seed = 0L) {
+morie_pca_dimension_reduction <- function(x, n_components = NULL, seed = 0L) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)
   n <- nrow(x)

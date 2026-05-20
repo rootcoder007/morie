@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgsam.R
 \name{rgsam}
 \alias{rgsam}
-\alias{rangayyan_sample_entropy}
+\alias{morie_rangayyan_sample_entropy}
 \title{Sample entropy -- Rangayyan Ch 7}
 \usage{
 rgsam(x, m = 2L, r = NULL)
 
-rangayyan_sample_entropy(x, m = 2L, r = NULL)
+morie_rangayyan_sample_entropy(x, m = 2L, r = NULL)
 }
 \arguments{
 \item{x}{Numeric vector.}

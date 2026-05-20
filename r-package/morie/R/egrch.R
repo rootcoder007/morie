@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Internal: EGARCH(1,1) Gaussian negative log-likelihood. Extracted from
-# the egarch_model() base-R optimiser closure so the |beta| >= 1
+# the morie_egarch_model() base-R optimiser closure so the |beta| >= 1
 # stationarity guard is directly unit-testable. `r` is the centred
 # series, `n` its length, `EZ` = E|Z| for a standard normal.
 .egrch_negll <- function(p, r, n, EZ) {
@@ -24,13 +24,13 @@
 
 #' EGARCH(1,1) asymmetric volatility model
 #'
-#' @inheritParams garch_fit
+#' @inheritParams morie_garch_fit
 #' @return Named list with \code{omega, alpha, gamma, beta, loglik,
 #'   conditional_variance, n, method}.
 #' @examples
-#' egarch_model(x = rnorm(50))
+#' morie_egarch_model(x = rnorm(50))
 #' @export
-egarch_model <- function(x) {
+morie_egarch_model <- function(x) {
   r <- as.numeric(x) - mean(as.numeric(x))
   n <- length(r)
   if (n < 20) stop("Need >=20 obs.")

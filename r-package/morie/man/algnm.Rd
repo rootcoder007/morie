@@ -2,12 +2,12 @@
 % Please edit documentation in R/algnm.R
 \name{algnm}
 \alias{algnm}
-\alias{party_alignment}
+\alias{morie_party_alignment}
 \title{Rice party cohesion index (Rice 1928; Armstrong Ch 8)}
 \usage{
 algnm(x, party = NULL)
 
-party_alignment(x, party = NULL)
+morie_party_alignment(x, party = NULL)
 }
 \arguments{
 \item{x}{Either a 0/1 vote vector for one party, or a numeric

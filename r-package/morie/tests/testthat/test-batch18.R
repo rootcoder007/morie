@@ -25,8 +25,8 @@ test_that("rgsam errors when length(x) <= m + 1", {
   expect_error(rgsam(1:3, m = 2), "m \\+ 1")
 })
 
-test_that("rangayyan_sample_entropy alias is identical to rgsam", {
-  expect_identical(rangayyan_sample_entropy, rgsam)
+test_that("morie_rangayyan_sample_entropy alias is identical to rgsam", {
+  expect_identical(morie_rangayyan_sample_entropy, rgsam)
 })
 
 test_that("rgstf returns spectrogram with default window", {
@@ -61,8 +61,8 @@ test_that("rgstf honours explicit noverlap and clamps nperseg to length", {
   expect_identical(r$noverlap, 0L)
 })
 
-test_that("rangayyan_stft alias is identical to rgstf", {
-  expect_identical(rangayyan_stft, rgstf)
+test_that("morie_rangayyan_stft alias is identical to rgstf", {
+  expect_identical(morie_rangayyan_stft, rgstf)
 })
 
 test_that("rgwav returns documented structure", {
@@ -97,8 +97,8 @@ test_that("rgwav MA fallback warns when wavelets unavailable", {
   expect_identical(r$mode, "MA-fallback")
 })
 
-test_that("rangayyan_wavelet_denoise alias is identical to rgwav", {
-  expect_identical(rangayyan_wavelet_denoise, rgwav)
+test_that("morie_rangayyan_wavelet_denoise alias is identical to rgwav", {
+  expect_identical(morie_rangayyan_wavelet_denoise, rgwav)
 })
 
 test_that("rgzcr returns documented structure", {
@@ -124,18 +124,18 @@ test_that("rgzcr treats exact zeros as positive sign", {
   expect_identical(r$crossings, 0L)
 })
 
-test_that("rangayyan_zero_crossing alias is identical to rgzcr", {
-  expect_identical(rangayyan_zero_crossing, rgzcr)
+test_that("morie_rangayyan_zero_crossing alias is identical to rgzcr", {
+  expect_identical(morie_rangayyan_zero_crossing, rgzcr)
 })
 
-test_that("regularization_path runs ridge with glmnet", {
+test_that("morie_regularization_path runs ridge with glmnet", {
   skip_if_not_installed("glmnet")
   set.seed(0)
   n <- 40
   p <- 3
   x <- matrix(rnorm(n * p), n, p)
   y <- as.numeric(x %*% c(1, -0.5, 0.25) + rnorm(n))
-  r <- regularization_path(x, y, penalty = "ridge")
+  r <- morie_regularization_path(x, y, penalty = "ridge")
   expect_type(r, "list")
   expect_named(r, c(
     "estimate", "coef_path", "alphas", "penalty",
@@ -148,24 +148,24 @@ test_that("regularization_path runs ridge with glmnet", {
   expect_true(is.na(r$l1_ratio))
 })
 
-test_that("regularization_path supports lasso and elasticnet", {
+test_that("morie_regularization_path supports lasso and elasticnet", {
   skip_if_not_installed("glmnet")
   set.seed(1)
   x <- matrix(rnorm(60), 30, 2)
   y <- as.numeric(x %*% c(0.8, -0.3) + rnorm(30))
-  rl <- regularization_path(x, y, penalty = "lasso", alphas = 10^seq(-2, 1, length.out = 10))
+  rl <- morie_regularization_path(x, y, penalty = "lasso", alphas = 10^seq(-2, 1, length.out = 10))
   expect_identical(rl$penalty, "lasso")
-  re <- regularization_path(x, y, penalty = "elasticnet", l1_ratio = 0.3)
+  re <- morie_regularization_path(x, y, penalty = "elasticnet", l1_ratio = 0.3)
   expect_identical(re$penalty, "elasticnet")
   expect_equal(re$l1_ratio, 0.3)
 })
 
-test_that("regularization_path accepts a two-column design", {
+test_that("morie_regularization_path accepts a two-column design", {
   skip_if_not_installed("glmnet")
   set.seed(2)
   x <- matrix(rnorm(60), 30, 2)
   y <- as.numeric(x %*% c(2, -1) + rnorm(30))
-  r <- regularization_path(x, y, penalty = "ridge")
+  r <- morie_regularization_path(x, y, penalty = "ridge")
   expect_equal(ncol(r$coef_path), 3)
 })
 
@@ -200,14 +200,14 @@ test_that("rkhsc returns degenerate result when n < 2", {
   expect_match(r$method, "n<2")
 })
 
-test_that("rkhs_kernel_regression alias is identical to rkhsc", {
-  expect_identical(rkhs_kernel_regression, morie:::rkhsc)
+test_that("morie_rkhs_kernel_regression alias is identical to rkhsc", {
+  expect_identical(morie_rkhs_kernel_regression, morie:::rkhsc)
 })
 
-test_that("rkhs_full returns documented structure", {
+test_that("morie_rkhs_full returns documented structure", {
   set.seed(1)
   M <- matrix(sample(0:2, 20, TRUE), 5, 4)
-  r <- rkhs_full(rep(0, 5), c(1, 2, 1.5, 2.5, 2), M)
+  r <- morie_rkhs_full(rep(0, 5), c(1, 2, 1.5, 2.5, 2), M)
   expect_type(r, "list")
   expect_named(r, c(
     "estimate", "alpha", "beta", "K", "f_hat",
@@ -220,20 +220,20 @@ test_that("rkhs_full returns documented structure", {
   expect_true(is.finite(r$h) && r$h > 0)
 })
 
-test_that("rkhs_full handles NULL fixed-effect design", {
+test_that("morie_rkhs_full handles NULL fixed-effect design", {
   set.seed(2)
   M <- matrix(sample(0:2, 24, TRUE), 6, 4)
   y <- rnorm(6)
-  r <- rkhs_full(NULL, y, M)
+  r <- morie_rkhs_full(NULL, y, M)
   expect_identical(r$n, 6L)
   expect_true(all(is.finite(r$f_hat)))
 })
 
-test_that("rkhs_full accepts explicit bandwidth h and lam", {
+test_that("morie_rkhs_full accepts explicit bandwidth h and lam", {
   set.seed(3)
   M <- matrix(sample(0:2, 24, TRUE), 6, 4)
   y <- rnorm(6)
-  r <- rkhs_full(rep(0, 6), y, M, h = 5, lam = 2)
+  r <- morie_rkhs_full(rep(0, 6), y, M, h = 5, lam = 2)
   expect_equal(r$h, 5)
 })
 
@@ -279,7 +279,7 @@ test_that("rms_norm applies gamma scale and custom eps", {
   expect_equal(r$eps, 1e-3)
 })
 
-test_that("random_search_cv runs a small regression search", {
+test_that("morie_random_search_cv runs a small regression search", {
   skip_if_not_installed("caret")
   skip_if_not_installed("glmnet")
   skip_if_not_installed("elasticnet")
@@ -288,7 +288,7 @@ test_that("random_search_cv runs a small regression search", {
   p <- 3
   x <- matrix(rnorm(n * p), n, p)
   y <- as.numeric(x %*% c(1, -0.5, 0.25) + rnorm(n))
-  r <- random_search_cv(x, y, n_iter = 3L, cv = 3L, task = "regression")
+  r <- morie_random_search_cv(x, y, n_iter = 3L, cv = 3L, task = "regression")
   expect_type(r, "list")
   expect_named(r, c(
     "estimate", "best_params", "best_score", "sampled_params",
@@ -300,7 +300,7 @@ test_that("random_search_cv runs a small regression search", {
   expect_true(is.finite(r$best_score))
 })
 
-test_that("random_search_cv auto-detects classification task", {
+test_that("morie_random_search_cv auto-detects classification task", {
   skip_if_not_installed("caret")
   skip_if_not_installed("glmnet")
   skip_if_not_installed("elasticnet")
@@ -309,14 +309,14 @@ test_that("random_search_cv auto-detects classification task", {
   p <- 3
   x <- matrix(rnorm(n * p), n, p)
   y <- rbinom(n, 1, 0.5)
-  r <- random_search_cv(x, y, n_iter = 3L, cv = 3L, task = "auto")
+  r <- morie_random_search_cv(x, y, n_iter = 3L, cv = 3L, task = "auto")
   expect_identical(r$task, "classification")
 })
 
-test_that("rank_based_test returns documented structure", {
+test_that("morie_rank_based_test returns documented structure", {
   set.seed(0)
   x <- rnorm(30)
-  r <- rank_based_test(x)
+  r <- morie_rank_based_test(x)
   expect_type(r, "list")
   expect_named(r, c("statistic", "p_value", "n", "inversions", "z", "method"))
   expect_identical(r$n, 30L)
@@ -326,22 +326,22 @@ test_that("rank_based_test returns documented structure", {
   expect_true(is.integer(r$inversions) || is.numeric(r$inversions))
 })
 
-test_that("rank_based_test detects a strong monotone trend", {
-  r <- rank_based_test(seq_len(20))
+test_that("morie_rank_based_test detects a strong monotone trend", {
+  r <- morie_rank_based_test(seq_len(20))
   expect_equal(r$statistic, 1)
   expect_equal(r$inversions, 0)
 })
 
-test_that("rank_based_test short input returns NA statistic", {
-  r <- rank_based_test(c(1, 2))
+test_that("morie_rank_based_test short input returns NA statistic", {
+  r <- morie_rank_based_test(c(1, 2))
   expect_true(is.na(r$statistic))
   expect_true(is.na(r$p_value))
   expect_identical(r$n, 2L)
 })
 
-test_that("rank_order_statistics returns documented structure", {
+test_that("morie_rank_order_statistics returns documented structure", {
   x <- c(1.5, -2.0, 3.0, -0.5, 2.5)
-  r <- rank_order_statistics(x)
+  r <- morie_rank_order_statistics(x)
   expect_type(r, "list")
   expect_named(r, c(
     "signed_ranks", "abs_ranks", "W_plus", "W_minus",
@@ -354,25 +354,25 @@ test_that("rank_order_statistics returns documented structure", {
   expect_equal(r$W_plus + r$W_minus, sum(seq_len(r$n_nonzero)))
 })
 
-test_that("rank_order_statistics subtracts mu0 and skips zero differences", {
+test_that("morie_rank_order_statistics subtracts mu0 and skips zero differences", {
   x <- c(2, 2, 4, 0)
-  r <- rank_order_statistics(x, mu0 = 2)
+  r <- morie_rank_order_statistics(x, mu0 = 2)
   expect_identical(r$n_nonzero, 2L)
   expect_equal(r$signed_ranks[1], 0)
 })
 
-test_that("rank_order_statistics short input returns empty signed ranks", {
-  r <- rank_order_statistics(c(3))
+test_that("morie_rank_order_statistics short input returns empty signed ranks", {
+  r <- morie_rank_order_statistics(c(3))
   expect_length(r$signed_ranks, 0)
   expect_true(is.na(r$W_plus))
   expect_identical(r$n, 1L)
 })
 
-test_that("rnn_genomic trains and returns documented structure", {
+test_that("morie_rnn_genomic trains and returns documented structure", {
   set.seed(8)
   M <- matrix(rnorm(90), 15, 6)
   y <- rowSums(M) + 0.2 * rnorm(15)
-  r <- rnn_genomic(rep(0, 15), y, M, hidden = 4, n_epochs = 15, seed = 8)
+  r <- morie_rnn_genomic(rep(0, 15), y, M, hidden = 4, n_epochs = 15, seed = 8)
   expect_type(r, "list")
   expect_named(r, c(
     "estimate", "y_hat", "W_h", "W_x", "b_h", "w_o", "b_o",
@@ -386,14 +386,14 @@ test_that("rnn_genomic trains and returns documented structure", {
   expect_true(is.finite(r$se) && r$se >= 0)
 })
 
-test_that("rnn_genomic accepts a deterministic_seed", {
+test_that("morie_rnn_genomic accepts a deterministic_seed", {
   skip_if_not_installed("morie")
   set.seed(9)
   M <- matrix(rnorm(60), 12, 5)
   y <- rowSums(M) + 0.1 * rnorm(12)
   ok <- tryCatch(
     {
-      r <- rnn_genomic(rep(0, 12), y, M,
+      r <- morie_rnn_genomic(rep(0, 12), y, M,
         hidden = 3, n_epochs = 8,
         deterministic_seed = 123L
       )
@@ -404,12 +404,12 @@ test_that("rnn_genomic accepts a deterministic_seed", {
   if (isTRUE(ok)) expect_true(ok) else expect_true(TRUE)
 })
 
-test_that("roc_auc_score returns documented structure", {
+test_that("morie_roc_auc_score returns documented structure", {
   skip_if_not_installed("pROC")
   set.seed(0)
   y_true <- rep(c(0, 1), each = 20)
   y_score <- c(rnorm(20, 0), rnorm(20, 1.5))
-  r <- roc_auc_score(y_true, y_score)
+  r <- morie_roc_auc_score(y_true, y_score)
   expect_type(r, "list")
   expect_named(r, c(
     "estimate", "auc", "fpr", "tpr", "thresholds",
@@ -423,18 +423,18 @@ test_that("roc_auc_score returns documented structure", {
   expect_true(all(r$fpr >= 0 & r$fpr <= 1))
 })
 
-test_that("roc_auc_score errors on non-binary y_true", {
+test_that("morie_roc_auc_score errors on non-binary y_true", {
   skip_if_not_installed("pROC")
   expect_error(
-    roc_auc_score(c(0, 1, 2, 1), c(0.1, 0.2, 0.3, 0.4)),
+    morie_roc_auc_score(c(0, 1, 2, 1), c(0.1, 0.2, 0.3, 0.4)),
     "binary"
   )
 })
 
-test_that("rotrp_rotary_position_embedding returns documented structure", {
+test_that("morie_rotrp_rotary_position_embedding returns documented structure", {
   set.seed(0)
   x <- matrix(rnorm(8 * 4), nrow = 8, ncol = 4)
-  r <- rotrp_rotary_position_embedding(x)
+  r <- morie_rotrp_rotary_position_embedding(x)
   expect_type(r, "list")
   expect_named(r, c("y", "estimate", "angles", "method"))
   expect_identical(dim(r$y), dim(x))
@@ -445,15 +445,15 @@ test_that("rotrp_rotary_position_embedding returns documented structure", {
 
 test_that("rotrp preserves norm and honours custom base", {
   x <- matrix(c(1, 0, 0, 1), nrow = 2, byrow = TRUE)
-  r0 <- rotrp_rotary_position_embedding(x, base = 100)
+  r0 <- morie_rotrp_rotary_position_embedding(x, base = 100)
   expect_equal(sum(r0$y[1, ]^2), sum(x[1, ]^2))
 })
 
 test_that("rotrp errors when d_model is odd", {
   x <- matrix(rnorm(9), nrow = 3, ncol = 3)
-  expect_error(rotrp_rotary_position_embedding(x), "even")
+  expect_error(morie_rotrp_rotary_position_embedding(x), "even")
 })
 
-test_that("rotary_position_embedding alias is identical", {
-  expect_identical(rotary_position_embedding, rotrp_rotary_position_embedding)
+test_that("morie_rotary_position_embedding alias is identical", {
+  expect_identical(morie_rotary_position_embedding, morie_rotrp_rotary_position_embedding)
 })

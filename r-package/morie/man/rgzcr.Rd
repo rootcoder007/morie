@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgzcr.R
 \name{rgzcr}
 \alias{rgzcr}
-\alias{rangayyan_zero_crossing}
+\alias{morie_rangayyan_zero_crossing}
 \title{Zero-crossing rate -- Rangayyan Ch 5}
 \usage{
 rgzcr(x, fs = 1)
 
-rangayyan_zero_crossing(x, fs = 1)
+morie_rangayyan_zero_crossing(x, fs = 1)
 }
 \arguments{
 \item{x}{Numeric vector.}

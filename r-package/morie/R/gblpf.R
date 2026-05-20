@@ -11,13 +11,13 @@
 #' @return Named list (estimate, g_hat, beta, se, lambda_gblup, n, method).
 #' @references Montesinos Lopez Ch 3.
 #' @examples
-#' gblup_full(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2,      200, TRUE), 50, 4))
+#' morie_gblup_full(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 #' @export
-gblup_full <- function(x, y, markers, lambda_gblup = NULL) {
+morie_gblup_full <- function(x, y, markers, lambda_gblup = NULL) {
   y <- as.numeric(y)
   n <- length(y)
   M <- as.matrix(markers)
-  G <- grm_vanraden(M, method = 1)$estimate
+  G <- morie_grm_vanraden(M, method = 1)$estimate
   G <- G + 1e-6 * diag(n)
   cand <- if (is.null(x) || (is.numeric(x) && length(x) == 0)) {
     matrix(1, n, 1)
@@ -55,4 +55,4 @@ gblup_full <- function(x, y, markers, lambda_gblup = NULL) {
 
 # CANONICAL TEST
 # set.seed(0); M <- matrix(sample(0:2, 20, TRUE), 4, 5)
-# gblup_full(rep(0, 4), c(1, 2, 3, 2.5), M)
+# morie_gblup_full(rep(0, 4), c(1, 2, 3, 2.5), M)

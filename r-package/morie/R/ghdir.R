@@ -12,9 +12,9 @@
 #' @return named list with `estimate`, `cdf_grid`, `cdf_post`,
 #'   `cdf_var`, `alpha_post`, `n`, `method`.
 #' @examples
-#' ghosal_dirichlet_posterior(x = rnorm(50))
+#' morie_ghosal_dirichlet_posterior(x = rnorm(50))
 #' @export
-ghosal_dirichlet_posterior <- function(x, alpha = 1.0, base_mean = 0,
+morie_ghosal_dirichlet_posterior <- function(x, alpha = 1.0, base_mean = 0,
                                        base_sd = 1, grid = NULL) {
   x <- as.numeric(x)
   n <- length(x)

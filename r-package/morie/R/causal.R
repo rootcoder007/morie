@@ -50,8 +50,8 @@ NULL
 #' @export
 #' @examples
 #' df <- data.frame(t = c(0, 1, 0, 1, 0, 1), x = rnorm(6))
-#' ps <- estimate_propensity_scores(df, "t", "x")
-estimate_propensity_scores <- function(data, treatment, covariates,
+#' ps <- morie_estimate_propensity_scores(df, "t", "x")
+morie_estimate_propensity_scores <- function(data, treatment, covariates,
                                        trim = c(0.01, 0.99)) {
   ps <- .fit_propensity(data, treatment, covariates)
   lo <- stats::quantile(ps, trim[1])
@@ -86,15 +86,15 @@ estimate_propensity_scores <- function(data, treatment, covariates,
 #'   y = rnorm(200),
 #'   x = rnorm(200)
 #' )
-#' estimate_ate(df, "t", "y", "x")
-estimate_ate <- function(data, treatment, outcome, covariates,
+#' morie_estimate_ate(df, "t", "y", "x")
+morie_estimate_ate <- function(data, treatment, outcome, covariates,
                          propensity_col = NULL) {
   t <- as.numeric(data[[treatment]])
   y <- as.numeric(data[[outcome]])
   ps <- if (!is.null(propensity_col)) {
     .clip_ps(data[[propensity_col]])
   } else {
-    estimate_propensity_scores(data, treatment, covariates)
+    morie_estimate_propensity_scores(data, treatment, covariates)
   }
 
   w <- t / ps + (1 - t) / (1 - ps)
@@ -119,21 +119,21 @@ estimate_ate <- function(data, treatment, outcome, covariates,
 #' Treated units receive weight 1; controls receive
 #' \eqn{w_i = \hat{e}(X_i)/(1-\hat{e}(X_i))}.
 #'
-#' @inheritParams estimate_ate
+#' @inheritParams morie_estimate_ate
 #' @return Named list: `att`, `se`, `ci_lower`, `ci_upper`, `n_treated`.
 #' @export
 #' @examples
 #' set.seed(2)
 #' df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
-#' estimate_att(df, "t", "y", "x")
-estimate_att <- function(data, treatment, outcome, covariates,
+#' morie_estimate_att(df, "t", "y", "x")
+morie_estimate_att <- function(data, treatment, outcome, covariates,
                          propensity_col = NULL) {
   t <- as.numeric(data[[treatment]])
   y <- as.numeric(data[[outcome]])
   ps <- if (!is.null(propensity_col)) {
     .clip_ps(data[[propensity_col]])
   } else {
-    estimate_propensity_scores(data, treatment, covariates)
+    morie_estimate_propensity_scores(data, treatment, covariates)
   }
 
   # Control weights: e(X) / (1 - e(X))
@@ -161,21 +161,21 @@ estimate_att <- function(data, treatment, outcome, covariates,
 #' Control units receive weight 1; treated units receive
 #' \eqn{w_i = (1-\hat{e}(X_i))/\hat{e}(X_i)}.
 #'
-#' @inheritParams estimate_ate
+#' @inheritParams morie_estimate_ate
 #' @return Named list: `atc`, `se`, `ci_lower`, `ci_upper`, `n_control`.
 #' @examples
 #' set.seed(1)
 #' df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
-#' estimate_atc(df, "t", "y", "x")
+#' morie_estimate_atc(df, "t", "y", "x")
 #' @export
-estimate_atc <- function(data, treatment, outcome, covariates,
+morie_estimate_atc <- function(data, treatment, outcome, covariates,
                          propensity_col = NULL) {
   t <- as.numeric(data[[treatment]])
   y <- as.numeric(data[[outcome]])
   ps <- if (!is.null(propensity_col)) {
     .clip_ps(data[[propensity_col]])
   } else {
-    estimate_propensity_scores(data, treatment, covariates)
+    morie_estimate_propensity_scores(data, treatment, covariates)
   }
 
   w_trt <- (1 - ps) / ps
@@ -202,15 +202,15 @@ estimate_atc <- function(data, treatment, outcome, covariates,
 #' **either** the propensity model **or** the outcome model is correctly
 #' specified.
 #'
-#' @inheritParams estimate_ate
+#' @inheritParams morie_estimate_ate
 #' @param outcome_model Family for the outcome model: `"linear"` or `"logistic"`.
 #' @return Named list: `ate`, `se`, `ci_lower`, `ci_upper`, `n`.
 #' @examples
 #' set.seed(1)
 #' df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
-#' estimate_aipw(df, "t", "y", "x")
+#' morie_estimate_aipw(df, "t", "y", "x")
 #' @export
-estimate_aipw <- function(data, treatment, outcome, covariates,
+morie_estimate_aipw <- function(data, treatment, outcome, covariates,
                           propensity_col = NULL,
                           outcome_model = c("linear", "logistic")) {
   outcome_model <- match.arg(outcome_model)
@@ -219,7 +219,7 @@ estimate_aipw <- function(data, treatment, outcome, covariates,
   ps <- if (!is.null(propensity_col)) {
     .clip_ps(data[[propensity_col]])
   } else {
-    estimate_propensity_scores(data, treatment, covariates)
+    morie_estimate_propensity_scores(data, treatment, covariates)
   }
 
   fam <- if (outcome_model == "logistic") stats::binomial() else stats::gaussian()
@@ -252,7 +252,7 @@ estimate_aipw <- function(data, treatment, outcome, covariates,
 #' Applies AIPW within each level of `group_col` to estimate
 #' stratum-specific treatment effects.
 #'
-#' @inheritParams estimate_aipw
+#' @inheritParams morie_estimate_aipw
 #' @param group_col Name of the grouping variable (e.g. `"gender"`).
 #' @return Data frame with columns: `group`, `ate`, `se`,
 #'   `ci_lower`, `ci_upper`, `n`.
@@ -265,8 +265,8 @@ estimate_aipw <- function(data, treatment, outcome, covariates,
 #'   x = rnorm(300),
 #'   g = sample(c("A", "B"), 300, replace = TRUE)
 #' )
-#' estimate_gate(df, "t", "y", "x", "g")
-estimate_gate <- function(data, treatment, outcome, covariates,
+#' morie_estimate_gate(df, "t", "y", "x", "g")
+morie_estimate_gate <- function(data, treatment, outcome, covariates,
                           group_col, propensity_col = NULL,
                           outcome_model = c("linear", "logistic")) {
   outcome_model <- match.arg(outcome_model)
@@ -284,7 +284,7 @@ estimate_gate <- function(data, treatment, outcome, covariates,
       next
     }
     est <- tryCatch(
-      estimate_aipw(sub, treatment, outcome, covariates,
+      morie_estimate_aipw(sub, treatment, outcome, covariates,
         propensity_col = propensity_col,
         outcome_model = outcome_model
       ),
@@ -316,16 +316,20 @@ estimate_gate <- function(data, treatment, outcome, covariates,
 #'
 #' The **S-learner** fits one model with treatment as a feature.
 #'
-#' @inheritParams estimate_aipw
+#' @inheritParams morie_estimate_aipw
 #' @param meta_learner `"t_learner"` (default) or `"s_learner"`.
 #' @return Numeric vector of per-unit CATE estimates.
 #' @examples
-#' estimate_cate(data = data.frame(t = stats::rbinom(100, 1, 0.4),
-#'   y = stats::rbinom(100, 1, 0.3), x1 = stats::rnorm(100),
-#'   x2 = stats::rnorm(100)), treatment = "t", outcome = "y",
-#'   covariates = c("x1", "x2"))
+#' morie_estimate_cate(
+#'   data = data.frame(
+#'     t = stats::rbinom(100, 1, 0.4),
+#'     y = stats::rbinom(100, 1, 0.3), x1 = stats::rnorm(100),
+#'     x2 = stats::rnorm(100)
+#'   ), treatment = "t", outcome = "y",
+#'   covariates = c("x1", "x2")
+#' )
 #' @export
-estimate_cate <- function(data, treatment, outcome, covariates,
+morie_estimate_cate <- function(data, treatment, outcome, covariates,
                           propensity_col = NULL,
                           outcome_model = c("linear", "logistic"),
                           meta_learner = c("t_learner", "s_learner")) {
@@ -389,8 +393,8 @@ estimate_cate <- function(data, treatment, outcome, covariates,
 #' z <- rbinom(n, 1, 0.5)
 #' t <- rbinom(n, 1, plogis(-0.2 + 1.5 * z))
 #' y <- 0.8 * t + rnorm(n)
-#' estimate_late(data.frame(t = t, y = y, z = z), "t", "y", "z")
-estimate_late <- function(data, treatment, outcome, instrument,
+#' morie_estimate_late(data.frame(t = t, y = y, z = z), "t", "y", "z")
+morie_estimate_late <- function(data, treatment, outcome, instrument,
                           covariates = NULL) {
   t <- as.numeric(data[[treatment]])
   y <- as.numeric(data[[outcome]])
@@ -505,11 +509,11 @@ morie_e_value <- function(rr, rr_lower = NULL) {
 #' @param gamma_range Numeric vector of \eqn{\Gamma} values to test.
 #' @return Data frame with columns: `gamma`, `p_lower`, `p_upper`.
 #' @examples
-#' sensitivity_rosenbaum(treated = rnorm(30, 0.5), control = rnorm(30))
+#' morie_sensitivity_rosenbaum(treated = rnorm(30, 0.5), control = rnorm(30))
 #' @export
 #' @references
 #'   Rosenbaum PR (2002). *Observational Studies* (2nd ed.). Springer.
-sensitivity_rosenbaum <- function(treated, control,
+morie_sensitivity_rosenbaum <- function(treated, control,
                                   gamma_range = seq(1, 3, by = 0.2)) {
   n1 <- length(treated)
   n0 <- length(control)
@@ -550,14 +554,14 @@ sensitivity_rosenbaum <- function(treated, control,
 #' Estimates the ATE by:
 #' \deqn{\widehat{ATE} = \frac{1}{n}\sum_i \bigl[\hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)\bigr]}
 #'
-#' @inheritParams estimate_aipw
+#' @inheritParams morie_estimate_aipw
 #' @return Named list: `ate`, `se`, `ci_lower`, `ci_upper`.
 #' @examples
 #' set.seed(1)
 #' df <- data.frame(t = rbinom(200, 1, 0.4), y = rnorm(200), x = rnorm(200))
-#' estimate_g_computation(df, "t", "y", "x")
+#' morie_estimate_g_computation(df, "t", "y", "x")
 #' @export
-estimate_g_computation <- function(data, treatment, outcome, covariates,
+morie_estimate_g_computation <- function(data, treatment, outcome, covariates,
                                    outcome_model = c("linear", "logistic")) {
   outcome_model <- match.arg(outcome_model)
   fam <- if (outcome_model == "logistic") stats::binomial() else stats::gaussian()

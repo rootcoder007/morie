@@ -52,4 +52,4 @@ tpspn <- function(x, y, lam = 0) {
 #' @rdname tpspn
 #' @keywords internal
 #' @export
-thin_plate_spline <- tpspn
+morie_thin_plate_spline <- tpspn

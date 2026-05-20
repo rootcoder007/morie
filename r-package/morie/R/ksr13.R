@@ -9,9 +9,9 @@
 #' @return Named list with estimate (rank), n, method.
 #' @references Kosorok (2008), Ch 6.
 #' @examples
-#' ksr13_kosorok_tangent_space(x = rnorm(50))
+#' morie_ksr13_kosorok_tangent_space(x = rnorm(50))
 #' @export
-ksr13_kosorok_tangent_space <- function(x) {
+morie_ksr13_kosorok_tangent_space <- function(x) {
   x <- as.numeric(x)
   n <- length(x)
   s1 <- x - mean(x)
@@ -27,9 +27,9 @@ ksr13_kosorok_tangent_space <- function(x) {
 }
 
 # CANONICAL TEST
-# set.seed(0); ksr13_kosorok_tangent_space(rnorm(200))
+# set.seed(0); morie_ksr13_kosorok_tangent_space(rnorm(200))
 
-#' @rdname ksr13_kosorok_tangent_space
+#' @rdname morie_ksr13_kosorok_tangent_space
 #' @keywords internal
 #' @export
-kosorok_tangent_space <- ksr13_kosorok_tangent_space
+morie_kosorok_tangent_space <- morie_ksr13_kosorok_tangent_space

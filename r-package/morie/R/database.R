@@ -96,7 +96,7 @@ morie_builtin_db <- function() {
 #' \donttest{
 #' # DuckDB (default when 'duckdb' is installed); pass a '.db' path for SQLite.
 #' if (requireNamespace("duckdb", quietly = TRUE) &&
-#'     requireNamespace("DBI", quietly = TRUE)) {
+#'   requireNamespace("DBI", quietly = TRUE)) {
 #'   tmp <- tempfile(fileext = ".duckdb")
 #'   con <- morie_db_connect(db_path = tmp)
 #'   DBI::dbListTables(con)
@@ -140,7 +140,9 @@ morie_db_connect <- function(db_path = NULL) {
     if (!requireNamespace("duckdb", quietly = TRUE)) {
       stop("DuckDB path requested but the 'duckdb' package isn't installed.\n",
         "  install.packages('duckdb')  -- or pass db_path ending in '.db' ",
-        "for SQLite.", call. = FALSE)
+        "for SQLite.",
+        call. = FALSE
+      )
     }
     return(DBI::dbConnect(duckdb::duckdb(), dbdir = db_path))
   }
@@ -148,7 +150,9 @@ morie_db_connect <- function(db_path = NULL) {
   if (!requireNamespace("RSQLite", quietly = TRUE)) {
     stop("SQLite path requested but the 'RSQLite' package isn't installed.\n",
       "  install.packages('RSQLite')  -- or install 'duckdb' and pass a ",
-      "'.duckdb' path.", call. = FALSE)
+      "'.duckdb' path.",
+      call. = FALSE
+    )
   }
   con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
   DBI::dbExecute(con, "PRAGMA journal_mode=WAL")
@@ -167,8 +171,10 @@ morie_db_connect <- function(db_path = NULL) {
 #'   for non-SQLite backends (PostgreSQL, DuckDB, MariaDB).
 #' @return Number of rows written (invisible).
 #' @examples
-#' morie_cache_store(data = data.frame(x = rnorm(50), y = rnorm(50)),
-#'   table_name = "demo")
+#' morie_cache_store(
+#'   data = data.frame(x = rnorm(50), y = rnorm(50)),
+#'   table_name = "demo"
+#' )
 #' @export
 morie_cache_store <- function(data, table_name, db_path = NULL, con = NULL) {
   h <- .morie_db_handle(con, db_path)
@@ -704,8 +710,10 @@ morie_download_bootstrap <- function(survey = "all", limit = 32000L,
       message("Downloading ", key, " from CKAN (limit=", limit, ")...")
       tryCatch(
         {
-          data <- morie_fetch_ckan(entry$survey, limit = limit,
-                                   db_path = db_path, con = con)
+          data <- morie_fetch_ckan(entry$survey,
+            limit = limit,
+            db_path = db_path, con = con
+          )
           morie_cache_store(data, entry$table_name, db_path = db_path, con = con)
           message("  OK: ", nrow(data), " rows cached as ", entry$table_name)
         },

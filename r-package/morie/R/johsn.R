@@ -10,7 +10,7 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-johansen_cointegration <- function(x, k_ar_diff = 1) {
+morie_johansen_cointegration <- function(x, k_ar_diff = 1) {
   Y <- as.matrix(x)
   if (nrow(Y) < ncol(Y)) Y <- t(Y)
   Tt <- nrow(Y)

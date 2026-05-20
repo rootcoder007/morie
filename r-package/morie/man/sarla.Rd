@@ -2,12 +2,12 @@
 % Please edit documentation in R/sarla.R
 \name{sarla}
 \alias{sarla}
-\alias{spatial_ar_lag}
+\alias{morie_spatial_ar_lag}
 \title{Spatial autoregressive lag model (SAR lag, ML).}
 \usage{
 sarla(x, y, w)
 
-spatial_ar_lag(x, y, w)
+morie_spatial_ar_lag(x, y, w)
 }
 \arguments{
 \item{x}{Design matrix (n by p).}
@@ -24,10 +24,8 @@ Y = rho W Y + X beta + eps,  eps ~ N(0, sigma2 I).
 Concentrated log-likelihood in rho.
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }
 \references{
 Anselin (1988); Schabenberger & Gotway (2005), Ch 7.

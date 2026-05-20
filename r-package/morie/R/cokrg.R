@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-#' Simple cokriging for co-located bivariate spatial prediction.
+#' Simple morie_cokriging for co-located bivariate spatial prediction.
 #'
 #' \deqn{\hat Z_1(s_0) = \lambda^\top Z_1 + \mu^\top Z_2}, system
 #' \deqn{[C_{pp} \; C_{ps}; C_{ps}^\top \; C_{ss}] [\lambda; \mu] = [c_{0p}; c_{0s}]}.
@@ -15,7 +15,7 @@
 #' @return Named list: estimate, se, n, method.
 #' @references Schabenberger & Gotway (2005), Ch 4.
 #' @examples
-#' cokrg(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100),      50, 2), target = rnorm(50))
+#' cokrg(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100), 50, 2), target = rnorm(50))
 #' @export
 cokrg <- function(x, y, coords, target,
                   sill_p = 1, range_p = 1,
@@ -66,11 +66,11 @@ cokrg <- function(x, y, coords, target,
   list(
     estimate = if (m == 1) ests[1] else ests,
     se = if (m == 1) ses[1] else ses, n = n,
-    method = "Simple cokriging (linear coregionalization, exp. cov)"
+    method = "Simple morie_cokriging (linear coregionalization, exp. cov)"
   )
 }
 
 #' @rdname cokrg
 #' @keywords internal
 #' @export
-cokriging <- cokrg
+morie_cokriging <- cokrg

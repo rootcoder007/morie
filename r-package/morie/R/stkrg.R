@@ -68,4 +68,4 @@ stkrg <- function(x, coords, times, target,
 #' @rdname stkrg
 #' @keywords internal
 #' @export
-spatiotemporal_kriging <- stkrg
+morie_spatiotemporal_kriging <- stkrg

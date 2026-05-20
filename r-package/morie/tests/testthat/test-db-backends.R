@@ -47,7 +47,8 @@ test_that("DBI/SQLite cache via pre-opened `con=`", {
 })
 
 test_that(".morie_db_handle rejects non-DBI input", {
-  expect_error(morie_cache_store(data.frame(x = 1), "demo", con = "not-a-con"),
+  expect_error(
+    morie_cache_store(data.frame(x = 1), "demo", con = "not-a-con"),
     "must be a DBIConnection"
   )
 })
@@ -129,7 +130,8 @@ test_that("DBI/PostgreSQL cache round-trip (CI only)", {
   expect_true(DBI::dbIsValid(con))
 
   # Unique table name so parallel CI runs don't collide.
-  tbl <- paste0("morie_test_",
+  tbl <- paste0(
+    "morie_test_",
     format(Sys.time(), "%Y%m%d%H%M%S"), "_",
     as.integer(stats::runif(1, 0, .Machine$integer.max))
   )

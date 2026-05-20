@@ -109,7 +109,12 @@ jobs:
           sbom: true
 
       - name: Generate build provenance attestation
-        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2
+        # v4.1.0 — composite action that internally uses
+        # actions/attest@v4.1.0 with `using: node24`. Bumped from v2
+        # (Node-20-targeting sub-actions) on 2026-05-21 to clear the
+        # "Node.js 20 deprecated" annotation that appeared on the
+        # v0.9.4 Docker publish run (26019670710).
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.build.outputs.digest }}

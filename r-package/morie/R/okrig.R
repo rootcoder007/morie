@@ -83,4 +83,4 @@ okrig <- function(x, coords, target, model = "exponential",
 #' @rdname okrig
 #' @keywords internal
 #' @export
-ordinary_kriging <- okrig
+morie_ordinary_kriging <- okrig

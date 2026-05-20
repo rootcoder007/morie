@@ -62,4 +62,4 @@ permt <- function(x, y, statistic = NULL, B = 5000L,
 #' @rdname permt
 #' @keywords internal
 #' @export
-permutation_test_general <- permt
+morie_permutation_test_general <- permt

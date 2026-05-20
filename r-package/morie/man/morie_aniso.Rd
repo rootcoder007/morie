@@ -2,13 +2,13 @@
 % Please edit documentation in R/aniso.R
 \name{morie_aniso}
 \alias{morie_aniso}
-\alias{anisotropy_test}
+\alias{morie_anisotropy_test}
 \title{Anisotropy detection via Levene comparison of directional pair-difference
 distributions.}
 \usage{
 morie_aniso(x, coords, n_dirs = 4, tol_deg = 22.5)
 
-anisotropy_test(x, coords, n_dirs = 4, tol_deg = 22.5)
+morie_anisotropy_test(x, coords, n_dirs = 4, tol_deg = 22.5)
 }
 \arguments{
 \item{x}{Numeric vector.}

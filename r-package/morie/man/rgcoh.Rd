@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgcoh.R
 \name{rgcoh}
 \alias{rgcoh}
-\alias{rangayyan_coherence}
+\alias{morie_rangayyan_coherence}
 \title{Magnitude-squared morie_coherence -- Rangayyan Ch 4}
 \usage{
 rgcoh(x, y, fs = 1, nperseg = NULL)
 
-rangayyan_coherence(x, y, fs = 1, nperseg = NULL)
+morie_rangayyan_coherence(x, y, fs = 1, nperseg = NULL)
 }
 \arguments{
 \item{x, y}{Numeric vectors of equal length.}

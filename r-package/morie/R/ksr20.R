@@ -9,9 +9,9 @@
 #' @return Named list with estimate, se, n, method.
 #' @references Kosorok (2008), Ch 8.
 #' @examples
-#' ksr20_kosorok_censoring_survival(t = seq(0, 1, length.out = 50),      event = rbinom(50, 1, 0.8))
+#' morie_ksr20_kosorok_censoring_survival(t = seq(0, 1, length.out = 50), event = rbinom(50, 1, 0.8))
 #' @export
-ksr20_kosorok_censoring_survival <- function(t, event) {
+morie_ksr20_kosorok_censoring_survival <- function(t, event) {
   t <- as.numeric(t)
   event <- as.integer(event)
   n <- length(t)
@@ -42,9 +42,9 @@ ksr20_kosorok_censoring_survival <- function(t, event) {
 }
 
 # CANONICAL TEST
-# ksr20_kosorok_censoring_survival(1:10, c(1,1,0,1,1,0,1,1,1,0))
+# morie_ksr20_kosorok_censoring_survival(1:10, c(1,1,0,1,1,0,1,1,1,0))
 
-#' @rdname ksr20_kosorok_censoring_survival
+#' @rdname morie_ksr20_kosorok_censoring_survival
 #' @keywords internal
 #' @export
-kosorok_censoring_survival <- ksr20_kosorok_censoring_survival
+morie_kosorok_censoring_survival <- morie_ksr20_kosorok_censoring_survival

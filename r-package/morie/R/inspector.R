@@ -15,10 +15,10 @@
 #' tmp <- tempfile(fileext = ".json")
 #' if (requireNamespace("jsonlite", quietly = TRUE)) {
 #'   jsonlite::write_json(list(estimate = 0.123, se = 0.045), tmp)
-#'   inspect_output(tmp)
+#'   morie_inspect_output(tmp)
 #'   unlink(tmp)
 #' }
-inspect_output <- function(path) {
+morie_inspect_output <- function(path) {
   result <- list(
     path        = path,
     format      = tools::file_ext(path),
@@ -87,17 +87,17 @@ inspect_output <- function(path) {
 #'     tmp,
 #'     auto_unbox = TRUE
 #'   )
-#'   verify_statistical_output(tmp)
+#'   morie_verify_statistical_output(tmp)
 #'   unlink(tmp)
 #' }
-verify_statistical_output <- function(path) {
+morie_verify_statistical_output <- function(path) {
   out <- list(path = path, passed = FALSE, checks = list())
   if (!file.exists(path)) {
     out$checks$file_exists <- FALSE
     return(out)
   }
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
-    stop("jsonlite is required for verify_statistical_output().",
+    stop("jsonlite is required for morie_verify_statistical_output().",
       call. = FALSE
     )
   }

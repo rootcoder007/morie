@@ -8,9 +8,9 @@
 #' @param noise Optional noise sd.
 #' @return Named list with estimate, fitted, noise, sigma, inclusion, n, method.
 #' @examples
-#' ghosal_wavelet_prior(x = rnorm(50))
+#' morie_ghosal_wavelet_prior(x = rnorm(50))
 #' @export
-ghosal_wavelet_prior <- function(x, pi = 0.5, sigma = NULL, noise = NULL) {
+morie_ghosal_wavelet_prior <- function(x, pi = 0.5, sigma = NULL, noise = NULL) {
   x <- as.numeric(x)
   n <- length(x)
   if (n < 4) {

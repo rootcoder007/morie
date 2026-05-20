@@ -54,4 +54,4 @@ strat <- function(data, y = "y", strata = "stratum", pop_sizes = NULL) {
 #' @rdname strat
 #' @keywords internal
 #' @export
-stratified_sampling <- strat
+morie_stratified_sampling <- strat

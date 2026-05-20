@@ -7,11 +7,11 @@
 #'
 #' @param y_true Numeric observed.
 #' @param y_pred Numeric predicted.
-#' @return list(estimate (Pearson r), pearson_r, spearman_rho, mse, mspe,
+#' @return list(estimate (Pearson r), pearson_r, morie_spearman_rho, mse, mspe,
 #'   rmse, r2, slope, intercept, n, method).
 #' @references Montesinos Lopez Ch 2.
 #' @examples
-#' morie_prediction_accuracy(y_true = rbinom(50, 1, 0.5), y_pred = rbinom(50,      1, 0.5))
+#' morie_prediction_accuracy(y_true = rbinom(50, 1, 0.5), y_pred = rbinom(50, 1, 0.5))
 #' @export
 morie_prediction_accuracy <- function(y_true, y_pred) {
   y_true <- as.numeric(y_true)
@@ -49,7 +49,7 @@ morie_prediction_accuracy <- function(y_true, y_pred) {
     NA_real_
   }
   list(
-    estimate = r, pearson_r = r, spearman_rho = rho,
+    estimate = r, pearson_r = r, morie_spearman_rho = rho,
     mse = mse, mspe = mse, rmse = rmse, r2 = r2,
     slope = slope, intercept = intercept,
     n = n, method = "Pearson r + Spearman rho + MSE/MSPE + calibration"

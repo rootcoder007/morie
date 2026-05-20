@@ -9,9 +9,9 @@
 #' @return Named list with estimate, n, method.
 #' @references Kosorok (2008), Ch 2.
 #' @examples
-#' ksr06_kosorok_maximal_inequality(x = rnorm(50))
+#' morie_ksr06_kosorok_maximal_inequality(x = rnorm(50))
 #' @export
-ksr06_kosorok_maximal_inequality <- function(x) {
+morie_ksr06_kosorok_maximal_inequality <- function(x) {
   x <- as.numeric(x)
   n <- length(x)
   sigma_n <- if (n > 1L) stats::sd(x) else NA_real_
@@ -29,9 +29,9 @@ ksr06_kosorok_maximal_inequality <- function(x) {
 }
 
 # CANONICAL TEST
-# set.seed(0); ksr06_kosorok_maximal_inequality(rnorm(200))
+# set.seed(0); morie_ksr06_kosorok_maximal_inequality(rnorm(200))
 
-#' @rdname ksr06_kosorok_maximal_inequality
+#' @rdname morie_ksr06_kosorok_maximal_inequality
 #' @keywords internal
 #' @export
-kosorok_maximal_inequality <- ksr06_kosorok_maximal_inequality
+morie_kosorok_maximal_inequality <- morie_ksr06_kosorok_maximal_inequality

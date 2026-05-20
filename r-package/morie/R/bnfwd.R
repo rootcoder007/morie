@@ -13,9 +13,9 @@
 #' @return Named list \code{(y, estimate, x_hat, mu, var, eps, method)}.
 #' @references Ioffe & Szegedy (2015), ICML.
 #' @examples
-#' bnfwd_batch_norm_forward(x = rnorm(50))
+#' morie_bnfwd_batch_norm_forward(x = rnorm(50))
 #' @export
-bnfwd_batch_norm_forward <- function(x, gamma = NULL, beta = NULL,
+morie_bnfwd_batch_norm_forward <- function(x, gamma = NULL, beta = NULL,
                                      eps = 1e-5) {
   x <- as.matrix(x)
   # axis=0 (batch) -> per-feature stats
@@ -33,7 +33,7 @@ bnfwd_batch_norm_forward <- function(x, gamma = NULL, beta = NULL,
   )
 }
 
-#' @rdname bnfwd_batch_norm_forward
+#' @rdname morie_bnfwd_batch_norm_forward
 #' @keywords internal
 #' @export
-batch_norm_forward <- bnfwd_batch_norm_forward
+morie_batch_norm_forward <- morie_bnfwd_batch_norm_forward

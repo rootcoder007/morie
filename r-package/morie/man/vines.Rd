@@ -2,12 +2,12 @@
 % Please edit documentation in R/vines.R
 \name{vines}
 \alias{vines}
-\alias{vine_copula}
+\alias{morie_vine_copula}
 \title{Gaussian D-vine pair-copula construction (Aas, Czado, Frigessi & Bakken 2009)}
 \usage{
 vines(x)
 
-vine_copula(x)
+morie_vine_copula(x)
 }
 \arguments{
 \item{x}{matrix (n x d) of continuous variables.}

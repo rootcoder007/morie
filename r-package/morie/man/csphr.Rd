@@ -2,12 +2,12 @@
 % Please edit documentation in R/csphr.R
 \name{csphr}
 \alias{csphr}
-\alias{cutting_plane_sphere}
+\alias{morie_cutting_plane_sphere}
 \title{Cutting plane (linear discriminant; Armstrong Ch 3)}
 \usage{
 csphr(x, votes = NULL)
 
-cutting_plane_sphere(x, votes = NULL)
+morie_cutting_plane_sphere(x, votes = NULL)
 }
 \arguments{
 \item{x}{Ideal-point matrix (n by p).}

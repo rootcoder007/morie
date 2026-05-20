@@ -2,11 +2,11 @@
 # Coverage lift batch L: dccmd, mrm_doe, entheo_preprocess, mrm_diagnostics, study_reporting, synthetic, frns_predpol, frns_metrics.
 
 # ==== dccmd.R ====
-test_that("dcc_multivariate_garch errors when n too small", {
+test_that("morie_dcc_multivariate_garch errors when n too small", {
   # n=10 rows, k=2 cols: 20 values matches; n=10 < 30 triggers the guard
-  expect_error(dcc_multivariate_garch(matrix(rnorm(20), 10, 2)), "Need n>=30")
+  expect_error(morie_dcc_multivariate_garch(matrix(rnorm(20), 10, 2)), "Need n>=30")
   # k=1 column: matrix(rnorm(30), 30, 1) is correct (30*1=30 values)
-  expect_error(dcc_multivariate_garch(matrix(rnorm(30), 30, 1)), "Need n>=30")
+  expect_error(morie_dcc_multivariate_garch(matrix(rnorm(30), 30, 1)), "Need n>=30")
 })
 
 test_that(".dccmd_negll guards return 1e10 on out-of-domain parameters", {
@@ -123,8 +123,10 @@ test_that("resolve_synthetic_name_map rejects bad inputs", {
 
 test_that("morie_generate_synthetic_data validates n and special_code_rate", {
   expect_error(morie_generate_synthetic_data(n = 50), "n` must be an integer")
-  expect_error(morie_generate_synthetic_data(n = 200, special_code_rate = -0.1),
-    "special_code_rate")
+  expect_error(
+    morie_generate_synthetic_data(n = 200, special_code_rate = -0.1),
+    "special_code_rate"
+  )
 })
 
 test_that("inject_special_codes is identity when rate == 0", {
@@ -134,33 +136,37 @@ test_that("inject_special_codes is identity when rate == 0", {
 })
 
 # ==== frns_predpol.R ====
-test_that("predpol_aggregate_areas errors on length mismatch", {
+test_that("morie_predpol_aggregate_areas errors on length mismatch", {
   expect_error(
-    predpol_aggregate_areas(area = c("a", "b"), risk = c(1, 2, 3), outcome = c(0, 1)),
+    morie_predpol_aggregate_areas(area = c("a", "b"), risk = c(1, 2, 3), outcome = c(0, 1)),
     "same length"
   )
 })
 
-test_that("predpol_calibration_audit guards length, n<2", {
+test_that("morie_predpol_calibration_audit guards length, n<2", {
   expect_error(
-    predpol_calibration_audit(areas = "a", mean_risk = c(1, 2),
-      outcome_rate = c(1, 2), group = c("X", "Y")),
+    morie_predpol_calibration_audit(
+      areas = "a", mean_risk = c(1, 2),
+      outcome_rate = c(1, 2), group = c("X", "Y")
+    ),
     "must all align"
   )
   expect_error(
-    predpol_calibration_audit(areas = c("a"), mean_risk = 1,
-      outcome_rate = 1, group = "X"),
+    morie_predpol_calibration_audit(
+      areas = c("a"), mean_risk = 1,
+      outcome_rate = 1, group = "X"
+    ),
     "at least two areas"
   )
 })
 
-test_that("predpol_score_disparity guards", {
+test_that("morie_predpol_score_disparity guards", {
   expect_error(
-    predpol_score_disparity(score = 1:3, group = c("A", "A")),
+    morie_predpol_score_disparity(score = 1:3, group = c("A", "A")),
     "same length"
   )
   expect_error(
-    predpol_score_disparity(score = 1:3, group = c("A", "A", "A")),
+    morie_predpol_score_disparity(score = 1:3, group = c("A", "A", "A")),
     "at least two groups"
   )
 })
@@ -185,21 +191,21 @@ test_that(".frns_resolve_privileged errors on unknown privileged key", {
   )
 })
 
-test_that("fairness_disparate_impact handles too-few-groups", {
+test_that("morie_fairness_disparate_impact handles too-few-groups", {
   expect_error(
-    fairness_disparate_impact(c(1, 1, 0), c("A", "A", "A")),
+    morie_fairness_disparate_impact(c(1, 1, 0), c("A", "A", "A")),
     "at least two groups"
   )
 })
 
-test_that("fairness_demographic_parity guards too-few-groups", {
+test_that("morie_fairness_demographic_parity guards too-few-groups", {
   expect_error(
-    fairness_demographic_parity(c(1, 0, 1), c("A", "A", "A")),
+    morie_fairness_demographic_parity(c(1, 0, 1), c("A", "A", "A")),
     "at least two groups"
   )
 })
 
-test_that("fairness_gini guards empty + per-group breakdown", {
-  expect_error(fairness_gini(numeric(0)), "values is empty")
-  expect_equal(fairness_gini(c(0, 0, 0, 0))$value, 0)
+test_that("morie_fairness_gini guards empty + per-group breakdown", {
+  expect_error(morie_fairness_gini(numeric(0)), "values is empty")
+  expect_equal(morie_fairness_gini(c(0, 0, 0, 0))$value, 0)
 })

@@ -52,4 +52,4 @@ rglyp <- function(x, m = 3L, tau = 1L, max_t = NULL, theiler = 10L) {
 #' @rdname rglyp
 #' @keywords internal
 #' @export
-rangayyan_lyapunov <- rglyp
+morie_rangayyan_lyapunov <- rglyp

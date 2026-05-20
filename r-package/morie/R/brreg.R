@@ -10,9 +10,9 @@
 #' @return list(estimate, beta, intercept, se, beta_se, lam, n, p, method).
 #' @references Montesinos Lopez Ch 4.
 #' @examples
-#' bayesian_ridge_regression(x = rnorm(50), y = rnorm(50))
+#' morie_bayesian_ridge_regression(x = rnorm(50), y = rnorm(50))
 #' @export
-bayesian_ridge_regression <- function(x, y, lam = NULL) {
+morie_bayesian_ridge_regression <- function(x, y, lam = NULL) {
   X <- as.matrix(x)
   y <- as.numeric(y)
   n <- nrow(X)
@@ -45,4 +45,4 @@ bayesian_ridge_regression <- function(x, y, lam = NULL) {
 
 # CANONICAL TEST
 # set.seed(2); X <- matrix(rnorm(100), 20, 5); b <- c(1,-1,0.5,0,0)
-# y <- X %*% b + 0.1*rnorm(20); bayesian_ridge_regression(X, y)$beta
+# y <- X %*% b + 0.1*rnorm(20); morie_bayesian_ridge_regression(X, y)$beta

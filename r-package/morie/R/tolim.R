@@ -17,8 +17,8 @@
 #' @references Wilks (1941); Gibbons & Chakraborti (6e) Ch 2.11.
 #' @export
 #' @examples
-#' tolerance_limits(1:100, coverage = 0.90, confidence = 0.95)
-tolerance_limits <- function(x, coverage = 0.90, confidence = 0.95) {
+#' morie_tolerance_limits(1:100, coverage = 0.90, confidence = 0.95)
+morie_tolerance_limits <- function(x, coverage = 0.90, confidence = 0.95) {
   x <- as.numeric(x)
   n <- length(x)
   if (n < 2) {

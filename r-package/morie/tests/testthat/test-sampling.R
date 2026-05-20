@@ -8,27 +8,27 @@ df100 <- data.frame(
   size  = abs(rnorm(100, mean = 5))
 )
 
-# ── simple_random_sample ──────────────────────────────────────────────────────
+# ── morie_simple_random_sample ──────────────────────────────────────────────────────
 
-test_that("simple_random_sample returns correct number of rows", {
-  s <- simple_random_sample(df100, 20)
+test_that("morie_simple_random_sample returns correct number of rows", {
+  s <- morie_simple_random_sample(df100, 20)
   expect_equal(nrow(s), 20)
 })
 
-test_that("simple_random_sample adds .weight column", {
-  s <- simple_random_sample(df100, 20)
+test_that("morie_simple_random_sample adds .weight column", {
+  s <- morie_simple_random_sample(df100, 20)
   expect_true(".weight" %in% names(s))
   expect_equal(unique(s$.weight), 100 / 20)
 })
 
-test_that("simple_random_sample WOR does not duplicate rows", {
-  s <- simple_random_sample(df100, 50)
+test_that("morie_simple_random_sample WOR does not duplicate rows", {
+  s <- morie_simple_random_sample(df100, 50)
   expect_equal(length(unique(s$id)), 50)
 })
 
-test_that("simple_random_sample is reproducible with same seed", {
-  s1 <- simple_random_sample(df100, 20, seed = 7)
-  s2 <- simple_random_sample(df100, 20, seed = 7)
+test_that("morie_simple_random_sample is reproducible with same seed", {
+  s1 <- morie_simple_random_sample(df100, 20, seed = 7)
+  s2 <- morie_simple_random_sample(df100, 20, seed = 7)
   expect_equal(s1$id, s2$id)
 })
 
@@ -111,17 +111,17 @@ test_that("morie_bootstrap_sample is reproducible with same seed", {
   expect_equal(r1$distribution, r2$distribution)
 })
 
-# ── jackknife_estimate ────────────────────────────────────────────────────────
+# ── morie_jackknife_estimate ────────────────────────────────────────────────────────
 
-test_that("jackknife_estimate returns correct fields", {
-  result <- jackknife_estimate(df100, function(d) mean(d$x))
+test_that("morie_jackknife_estimate returns correct fields", {
+  result <- morie_jackknife_estimate(df100, function(d) mean(d$x))
   expect_named(result, c("estimate", "se", "bias"))
   expect_type(result$se, "double")
 })
 
 test_that("jackknife SE is close to bootstrap SE for mean", {
   df_j <- data.frame(x = rnorm(100))
-  jk <- jackknife_estimate(df_j, function(d) mean(d$x))
+  jk <- morie_jackknife_estimate(df_j, function(d) mean(d$x))
   # True SE ≈ 0.1; jackknife should be close
   expect_lt(abs(jk$se - 0.1), 0.03)
 })
@@ -150,12 +150,12 @@ test_that("DEFF > 1 for unequal weights", {
   expect_gt(morie_design_effect(w), 1)
 })
 
-# ── calibration_weights ───────────────────────────────────────────────────────
+# ── morie_calibration_weights ───────────────────────────────────────────────────────
 
-test_that("calibration_weights match population marginals after raking", {
+test_that("morie_calibration_weights match population marginals after raking", {
   df_c <- data.frame(gender = c(rep("M", 60), rep("F", 40)))
   pop_totals <- list(gender_M = 50, gender_F = 50)
-  w <- calibration_weights(df_c, "gender", pop_totals)
+  w <- morie_calibration_weights(df_c, "gender", pop_totals)
   # After calibration, sum of weights for M and F should both equal 50
   expect_lt(abs(sum(w[df_c$gender == "M"]) - 50), 1)
   expect_lt(abs(sum(w[df_c$gender == "F"]) - 50), 1)

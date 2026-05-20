@@ -12,9 +12,9 @@
 #' @return named list with `estimate`, `grid`, `density`, `k_post`, `n`
 #' @importFrom utils head tail
 #' @examples
-#' ghosal_dpmixture_density(x = rnorm(50))
+#' morie_ghosal_dpmixture_density(x = rnorm(50))
 #' @export
-ghosal_dpmixture_density <- function(x, alpha = 1.0, sigma = NULL,
+morie_ghosal_dpmixture_density <- function(x, alpha = 1.0, sigma = NULL,
                                      grid = NULL, n_iter = 120, burn = 40,
                                      seed = 0, deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {

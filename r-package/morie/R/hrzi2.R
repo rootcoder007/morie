@@ -47,4 +47,4 @@ hrzi2 <- function(x, y, bandwidth = NULL) {
 #' @rdname hrzi2
 #' @keywords internal
 #' @export
-horowitz_average_derivative <- hrzi2
+morie_horowitz_average_derivative <- hrzi2

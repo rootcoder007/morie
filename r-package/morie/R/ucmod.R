@@ -8,9 +8,9 @@
 #' @return Named list with \code{trend, seasonal, irregular, loglik, n,
 #'   period, method}.
 #' @examples
-#' unobserved_components(x = rnorm(50))
+#' morie_unobserved_components(x = rnorm(50))
 #' @export
-unobserved_components <- function(x, period = 12, trend = "local linear") {
+morie_unobserved_components <- function(x, period = 12, trend = "local linear") {
   y <- as.numeric(x)
   n <- length(y)
   if (n < max(2 * period, 6)) stop("Series too short.")

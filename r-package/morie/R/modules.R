@@ -2,9 +2,9 @@
 #'
 #' @return Data frame describing the implemented module surface.
 #' @examples
-#' list_morie_modules()
+#' morie_list_morie_modules()
 #' @export
-list_morie_modules <- function() {
+morie_list_morie_modules <- function() {
   data.frame(
     name = c(
       "data-wrangling",
@@ -97,14 +97,14 @@ list_morie_modules <- function() {
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-canonicalize_cpads_data <- function(data) {
+morie_canonicalize_cpads_data <- function(data) {
   required_raw <- c(
     "wtpumf", "alc05", "alc12_30d_prev_total", "alc12_30d_prev", "can05", "age_groups",
     "dvdemq01", "region", "hwbq01", "hwbq02", "ebac_tot", "ebac_legal"
   )
   missing_raw <- setdiff(required_raw, names(data))
   if (length(missing_raw) > 0) {
-    validate_cpads_data(data, strict = TRUE)
+    morie_validate_cpads_data(data, strict = TRUE)
     return(data)
   }
 
@@ -133,7 +133,7 @@ canonicalize_cpads_data <- function(data) {
   for (nm in names(canonical)) {
     out[[nm]] <- canonical[[nm]]
   }
-  validate_cpads_data(out, strict = TRUE)
+  morie_validate_cpads_data(out, strict = TRUE)
   out
 }
 
@@ -147,12 +147,12 @@ canonicalize_cpads_data <- function(data) {
 #' # a morie project tree; the CKAN-fetched PUMF works identically (see
 #' # morie_load_dataset("ocp21")). The tryCatch guard lets the example
 #' # render cleanly on machines without the CSV checked out locally.
-#' tryCatch(load_cpads_data(), error = function(e) message(conditionMessage(e)))
+#' tryCatch(morie_load_cpads_data(), error = function(e) message(conditionMessage(e)))
 #' }
 #' @export
-load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
+morie_load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
   cpads_csv <- .resolve_cpads_csv(cpads_csv)
-  canonicalize_cpads_data(utils::read.csv(cpads_csv, stringsAsFactors = FALSE))
+  morie_canonicalize_cpads_data(utils::read.csv(cpads_csv, stringsAsFactors = FALSE))
 }
 
 .write_module_outputs <- function(outputs, output_dir = NULL) {
@@ -186,13 +186,13 @@ load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
 #' # (morie_load_dataset("ocp21")). Wrapped in tryCatch so the example
 #' # documents usage even when the CSV is not checked out locally.
 #' tryCatch(
-#'   run_morie_module("descriptive-statistics"),
+#'   morie_run_morie_module("descriptive-statistics"),
 #'   error = function(e) message(conditionMessage(e))
 #' )
 #' }
 #' @export
-run_morie_module <- function(module_name, cpads_csv = .cpads_default_csv(), output_dir = NULL) {
-  data <- load_cpads_data(cpads_csv)
+morie_run_morie_module <- function(module_name, cpads_csv = .cpads_default_csv(), output_dir = NULL) {
+  data <- morie_load_cpads_data(cpads_csv)
 
   outputs <- switch(module_name,
     "data-wrangling" = .run_data_wrangling_module_internal(data, cpads_csv = cpads_csv, output_dir = output_dir),
@@ -233,13 +233,13 @@ run_morie_module <- function(module_name, cpads_csv = .cpads_default_csv(), outp
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-run_morie_modules <- function(
-  modules = list_morie_modules()$name,
+morie_run_morie_modules <- function(
+  modules = morie_list_morie_modules()$name,
   cpads_csv = .cpads_default_csv(),
   output_dir = NULL
 ) {
   stats::setNames(
-    lapply(modules, function(m) run_morie_module(m, cpads_csv = cpads_csv, output_dir = output_dir)),
+    lapply(modules, function(m) morie_run_morie_module(m, cpads_csv = cpads_csv, output_dir = output_dir)),
     modules
   )
 }

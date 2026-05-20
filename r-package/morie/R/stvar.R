@@ -66,4 +66,4 @@ stvar <- function(x, coords, times,
 #' @rdname stvar
 #' @keywords internal
 #' @export
-spatiotemporal_variogram <- stvar
+morie_spatiotemporal_variogram <- stvar

@@ -22,10 +22,10 @@
 #'   x2 = rnorm(200),
 #'   w = runif(200, 0.5, 1.5)
 #' )
-#' run_weighted_logistic_analysis(df,
+#' morie_run_weighted_logistic_analysis(df,
 #'   outcome = "y", predictors = c("x1", "x2"), weights_col = "w"
 #' )
-run_weighted_logistic_analysis <- function(data, outcome, predictors,
+morie_run_weighted_logistic_analysis <- function(data, outcome, predictors,
                                            weights_col = NULL) {
   fml <- stats::as.formula(
     paste(outcome, "~", paste(predictors, collapse = " + "))
@@ -81,12 +81,12 @@ run_weighted_logistic_analysis <- function(data, outcome, predictors,
 #'   y = rbinom(200, 1, 0.4),
 #'   x1 = rnorm(200), x2 = rnorm(200), x3 = rnorm(200)
 #' )
-#' compare_nested_logistic_models(df,
+#' morie_compare_nested_logistic_models(df,
 #'   outcome = "y",
 #'   predictors_full = c("x1", "x2", "x3"),
 #'   predictors_reduced = c("x1")
 #' )
-compare_nested_logistic_models <- function(data, outcome,
+morie_compare_nested_logistic_models <- function(data, outcome,
                                            predictors_full,
                                            predictors_reduced) {
   if (!all(predictors_reduced %in% predictors_full)) {
@@ -128,7 +128,7 @@ compare_nested_logistic_models <- function(data, outcome,
 #' Run a treatment-effects analysis (point estimate, SE, 95% CI)
 #'
 #' Mirrors the Python `morie.run_treatment_effects_analysis()`. Convenience
-#' wrapper around [estimate_ate()] that also produces a 95% confidence
+#' wrapper around [morie_estimate_ate()] that also produces a 95% confidence
 #' interval (delta-method approximation).
 #'
 #' @param data A `data.frame`.
@@ -145,12 +145,12 @@ compare_nested_logistic_models <- function(data, outcome,
 #'   t = rbinom(200, 1, 0.5),
 #'   x1 = rnorm(200), x2 = rnorm(200)
 #' )
-#' run_treatment_effects_analysis(df,
+#' morie_run_treatment_effects_analysis(df,
 #'   treatment = "t", outcome = "y", covariates = c("x1", "x2")
 #' )
-run_treatment_effects_analysis <- function(data, treatment, outcome,
+morie_run_treatment_effects_analysis <- function(data, treatment, outcome,
                                            covariates) {
-  ate_res <- estimate_ate(data,
+  ate_res <- morie_estimate_ate(data,
     treatment = treatment, outcome = outcome,
     covariates = covariates
   )

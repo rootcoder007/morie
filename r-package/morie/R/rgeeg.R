@@ -53,4 +53,4 @@ rgeeg <- function(x, fs, bands = NULL, nperseg = NULL) {
 #' @rdname rgeeg
 #' @keywords internal
 #' @export
-rangayyan_eeg_bands <- rgeeg
+morie_rangayyan_eeg_bands <- rgeeg

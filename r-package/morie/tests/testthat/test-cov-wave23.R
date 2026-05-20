@@ -20,11 +20,11 @@ test_that(".frns helpers cover empty / degenerate inputs", {
   expect_true(is.na(morie:::.frns_worst_abs(c(NA_real_, NaN, Inf, -Inf))))
 })
 
-# ---- fairness_disparate_impact --------------------------------------------
+# ---- morie_fairness_disparate_impact --------------------------------------------
 
-test_that("fairness_disparate_impact: zero-base, adverse, inferred priv", {
+test_that("morie_fairness_disparate_impact: zero-base, adverse, inferred priv", {
   # privileged group has a zero favourable-outcome rate -> undefined ratios
-  z <- fairness_disparate_impact(c(0, 0, 0, 1, 1, 0),
+  z <- morie_fairness_disparate_impact(c(0, 0, 0, 1, 1, 0),
     c("A", "A", "A", "B", "B", "B"),
     privileged = "A"
   )
@@ -33,7 +33,7 @@ test_that("fairness_disparate_impact: zero-base, adverse, inferred priv", {
   expect_match(z$interpretation, "could not be computed")
 
   # clear adverse impact: B rate 0.25 vs A rate 1.0
-  a <- fairness_disparate_impact(c(1, 1, 1, 1, 1, 0, 0, 0),
+  a <- morie_fairness_disparate_impact(c(1, 1, 1, 1, 1, 0, 0, 0),
     c(rep("A", 4), rep("B", 4)),
     privileged = "A"
   )
@@ -41,42 +41,42 @@ test_that("fairness_disparate_impact: zero-base, adverse, inferred priv", {
   expect_match(a$interpretation, "Adverse impact detected")
 
   # privileged = NULL -> the inferred-reference warning path
-  inf <- fairness_disparate_impact(
+  inf <- morie_fairness_disparate_impact(
     c(1, 1, 0, 0, 1, 0),
     c("A", "A", "A", "B", "B", "B")
   )
   expect_true(any(grepl("inferred", inf$warnings)))
 })
 
-# ---- fairness_demographic_parity ------------------------------------------
+# ---- morie_fairness_demographic_parity ------------------------------------------
 
-test_that("fairness_demographic_parity: <2 groups, inferred priv, gap interp", {
+test_that("morie_fairness_demographic_parity: <2 groups, inferred priv, gap interp", {
   expect_error(
-    fairness_demographic_parity(c(1, 0), c("A", "A")),
+    morie_fairness_demographic_parity(c(1, 0), c("A", "A")),
     "at least two groups"
   )
-  res <- fairness_demographic_parity(
+  res <- morie_fairness_demographic_parity(
     c(1, 1, 1, 1, 0, 0, 0, 0),
     c(rep("A", 4), rep("B", 4))
   )
   expect_true(any(grepl("inferred", res$warnings)))
   expect_match(res$interpretation, "differ materially")
-  near <- fairness_demographic_parity(c(1, 1, 1, 0, 1, 1, 0, 1),
+  near <- morie_fairness_demographic_parity(c(1, 1, 1, 0, 1, 1, 0, 1),
     c(rep("A", 4), rep("B", 4)),
     privileged = "A"
   )
   expect_match(near$interpretation, "close to parity")
 })
 
-# ---- fairness_equalized_odds / average_odds_difference --------------------
+# ---- morie_fairness_equalized_odds / average_odds_difference --------------------
 
-test_that("fairness_equalized_odds: undefined-rate warning + violation", {
+test_that("morie_fairness_equalized_odds: undefined-rate warning + violation", {
   expect_error(
-    fairness_equalized_odds(c(1, 0), c(1, 0), c("A", "A")),
+    morie_fairness_equalized_odds(c(1, 0), c(1, 0), c("A", "A")),
     "at least two groups"
   )
   # group B has no positive ground-truth cases -> NA TPR -> warning
-  eo <- fairness_equalized_odds(
+  eo <- morie_fairness_equalized_odds(
     y_true = c(1, 1, 0, 0, 0, 0, 0, 0),
     y_pred = c(1, 0, 1, 0, 1, 1, 0, 1),
     group = c(rep("A", 4), rep("B", 4)),
@@ -84,7 +84,7 @@ test_that("fairness_equalized_odds: undefined-rate warning + violation", {
   )
   expect_true(any(grepl("undefined", eo$warnings)))
   # a large, well-defined gap -> the violation interpretation
-  viol <- fairness_equalized_odds(
+  viol <- morie_fairness_equalized_odds(
     y_true = c(1, 1, 0, 0, 1, 1, 0, 0),
     y_pred = c(1, 1, 0, 0, 0, 0, 1, 1),
     group = c(rep("A", 4), rep("B", 4)),
@@ -94,8 +94,8 @@ test_that("fairness_equalized_odds: undefined-rate warning + violation", {
   expect_match(viol$interpretation, "differ substantially")
 })
 
-test_that("fairness_average_odds_difference runs with inferred privileged", {
-  aod <- fairness_average_odds_difference(
+test_that("morie_fairness_average_odds_difference runs with inferred privileged", {
+  aod <- morie_fairness_average_odds_difference(
     y_true = c(1, 1, 0, 0, 1, 1, 0, 0),
     y_pred = c(1, 1, 0, 0, 0, 0, 1, 1),
     group  = c(rep("A", 4), rep("B", 4))
@@ -104,15 +104,15 @@ test_that("fairness_average_odds_difference runs with inferred privileged", {
   expect_match(aod$interpretation, "average odds difference")
 })
 
-# ---- fairness_bias_amplification ------------------------------------------
+# ---- morie_fairness_bias_amplification ------------------------------------------
 
-test_that("fairness_bias_amplification: amplified and quiet regimes", {
-  amp <- fairness_bias_amplification(c(1, 1, 1, 1, 0, 0, 0, 0),
+test_that("morie_fairness_bias_amplification: amplified and quiet regimes", {
+  amp <- morie_fairness_bias_amplification(c(1, 1, 1, 1, 0, 0, 0, 0),
     c(rep("A", 4), rep("B", 4)),
     privileged = "A"
   )
   expect_match(amp$interpretation, "directional disparity")
-  quiet <- fairness_bias_amplification(
+  quiet <- morie_fairness_bias_amplification(
     c(1, 1, 1, 0, 1, 1, 0, 1),
     c(rep("A", 4), rep("B", 4))
   )

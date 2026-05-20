@@ -16,15 +16,15 @@ dlgen_fixture <- function() {
 test_that("dlgen deterministic_seed is reproducible", {
   skip_if_no_hash()
   fx <- dlgen_fixture()
-  r1 <- deep_learning_genomic(fx$x, fx$y, fx$M,
+  r1 <- morie_deep_learning_genomic(fx$x, fx$y, fx$M,
     n_epochs = 30,
     deterministic_seed = 42L
   )
-  r2 <- deep_learning_genomic(fx$x, fx$y, fx$M,
+  r2 <- morie_deep_learning_genomic(fx$x, fx$y, fx$M,
     n_epochs = 30,
     deterministic_seed = 42L
   )
-  r3 <- deep_learning_genomic(fx$x, fx$y, fx$M,
+  r3 <- morie_deep_learning_genomic(fx$x, fx$y, fx$M,
     n_epochs = 30,
     deterministic_seed = 999L
   )
@@ -35,8 +35,8 @@ test_that("dlgen deterministic_seed is reproducible", {
 
 test_that("dlgen default (deterministic_seed = NULL) path is unchanged", {
   fx <- dlgen_fixture()
-  r1 <- deep_learning_genomic(fx$x, fx$y, fx$M, n_epochs = 30, seed = 42)
-  r2 <- deep_learning_genomic(fx$x, fx$y, fx$M, n_epochs = 30, seed = 42)
+  r1 <- morie_deep_learning_genomic(fx$x, fx$y, fx$M, n_epochs = 30, seed = 42)
+  r2 <- morie_deep_learning_genomic(fx$x, fx$y, fx$M, n_epochs = 30, seed = 42)
   expect_equal(r1$estimate, r2$estimate)
   expect_equal(r1$W1, r2$W1)
 })

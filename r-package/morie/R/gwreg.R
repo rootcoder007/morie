@@ -13,7 +13,7 @@
 #'   n, method.
 #' @references Brunsdon, Fotheringham & Charlton (1996).
 #' @examples
-#' gwreg(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100),      50, 2))
+#' gwreg(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100), 50, 2))
 #' @export
 gwreg <- function(x, y, coords, bandwidth = NULL, kernel = "gaussian") {
   X <- as.matrix(x)
@@ -65,4 +65,4 @@ gwreg <- function(x, y, coords, bandwidth = NULL, kernel = "gaussian") {
 #' @rdname gwreg
 #' @keywords internal
 #' @export
-geographically_weighted_regression <- gwreg
+morie_geographically_weighted_regression <- gwreg

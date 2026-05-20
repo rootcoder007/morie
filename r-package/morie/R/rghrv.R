@@ -38,4 +38,4 @@ rghrv <- function(rr_ms) {
 #' @rdname rghrv
 #' @keywords internal
 #' @export
-rangayyan_hrv <- rghrv
+morie_rangayyan_hrv <- rghrv

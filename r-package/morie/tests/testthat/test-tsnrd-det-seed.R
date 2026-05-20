@@ -25,15 +25,15 @@ test_that("tsnrd deterministic_seed is reproducible", {
   skip_if_no_hash()
   testthat::skip_if_not_installed("Rtsne")
   X <- x_blobs_fixture()
-  r1 <- tsne_reduction(X,
+  r1 <- morie_tsne_reduction(X,
     n_components = 2L, perplexity = 5,
     n_iter = 300L, deterministic_seed = 42L
   )
-  r2 <- tsne_reduction(X,
+  r2 <- morie_tsne_reduction(X,
     n_components = 2L, perplexity = 5,
     n_iter = 300L, deterministic_seed = 42L
   )
-  r3 <- tsne_reduction(X,
+  r3 <- morie_tsne_reduction(X,
     n_components = 2L, perplexity = 5,
     n_iter = 300L, deterministic_seed = 999L
   )
@@ -44,11 +44,11 @@ test_that("tsnrd deterministic_seed is reproducible", {
 test_that("tsnrd default (deterministic_seed = NULL) path is unchanged", {
   testthat::skip_if_not_installed("Rtsne")
   X <- x_blobs_fixture()
-  r1 <- tsne_reduction(X,
+  r1 <- morie_tsne_reduction(X,
     n_components = 2L, perplexity = 5,
     n_iter = 300L, seed = 42L
   )
-  r2 <- tsne_reduction(X,
+  r2 <- morie_tsne_reduction(X,
     n_components = 2L, perplexity = 5,
     n_iter = 300L, seed = 42L
   )

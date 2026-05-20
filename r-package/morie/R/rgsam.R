@@ -42,4 +42,4 @@ rgsam <- function(x, m = 2L, r = NULL) {
 #' @rdname rgsam
 #' @keywords internal
 #' @export
-rangayyan_sample_entropy <- rgsam
+morie_rangayyan_sample_entropy <- rgsam

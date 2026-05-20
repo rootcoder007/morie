@@ -42,7 +42,7 @@ test_that("kernel callables recompute a non-positive supplied bandwidth", {
   ok("hrzk3", morie:::hrzk3(X[, 1], y, bandwidth = -1))
   ok("hrzp1", morie:::hrzp1(X[, 1], y, z, bandwidth = -1))
   ok("nstat", nstat(y, coords, bandwidth = -1))
-  ok("rkhsf", rkhs_full(X, y, markers = mk, h = -1))
+  ok("rkhsf", morie_rkhs_full(X, y, markers = mk, h = -1))
   # hrzk3: a grid point far outside the data -> all kernel weights ~ 0
   ok("hrzk3_far", morie:::hrzk3(X[, 1], y, grid = 1e6))
   expect_true(TRUE)
@@ -128,7 +128,7 @@ test_that("gradient-boosting / xgboost objectives run the classification path", 
   set.seed(293)
   X <- matrix(rnorm(80 * 3), 80, 3)
   yb <- rbinom(80, 1, plogis(X[, 1]))
-  ok("gbens_cls", gradient_boosting_ensemble(X, yb, task = "classification"))
-  ok("xgbst_cls", xgboost_objective(X, yb, task = "classification"))
+  ok("gbens_cls", morie_gradient_boosting_ensemble(X, yb, task = "classification"))
+  ok("xgbst_cls", morie_xgboost_objective(X, yb, task = "classification"))
   expect_true(TRUE)
 })

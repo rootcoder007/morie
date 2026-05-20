@@ -15,11 +15,13 @@
 #' @return list(estimate, beta, intercept, se, beta_se, lam, sigma2, n_iter, n, p, method).
 #' @references Park & Casella (2008) JASA 103:681. Montesinos Lopez Ch 4.
 #' @examples
-#' bayesian_lasso_full(x = matrix(rnorm(150), 50, 3), y = rnorm(50),
+#' morie_bayesian_lasso_full(
+#'   x = matrix(rnorm(150), 50, 3), y = rnorm(50),
 #'   n_iter = 50L, burn = 10L, lam = 1, seed = 1L,
-#'   deterministic_seed = TRUE)
+#'   deterministic_seed = TRUE
+#' )
 #' @export
-bayesian_lasso_full <- function(x, y, n_iter = 200, burn = 50,
+morie_bayesian_lasso_full <- function(x, y, n_iter = 200, burn = 50,
                                 lam = NULL, seed = 0,
                                 deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
@@ -92,4 +94,4 @@ bayesian_lasso_full <- function(x, y, n_iter = 200, burn = 50,
 
 # CANONICAL TEST
 # set.seed(3); X <- matrix(rnorm(100), 20, 5); b <- c(1,-1,0,0,0)
-# y <- X %*% b + 0.2*rnorm(20); bayesian_lasso_full(X, y, seed=3)$beta
+# y <- X %*% b + 0.2*rnorm(20); morie_bayesian_lasso_full(X, y, seed=3)$beta

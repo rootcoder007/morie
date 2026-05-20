@@ -48,4 +48,4 @@ nstat <- function(x, coords, bandwidth = NULL) {
 #' @rdname nstat
 #' @keywords internal
 #' @export
-nonstationary_covariance <- nstat
+morie_nonstationary_covariance <- nstat

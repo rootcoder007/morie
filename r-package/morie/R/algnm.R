@@ -64,4 +64,4 @@ algnm <- function(x, party = NULL) {
 #' @keywords internal
 #' @rdname algnm
 #' @export
-party_alignment <- algnm
+morie_party_alignment <- algnm

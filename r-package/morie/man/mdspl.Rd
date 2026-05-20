@@ -2,12 +2,12 @@
 % Please edit documentation in R/mdspl.R
 \name{mdspl}
 \alias{mdspl}
-\alias{mds_spatial_map}
+\alias{morie_mds_spatial_map}
 \title{Classical MDS for spatial map of legislators (Armstrong Ch 7)}
 \usage{
 mdspl(x, k = 2L)
 
-mds_spatial_map(x, k = 2L)
+morie_mds_spatial_map(x, k = 2L)
 }
 \arguments{
 \item{x}{Either an (n by p) configuration matrix OR an (n by n)

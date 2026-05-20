@@ -1,0 +1,117 @@
+# Minimal pkgdown configuration for the morie R package.
+#
+# pkgcheck's "Repository has a website" check passes via the URL field
+# in DESCRIPTION, so this file is not strictly required. It is included
+# so contributors who want to build a local documentation site can do
+# so with a single call:
+#
+#   pkgdown::build_site()
+#
+# Building the site on GitHub Pages is a follow-up: the workflow lives
+# in the top-level `morie-090/.github/workflows/` tree (alongside the
+# Sphinx Pages workflow for the Python side) and is wired up
+# separately.
+
+url: https://hadesllm.github.io/morie/
+
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#7c3aed"   # match the Python-side Sphinx theme
+
+home:
+  title: morie
+  description: >
+    Multi-domain Open Research and Inferential Estimation -- a
+    dual-language (R + Python) scientific computing package for
+    causal inference, sampling, psychometrics, point-process
+    modeling, and criminological accountability analysis.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    articles:
+      text: Articles
+      menu:
+        - text: Getting started
+          href: articles/intro.html
+        - text: The SIU pipeline
+          href: articles/siu-pipeline.html
+        - text: MRM OTIS walkthrough
+          href: articles/mrm-otis-walkthrough.html
+        - text: Causal inference
+          href: articles/causal-inference.html
+        - text: Chi-square tests and ANOVA
+          href: articles/chi-square-and-anova.html
+        - text: CPADS canonicalization
+          href: articles/cpads-canonicalization.html
+        - text: Dataset catalog
+          href: articles/dataset-catalog.html
+        - text: Disparity audit
+          href: articles/disparity-audit.html
+        - text: Effect sizes
+          href: articles/effect-sizes.html
+        - text: IPW deep dive
+          href: articles/ipw-deep-dive.html
+        - text: MRM dataset fetchers
+          href: articles/mrm-dataset-fetchers.html
+        - text: MRM empirical callables
+          href: articles/mrm-empirical-callables.html
+        - text: Signal processing
+          href: articles/signal-processing.html
+        - text: Survey-weighted estimation
+          href: articles/survey-weighted.html
+
+reference:
+  - title: SIU pipeline
+    desc: Fetch, parse, audit, and translate Ontario SIU director's reports.
+    contents:
+      - starts_with("morie_fetch_siu")
+      - starts_with("morie_siu_")
+  - title: Universal data fetchers
+    desc: Multi-portal CKAN, ArcGIS, and generic fetch helpers.
+    contents:
+      - starts_with("morie_fetch")
+      - starts_with("morie_ckan")
+  - title: Causal estimators
+    desc: ATE / ATT / ATC / AIPW and the broader causal toolkit.
+    contents:
+      - starts_with("morie_estimate_")
+      - starts_with("morie_ipw")
+      - starts_with("morie_ebac")
+  - title: Hawkes self-exciting point processes
+    contents:
+      - starts_with("morie_hawkes")
+  - title: Chi-square, ANOVA, effect sizes
+    contents:
+      - morie_chi_square_test
+      - morie_cramers_v
+      - morie_omega_squared
+      - morie_cohen_d
+      - morie_proportion_ci
+      - morie_evalue
+  - title: MRM framework
+    desc: Multilevel Reconciliation Methodology framework callables.
+    contents:
+      - starts_with("mrm_")
+  - title: Datasets
+    contents:
+      - morie_dataset_catalog
+      - morie_dataset_info
+      - morie_load_dataset
+  - title: Outputs manifest
+    contents:
+      - morie_read_outputs_manifest
+      - morie_audit_public_outputs
+      - morie_summarize_output_audit
+      - morie_build_outputs_manifest
+  - title: Synthetic data
+    contents:
+      - morie_generate_synthetic_data
+      - morie_write_synthetic_data
+      - morie_default_synthetic_name_map
+  - title: Everything else
+    contents:
+      - matches(".")

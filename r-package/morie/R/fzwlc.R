@@ -64,4 +64,4 @@ fzwlc <- function(x, theta0 = 0, h = NULL, alternative = "two-sided") {
 #' @rdname fzwlc
 #' @keywords internal
 #' @export
-fauzi_smoothed_wilcoxon <- fzwlc
+morie_fauzi_smoothed_wilcoxon <- fzwlc

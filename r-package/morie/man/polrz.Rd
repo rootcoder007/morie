@@ -2,12 +2,12 @@
 % Please edit documentation in R/polrz.R
 \name{polrz}
 \alias{polrz}
-\alias{polarization_index}
+\alias{morie_polarization_index}
 \title{Polarization index (Cohen-d between two groups; Armstrong Ch 8)}
 \usage{
 polrz(x, group = NULL)
 
-polarization_index(x, group = NULL)
+morie_polarization_index(x, group = NULL)
 }
 \arguments{
 \item{x}{Numeric vector of ideal points.}

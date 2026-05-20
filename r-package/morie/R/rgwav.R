@@ -71,4 +71,4 @@ rgwav <- function(x, wavelet = "d8", level = NULL, mode = c("soft", "hard")) {
 #' @rdname rgwav
 #' @keywords internal
 #' @export
-rangayyan_wavelet_denoise <- rgwav
+morie_rangayyan_wavelet_denoise <- rgwav

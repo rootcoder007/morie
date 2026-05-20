@@ -16,8 +16,6 @@ Numeric Cramer's V in the interval [0, 1].
 Cramer's V for categorical association
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }

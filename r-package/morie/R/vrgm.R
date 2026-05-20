@@ -50,4 +50,4 @@ vrgm <- function(x, coords, n_bins = 10, max_dist = NULL) {
 #' @rdname vrgm
 #' @keywords internal
 #' @export
-variogram_estimation <- vrgm
+morie_variogram_estimation <- vrgm

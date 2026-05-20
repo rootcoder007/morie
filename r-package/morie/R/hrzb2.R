@@ -65,4 +65,4 @@ hrzb2 <- function(x, y, bandwidth = NULL) {
 #' @rdname hrzb2
 #' @keywords internal
 #' @export
-horowitz_smoothed_maximum_score <- hrzb2
+morie_horowitz_smoothed_maximum_score <- hrzb2

@@ -25,8 +25,8 @@ test_that("rgapn errors on series too short for template", {
   expect_error(rgapn(c(1, 2, 3), m = 2L), "m \\+ 1")
 })
 
-test_that("rangayyan_approximate_entropy alias is identical to rgapn", {
-  expect_identical(rangayyan_approximate_entropy, rgapn)
+test_that("morie_rangayyan_approximate_entropy alias is identical to rgapn", {
+  expect_identical(morie_rangayyan_approximate_entropy, rgapn)
 })
 
 test_that("rgarb returns AR coefficients of requested order", {
@@ -58,8 +58,8 @@ test_that("rgarb errors on invalid order", {
   expect_error(rgarb(rnorm(20), order = 20L), "order")
 })
 
-test_that("rangayyan_ar_burg alias is identical to rgarb", {
-  expect_identical(rangayyan_ar_burg, rgarb)
+test_that("morie_rangayyan_ar_burg alias is identical to rgarb", {
+  expect_identical(morie_rangayyan_ar_burg, rgarb)
 })
 
 test_that("rgcoh returns morie_coherence bounded in [0, 1]", {
@@ -93,8 +93,8 @@ test_that("rgcoh errors on unequal length inputs", {
   expect_error(rgcoh(1:10, 1:8), "equal length")
 })
 
-test_that("rangayyan_coherence alias is identical to rgcoh", {
-  expect_identical(rangayyan_coherence, rgcoh)
+test_that("morie_rangayyan_coherence alias is identical to rgcoh", {
+  expect_identical(morie_rangayyan_coherence, rgcoh)
 })
 
 test_that("rgcrl returns D2 and scaling vectors", {
@@ -117,8 +117,8 @@ test_that("rgcrl errors on series too short for embedding", {
   expect_error(rgcrl(rnorm(8), m = 3L, tau = 2L), "too short")
 })
 
-test_that("rangayyan_correlation_dimension alias is identical to rgcrl", {
-  expect_identical(rangayyan_correlation_dimension, rgcrl)
+test_that("morie_rangayyan_correlation_dimension alias is identical to rgcrl", {
+  expect_identical(morie_rangayyan_correlation_dimension, rgcrl)
 })
 
 test_that("rgdfa returns alpha exponent and scaling vectors", {
@@ -141,8 +141,8 @@ test_that("rgdfa errors on series shorter than 32 samples", {
   expect_error(rgdfa(rnorm(20)), "32 samples")
 })
 
-test_that("rangayyan_dfa alias is identical to rgdfa", {
-  expect_identical(rangayyan_dfa, rgdfa)
+test_that("morie_rangayyan_dfa alias is identical to rgdfa", {
+  expect_identical(morie_rangayyan_dfa, rgdfa)
 })
 
 test_that("rgeeg returns absolute and relative band power", {
@@ -170,8 +170,8 @@ test_that("rgeeg honours custom bands and nperseg", {
   expect_named(r$relative, c("low", "high"))
 })
 
-test_that("rangayyan_eeg_bands alias is identical to rgeeg", {
-  expect_identical(rangayyan_eeg_bands, rgeeg)
+test_that("morie_rangayyan_eeg_bands alias is identical to rgeeg", {
+  expect_identical(morie_rangayyan_eeg_bands, rgeeg)
 })
 
 test_that("rgemg returns RMS envelope of length(x)", {
@@ -197,8 +197,8 @@ test_that("rgemg errors on window < 1", {
   expect_error(rgemg(rnorm(50), window = 0L), "window")
 })
 
-test_that("rangayyan_emg_rms alias is identical to rgemg", {
-  expect_identical(rangayyan_emg_rms, rgemg)
+test_that("morie_rangayyan_emg_rms alias is identical to rgemg", {
+  expect_identical(morie_rangayyan_emg_rms, rgemg)
 })
 
 test_that("rgenv returns envelope and instantaneous quantities (even N)", {
@@ -225,8 +225,8 @@ test_that("rgenv handles odd-length input", {
   expect_true(all(is.finite(r$envelope)))
 })
 
-test_that("rangayyan_envelope alias is identical to rgenv", {
-  expect_identical(rangayyan_envelope, rgenv)
+test_that("morie_rangayyan_envelope alias is identical to rgenv", {
+  expect_identical(morie_rangayyan_envelope, rgenv)
 })
 
 test_that("rgfir filters a signal when 'signal' is available", {
@@ -262,8 +262,8 @@ test_that("rgfir supports alternative windows and short-signal path", {
   }
 })
 
-test_that("rangayyan_fir_filter alias is identical to rgfir", {
-  expect_identical(rangayyan_fir_filter, rgfir)
+test_that("morie_rangayyan_fir_filter alias is identical to rgfir", {
+  expect_identical(morie_rangayyan_fir_filter, rgfir)
 })
 
 test_that("rghfd returns HFD and scaling vectors", {
@@ -286,8 +286,8 @@ test_that("rghfd errors on too-short input or tiny kmax", {
   expect_error(rghfd(rnorm(50), kmax = 1L), "kmax")
 })
 
-test_that("rangayyan_higuchi_fd alias is identical to rghfd", {
-  expect_identical(rangayyan_higuchi_fd, rghfd)
+test_that("morie_rangayyan_higuchi_fd alias is identical to rghfd", {
+  expect_identical(morie_rangayyan_higuchi_fd, rghfd)
 })
 
 test_that("rghrv returns documented time-domain indices", {
@@ -317,8 +317,8 @@ test_that("rghrv errors on fewer than 2 intervals", {
   expect_error(rghrv(800), "2 RR")
 })
 
-test_that("rangayyan_hrv alias is identical to rghrv", {
-  expect_identical(rangayyan_hrv, rghrv)
+test_that("morie_rangayyan_hrv alias is identical to rghrv", {
+  expect_identical(morie_rangayyan_hrv, rghrv)
 })
 
 test_that("rgiir lowpass filters a signal when 'signal' is available", {
@@ -351,8 +351,8 @@ test_that("rgiir rejects an invalid btype", {
   expect_error(rgiir(rnorm(100), cutoff = 10, fs = 100, btype = "bogus"))
 })
 
-test_that("rangayyan_iir_filter alias is identical to rgiir", {
-  expect_identical(rangayyan_iir_filter, rgiir)
+test_that("morie_rangayyan_iir_filter alias is identical to rgiir", {
+  expect_identical(morie_rangayyan_iir_filter, rgiir)
 })
 
 test_that("rglyp returns lyapunov exponent and divergence curve", {
@@ -376,8 +376,8 @@ test_that("rglyp errors on series too short for embedding", {
   expect_error(rglyp(rnorm(8), m = 3L, tau = 2L), "too short")
 })
 
-test_that("rangayyan_lyapunov alias is identical to rglyp", {
-  expect_identical(rangayyan_lyapunov, rglyp)
+test_that("morie_rangayyan_lyapunov alias is identical to rglyp", {
+  expect_identical(morie_rangayyan_lyapunov, rglyp)
 })
 
 test_that("rgpsd returns one-sided PSD with documented fields", {
@@ -408,8 +408,8 @@ test_that("rgpsd supports alternative windows and default nperseg", {
   }
 })
 
-test_that("rangayyan_psd alias is identical to rgpsd", {
-  expect_identical(rangayyan_psd, rgpsd)
+test_that("morie_rangayyan_psd alias is identical to rgpsd", {
+  expect_identical(morie_rangayyan_psd, rgpsd)
 })
 
 test_that("rgqrs detects R-peaks on a synthetic ECG", {
@@ -446,6 +446,6 @@ test_that("rgqrs default fs argument path runs", {
   expect_true(is.na(r$heart_rate_bpm) || is.finite(r$heart_rate_bpm))
 })
 
-test_that("rangayyan_qrs_detect alias is identical to rgqrs", {
-  expect_identical(rangayyan_qrs_detect, rgqrs)
+test_that("morie_rangayyan_qrs_detect alias is identical to rgqrs", {
+  expect_identical(morie_rangayyan_qrs_detect, rgqrs)
 })

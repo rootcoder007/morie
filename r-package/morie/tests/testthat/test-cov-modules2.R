@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Coverage wave 7 -- R/modules.R: CPADS-CSV resolution, canonicalization,
-# module-output writing, and the run_morie_module(s) dispatch.
+# module-output writing, and the morie_run_morie_module(s) dispatch.
 
 test_that(".cpads_default_csv returns a CPADS csv path", {
   p <- morie:::.cpads_default_csv()
@@ -19,25 +19,25 @@ test_that(".resolve_cpads_csv resolves an existing file, errors otherwise", {
   )
 })
 
-test_that("canonicalize_cpads_data passes through already-canonical data", {
-  out <- canonicalize_cpads_data(make_canonical_cpads(n = 120L))
+test_that("morie_canonicalize_cpads_data passes through already-canonical data", {
+  out <- morie_canonicalize_cpads_data(make_canonical_cpads(n = 120L))
   expect_s3_class(out, "data.frame")
   expect_true("ebac_tot" %in% names(out))
 })
 
-test_that("canonicalize_cpads_data maps raw CPADS columns", {
-  out <- canonicalize_cpads_data(make_raw_cpads(n = 300L))
+test_that("morie_canonicalize_cpads_data maps raw CPADS columns", {
+  out <- morie_canonicalize_cpads_data(make_raw_cpads(n = 300L))
   expect_true(all(c(
     "weight", "alcohol_past12m", "cannabis_any_use",
     "heavy_drinking_30d"
   ) %in% names(out)))
 })
 
-test_that("load_cpads_data reads and canonicalizes a raw CPADS csv", {
+test_that("morie_load_cpads_data reads and canonicalizes a raw CPADS csv", {
   csv <- tempfile("rawcpads-", fileext = ".csv")
   utils::write.csv(make_raw_cpads(n = 400L), csv, row.names = FALSE)
   on.exit(unlink(csv), add = TRUE)
-  d <- load_cpads_data(csv)
+  d <- morie_load_cpads_data(csv)
   expect_s3_class(d, "data.frame")
   expect_true("heavy_drinking_30d" %in% names(d))
 })
@@ -56,22 +56,22 @@ test_that(".write_module_outputs: no dir returns as-is; a dir writes files", {
   expect_true(file.exists(file.path(od, "pre.csv")))
 })
 
-test_that("run_morie_module errors on an unknown module name", {
+test_that("morie_run_morie_module errors on an unknown module name", {
   csv <- tempfile("rawcpads-", fileext = ".csv")
   utils::write.csv(make_raw_cpads(n = 200L), csv, row.names = FALSE)
   on.exit(unlink(csv), add = TRUE)
   expect_error(
-    suppressWarnings(run_morie_module("not-a-real-module", cpads_csv = csv)),
+    suppressWarnings(morie_run_morie_module("not-a-real-module", cpads_csv = csv)),
     "Unknown module"
   )
 })
 
-test_that("run_morie_modules runs a set of in-memory-safe modules", {
+test_that("morie_run_morie_modules runs a set of in-memory-safe modules", {
   skip_on_cran()
   csv <- tempfile("rawcpads-", fileext = ".csv")
   utils::write.csv(make_raw_cpads(n = 600L), csv, row.names = FALSE)
   on.exit(unlink(csv), add = TRUE)
-  res <- suppressWarnings(run_morie_modules(
+  res <- suppressWarnings(morie_run_morie_modules(
     modules = c("descriptive-statistics", "distribution-tests"),
     cpads_csv = csv
   ))

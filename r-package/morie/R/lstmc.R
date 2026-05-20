@@ -21,9 +21,9 @@
 #' @return Named list \code{(h, c, estimate, i, f, g, o, method)}.
 #' @references Hochreiter & Schmidhuber (1997), Neural Computation 9(8).
 #' @examples
-#' lstmc_lstm_cell(x = rnorm(50))
+#' morie_lstmc_lstm_cell(x = rnorm(50))
 #' @export
-lstmc_lstm_cell <- function(x, h_prev = NULL, c_prev = NULL,
+morie_lstmc_lstm_cell <- function(x, h_prev = NULL, c_prev = NULL,
                             W = NULL, U = NULL, b = NULL,
                             hidden_size = NULL, seed = 0L,
                             deterministic_seed = NULL) {
@@ -64,7 +64,7 @@ lstmc_lstm_cell <- function(x, h_prev = NULL, c_prev = NULL,
   )
 }
 
-#' @rdname lstmc_lstm_cell
+#' @rdname morie_lstmc_lstm_cell
 #' @keywords internal
 #' @export
-lstm_cell <- lstmc_lstm_cell
+morie_lstm_cell <- morie_lstmc_lstm_cell

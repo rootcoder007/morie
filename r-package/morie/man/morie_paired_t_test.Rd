@@ -20,8 +20,6 @@ Named list: \code{t}, \code{df}, \code{p_value}, \code{ci_diff}, \code{mean_diff
 Paired t-test
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }

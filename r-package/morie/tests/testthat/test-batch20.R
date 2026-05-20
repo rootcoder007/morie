@@ -47,8 +47,8 @@ test_that("sptau returns NA list when weights or variance vanish", {
   expect_true(is.na(res2$statistic))
 })
 
-test_that("spatial_autocorrelation is an alias of sptau", {
-  expect_identical(spatial_autocorrelation, sptau)
+test_that("morie_spatial_autocorrelation is an alias of sptau", {
+  expect_identical(morie_spatial_autocorrelation, sptau)
 })
 
 test_that("sptrn fits a 1-D linear trend surface", {
@@ -84,14 +84,14 @@ test_that("sptrn errors when order exceeds 3 or n < p", {
   )
 })
 
-test_that("spatial_trend_surface is an alias of sptrn", {
-  expect_identical(spatial_trend_surface, sptrn)
+test_that("morie_spatial_trend_surface is an alias of sptrn", {
+  expect_identical(morie_spatial_trend_surface, sptrn)
 })
 
-test_that("state_space_model runs the base-R Kalman path", {
+test_that("morie_state_space_model runs the base-R Kalman path", {
   set.seed(3)
   y <- cumsum(rnorm(40))
-  res <- state_space_model(y)
+  res <- morie_state_space_model(y)
   expect_type(res, "list")
   expect_named(res, c(
     "filtered_state", "filtered_state_variance",
@@ -104,8 +104,8 @@ test_that("state_space_model runs the base-R Kalman path", {
   expect_true(res$Q >= 0 && res$R >= 0)
 })
 
-test_that("state_space_model errors on short series", {
-  expect_error(state_space_model(c(1, 2, 3)), ">=4")
+test_that("morie_state_space_model errors on short series", {
+  expect_error(morie_state_space_model(c(1, 2, 3)), ">=4")
 })
 
 test_that("stacv computes empirical spatiotemporal autocovariance", {
@@ -138,8 +138,8 @@ test_that("stacv errors on shape mismatch", {
   expect_error(stacv(rnorm(8), coords, runif(10)), "mismatch")
 })
 
-test_that("spatiotemporal_autocovariance is an alias of stacv", {
-  expect_identical(spatiotemporal_autocovariance, stacv)
+test_that("morie_spatiotemporal_autocovariance is an alias of stacv", {
+  expect_identical(morie_spatiotemporal_autocovariance, stacv)
 })
 
 test_that("stkrg predicts at a single target location", {
@@ -194,8 +194,8 @@ test_that("stkrg errors on shape and dimension mismatches", {
   )
 })
 
-test_that("spatiotemporal_kriging is an alias of stkrg", {
-  expect_identical(spatiotemporal_kriging, stkrg)
+test_that("morie_spatiotemporal_kriging is an alias of stkrg", {
+  expect_identical(morie_spatiotemporal_kriging, stkrg)
 })
 
 test_that("strat computes stratified mean with proportional weights", {
@@ -224,8 +224,8 @@ test_that("strat accepts explicit population sizes", {
   expect_equal(res$estimate, 0.75 * 2 + 0.25 * 11, tolerance = 1e-9)
 })
 
-test_that("stratified_sampling is an exported alias of strat", {
-  expect_identical(stratified_sampling, strat)
+test_that("morie_stratified_sampling is an exported alias of strat", {
+  expect_identical(morie_stratified_sampling, strat)
 })
 
 test_that("study_core .safe_divide handles zero and NA denominators", {
@@ -326,15 +326,15 @@ test_that("stvar honours explicit cutoffs and errors on shape mismatch", {
   expect_error(stvar(rnorm(8), coords, times), "mismatch")
 })
 
-test_that("spatiotemporal_variogram is an alias of stvar", {
-  expect_identical(spatiotemporal_variogram, stvar)
+test_that("morie_spatiotemporal_variogram is an alias of stvar", {
+  expect_identical(morie_spatiotemporal_variogram, stvar)
 })
 
-test_that("sukhatme_test compares two-sample scales", {
+test_that("morie_sukhatme_test compares two-sample scales", {
   set.seed(11)
   x <- rnorm(20, sd = 1)
   y <- rnorm(25, sd = 3)
-  res <- sukhatme_test(x, y)
+  res <- morie_sukhatme_test(x, y)
   expect_type(res, "list")
   expect_named(res, c("statistic", "p_value", "U", "n", "m", "method"))
   expect_equal(res$n, 45L)
@@ -343,18 +343,18 @@ test_that("sukhatme_test compares two-sample scales", {
   expect_true(res$p_value >= 0 && res$p_value <= 1)
 })
 
-test_that("sukhatme_test returns NA list for short samples", {
-  res <- sukhatme_test(c(1), c(2, 3, 4))
+test_that("morie_sukhatme_test returns NA list for short samples", {
+  res <- morie_sukhatme_test(c(1), c(2, 3, 4))
   expect_true(is.na(res$statistic))
   expect_true(is.na(res$U))
   expect_equal(res$n, 4L)
 })
 
-test_that("svm_genomic runs (e1071 path or kernel-ridge fallback)", {
+test_that("morie_svm_genomic runs (e1071 path or kernel-ridge fallback)", {
   set.seed(12)
   M <- matrix(rnorm(100), 25, 4)
   y <- sin(M[, 1]) + 0.2 * rnorm(25)
-  res <- svm_genomic(rep(0, 25), y, M)
+  res <- morie_svm_genomic(rep(0, 25), y, M)
   expect_type(res, "list")
   expect_named(res, c(
     "estimate", "y_hat", "alpha", "support_indices",
@@ -366,22 +366,22 @@ test_that("svm_genomic runs (e1071 path or kernel-ridge fallback)", {
   expect_true(res$se >= 0)
 })
 
-test_that("svm_genomic accepts NULL fixed effects and numeric gamma", {
+test_that("morie_svm_genomic accepts NULL fixed effects and numeric gamma", {
   set.seed(13)
   M <- matrix(rnorm(80), 20, 4)
   y <- M[, 1] + 0.1 * rnorm(20)
-  res <- svm_genomic(NULL, y, M, C = 2, epsilon = 0.05, gamma = 0.5)
+  res <- morie_svm_genomic(NULL, y, M, C = 2, epsilon = 0.05, gamma = 0.5)
   expect_equal(res$n, 20L)
   expect_length(res$y_hat, 20L)
   expect_true(is.character(res$method))
 })
 
-test_that("svm_hinge_primal fits a linear SVM when e1071 is available", {
+test_that("morie_svm_hinge_primal fits a linear SVM when e1071 is available", {
   skip_if_not_installed("e1071")
   set.seed(14)
   x <- rbind(matrix(rnorm(40, 1), 20, 2), matrix(rnorm(40, -1), 20, 2))
   y <- rep(c(1L, 0L), each = 20)
-  res <- svm_hinge_primal(x, y, C = 1)
+  res <- morie_svm_hinge_primal(x, y, C = 1)
   expect_type(res, "list")
   expect_named(res, c(
     "estimate", "intercept", "weights", "train_accuracy",
@@ -392,29 +392,29 @@ test_that("svm_hinge_primal fits a linear SVM when e1071 is available", {
   expect_true(res$train_accuracy >= 0 && res$train_accuracy <= 1)
 })
 
-test_that("svm_hinge_primal errors on non-binary y", {
+test_that("morie_svm_hinge_primal errors on non-binary y", {
   skip_if_not_installed("e1071")
   x <- matrix(rnorm(30), 15, 2)
   y <- rep(c(1L, 2L, 3L), each = 5)
-  expect_error(svm_hinge_primal(x, y), "binary")
+  expect_error(morie_svm_hinge_primal(x, y), "binary")
 })
 
-test_that("svm_hinge_primal coerces a vector predictor to a 1-column matrix", {
+test_that("morie_svm_hinge_primal coerces a vector predictor to a 1-column matrix", {
   skip_if_not_installed("e1071")
   set.seed(15)
   x <- c(rnorm(15, 2), rnorm(15, -2))
   y <- rep(c(1L, 0L), each = 15)
-  res <- svm_hinge_primal(x, y)
+  res <- morie_svm_hinge_primal(x, y)
   expect_equal(res$n, 30L)
 })
 
-test_that("svm_kernel_trick fits each supported kernel", {
+test_that("morie_svm_kernel_trick fits each supported kernel", {
   skip_if_not_installed("e1071")
   set.seed(16)
   x <- rbind(matrix(rnorm(60, 1), 30, 2), matrix(rnorm(60, -1), 30, 2))
   y <- rep(c(1L, 0L), each = 30)
   for (k in c("rbf", "poly", "sigmoid", "linear")) {
-    res <- svm_kernel_trick(x, y, kernel = k)
+    res <- morie_svm_kernel_trick(x, y, kernel = k)
     expect_type(res, "list")
     expect_named(res, c(
       "estimate", "train_accuracy", "n_support", "kernel",
@@ -426,14 +426,14 @@ test_that("svm_kernel_trick fits each supported kernel", {
   }
 })
 
-test_that("svm_kernel_trick honours gamma 'auto' and numeric gamma", {
+test_that("morie_svm_kernel_trick honours gamma 'auto' and numeric gamma", {
   skip_if_not_installed("e1071")
   set.seed(17)
   x <- rbind(matrix(rnorm(40, 1), 20, 2), matrix(rnorm(40, -1), 20, 2))
   y <- rep(c(1L, 0L), each = 20)
-  res_auto <- svm_kernel_trick(x, y, gamma = "auto")
+  res_auto <- morie_svm_kernel_trick(x, y, gamma = "auto")
   expect_equal(res_auto$gamma, "auto")
-  res_num <- svm_kernel_trick(x, y, gamma = 0.25, degree = 2L)
+  res_num <- morie_svm_kernel_trick(x, y, gamma = 0.25, degree = 2L)
   expect_equal(res_num$degree, 2L)
 })
 
@@ -465,11 +465,11 @@ test_that("swiglu_activation errors when only one of W/V is supplied", {
   expect_error(morie:::swiglu_activation(x, W = W), "both W and V")
 })
 
-test_that("default_synthetic_name_map returns the canonical key set", {
-  m_generic <- default_synthetic_name_map("generic")
+test_that("morie_default_synthetic_name_map returns the canonical key set", {
+  m_generic <- morie_default_synthetic_name_map("generic")
   expect_type(m_generic, "character")
   expect_true(all(morie:::synthetic_required_keys() %in% names(m_generic)))
-  m_legacy <- default_synthetic_name_map("morie_legacy")
+  m_legacy <- morie_default_synthetic_name_map("morie_legacy")
   expect_true(all(morie:::synthetic_required_keys() %in% names(m_legacy)))
   expect_equal(unname(m_legacy[["id"]]), "seqid")
 })
@@ -498,7 +498,7 @@ test_that("morie_generate_synthetic_data validates n and special_code_rate", {
 })
 
 test_that("morie_generate_synthetic_data accepts a custom name map", {
-  base <- default_synthetic_name_map("generic")
+  base <- morie_default_synthetic_name_map("generic")
   custom <- base
   custom[["id"]] <- "record_id"
   d <- morie_generate_synthetic_data(n = 120L, seed = 3L, name_map = custom)
@@ -511,7 +511,7 @@ test_that("resolve_synthetic_name_map rejects malformed maps", {
     morie:::resolve_synthetic_name_map(bad_missing, "generic"),
     "missing required keys"
   )
-  full <- default_synthetic_name_map("generic")
+  full <- morie_default_synthetic_name_map("generic")
   dup <- full
   dup[["weight"]] <- dup[["id"]]
   expect_error(morie:::resolve_synthetic_name_map(dup, "generic"), "unique")
@@ -532,23 +532,23 @@ test_that("synthetic helpers inv_logit and inject_special_codes behave", {
   expect_length(out2, 500L)
 })
 
-test_that("write_synthetic_data writes a CSV and guards existing files", {
+test_that("morie_write_synthetic_data writes a CSV and guards existing files", {
   tmp <- tempfile(fileext = ".csv")
-  p <- write_synthetic_data(tmp, n = 110L, seed = 5L)
+  p <- morie_write_synthetic_data(tmp, n = 110L, seed = 5L)
   expect_true(file.exists(p))
   back <- utils::read.csv(p)
   expect_equal(nrow(back), 110L)
   expect_error(
-    write_synthetic_data(tmp, n = 110L, seed = 5L),
+    morie_write_synthetic_data(tmp, n = 110L, seed = 5L),
     "already exists"
   )
-  p2 <- write_synthetic_data(tmp, n = 110L, seed = 5L, overwrite = TRUE)
+  p2 <- morie_write_synthetic_data(tmp, n = 110L, seed = 5L, overwrite = TRUE)
   expect_true(file.exists(p2))
   unlink(tmp)
 })
 
-test_that("write_synthetic_data errors on an empty path", {
-  expect_error(write_synthetic_data(""), "non-empty")
+test_that("morie_write_synthetic_data errors on an empty path", {
+  expect_error(morie_write_synthetic_data(""), "non-empty")
 })
 
 test_that("study_core data-file module paths are not exercised offline", {

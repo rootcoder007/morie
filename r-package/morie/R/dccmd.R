@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Internal: DCC(1,1) two-step Gaussian negative log-likelihood for the
-# base-R fallback path. Extracted from the dcc_multivariate_garch()
+# base-R fallback path. Extracted from the morie_dcc_multivariate_garch()
 # optimiser closure so the parameter-domain and non-positive-determinant
 # guards are directly unit-testable. `Q_bar` is the unconditional
 # correlation, `n` the sample size, `Z` the standardised residuals.
@@ -39,9 +39,9 @@
 #' @return Named list with \code{a, b, unconditional_correlation,
 #'   conditional_correlation, conditional_variance, loglik, n, k, method}.
 #' @examples
-#' dcc_multivariate_garch(x = matrix(rnorm(150), 50, 3))
+#' morie_dcc_multivariate_garch(x = matrix(rnorm(150), 50, 3))
 #' @export
-dcc_multivariate_garch <- function(x) {
+morie_dcc_multivariate_garch <- function(x) {
   X <- as.matrix(x)
   if (nrow(X) < ncol(X)) X <- t(X)
   n <- nrow(X)
@@ -90,7 +90,7 @@ dcc_multivariate_garch <- function(x) {
   Z <- matrix(NA_real_, n, k)
   for (j in seq_len(k)) {
     rj <- X[, j] - mean(X[, j])
-    g <- garch_fit(rj)
+    g <- morie_garch_fit(rj)
     H[, j] <- g$conditional_variance
     Z[, j] <- rj / sqrt(H[, j] + 1e-12)
   }

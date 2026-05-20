@@ -68,4 +68,4 @@ extvm <- function(x) {
 #' @rdname extvm
 #' @keywords internal
 #' @export
-extreme_value_gev <- extvm
+morie_extreme_value_gev <- extvm

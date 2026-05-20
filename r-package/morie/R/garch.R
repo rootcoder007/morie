@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Internal: GARCH(1,1) Gaussian negative log-likelihood for the base-R
-# fallback. Extracted from the garch_fit() optimiser closure so the
+# fallback. Extracted from the morie_garch_fit() optimiser closure so the
 # parameter-domain guard is directly unit-testable.
 .garch_negll <- function(p, r, n) {
   omega <- p[1]
@@ -24,9 +24,9 @@
 #' @return Named list with \code{omega, alpha, beta, persistence, loglik,
 #'   conditional_variance, n, method}.
 #' @examples
-#' garch_fit(x = rnorm(50))
+#' morie_garch_fit(x = rnorm(50))
 #' @export
-garch_fit <- function(x) {
+morie_garch_fit <- function(x) {
   r <- as.numeric(x) - mean(as.numeric(x))
   n <- length(r)
   if (n < 10) stop("Need >=10 obs.")

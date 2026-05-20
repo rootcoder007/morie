@@ -48,4 +48,4 @@ rkhsc <- function(x, y, sigma = NULL, lam = 1e-3) {
 #' @rdname rkhsc
 #' @keywords internal
 #' @export
-rkhs_kernel_regression <- rkhsc
+morie_rkhs_kernel_regression <- rkhsc

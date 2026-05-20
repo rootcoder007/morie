@@ -74,4 +74,4 @@ hrzn1 <- function(x, y, z, J = 5, alpha = 1e-3, grid = NULL,
 #' @rdname hrzn1
 #' @keywords internal
 #' @export
-horowitz_nonparametric_iv <- hrzn1
+morie_horowitz_nonparametric_iv <- hrzn1

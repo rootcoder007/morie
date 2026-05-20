@@ -21,7 +21,7 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-heinz_he_initialization <- function(fan_in, fan_out = NULL, seed = 42L,
+morie_heinz_he_initialization <- function(fan_in, fan_out = NULL, seed = 42L,
                                     mode = "normal",
                                     deterministic_seed = NULL) {
   fan_in <- as.integer(fan_in)
@@ -55,7 +55,7 @@ heinz_he_initialization <- function(fan_in, fan_out = NULL, seed = 42L,
   )
 }
 
-#' @rdname heinz_he_initialization
+#' @rdname morie_heinz_he_initialization
 #' @keywords internal
 #' @export
-he_initialization <- heinz_he_initialization
+morie_he_initialization <- morie_heinz_he_initialization

@@ -10,9 +10,9 @@
 #' @return Named list with \code{mu, sigma, transition,
 #'   smoothed_probabilities, loglik, n, k_regimes, method}.
 #' @examples
-#' regime_switching(x = rnorm(50))
+#' morie_regime_switching(x = rnorm(50))
 #' @export
-regime_switching <- function(x, k_regimes = 2) {
+morie_regime_switching <- function(x, k_regimes = 2) {
   y <- as.numeric(x)
   n <- length(y)
   if (n < 4 * k_regimes) stop("Series too short for K regimes.")
@@ -23,7 +23,8 @@ regime_switching <- function(x, k_regimes = 2) {
     # trips --as-cran's 2-worker cap (R_CHECK_LIMIT_CORES). Disable it: a
     # 60-point regime-switching EM is far cheaper to run sequentially anyway.
     msfit <- MSwM::msmFit(
-      base_fit, k = k_regimes, sw = c(TRUE, TRUE),
+      base_fit,
+      k = k_regimes, sw = c(TRUE, TRUE),
       control = list(parallelization = FALSE)
     )
     return(list(

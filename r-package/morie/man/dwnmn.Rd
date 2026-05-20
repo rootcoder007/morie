@@ -2,12 +2,12 @@
 % Please edit documentation in R/dwnmn.R
 \name{dwnmn}
 \alias{dwnmn}
-\alias{dynamic_wnominate}
+\alias{morie_dynamic_wnominate}
 \title{Dynamic ideal points / random-walk smoother (Armstrong Ch 6)}
 \usage{
 dwnmn(x, sigma_w = 0.1)
 
-dynamic_wnominate(x, sigma_w = 0.1)
+morie_dynamic_wnominate(x, sigma_w = 0.1)
 }
 \arguments{
 \item{x}{Numeric vector (per-period ideal points) or matrix

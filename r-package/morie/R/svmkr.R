@@ -15,12 +15,13 @@
 #'   gamma, degree, n, method.
 #' @importFrom stats predict
 #' @examples
-#' svm_kernel_trick(x = rnorm(50), y = rnorm(50))
+#' morie_svm_kernel_trick(x = rnorm(50), y = rnorm(50))
 #' @export
-svm_kernel_trick <- function(x, y, kernel = "rbf", C = 1.0,
+morie_svm_kernel_trick <- function(x, y, kernel = "rbf", C = 1.0,
                              gamma = "scale", degree = 3L, seed = 0L) {
+  x <- .morie_ensure_design_matrix(x)
   if (!requireNamespace("e1071", quietly = TRUE)) {
-    stop("Function 'svm_kernel_trick' requires package 'e1071'. Install with install.packages('e1071').")
+    stop("Function 'morie_svm_kernel_trick' requires package 'e1071'. Install with install.packages('e1071').")
   }
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)

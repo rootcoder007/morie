@@ -2,12 +2,12 @@
 % Please edit documentation in R/cndrc.R
 \name{cndrc}
 \alias{cndrc}
-\alias{condorcet_winner}
+\alias{morie_condorcet_winner}
 \title{Condorcet winner detection (Armstrong Ch 2)}
 \usage{
 cndrc(preference_matrix)
 
-condorcet_winner(preference_matrix)
+morie_condorcet_winner(preference_matrix)
 }
 \arguments{
 \item{preference_matrix}{n by n matrix where entry (i, j) = number of

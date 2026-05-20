@@ -49,4 +49,4 @@ antth <- function(x = NULL, f = NULL, N = 1000L, seed = 42L) {
 #' @rdname antth
 #' @keywords internal
 #' @export
-antithetic_variates <- antth
+morie_antithetic_variates <- antth

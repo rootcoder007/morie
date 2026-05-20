@@ -136,6 +136,16 @@ jobs:
           r-version: 'release'
           use-public-rspm: true
 
+      # pkgcheck's internal rcmdcheck builds the PDF manual, which needs
+      # the `inconsolata` LaTeX font. Without it pkgcheck reports a
+      # spurious "R CMD check found 1 warning" against a package that
+      # otherwise has 0 warnings in the dedicated r-cmd-check.yml matrix.
+      - uses: r-lib/actions/setup-tinytex@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - name: Install inconsolata + helpers for PDF manual build
+        run: |
+          tlmgr update --self
+          tlmgr install inconsolata helvetic times courier ec parskip url upquote
+
       - name: Install system deps for pkgstats (universal-ctags)
         run: |
           sudo apt-get update -y

@@ -47,4 +47,4 @@ fzedg <- function(x, z = 1.96, p = 0.5) {
 #' @rdname fzedg
 #' @keywords internal
 #' @export
-fauzi_edgeworth_quantile <- fzedg
+morie_fauzi_edgeworth_quantile <- fzedg

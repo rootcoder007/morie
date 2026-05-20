@@ -13,10 +13,12 @@
 #'   sigma_m2_naive, sum_2pq, p_freq, n, p, method).
 #' @references VanRaden (2008); Montesinos Lopez Ch 3.
 #' @examples
-#' marker_variance(x = rnorm(50), y = rnorm(50),
-#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4))
+#' morie_marker_variance(
+#'   x = rnorm(50), y = rnorm(50),
+#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4)
+#' )
 #' @export
-marker_variance <- function(x, y, markers) {
+morie_marker_variance <- function(x, y, markers) {
   y <- as.numeric(y)
   n <- length(y)
   M <- as.matrix(markers)
@@ -31,7 +33,7 @@ marker_variance <- function(x, y, markers) {
   p_freq <- colMeans(M) / 2
   sum_2pq <- 2 * sum(p_freq * (1 - p_freq))
   if (sum_2pq <= 0) sum_2pq <- 1
-  G <- grm_vanraden(M, method = 1)$estimate + 1e-6 * diag(n)
+  G <- morie_grm_vanraden(M, method = 1)$estimate + 1e-6 * diag(n)
   Ginv <- solve(G)
   lam <- 1
   px <- ncol(X)
@@ -64,4 +66,4 @@ marker_variance <- function(x, y, markers) {
 # CANONICAL TEST
 # set.seed(16); M <- matrix(sample(0:2, 160, TRUE), 20, 8)
 # y <- M %*% rnorm(8) + 0.5*rnorm(20)
-# marker_variance(rep(0, 20), y, M)$h2
+# morie_marker_variance(rep(0, 20), y, M)$h2

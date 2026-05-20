@@ -91,4 +91,4 @@ vrgft <- function(x, coords, model = "exponential",
 #' @rdname vrgft
 #' @keywords internal
 #' @export
-variogram_fitting <- vrgft
+morie_variogram_fitting <- vrgft

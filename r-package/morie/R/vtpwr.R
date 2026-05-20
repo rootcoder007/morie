@@ -97,7 +97,7 @@ vtpwr <- function(x, quota = NULL) {
     return(list(
       banzhaf = numeric(0), shapley_shubik = numeric(0),
       quota = NA_real_, weights = w,
-      method = "voting_power_index"
+      method = "morie_voting_power_index"
     ))
   }
   if (is.null(quota)) quota <- sum(w) / 2 + 1e-9
@@ -107,4 +107,4 @@ vtpwr <- function(x, quota = NULL) {
 #' @keywords internal
 #' @rdname vtpwr
 #' @export
-voting_power_index <- vtpwr
+morie_voting_power_index <- vtpwr

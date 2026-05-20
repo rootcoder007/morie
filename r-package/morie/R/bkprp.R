@@ -18,9 +18,9 @@
 #' @return Named list \code{(loss, estimate, dW, db, dx, a, z, method)}.
 #' @references Rumelhart, Hinton & Williams (1986); Goodfellow et al. (2016).
 #' @examples
-#' bkprp_backpropagation(x = rnorm(50), y = rnorm(50))
+#' morie_bkprp_backpropagation(x = rnorm(50), y = rnorm(50))
 #' @export
-bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
+morie_bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
                                   activation = "sigmoid") {
   x <- as.matrix(x)
   y <- as.matrix(y)
@@ -70,7 +70,7 @@ bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
   )
 }
 
-#' @rdname bkprp_backpropagation
+#' @rdname morie_bkprp_backpropagation
 #' @keywords internal
 #' @export
-backpropagation <- bkprp_backpropagation
+morie_backpropagation <- morie_bkprp_backpropagation

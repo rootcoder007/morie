@@ -19,7 +19,7 @@ brdgr <- function(x, y = NULL) {
       n_bridges = sum(xb), bridge_ids = which(xb),
       share = sum(xb) / max(length(xb), 1L),
       n1 = length(xb), n2 = length(xb),
-      method = "bridge_observations"
+      method = "morie_bridge_observations"
     ))
   }
   if (!is.matrix(x) && !is.matrix(y)) {
@@ -30,7 +30,7 @@ brdgr <- function(x, y = NULL) {
       n_bridges = length(common), bridge_ids = common,
       share = length(common) / max(length(s1), 1L),
       n1 = length(s1), n2 = length(s2),
-      method = "bridge_observations"
+      method = "morie_bridge_observations"
     ))
   }
   if (!is.matrix(x) || !is.matrix(y) || nrow(x) != nrow(y)) {
@@ -43,11 +43,11 @@ brdgr <- function(x, y = NULL) {
     n_bridges = sum(bridges), bridge_ids = which(bridges),
     share = sum(bridges) / max(nrow(x), 1L),
     n1 = sum(has1), n2 = sum(has2),
-    method = "bridge_observations"
+    method = "morie_bridge_observations"
   )
 }
 
 #' @keywords internal
 #' @rdname brdgr
 #' @export
-bridge_observations <- brdgr
+morie_bridge_observations <- brdgr

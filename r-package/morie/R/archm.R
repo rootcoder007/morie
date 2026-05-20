@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Internal: ARCH(1)-in-mean negative log-likelihood. Extracted from the
-# arch_in_mean() optimiser closure so the parameter-domain guard is
+# morie_arch_in_mean() optimiser closure so the parameter-domain guard is
 # directly unit-testable. `y` is the series, `n` its length.
 .archm_negll <- function(p, y, n) {
   mu <- p[1]
@@ -24,13 +24,13 @@
 
 #' ARCH(1)-in-mean model
 #'
-#' @inheritParams garch_fit
+#' @inheritParams morie_garch_fit
 #' @return Named list with \code{mu, delta, omega, alpha, loglik,
 #'   conditional_variance, n, method}.
 #' @examples
-#' arch_in_mean(x = rnorm(50))
+#' morie_arch_in_mean(x = rnorm(50))
 #' @export
-arch_in_mean <- function(x) {
+morie_arch_in_mean <- function(x) {
   y <- as.numeric(x)
   n <- length(y)
   if (n < 20) stop("Need >=20 obs.")

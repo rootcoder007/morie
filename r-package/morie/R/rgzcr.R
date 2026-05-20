@@ -32,4 +32,4 @@ rgzcr <- function(x, fs = 1.0) {
 #' @rdname rgzcr
 #' @keywords internal
 #' @export
-rangayyan_zero_crossing <- rgzcr
+morie_rangayyan_zero_crossing <- rgzcr

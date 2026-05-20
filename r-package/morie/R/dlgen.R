@@ -17,10 +17,12 @@
 #' @return list(estimate, y_hat, beta, W1, b1, w2, b2, se, n, method).
 #' @references Montesinos Lopez Ch 12.
 #' @examples
-#' deep_learning_genomic(x = rnorm(50), y = rnorm(50),
-#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4))
+#' morie_deep_learning_genomic(
+#'   x = rnorm(50), y = rnorm(50),
+#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4)
+#' )
 #' @export
-deep_learning_genomic <- function(x, y, markers, hidden = 16,
+morie_deep_learning_genomic <- function(x, y, markers, hidden = 16,
                                   n_epochs = 200, lr = 1e-2,
                                   l2 = 1e-3, seed = 0,
                                   deterministic_seed = NULL) {
@@ -74,4 +76,4 @@ deep_learning_genomic <- function(x, y, markers, hidden = 16,
 
 # CANONICAL TEST
 # set.seed(6); M <- matrix(rnorm(100), 20, 5)
-# y <- M[,1] + 0.3*rnorm(20); deep_learning_genomic(rep(0,20), y, M, seed=6)
+# y <- M[,1] + 0.3*rnorm(20); morie_deep_learning_genomic(rep(0,20), y, M, seed=6)

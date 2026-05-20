@@ -45,4 +45,4 @@ fzbrd <- function(x, t = NULL, h = NULL, c = 2) {
 #' @rdname fzbrd
 #' @keywords internal
 #' @export
-fauzi_bias_reduced_kdfe <- fzbrd
+morie_fauzi_bias_reduced_kdfe <- fzbrd

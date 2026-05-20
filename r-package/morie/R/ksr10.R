@@ -12,9 +12,9 @@
 #' @return Named list with estimate, se, n, method.
 #' @references Kosorok (2008), Ch 5; Huber (1981).
 #' @examples
-#' ksr10_kosorok_m_estimator(x = rnorm(50))
+#' morie_ksr10_kosorok_m_estimator(x = rnorm(50))
 #' @export
-ksr10_kosorok_m_estimator <- function(x, y = NULL, k = 1.345,
+morie_ksr10_kosorok_m_estimator <- function(x, y = NULL, k = 1.345,
                                       max_iter = 100, tol = 1e-10) {
   x <- as.numeric(x)
   n <- length(x)
@@ -46,9 +46,9 @@ ksr10_kosorok_m_estimator <- function(x, y = NULL, k = 1.345,
 }
 
 # CANONICAL TEST
-# set.seed(0); ksr10_kosorok_m_estimator(rnorm(200))
+# set.seed(0); morie_ksr10_kosorok_m_estimator(rnorm(200))
 
-#' @rdname ksr10_kosorok_m_estimator
+#' @rdname morie_ksr10_kosorok_m_estimator
 #' @keywords internal
 #' @export
-kosorok_m_estimator <- ksr10_kosorok_m_estimator
+morie_kosorok_m_estimator <- morie_ksr10_kosorok_m_estimator

@@ -11,7 +11,7 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-gxe_interaction_model <- function(x, y, env) {
+morie_gxe_interaction_model <- function(x, y, env) {
   g_id <- x
   e_id <- env
   yv <- as.numeric(y)
@@ -68,4 +68,4 @@ gxe_interaction_model <- function(x, y, env) {
 
 # CANONICAL TEST
 # x <- c(1,1,2,2,3,3,1,1,2,2,3,3); env <- c(1,1,1,1,1,1,2,2,2,2,2,2)
-# y <- c(1,2,3,4,5,6,2,3,4,5,6,7); gxe_interaction_model(x, y, env)
+# y <- c(1,2,3,4,5,6,2,3,4,5,6,7); morie_gxe_interaction_model(x, y, env)

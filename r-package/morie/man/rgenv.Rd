@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgenv.R
 \name{rgenv}
 \alias{rgenv}
-\alias{rangayyan_envelope}
+\alias{morie_rangayyan_envelope}
 \title{Hilbert envelope -- Rangayyan Ch 5}
 \usage{
 rgenv(x)
 
-rangayyan_envelope(x)
+morie_rangayyan_envelope(x)
 }
 \arguments{
 \item{x}{Numeric vector.}

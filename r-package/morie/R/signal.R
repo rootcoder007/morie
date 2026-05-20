@@ -141,11 +141,11 @@ buttbs <- function(x, fs, low = 59, high = 61, order = 4L) {
 #'   set.seed(1)
 #'   t <- seq(0, 1, length.out = 200)
 #'   x <- sin(2 * pi * 3 * t) + rnorm(200, sd = 0.2)
-#'   y <- sgolay_smooth(x, window_length = 11, polyorder = 3)
+#'   y <- morie_sgolay_smooth(x, window_length = 11, polyorder = 3)
 #'   length(y$filtered)
 #' }
 #' }
-sgolay_smooth <- function(x, window_length = 11L, polyorder = 3L) {
+morie_sgolay_smooth <- function(x, window_length = 11L, polyorder = 3L) {
   if (requireNamespace("signal", quietly = TRUE)) {
     sg <- signal::sgolay(p = polyorder, n = window_length)
     y <- signal::filter(sg, x)
@@ -170,11 +170,11 @@ sgolay_smooth <- function(x, window_length = 11L, polyorder = 3L) {
 #' if (requireNamespace("pracma", quietly = TRUE)) {
 #'   set.seed(1)
 #'   x <- cumsum(rnorm(2048)) # Brownian motion, expected H ~ 0.5
-#'   res <- hurst_r(x)
+#'   res <- morie_hurst_r(x)
 #'   res$interpretation
 #' }
 #' }
-hurst_r <- function(x) {
+morie_hurst_r <- function(x) {
   if (requireNamespace("pracma", quietly = TRUE)) {
     result <- pracma::hurstexp(x, display = FALSE)
     return(list(H = result$Hs, interpretation = ifelse(result$Hs > 0.55, "persistent",
@@ -222,11 +222,11 @@ hfd <- function(x, kmax = 10L) {
 #' if (requireNamespace("signal", quietly = TRUE)) {
 #'   set.seed(1)
 #'   x <- rnorm(2000) # 1 second of white-noise PCG-like input
-#'   y <- pcg_filter(x)
+#'   y <- morie_pcg_filter(x)
 #'   length(y$filtered)
 #' }
 #' }
-pcg_filter <- function(x, fs = 2000, low = 25, high = 400) {
+morie_pcg_filter <- function(x, fs = 2000, low = 25, high = 400) {
   buttbp(x, fs, low, high)
 }
 

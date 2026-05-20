@@ -21,7 +21,7 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-trfbl_transformer_block <- function(x, num_heads = 2L, d_ff = NULL,
+morie_trfbl_transformer_block <- function(x, num_heads = 2L, d_ff = NULL,
                                     seed = 0L,
                                     deterministic_seed = NULL) {
   x <- as.matrix(x)
@@ -29,7 +29,7 @@ trfbl_transformer_block <- function(x, num_heads = 2L, d_ff = NULL,
   d_model <- ncol(x)
   if (is.null(d_ff)) d_ff <- 4L * d_model
 
-  attn <- mhatf_multi_head_attention_full(x,
+  attn <- morie_mhatf_multi_head_attention_full(x,
     num_heads = num_heads, seed = seed,
     deterministic_seed = deterministic_seed
   )
@@ -63,7 +63,7 @@ trfbl_transformer_block <- function(x, num_heads = 2L, d_ff = NULL,
   0.5 * z * (1 + tanh(sqrt(2 / pi) * (z + 0.044715 * z^3)))
 }
 
-#' @rdname trfbl_transformer_block
+#' @rdname morie_trfbl_transformer_block
 #' @keywords internal
 #' @export
-transformer_block <- trfbl_transformer_block
+morie_transformer_block <- morie_trfbl_transformer_block

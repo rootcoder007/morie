@@ -2,12 +2,12 @@
 % Please edit documentation in R/sptrn.R
 \name{sptrn}
 \alias{sptrn}
-\alias{spatial_trend_surface}
+\alias{morie_spatial_trend_surface}
 \title{Polynomial trend surface analysis (OLS).}
 \usage{
 sptrn(x, coords, order = 2)
 
-spatial_trend_surface(x, coords, order = 2)
+morie_spatial_trend_surface(x, coords, order = 2)
 }
 \arguments{
 \item{x}{Numeric vector.}

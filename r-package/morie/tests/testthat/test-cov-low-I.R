@@ -16,11 +16,11 @@ test_that("vines short-circuits when n<3 or d<2", {
   expect_true(is.na(out_n$estimate))
 })
 
-test_that("ksr19_kosorok_cox_partial_likelihood runs on standard inputs", {
+test_that("morie_ksr19_kosorok_cox_partial_likelihood runs on standard inputs", {
   set.seed(1)
   xs <- rnorm(100)
   ts <- rexp(100, rate = exp(0.5 * xs))
-  out <- ksr19_kosorok_cox_partial_likelihood(xs, ts, rep(1L, 100))
+  out <- morie_ksr19_kosorok_cox_partial_likelihood(xs, ts, rep(1L, 100))
   expect_true(is.finite(out$estimate))
   expect_equal(out$n, 100L)
 })
@@ -37,7 +37,7 @@ test_that("polrz error guards fire", {
   expect_error(polrz(c(1, 2, 3), group = c("a", "b", "c")), "2 levels")
 })
 
-test_that("xgboost_objective regression task on auto-detected continuous y", {
+test_that("morie_xgboost_objective regression task on auto-detected continuous y", {
   testthat::skip_if_not(
     requireNamespace("xgboost", quietly = TRUE) ||
       requireNamespace("gbm", quietly = TRUE),
@@ -46,7 +46,7 @@ test_that("xgboost_objective regression task on auto-detected continuous y", {
   set.seed(1)
   x <- matrix(rnorm(200), 50, 4)
   y <- as.numeric(x %*% c(1, -1, 0.5, 0) + 0.3 * rnorm(50))
-  out <- xgboost_objective(x, y, n_estimators = 10L)
+  out <- morie_xgboost_objective(x, y, n_estimators = 10L)
   expect_true(is.finite(out$estimate))
   expect_equal(out$task, "regression")
 })
@@ -68,31 +68,31 @@ test_that("hrzp1 insufficient-data guard returns NA", {
   expect_match(out$method, "insufficient")
 })
 
-test_that("ghosal_np_classification runs on binary y", {
+test_that("morie_ghosal_np_classification runs on binary y", {
   set.seed(1)
   x <- matrix(rnorm(80), 20, 4)
   y <- rbinom(20, 1, 0.5)
-  out <- ghosal_np_classification(x, y, n_iter = 20)
+  out <- morie_ghosal_np_classification(x, y, n_iter = 20)
   expect_true(out$accuracy >= 0 && out$accuracy <= 1)
   expect_equal(out$n, 20L)
 })
 
-test_that("random_forest_ensemble regression path runs", {
+test_that("morie_random_forest_ensemble regression path runs", {
   testthat::skip_if_not_installed("randomForest")
   set.seed(1)
   x <- matrix(rnorm(200), 50, 4)
   y <- as.numeric(x %*% c(1, -1, 0.5, 0) + 0.3 * rnorm(50))
-  out <- random_forest_ensemble(x, y, n_estimators = 20L)
+  out <- morie_random_forest_ensemble(x, y, n_estimators = 20L)
   expect_equal(out$task, "regression")
   expect_true(is.finite(out$estimate))
 })
 
-test_that("genomic_cross_validation runs on default inputs", {
+test_that("morie_genomic_cross_validation runs on default inputs", {
   set.seed(1)
   X <- matrix(rnorm(200), 50, 4)
   b <- c(1, -1, 0.5, 0)
   y <- as.numeric(X %*% b + 0.3 * rnorm(50))
-  out <- genomic_cross_validation(X, y, K = 5, seed = 1)
+  out <- morie_genomic_cross_validation(X, y, K = 5, seed = 1)
   expect_true(is.finite(out$estimate))
   expect_length(out$r_per_fold, 5L)
   expect_equal(out$K, 5)

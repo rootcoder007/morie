@@ -54,7 +54,7 @@ design choice that the per-row MRM modules implement.
 
 ```{r design, eval = FALSE}
 # Full ten-estimator ensemble on the canonical a01 design:
-result <- estimate_ate(
+result <- morie_estimate_ate(
   data       = otis,
   outcome    = "Y_vm_count",
   treatment  = "T_high_ac",
@@ -73,7 +73,7 @@ on individual ID, two-way) is reported alongside the IRM-DML primary.
 # Augmented IPW
 
 ```{r aipw, eval = FALSE}
-result_aipw <- estimate_aipw(
+result_aipw <- morie_estimate_aipw(
   data       = otis,
   outcome    = "Y_vm_count",
   treatment  = "T_high_ac",

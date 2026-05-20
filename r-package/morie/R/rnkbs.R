@@ -9,9 +9,9 @@
 #' @return Named list: statistic (tau), p_value, n, inversions, z.
 #' @importFrom stats cor.test
 #' @examples
-#' rank_based_test(x = rnorm(50))
+#' morie_rank_based_test(x = rnorm(50))
 #' @export
-rank_based_test <- function(x) {
+morie_rank_based_test <- function(x) {
   x <- as.numeric(x)
   n <- length(x)
   if (n < 3) {

@@ -18,5 +18,6 @@ Resolve standard project paths
 }
 \examples{
 tryCatch(morie_paths(),
-  error = function(e) message("not inside a morie project tree"))
+  error = function(e) message("not inside a morie project tree")
+)
 }

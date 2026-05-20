@@ -11,9 +11,9 @@
 #' @return Named list: estimate, reference_ols, n_epochs, batch_size,
 #'   loss, n, method.
 #' @examples
-#' mini_batch_gradient(x = rnorm(50), y = rnorm(50))
+#' morie_mini_batch_gradient(x = rnorm(50), y = rnorm(50))
 #' @export
-mini_batch_gradient <- function(x, y, lr = 0.01, n_epochs = 200,
+morie_mini_batch_gradient <- function(x, y, lr = 0.01, n_epochs = 200,
                                 batch_size = 32L, seed = 0L) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)

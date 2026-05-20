@@ -14,16 +14,16 @@ skip_if_no_hash <- function() {
 test_that("mhatf deterministic_seed is reproducible", {
   skip_if_no_hash()
   x <- diag(4)
-  r1 <- mhatf_multi_head_attention_full(x, num_heads = 2L, deterministic_seed = 42L)
-  r2 <- mhatf_multi_head_attention_full(x, num_heads = 2L, deterministic_seed = 42L)
-  r3 <- mhatf_multi_head_attention_full(x, num_heads = 2L, deterministic_seed = 999L)
+  r1 <- morie_mhatf_multi_head_attention_full(x, num_heads = 2L, deterministic_seed = 42L)
+  r2 <- morie_mhatf_multi_head_attention_full(x, num_heads = 2L, deterministic_seed = 42L)
+  r3 <- morie_mhatf_multi_head_attention_full(x, num_heads = 2L, deterministic_seed = 999L)
   expect_equal(r1$output, r2$output)
   expect_false(isTRUE(all.equal(r1$output, r3$output)))
 })
 
 test_that("mhatf default (deterministic_seed = NULL) path is unchanged", {
   x <- diag(4)
-  r1 <- mhatf_multi_head_attention_full(x, num_heads = 2L, seed = 0L)
-  r2 <- mhatf_multi_head_attention_full(x, num_heads = 2L, seed = 0L)
+  r1 <- morie_mhatf_multi_head_attention_full(x, num_heads = 2L, seed = 0L)
+  r2 <- morie_mhatf_multi_head_attention_full(x, num_heads = 2L, seed = 0L)
   expect_equal(r1$output, r2$output)
 })

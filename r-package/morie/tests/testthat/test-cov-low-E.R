@@ -72,24 +72,26 @@ test_that("okrig errors on dim mismatch", {
 })
 
 # ==== wavts.R ====
-test_that("wavelet_time_series runs on defaults", {
+test_that("morie_wavelet_time_series runs on defaults", {
   set.seed(1)
-  out <- wavelet_time_series(rnorm(64))
-  expect_named(out, c("approximation", "details", "energies", "level",
-                      "n", "wavelet", "method"))
+  out <- morie_wavelet_time_series(rnorm(64))
+  expect_named(out, c(
+    "approximation", "details", "energies", "level",
+    "n", "wavelet", "method"
+  ))
   expect_equal(out$n, 64L)
   expect_true(out$level >= 1L)
   expect_length(out$energies, out$level + 1L)
 })
 
-test_that("wavelet_time_series errors on too-short input", {
+test_that("morie_wavelet_time_series errors on too-short input", {
   set.seed(1)
-  expect_error(wavelet_time_series(c(1, 2, 3)), ">=4")
+  expect_error(morie_wavelet_time_series(c(1, 2, 3)), ">=4")
 })
 
-test_that("wavelet_time_series caps level at max_lv", {
+test_that("morie_wavelet_time_series caps level at max_lv", {
   set.seed(1)
-  out <- wavelet_time_series(rnorm(8), level = 99)
+  out <- morie_wavelet_time_series(rnorm(8), level = 99)
   expect_equal(out$level, 3L) # floor(log2(8)) = 3
 })
 
@@ -136,8 +138,10 @@ test_that("morie_cache_load returns NULL for missing table", {
 })
 
 test_that(".morie_db_handle rejects non-DBI con", {
-  expect_error(morie:::.morie_db_handle(con = list(fake = TRUE)),
-               "DBIConnection")
+  expect_error(
+    morie:::.morie_db_handle(con = list(fake = TRUE)),
+    "DBIConnection"
+  )
 })
 
 test_that("morie_cache_file errors on unsupported format", {
@@ -148,34 +152,42 @@ test_that("morie_cache_file errors on unsupported format", {
 })
 
 test_that("morie_dataset_info errors on unknown key", {
-  expect_error(morie_dataset_info("not_a_real_key_zzz"),
-               "Unknown dataset key")
+  expect_error(
+    morie_dataset_info("not_a_real_key_zzz"),
+    "Unknown dataset key"
+  )
 })
 
 test_that("morie_load_dataset errors on unknown key", {
-  expect_error(morie_load_dataset("not_a_real_key_zzz"),
-               "Unknown dataset key")
+  expect_error(
+    morie_load_dataset("not_a_real_key_zzz"),
+    "Unknown dataset key"
+  )
 })
 
 test_that("morie_download_bootstrap errors on unknown survey", {
-  expect_error(morie_download_bootstrap(survey = "not_a_survey_zzz"),
-               "Unknown survey")
+  expect_error(
+    morie_download_bootstrap(survey = "not_a_survey_zzz"),
+    "Unknown survey"
+  )
 })
 
 # ==== tarmd.R ====
-test_that("threshold_autoregression runs on defaults", {
+test_that("morie_threshold_autoregression runs on defaults", {
   set.seed(1)
   x <- as.numeric(arima.sim(list(ar = 0.5), n = 200))
-  out <- threshold_autoregression(x)
-  expect_named(out, c("threshold", "phi_lower", "phi_upper", "p", "d",
-                      "regime_sizes", "sse", "n", "method"))
+  out <- morie_threshold_autoregression(x)
+  expect_named(out, c(
+    "threshold", "phi_lower", "phi_upper", "p", "d",
+    "regime_sizes", "sse", "n", "method"
+  ))
   expect_equal(out$p, 1L)
   expect_equal(out$d, 1L)
   expect_equal(out$n, 200L)
   expect_true(out$sse > 0)
 })
 
-test_that("threshold_autoregression errors on too-short series", {
+test_that("morie_threshold_autoregression errors on too-short series", {
   set.seed(1)
-  expect_error(threshold_autoregression(rnorm(5)), "too short")
+  expect_error(morie_threshold_autoregression(rnorm(5)), "too short")
 })

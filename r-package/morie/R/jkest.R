@@ -45,4 +45,4 @@ jkest <- function(x, statistic = NULL) {
 #' @rdname jkest
 #' @keywords internal
 #' @export
-jackknife_estimator <- jkest
+morie_jackknife_estimator <- jkest

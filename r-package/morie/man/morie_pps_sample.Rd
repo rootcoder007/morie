@@ -22,8 +22,6 @@ Data frame of selected units with \code{.weight} (Hansen-Hurwitz weights).
 Probability proportional to size (PPS) sampling
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }

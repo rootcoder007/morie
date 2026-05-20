@@ -34,16 +34,16 @@ idlpt <- function(X_r, X_s = NULL) {
   list(
     ideal_points = out, n_respondents = nrow(Xr),
     k = ncol(Xr), mean_stim_dist = msd,
-    method = "ideal_point_recovery"
+    method = "morie_ideal_point_recovery"
   )
 }
 
 #' @keywords internal
 #' @rdname idlpt
 #' @export
-ideal_point_recovery <- idlpt
+morie_ideal_point_recovery <- idlpt
 
 #' @rdname idlpt
 #' @keywords internal
 #' @export
-ideal_point_model <- idlpt
+morie_ideal_point_model <- idlpt

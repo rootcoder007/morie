@@ -14,9 +14,9 @@
 #' @return Named list with estimate, se, n, method.
 #' @references Kosorok (2008), Ch 10.
 #' @examples
-#' ksr08_kosorok_multiplier_bootstrap(x = rnorm(50))
+#' morie_ksr08_kosorok_multiplier_bootstrap(x = rnorm(50))
 #' @export
-ksr08_kosorok_multiplier_bootstrap <- function(x, B = 1000, seed = 0,
+morie_ksr08_kosorok_multiplier_bootstrap <- function(x, B = 1000, seed = 0,
                                                deterministic_seed = NULL) {
   x <- as.numeric(x)
   n <- length(x)
@@ -38,9 +38,9 @@ ksr08_kosorok_multiplier_bootstrap <- function(x, B = 1000, seed = 0,
 }
 
 # CANONICAL TEST
-# set.seed(0); ksr08_kosorok_multiplier_bootstrap(rnorm(200), B=500, seed=42)
+# set.seed(0); morie_ksr08_kosorok_multiplier_bootstrap(rnorm(200), B=500, seed=42)
 
-#' @rdname ksr08_kosorok_multiplier_bootstrap
+#' @rdname morie_ksr08_kosorok_multiplier_bootstrap
 #' @keywords internal
 #' @export
-kosorok_multiplier_bootstrap <- ksr08_kosorok_multiplier_bootstrap
+morie_kosorok_multiplier_bootstrap <- morie_ksr08_kosorok_multiplier_bootstrap

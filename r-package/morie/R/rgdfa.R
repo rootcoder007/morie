@@ -52,4 +52,4 @@ rgdfa <- function(x, scales = NULL, order = 1L) {
 #' @rdname rgdfa
 #' @keywords internal
 #' @export
-rangayyan_dfa <- rgdfa
+morie_rangayyan_dfa <- rgdfa

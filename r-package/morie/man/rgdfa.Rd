@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgdfa.R
 \name{rgdfa}
 \alias{rgdfa}
-\alias{rangayyan_dfa}
+\alias{morie_rangayyan_dfa}
 \title{Detrended fluctuation analysis -- Rangayyan Ch 7}
 \usage{
 rgdfa(x, scales = NULL, order = 1L)
 
-rangayyan_dfa(x, scales = NULL, order = 1L)
+morie_rangayyan_dfa(x, scales = NULL, order = 1L)
 }
 \arguments{
 \item{x}{Numeric vector.}

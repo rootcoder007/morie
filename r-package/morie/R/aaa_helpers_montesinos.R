@@ -16,9 +16,9 @@
 #' @return Named list with estimate (G matrix), diag_mean, off_mean, p, n, m, method.
 #' @references VanRaden (2008) J Dairy Sci 91:4414. Montesinos Lopez Ch 3.
 #' @examples
-#' grm_vanraden(markers = matrix(sample(0:2, 200, TRUE), 50, 4))
+#' morie_grm_vanraden(markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 #' @export
-grm_vanraden <- function(markers, method = 1) {
+morie_grm_vanraden <- function(markers, method = 1) {
   M <- as.matrix(markers)
   storage.mode(M) <- "double"
   n <- nrow(M)
@@ -49,4 +49,4 @@ grm_vanraden <- function(markers, method = 1) {
 
 # CANONICAL TEST
 # set.seed(0); M <- matrix(sample(0:2, 20, TRUE), 4, 5)
-# grm_vanraden(M)$diag_mean  # ~1 in expectation
+# morie_grm_vanraden(M)$diag_mean  # ~1 in expectation

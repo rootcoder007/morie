@@ -23,7 +23,7 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-mhatf_multi_head_attention_full <- function(x, num_heads = 2L,
+morie_mhatf_multi_head_attention_full <- function(x, num_heads = 2L,
                                             W_q = NULL, W_k = NULL,
                                             W_v = NULL, W_o = NULL,
                                             seed = 0L,
@@ -61,7 +61,7 @@ mhatf_multi_head_attention_full <- function(x, num_heads = 2L,
   head_attns <- vector("list", num_heads)
   for (h in seq_len(num_heads)) {
     cols <- ((h - 1L) * d_k + 1L):(h * d_k)
-    res <- attnq_scaled_dot_product_attention(
+    res <- morie_attnq_scaled_dot_product_attention(
       Q[, cols, drop = FALSE],
       K[, cols, drop = FALSE],
       V[, cols, drop = FALSE]
@@ -79,7 +79,7 @@ mhatf_multi_head_attention_full <- function(x, num_heads = 2L,
   )
 }
 
-#' @rdname mhatf_multi_head_attention_full
+#' @rdname morie_mhatf_multi_head_attention_full
 #' @keywords internal
 #' @export
-multi_head_attention_full <- mhatf_multi_head_attention_full
+morie_multi_head_attention_full <- morie_mhatf_multi_head_attention_full

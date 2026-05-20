@@ -44,4 +44,4 @@ fzhok <- function(x, t = NULL, h = NULL, order = 4L) {
 #' @rdname fzhok
 #' @keywords internal
 #' @export
-fauzi_higher_order_kernel <- fzhok
+morie_fauzi_higher_order_kernel <- fzhok

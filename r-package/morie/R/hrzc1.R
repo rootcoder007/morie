@@ -64,4 +64,4 @@ hrzc1 <- function(x, y, censor = 0.0) {
 #' @rdname hrzc1
 #' @keywords internal
 #' @export
-horowitz_censored_regression <- hrzc1
+morie_horowitz_censored_regression <- hrzc1

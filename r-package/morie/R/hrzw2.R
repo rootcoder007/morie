@@ -54,4 +54,4 @@ hrzw2 <- function(x, y, B = 50, n_h = 15, seed = 0) {
 #' @rdname hrzw2
 #' @keywords internal
 #' @export
-horowitz_bandwidth_bootstrap <- hrzw2
+morie_horowitz_bandwidth_bootstrap <- hrzw2

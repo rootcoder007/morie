@@ -31,4 +31,4 @@ hrzp2 <- function(x, y, c = 1.06) {
 #' @rdname hrzp2
 #' @keywords internal
 #' @export
-horowitz_plr_bandwidth <- hrzp2
+morie_horowitz_plr_bandwidth <- hrzp2

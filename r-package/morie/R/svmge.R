@@ -11,9 +11,9 @@
 #' @return list(estimate, y_hat, alpha, support_indices, se, n, method).
 #' @references Vapnik (1995); Montesinos Lopez Ch 7.
 #' @examples
-#' svm_genomic(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2,      200, TRUE), 50, 4))
+#' morie_svm_genomic(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 #' @export
-svm_genomic <- function(x, y, markers, C = 1, epsilon = 0.1,
+morie_svm_genomic <- function(x, y, markers, C = 1, epsilon = 0.1,
                         gamma = "scale") {
   y <- as.numeric(y)
   n <- length(y)
@@ -75,4 +75,4 @@ svm_genomic <- function(x, y, markers, C = 1, epsilon = 0.1,
 
 # CANONICAL TEST
 # set.seed(12); M <- matrix(rnorm(100), 25, 4); y <- sin(M[,1])+0.2*rnorm(25)
-# svm_genomic(rep(0, 25), y, M)
+# morie_svm_genomic(rep(0, 25), y, M)

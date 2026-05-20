@@ -49,4 +49,4 @@ mdspl <- function(x, k = 2L) {
 #' @keywords internal
 #' @rdname mdspl
 #' @export
-mds_spatial_map <- mdspl
+morie_mds_spatial_map <- mdspl

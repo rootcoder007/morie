@@ -23,9 +23,9 @@ test_that("rgdfa accepts user-supplied scales and order", {
 })
 
 # ==== lstmc.R ====
-test_that("lstmc_lstm_cell runs on defaults", {
+test_that("morie_lstmc_lstm_cell runs on defaults", {
   set.seed(1)
-  out <- lstmc_lstm_cell(x = rnorm(8))
+  out <- morie_lstmc_lstm_cell(x = rnorm(8))
   expect_type(out, "list")
   expect_named(out, c("h", "c", "estimate", "i", "f", "g", "o", "method"))
   expect_length(out$h, 8L)
@@ -34,10 +34,10 @@ test_that("lstmc_lstm_cell runs on defaults", {
   expect_true(all(out$f >= 0 & out$f <= 1))
 })
 
-test_that("lstmc_lstm_cell honours hidden_size and prior states", {
+test_that("morie_lstmc_lstm_cell honours hidden_size and prior states", {
   set.seed(1)
   H <- 4L
-  out <- lstmc_lstm_cell(
+  out <- morie_lstmc_lstm_cell(
     x = rnorm(6), h_prev = rep(0.1, H), c_prev = rep(-0.2, H),
     hidden_size = H, seed = 42L
   )
@@ -47,29 +47,29 @@ test_that("lstmc_lstm_cell honours hidden_size and prior states", {
 })
 
 # ==== svmge.R ====
-test_that("svm_genomic runs with x = NULL (markers only)", {
+test_that("morie_svm_genomic runs with x = NULL (markers only)", {
   set.seed(1)
   M <- matrix(sample(0:2, 200, TRUE), 50, 4)
   y <- rnorm(50)
-  out <- svm_genomic(x = NULL, y = y, markers = M)
+  out <- morie_svm_genomic(x = NULL, y = y, markers = M)
   expect_type(out, "list")
   expect_length(out$y_hat, 50L)
   expect_equal(out$n, 50L)
 })
 
-test_that("svm_genomic drops zero-variance columns without error", {
+test_that("morie_svm_genomic drops zero-variance columns without error", {
   set.seed(1)
   M <- matrix(rnorm(100), 25, 4)
   M[, 2] <- 0
   y <- rnorm(25)
-  out <- svm_genomic(x = NULL, y = y, markers = M)
+  out <- morie_svm_genomic(x = NULL, y = y, markers = M)
   expect_length(out$y_hat, 25L)
 })
 
 # ==== grucl.R ====
-test_that("grucl_gru_cell runs on defaults", {
+test_that("morie_grucl_gru_cell runs on defaults", {
   set.seed(1)
-  out <- grucl_gru_cell(x = rnorm(8))
+  out <- morie_grucl_gru_cell(x = rnorm(8))
   expect_type(out, "list")
   expect_named(out, c("h", "estimate", "z", "r", "n", "method"))
   expect_length(out$h, 8L)
@@ -78,10 +78,10 @@ test_that("grucl_gru_cell runs on defaults", {
   expect_true(all(out$r >= 0 & out$r <= 1))
 })
 
-test_that("grucl_gru_cell respects explicit hidden_size and h_prev", {
+test_that("morie_grucl_gru_cell respects explicit hidden_size and h_prev", {
   set.seed(1)
   H <- 5L
-  out <- grucl_gru_cell(
+  out <- morie_grucl_gru_cell(
     x = rnorm(4), h_prev = rep(0.05, H),
     hidden_size = H, seed = 3L
   )

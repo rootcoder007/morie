@@ -41,4 +41,4 @@ rgiir <- function(x, cutoff, order = 4L, fs = 1.0, btype = c("low", "high", "pas
 #' @rdname rgiir
 #' @keywords internal
 #' @export
-rangayyan_iir_filter <- rgiir
+morie_rangayyan_iir_filter <- rgiir

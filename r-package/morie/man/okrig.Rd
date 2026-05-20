@@ -2,7 +2,7 @@
 % Please edit documentation in R/okrig.R
 \name{okrig}
 \alias{okrig}
-\alias{ordinary_kriging}
+\alias{morie_ordinary_kriging}
 \title{Ordinary kriging prediction (exponential / gaussian / spherical).}
 \usage{
 okrig(
@@ -15,7 +15,7 @@ okrig(
   range_ = 1
 )
 
-ordinary_kriging(
+morie_ordinary_kriging(
   x,
   coords,
   target,

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Internal: MIDAS sum-of-squared-errors objective. Extracted from the
-# midas_regression() optimiser closure so the theta-domain guard and the
+# morie_midas_regression() optimiser closure so the theta-domain guard and the
 # non-finite-SSE guard are directly unit-testable. `X` is the lag-matrix,
 # `Y` the target, `K` the number of high-frequency lags.
 .midas_sse <- function(p, X, Y, K) {
@@ -29,7 +29,7 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-midas_regression <- function(x, y, K = NULL) {
+morie_midas_regression <- function(x, y, K = NULL) {
   Y <- as.numeric(y)
   nT <- length(Y)
   if (is.null(dim(x))) {

@@ -2,7 +2,7 @@
 
 #' GP nonparametric regression
 #'
-#' Wraps \code{ghosal_gp_squared_exponential}.
+#' Wraps \code{morie_ghosal_gp_squared_exponential}.
 #'
 #' @param x Numeric vector or matrix of input points.
 #' @param y Numeric response vector.
@@ -12,11 +12,11 @@
 #' @return Named list with estimate, se, mu, sd, ci_lower, ci_upper, r2,
 #'   log_marginal, length_scale, noise, n, method.
 #' @examples
-#' ghosal_np_regression(x = rnorm(50), y = rnorm(50))
+#' morie_ghosal_np_regression(x = rnorm(50), y = rnorm(50))
 #' @export
-ghosal_np_regression <- function(x, y, length_scale = NULL,
+morie_ghosal_np_regression <- function(x, y, length_scale = NULL,
                                  sigma_f = 1.0, noise = NULL) {
-  gp <- ghosal_gp_squared_exponential(x, y,
+  gp <- morie_ghosal_gp_squared_exponential(x, y,
     length_scale = length_scale,
     sigma_f = sigma_f, noise = noise
   )

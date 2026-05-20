@@ -2,12 +2,12 @@
 % Please edit documentation in R/pspln.R
 \name{pspln}
 \alias{pspln}
-\alias{penalized_spline}
+\alias{morie_penalized_spline}
 \title{Penalised B-spline regression (P-splines; Eilers & Marx 1996)}
 \usage{
 pspln(x, y, n_knots = 20L, degree = 3L, lam = 1)
 
-penalized_spline(x, y, n_knots = 20L, degree = 3L, lam = 1)
+morie_penalized_spline(x, y, n_knots = 20L, degree = 3L, lam = 1)
 }
 \arguments{
 \item{x}{numeric vector.}

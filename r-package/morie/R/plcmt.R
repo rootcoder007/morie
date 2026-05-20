@@ -8,9 +8,9 @@
 #' @param x,y Numeric vectors.
 #' @return Named list: placements, ranks_y, U_y, E_U, Var_U, m, n.
 #' @examples
-#' rank_placements(x = rnorm(50), y = rnorm(50))
+#' morie_rank_placements(x = rnorm(50), y = rnorm(50))
 #' @export
-rank_placements <- function(x, y) {
+morie_rank_placements <- function(x, y) {
   x <- as.numeric(x)
   y <- as.numeric(y)
   m <- length(x)

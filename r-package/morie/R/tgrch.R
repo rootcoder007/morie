@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Internal: GJR-GARCH(1,1) Gaussian negative log-likelihood for the
-# base-R fallback. Extracted from the tgarch_model() optimiser closure
+# base-R fallback. Extracted from the morie_tgarch_model() optimiser closure
 # so the parameter-domain guard is directly unit-testable.
 .tgarch_negll <- function(p, r, n) {
   omega <- p[1]
@@ -25,13 +25,13 @@
 
 #' GJR-GARCH(1,1) threshold GARCH
 #'
-#' @inheritParams garch_fit
+#' @inheritParams morie_garch_fit
 #' @return Named list with \code{omega, alpha, gamma, beta, persistence,
 #'   loglik, conditional_variance, n, method}.
 #' @examples
-#' tgarch_model(x = rnorm(50))
+#' morie_tgarch_model(x = rnorm(50))
 #' @export
-tgarch_model <- function(x) {
+morie_tgarch_model <- function(x) {
   r <- as.numeric(x) - mean(as.numeric(x))
   n <- length(r)
   if (n < 20) stop("Need >=20 obs.")

@@ -2,13 +2,13 @@
 # Batch 22 (final) tests: vaenc, vdwrd, vecmf, vines, vrgft, vrgm, vtpwr,
 #   wavts, wdemb, wnom, workflow, wsrpw, xavir, xgbst.
 
-test_that("vaenc_vae_elbo returns the documented named list (vector input)", {
+test_that("morie_vaenc_vae_elbo returns the documented named list (vector input)", {
   set.seed(1)
   x <- rnorm(8)
   x_recon <- x + rnorm(8, sd = 0.1)
   mu <- rnorm(8)
   log_var <- rnorm(8, sd = 0.2)
-  r <- vaenc_vae_elbo(x, x_recon, mu, log_var)
+  r <- morie_vaenc_vae_elbo(x, x_recon, mu, log_var)
   expect_type(r, "list")
   expect_named(r, c(
     "elbo", "estimate", "loss", "recon_loss",
@@ -22,44 +22,44 @@ test_that("vaenc_vae_elbo returns the documented named list (vector input)", {
   expect_identical(r$method, "VAE ELBO")
 })
 
-test_that("vaenc_vae_elbo perfect reconstruction gives zero recon loss", {
+test_that("morie_vaenc_vae_elbo perfect reconstruction gives zero recon loss", {
   x <- c(1, 2, 3, 4)
-  r <- vaenc_vae_elbo(x, x, rep(0, 4), rep(0, 4))
+  r <- morie_vaenc_vae_elbo(x, x, rep(0, 4), rep(0, 4))
   expect_equal(r$recon_loss, 0)
   expect_equal(r$kl_divergence, 0)
   expect_equal(r$elbo, 0)
 })
 
-test_that("vaenc_vae_elbo handles matrix input and reduction='sum'", {
+test_that("morie_vaenc_vae_elbo handles matrix input and reduction='sum'", {
   set.seed(2)
   x <- matrix(rnorm(12), nrow = 3)
   x_recon <- x + 0.05
   mu <- matrix(rnorm(12), nrow = 3)
   log_var <- matrix(rnorm(12, sd = 0.1), nrow = 3)
-  r_mean <- vaenc_vae_elbo(x, x_recon, mu, log_var, reduction = "mean")
-  r_sum <- vaenc_vae_elbo(x, x_recon, mu, log_var, reduction = "sum")
+  r_mean <- morie_vaenc_vae_elbo(x, x_recon, mu, log_var, reduction = "mean")
+  r_sum <- morie_vaenc_vae_elbo(x, x_recon, mu, log_var, reduction = "sum")
   expect_true(is.finite(r_mean$elbo))
   expect_true(is.finite(r_sum$elbo))
 })
 
-test_that("vaenc_vae_elbo rejects an unknown reduction", {
+test_that("morie_vaenc_vae_elbo rejects an unknown reduction", {
   expect_error(
-    vaenc_vae_elbo(1:4, 1:4, rep(0, 4), rep(0, 4),
+    morie_vaenc_vae_elbo(1:4, 1:4, rep(0, 4), rep(0, 4),
       reduction = "median"
     ),
     "reduction"
   )
 })
 
-test_that("vae_elbo alias is identical to vaenc_vae_elbo", {
-  expect_identical(vae_elbo, vaenc_vae_elbo)
+test_that("morie_vae_elbo alias is identical to morie_vaenc_vae_elbo", {
+  expect_identical(morie_vae_elbo, morie_vaenc_vae_elbo)
 })
 
-test_that("van_der_waerden_test returns the documented named list", {
+test_that("morie_van_der_waerden_test returns the documented named list", {
   set.seed(3)
   x <- rnorm(20)
   y <- rnorm(25, mean = 0.4)
-  r <- van_der_waerden_test(x, y)
+  r <- morie_van_der_waerden_test(x, y)
   expect_type(r, "list")
   expect_named(r, c("statistic", "p_value", "z", "n", "m", "method"))
   expect_true(is.finite(r$statistic))
@@ -70,8 +70,8 @@ test_that("van_der_waerden_test returns the documented named list", {
   expect_identical(r$method, "Van der Waerden normal-scores test")
 })
 
-test_that("van_der_waerden_test returns NA stats for too-short samples", {
-  r <- van_der_waerden_test(c(1), c(2, 3, 4))
+test_that("morie_van_der_waerden_test returns NA stats for too-short samples", {
+  r <- morie_van_der_waerden_test(c(1), c(2, 3, 4))
   expect_true(is.na(r$statistic))
   expect_true(is.na(r$p_value))
   expect_true(is.na(r$z))
@@ -79,13 +79,13 @@ test_that("van_der_waerden_test returns NA stats for too-short samples", {
   expect_equal(r$n, 4L)
 })
 
-test_that("vecm returns the documented structure on a small I(1) system", {
+test_that("morie_vecm returns the documented structure on a small I(1) system", {
   set.seed(4)
   Tt <- 60
   e1 <- cumsum(rnorm(Tt))
   e2 <- e1 + rnorm(Tt, sd = 0.3)
   Y <- cbind(e1, e2)
-  r <- vecm(Y, k_ar = 1, coint_rank = 1)
+  r <- morie_vecm(Y, k_ar = 1, coint_rank = 1)
   expect_type(r, "list")
   expect_true(all(c(
     "alpha", "beta", "Sigma", "n", "k", "rank",
@@ -97,13 +97,13 @@ test_that("vecm returns the documented structure on a small I(1) system", {
   expect_true(is.character(r$method))
 })
 
-test_that("vecm errors on too-short series or bad rank", {
+test_that("morie_vecm errors on too-short series or bad rank", {
   set.seed(5)
   Yshort <- cbind(cumsum(rnorm(10)), cumsum(rnorm(10)))
-  expect_error(vecm(Yshort), "T>=20")
+  expect_error(morie_vecm(Yshort), "T>=20")
   Ylong <- cbind(cumsum(rnorm(30)), cumsum(rnorm(30)))
-  expect_error(vecm(Ylong, coint_rank = 0), "rank")
-  expect_error(vecm(Ylong, coint_rank = 5), "rank")
+  expect_error(morie_vecm(Ylong, coint_rank = 0), "rank")
+  expect_error(morie_vecm(Ylong, coint_rank = 5), "rank")
 })
 
 test_that("vines computes partial-correlation matrix and loglik", {
@@ -130,8 +130,8 @@ test_that("vines returns NA estimate when n<3 or d<2", {
   expect_match(r$method, "n<3")
 })
 
-test_that("vine_copula alias is identical to vines", {
-  expect_identical(vine_copula, morie:::vines)
+test_that("morie_vine_copula alias is identical to vines", {
+  expect_identical(morie_vine_copula, morie:::vines)
 })
 
 test_that("vrgm returns the documented empirical variogram structure", {
@@ -162,8 +162,8 @@ test_that("vrgm errors on mismatched coords or too few points", {
   expect_error(vrgm(1, matrix(0, ncol = 1)), "at least 2")
 })
 
-test_that("variogram_estimation alias is identical to vrgm", {
-  expect_identical(variogram_estimation, vrgm)
+test_that("morie_variogram_estimation alias is identical to vrgm", {
+  expect_identical(morie_variogram_estimation, vrgm)
 })
 
 test_that("vrgft fits an exponential variogram model", {
@@ -202,8 +202,8 @@ test_that("vrgft errors when too few non-empty bins are available", {
   )
 })
 
-test_that("variogram_fitting alias is identical to vrgft", {
-  expect_identical(variogram_fitting, vrgft)
+test_that("morie_variogram_fitting alias is identical to vrgft", {
+  expect_identical(morie_variogram_fitting, vrgft)
 })
 
 test_that("vtpwr returns exact Banzhaf and Shapley-Shubik indices", {
@@ -232,7 +232,7 @@ test_that("vtpwr handles an empty weight vector", {
   expect_equal(length(r$banzhaf), 0L)
   expect_equal(length(r$shapley_shubik), 0L)
   expect_true(is.na(r$quota))
-  expect_identical(r$method, "voting_power_index")
+  expect_identical(r$method, "morie_voting_power_index")
 })
 
 test_that("vtpwr uses Monte Carlo for large games (n>10)", {
@@ -242,14 +242,14 @@ test_that("vtpwr uses Monte Carlo for large games (n>10)", {
   expect_true(all(is.finite(r$shapley_shubik)))
 })
 
-test_that("voting_power_index alias is identical to vtpwr", {
-  expect_identical(voting_power_index, vtpwr)
+test_that("morie_voting_power_index alias is identical to vtpwr", {
+  expect_identical(morie_voting_power_index, vtpwr)
 })
 
-test_that("wavelet_time_series returns the documented structure", {
+test_that("morie_wavelet_time_series returns the documented structure", {
   set.seed(9)
   x <- rnorm(64)
-  r <- wavelet_time_series(x)
+  r <- morie_wavelet_time_series(x)
   expect_type(r, "list")
   expect_true(all(c(
     "approximation", "details", "energies", "level",
@@ -262,16 +262,16 @@ test_that("wavelet_time_series returns the documented structure", {
   expect_true(all(is.finite(r$energies)))
 })
 
-test_that("wavelet_time_series respects an explicit level argument", {
+test_that("morie_wavelet_time_series respects an explicit level argument", {
   set.seed(10)
   x <- rnorm(32)
-  r <- wavelet_time_series(x, level = 2)
+  r <- morie_wavelet_time_series(x, level = 2)
   expect_equal(r$level, 2L)
   expect_equal(length(r$details), 2L)
 })
 
-test_that("wavelet_time_series errors on too-short series", {
-  expect_error(wavelet_time_series(c(1, 2, 3)), ">=4")
+test_that("morie_wavelet_time_series errors on too-short series", {
+  expect_error(morie_wavelet_time_series(c(1, 2, 3)), ">=4")
 })
 
 test_that("word_embedding looks up rows with a random embedding matrix", {
@@ -318,7 +318,7 @@ test_that("wnom computes the NOMINATE log-likelihood and GMP", {
   expect_true(r$loglik <= 0)
   expect_true(r$GMP >= 0 && r$GMP <= 1)
   expect_equal(r$n_total, n_leg * n_votes)
-  expect_identical(r$method, "wnominate_estimate")
+  expect_identical(r$method, "morie_wnominate_estimate")
 })
 
 test_that("wnom handles NA votes and custom salience weights", {
@@ -338,12 +338,12 @@ test_that("wnom handles NA votes and custom salience weights", {
 })
 
 test_that("morie_wnominate aliases are identical to wnom", {
-  expect_identical(wnominate_estimate, wnom)
+  expect_identical(morie_wnominate_estimate, wnom)
   expect_identical(morie_wnominate, wnom)
 })
 
-test_that("default_workflow_map returns the documented named vector", {
-  m <- default_workflow_map()
+test_that("morie_default_workflow_map returns the documented named vector", {
+  m <- morie_default_workflow_map()
   expect_type(m, "character")
   expect_true(all(c(
     "modules", "publish", "render",
@@ -352,34 +352,34 @@ test_that("default_workflow_map returns the documented named vector", {
   expect_true(all(nzchar(m)))
 })
 
-test_that("run_workflow_step rejects an unknown step", {
-  expect_error(run_workflow_step("does_not_exist"), "Unknown step")
+test_that("morie_run_workflow_step rejects an unknown step", {
+  expect_error(morie_run_workflow_step("does_not_exist"), "Unknown step")
 })
 
-test_that("run_workflow_step rejects a missing or empty step", {
-  expect_error(run_workflow_step(), "exactly one")
-  expect_error(run_workflow_step(""), "exactly one")
-  expect_error(run_workflow_step(c("modules", "render")), "exactly one")
+test_that("morie_run_workflow_step rejects a missing or empty step", {
+  expect_error(morie_run_workflow_step(), "exactly one")
+  expect_error(morie_run_workflow_step(""), "exactly one")
+  expect_error(morie_run_workflow_step(c("modules", "render")), "exactly one")
 })
 
-test_that("run_workflow_step rejects an invalid script_map", {
+test_that("morie_run_workflow_step rejects an invalid script_map", {
   expect_error(
-    run_workflow_step("modules", script_map = c("a", "b")),
+    morie_run_workflow_step("modules", script_map = c("a", "b")),
     "named character"
   )
   bad <- c("a")
   names(bad) <- ""
   expect_error(
-    run_workflow_step("modules", script_map = bad),
+    morie_run_workflow_step("modules", script_map = bad),
     "empty step names"
   )
 })
 
-test_that("run_workflow_step errors when the script file is absent", {
+test_that("morie_run_workflow_step errors when the script file is absent", {
   tmp <- tempfile("morie-wf-")
   dir.create(tmp)
   expect_error(
-    run_workflow_step("modules", project_root = tmp),
+    morie_run_workflow_step("modules", project_root = tmp),
     "not found"
   )
 })
@@ -407,8 +407,8 @@ test_that("morie_run_pipeline returns a data frame of step statuses", {
   expect_equal(df$step[1], "modules")
 })
 
-test_that("wilcoxon_power returns the documented Monte-Carlo structure", {
-  r <- wilcoxon_power(rep(0, 15), effect_size = 0.6, nsim = 60, seed = 1)
+test_that("morie_wilcoxon_power returns the documented Monte-Carlo structure", {
+  r <- morie_wilcoxon_power(rep(0, 15), effect_size = 0.6, nsim = 60, seed = 1)
   expect_type(r, "list")
   expect_named(r, c(
     "statistic", "n", "effect_size", "alpha",
@@ -422,20 +422,20 @@ test_that("wilcoxon_power returns the documented Monte-Carlo structure", {
   expect_match(r$method, "Wilcoxon")
 })
 
-test_that("wilcoxon_power returns NA power for too-short input", {
-  r <- wilcoxon_power(c(1, 2, 3), nsim = 10)
+test_that("morie_wilcoxon_power returns NA power for too-short input", {
+  r <- morie_wilcoxon_power(c(1, 2, 3), nsim = 10)
   expect_true(is.na(r$statistic))
   expect_true(is.na(r$se))
   expect_equal(r$n, 3L)
 })
 
-test_that("wilcoxon_power runs without a fixed seed", {
-  r <- wilcoxon_power(rep(0, 10), nsim = 30, seed = NULL)
+test_that("morie_wilcoxon_power runs without a fixed seed", {
+  r <- morie_wilcoxon_power(rep(0, 10), nsim = 30, seed = NULL)
   expect_true(r$statistic >= 0 && r$statistic <= 1)
 })
 
-test_that("xavir_xavier_init returns the documented uniform-init list", {
-  r <- xavir_xavier_init(8, 4, seed = 42L, uniform = TRUE)
+test_that("morie_xavir_xavier_init returns the documented uniform-init list", {
+  r <- morie_xavir_xavier_init(8, 4, seed = 42L, uniform = TRUE)
   expect_type(r, "list")
   expect_named(r, c(
     "weights", "value", "fan_in", "fan_out",
@@ -450,33 +450,33 @@ test_that("xavir_xavier_init returns the documented uniform-init list", {
   expect_identical(r$method, "uniform")
 })
 
-test_that("xavir_xavier_init supports normal initialization", {
-  r <- xavir_xavier_init(6, 6, uniform = FALSE)
+test_that("morie_xavir_xavier_init supports normal initialization", {
+  r <- morie_xavir_xavier_init(6, 6, uniform = FALSE)
   expect_equal(dim(r$weights), c(6L, 6L))
   expect_identical(r$method, "normal")
 })
 
-test_that("xavir_xavier_init is reproducible for a fixed seed", {
-  r1 <- xavir_xavier_init(5, 3, seed = 7L)
-  r2 <- xavir_xavier_init(5, 3, seed = 7L)
+test_that("morie_xavir_xavier_init is reproducible for a fixed seed", {
+  r1 <- morie_xavir_xavier_init(5, 3, seed = 7L)
+  r2 <- morie_xavir_xavier_init(5, 3, seed = 7L)
   expect_equal(r1$weights, r2$weights)
 })
 
-test_that("xavir_xavier_init errors on non-positive fan sizes", {
-  expect_error(xavir_xavier_init(0, 4), "> 0")
-  expect_error(xavir_xavier_init(4, -1), "> 0")
+test_that("morie_xavir_xavier_init errors on non-positive fan sizes", {
+  expect_error(morie_xavir_xavier_init(0, 4), "> 0")
+  expect_error(morie_xavir_xavier_init(4, -1), "> 0")
 })
 
-test_that("xavier_initialization alias is identical to xavir_xavier_init", {
-  expect_identical(xavier_initialization, xavir_xavier_init)
+test_that("morie_xavier_initialization alias is identical to morie_xavir_xavier_init", {
+  expect_identical(morie_xavier_initialization, morie_xavir_xavier_init)
 })
 
-test_that("xgboost_objective fits a regression model", {
+test_that("morie_xgboost_objective fits a regression model", {
   skip_if_not_installed("xgboost")
   set.seed(13)
   x <- matrix(rnorm(80), ncol = 4)
   y <- x[, 1] + rnorm(20, sd = 0.1)
-  r <- xgboost_objective(x, y,
+  r <- morie_xgboost_objective(x, y,
     n_estimators = 10L, max_depth = 2L,
     task = "regression"
   )
@@ -491,12 +491,12 @@ test_that("xgboost_objective fits a regression model", {
   expect_gte(length(r$feature_importances), 1L)
 })
 
-test_that("xgboost_objective fits a classification model", {
+test_that("morie_xgboost_objective fits a classification model", {
   skip_if_not_installed("xgboost")
   set.seed(14)
   x <- matrix(rnorm(80), ncol = 4)
   y <- as.integer(x[, 1] > 0)
-  r <- xgboost_objective(x, y,
+  r <- morie_xgboost_objective(x, y,
     n_estimators = 10L, max_depth = 2L,
     task = "classification"
   )
@@ -504,20 +504,20 @@ test_that("xgboost_objective fits a classification model", {
   expect_true(r$train_score >= 0 && r$train_score <= 1)
 })
 
-test_that("xgboost_objective auto-detects the task and coerces a vector x", {
+test_that("morie_xgboost_objective auto-detects the task and coerces a vector x", {
   skip_if_not_installed("xgboost")
   set.seed(15)
   x <- rnorm(30)
   y <- x + rnorm(30, sd = 0.1)
-  r <- xgboost_objective(x, y, n_estimators = 8L, task = "auto")
+  r <- morie_xgboost_objective(x, y, n_estimators = 8L, task = "auto")
   expect_equal(r$n, 30L)
   expect_true(r$task %in% c("regression", "classification"))
 })
 
-test_that("xgboost_objective errors when no boosting backend is installed", {
+test_that("morie_xgboost_objective errors when no boosting backend is installed", {
   if (FALSE) {
     expect_error(
-      xgboost_objective(matrix(1:4, ncol = 1), 1:4),
+      morie_xgboost_objective(matrix(1:4, ncol = 1), 1:4),
       "xgboost.*gbm"
     )
   }

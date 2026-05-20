@@ -14,10 +14,12 @@
 #' @return list(estimate, y_hat, train_loss, se, n, method).
 #' @references Friedman (2001); Montesinos Lopez Ch 9.
 #' @examples
-#' gradient_boosting_genomic(x = rnorm(50), y = rnorm(50),
-#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4))
+#' morie_gradient_boosting_genomic(
+#'   x = rnorm(50), y = rnorm(50),
+#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4)
+#' )
 #' @export
-gradient_boosting_genomic <- function(x, y, markers, n_estimators = 100,
+morie_gradient_boosting_genomic <- function(x, y, markers, n_estimators = 100,
                                       learning_rate = 0.1, max_depth = 3,
                                       seed = 0) {
   set.seed(seed)
@@ -95,4 +97,4 @@ gradient_boosting_genomic <- function(x, y, markers, n_estimators = 100,
 
 # CANONICAL TEST
 # set.seed(14); M <- matrix(rnorm(160), 40, 4); y <- sign(M[,1])+0.3*rnorm(40)
-# gradient_boosting_genomic(rep(0,40), y, M, n_estimators=20, seed=14)
+# morie_gradient_boosting_genomic(rep(0,40), y, M, n_estimators=20, seed=14)

@@ -23,8 +23,6 @@ Randomly selects \code{n_clusters} clusters, then takes all units within
 selected clusters.
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }

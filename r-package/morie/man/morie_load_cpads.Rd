@@ -26,7 +26,7 @@ Resolution order:
 }
 }
 \examples{
-\dontrun{
+\donttest{
 # Needs the CPADS PUMF (local file, cache, or a live CKAN fetch),
 # so it cannot run inside an offline R CMD check.
 cpads <- morie_load_cpads(use_ckan = TRUE)

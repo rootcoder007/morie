@@ -17,12 +17,12 @@ test_that("morie_aniso returns trivially-isotropic result for 1D coords", {
 })
 
 # ==== vecmf.R ====
-test_that("vecm errors when T<20 or rank out of bounds", {
-  expect_error(vecm(matrix(rnorm(10), 5, 2)), "Need T>=20")
+test_that("morie_vecm errors when T<20 or rank out of bounds", {
+  expect_error(morie_vecm(matrix(rnorm(10), 5, 2)), "Need T>=20")
 })
 
 # ==== causal.R ====
-test_that("estimate_gate returns NA row for tiny / single-treatment subgroup", {
+test_that("morie_estimate_gate returns NA row for tiny / single-treatment subgroup", {
   set.seed(1)
   df <- data.frame(
     t = c(rep(0, 5), rep(1, 5), rbinom(290, 1, 0.4)),
@@ -30,7 +30,7 @@ test_that("estimate_gate returns NA row for tiny / single-treatment subgroup", {
     x = rnorm(300),
     g = c(rep("tiny", 5), rep("notreat", 5), rep("ok", 290))
   )
-  res <- estimate_gate(df, "t", "y", "x", "g")
+  res <- morie_estimate_gate(df, "t", "y", "x", "g")
   tiny <- res[res$group == "tiny", ]
   notreat <- res[res$group == "notreat", ]
   expect_true(is.na(tiny$ate))
@@ -38,12 +38,12 @@ test_that("estimate_gate returns NA row for tiny / single-treatment subgroup", {
 })
 
 # ==== dtrsp.R ====
-test_that("decision_tree_split entropy criterion runs on small data", {
+test_that("morie_decision_tree_split entropy criterion runs on small data", {
   testthat::skip_if_not_installed("rpart")
   set.seed(1)
   x <- matrix(rnorm(80), 40, 2)
   y <- as.factor(rbinom(40, 1, 0.5))
-  res <- decision_tree_split(x, y, criterion = "entropy")
+  res <- morie_decision_tree_split(x, y, criterion = "entropy")
   expect_equal(res$criterion, "entropy")
   expect_true(is.finite(res$root_impurity))
 })
@@ -90,36 +90,38 @@ test_that(".entheo_align handles empty inputs", {
 })
 
 # ==== inspector.R ====
-test_that("inspect_output reports missing for nonexistent paths", {
-  res <- inspect_output(tempfile(fileext = ".json"))
+test_that("morie_inspect_output reports missing for nonexistent paths", {
+  res <- morie_inspect_output(tempfile(fileext = ".json"))
   expect_false(res$exists)
   expect_equal(res$status, "missing")
 })
 
-test_that("inspect_output handles unsupported extensions, csv + rds", {
+test_that("morie_inspect_output handles unsupported extensions, csv + rds", {
   # Unsupported extension
   tmp_txt <- tempfile(fileext = ".txt")
-  writeLines("hi", tmp_txt); withr::defer(unlink(tmp_txt))
-  res_txt <- inspect_output(tmp_txt)
+  writeLines("hi", tmp_txt)
+  withr::defer(unlink(tmp_txt))
+  res_txt <- morie_inspect_output(tmp_txt)
   expect_match(res_txt$status, "unsupported-extension")
 
   # CSV branch
   tmp_csv <- tempfile(fileext = ".csv")
   utils::write.csv(data.frame(a = 1:3, b = 4:6), tmp_csv, row.names = FALSE)
   withr::defer(unlink(tmp_csv))
-  res_csv <- inspect_output(tmp_csv)
+  res_csv <- morie_inspect_output(tmp_csv)
   expect_equal(res_csv$status, "ok")
 
   # RDS branch
   tmp_rds <- tempfile(fileext = ".rds")
-  saveRDS(data.frame(x = 1:2), tmp_rds); withr::defer(unlink(tmp_rds))
-  res_rds <- inspect_output(tmp_rds)
+  saveRDS(data.frame(x = 1:2), tmp_rds)
+  withr::defer(unlink(tmp_rds))
+  res_rds <- morie_inspect_output(tmp_rds)
   expect_equal(res_rds$status, "ok")
 })
 
-test_that("verify_statistical_output handles missing file", {
+test_that("morie_verify_statistical_output handles missing file", {
   testthat::skip_if_not_installed("jsonlite")
-  res_missing <- verify_statistical_output(tempfile(fileext = ".json"))
+  res_missing <- morie_verify_statistical_output(tempfile(fileext = ".json"))
   expect_false(res_missing$passed)
 })
 
@@ -137,24 +139,32 @@ test_that(".clip_exp saturates at +/-700", {
 
 # ==== workflow.R ====
 test_that("validate_workflow_map errors on bad shapes", {
-  expect_error(morie:::validate_workflow_map(list(a = "x")),
-               "must be a named character vector")
-  expect_error(morie:::validate_workflow_map(c("x", "y")),
-               "must be a named character vector")
+  expect_error(
+    morie:::validate_workflow_map(list(a = "x")),
+    "must be a named character vector"
+  )
+  expect_error(
+    morie:::validate_workflow_map(c("x", "y")),
+    "must be a named character vector"
+  )
 })
 
-test_that("run_workflow_step errors on missing/unknown step", {
-  expect_error(run_workflow_step(), "exactly one workflow")
-  expect_error(run_workflow_step(c("a", "b")), "exactly one workflow")
+test_that("morie_run_workflow_step errors on missing/unknown step", {
+  expect_error(morie_run_workflow_step(), "exactly one workflow")
+  expect_error(morie_run_workflow_step(c("a", "b")), "exactly one workflow")
   expect_error(
-    run_workflow_step("nope", script_map = c(a = "foo.R")),
+    morie_run_workflow_step("nope", script_map = c(a = "foo.R")),
     "Unknown step"
   )
 })
 
 test_that("morie_run_pipeline rejects bad/empty steps", {
-  expect_error(morie_run_pipeline(steps = character()),
-               "non-empty character vector")
-  expect_error(morie_run_pipeline(steps = 1L),
-               "non-empty character vector")
+  expect_error(
+    morie_run_pipeline(steps = character()),
+    "non-empty character vector"
+  )
+  expect_error(
+    morie_run_pipeline(steps = 1L),
+    "non-empty character vector"
+  )
 })

@@ -13,9 +13,9 @@
 #'   k_lower, k_upper.
 #' @importFrom stats dbinom
 #' @examples
-#' sign_test_power(x = rnorm(50))
+#' morie_sign_test_power(x = rnorm(50))
 #' @export
-sign_test_power <- function(x, mu0 = 0, p_alt = 0.7, alpha = 0.05) {
+morie_sign_test_power <- function(x, mu0 = 0, p_alt = 0.7, alpha = 0.05) {
   x <- as.numeric(x)
   n <- sum(x != mu0)
   if (n < 1 || !(p_alt > 0 && p_alt < 1)) {

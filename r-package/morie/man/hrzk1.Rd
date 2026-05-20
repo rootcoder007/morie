@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzk1.R
 \name{hrzk1}
 \alias{hrzk1}
-\alias{horowitz_kernel_density}
+\alias{morie_horowitz_kernel_density}
 \title{Kernel density estimator (Rosenblatt-Parzen)}
 \usage{
 hrzk1(x, bandwidth = NULL, sample = NULL)
 
-horowitz_kernel_density(x, bandwidth = NULL, sample = NULL)
+morie_horowitz_kernel_density(x, bandwidth = NULL, sample = NULL)
 }
 \arguments{
 \item{x}{Numeric evaluation points (or sample if \code{sample} is NULL).}

@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgapn.R
 \name{rgapn}
 \alias{rgapn}
-\alias{rangayyan_approximate_entropy}
+\alias{morie_rangayyan_approximate_entropy}
 \title{Approximate entropy -- Rangayyan Ch 7}
 \usage{
 rgapn(x, m = 2L, r = NULL)
 
-rangayyan_approximate_entropy(x, m = 2L, r = NULL)
+morie_rangayyan_approximate_entropy(x, m = 2L, r = NULL)
 }
 \arguments{
 \item{x}{Numeric vector.}

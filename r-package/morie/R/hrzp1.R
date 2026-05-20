@@ -50,4 +50,4 @@ hrzp1 <- function(x, y, z, bandwidth = NULL) {
 #' @rdname hrzp1
 #' @keywords internal
 #' @export
-horowitz_plr_estimator <- hrzp1
+morie_horowitz_plr_estimator <- hrzp1

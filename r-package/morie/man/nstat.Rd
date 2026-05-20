@@ -2,12 +2,12 @@
 % Please edit documentation in R/nstat.R
 \name{nstat}
 \alias{nstat}
-\alias{nonstationary_covariance}
+\alias{morie_nonstationary_covariance}
 \title{Non-stationary covariance estimation (moving-window kernel).}
 \usage{
 nstat(x, coords, bandwidth = NULL)
 
-nonstationary_covariance(x, coords, bandwidth = NULL)
+morie_nonstationary_covariance(x, coords, bandwidth = NULL)
 }
 \arguments{
 \item{x}{Numeric vector.}

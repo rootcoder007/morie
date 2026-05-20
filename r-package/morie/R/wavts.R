@@ -8,9 +8,9 @@
 #' @return Named list with \code{approximation, details, energies, level,
 #'   n, wavelet, method}.
 #' @examples
-#' wavelet_time_series(x = rnorm(50))
+#' morie_wavelet_time_series(x = rnorm(50))
 #' @export
-wavelet_time_series <- function(x, wavelet = "haar", level = NULL) {
+morie_wavelet_time_series <- function(x, wavelet = "haar", level = NULL) {
   y <- as.numeric(x)
   n <- length(y)
   if (n < 4) stop("Need >=4 obs.")

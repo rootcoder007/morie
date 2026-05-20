@@ -2,12 +2,12 @@
 % Please edit documentation in R/vtpwr.R
 \name{vtpwr}
 \alias{vtpwr}
-\alias{voting_power_index}
+\alias{morie_voting_power_index}
 \title{Banzhaf and Shapley-Shubik voting-power indices (Armstrong Ch 10)}
 \usage{
 vtpwr(x, quota = NULL)
 
-voting_power_index(x, quota = NULL)
+morie_voting_power_index(x, quota = NULL)
 }
 \arguments{
 \item{x}{Numeric weight vector w.}

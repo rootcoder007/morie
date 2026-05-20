@@ -45,4 +45,4 @@ fzsgn <- function(x, theta0 = 0, h = NULL, alternative = "two-sided") {
 #' @rdname fzsgn
 #' @keywords internal
 #' @export
-fauzi_smoothed_sign <- fzsgn
+morie_fauzi_smoothed_sign <- fzsgn

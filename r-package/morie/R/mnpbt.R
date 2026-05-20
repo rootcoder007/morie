@@ -44,4 +44,4 @@ mnpbt <- function(x, n_draws = 2000L, seed = 0L) {
 #' @keywords internal
 #' @rdname mnpbt
 #' @export
-multinomial_probit_spatial <- mnpbt
+morie_multinomial_probit_spatial <- mnpbt

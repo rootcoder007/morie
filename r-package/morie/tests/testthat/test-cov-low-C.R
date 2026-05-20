@@ -36,9 +36,13 @@ test_that("quntf handles zero-IQR (constant or near-constant) input", {
 # ==== mrm_siu.R ====
 .make_siu_df <- function(n = 60, with_decision = TRUE, censor_some = TRUE) {
   set.seed(1)
-  services <- rep(c("Toronto Police Service", "Ottawa Police Service",
-                    "Ontario Provincial Police", "Peel Regional Police"),
-                  length.out = n)
+  services <- rep(
+    c(
+      "Toronto Police Service", "Ottawa Police Service",
+      "Ontario Provincial Police", "Peel Regional Police"
+    ),
+    length.out = n
+  )
   inc <- as.Date("2022-01-01") + sample.int(800, n, replace = TRUE)
   gap <- sample(30:400, n, replace = TRUE)
   dec <- inc + gap
@@ -50,14 +54,18 @@ test_that("quntf handles zero-IQR (constant or near-constant) input", {
     case_number = sprintf("OCC-%05d", seq_len(n)),
     date_of_incident_iso = format(inc, "%Y-%m-%d"),
     date_of_director_decision_iso = ifelse(is.na(dec), NA_character_,
-                                           format(dec, "%Y-%m-%d")),
+      format(dec, "%Y-%m-%d")
+    ),
     police_service = services,
     director_decision_category = sample(
       c("charges_laid", "no_charges", "no_jurisdiction"),
-      n, replace = TRUE
+      n,
+      replace = TRUE
     ),
     reason_for_interaction = sample(c("vehicle", "firearm", "custody"),
-                                    n, replace = TRUE),
+      n,
+      replace = TRUE
+    ),
     stringsAsFactors = FALSE
   )
 }
@@ -88,7 +96,7 @@ test_that("mrm_siu_outcome_classifier returns counts and shares", {
   expect_s3_class(out, "data.frame")
   expect_named(out, c("service", "outcome", "n_cases", "share_within_service"))
   expect_true(all(out$share_within_service >= 0 &
-                    out$share_within_service <= 1))
+    out$share_within_service <= 1))
 })
 
 # ==== rglyp.R ====
@@ -104,31 +112,36 @@ test_that("rglyp returns lyapunov + divergence_curve for a Gaussian series", {
 test_that("rglyp errors when series is too short to embed", {
   set.seed(1)
   expect_error(rglyp(rnorm(5), m = 3L, tau = 1L),
-               "too short", ignore.case = TRUE)
+    "too short",
+    ignore.case = TRUE
+  )
 })
 
 # ==== ghcon.R ====
-test_that("ghosal_posterior_consistency returns full structure on Gaussian data", {
+test_that("morie_ghosal_posterior_consistency returns full structure on Gaussian data", {
   set.seed(1)
-  out <- ghosal_posterior_consistency(rnorm(80), K = 50, seed = 1)
-  expect_named(out, c("estimate", "ks_mean", "ks_se", "schwartz_bound",
-                      "n", "eps", "method"))
-  expect_gte(out$estimate, 0); expect_lte(out$estimate, 1)
+  out <- morie_ghosal_posterior_consistency(rnorm(80), K = 50, seed = 1)
+  expect_named(out, c(
+    "estimate", "ks_mean", "ks_se", "schwartz_bound",
+    "n", "eps", "method"
+  ))
+  expect_gte(out$estimate, 0)
+  expect_lte(out$estimate, 1)
   expect_gt(out$ks_mean, 0)
   expect_gte(out$ks_se, 0)
   expect_equal(out$n, 80L)
 })
 
-test_that("ghosal_posterior_consistency short-circuits on empty input", {
-  out <- ghosal_posterior_consistency(numeric(0))
+test_that("morie_ghosal_posterior_consistency short-circuits on empty input", {
+  out <- morie_ghosal_posterior_consistency(numeric(0))
   expect_true(is.na(out$estimate))
   expect_equal(out$n, 0L)
 })
 
 # ==== ghsve.R ====
-test_that("ghosal_sieve_prior returns a Bernstein-sieve fit on Gaussian data", {
+test_that("morie_ghosal_sieve_prior returns a Bernstein-sieve fit on Gaussian data", {
   set.seed(1)
-  out <- ghosal_sieve_prior(rnorm(80))
+  out <- morie_ghosal_sieve_prior(rnorm(80))
   expect_named(out, c("estimate", "log_lik_per_obs", "weights", "K", "n", "method"))
   expect_true(is.finite(out$estimate))
   expect_true(is.finite(out$log_lik_per_obs))
@@ -138,17 +151,17 @@ test_that("ghosal_sieve_prior returns a Bernstein-sieve fit on Gaussian data", {
   expect_equal(out$n, 80L)
 })
 
-test_that("ghosal_sieve_prior short-circuits when n < 3", {
+test_that("morie_ghosal_sieve_prior short-circuits when n < 3", {
   set.seed(1)
-  out <- ghosal_sieve_prior(c(1.1, 2.2))
+  out <- morie_ghosal_sieve_prior(c(1.1, 2.2))
   expect_true(is.na(out$estimate))
   expect_equal(out$n, 2L)
   expect_match(out$method, "n<3")
 })
 
-test_that("ghosal_sieve_prior honours an explicit K", {
+test_that("morie_ghosal_sieve_prior honours an explicit K", {
   set.seed(1)
-  out <- ghosal_sieve_prior(rnorm(60), K = 6L)
+  out <- morie_ghosal_sieve_prior(rnorm(60), K = 6L)
   expect_equal(out$K, 6L)
   expect_length(out$weights, 6L)
 })

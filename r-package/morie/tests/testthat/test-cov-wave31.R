@@ -1,15 +1,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# Coverage wave 31 -- the dcc_multivariate_garch() rmgarch branch.
+# Coverage wave 31 -- the morie_dcc_multivariate_garch() rmgarch branch.
 #
 # rmgarch::dccfit() throws "$ operator not defined for this S4 class"
 # under the installed rmgarch/rugarch -- an S4-layout incompatibility
-# inside those packages, which dcc_multivariate_garch() catches and
+# inside those packages, which morie_dcc_multivariate_garch() catches and
 # degrades past. We cannot fix rmgarch's internals, but we can test
 # morie's own rmgarch-branch glue (coefficient-name extraction, result
 # assembly) by mocking the rmgarch / rugarch / stats entry points to
 # return rmgarch-shaped values, so the branch executes end to end.
 
-test_that("dcc_multivariate_garch assembles the rmgarch-path result", {
+test_that("morie_dcc_multivariate_garch assembles the rmgarch-path result", {
   testthat::skip_if_not_installed("rmgarch")
   testthat::skip_if_not_installed("rugarch")
   set.seed(31)
@@ -32,7 +32,7 @@ test_that("dcc_multivariate_garch assembles the rmgarch-path result", {
     .package = "stats"
   )
 
-  res <- dcc_multivariate_garch(X)
+  res <- morie_dcc_multivariate_garch(X)
   expect_equal(res$method, "DCC(1,1) via rmgarch")
   expect_equal(res$a, 0.02)
   expect_equal(res$b, 0.95)

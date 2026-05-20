@@ -62,4 +62,4 @@ sobls <- function(N = 128L, d = 1L, f = NULL, scramble = TRUE, seed = 42L) {
 #' @rdname sobls
 #' @keywords internal
 #' @export
-sobol_sequence <- sobls
+morie_sobol_sequence <- sobls

@@ -100,4 +100,4 @@ ukrig <- function(x, coords, target, model = "exponential",
 #' @rdname ukrig
 #' @keywords internal
 #' @export
-universal_kriging <- ukrig
+morie_universal_kriging <- ukrig

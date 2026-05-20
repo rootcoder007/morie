@@ -21,5 +21,6 @@ markers in older checkouts.
 }
 \examples{
 tryCatch(morie_find_project_root(),
-  error = function(e) message("not inside a morie project tree"))
+  error = function(e) message("not inside a morie project tree")
+)
 }

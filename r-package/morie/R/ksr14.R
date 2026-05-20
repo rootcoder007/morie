@@ -10,9 +10,9 @@
 #' @return Named list with estimate, se, n, method.
 #' @references Kosorok (2008), Ch 7.
 #' @examples
-#' ksr14_kosorok_profile_likelihood(x = rnorm(50), y = rnorm(50))
+#' morie_ksr14_kosorok_profile_likelihood(x = rnorm(50), y = rnorm(50))
 #' @export
-ksr14_kosorok_profile_likelihood <- function(x, y) {
+morie_ksr14_kosorok_profile_likelihood <- function(x, y) {
   x <- as.numeric(x)
   y <- as.numeric(y)
   n <- length(x)
@@ -31,9 +31,9 @@ ksr14_kosorok_profile_likelihood <- function(x, y) {
 
 # CANONICAL TEST
 # set.seed(0); xs <- rnorm(200); ys <- 1.5*xs + rnorm(200)
-# ksr14_kosorok_profile_likelihood(xs, ys)
+# morie_ksr14_kosorok_profile_likelihood(xs, ys)
 
-#' @rdname ksr14_kosorok_profile_likelihood
+#' @rdname morie_ksr14_kosorok_profile_likelihood
 #' @keywords internal
 #' @export
-kosorok_profile_likelihood <- ksr14_kosorok_profile_likelihood
+morie_kosorok_profile_likelihood <- morie_ksr14_kosorok_profile_likelihood

@@ -69,9 +69,9 @@ exact, and Wald CIs. Wilson is the default and is what we recommend
 in published papers (it has better small-sample coverage than Wald).
 
 ```{r proportion-ci}
-proportion_ci(35, 100)                       # Wilson, 95% CI
-proportion_ci(35, 100, method = "exact")     # Clopper-Pearson
-proportion_ci(35, 100, method = "wald")      # Wald
+morie_proportion_ci(35, 100)                       # Wilson, 95% CI
+morie_proportion_ci(35, 100, method = "exact")     # Clopper-Pearson
+morie_proportion_ci(35, 100, method = "wald")      # Wald
 ```
 
 # E-value (sensitivity analysis)

@@ -53,4 +53,4 @@ hrzm1 <- function(y, k = 2, maxit = 200, tol = 1e-6, seed = 0) {
 #' @rdname hrzm1
 #' @keywords internal
 #' @export
-horowitz_mixture_model <- hrzm1
+morie_horowitz_mixture_model <- hrzm1

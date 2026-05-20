@@ -19,12 +19,12 @@ only measure disparity in predictions that already exist.
 \details{
 Functions:
 \itemize{
-\item \code{fairness_disparate_impact()}: the EEOC four-fifths rule.
-\item \code{fairness_demographic_parity()}: favourable-rate gap.
-\item \code{fairness_equalized_odds()}: TPR/FPR gaps (needs ground truth).
-\item \code{fairness_average_odds_difference()}: mean TPR+FPR gap.
-\item \code{fairness_gini()}: concentration of a score distribution.
-\item \code{fairness_bias_amplification()}: composite \code{Delta_parity * G}.
+\item \code{morie_fairness_disparate_impact()}: the EEOC four-fifths rule.
+\item \code{morie_fairness_demographic_parity()}: favourable-rate gap.
+\item \code{morie_fairness_equalized_odds()}: TPR/FPR gaps (needs ground truth).
+\item \code{morie_fairness_average_odds_difference()}: mean TPR+FPR gap.
+\item \code{morie_fairness_gini()}: concentration of a score distribution.
+\item \code{morie_fairness_bias_amplification()}: composite \code{Delta_parity * G}.
 }
 
 Each returns a named \code{list} with the metric value, a per-group
@@ -41,5 +41,5 @@ arXiv:2603.18987 (the Bias Amplification Score).
 \examples{
 pred <- c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0)
 race <- c(rep("A", 5), rep("B", 5))
-fairness_disparate_impact(pred, race, privileged = "A")$value
+morie_fairness_disparate_impact(pred, race, privileged = "A")$value
 }

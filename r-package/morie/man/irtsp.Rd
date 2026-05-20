@@ -2,12 +2,12 @@
 % Please edit documentation in R/irtsp.R
 \name{irtsp}
 \alias{irtsp}
-\alias{irt_spatial}
+\alias{morie_irt_spatial}
 \title{IRT 2PL spatial ideal-point model (Armstrong Ch 4)}
 \usage{
 irtsp(x, n_iter = 60L, tol = 1e-06)
 
-irt_spatial(x, n_iter = 60L, tol = 1e-06)
+morie_irt_spatial(x, n_iter = 60L, tol = 1e-06)
 }
 \arguments{
 \item{x}{Binary roll-call matrix (n by m).}

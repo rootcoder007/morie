@@ -27,7 +27,7 @@ resolve_synthetic_name_map <- function(name_map, profile) {
   required <- synthetic_required_keys()
 
   if (is.null(name_map)) {
-    return(default_synthetic_name_map(profile = profile))
+    return(morie_default_synthetic_name_map(profile = profile))
   }
 
   if (is.list(name_map)) {
@@ -66,9 +66,9 @@ resolve_synthetic_name_map <- function(name_map, profile) {
 #'   `"morie_legacy"` reproduces previous EML legacy column names.
 #' @return Named character vector.
 #' @examples
-#' default_synthetic_name_map("generic")
+#' morie_default_synthetic_name_map("generic")
 #' @export
-default_synthetic_name_map <- function(profile = c("generic", "morie_legacy")) {
+morie_default_synthetic_name_map <- function(profile = c("generic", "morie_legacy")) {
   profile <- match.arg(profile)
 
   if (identical(profile, "generic")) {
@@ -124,7 +124,7 @@ default_synthetic_name_map <- function(profile = c("generic", "morie_legacy")) {
 #' @param profile Convenience profile for output naming; ignored when
 #'   `name_map` is supplied.
 #' @param name_map Optional named character vector mapping canonical keys to
-#'   output column names. Use [default_synthetic_name_map()] as a template.
+#'   output column names. Use [morie_default_synthetic_name_map()] as a template.
 #' @return A data.frame with synthetic records.
 #' @examples
 #' df <- morie_generate_synthetic_data(n = 200, seed = 1)
@@ -255,10 +255,10 @@ morie_generate_synthetic_data <- function(
 #' @param overwrite If `TRUE`, overwrite existing file.
 #' @return Normalized output path.
 #' @examples
-#' out <- write_synthetic_data(tempfile(fileext = ".csv"), n = 200, seed = 1)
+#' out <- morie_write_synthetic_data(tempfile(fileext = ".csv"), n = 200, seed = 1)
 #' file.exists(out)
 #' @export
-write_synthetic_data <- function(
+morie_write_synthetic_data <- function(
   path,
   n = 5000L,
   seed = 42L,

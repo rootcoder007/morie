@@ -27,4 +27,4 @@ rgemg <- function(x, window = 64L, fs = 1.0) {
 #' @rdname rgemg
 #' @keywords internal
 #' @export
-rangayyan_emg_rms <- rgemg
+morie_rangayyan_emg_rms <- rgemg

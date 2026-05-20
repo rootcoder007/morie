@@ -34,7 +34,7 @@ bysid <- function(x, n_iter = 400L, burn = 100L, seed = 0L,
       x_mean = rep(NA_real_, n), x_sd = rep(NA_real_, n),
       x_ci = matrix(NA_real_, n, 2L),
       alpha = rep(NA_real_, m), beta = rep(NA_real_, m),
-      n_iter = 0L, method = "bayesian_ideal_points"
+      n_iter = 0L, method = "morie_bayesian_ideal_points"
     ))
   }
   Mc <- M - matrix(colMeans(M, na.rm = TRUE), n, m, byrow = TRUE)
@@ -90,7 +90,7 @@ bysid <- function(x, n_iter = 400L, burn = 100L, seed = 0L,
       x_mean = rep(NA_real_, n), x_sd = rep(NA_real_, n),
       x_ci = matrix(NA_real_, n, 2L),
       alpha = rep(NA_real_, m), beta = rep(NA_real_, m),
-      n_iter = n_iter, method = "bayesian_ideal_points"
+      n_iter = n_iter, method = "morie_bayesian_ideal_points"
     ))
   }
   arr <- do.call(rbind, samples)
@@ -105,11 +105,11 @@ bysid <- function(x, n_iter = 400L, burn = 100L, seed = 0L,
   list(
     x_mean = x_mean, x_sd = x_sd, x_ci = x_ci,
     alpha = a_mean, beta = b_mean,
-    n_iter = n_iter, method = "bayesian_ideal_points"
+    n_iter = n_iter, method = "morie_bayesian_ideal_points"
   )
 }
 
 #' @keywords internal
 #' @rdname bysid
 #' @export
-bayesian_ideal_points <- bysid
+morie_bayesian_ideal_points <- bysid

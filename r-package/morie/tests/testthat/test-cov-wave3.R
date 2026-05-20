@@ -5,11 +5,11 @@
 
 # --- regms.R ---------------------------------------------------------------
 
-test_that("regime_switching errors on a too-short series", {
-  expect_error(regime_switching(1:3, k_regimes = 2), "short")
+test_that("morie_regime_switching errors on a too-short series", {
+  expect_error(morie_regime_switching(1:3, k_regimes = 2), "short")
 })
 
-test_that("regime_switching base-R EM path runs when MSwM is absent", {
+test_that("morie_regime_switching base-R EM path runs when MSwM is absent", {
   set.seed(1)
   x <- c(stats::rnorm(45, 0, 1), stats::rnorm(45, 6, 1))
   testthat::local_mocked_bindings(
@@ -18,7 +18,7 @@ test_that("regime_switching base-R EM path runs when MSwM is absent", {
     },
     .package = "base"
   )
-  r <- regime_switching(x, k_regimes = 2)
+  r <- morie_regime_switching(x, k_regimes = 2)
   expect_equal(r$k_regimes, 2)
   expect_length(r$mu, 2L)
   expect_true(is.finite(r$loglik))
@@ -26,11 +26,11 @@ test_that("regime_switching base-R EM path runs when MSwM is absent", {
   expect_equal(dim(r$transition), c(2L, 2L))
 })
 
-test_that("regime_switching uses MSwM when it is available", {
+test_that("morie_regime_switching uses MSwM when it is available", {
   skip_if_not_installed("MSwM")
   set.seed(2)
   x <- c(stats::rnorm(60, 0, 1), stats::rnorm(60, 4, 1.5))
-  r <- tryCatch(suppressWarnings(regime_switching(x, k_regimes = 2)),
+  r <- tryCatch(suppressWarnings(morie_regime_switching(x, k_regimes = 2)),
     error = function(e) NULL
   )
   expect_true(is.null(r) || identical(r$k_regimes, 2))
@@ -48,15 +48,15 @@ test_that("morie_build_prompt handles bare, contextual and empty questions", {
   expect_error(morie_build_prompt("   "), "non-empty")
 })
 
-test_that("ask_percy returns agent text on a successful Python call", {
+test_that("morie_ask_percy returns agent text on a successful Python call", {
   testthat::local_mocked_bindings(
     system2 = function(command, args, ...) "the agent reply",
     .package = "base"
   )
-  expect_equal(ask_percy("hello"), "the agent reply")
+  expect_equal(morie_ask_percy("hello"), "the agent reply")
 })
 
-test_that("ask_percy errors when the Python call exits non-zero", {
+test_that("morie_ask_percy errors when the Python call exits non-zero", {
   testthat::local_mocked_bindings(
     system2 = function(command, args, ...) {
       out <- "traceback ..."
@@ -64,7 +64,7 @@ test_that("ask_percy errors when the Python call exits non-zero", {
       out
     }, .package = "base"
   )
-  expect_error(ask_percy("hello"), "Perseus agent call failed")
+  expect_error(morie_ask_percy("hello"), "Perseus agent call failed")
 })
 
 # --- mrm_samples.R ---------------------------------------------------------

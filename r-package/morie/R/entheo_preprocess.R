@@ -116,7 +116,10 @@ preprocess_fmri <- function(record,
     n_parcels = n_parcels,
     warnings = warnings_vec,
     interpretation = sprintf(
-      "Motion-scrubbed %d volume(s) above %g mm FD; top-%d singular components projected out as toy ICA-AROMA stand-in.",
+      paste0(
+        "Motion-scrubbed %d volume(s) above %g mm FD; top-%d singular ",
+        "components projected out as toy ICA-AROMA stand-in."
+      ),
       n_scrubbed, motion_threshold_mm, n_noise_components
     )
   )

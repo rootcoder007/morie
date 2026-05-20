@@ -83,13 +83,16 @@ morie_tps_layer_urls <- function() {
     BreakAndEnter =
       "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Break_and_Enter_Open_Data/FeatureServer/0",
     Homicides =
-      "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Homicides_Open_Data_ASR_RC_TBL_002/FeatureServer/0",
+      paste0("https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/",
+        "rest/services/Homicides_Open_Data_ASR_RC_TBL_002/FeatureServer/0"),
     Robbery =
       "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Robbery_Open_Data/FeatureServer/0",
     ShootingAndFirearmDiscarges =
-      "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Shooting_and_Firearm_Discharges_Open_Data/FeatureServer/0",
+      paste0("https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/",
+        "rest/services/Shooting_and_Firearm_Discharges_Open_Data/FeatureServer/0"),
     TheftFromMV =
-      "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Theft_From_Motor_Vehicle_Open_Data/FeatureServer/0",
+      paste0("https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/",
+        "rest/services/Theft_From_Motor_Vehicle_Open_Data/FeatureServer/0"),
     TheftOver =
       "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Theft_Over_Open_Data/FeatureServer/0"
   )

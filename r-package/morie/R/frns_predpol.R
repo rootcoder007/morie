@@ -10,23 +10,23 @@
 #' composition.
 #'
 #' Functions:
-#' * `predpol_aggregate_areas()`: roll per-record data up to one row
+#' * `morie_predpol_aggregate_areas()`: roll per-record data up to one row
 #'   per area.
-#' * `predpol_calibration_audit()`: Spearman calibration plus a
+#' * `morie_predpol_calibration_audit()`: Spearman calibration plus a
 #'   per-group mean rank gap (the over-/under-prediction signal).
-#' * `predpol_score_disparity()`: descriptive per-group risk-score
+#' * `morie_predpol_score_disparity()`: descriptive per-group risk-score
 #'   summary with a one-way ANOVA.
 #'
 #' Written from the project's published methodology; no code copied
 #' (that repository carries no licence and is not redistributable).
 #'
-#' @return \code{predpol_aggregate_areas()} returns a per-area
-#'   \code{data.frame}; \code{predpol_calibration_audit()} and
-#'   \code{predpol_score_disparity()} return named \code{list}s of audit
+#' @return \code{morie_predpol_aggregate_areas()} returns a per-area
+#'   \code{data.frame}; \code{morie_predpol_calibration_audit()} and
+#'   \code{morie_predpol_score_disparity()} return named \code{list}s of audit
 #'   statistics, per-group breakdowns, and a plain-language
 #'   \code{interpretation}.
 #' @examples
-#' agg <- predpol_aggregate_areas(
+#' agg <- morie_predpol_aggregate_areas(
 #'   area = c("a", "a", "b", "b"), risk = c(10, 20, 30, 40),
 #'   outcome = c(1, 0, 1, 1)
 #' )
@@ -60,13 +60,13 @@ NULL
 #'   `n_records`.
 #' @export
 #' @examples
-#' agg <- predpol_aggregate_areas(
+#' agg <- morie_predpol_aggregate_areas(
 #'   area = c("a", "a", "b", "b"), risk = c(10, 20, 30, 40),
 #'   outcome = c(1, 0, 1, 1)
 #' )
 #' agg$mean_risk # 15 35
 #' agg$outcome_rate # 0.5 1.0
-predpol_aggregate_areas <- function(area, risk, outcome, group = NULL,
+morie_predpol_aggregate_areas <- function(area, risk, outcome, group = NULL,
                                     population = NULL) {
   if (length(area) != length(risk) || length(area) != length(outcome)) {
     stop("area, risk and outcome must be the same length", call. = FALSE)
@@ -137,7 +137,7 @@ predpol_aggregate_areas <- function(area, risk, outcome, group = NULL,
 #'   `warnings`, `interpretation`.
 #' @export
 #' @examples
-#' res <- predpol_calibration_audit(
+#' res <- morie_predpol_calibration_audit(
 #'   areas = c("d1", "d2", "d3", "d4", "d5", "d6"),
 #'   mean_risk = c(90, 80, 70, 30, 20, 10),
 #'   outcome_rate = c(10, 20, 30, 70, 80, 90),
@@ -145,7 +145,7 @@ predpol_aggregate_areas <- function(area, risk, outcome, group = NULL,
 #' )
 #' res$group_rank_gap$X # 3  (group X over-predicted)
 #' res$spearman # -1 (perfectly miscalibrated)
-predpol_calibration_audit <- function(areas, mean_risk, outcome_rate,
+morie_predpol_calibration_audit <- function(areas, mean_risk, outcome_rate,
                                       group) {
   n <- length(areas)
   if (!(n == length(mean_risk) && n == length(outcome_rate) &&
@@ -250,7 +250,7 @@ predpol_calibration_audit <- function(areas, mean_risk, outcome_rate,
 #' Reports per-group n / mean / median / sd, a one-way ANOVA for
 #' whether group membership relates to the score, and each group's
 #' mean-score gap from a reference group. A significant gap is not
-#' itself proof of bias; pair this with `predpol_calibration_audit()`.
+#' itself proof of bias; pair this with `morie_predpol_calibration_audit()`.
 #'
 #' @param score Continuous risk score, one per individual.
 #' @param group Protected attribute, one per individual.
@@ -261,13 +261,13 @@ predpol_calibration_audit <- function(areas, mean_risk, outcome_rate,
 #'   `reference`, `warnings`, `interpretation`.
 #' @export
 #' @examples
-#' res <- predpol_score_disparity(
+#' res <- morie_predpol_score_disparity(
 #'   score = c(9, 10, 11, 19, 20, 21),
 #'   group = c("A", "A", "A", "B", "B", "B")
 #' )
 #' res$value # 10  (group means 10 and 20)
 #' res$significant # TRUE
-predpol_score_disparity <- function(score, group, reference = NULL) {
+morie_predpol_score_disparity <- function(score, group, reference = NULL) {
   if (length(score) != length(group)) {
     stop("score and group must be the same length", call. = FALSE)
   }
@@ -349,7 +349,7 @@ predpol_score_disparity <- function(score, group, reference = NULL) {
     ),
     anova_line,
     "Note: a score gap is not itself evidence of bias; pair this with ",
-    "predpol_calibration_audit(), which compares the score against ",
+    "morie_predpol_calibration_audit(), which compares the score against ",
     "realised outcomes."
   )
 

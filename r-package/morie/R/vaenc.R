@@ -22,7 +22,7 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-vaenc_vae_elbo <- function(x, x_recon, mu, log_var, reduction = "mean") {
+morie_vaenc_vae_elbo <- function(x, x_recon, mu, log_var, reduction = "mean") {
   x <- as.array(x)
   x_recon <- as.array(x_recon)
   mu <- as.array(mu)
@@ -56,7 +56,7 @@ vaenc_vae_elbo <- function(x, x_recon, mu, log_var, reduction = "mean") {
   )
 }
 
-#' @rdname vaenc_vae_elbo
+#' @rdname morie_vaenc_vae_elbo
 #' @keywords internal
 #' @export
-vae_elbo <- vaenc_vae_elbo
+morie_vae_elbo <- morie_vaenc_vae_elbo

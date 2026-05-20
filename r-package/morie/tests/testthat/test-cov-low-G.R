@@ -15,7 +15,8 @@ test_that("rgeeg honours custom bands and nperseg", {
   set.seed(1)
   x <- rnorm(1024)
   r <- rgeeg(
-    x, fs = 100,
+    x,
+    fs = 100,
     bands = list(low = c(1, 5), high = c(20, 40)),
     nperseg = 64
   )
@@ -34,7 +35,10 @@ test_that("sptau canonical chain returns I ~ 0.5", {
   x <- c(1, 2, 3, 4, 5)
   n <- 5
   W <- matrix(0, n, n)
-  for (i in 1:(n - 1)) { W[i, i + 1] <- 1; W[i + 1, i] <- 1 }
+  for (i in 1:(n - 1)) {
+    W[i, i + 1] <- 1
+    W[i + 1, i] <- 1
+  }
   r <- sptau(x, W)
   expect_equal(r$statistic, 0.5, tolerance = 1e-8)
   expect_equal(r$n, 5L)
@@ -47,7 +51,7 @@ test_that("sptau errors on bad-shape weight matrix", {
 test_that("ksr10 estimates near median for symmetric data", {
   set.seed(1)
   x <- rnorm(200)
-  r <- ksr10_kosorok_m_estimator(x)
+  r <- morie_ksr10_kosorok_m_estimator(x)
   expect_equal(r$n, 200L)
   expect_true(abs(r$estimate) < 0.3)
   expect_true(r$se > 0)
@@ -56,7 +60,9 @@ test_that("ksr10 estimates near median for symmetric data", {
 test_that("ukrig canonical line example ~ 3.5", {
   set.seed(1)
   r <- ukrig(c(1, 2, 3, 4, 5), matrix(0:4, ncol = 1),
-             matrix(2.5, 1, 1), trend_order = 1)
+    matrix(2.5, 1, 1),
+    trend_order = 1
+  )
   expect_equal(r$estimate, 3.5, tolerance = 0.5)
   expect_equal(r$n, 5L)
 })
@@ -74,7 +80,8 @@ test_that("ukrig works with gaussian and spherical models", {
 test_that("vrgm canonical line example returns valid bins", {
   set.seed(1)
   r <- vrgm(c(1, 2, 3, 4, 5), matrix(0:4, ncol = 1),
-            n_bins = 4, max_dist = 4)
+    n_bins = 4, max_dist = 4
+  )
   expect_named(r$estimate, c("bins", "gamma", "n_pairs"))
   expect_length(r$estimate$bins, 4)
   expect_equal(r$n, 5L)

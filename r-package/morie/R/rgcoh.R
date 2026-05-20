@@ -58,4 +58,4 @@ rgcoh <- function(x, y, fs = 1.0, nperseg = NULL) {
 #' @rdname rgcoh
 #' @keywords internal
 #' @export
-rangayyan_coherence <- rgcoh
+morie_rangayyan_coherence <- rgcoh

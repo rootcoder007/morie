@@ -96,14 +96,14 @@ test_that("hrzq1 recovers slope on a clean linear signal at tau=0.5", {
 })
 
 # ==== xavir.R ====
-test_that("xavir_xavier_init errors on non-positive fan_in or fan_out", {
-  expect_error(xavir_xavier_init(0, 4), "fan_in and fan_out must be > 0")
-  expect_error(xavir_xavier_init(4, -1), "fan_in and fan_out must be > 0")
+test_that("morie_xavir_xavier_init errors on non-positive fan_in or fan_out", {
+  expect_error(morie_xavir_xavier_init(0, 4), "fan_in and fan_out must be > 0")
+  expect_error(morie_xavir_xavier_init(4, -1), "fan_in and fan_out must be > 0")
 })
 
-test_that("xavir_xavier_init uniform branch returns matrix in [-limit, +limit]", {
+test_that("morie_xavir_xavier_init uniform branch returns matrix in [-limit, +limit]", {
   set.seed(1)
-  out <- xavir_xavier_init(fan_in = 8, fan_out = 16, seed = 42L, uniform = TRUE)
+  out <- morie_xavir_xavier_init(fan_in = 8, fan_out = 16, seed = 42L, uniform = TRUE)
   expect_false(is.null(out))
   expect_equal(dim(out$weights), c(8, 16))
   limit <- sqrt(6 / (8 + 16))
@@ -113,9 +113,9 @@ test_that("xavir_xavier_init uniform branch returns matrix in [-limit, +limit]",
   expect_equal(out$shape, c(8, 16))
 })
 
-test_that("xavir_xavier_init normal branch returns matrix with expected sd scale", {
+test_that("morie_xavir_xavier_init normal branch returns matrix with expected sd scale", {
   set.seed(1)
-  out <- xavir_xavier_init(fan_in = 32, fan_out = 32, seed = 42L, uniform = FALSE)
+  out <- morie_xavir_xavier_init(fan_in = 32, fan_out = 32, seed = 42L, uniform = FALSE)
   expect_equal(dim(out$weights), c(32, 32))
   expect_equal(out$method, "normal")
 })

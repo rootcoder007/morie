@@ -2,12 +2,12 @@
 % Please edit documentation in R/rghfd.R
 \name{rghfd}
 \alias{rghfd}
-\alias{rangayyan_higuchi_fd}
+\alias{morie_rangayyan_higuchi_fd}
 \title{Higuchi fractal dimension -- Rangayyan Ch 7}
 \usage{
 rghfd(x, kmax = 10L)
 
-rangayyan_higuchi_fd(x, kmax = 10L)
+morie_rangayyan_higuchi_fd(x, kmax = 10L)
 }
 \arguments{
 \item{x}{Numeric vector.}

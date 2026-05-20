@@ -25,7 +25,7 @@ agset <- function(options, setter_ideal, reversion) {
       setter_ideal = setter_ideal, reversion = reversion,
       win_set_size = 0L,
       win_set_bounds = c(NA_real_, NA_real_),
-      method = "agenda_setter_power"
+      method = "morie_agenda_setter_power"
     ))
   }
   median_voter_pt <- (setter_ideal + reversion) / 2
@@ -43,11 +43,11 @@ agset <- function(options, setter_ideal, reversion) {
     setter_ideal = setter_ideal, reversion = reversion,
     win_set_size = as.integer(sum(in_win)),
     win_set_bounds = c(win_lo, win_hi),
-    method = "agenda_setter_power"
+    method = "morie_agenda_setter_power"
   )
 }
 
 #' @keywords internal
 #' @rdname agset
 #' @export
-agenda_setter_power <- agset
+morie_agenda_setter_power <- agset

@@ -20,8 +20,6 @@ Numeric eta-squared.
 Eta-squared from F-statistic
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }

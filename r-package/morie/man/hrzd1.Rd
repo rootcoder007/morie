@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzd1.R
 \name{hrzd1}
 \alias{hrzd1}
-\alias{horowitz_duration_model}
+\alias{morie_horowitz_duration_model}
 \title{Cox partial-likelihood proportional-hazards estimator}
 \usage{
 hrzd1(t, x, event)
 
-horowitz_duration_model(t, x, event)
+morie_horowitz_duration_model(t, x, event)
 }
 \arguments{
 \item{t}{Numeric vector of observed event/censoring times.}

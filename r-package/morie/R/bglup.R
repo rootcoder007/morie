@@ -15,9 +15,9 @@
 #' @return list(estimate, beta, beta_pip, pi, sigma_b2, sigma2, n_iter, n, p, method).
 #' @references Habier-Fernando-Kizilkaya-Garrick (2011); Montesinos Lopez Ch 4.
 #' @examples
-#' bayes_cpi_genomic(x = rnorm(50), y = rnorm(50))
+#' morie_bayes_cpi_genomic(x = rnorm(50), y = rnorm(50))
 #' @export
-bayes_cpi_genomic <- function(x, y, n_iter = 300, burn = 100,
+morie_bayes_cpi_genomic <- function(x, y, n_iter = 300, burn = 100,
                               pi_init = 0.1, seed = 0,
                               deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
@@ -100,4 +100,4 @@ bayes_cpi_genomic <- function(x, y, n_iter = 300, burn = 100,
 
 # CANONICAL TEST
 # set.seed(11); X <- matrix(rnorm(180), 30, 6); b <- c(1,0,0,-1,0,0)
-# y <- X %*% b + 0.1*rnorm(30); bayes_cpi_genomic(X, y, seed=11)$beta_pip
+# y <- X %*% b + 0.1*rnorm(30); morie_bayes_cpi_genomic(X, y, seed=11)$beta_pip

@@ -18,7 +18,7 @@ test_that("build and read manifest", {
   root <- make_fixture_project()
   manifest_path <- file.path(root, "data", "manifest", "outputs_manifest.csv")
 
-  built <- build_outputs_manifest(
+  built <- morie_build_outputs_manifest(
     output_dir = file.path(root, "data", "manifest", "outputs"),
     manifest_path = manifest_path
   )
@@ -26,16 +26,16 @@ test_that("build and read manifest", {
   expect_true(file.exists(manifest_path))
   expect_true(all(c("output", "public_path", "size_kb", "modified") %in% names(built)))
 
-  read_back <- read_outputs_manifest(project_root = root)
+  read_back <- morie_read_outputs_manifest(project_root = root)
   expect_equal(nrow(read_back), nrow(built))
-  expect_true(validate_outputs_manifest(read_back))
+  expect_true(morie_validate_outputs_manifest(read_back))
 })
 
 test_that("audit captures missing and unexpected outputs", {
   root <- make_fixture_project()
   manifest_path <- file.path(root, "data", "manifest", "outputs_manifest.csv")
 
-  manifest <- build_outputs_manifest(
+  manifest <- morie_build_outputs_manifest(
     output_dir = file.path(root, "data", "manifest", "outputs"),
     manifest_path = manifest_path
   )
@@ -43,8 +43,8 @@ test_that("audit captures missing and unexpected outputs", {
   unlink(file.path(root, "data", "manifest", "outputs", "notes.txt"))
   writeLines("new", file.path(root, "data", "manifest", "outputs", "extra.csv"))
 
-  audit <- audit_public_outputs(project_root = root, manifest = manifest)
-  summary <- summarize_output_audit(audit)
+  audit <- morie_audit_public_outputs(project_root = root, manifest = manifest)
+  summary <- morie_summarize_output_audit(audit)
 
   expect_equal(summary$declared_missing, 1)
   expect_equal(summary$unexpected_files, 1)

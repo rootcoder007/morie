@@ -19,6 +19,10 @@ exclusions: list(
       line_length_linter = Inf
     ),
     "R/RcppExports.R" = Inf,
-    "R/dataset_catalog.R" = list(line_length_linter = Inf)
+    "R/dataset_catalog.R" = list(line_length_linter = Inf),
+    "R/study_core.R" = list(line_length_linter = Inf),
+    "R/study_reporting.R" = list(line_length_linter = Inf),
+    "R/rndsr.R" = list(line_length_linter = Inf),
+    "R/rfens.R" = list(line_length_linter = Inf)
   )
 encoding: "UTF-8"

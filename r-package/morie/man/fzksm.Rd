@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzksm.R
 \name{fzksm}
 \alias{fzksm}
-\alias{fauzi_ks_smoothed}
+\alias{morie_fauzi_ks_smoothed}
 \title{Fauzi: Kolmogorov-Smirnov test with kernel-smoothed CDF (Ch 5)}
 \usage{
 fzksm(x, cdf = "norm", args = NULL, h = NULL, n_grid = 512L)
 
-fauzi_ks_smoothed(x, cdf = "norm", args = NULL, h = NULL, n_grid = 512L)
+morie_fauzi_ks_smoothed(x, cdf = "norm", args = NULL, h = NULL, n_grid = 512L)
 }
 \arguments{
 \item{x}{Numeric vector.}

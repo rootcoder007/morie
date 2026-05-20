@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzbrd.R
 \name{fzbrd}
 \alias{fzbrd}
-\alias{fauzi_bias_reduced_kdfe}
+\alias{morie_fauzi_bias_reduced_kdfe}
 \title{Fauzi: Bias-reduced KDFE via geometric extrapolation (Ch 2)}
 \usage{
 fzbrd(x, t = NULL, h = NULL, c = 2)
 
-fauzi_bias_reduced_kdfe(x, t = NULL, h = NULL, c = 2)
+morie_fauzi_bias_reduced_kdfe(x, t = NULL, h = NULL, c = 2)
 }
 \arguments{
 \item{x}{Numeric vector.}

@@ -150,10 +150,10 @@ test_that("preprocess_fmri warns when motion absent and matrices missing", {
   expect_equal(res2$n_scrubbed, 0L)
 })
 
-test_that("ewma_volatility returns the documented structure", {
+test_that("morie_ewma_volatility returns the documented structure", {
   set.seed(10)
   x <- stats::rnorm(200)
-  res <- ewma_volatility(x)
+  res <- morie_ewma_volatility(x)
   expect_true(is.list(res))
   expect_named(res, c(
     "conditional_variance", "conditional_volatility",
@@ -169,24 +169,24 @@ test_that("ewma_volatility returns the documented structure", {
   expect_equal(res$last_volatility, sqrt(res$last_variance))
 })
 
-test_that("ewma_volatility honours a custom lambda", {
+test_that("morie_ewma_volatility honours a custom lambda", {
   set.seed(11)
   x <- stats::rnorm(50)
-  res <- ewma_volatility(x, lambda = 0.8)
+  res <- morie_ewma_volatility(x, lambda = 0.8)
   expect_equal(res$lambda, 0.8)
   expect_true(all(is.finite(res$conditional_volatility)))
 })
 
-test_that("ewma_volatility errors on bad input", {
-  expect_error(ewma_volatility(1))
-  expect_error(ewma_volatility(stats::rnorm(10), lambda = 0))
-  expect_error(ewma_volatility(stats::rnorm(10), lambda = 1))
+test_that("morie_ewma_volatility errors on bad input", {
+  expect_error(morie_ewma_volatility(1))
+  expect_error(morie_ewma_volatility(stats::rnorm(10), lambda = 0))
+  expect_error(morie_ewma_volatility(stats::rnorm(10), lambda = 1))
 })
 
-test_that("extreme_value_gev fits a GEV and returns SEs", {
+test_that("morie_extreme_value_gev fits a GEV and returns SEs", {
   set.seed(20)
   x <- stats::rnorm(300, mean = 10, sd = 2)
-  res <- extreme_value_gev(x)
+  res <- morie_extreme_value_gev(x)
   expect_true(is.list(res))
   expect_true(all(c(
     "mu", "sigma", "xi", "se_mu", "se_sigma", "se_xi",
@@ -200,8 +200,8 @@ test_that("extreme_value_gev fits a GEV and returns SEs", {
   expect_equal(res$estimate, res$mu)
 })
 
-test_that("extreme_value_gev returns NA path for too-few obs", {
-  res <- extreme_value_gev(c(1, 2, 3))
+test_that("morie_extreme_value_gev returns NA path for too-few obs", {
+  res <- morie_extreme_value_gev(c(1, 2, 3))
   expect_true(is.list(res))
   expect_true(is.na(res$estimate))
   expect_equal(res$n, 3L)
@@ -264,10 +264,10 @@ test_that("flash_attention accepts separate K, V and a mask", {
   expect_equal(res$block_size, 4L)
 })
 
-test_that("fairness_disparate_impact detects adverse impact", {
+test_that("morie_fairness_disparate_impact detects adverse impact", {
   pred <- c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0)
   race <- c(rep("A", 5), rep("B", 5))
-  res <- fairness_disparate_impact(pred, race, privileged = "A")
+  res <- morie_fairness_disparate_impact(pred, race, privileged = "A")
   expect_true(is.list(res))
   expect_true(all(c(
     "value", "ratios", "rates", "privileged",
@@ -280,27 +280,27 @@ test_that("fairness_disparate_impact detects adverse impact", {
   expect_equal(res$threshold, 0.8)
 })
 
-test_that("fairness_disparate_impact infers privileged group with warning", {
+test_that("morie_fairness_disparate_impact infers privileged group with warning", {
   pred <- c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0)
   race <- c(rep("A", 5), rep("B", 5))
-  res <- fairness_disparate_impact(pred, race)
+  res <- morie_fairness_disparate_impact(pred, race)
   expect_true(length(res$warnings) >= 1L)
   expect_true(res$privileged %in% c("A", "B"))
 })
 
-test_that("fairness_disparate_impact errors on bad inputs", {
-  expect_error(fairness_disparate_impact(c(1, 0), c("A", "A")))
-  expect_error(fairness_disparate_impact(c(1, 0, 1),
+test_that("morie_fairness_disparate_impact errors on bad inputs", {
+  expect_error(morie_fairness_disparate_impact(c(1, 0), c("A", "A")))
+  expect_error(morie_fairness_disparate_impact(c(1, 0, 1),
     c("A", "B", "B"),
     privileged = "Z"
   ))
-  expect_error(fairness_disparate_impact(c(1, 0, 1), c("A", "B")))
+  expect_error(morie_fairness_disparate_impact(c(1, 0, 1), c("A", "B")))
 })
 
-test_that("fairness_demographic_parity reports the parity gap", {
+test_that("morie_fairness_demographic_parity reports the parity gap", {
   pred <- c(1, 1, 1, 1, 0, 0, 0, 1, 0, 0)
   race <- c(rep("A", 5), rep("B", 5))
-  res <- fairness_demographic_parity(pred, race, privileged = "A")
+  res <- morie_fairness_demographic_parity(pred, race, privileged = "A")
   expect_true(is.list(res))
   expect_true(all(c(
     "value", "gaps", "rates", "privileged", "warnings",
@@ -310,11 +310,11 @@ test_that("fairness_demographic_parity reports the parity gap", {
   expect_equal(res$privileged, "A")
 })
 
-test_that("fairness_equalized_odds flags a TPR/FPR violation", {
+test_that("morie_fairness_equalized_odds flags a TPR/FPR violation", {
   truth <- c(1, 0, 1, 0, 1, 0, 1, 0)
   pred <- c(1, 0, 1, 0, 1, 1, 0, 1)
   race <- c(rep("A", 4), rep("B", 4))
-  res <- fairness_equalized_odds(truth, pred, race, privileged = "A")
+  res <- morie_fairness_equalized_odds(truth, pred, race, privileged = "A")
   expect_true(is.list(res))
   expect_true(all(c(
     "value", "tpr_gaps", "fpr_gaps", "rates",
@@ -324,18 +324,18 @@ test_that("fairness_equalized_odds flags a TPR/FPR violation", {
   expect_type(res$violation, "logical")
 })
 
-test_that("fairness_equalized_odds errors on mismatched lengths", {
-  expect_error(fairness_equalized_odds(
+test_that("morie_fairness_equalized_odds errors on mismatched lengths", {
+  expect_error(morie_fairness_equalized_odds(
     c(1, 0), c(1, 0, 1),
     c("A", "B", "A")
   ))
 })
 
-test_that("fairness_average_odds_difference returns AOD breakdown", {
+test_that("morie_fairness_average_odds_difference returns AOD breakdown", {
   truth <- c(1, 0, 1, 0, 1, 0, 1, 0)
   pred <- c(1, 0, 1, 0, 1, 1, 0, 1)
   race <- c(rep("A", 4), rep("B", 4))
-  res <- fairness_average_odds_difference(truth, pred, race,
+  res <- morie_fairness_average_odds_difference(truth, pred, race,
     privileged = "A"
   )
   expect_true(is.list(res))
@@ -347,8 +347,8 @@ test_that("fairness_average_odds_difference returns AOD breakdown", {
   expect_true(is.list(res$average_odds_difference))
 })
 
-test_that("fairness_gini ranges from 0 to near 1", {
-  eq <- fairness_gini(c(5, 5, 5, 5))
+test_that("morie_fairness_gini ranges from 0 to near 1", {
+  eq <- morie_fairness_gini(c(5, 5, 5, 5))
   expect_true(is.list(eq))
   expect_true(all(c(
     "value", "gini", "per_group", "warnings",
@@ -356,30 +356,30 @@ test_that("fairness_gini ranges from 0 to near 1", {
   ) %in% names(eq)))
   expect_equal(eq$value, 0)
 
-  conc <- fairness_gini(c(0, 0, 0, 100))
+  conc <- morie_fairness_gini(c(0, 0, 0, 100))
   expect_gt(conc$value, 0.5)
   expect_lte(conc$value, 1)
 })
 
-test_that("fairness_gini supports per-group breakdown and negatives", {
-  res <- fairness_gini(c(1, 2, 3, 4, 5, 6),
+test_that("morie_fairness_gini supports per-group breakdown and negatives", {
+  res <- morie_fairness_gini(c(1, 2, 3, 4, 5, 6),
     group = c("A", "A", "A", "B", "B", "B")
   )
   expect_true(is.list(res$per_group))
   expect_true(all(c("A", "B") %in% names(res$per_group)))
 
-  neg <- fairness_gini(c(-1, 2, 3))
+  neg <- morie_fairness_gini(c(-1, 2, 3))
   expect_true(length(neg$warnings) >= 1L)
 })
 
-test_that("fairness_gini errors on empty input", {
-  expect_error(fairness_gini(numeric(0)))
+test_that("morie_fairness_gini errors on empty input", {
+  expect_error(morie_fairness_gini(numeric(0)))
 })
 
-test_that("fairness_bias_amplification returns composite score", {
+test_that("morie_fairness_bias_amplification returns composite score", {
   pred <- c(1, 1, 1, 1, 0, 0, 0, 0)
   race <- c(rep("A", 4), rep("B", 4))
-  res <- fairness_bias_amplification(pred, race, privileged = "A")
+  res <- morie_fairness_bias_amplification(pred, race, privileged = "A")
   expect_true(is.list(res))
   expect_true(all(c(
     "value", "bias_amplification_score",
@@ -391,8 +391,8 @@ test_that("fairness_bias_amplification returns composite score", {
   expect_equal(res$value, res$bias_amplification_score)
 })
 
-test_that("predpol_aggregate_areas rolls records up per area", {
-  agg <- predpol_aggregate_areas(
+test_that("morie_predpol_aggregate_areas rolls records up per area", {
+  agg <- morie_predpol_aggregate_areas(
     area = c("a", "a", "b", "b"), risk = c(10, 20, 30, 40),
     outcome = c(1, 0, 1, 1)
   )
@@ -408,8 +408,8 @@ test_that("predpol_aggregate_areas rolls records up per area", {
   expect_null(agg$group)
 })
 
-test_that("predpol_aggregate_areas handles group and named population", {
-  agg <- predpol_aggregate_areas(
+test_that("morie_predpol_aggregate_areas handles group and named population", {
+  agg <- morie_predpol_aggregate_areas(
     area = c("a", "a", "b", "b"), risk = c(10, 20, 30, 40),
     outcome = c(2, 1, 5, 4),
     group = c("X", "X", "Y", "Y"),
@@ -419,8 +419,8 @@ test_that("predpol_aggregate_areas handles group and named population", {
   expect_true(all(is.finite(agg$outcome_rate)))
 })
 
-test_that("predpol_aggregate_areas accepts per-record population", {
-  agg <- predpol_aggregate_areas(
+test_that("morie_predpol_aggregate_areas accepts per-record population", {
+  agg <- morie_predpol_aggregate_areas(
     area = c("a", "a", "b", "b"), risk = c(10, 20, 30, 40),
     outcome = c(2, 1, 5, 4),
     population = c(5000, 5000, 8000, 8000)
@@ -428,21 +428,21 @@ test_that("predpol_aggregate_areas accepts per-record population", {
   expect_true(all(is.finite(agg$outcome_rate)))
 })
 
-test_that("predpol_aggregate_areas errors on misaligned inputs", {
-  expect_error(predpol_aggregate_areas(
+test_that("morie_predpol_aggregate_areas errors on misaligned inputs", {
+  expect_error(morie_predpol_aggregate_areas(
     c("a", "b"), c(1, 2, 3),
     c(1, 0)
   ))
-  expect_error(predpol_aggregate_areas(c("a", "b"), c(1, 2), c(1, 0),
+  expect_error(morie_predpol_aggregate_areas(c("a", "b"), c(1, 2), c(1, 0),
     group = c("X")
   ))
-  expect_error(predpol_aggregate_areas(c("a", "b"), c(1, 2), c(1, 0),
+  expect_error(morie_predpol_aggregate_areas(c("a", "b"), c(1, 2), c(1, 0),
     population = c(1, 2, 3)
   ))
 })
 
-test_that("predpol_calibration_audit reports Spearman and rank gaps", {
-  res <- predpol_calibration_audit(
+test_that("morie_predpol_calibration_audit reports Spearman and rank gaps", {
+  res <- morie_predpol_calibration_audit(
     areas = c("d1", "d2", "d3", "d4", "d5", "d6"),
     mean_risk = c(90, 80, 70, 30, 20, 10),
     outcome_rate = c(10, 20, 30, 70, 80, 90),
@@ -459,8 +459,8 @@ test_that("predpol_calibration_audit reports Spearman and rank gaps", {
   expect_true(res$worst_group %in% c("X", "Y"))
 })
 
-test_that("predpol_calibration_audit drops non-finite areas", {
-  res <- predpol_calibration_audit(
+test_that("morie_predpol_calibration_audit drops non-finite areas", {
+  res <- morie_predpol_calibration_audit(
     areas = c("d1", "d2", "d3", "d4"),
     mean_risk = c(90, 80, NA, 30),
     outcome_rate = c(10, 20, 30, 70),
@@ -469,16 +469,16 @@ test_that("predpol_calibration_audit drops non-finite areas", {
   expect_true(length(res$warnings) >= 1L)
 })
 
-test_that("predpol_calibration_audit errors on bad input", {
-  expect_error(predpol_calibration_audit(c("d1"), c(1), c(1), c("X")))
-  expect_error(predpol_calibration_audit(
+test_that("morie_predpol_calibration_audit errors on bad input", {
+  expect_error(morie_predpol_calibration_audit(c("d1"), c(1), c(1), c("X")))
+  expect_error(morie_predpol_calibration_audit(
     c("d1", "d2"), c(1, 2),
     c(1, 2), c("X")
   ))
 })
 
-test_that("predpol_score_disparity returns ANOVA-backed summary", {
-  res <- predpol_score_disparity(
+test_that("morie_predpol_score_disparity returns ANOVA-backed summary", {
+  res <- morie_predpol_score_disparity(
     score = c(9, 10, 11, 19, 20, 21),
     group = c("A", "A", "A", "B", "B", "B")
   )
@@ -494,8 +494,8 @@ test_that("predpol_score_disparity returns ANOVA-backed summary", {
   expect_true(res$reference %in% c("A", "B"))
 })
 
-test_that("predpol_score_disparity honours explicit reference", {
-  res <- predpol_score_disparity(
+test_that("morie_predpol_score_disparity honours explicit reference", {
+  res <- morie_predpol_score_disparity(
     score = c(9, 10, 11, 19, 20, 21),
     group = c("A", "A", "A", "B", "B", "B"),
     reference = "B"
@@ -503,24 +503,24 @@ test_that("predpol_score_disparity honours explicit reference", {
   expect_equal(res$reference, "B")
 })
 
-test_that("predpol_score_disparity errors on bad input", {
-  expect_error(predpol_score_disparity(c(1, 2, 3), c("A", "A")))
-  expect_error(predpol_score_disparity(
+test_that("morie_predpol_score_disparity errors on bad input", {
+  expect_error(morie_predpol_score_disparity(c(1, 2, 3), c("A", "A")))
+  expect_error(morie_predpol_score_disparity(
     c(1, 2, 3),
     c("A", "A", "A")
   ))
-  expect_error(predpol_score_disparity(c(1, 2, 3, 4),
+  expect_error(morie_predpol_score_disparity(c(1, 2, 3, 4),
     c("A", "A", "B", "B"),
     reference = "Z"
   ))
 })
 
-test_that("predpol_temporal_audit audits cells across periods", {
+test_that("morie_predpol_temporal_audit audits cells across periods", {
   period <- c(rep("p1", 10), rep("p2", 10))
   city <- rep("A", 20)
   pred <- rep(c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0), 2)
   grp <- rep(c(rep("X", 5), rep("Y", 5)), 2)
-  res <- predpol_temporal_audit(period, city, pred, grp,
+  res <- morie_predpol_temporal_audit(period, city, pred, grp,
     privileged = "X"
   )
   expect_true(is.list(res))
@@ -534,33 +534,33 @@ test_that("predpol_temporal_audit audits cells across periods", {
   expect_equal(res$privileged, "X")
 })
 
-test_that("predpol_temporal_audit infers privileged group with warning", {
+test_that("morie_predpol_temporal_audit infers privileged group with warning", {
   period <- c(rep("p1", 10), rep("p2", 10))
   city <- rep("A", 20)
   pred <- rep(c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0), 2)
   grp <- rep(c(rep("X", 5), rep("Y", 5)), 2)
-  res <- predpol_temporal_audit(period, city, pred, grp)
+  res <- morie_predpol_temporal_audit(period, city, pred, grp)
   expect_true(length(res$warnings) >= 1L)
   expect_true(res$privileged %in% c("X", "Y"))
 })
 
-test_that("predpol_temporal_audit errors on misaligned/empty input", {
-  expect_error(predpol_temporal_audit(
+test_that("morie_predpol_temporal_audit errors on misaligned/empty input", {
+  expect_error(morie_predpol_temporal_audit(
     c("p1", "p2"), c("A"),
     c(1, 0), c("X", "Y")
   ))
-  expect_error(predpol_temporal_audit(
+  expect_error(morie_predpol_temporal_audit(
     character(0), character(0),
     numeric(0), character(0)
   ))
 })
 
-test_that("fwpas_forward_pass_dense computes a matrix forward pass", {
+test_that("morie_fwpas_forward_pass_dense computes a matrix forward pass", {
   set.seed(50)
   x <- matrix(stats::rnorm(6 * 4), 6, 4)
   w <- matrix(stats::rnorm(3 * 4), 3, 4)
   b <- stats::rnorm(3)
-  res <- fwpas_forward_pass_dense(x, w, b, activation = "sigmoid")
+  res <- morie_fwpas_forward_pass_dense(x, w, b, activation = "sigmoid")
   expect_true(is.list(res))
   expect_named(res, c("z", "a", "estimate", "activation", "method"))
   expect_equal(dim(res$a), c(6L, 3L))
@@ -568,7 +568,7 @@ test_that("fwpas_forward_pass_dense computes a matrix forward pass", {
   expect_identical(res$a, res$estimate)
 })
 
-test_that("fwpas_forward_pass_dense supports all activations", {
+test_that("morie_fwpas_forward_pass_dense supports all activations", {
   set.seed(51)
   x <- matrix(stats::rnorm(5 * 4), 5, 4)
   w <- matrix(stats::rnorm(3 * 4), 3, 4)
@@ -577,31 +577,31 @@ test_that("fwpas_forward_pass_dense supports all activations", {
     "identity", "linear", "none", "tanh", "relu",
     "softmax"
   )) {
-    res <- fwpas_forward_pass_dense(x, w, b, activation = act)
+    res <- morie_fwpas_forward_pass_dense(x, w, b, activation = act)
     expect_equal(dim(res$a), c(5L, 3L))
     expect_true(all(is.finite(res$a)))
   }
-  sm <- fwpas_forward_pass_dense(x, w, b, activation = "softmax")
+  sm <- morie_fwpas_forward_pass_dense(x, w, b, activation = "softmax")
   expect_true(all(abs(rowSums(sm$a) - 1) < 1e-8))
-  rl <- fwpas_forward_pass_dense(x, w, b, activation = "relu")
+  rl <- morie_fwpas_forward_pass_dense(x, w, b, activation = "relu")
   expect_true(all(rl$a >= 0))
 })
 
-test_that("fwpas_forward_pass_dense errors on unknown activation", {
+test_that("morie_fwpas_forward_pass_dense errors on unknown activation", {
   x <- matrix(stats::rnorm(8), 2, 4)
   w <- matrix(stats::rnorm(12), 3, 4)
   b <- stats::rnorm(3)
-  expect_error(fwpas_forward_pass_dense(x, w, b, activation = "bogus"))
+  expect_error(morie_fwpas_forward_pass_dense(x, w, b, activation = "bogus"))
 })
 
-test_that("forward_pass_dense alias matches fwpas_forward_pass_dense", {
+test_that("morie_forward_pass_dense alias matches morie_fwpas_forward_pass_dense", {
   set.seed(52)
   x <- matrix(stats::rnorm(4 * 3), 4, 3)
   w <- matrix(stats::rnorm(2 * 3), 2, 3)
   b <- stats::rnorm(2)
   expect_equal(
-    forward_pass_dense(x, w, b),
-    fwpas_forward_pass_dense(x, w, b)
+    morie_forward_pass_dense(x, w, b),
+    morie_fwpas_forward_pass_dense(x, w, b)
   )
 })
 
@@ -636,10 +636,10 @@ test_that("fzbrd handles too-few obs and invalid c", {
   expect_error(fzbrd(stats::rnorm(20), c = 1))
 })
 
-test_that("fauzi_bias_reduced_kdfe alias matches fzbrd", {
+test_that("morie_fauzi_bias_reduced_kdfe alias matches fzbrd", {
   set.seed(62)
   x <- stats::rnorm(80)
-  expect_equal(fauzi_bias_reduced_kdfe(x, t = 0), fzbrd(x, t = 0))
+  expect_equal(morie_fauzi_bias_reduced_kdfe(x, t = 0), fzbrd(x, t = 0))
 })
 
 test_that("fzcvm computes a smoothed Cramer-von Mises statistic", {
@@ -671,11 +671,11 @@ test_that("fzcvm handles too-few obs and bad cdf", {
   expect_error(fzcvm(stats::rnorm(20), cdf = "weibull"))
 })
 
-test_that("fauzi_cvm_smoothed alias matches fzcvm", {
+test_that("morie_fauzi_cvm_smoothed alias matches fzcvm", {
   set.seed(72)
   x <- stats::rnorm(60)
   expect_equal(
-    fauzi_cvm_smoothed(x, cdf = "norm", args = list(0, 1)),
+    morie_fauzi_cvm_smoothed(x, cdf = "norm", args = list(0, 1)),
     fzcvm(x, cdf = "norm", args = list(0, 1))
   )
 })
@@ -707,8 +707,8 @@ test_that("fzedg handles too-few obs", {
   expect_equal(res$n, 3L)
 })
 
-test_that("fauzi_edgeworth_quantile alias matches fzedg", {
-  expect_equal(fauzi_edgeworth_quantile(1:30), fzedg(1:30))
+test_that("morie_fauzi_edgeworth_quantile alias matches fzedg", {
+  expect_equal(morie_fauzi_edgeworth_quantile(1:30), fzedg(1:30))
 })
 
 test_that("fzhdc computes a Hoeffding decomposition", {
@@ -746,10 +746,10 @@ test_that("fzhdc accepts a custom kernel and handles too-few obs", {
   expect_equal(few$n, 3L)
 })
 
-test_that("fauzi_h_decomposition alias matches fzhdc", {
+test_that("morie_fauzi_h_decomposition alias matches fzhdc", {
   set.seed(83)
   x <- stats::rnorm(40)
-  expect_equal(fauzi_h_decomposition(x), fzhdc(x))
+  expect_equal(morie_fauzi_h_decomposition(x), fzhdc(x))
 })
 
 test_that("fzhok computes an order-4 kernel density estimate", {
@@ -782,8 +782,8 @@ test_that("fzhok handles too-few obs", {
   expect_equal(res$n, 1L)
 })
 
-test_that("fauzi_higher_order_kernel alias matches fzhok", {
+test_that("morie_fauzi_higher_order_kernel alias matches fzhok", {
   set.seed(92)
   x <- stats::rnorm(80)
-  expect_equal(fauzi_higher_order_kernel(x, t = 0), fzhok(x, t = 0))
+  expect_equal(morie_fauzi_higher_order_kernel(x, t = 0), fzhok(x, t = 0))
 })

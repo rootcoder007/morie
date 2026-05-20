@@ -43,4 +43,4 @@ fzsrv <- function(x, t = NULL, h = NULL) {
 #' @rdname fzsrv
 #' @keywords internal
 #' @export
-fauzi_survival_kernel <- fzsrv
+morie_fauzi_survival_kernel <- fzsrv

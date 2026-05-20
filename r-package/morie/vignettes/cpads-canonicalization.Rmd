@@ -23,18 +23,18 @@ The Canadian Postsecondary Education Alcohol and Drug Use Survey
 (CPADS) is one of the Statistics Canada PUMFs that MORIE supports
 out of the box. Variable names, value codes, and survey weights
 differ across cycles, so MORIE provides a *canonical* column
-contract and a `canonicalize_cpads_data()` helper to harmonise
+contract and a `morie_canonicalize_cpads_data()` helper to harmonise
 cycles into a single analysis-ready tibble.
 
 # The CPADS column contract
 
 ```{r contract, eval = FALSE}
 library(morie)
-contract <- cpads_contract()
+contract <- morie_cpads_contract()
 str(contract, max.level = 2)
 ```
 
-`cpads_contract()` returns the canonical names, value-code maps,
+`morie_cpads_contract()` returns the canonical names, value-code maps,
 and survey-weight columns. Using the contract is opt-in --- the
 estimators in MORIE do not require it --- but it lets you write
 analysis code once and run it across cycles unchanged.
@@ -43,12 +43,12 @@ analysis code once and run it across cycles unchanged.
 
 ```{r load, eval = FALSE}
 raw_2122 <- morie_load_dataset("cpads-2122")
-df       <- canonicalize_cpads_data(raw_2122)
+df       <- morie_canonicalize_cpads_data(raw_2122)
 
 # Validates that all canonical columns are present + correctly
 # typed. Returns silently if OK, or stops with a clear message
 # pointing at the offending column.
-validate_cpads_data(df)
+morie_validate_cpads_data(df)
 ```
 
 # A simple analysis with weights
@@ -65,7 +65,7 @@ weighted_freq
 ```{r causal, eval = FALSE}
 # Estimate ATE of (canonical-treatment) on
 # (canonical-outcome), passing CPADS PUMF weights:
-ate <- estimate_ate(df,
+ate <- morie_estimate_ate(df,
                     outcome    = "heavy_drinking_30d",
                     treatment  = "treat_canonical",
                     covariates = c("age", "sex", "region"),

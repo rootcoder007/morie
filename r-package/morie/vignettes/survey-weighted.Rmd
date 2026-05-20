@@ -51,15 +51,15 @@ dim(clust)
 
 # Calibration weights and design weights
 
-`compute_design_weights()` and `calibration_weights()` produce
+`morie_compute_design_weights()` and `morie_calibration_weights()` produce
 weights consistent with a known sampling scheme and known
 population marginals.
 
-```{r weights, eval = exists("compute_design_weights")}
+```{r weights, eval = exists("morie_compute_design_weights")}
 # Design weights from a stratified scheme.
 # Treat `region` as the stratum; supply known population sizes per stratum.
 pop_sizes <- c(ON = 14000000, QC = 8500000, BC = 5200000, AB = 4400000)
-design <- compute_design_weights(
+design <- morie_compute_design_weights(
   df,
   strata_col       = "region",
   population_sizes = pop_sizes

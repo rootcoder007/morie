@@ -24,12 +24,13 @@
 #'   n, method.
 #' @importFrom stats predict
 #' @examples
-#' xgboost_objective(x = rnorm(50), y = rnorm(50))
+#' morie_xgboost_objective(x = rnorm(50), y = rnorm(50))
 #' @export
-xgboost_objective <- function(x, y, n_estimators = 100L, learning_rate = 0.1,
+morie_xgboost_objective <- function(x, y, n_estimators = 100L, learning_rate = 0.1,
                               max_depth = 3L, reg_lambda = 1.0,
                               reg_alpha = 0.0, task = "auto", seed = 0L,
                               deterministic_seed = NULL) {
+  x <- .morie_ensure_design_matrix(x)
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)
   if (identical(task, "auto")) {
@@ -76,7 +77,7 @@ xgboost_objective <- function(x, y, n_estimators = 100L, learning_rate = 0.1,
   } else {
     # gbm fallback (same objective family, no L1)
     if (!requireNamespace("gbm", quietly = TRUE)) {
-      stop("install 'xgboost' (preferred) or 'gbm' for xgboost_objective")
+      stop("install 'xgboost' (preferred) or 'gbm' for morie_xgboost_objective")
     }
     yv <- if (task == "classification") factor(y) else as.numeric(y)
     df <- as.data.frame(x)

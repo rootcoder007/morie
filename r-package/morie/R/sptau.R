@@ -84,4 +84,4 @@ sptau <- function(x, w) {
 #' @rdname sptau
 #' @keywords internal
 #' @export
-spatial_autocorrelation <- sptau
+morie_spatial_autocorrelation <- sptau

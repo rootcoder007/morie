@@ -20,9 +20,9 @@ knitr::opts_chunk$set(
 # Overview
 
 For aggregate contingency tables --- the kind that sit behind the
-Doob $\chi^{2}$ family in the MRM framework --- MORIE exposes
-`chi_square_test()` and the companion effect-size helpers (Cramer's
-V, omega-squared) as first-class functions.
+MRM chi-square family --- MORIE exposes `morie_chi_square_test()`
+and the companion effect-size helpers (Cramer's V, omega-squared)
+as first-class functions.
 
 # A 2x3 contingency table
 
@@ -33,13 +33,13 @@ tab <- matrix(c(20, 10, 30,
               dimnames = list(group = c("treated", "control"),
                               outcome = c("A", "B", "C")))
 
-result <- chi_square_test(tab)
+result <- morie_chi_square_test(tab)
 result$statistic
 result$p_value
 result$df
 ```
 
-`chi_square_test()` returns the Pearson $\chi^{2}$, the asymptotic
+`morie_chi_square_test()` returns the Pearson $\chi^{2}$, the asymptotic
 p-value, and the degrees of freedom in a tidy list.
 
 # Effect size: Cramer's V
@@ -73,9 +73,9 @@ df_w    <- fsum$Df[2]
 morie_omega_squared(f_stat = fstat, df_between = df_b, df_within = df_w, n = n)
 ```
 
-# Doob $\chi^{2}$ family
+# MRM chi-square family
 
-The MRM framework's "Doob $\chi^{2}$ family" is a coordinated set of
+The MRM framework's chi-square family is a coordinated set of
 chi-square tests on the published Sprott / Doob / Iftene
 contingency tables (federal SIU operation, COVID-period operation,
 torture-classification rates, IEDM analyses). MORIE reproduces

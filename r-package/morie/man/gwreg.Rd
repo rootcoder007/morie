@@ -2,12 +2,12 @@
 % Please edit documentation in R/gwreg.R
 \name{gwreg}
 \alias{gwreg}
-\alias{geographically_weighted_regression}
+\alias{morie_geographically_weighted_regression}
 \title{Geographically weighted regression (GWR).}
 \usage{
 gwreg(x, y, coords, bandwidth = NULL, kernel = "gaussian")
 
-geographically_weighted_regression(
+morie_geographically_weighted_regression(
   x,
   y,
   coords,
@@ -35,7 +35,7 @@ Local WLS at each site i:
 \deqn{\beta(s_i) = (X^\top W(s_i) X)^{-1} X^\top W(s_i) y}.
 }
 \examples{
-gwreg(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100),      50, 2))
+gwreg(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100), 50, 2))
 }
 \references{
 Brunsdon, Fotheringham & Charlton (1996).

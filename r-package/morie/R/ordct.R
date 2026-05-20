@@ -12,9 +12,9 @@
 #' @return Named list: statistic (M^2), p_value, df, n, correlation.
 #' @importFrom stats cor pchisq
 #' @examples
-#' ordered_categories(x = rnorm(50))
+#' morie_ordered_categories(x = rnorm(50))
 #' @export
-ordered_categories <- function(x, row_scores = NULL, col_scores = NULL) {
+morie_ordered_categories <- function(x, row_scores = NULL, col_scores = NULL) {
   X <- as.matrix(x)
   storage.mode(X) <- "numeric"
   r <- nrow(X)

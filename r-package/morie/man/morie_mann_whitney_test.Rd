@@ -24,8 +24,6 @@ Named list: \code{W}, \code{p_value}, \code{r} (effect size).
 Mann-Whitney U test (Wilcoxon rank-sum)
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }

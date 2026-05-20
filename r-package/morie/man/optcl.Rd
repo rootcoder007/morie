@@ -2,12 +2,12 @@
 % Please edit documentation in R/optcl.R
 \name{optcl}
 \alias{optcl}
-\alias{optimal_classification}
+\alias{morie_optimal_classification}
 \title{Optimal Classification cutting point (Poole 2000; Armstrong Ch 3)}
 \usage{
 optcl(x, votes = NULL)
 
-optimal_classification(x, votes = NULL)
+morie_optimal_classification(x, votes = NULL)
 }
 \arguments{
 \item{x}{Numeric vector of ideal points.}

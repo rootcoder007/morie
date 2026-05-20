@@ -10,9 +10,9 @@
 #' @return Named list: statistic, p_value, df, n, grand_median, table.
 #' @importFrom stats median chisq.test
 #' @examples
-#' control_median_test(x = rnorm(50), y = rnorm(50))
+#' morie_control_median_test(x = rnorm(50), y = rnorm(50))
 #' @export
-control_median_test <- function(x, y) {
+morie_control_median_test <- function(x, y) {
   x <- as.numeric(x)
   y <- as.numeric(y)
   m <- length(x)

@@ -20,7 +20,7 @@ test_that("morie_run_pipeline supports custom workflow map", {
 })
 
 test_that("default workflow map returns a non-empty named character vector", {
-  smap <- default_workflow_map()
+  smap <- morie_default_workflow_map()
   expect_type(smap, "character")
   expect_true(length(smap) >= 1)
   expect_false(is.null(names(smap)))

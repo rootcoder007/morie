@@ -47,9 +47,9 @@ df <- data.frame(y = y, treat = treat, X1 = X1, X2 = X2)
 # Single-robust ATE / ATT / ATC
 
 ```{r ate-att-atc}
-ate <- estimate_ate(df, treatment = "treat", outcome = "y", covariates = c("X1", "X2"))
-att <- estimate_att(df, treatment = "treat", outcome = "y", covariates = c("X1", "X2"))
-atc <- estimate_atc(df, treatment = "treat", outcome = "y", covariates = c("X1", "X2"))
+ate <- morie_estimate_ate(df, treatment = "treat", outcome = "y", covariates = c("X1", "X2"))
+att <- morie_estimate_att(df, treatment = "treat", outcome = "y", covariates = c("X1", "X2"))
+atc <- morie_estimate_atc(df, treatment = "treat", outcome = "y", covariates = c("X1", "X2"))
 
 ate$estimate
 att$estimate
@@ -68,13 +68,13 @@ Under heterogeneity, they diverge in informative ways.
 
 # Doubly robust: augmented IPW
 
-`estimate_aipw()` is the augmented inverse-probability-weighting
+`morie_estimate_aipw()` is the augmented inverse-probability-weighting
 estimator. It is consistent if either the propensity model or the
 outcome model is correctly specified --- the doubly-robust
 guarantee.
 
 ```{r aipw}
-aipw <- estimate_aipw(df, treatment = "treat", outcome = "y", covariates = c("X1", "X2"))
+aipw <- morie_estimate_aipw(df, treatment = "treat", outcome = "y", covariates = c("X1", "X2"))
 aipw$estimate
 aipw$se
 ```
@@ -82,7 +82,7 @@ aipw$se
 # Per-unit CATE (T-learner / S-learner)
 
 ```{r cate}
-cate <- estimate_cate(df, treatment = "treat", outcome = "y", covariates = c("X1", "X2"),
+cate <- morie_estimate_cate(df, treatment = "treat", outcome = "y", covariates = c("X1", "X2"),
                       meta_learner = "t_learner")
 head(cate)
 ```
@@ -94,7 +94,7 @@ average treatment effect.
 
 ```{r gate}
 df$g <- sample(c("A", "B", "C"), nrow(df), replace = TRUE)
-gate <- estimate_gate(df, treatment = "treat", outcome = "y",
+gate <- morie_estimate_gate(df, treatment = "treat", outcome = "y",
                       covariates = c("X1", "X2"),
                       group_col = "g")
 gate

@@ -15,7 +15,7 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-mxpol_maxpool_forward <- function(x, kernel_size = 2L, stride = NULL) {
+morie_mxpol_maxpool_forward <- function(x, kernel_size = 2L, stride = NULL) {
   x <- as.matrix(x)
   k <- as.integer(kernel_size)
   s <- if (is.null(stride)) k else as.integer(stride)
@@ -44,7 +44,7 @@ mxpol_maxpool_forward <- function(x, kernel_size = 2L, stride = NULL) {
   )
 }
 
-#' @rdname mxpol_maxpool_forward
+#' @rdname morie_mxpol_maxpool_forward
 #' @keywords internal
 #' @export
-maxpool_forward <- mxpol_maxpool_forward
+morie_maxpool_forward <- morie_mxpol_maxpool_forward

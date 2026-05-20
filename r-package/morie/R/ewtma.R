@@ -2,14 +2,14 @@
 
 #' EWMA volatility (RiskMetrics 1996)
 #'
-#' @inheritParams garch_fit
+#' @inheritParams morie_garch_fit
 #' @param lambda Decay factor in (0,1). Default 0.94 (daily RiskMetrics).
 #' @return Named list with \code{conditional_variance, conditional_volatility,
 #'   lambda, n, last_variance, last_volatility, method}.
 #' @examples
-#' ewma_volatility(x = rnorm(50))
+#' morie_ewma_volatility(x = rnorm(50))
 #' @export
-ewma_volatility <- function(x, lambda = 0.94) {
+morie_ewma_volatility <- function(x, lambda = 0.94) {
   r <- as.numeric(x)
   n <- length(r)
   if (n < 2) stop("Need >=2 obs.")

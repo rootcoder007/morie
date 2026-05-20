@@ -11,9 +11,9 @@
 #' @return Named list: statistic, p_value, z, n, m.
 #' @importFrom stats qnorm pnorm
 #' @examples
-#' terry_hoeffding_test(x = rnorm(50), y = rnorm(50))
+#' morie_terry_hoeffding_test(x = rnorm(50), y = rnorm(50))
 #' @export
-terry_hoeffding_test <- function(x, y) {
+morie_terry_hoeffding_test <- function(x, y) {
   x <- as.numeric(x)
   y <- as.numeric(y)
   m <- length(x)

@@ -7,9 +7,9 @@
 #' @param d Integer dimension (default 1).
 #' @return Named list with estimate, betas, rates, best_beta, n, d, method.
 #' @examples
-#' ghosal_adaptation(x = rnorm(50))
+#' morie_ghosal_adaptation(x = rnorm(50))
 #' @export
-ghosal_adaptation <- function(x, betas = NULL, d = 1) {
+morie_ghosal_adaptation <- function(x, betas = NULL, d = 1) {
   n <- length(x)
   if (is.null(betas)) betas <- seq(0.5, 3.0, length.out = 11)
   rates <- n^(-betas / (2 * betas + d))

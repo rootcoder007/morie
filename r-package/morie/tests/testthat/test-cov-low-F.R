@@ -3,8 +3,10 @@
 
 test_that("cokrg runs on default args with vector target", {
   set.seed(1)
-  out <- cokrg(x = rnorm(50), y = rnorm(50),
-               coords = matrix(runif(100), 50, 2), target = c(0.5, 0.5))
+  out <- cokrg(
+    x = rnorm(50), y = rnorm(50),
+    coords = matrix(runif(100), 50, 2), target = c(0.5, 0.5)
+  )
   expect_type(out, "list")
   expect_equal(out$n, 50)
 })
@@ -12,16 +14,18 @@ test_that("cokrg runs on default args with vector target", {
 test_that("cokrg errors on dim mismatches", {
   set.seed(1)
   expect_error(
-    cokrg(x = rnorm(10), y = rnorm(10),
-          coords = matrix(runif(20), 10, 2), target = c(0.5, 0.5, 0.5)),
+    cokrg(
+      x = rnorm(10), y = rnorm(10),
+      coords = matrix(runif(20), 10, 2), target = c(0.5, 0.5, 0.5)
+    ),
     "target/coords dim mismatch"
   )
 })
 
-test_that("gradient_boosting_ensemble runs regression on small data", {
+test_that("morie_gradient_boosting_ensemble runs regression on small data", {
   testthat::skip_if_not_installed("gbm")
   set.seed(1)
-  out <- gradient_boosting_ensemble(
+  out <- morie_gradient_boosting_ensemble(
     x = matrix(rnorm(60), 30, 2), y = rnorm(30),
     n_estimators = 10L, max_depth = 2L
   )
@@ -43,12 +47,14 @@ test_that("morie_grid_search_cv regression returns scores", {
 
 test_that("indkr runs on default args + alias matches", {
   set.seed(1)
-  out <- indkr(x = rnorm(40),
-               coords = matrix(runif(80), 40, 2),
-               threshold = 0.5)
+  out <- indkr(
+    x = rnorm(40),
+    coords = matrix(runif(80), 40, 2),
+    threshold = 0.5
+  )
   expect_equal(out$n, 40)
   expect_true(all(out$estimate >= 0 & out$estimate <= 1))
-  expect_identical(indicator_kriging, indkr)
+  expect_identical(morie_indicator_kriging, indkr)
 })
 
 test_that("indkr errors on bad dims", {
@@ -59,8 +65,8 @@ test_that("indkr errors on bad dims", {
   )
 })
 
-test_that("list_morie_modules returns a 21-row data.frame", {
-  out <- list_morie_modules()
+test_that("morie_list_morie_modules returns a 21-row data.frame", {
+  out <- morie_list_morie_modules()
   expect_s3_class(out, "data.frame")
   expect_equal(nrow(out), 21L)
   expect_named(out, c("name", "description"))
@@ -135,14 +141,14 @@ test_that("rghfd errors on degenerate inputs", {
   expect_error(rghfd(rnorm(10), kmax = 1L), "kmax >= 2")
 })
 
-test_that("eg_coint runs with default lag selection", {
+test_that("morie_eg_coint runs with default lag selection", {
   set.seed(1)
-  out <- eg_coint(y1 = cumsum(rnorm(120)), y2 = cumsum(rnorm(120)))
+  out <- morie_eg_coint(y1 = cumsum(rnorm(120)), y2 = cumsum(rnorm(120)))
   expect_equal(out$n, 120L)
   expect_true(is.numeric(out$adf_statistic))
 })
 
-test_that("eg_coint errors on mismatched lengths and too-short series", {
-  expect_error(eg_coint(rnorm(50), rnorm(40)), "Length mismatch")
-  expect_error(eg_coint(rnorm(10), rnorm(10)), ">=20 obs")
+test_that("morie_eg_coint errors on mismatched lengths and too-short series", {
+  expect_error(morie_eg_coint(rnorm(50), rnorm(40)), "Length mismatch")
+  expect_error(morie_eg_coint(rnorm(10), rnorm(10)), ">=20 obs")
 })

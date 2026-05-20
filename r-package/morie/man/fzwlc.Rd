@@ -2,12 +2,17 @@
 % Please edit documentation in R/fzwlc.R
 \name{fzwlc}
 \alias{fzwlc}
-\alias{fauzi_smoothed_wilcoxon}
+\alias{morie_fauzi_smoothed_wilcoxon}
 \title{Fauzi: Smoothed Wilcoxon signed-rank test (Ch 5)}
 \usage{
 fzwlc(x, theta0 = 0, h = NULL, alternative = "two-sided")
 
-fauzi_smoothed_wilcoxon(x, theta0 = 0, h = NULL, alternative = "two-sided")
+morie_fauzi_smoothed_wilcoxon(
+  x,
+  theta0 = 0,
+  h = NULL,
+  alternative = "two-sided"
+)
 }
 \arguments{
 \item{x}{Numeric vector.}

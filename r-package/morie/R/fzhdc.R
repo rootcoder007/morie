@@ -82,4 +82,4 @@ fzhdc <- function(x, kernel = NULL, max_pairs = 2000L, seed = 0L) {
 #' @rdname fzhdc
 #' @keywords internal
 #' @export
-fauzi_h_decomposition <- fzhdc
+morie_fauzi_h_decomposition <- fzhdc

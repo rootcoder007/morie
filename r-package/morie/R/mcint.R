@@ -32,4 +32,4 @@ mcint_crude <- function(f, a = 0, b = 1, N = 1000L, seed = 42L) {
 #' @rdname mcint_crude
 #' @keywords internal
 #' @export
-monte_carlo_integration <- mcint_crude
+morie_monte_carlo_integration <- mcint_crude

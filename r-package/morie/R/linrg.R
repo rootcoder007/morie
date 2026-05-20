@@ -12,9 +12,9 @@
 #' @references
 #' Hastie, Tibshirani & Friedman, Elements of Statistical Learning (2009).
 #' @examples
-#' linear_regression_ols(x = rnorm(50), y = rnorm(50))
+#' morie_linear_regression_ols(x = rnorm(50), y = rnorm(50))
 #' @export
-linear_regression_ols <- function(x, y) {
+morie_linear_regression_ols <- function(x, y) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)
   y <- as.numeric(y)

@@ -20,13 +20,14 @@
 #'   n_estimators, learning_rate, max_depth, task, n, method.
 #' @importFrom stats predict
 #' @examples
-#' gradient_boosting_ensemble(x = rnorm(50), y = rnorm(50))
+#' morie_gradient_boosting_ensemble(x = rnorm(50), y = rnorm(50))
 #' @export
-gradient_boosting_ensemble <- function(x, y, n_estimators = 100L,
+morie_gradient_boosting_ensemble <- function(x, y, n_estimators = 100L,
                                        learning_rate = 0.1,
                                        max_depth = 3L,
                                        task = "auto", seed = 0L,
                                        deterministic_seed = NULL) {
+  x <- .morie_ensure_design_matrix(x)
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)
   if (identical(task, "auto")) {
@@ -67,7 +68,7 @@ gradient_boosting_ensemble <- function(x, y, n_estimators = 100L,
   } else {
     # xgboost fallback
     if (!requireNamespace("xgboost", quietly = TRUE)) {
-      stop("install either 'gbm' or 'xgboost' for gradient_boosting_ensemble")
+      stop("install either 'gbm' or 'xgboost' for morie_gradient_boosting_ensemble")
     }
     yv <- if (task == "classification") as.numeric(as.factor(y)) - 1 else as.numeric(y)
     obj <- if (task == "classification") "binary:logistic" else "reg:squarederror"

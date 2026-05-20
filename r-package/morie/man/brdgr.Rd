@@ -2,12 +2,12 @@
 % Please edit documentation in R/brdgr.R
 \name{brdgr}
 \alias{brdgr}
-\alias{bridge_observations}
+\alias{morie_bridge_observations}
 \title{Bridge observations across sessions / chambers (Armstrong Ch 6)}
 \usage{
 brdgr(x, y = NULL)
 
-bridge_observations(x, y = NULL)
+morie_bridge_observations(x, y = NULL)
 }
 \arguments{
 \item{x}{Vector of session-1 IDs or session-1 vote matrix.}

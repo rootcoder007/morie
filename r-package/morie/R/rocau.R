@@ -12,14 +12,14 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-roc_auc_score <- function(y_true, y_score) {
+morie_roc_auc_score <- function(y_true, y_score) {
   if (!requireNamespace("pROC", quietly = TRUE)) {
-    stop("Function 'roc_auc_score' requires package 'pROC'. Install with install.packages('pROC').")
+    stop("Function 'morie_roc_auc_score' requires package 'pROC'. Install with install.packages('pROC').")
   }
   yt <- as.numeric(y_true)
   ys <- as.numeric(y_score)
   classes <- sort(unique(yt))
-  if (length(classes) != 2) stop("roc_auc_score requires binary y_true")
+  if (length(classes) != 2) stop("morie_roc_auc_score requires binary y_true")
   pos <- classes[2]
   yt_b <- as.integer(yt == pos)
   rc <- pROC::roc(

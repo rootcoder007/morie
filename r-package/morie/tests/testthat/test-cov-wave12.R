@@ -22,14 +22,14 @@ test_that(".morie_beta_weights and %||% behave", {
   expect_equal(nz(3, 5), 3)
 })
 
-test_that("ghosal_survival_beta_process estimates posterior survival", {
+test_that("morie_ghosal_survival_beta_process estimates posterior survival", {
   set.seed(1)
-  res <- ghosal_survival_beta_process(stats::rexp(60),
+  res <- morie_ghosal_survival_beta_process(stats::rexp(60),
     event = stats::rbinom(60, 1, 0.7)
   )
   expect_true(is.list(res))
   expect_true(is.numeric(res$estimate))
-  empty <- ghosal_survival_beta_process(numeric(0))
+  empty <- morie_ghosal_survival_beta_process(numeric(0))
   expect_equal(empty$n, 0)
 })
 

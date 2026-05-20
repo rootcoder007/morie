@@ -16,8 +16,6 @@ Numeric design effect (= n / ESS).
 Design effect (DEFF)
 }
 \examples{
-\dontrun{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
-}
 }

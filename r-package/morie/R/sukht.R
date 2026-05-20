@@ -9,9 +9,9 @@
 #' @return Named list: statistic (z), p_value, U, n, m.
 #' @importFrom stats wilcox.test median
 #' @examples
-#' sukhatme_test(x = rnorm(50), y = rnorm(50))
+#' morie_sukhatme_test(x = rnorm(50), y = rnorm(50))
 #' @export
-sukhatme_test <- function(x, y) {
+morie_sukhatme_test <- function(x, y) {
   x <- as.numeric(x)
   y <- as.numeric(y)
   m <- length(x)

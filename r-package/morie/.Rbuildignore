@@ -19,3 +19,6 @@
 ^src/Makevars$
 ^src/Makevars\.win$
 ^\.lintr$
+^scripts$
+^_pkgdown\.yml$
+^docs$

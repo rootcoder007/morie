@@ -19,7 +19,7 @@ polrz <- function(x, group = NULL) {
   if (n < 2L) {
     return(list(
       estimate = NA_real_, n = n,
-      method = "polarization_index"
+      method = "morie_polarization_index"
     ))
   }
   if (is.null(group)) {
@@ -34,7 +34,7 @@ polrz <- function(x, group = NULL) {
   xR <- x[g == 1L]
   xD <- x[g == 0L]
   if (length(xR) < 1L || length(xD) < 1L) {
-    return(list(estimate = NA_real_, n = n, method = "polarization_index"))
+    return(list(estimate = NA_real_, n = n, method = "morie_polarization_index"))
   }
   mR <- mean(xR)
   mD <- mean(xD)
@@ -49,11 +49,11 @@ polrz <- function(x, group = NULL) {
   list(
     estimate = pol, mean_R = mR, mean_D = mD, sd_R = sR, sd_D = sD,
     pooled_sd = pooled, n_R = nR, n_D = nD,
-    method = "polarization_index"
+    method = "morie_polarization_index"
   )
 }
 
 #' @keywords internal
 #' @rdname polrz
 #' @export
-polarization_index <- polrz
+morie_polarization_index <- polrz

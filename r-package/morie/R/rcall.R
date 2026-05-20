@@ -38,11 +38,11 @@ rcall <- function(x) {
     n_nay = as.integer(n_nay), n_abs = as.integer(n_abs),
     marginal_yea = marg_yea, marginal_nay = marg_nay,
     pct_yea = pct_yea, lopsided_pct = as.numeric(lopsided),
-    method = "roll_call_analysis"
+    method = "morie_roll_call_analysis"
   )
 }
 
 #' @keywords internal
 #' @rdname rcall
 #' @export
-roll_call_analysis <- rcall
+morie_roll_call_analysis <- rcall

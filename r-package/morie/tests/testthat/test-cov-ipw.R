@@ -3,22 +3,22 @@
 # propensity / eBAC selection-adjusted IPW workflows. Uses the shared
 # make_canonical_cpads() fixture (helper-cpads.R).
 
-test_that("cpads_contract describes the 11-variable local contract", {
-  ct <- cpads_contract()
+test_that("morie_cpads_contract describes the 11-variable local contract", {
+  ct <- morie_cpads_contract()
   expect_type(ct, "list")
   expect_length(ct$required_variables, 11L)
   expect_equal(ct$source_kind, "local_private_file")
   expect_true(nzchar(ct$note))
 })
 
-test_that("validate_cpads_data flags missing variables and respects strict", {
+test_that("morie_validate_cpads_data flags missing variables and respects strict", {
   d <- make_canonical_cpads(n = 200L)
-  expect_length(validate_cpads_data(d, strict = TRUE), 0L)
+  expect_length(morie_validate_cpads_data(d, strict = TRUE), 0L)
   broken <- d[, setdiff(names(d), c("ebac_tot", "gender")), drop = FALSE]
-  miss <- validate_cpads_data(broken, strict = FALSE)
+  miss <- morie_validate_cpads_data(broken, strict = FALSE)
   expect_true(all(c("ebac_tot", "gender") %in% miss))
   expect_error(
-    validate_cpads_data(broken, strict = TRUE),
+    morie_validate_cpads_data(broken, strict = TRUE),
     "missing required variables"
   )
 })
@@ -29,10 +29,10 @@ test_that(".weighted_prop and .ess compute on simple inputs", {
   expect_lt(morie:::.ess(c(rep(1, 9), 100)), 10)
 })
 
-test_that("run_propensity_ipw_analysis returns IPW tables, writes CSVs", {
+test_that("morie_run_propensity_ipw_analysis returns IPW tables, writes CSVs", {
   d <- make_canonical_cpads(n = 1400L, seed = 303L)
   od <- tempfile("ipw-")
-  res <- suppressWarnings(run_propensity_ipw_analysis(d, output_dir = od))
+  res <- suppressWarnings(morie_run_propensity_ipw_analysis(d, output_dir = od))
   expect_named(res, c("analysis_frame", "ipw_results", "diagnostics"))
   expect_equal(res$ipw_results$estimand, "ATE")
   expect_equal(nrow(res$diagnostics), 6L)
@@ -40,7 +40,7 @@ test_that("run_propensity_ipw_analysis returns IPW tables, writes CSVs", {
   expect_true(file.exists(file.path(od, "ipw_diagnostics.csv")))
 })
 
-test_that("run_ebac_selection_ipw_analysis errors without the survey pkg", {
+test_that("morie_run_ebac_selection_ipw_analysis errors without the survey pkg", {
   testthat::local_mocked_bindings(
     requireNamespace = function(package, ...) {
       if (identical(package, "survey")) FALSE else TRUE
@@ -48,17 +48,17 @@ test_that("run_ebac_selection_ipw_analysis errors without the survey pkg", {
     .package = "base"
   )
   expect_error(
-    run_ebac_selection_ipw_analysis(make_canonical_cpads(n = 200L)),
+    morie_run_ebac_selection_ipw_analysis(make_canonical_cpads(n = 200L)),
     "survey"
   )
 })
 
-test_that("run_ebac_selection_ipw_analysis runs the selection-adjusted IPW", {
+test_that("morie_run_ebac_selection_ipw_analysis runs the selection-adjusted IPW", {
   skip_if_not_installed("survey")
   d <- make_canonical_cpads(n = 1600L, seed = 404L)
   od <- tempfile("ebac-")
   res <- suppressWarnings(
-    run_ebac_selection_ipw_analysis(d, output_dir = od)
+    morie_run_ebac_selection_ipw_analysis(d, output_dir = od)
   )
   expect_named(res, c(
     "analysis_frame", "ebac_final_ipw_diagnostics",

@@ -84,4 +84,4 @@ hrzi1 <- function(x, y, bandwidth = NULL) {
 #' @rdname hrzi1
 #' @keywords internal
 #' @export
-horowitz_index_model <- hrzi1
+morie_horowitz_index_model <- hrzi1

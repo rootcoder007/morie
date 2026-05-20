@@ -48,4 +48,4 @@ copul <- function(x, y, family = c("gaussian", "clayton", "gumbel")) {
 #' @rdname copul
 #' @keywords internal
 #' @export
-copula_estimation <- copul
+morie_copula_estimation <- copul

@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzcvm.R
 \name{fzcvm}
 \alias{fzcvm}
-\alias{fauzi_cvm_smoothed}
+\alias{morie_fauzi_cvm_smoothed}
 \title{Fauzi: Cramer-von Mises test with kernel-smoothed CDF (Ch 5)}
 \usage{
 fzcvm(x, cdf = "norm", args = NULL, h = NULL)
 
-fauzi_cvm_smoothed(x, cdf = "norm", args = NULL, h = NULL)
+morie_fauzi_cvm_smoothed(x, cdf = "norm", args = NULL, h = NULL)
 }
 \arguments{
 \item{x}{Numeric vector.}

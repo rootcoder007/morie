@@ -52,4 +52,4 @@ hrzq1 <- function(x, y, tau = 0.5) {
 #' @rdname hrzq1
 #' @keywords internal
 #' @export
-horowitz_quantile_regression <- hrzq1
+morie_horowitz_quantile_regression <- hrzq1

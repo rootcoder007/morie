@@ -61,4 +61,4 @@ vines <- function(x) {
 #' @rdname vines
 #' @keywords internal
 #' @export
-vine_copula <- vines
+morie_vine_copula <- vines

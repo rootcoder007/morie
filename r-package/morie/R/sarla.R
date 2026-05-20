@@ -69,4 +69,4 @@ sarla <- function(x, y, w) {
 #' @rdname sarla
 #' @keywords internal
 #' @export
-spatial_ar_lag <- sarla
+morie_spatial_ar_lag <- sarla

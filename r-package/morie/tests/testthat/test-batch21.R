@@ -2,10 +2,10 @@
 # Batch 21 tests: tarmd, tgrch, thfdt, tknbp, tmpsc, tolim, topkd, toppd,
 # tpspn, trfbl, trfge, tsnrd, ucmod, ukrig, unfdl
 
-test_that("threshold_autoregression returns a SETAR fit on the default path", {
+test_that("morie_threshold_autoregression returns a SETAR fit on the default path", {
   set.seed(21)
   x <- as.numeric(arima.sim(list(ar = 0.5), n = 120))
-  fit <- threshold_autoregression(x)
+  fit <- morie_threshold_autoregression(x)
   expect_type(fit, "list")
   expect_named(fit, c(
     "threshold", "phi_lower", "phi_upper", "p", "d",
@@ -23,10 +23,10 @@ test_that("threshold_autoregression returns a SETAR fit on the default path", {
   expect_type(fit$method, "character")
 })
 
-test_that("threshold_autoregression honours p, d and n_grid arguments", {
+test_that("morie_threshold_autoregression honours p, d and n_grid arguments", {
   set.seed(22)
   x <- as.numeric(arima.sim(list(ar = c(0.4, 0.2)), n = 200))
-  fit <- threshold_autoregression(x, p = 2, d = 2, n_grid = 25)
+  fit <- morie_threshold_autoregression(x, p = 2, d = 2, n_grid = 25)
   expect_equal(fit$p, 2)
   expect_equal(fit$d, 2)
   expect_length(fit$phi_lower, 3L)
@@ -34,17 +34,17 @@ test_that("threshold_autoregression honours p, d and n_grid arguments", {
   expect_true(grepl("p=2", fit$method))
 })
 
-test_that("threshold_autoregression errors on a too-short series", {
-  expect_error(threshold_autoregression(1:6),
+test_that("morie_threshold_autoregression errors on a too-short series", {
+  expect_error(morie_threshold_autoregression(1:6),
     "too short",
     ignore.case = TRUE
   )
 })
 
-test_that("tgarch_model fits a GJR-GARCH(1,1) series", {
+test_that("morie_tgarch_model fits a GJR-GARCH(1,1) series", {
   set.seed(23)
   x <- rnorm(150)
-  fit <- tgarch_model(x)
+  fit <- morie_tgarch_model(x)
   expect_type(fit, "list")
   expect_named(fit, c(
     "omega", "alpha", "gamma", "beta", "persistence",
@@ -60,15 +60,15 @@ test_that("tgarch_model fits a GJR-GARCH(1,1) series", {
   expect_type(fit$method, "character")
 })
 
-test_that("tgarch_model errors when there are fewer than 20 observations", {
-  expect_error(tgarch_model(rnorm(10)), ">=20", fixed = TRUE)
+test_that("morie_tgarch_model errors when there are fewer than 20 observations", {
+  expect_error(morie_tgarch_model(rnorm(10)), ">=20", fixed = TRUE)
 })
 
-test_that("terry_hoeffding_test computes a normal-scores statistic", {
+test_that("morie_terry_hoeffding_test computes a normal-scores statistic", {
   set.seed(24)
   x <- rnorm(15, 0)
   y <- rnorm(18, 0.7)
-  res <- terry_hoeffding_test(x, y)
+  res <- morie_terry_hoeffding_test(x, y)
   expect_type(res, "list")
   expect_named(res, c("statistic", "p_value", "z", "n", "m", "method"))
   expect_true(is.finite(res$statistic))
@@ -78,8 +78,8 @@ test_that("terry_hoeffding_test computes a normal-scores statistic", {
   expect_equal(res$n, length(x) + length(y))
 })
 
-test_that("terry_hoeffding_test returns NA when a sample is too small", {
-  res <- terry_hoeffding_test(c(1), c(2, 3, 4))
+test_that("morie_terry_hoeffding_test returns NA when a sample is too small", {
+  res <- morie_terry_hoeffding_test(c(1), c(2, 3, 4))
   expect_true(is.na(res$statistic))
   expect_true(is.na(res$p_value))
   expect_true(is.na(res$z))
@@ -137,8 +137,8 @@ test_that("temperature_scaling errors on a non-positive temperature", {
   )
 })
 
-test_that("tolerance_limits computes Wilks coverage on the default path", {
-  res <- tolerance_limits(1:100)
+test_that("morie_tolerance_limits computes Wilks coverage on the default path", {
+  res <- morie_tolerance_limits(1:100)
   expect_type(res, "list")
   expect_named(res, c(
     "lower", "upper", "coverage_requested",
@@ -151,14 +151,14 @@ test_that("tolerance_limits computes Wilks coverage on the default path", {
   expect_equal(res$n, 100L)
 })
 
-test_that("tolerance_limits honours a custom coverage argument", {
-  res <- tolerance_limits(1:50, coverage = 0.80, confidence = 0.99)
+test_that("morie_tolerance_limits honours a custom coverage argument", {
+  res <- morie_tolerance_limits(1:50, coverage = 0.80, confidence = 0.99)
   expect_equal(res$coverage_requested, 0.80)
   expect_true(is.finite(res$confidence_achieved))
 })
 
-test_that("tolerance_limits returns NA for a single observation", {
-  res <- tolerance_limits(42)
+test_that("morie_tolerance_limits returns NA for a single observation", {
+  res <- morie_tolerance_limits(42)
   expect_true(is.na(res$lower))
   expect_true(is.na(res$upper))
   expect_true(is.na(res$confidence_achieved))
@@ -209,12 +209,12 @@ test_that("top_p_nucleus errors when p is out of range", {
   expect_error(morie:::top_p_nucleus(1:3, p = 1.5), "(0, 1]", fixed = TRUE)
 })
 
-test_that("thin_plate_spline fits a smooth surface", {
+test_that("morie_thin_plate_spline fits a smooth surface", {
   skip_if_not_installed("MASS")
   set.seed(25)
   xx <- matrix(runif(60), ncol = 2)
   yy <- xx[, 1] + xx[, 2] + rnorm(30, sd = 0.01)
-  res <- thin_plate_spline(xx, yy, lam = 1e-6)
+  res <- morie_thin_plate_spline(xx, yy, lam = 1e-6)
   expect_type(res, "list")
   expect_named(res, c(
     "a", "beta", "fitted", "residuals", "sse", "r2",
@@ -245,10 +245,10 @@ test_that("tpspn returns an NA estimate when n is too small", {
   expect_true(grepl("too small", res$method))
 })
 
-test_that("trfbl_transformer_block runs a post-LN encoder block", {
+test_that("morie_trfbl_transformer_block runs a post-LN encoder block", {
   set.seed(27)
   x <- matrix(rnorm(24), nrow = 4, ncol = 6)
-  res <- trfbl_transformer_block(x, num_heads = 2L, seed = 1L)
+  res <- morie_trfbl_transformer_block(x, num_heads = 2L, seed = 1L)
   expect_type(res, "list")
   expect_named(res, c(
     "output", "estimate", "h1", "num_heads", "d_ff",
@@ -261,26 +261,26 @@ test_that("trfbl_transformer_block runs a post-LN encoder block", {
   expect_equal(res$d_ff, 24L)
 })
 
-test_that("trfbl_transformer_block honours a custom d_ff", {
+test_that("morie_trfbl_transformer_block honours a custom d_ff", {
   set.seed(28)
   x <- matrix(rnorm(20), nrow = 4, ncol = 5)
-  res <- transformer_block(x, num_heads = 1L, d_ff = 12L, seed = 2L)
+  res <- morie_transformer_block(x, num_heads = 1L, d_ff = 12L, seed = 2L)
   expect_equal(res$d_ff, 12L)
   expect_equal(dim(res$output), dim(x))
 })
 
-test_that("trfbl_transformer_block accepts a deterministic seed", {
+test_that("morie_trfbl_transformer_block accepts a deterministic seed", {
   x <- matrix(rnorm(24), nrow = 4, ncol = 6)
-  res1 <- trfbl_transformer_block(x, num_heads = 2L, deterministic_seed = 7L)
-  res2 <- trfbl_transformer_block(x, num_heads = 2L, deterministic_seed = 7L)
+  res1 <- morie_trfbl_transformer_block(x, num_heads = 2L, deterministic_seed = 7L)
+  res2 <- morie_trfbl_transformer_block(x, num_heads = 2L, deterministic_seed = 7L)
   expect_equal(res1$output, res2$output)
 })
 
-test_that("transformer_genomic fits a 1-head attention genomic predictor", {
+test_that("morie_transformer_genomic fits a 1-head attention genomic predictor", {
   set.seed(29)
   M <- matrix(rnorm(72), 12, 6)
   y <- M[, 3] + 0.2 * rnorm(12)
-  res <- transformer_genomic(rep(0, 12), y, M, seed = 9)
+  res <- morie_transformer_genomic(rep(0, 12), y, M, seed = 9)
   expect_type(res, "list")
   expect_named(res, c(
     "estimate", "y_hat", "beta", "attention", "context",
@@ -294,28 +294,28 @@ test_that("transformer_genomic fits a 1-head attention genomic predictor", {
   expect_true(is.finite(res$se) && res$se >= 0)
 })
 
-test_that("transformer_genomic works with NULL fixed effects and custom args", {
+test_that("morie_transformer_genomic works with NULL fixed effects and custom args", {
   set.seed(30)
   M <- matrix(rnorm(50), 10, 5)
   y <- M[, 1] + 0.1 * rnorm(10)
-  res <- transformer_genomic(NULL, y, M, d_model = 4, lam = 2, seed = 3)
+  res <- morie_transformer_genomic(NULL, y, M, d_model = 4, lam = 2, seed = 3)
   expect_length(res$y_hat, 10L)
   expect_equal(dim(res$context), c(10L, 4L))
 })
 
-test_that("transformer_genomic accepts a deterministic seed", {
+test_that("morie_transformer_genomic accepts a deterministic seed", {
   M <- matrix(rnorm(48), 8, 6)
   y <- M[, 2] + 0.1 * rnorm(8)
-  r1 <- transformer_genomic(NULL, y, M, deterministic_seed = 5L)
-  r2 <- transformer_genomic(NULL, y, M, deterministic_seed = 5L)
+  r1 <- morie_transformer_genomic(NULL, y, M, deterministic_seed = 5L)
+  r2 <- morie_transformer_genomic(NULL, y, M, deterministic_seed = 5L)
   expect_equal(r1$y_hat, r2$y_hat)
 })
 
-test_that("tsne_reduction wraps Rtsne and returns an embedding", {
+test_that("morie_tsne_reduction wraps Rtsne and returns an embedding", {
   skip_if_not_installed("Rtsne")
   set.seed(31)
   x <- matrix(rnorm(120), nrow = 30, ncol = 4)
-  res <- tsne_reduction(x,
+  res <- morie_tsne_reduction(x,
     n_components = 2L, perplexity = 5,
     n_iter = 250L, seed = 1L
   )
@@ -331,18 +331,18 @@ test_that("tsne_reduction wraps Rtsne and returns an embedding", {
   expect_true(is.finite(res$kl_divergence))
 })
 
-test_that("tsne_reduction errors when Rtsne is unavailable", {
+test_that("morie_tsne_reduction errors when Rtsne is unavailable", {
   if (!requireNamespace("Rtsne", quietly = TRUE)) {
-    expect_error(tsne_reduction(matrix(rnorm(40), 10, 4)), "Rtsne")
+    expect_error(morie_tsne_reduction(matrix(rnorm(40), 10, 4)), "Rtsne")
   } else {
     expect_true(TRUE)
   }
 })
 
-test_that("unobserved_components decomposes a seasonal series", {
+test_that("morie_unobserved_components decomposes a seasonal series", {
   set.seed(32)
   y <- as.numeric(sin(2 * pi * (1:48) / 12)) + rnorm(48, sd = 0.1)
-  res <- unobserved_components(y, period = 12)
+  res <- morie_unobserved_components(y, period = 12)
   expect_type(res, "list")
   expect_named(res, c(
     "trend", "seasonal", "irregular", "loglik", "n",
@@ -356,17 +356,17 @@ test_that("unobserved_components decomposes a seasonal series", {
   expect_true(all(is.finite(res$trend)))
 })
 
-test_that("unobserved_components handles the non-seasonal path (period <= 1)", {
+test_that("morie_unobserved_components handles the non-seasonal path (period <= 1)", {
   set.seed(33)
   y <- cumsum(rnorm(40))
-  res <- unobserved_components(y, period = 0)
+  res <- morie_unobserved_components(y, period = 0)
   expect_length(res$trend, 40L)
   expect_true(all(res$seasonal == 0))
   expect_equal(res$period, 0)
 })
 
-test_that("unobserved_components errors on a too-short series", {
-  expect_error(unobserved_components(1:4, period = 12), "too short",
+test_that("morie_unobserved_components errors on a too-short series", {
+  expect_error(morie_unobserved_components(1:4, period = 12), "too short",
     ignore.case = TRUE
   )
 })
@@ -389,7 +389,7 @@ test_that("ukrig predicts at multiple targets and supports covariance models", {
   coords <- matrix(runif(20), ncol = 2)
   x <- rnorm(10)
   target <- matrix(runif(6), ncol = 2)
-  res_g <- universal_kriging(x, coords, target,
+  res_g <- morie_universal_kriging(x, coords, target,
     model = "gaussian",
     trend_order = 0
   )
@@ -428,10 +428,10 @@ test_that("unfdl performs metric unfolding on a preference matrix", {
   expect_equal(res$method, "unfolding")
 })
 
-test_that("unfolding_analysis honours k and returns the right embedding dims", {
+test_that("morie_unfolding_analysis honours k and returns the right embedding dims", {
   set.seed(36)
   P <- matrix(abs(rnorm(30, 3)), nrow = 5, ncol = 6)
-  res <- unfolding_analysis(P, k = 3L, n_iter = 20L)
+  res <- morie_unfolding_analysis(P, k = 3L, n_iter = 20L)
   expect_true(res$k <= 3L)
   expect_equal(ncol(res$X), res$k)
   expect_equal(ncol(res$Y), res$k)

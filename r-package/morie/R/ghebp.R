@@ -2,7 +2,7 @@
 
 # Internal: Antoniak DP empirical-Bayes negative log-likelihood in the
 # concentration parameter alpha. Extracted from the
-# ghosal_empirical_bayes() optimiser closure for direct unit-testing.
+# morie_ghosal_empirical_bayes() optimiser closure for direct unit-testing.
 .ghebp_negll <- function(a, K_n, n) {
   -(K_n * log(a) + lgamma(a) - lgamma(a + n))
 }
@@ -13,9 +13,9 @@
 #' @param alpha_grid Optional numeric grid of alpha values to maximise over.
 #' @return Named list with estimate (alpha-hat), K_n, log_lik_at_estimate, n, method.
 #' @examples
-#' ghosal_empirical_bayes(x = rnorm(50))
+#' morie_ghosal_empirical_bayes(x = rnorm(50))
 #' @export
-ghosal_empirical_bayes <- function(x, alpha_grid = NULL) {
+morie_ghosal_empirical_bayes <- function(x, alpha_grid = NULL) {
   x <- as.numeric(x)
   n <- length(x)
   if (n < 2) {

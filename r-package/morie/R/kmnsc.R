@@ -12,9 +12,9 @@
 #' @return Named list: estimate (inertia), labels, centers, inertia,
 #'   n_iter, n_clusters, n, method.
 #' @examples
-#' kmeans_clustering(x = rnorm(50))
+#' morie_kmeans_clustering(x = rnorm(50))
 #' @export
-kmeans_clustering <- function(x, n_clusters = 3L, n_init = 10L,
+morie_kmeans_clustering <- function(x, n_clusters = 3L, n_init = 10L,
                               max_iter = 300L, seed = 0L) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)

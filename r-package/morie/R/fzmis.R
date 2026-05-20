@@ -47,4 +47,4 @@ fzmis <- function(x, h = NULL) {
 #' @rdname fzmis
 #' @keywords internal
 #' @export
-fauzi_mise_computation <- fzmis
+morie_fauzi_mise_computation <- fzmis

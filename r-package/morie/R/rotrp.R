@@ -15,7 +15,7 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-rotrp_rotary_position_embedding <- function(x, base = 10000) {
+morie_rotrp_rotary_position_embedding <- function(x, base = 10000) {
   x <- as.matrix(x)
   seq_len <- nrow(x)
   d <- ncol(x)
@@ -42,7 +42,7 @@ rotrp_rotary_position_embedding <- function(x, base = 10000) {
   )
 }
 
-#' @rdname rotrp_rotary_position_embedding
+#' @rdname morie_rotrp_rotary_position_embedding
 #' @keywords internal
 #' @export
-rotary_position_embedding <- rotrp_rotary_position_embedding
+morie_rotary_position_embedding <- morie_rotrp_rotary_position_embedding

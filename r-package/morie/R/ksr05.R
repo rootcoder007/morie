@@ -9,9 +9,9 @@
 #' @return Named list with estimate, n, method.
 #' @references Kosorok (2008), Ch 2.
 #' @examples
-#' ksr05_kosorok_bracketing_number(x = rnorm(50))
+#' morie_ksr05_kosorok_bracketing_number(x = rnorm(50))
 #' @export
-ksr05_kosorok_bracketing_number <- function(x, e = 0.1) {
+morie_ksr05_kosorok_bracketing_number <- function(x, e = 0.1) {
   x <- as.numeric(x)
   list(
     estimate = as.integer(ceiling(1 / e^2)),
@@ -21,9 +21,9 @@ ksr05_kosorok_bracketing_number <- function(x, e = 0.1) {
 }
 
 # CANONICAL TEST
-# ksr05_kosorok_bracketing_number(1:50, 0.1)
+# morie_ksr05_kosorok_bracketing_number(1:50, 0.1)
 
-#' @rdname ksr05_kosorok_bracketing_number
+#' @rdname morie_ksr05_kosorok_bracketing_number
 #' @keywords internal
 #' @export
-kosorok_bracketing_number <- ksr05_kosorok_bracketing_number
+morie_kosorok_bracketing_number <- morie_ksr05_kosorok_bracketing_number

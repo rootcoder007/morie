@@ -61,4 +61,4 @@ fzmrb <- function(x, t = NULL, h = NULL) {
 #' @rdname fzmrb
 #' @keywords internal
 #' @export
-fauzi_mrl_boundary_free <- fzmrb
+morie_fauzi_mrl_boundary_free <- fzmrb

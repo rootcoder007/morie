@@ -16,7 +16,7 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-posab_positional_encoding_abs <- function(seq_len, d_model, base = 10000) {
+morie_posab_positional_encoding_abs <- function(seq_len, d_model, base = 10000) {
   seq_len <- as.integer(seq_len)
   d_model <- as.integer(d_model)
   if (seq_len <= 0 || d_model <= 0) {
@@ -37,7 +37,7 @@ posab_positional_encoding_abs <- function(seq_len, d_model, base = 10000) {
   )
 }
 
-#' @rdname posab_positional_encoding_abs
+#' @rdname morie_posab_positional_encoding_abs
 #' @keywords internal
 #' @export
-positional_encoding_abs <- posab_positional_encoding_abs
+morie_positional_encoding_abs <- morie_posab_positional_encoding_abs

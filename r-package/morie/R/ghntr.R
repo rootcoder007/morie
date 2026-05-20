@@ -8,9 +8,9 @@
 #' @param lam0 Optional baseline hazard rate.
 #' @return Named list with estimate, times, S_post, H_post, c, lam0, n, method.
 #' @examples
-#' ghosal_neutral_right(time = cumsum(rexp(50)))
+#' morie_ghosal_neutral_right(time = cumsum(rexp(50)))
 #' @export
-ghosal_neutral_right <- function(time, event = NULL, c = 1.0, lam0 = NULL) {
+morie_ghosal_neutral_right <- function(time, event = NULL, c = 1.0, lam0 = NULL) {
   s <- .gh_surv_post(time, event, c, lam0)
   if (is.null(s)) {
     return(list(

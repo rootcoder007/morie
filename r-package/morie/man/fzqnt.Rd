@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzqnt.R
 \name{fzqnt}
 \alias{fzqnt}
-\alias{fauzi_kernel_quantile_asymptotic}
+\alias{morie_fauzi_kernel_quantile_asymptotic}
 \title{Fauzi: Asymptotic distribution of kernel quantile (Ch 3)}
 \usage{
 fzqnt(x, p = 0.5, h = NULL)
 
-fauzi_kernel_quantile_asymptotic(x, p = 0.5, h = NULL)
+morie_fauzi_kernel_quantile_asymptotic(x, p = 0.5, h = NULL)
 }
 \arguments{
 \item{x}{Numeric vector.}

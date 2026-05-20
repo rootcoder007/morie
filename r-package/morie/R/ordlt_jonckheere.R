@@ -14,9 +14,9 @@
 #' @return Named list: statistic, p_value, z, E_J, Var_J, n, k, method.
 #' @importFrom stats pnorm
 #' @examples
-#' ordered_alternatives_test(groups = list(rnorm(20), rnorm(20),      rnorm(20)))
+#' morie_ordered_alternatives_test(groups = list(rnorm(20), rnorm(20), rnorm(20)))
 #' @export
-ordered_alternatives_test <- function(groups) {
+morie_ordered_alternatives_test <- function(groups) {
   if (!is.list(groups) || length(groups) < 2) {
     return(list(
       statistic = NA_real_, p_value = NA_real_, z = NA_real_,

@@ -2,15 +2,15 @@
 # Coverage wave 14 -- dccmd.R (DCC-GARCH), vrgft.R (variogram fit),
 # fzmrl.R (kernel mean-residual-life), irm.R (DoubleML IRM).
 
-test_that("dcc_multivariate_garch validates panel dimensions", {
-  expect_error(dcc_multivariate_garch(matrix(1:10, 5, 2)), "n>=30")
+test_that("morie_dcc_multivariate_garch validates panel dimensions", {
+  expect_error(morie_dcc_multivariate_garch(matrix(1:10, 5, 2)), "n>=30")
   expect_error(
-    dcc_multivariate_garch(matrix(stats::rnorm(30), 30, 1)),
+    morie_dcc_multivariate_garch(matrix(stats::rnorm(30), 30, 1)),
     "k>=2"
   )
 })
 
-test_that("dcc_multivariate_garch runs the base-R DCC fallback", {
+test_that("morie_dcc_multivariate_garch runs the base-R DCC fallback", {
   set.seed(1)
   x <- matrix(stats::rnorm(140), 70, 2)
   testthat::local_mocked_bindings(
@@ -19,7 +19,7 @@ test_that("dcc_multivariate_garch runs the base-R DCC fallback", {
     },
     .package = "base"
   )
-  res <- tryCatch(suppressWarnings(dcc_multivariate_garch(x)),
+  res <- tryCatch(suppressWarnings(morie_dcc_multivariate_garch(x)),
     error = function(e) e
   )
   expect_true(is.list(res) || inherits(res, "error"))
@@ -60,7 +60,7 @@ test_that("fzmrl computes kernel MRL across its branches", {
     is.numeric(edge$estimate))
 })
 
-test_that("estimate_irm errors when DoubleML is unavailable", {
+test_that("morie_estimate_irm errors when DoubleML is unavailable", {
   testthat::local_mocked_bindings(
     requireNamespace = function(package, ...) {
       if (package %in% c("DoubleML", "mlr3", "mlr3learners")) {
@@ -72,14 +72,14 @@ test_that("estimate_irm errors when DoubleML is unavailable", {
     .package = "base"
   )
   expect_error(
-    estimate_irm(data.frame(Y = 1, T = 1, X1 = 1),
+    morie_estimate_irm(data.frame(Y = 1, T = 1, X1 = 1),
       treatment = "T", outcome = "Y", covariates = "X1"
     ),
     "required"
   )
 })
 
-test_that("estimate_irm runs the DoubleML IRM when packages are present", {
+test_that("morie_estimate_irm runs the DoubleML IRM when packages are present", {
   skip_if_not_installed("DoubleML")
   skip_if_not_installed("mlr3")
   skip_if_not_installed("mlr3learners")
@@ -91,7 +91,7 @@ test_that("estimate_irm runs the DoubleML IRM when packages are present", {
   Y <- 0.5 * Tr + X[, 1] + stats::rnorm(n)
   df <- data.frame(Y = Y, T = Tr, X)
   res <- tryCatch(
-    suppressWarnings(estimate_irm(df,
+    suppressWarnings(morie_estimate_irm(df,
       treatment = "T", outcome = "Y",
       covariates = paste0("X", 1:4)
     )),

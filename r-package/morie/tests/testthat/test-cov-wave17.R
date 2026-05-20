@@ -2,26 +2,26 @@
 # Coverage wave 17 -- xavir.R (Xavier/Glorot init) and the
 # .morie_silverman_h bandwidth helper's degenerate-input branches.
 
-test_that("xavir_xavier_init builds uniform and normal initialisers", {
-  u <- xavir_xavier_init(4, 6, seed = 1L, uniform = TRUE)
+test_that("morie_xavir_xavier_init builds uniform and normal initialisers", {
+  u <- morie_xavir_xavier_init(4, 6, seed = 1L, uniform = TRUE)
   expect_equal(u$method, "uniform")
   expect_equal(dim(u$weights), c(4L, 6L))
   expect_equal(u$shape, c(4, 6))
   expect_true(is.finite(u$std))
 
-  nrm <- xavir_xavier_init(4, 6, seed = 1L, uniform = FALSE)
+  nrm <- morie_xavir_xavier_init(4, 6, seed = 1L, uniform = FALSE)
   expect_equal(nrm$method, "normal")
   expect_equal(dim(nrm$weights), c(4L, 6L))
 
-  expect_error(xavir_xavier_init(0, 5), "must be > 0")
-  expect_error(xavir_xavier_init(5, -1), "must be > 0")
+  expect_error(morie_xavir_xavier_init(0, 5), "must be > 0")
+  expect_error(morie_xavir_xavier_init(5, -1), "must be > 0")
 })
 
-test_that("xavir_xavier_init leaves the global RNG state unchanged", {
+test_that("morie_xavir_xavier_init leaves the global RNG state unchanged", {
   set.seed(123L)
   before <- stats::runif(1)
   set.seed(123L)
-  invisible(xavir_xavier_init(3, 3, seed = 99L))
+  invisible(morie_xavir_xavier_init(3, 3, seed = 99L))
   after <- stats::runif(1)
   expect_equal(before, after)
 })

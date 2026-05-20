@@ -15,12 +15,15 @@
 #' @return Named list: estimate (best CV score), best_params, best_score,
 #'   cv_results_params, cv_results_mean_score, task, n, method.
 #' @examples
-#' morie_grid_search_cv(x = matrix(rnorm(150), 50, 3), y = rnorm(50),
+#' morie_grid_search_cv(
+#'   x = matrix(rnorm(150), 50, 3), y = rnorm(50),
 #'   method = "lm", tune_grid = data.frame(intercept = c(TRUE, FALSE)),
-#'   cv = 3L, task = "regression", seed = 1L)
+#'   cv = 3L, task = "regression", seed = 1L
+#' )
 #' @export
 morie_grid_search_cv <- function(x, y, method = NULL, tune_grid = NULL,
-                           cv = 5L, task = "auto", seed = 0L) {
+                                 cv = 5L, task = "auto", seed = 0L) {
+  x <- .morie_ensure_design_matrix(x)
   if (!requireNamespace("caret", quietly = TRUE)) {
     stop("Function 'morie_grid_search_cv' requires package 'caret'. Install with install.packages('caret').")
   }
@@ -65,7 +68,11 @@ morie_grid_search_cv <- function(x, y, method = NULL, tune_grid = NULL,
     estimate              = as.numeric(max(scores, na.rm = TRUE)),
     best_params           = as.list(best),
     best_score            = as.numeric(max(scores, na.rm = TRUE)),
-    cv_results_params     = results[, setdiff(colnames(results), c("Accuracy", "Kappa", "RMSE", "Rsquared", "MAE")), drop = FALSE],
+    cv_results_params = results[
+      , setdiff(colnames(results),
+                c("Accuracy", "Kappa", "RMSE", "Rsquared", "MAE")),
+      drop = FALSE
+    ],
     cv_results_mean_score = scores,
     task                  = task,
     n                     = nrow(x),

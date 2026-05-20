@@ -24,7 +24,8 @@ is_absolute_path <- function(path) {
 #' @return Absolute path to the detected project root.
 #' @examples
 #' tryCatch(morie_find_project_root(),
-#'   error = function(e) message("not inside a morie project tree"))
+#'   error = function(e) message("not inside a morie project tree")
+#' )
 #' @export
 morie_find_project_root <- function(start = getwd(), max_up = 10L) {
   current <- normalizePath(start, winslash = "/", mustWork = FALSE)
@@ -55,7 +56,8 @@ morie_find_project_root <- function(start = getwd(), max_up = 10L) {
 #' @return Named list of key paths.
 #' @examples
 #' tryCatch(morie_paths(),
-#'   error = function(e) message("not inside a morie project tree"))
+#'   error = function(e) message("not inside a morie project tree")
+#' )
 #' @export
 morie_paths <- function(project_root = NULL) {
   root <- project_root %||% morie_find_project_root()

@@ -33,9 +33,9 @@ test_that("repetition_penalty: out-of-range / duplicate generated ids dropped", 
   expect_length(res$tensor, 3L)
 })
 
-test_that("rslnk_residual_connection: identity branch doubles input", {
+test_that("morie_rslnk_residual_connection: identity branch doubles input", {
   x <- array(1:8, dim = c(2, 4))
-  res <- rslnk_residual_connection(x)
+  res <- morie_rslnk_residual_connection(x)
   expect_type(res, "list")
   expect_named(res, c("y", "estimate", "Fx", "method"))
   expect_equal(res$y, x + x)
@@ -43,42 +43,42 @@ test_that("rslnk_residual_connection: identity branch doubles input", {
   expect_identical(res$method, "Residual identity shortcut")
 })
 
-test_that("rslnk_residual_connection: custom residual branch applied", {
+test_that("morie_rslnk_residual_connection: custom residual branch applied", {
   x <- c(1, 2, 3, 4)
-  res <- rslnk_residual_connection(x, f = function(z) z * 2)
+  res <- morie_rslnk_residual_connection(x, f = function(z) z * 2)
   expect_equal(as.numeric(res$y), x * 2 + x)
   expect_true(all(is.finite(res$y)))
 })
 
-test_that("rslnk_residual_connection: shape mismatch errors", {
+test_that("morie_rslnk_residual_connection: shape mismatch errors", {
   expect_error(
-    rslnk_residual_connection(c(1, 2, 3), f = function(z) c(1, 2)),
+    morie_rslnk_residual_connection(c(1, 2, 3), f = function(z) c(1, 2)),
     "shape"
   )
 })
 
-test_that("residual_connection alias is identical", {
-  expect_identical(residual_connection, rslnk_residual_connection)
+test_that("morie_residual_connection alias is identical", {
+  expect_identical(morie_residual_connection, morie_rslnk_residual_connection)
 })
 
-test_that("simple_random_sample: WOR returns n rows and weight column", {
+test_that("morie_simple_random_sample: WOR returns n rows and weight column", {
   df <- data.frame(x = 1:100)
-  out <- simple_random_sample(df, 20)
+  out <- morie_simple_random_sample(df, 20)
   expect_s3_class(out, "data.frame")
   expect_equal(nrow(out), 20L)
   expect_true(".weight" %in% names(out))
   expect_equal(unique(out$.weight), 100 / 20)
 })
 
-test_that("simple_random_sample: with replacement gives unit weights", {
+test_that("morie_simple_random_sample: with replacement gives unit weights", {
   df <- data.frame(x = 1:10)
-  out <- simple_random_sample(df, 25, replace = TRUE, seed = 1L)
+  out <- morie_simple_random_sample(df, 25, replace = TRUE, seed = 1L)
   expect_equal(nrow(out), 25L)
   expect_equal(unique(out$.weight), 1)
 })
 
-test_that("simple_random_sample: n exceeding population WOR errors", {
-  expect_error(simple_random_sample(data.frame(x = 1:5), 10), "exceeds")
+test_that("morie_simple_random_sample: n exceeding population WOR errors", {
+  expect_error(morie_simple_random_sample(data.frame(x = 1:5), 10), "exceeds")
 })
 
 test_that("morie_stratified_sample: equal allocation per stratum", {
@@ -161,9 +161,9 @@ test_that("morie_bootstrap_sample: returns estimate, se, CI and distribution", {
   expect_length(res$distribution, 50L)
 })
 
-test_that("jackknife_estimate: returns estimate, se and bias", {
+test_that("morie_jackknife_estimate: returns estimate, se and bias", {
   df <- data.frame(x = c(2, 4, 6, 8, 10))
-  res <- jackknife_estimate(df, statistic = function(d) mean(d$x))
+  res <- morie_jackknife_estimate(df, statistic = function(d) mean(d$x))
   expect_named(res, c("estimate", "se", "bias"))
   expect_equal(res$estimate, 6)
   expect_true(res$se >= 0)
@@ -188,9 +188,9 @@ test_that("morie_design_effect: unequal weights give DEFF >= 1", {
   expect_true(morie_design_effect(c(1, 1, 5, 10)) >= 1)
 })
 
-test_that("compute_design_weights: inverse-probability weights", {
+test_that("morie_compute_design_weights: inverse-probability weights", {
   df <- data.frame(g = c(rep("A", 4), rep("B", 6)))
-  w <- compute_design_weights(df, "g",
+  w <- morie_compute_design_weights(df, "g",
     population_sizes = c(A = 100L, B = 300L)
   )
   expect_type(w, "double")
@@ -198,9 +198,9 @@ test_that("compute_design_weights: inverse-probability weights", {
   expect_true(all(w > 0))
 })
 
-test_that("calibration_weights: default unit start, converges to totals", {
+test_that("morie_calibration_weights: default unit start, converges to totals", {
   df <- data.frame(g = c(rep("f", 5), rep("m", 5)))
-  w <- calibration_weights(df,
+  w <- morie_calibration_weights(df,
     aux_vars = "g",
     population_totals = list(g_f = 200, g_m = 100)
   )
@@ -209,9 +209,9 @@ test_that("calibration_weights: default unit start, converges to totals", {
   expect_equal(sum(w[df$g == "m"]), 100)
 })
 
-test_that("calibration_weights: honours supplied initial weights", {
+test_that("morie_calibration_weights: honours supplied initial weights", {
   df <- data.frame(g = c("a", "a", "b", "b"))
-  w <- calibration_weights(df,
+  w <- morie_calibration_weights(df,
     aux_vars = "g",
     population_totals = list(g_a = 10),
     initial_weights = c(1, 1, 2, 2),
@@ -252,8 +252,8 @@ test_that("sarla: shape mismatch errors", {
   expect_error(sarla(cbind(1, 1:4), 1:4, W), "shape mismatch")
 })
 
-test_that("spatial_ar_lag alias is identical to sarla", {
-  expect_identical(spatial_ar_lag, sarla)
+test_that("morie_spatial_ar_lag alias is identical to sarla", {
+  expect_identical(morie_spatial_ar_lag, sarla)
 })
 
 test_that("sarre: returns coefficient list on a small path graph", {
@@ -278,8 +278,8 @@ test_that("sarre: shape mismatch errors", {
   expect_error(sarre(cbind(1, 1:5), 1:5, W), "shape mismatch")
 })
 
-test_that("spatial_ar_error alias is identical to sarre", {
-  expect_identical(spatial_ar_error, sarre)
+test_that("morie_spatial_ar_error alias is identical to sarre", {
+  expect_identical(morie_spatial_ar_error, sarre)
 })
 
 test_that("sglm: Gaussian fit recovers a coefficient vector", {
@@ -326,14 +326,14 @@ test_that("sglm: accepts list-form coords", {
   expect_true(all(is.finite(res$estimate)))
 })
 
-test_that("spatial_glm alias is identical to sglm", {
-  expect_identical(spatial_glm, sglm)
+test_that("morie_spatial_glm alias is identical to sglm", {
+  expect_identical(morie_spatial_glm, sglm)
 })
 
-test_that("sign_test_power: default arguments give a valid power", {
+test_that("morie_sign_test_power: default arguments give a valid power", {
   set.seed(15)
   x <- rnorm(30, mean = 0.5)
-  res <- sign_test_power(x)
+  res <- morie_sign_test_power(x)
   expect_type(res, "list")
   expect_true(is.finite(res$statistic))
   expect_true(res$statistic >= 0 && res$statistic <= 1)
@@ -342,29 +342,29 @@ test_that("sign_test_power: default arguments give a valid power", {
   expect_equal(res$p_alt, 0.7)
 })
 
-test_that("sign_test_power: empty effective n returns NA statistic", {
-  res <- sign_test_power(rep(0, 5), mu0 = 0)
+test_that("morie_sign_test_power: empty effective n returns NA statistic", {
+  res <- morie_sign_test_power(rep(0, 5), mu0 = 0)
   expect_true(is.na(res$statistic))
   expect_equal(res$n, 0)
   expect_identical(res$method, "Sign-test power")
 })
 
-test_that("sign_test_power: invalid p_alt returns NA statistic", {
-  res <- sign_test_power(rnorm(10), p_alt = 1.5)
+test_that("morie_sign_test_power: invalid p_alt returns NA statistic", {
+  res <- morie_sign_test_power(rnorm(10), p_alt = 1.5)
   expect_true(is.na(res$statistic))
 })
 
-test_that("sign_test_power: tiny n with strict alpha has no rejection region", {
-  res <- sign_test_power(c(1, -1), mu0 = 0, alpha = 0.001)
+test_that("morie_sign_test_power: tiny n with strict alpha has no rejection region", {
+  res <- morie_sign_test_power(c(1, -1), mu0 = 0, alpha = 0.001)
   expect_equal(res$statistic, 0)
   expect_equal(res$size, 0)
   expect_true("warnings" %in% names(res))
 })
 
-test_that("sign_test_power: optional alpha widens rejection region", {
+test_that("morie_sign_test_power: optional alpha widens rejection region", {
   set.seed(16)
   x <- rnorm(25, mean = 0.6)
-  res <- sign_test_power(x, mu0 = 0, p_alt = 0.8, alpha = 0.10)
+  res <- morie_sign_test_power(x, mu0 = 0, p_alt = 0.8, alpha = 0.10)
   expect_true(is.finite(res$statistic))
   expect_true(res$size <= 0.10 + 1e-9)
 })
@@ -412,22 +412,22 @@ test_that("buttbs: bandstop filter with default cutoffs preserves length", {
   expect_identical(res$name, "butter_bandstop")
 })
 
-test_that("sgolay_smooth: default window/polyorder preserves length", {
+test_that("morie_sgolay_smooth: default window/polyorder preserves length", {
   skip_if_not_installed("signal")
   set.seed(1)
   x <- sin(2 * pi * 3 * seq(0, 1, length.out = 120)) + rnorm(120, sd = 0.2)
-  res <- sgolay_smooth(x)
+  res <- morie_sgolay_smooth(x)
   expect_type(res, "list")
   expect_named(res, c("filtered", "name"))
   expect_length(res$filtered, length(x))
   expect_identical(res$name, "savitzky_golay")
 })
 
-test_that("hurst_r: returns H and interpretation", {
+test_that("morie_hurst_r: returns H and interpretation", {
   skip_if_not_installed("pracma")
   set.seed(1)
   x <- cumsum(rnorm(512))
-  res <- hurst_r(x)
+  res <- morie_hurst_r(x)
   expect_type(res, "list")
   expect_named(res, c("H", "interpretation"))
   expect_true(res$interpretation %in%
@@ -438,11 +438,11 @@ test_that("hfd: Python-bridge path is not exercised offline", {
   expect_true(is.function(hfd))
 })
 
-test_that("pcg_filter: convenience preset preserves length", {
+test_that("morie_pcg_filter: convenience preset preserves length", {
   skip_if_not_installed("signal")
   set.seed(1)
   x <- rnorm(600)
-  res <- pcg_filter(x)
+  res <- morie_pcg_filter(x)
   expect_length(res$filtered, length(x))
   expect_identical(res$name, "butter_bandpass")
 })
@@ -477,8 +477,8 @@ test_that("smixd: accepts list-form coords", {
   expect_true(all(is.finite(res$estimate)))
 })
 
-test_that("spatial_mixed_model alias is identical to smixd", {
-  expect_identical(spatial_mixed_model, smixd)
+test_that("morie_spatial_mixed_model alias is identical to smixd", {
+  expect_identical(morie_spatial_mixed_model, smixd)
 })
 
 test_that("sobls: default sample is N-by-d in the unit cube", {
@@ -508,8 +508,8 @@ test_that("sobls: no scramble path returns valid sample", {
   expect_true(all(is.finite(res$sample)))
 })
 
-test_that("sobol_sequence alias is identical to sobls", {
-  expect_identical(morie:::sobol_sequence, morie:::sobls)
+test_that("morie_sobol_sequence alias is identical to sobls", {
+  expect_identical(morie:::morie_sobol_sequence, morie:::sobls)
 })
 
 test_that("spblk: box-form 1-D block returns estimate and se", {
@@ -556,8 +556,8 @@ test_that("spblk: 2-D box block quadratured", {
   expect_true(is.finite(res$estimate))
 })
 
-test_that("spatial_block_kriging alias is identical to spblk", {
-  expect_identical(spatial_block_kriging, spblk)
+test_that("morie_spatial_block_kriging alias is identical to spblk", {
+  expect_identical(morie_spatial_block_kriging, spblk)
 })
 
 test_that("spcrs: LOO cross-validation returns MSPE diagnostics", {
@@ -591,8 +591,8 @@ test_that("spcrs: accepts list-form coords", {
   expect_equal(res$n, 6L)
 })
 
-test_that("spatial_cross_validation alias is identical to spcrs", {
-  expect_identical(spatial_cross_validation, spcrs)
+test_that("morie_spatial_cross_validation alias is identical to spcrs", {
+  expect_identical(morie_spatial_cross_validation, spcrs)
 })
 
 test_that("morie_spectral_density: default arguments give Welch PSD", {
@@ -694,6 +694,6 @@ test_that("sptag: non-matrix vector input coerced to one column", {
   expect_equal(res$n, 4L)
 })
 
-test_that("spatial_agreement alias is identical to sptag", {
-  expect_identical(spatial_agreement, sptag)
+test_that("morie_spatial_agreement alias is identical to sptag", {
+  expect_identical(morie_spatial_agreement, sptag)
 })

@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzlst.R
 \name{fzlst}
 \alias{fzlst}
-\alias{fauzi_l_statistic}
+\alias{morie_fauzi_l_statistic}
 \title{Fauzi: L-statistic for kernel functionals (Ch 5)}
 \usage{
 fzlst(x, score = NULL, n_quad = 200L)
 
-fauzi_l_statistic(x, score = NULL, n_quad = 200L)
+morie_fauzi_l_statistic(x, score = NULL, n_quad = 200L)
 }
 \arguments{
 \item{x}{Numeric vector.}

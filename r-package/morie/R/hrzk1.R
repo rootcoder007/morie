@@ -40,4 +40,4 @@ hrzk1 <- function(x, bandwidth = NULL, sample = NULL) {
 #' @rdname hrzk1
 #' @keywords internal
 #' @export
-horowitz_kernel_density <- hrzk1
+morie_horowitz_kernel_density <- hrzk1

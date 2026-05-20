@@ -17,15 +17,15 @@ bglup_fixture <- function() {
 test_that("bglup deterministic_seed is reproducible", {
   skip_if_no_hash()
   fx <- bglup_fixture()
-  r1 <- bayes_cpi_genomic(fx$X, fx$y,
+  r1 <- morie_bayes_cpi_genomic(fx$X, fx$y,
     n_iter = 80, burn = 30,
     deterministic_seed = 42L
   )
-  r2 <- bayes_cpi_genomic(fx$X, fx$y,
+  r2 <- morie_bayes_cpi_genomic(fx$X, fx$y,
     n_iter = 80, burn = 30,
     deterministic_seed = 42L
   )
-  r3 <- bayes_cpi_genomic(fx$X, fx$y,
+  r3 <- morie_bayes_cpi_genomic(fx$X, fx$y,
     n_iter = 80, burn = 30,
     deterministic_seed = 999L
   )
@@ -36,8 +36,8 @@ test_that("bglup deterministic_seed is reproducible", {
 
 test_that("bglup default (deterministic_seed = NULL) path is unchanged", {
   fx <- bglup_fixture()
-  r1 <- bayes_cpi_genomic(fx$X, fx$y, n_iter = 80, burn = 30, seed = 42)
-  r2 <- bayes_cpi_genomic(fx$X, fx$y, n_iter = 80, burn = 30, seed = 42)
+  r1 <- morie_bayes_cpi_genomic(fx$X, fx$y, n_iter = 80, burn = 30, seed = 42)
+  r2 <- morie_bayes_cpi_genomic(fx$X, fx$y, n_iter = 80, burn = 30, seed = 42)
   expect_equal(r1$estimate, r2$estimate)
   expect_equal(r1$beta, r2$beta)
 })

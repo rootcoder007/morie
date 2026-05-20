@@ -473,7 +473,7 @@
     stringsAsFactors = FALSE
   )
   var_map <- data.frame(
-    variable_name = cpads_contract()$required_variables,
+    variable_name = morie_cpads_contract()$required_variables,
     user_guide_description = c(
       "Survey weight",
       "Alcohol use in the past 12 months",
@@ -487,7 +487,7 @@
       "Mental health",
       "Physical health"
     ),
-    exists_in_wrangled_data = cpads_contract()$required_variables %in% names(data),
+    exists_in_wrangled_data = morie_cpads_contract()$required_variables %in% names(data),
     coding_note = "See CPADS user guide PDF for official item wording and coding.",
     stringsAsFactors = FALSE
   )
@@ -519,7 +519,7 @@
       stringsAsFactors = FALSE
     ),
     ebac_final_user_guide_variable_map = var_map,
-    ebac_final_variable_audit = data.frame(item = names(data), value = ifelse(names(data) %in% cpads_contract()$required_variables, "canonical", "auxiliary"), stringsAsFactors = FALSE)
+    ebac_final_variable_audit = data.frame(item = names(data), value = ifelse(names(data) %in% morie_cpads_contract()$required_variables, "canonical", "auxiliary"), stringsAsFactors = FALSE)
   )
 }
 
@@ -595,8 +595,8 @@
   ))
   audit_tbl <- data.frame(
     check_name = c("outputs_present", "user_guide_reference_present", "cpads_required_variables_present"),
-    value = c(length(output_files), user_guide_present, all(cpads_contract()$required_variables %in% names(data))),
-    pass = c(length(output_files) > 0, user_guide_present, all(cpads_contract()$required_variables %in% names(data))),
+    value = c(length(output_files), user_guide_present, all(morie_cpads_contract()$required_variables %in% names(data))),
+    pass = c(length(output_files) > 0, user_guide_present, all(morie_cpads_contract()$required_variables %in% names(data))),
     stringsAsFactors = FALSE
   )
   list(

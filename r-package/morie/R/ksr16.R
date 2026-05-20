@@ -9,9 +9,9 @@
 #' @return Named list with estimate, n, method.
 #' @references Kosorok (2008), Ch 7.
 #' @examples
-#' ksr16_kosorok_influence_function(x = rnorm(50), y = rnorm(50))
+#' morie_ksr16_kosorok_influence_function(x = rnorm(50), y = rnorm(50))
 #' @export
-ksr16_kosorok_influence_function <- function(x, y) {
+morie_ksr16_kosorok_influence_function <- function(x, y) {
   x <- as.numeric(x)
   y <- as.numeric(y)
   n <- length(x)
@@ -30,9 +30,9 @@ ksr16_kosorok_influence_function <- function(x, y) {
 
 # CANONICAL TEST
 # set.seed(0); xs <- rnorm(200); ys <- 1.5*xs + rnorm(200)
-# ksr16_kosorok_influence_function(xs, ys)
+# morie_ksr16_kosorok_influence_function(xs, ys)
 
-#' @rdname ksr16_kosorok_influence_function
+#' @rdname morie_ksr16_kosorok_influence_function
 #' @keywords internal
 #' @export
-kosorok_influence_function <- ksr16_kosorok_influence_function
+morie_kosorok_influence_function <- morie_ksr16_kosorok_influence_function

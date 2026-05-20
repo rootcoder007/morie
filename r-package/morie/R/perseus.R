@@ -33,13 +33,13 @@ morie_build_prompt <- function(question, context = NULL) {
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-ask_percy <- function(question, context = NULL, python_bin = Sys.getenv("MORIE_PYTHON_BIN", "python3")) {
+morie_ask_percy <- function(question, context = NULL, python_bin = Sys.getenv("MORIE_PYTHON_BIN", "python3")) {
   prompt <- morie_build_prompt(question, context = context)
 
   code <- paste(
     "import json, sys",
-    "from morie.perseus import ask_percy",
-    "payload = ask_percy(question=sys.argv[1])",
+    "from morie.perseus import morie_ask_percy",
+    "payload = morie_ask_percy(question=sys.argv[1])",
     "print(payload['output_text'])",
     sep = "; "
   )
@@ -67,6 +67,6 @@ ask_percy <- function(question, context = NULL, python_bin = Sys.getenv("MORIE_P
 #' @keywords internal
 build_assistant_prompt <- morie_build_prompt
 
-#' @rdname ask_percy
+#' @rdname morie_ask_percy
 #' @keywords internal
-morie_assistant_query <- ask_percy
+morie_assistant_query <- morie_ask_percy

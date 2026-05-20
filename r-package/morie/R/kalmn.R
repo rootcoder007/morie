@@ -17,7 +17,7 @@
 #' morie_kalman_filter(x = rnorm(50))
 #' @export
 morie_kalman_filter <- function(x, transition = NULL, H = NULL, Q = NULL, R = NULL,
-                          x0 = NULL, P0 = NULL) {
+                                x0 = NULL, P0 = NULL) {
   Y <- as.matrix(x)
   n <- nrow(Y)
   m <- ncol(Y)

@@ -55,10 +55,10 @@ test_that("morie_det_rng rejects bad input", {
   expect_error(morie_det_rng(c("a", "b"), 1L))
 })
 
-test_that("grm_vanraden method 1 returns a valid GRM list", {
+test_that("morie_grm_vanraden method 1 returns a valid GRM list", {
   set.seed(0)
   M <- matrix(sample(0:2, 100, TRUE), nrow = 10, ncol = 10)
-  res <- grm_vanraden(M)
+  res <- morie_grm_vanraden(M)
   expect_true(is.list(res))
   expect_named(res, c(
     "estimate", "diag_mean", "off_mean",
@@ -75,10 +75,10 @@ test_that("grm_vanraden method 1 returns a valid GRM list", {
   expect_match(res$method, "VanRaden")
 })
 
-test_that("grm_vanraden method 2 uses per-locus scaling", {
+test_that("morie_grm_vanraden method 2 uses per-locus scaling", {
   set.seed(1)
   M <- matrix(sample(0:2, 60, TRUE), nrow = 6, ncol = 10)
-  res <- grm_vanraden(M, method = 2)
+  res <- morie_grm_vanraden(M, method = 2)
   expect_true(is.list(res))
   expect_true(is.matrix(res$estimate))
   expect_equal(dim(res$estimate), c(6L, 6L))
@@ -86,10 +86,10 @@ test_that("grm_vanraden method 2 uses per-locus scaling", {
   expect_match(res$method, "method 2")
 })
 
-test_that("grm_vanraden GRM is symmetric", {
+test_that("morie_grm_vanraden GRM is symmetric", {
   set.seed(2)
   M <- matrix(sample(0:2, 80, TRUE), nrow = 8, ncol = 10)
-  G <- grm_vanraden(M)$estimate
+  G <- morie_grm_vanraden(M)$estimate
   expect_equal(G, t(G))
 })
 
@@ -115,7 +115,7 @@ test_that("morie_prediction_accuracy returns full metric list", {
   res <- morie_prediction_accuracy(y, yhat)
   expect_true(is.list(res))
   expect_named(res, c(
-    "estimate", "pearson_r", "spearman_rho",
+    "estimate", "pearson_r", "morie_spearman_rho",
     "mse", "mspe", "rmse", "r2", "slope",
     "intercept", "n", "method"
   ))
@@ -164,7 +164,7 @@ test_that("agset returns a chosen proposal within the win set", {
   expect_equal(res$power, abs(res$chosen - res$reversion))
   expect_type(res$win_set_size, "integer")
   expect_length(res$win_set_bounds, 2L)
-  expect_equal(res$method, "agenda_setter_power")
+  expect_equal(res$method, "morie_agenda_setter_power")
 })
 
 test_that("agset returns reversion when win set is empty", {
@@ -182,8 +182,8 @@ test_that("agset handles empty options", {
   expect_equal(res$win_set_size, 0L)
 })
 
-test_that("agenda_setter_power is an alias of agset", {
-  expect_identical(agenda_setter_power, agset)
+test_that("morie_agenda_setter_power is an alias of agset", {
+  expect_identical(morie_agenda_setter_power, agset)
 })
 
 test_that("algnm computes Rice cohesion for a vote vector", {
@@ -225,8 +225,8 @@ test_that("algnm errors on party length mismatch", {
   expect_error(algnm(X, party = c("A", "B")), "party length")
 })
 
-test_that("party_alignment is an alias of algnm", {
-  expect_identical(party_alignment, algnm)
+test_that("morie_party_alignment is an alias of algnm", {
+  expect_identical(morie_party_alignment, algnm)
 })
 
 test_that("morie_aniso runs Levene-style anisotropy detection in 2D", {
@@ -260,12 +260,12 @@ test_that("morie_aniso errors when coords rows mismatch length(x)", {
   expect_error(morie_aniso(rnorm(5), coords), "coords rows")
 })
 
-test_that("anisotropy_test is an alias of morie_aniso", {
-  expect_identical(anisotropy_test, morie_aniso)
+test_that("morie_anisotropy_test is an alias of morie_aniso", {
+  expect_identical(morie_anisotropy_test, morie_aniso)
 })
 
-test_that("antithetic_variates estimates E[f(U)] with variance reduction", {
-  res <- antithetic_variates(N = 2000L, seed = 0L)
+test_that("morie_antithetic_variates estimates E[f(U)] with variance reduction", {
+  res <- morie_antithetic_variates(N = 2000L, seed = 0L)
   expect_true(is.list(res))
   expect_named(res, c(
     "estimate", "estimate_crude", "se",
@@ -278,25 +278,25 @@ test_that("antithetic_variates estimates E[f(U)] with variance reduction", {
   expect_match(res$method, "Antithetic")
 })
 
-test_that("antithetic_variates accepts a custom integrand", {
-  res <- antithetic_variates(f = function(u) u^2, N = 1500L, seed = 1L)
+test_that("morie_antithetic_variates accepts a custom integrand", {
+  res <- morie_antithetic_variates(f = function(u) u^2, N = 1500L, seed = 1L)
   expect_true(is.finite(res$estimate))
   expect_lt(abs(res$estimate - 1 / 3), 0.05)
   expect_true(is.finite(res$estimate_crude))
 })
 
-test_that("antithetic_variates rescales a supplied out-of-range sample", {
+test_that("morie_antithetic_variates rescales a supplied out-of-range sample", {
   set.seed(3)
   x <- rnorm(500)
-  res <- antithetic_variates(x = x)
+  res <- morie_antithetic_variates(x = x)
   expect_true(is.finite(res$estimate))
   expect_equal(res$n_pairs, 500L)
 })
 
-test_that("arch_in_mean fits an ARCH(1)-in-mean model", {
+test_that("morie_arch_in_mean fits an ARCH(1)-in-mean model", {
   set.seed(30)
   y <- rnorm(120, sd = 1.2)
-  res <- arch_in_mean(y)
+  res <- morie_arch_in_mean(y)
   expect_true(is.list(res))
   expect_named(res, c(
     "mu", "delta", "omega", "alpha", "loglik",
@@ -313,14 +313,14 @@ test_that("arch_in_mean fits an ARCH(1)-in-mean model", {
   expect_equal(res$n, 120L)
 })
 
-test_that("arch_in_mean errors on too-short series", {
-  expect_error(arch_in_mean(rnorm(10)))
+test_that("morie_arch_in_mean errors on too-short series", {
+  expect_error(morie_arch_in_mean(rnorm(10)))
 })
 
-test_that("attnq_scaled_dot_product_attention computes self-attention", {
+test_that("morie_attnq_scaled_dot_product_attention computes self-attention", {
   set.seed(40)
   Q <- matrix(rnorm(12), nrow = 3, ncol = 4)
-  res <- attnq_scaled_dot_product_attention(Q)
+  res <- morie_attnq_scaled_dot_product_attention(Q)
   expect_true(is.list(res))
   expect_named(res, c(
     "output", "estimate", "attn", "logits",
@@ -335,32 +335,32 @@ test_that("attnq_scaled_dot_product_attention computes self-attention", {
   expect_equal(res$d_k, 4L)
 })
 
-test_that("attnq_scaled_dot_product_attention accepts explicit K and V", {
+test_that("morie_attnq_scaled_dot_product_attention accepts explicit K and V", {
   set.seed(41)
   Q <- matrix(rnorm(8), nrow = 2, ncol = 4)
   K <- matrix(rnorm(20), nrow = 5, ncol = 4)
   V <- matrix(rnorm(15), nrow = 5, ncol = 3)
-  res <- attnq_scaled_dot_product_attention(Q, K, V)
+  res <- morie_attnq_scaled_dot_product_attention(Q, K, V)
   expect_equal(dim(res$output), c(2L, 3L))
   expect_equal(dim(res$attn), c(2L, 5L))
   expect_true(all(abs(rowSums(res$attn) - 1) < 1e-8))
   expect_true(all(is.finite(res$output)))
 })
 
-test_that("attnq_scaled_dot_product_attention applies an additive mask", {
+test_that("morie_attnq_scaled_dot_product_attention applies an additive mask", {
   set.seed(42)
   Q <- matrix(rnorm(12), nrow = 3, ncol = 4)
   mask <- matrix(0, nrow = 3, ncol = 3)
   mask[upper.tri(mask)] <- -1e9
-  res <- attnq_scaled_dot_product_attention(Q, mask = mask)
+  res <- morie_attnq_scaled_dot_product_attention(Q, mask = mask)
   expect_equal(dim(res$attn), c(3L, 3L))
   expect_true(all(abs(rowSums(res$attn) - 1) < 1e-8))
   expect_true(all(res$attn[upper.tri(res$attn)] < 1e-6))
 })
 
-test_that("scaled_dot_product_attention is an alias", {
+test_that("morie_scaled_dot_product_attention is an alias", {
   expect_identical(
-    scaled_dot_product_attention,
-    attnq_scaled_dot_product_attention
+    morie_scaled_dot_product_attention,
+    morie_attnq_scaled_dot_product_attention
   )
 })

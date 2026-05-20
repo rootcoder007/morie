@@ -11,9 +11,9 @@
 #' @return Named list: block_freq, block_prop, expected_prop, m, n,
 #'   cumulative, method.
 #' @examples
-#' two_sample_coverage(x = rnorm(50), y = rnorm(50))
+#' morie_two_sample_coverage(x = rnorm(50), y = rnorm(50))
 #' @export
-two_sample_coverage <- function(x, y) {
+morie_two_sample_coverage <- function(x, y) {
   x <- as.numeric(x)
   y <- as.numeric(y)
   m <- length(x)

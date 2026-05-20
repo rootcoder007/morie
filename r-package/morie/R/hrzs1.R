@@ -54,4 +54,4 @@ hrzs1 <- function(x, y, z, d) {
 #' @rdname hrzs1
 #' @keywords internal
 #' @export
-horowitz_sample_selection <- hrzs1
+morie_horowitz_sample_selection <- hrzs1

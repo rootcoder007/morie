@@ -56,4 +56,4 @@ rgfir <- function(x, cutoff, order = 51L, fs = 1.0, window = "hamming") {
 #' @rdname rgfir
 #' @keywords internal
 #' @export
-rangayyan_fir_filter <- rgfir
+morie_rangayyan_fir_filter <- rgfir

@@ -55,18 +55,18 @@
 #'   T <- rbinom(n, 1, ps)
 #'   Y <- 0.5 * T + X[, 1] + rnorm(n)
 #'   df <- data.frame(Y = Y, T = T, X)
-#'   estimate_irm(df,
+#'   morie_estimate_irm(df,
 #'     treatment = "T", outcome = "Y",
 #'     covariates = paste0("X", 1:5)
 #'   )
 #' }
 #' }
-estimate_irm <- function(data, treatment, outcome, covariates,
+morie_estimate_irm <- function(data, treatment, outcome, covariates,
                          n_folds = 5, random_state = 42) {
   for (pkg in c("DoubleML", "mlr3", "mlr3learners")) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
       stop(sprintf(
-        "Package %s is required for estimate_irm(). Install with: install.packages(%s)",
+        "Package %s is required for morie_estimate_irm(). Install with: install.packages(%s)",
         sQuote(pkg), sQuote(pkg)
       ), call. = FALSE)
     }

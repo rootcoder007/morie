@@ -2,12 +2,12 @@
 % Please edit documentation in R/indkr.R
 \name{indkr}
 \alias{indkr}
-\alias{indicator_kriging}
+\alias{morie_indicator_kriging}
 \title{Indicator kriging for exceedance probability.}
 \usage{
 indkr(x, coords, threshold, target = NULL, nugget = 0, sill = 0.25, range_ = 1)
 
-indicator_kriging(
+morie_indicator_kriging(
   x,
   coords,
   threshold,

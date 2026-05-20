@@ -34,7 +34,7 @@ Suppose a risk-flagging system has flagged a set of individuals. Group
 flagged <- c(rep(1, 5), 1, 1, 1, 0, 0)        # 10 individuals
 race    <- c(rep("A", 5), rep("B", 5))
 
-di <- fairness_disparate_impact(flagged, race, privileged = "A")
+di <- morie_fairness_disparate_impact(flagged, race, privileged = "A")
 di$value            # disparate-impact ratio
 di$adverse_impact   # below the 0.80 four-fifths threshold?
 ```
@@ -44,22 +44,22 @@ A disparate-impact ratio below 0.80 is the standard legal indicator of
 as an additive difference:
 
 ```{r}
-fairness_demographic_parity(flagged, race, privileged = "A")$value
+morie_fairness_demographic_parity(flagged, race, privileged = "A")$value
 ```
 
-When ground-truth outcomes are available, `fairness_equalized_odds`
+When ground-truth outcomes are available, `morie_fairness_equalized_odds`
 audits the system's *error rates*, not just its flagging rates:
 
 ```{r}
 truth <- c(1, 0, 1, 0, 1, 0, 1, 0)
 pred  <- c(1, 0, 1, 0, 1, 1, 0, 1)
 grp   <- c(rep("A", 4), rep("B", 4))
-fairness_equalized_odds(truth, pred, grp, privileged = "A")$violation
+morie_fairness_equalized_odds(truth, pred, grp, privileged = "A")$violation
 ```
 
 ## Predictive-policing calibration audit
 
-`predpol_calibration_audit` generalises the SciencesPo
+`morie_predpol_calibration_audit` generalises the SciencesPo
 *Predictive-policing-Chicago* district analysis: it ranks areas by the
 risk an algorithm *predicts* and by their *realised* outcome rate, then
 tests whether the disagreement tracks the areas' demographics.
@@ -70,7 +70,7 @@ mean_risk    <- c(90, 80, 70, 30, 20, 10)   # the algorithm's ranking
 outcome_rate <- c(10, 20, 30, 70, 80, 90)   # realised — the opposite
 area_group   <- c("X", "X", "X", "Y", "Y", "Y")
 
-audit <- predpol_calibration_audit(areas, mean_risk, outcome_rate,
+audit <- morie_predpol_calibration_audit(areas, mean_risk, outcome_rate,
                                    area_group)
 audit$group_rank_gap     # per-group mean rank gap
 audit$interpretation

@@ -37,10 +37,8 @@ core (the same kernels the Python package uses); without a compiled
 core it falls back to a pure-R \eqn{O(n^2)} likelihood.
 }
 \examples{
-\dontrun{
 set.seed(1)
 ev <- cumsum(rexp(200, rate = 2))
 fit <- morie_hawkes_fit(ev, kernel = "exponential")
 print(fit)
-}
 }

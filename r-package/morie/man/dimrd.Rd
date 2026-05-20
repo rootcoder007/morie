@@ -2,12 +2,12 @@
 % Please edit documentation in R/dimrd.R
 \name{dimrd}
 \alias{dimrd}
-\alias{dimensionality_test}
+\alias{morie_dimensionality_test}
 \title{Dimensionality test via Kaiser scree (Armstrong Ch 7)}
 \usage{
 dimrd(x, threshold = 1)
 
-dimensionality_test(x, threshold = 1)
+morie_dimensionality_test(x, threshold = 1)
 }
 \arguments{
 \item{x}{Numeric matrix (n by m).}

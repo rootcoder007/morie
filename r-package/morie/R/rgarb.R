@@ -46,4 +46,4 @@ rgarb <- function(x, order = 10L) {
 #' @rdname rgarb
 #' @keywords internal
 #' @export
-rangayyan_ar_burg <- rgarb
+morie_rangayyan_ar_burg <- rgarb

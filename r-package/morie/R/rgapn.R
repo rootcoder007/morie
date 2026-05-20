@@ -40,4 +40,4 @@ rgapn <- function(x, m = 2L, r = NULL) {
 #' @rdname rgapn
 #' @keywords internal
 #' @export
-rangayyan_approximate_entropy <- rgapn
+morie_rangayyan_approximate_entropy <- rgapn

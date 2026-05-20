@@ -37,7 +37,7 @@ the server transfer limit automatically (ArcGIS caps a single query
 at \code{maxRecordCount} features, typically 1000-2000).
 }
 \examples{
-\dontrun{
+\donttest{
 layer <- paste0(
   "https://services.arcgis.com/ORG/arcgis/rest/",
   "services/Assault/FeatureServer/0"

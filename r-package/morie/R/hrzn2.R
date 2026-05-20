@@ -53,4 +53,4 @@ hrzn2 <- function(y, sigma_u = 0.5, bandwidth = NULL, grid = NULL,
 #' @rdname hrzn2
 #' @keywords internal
 #' @export
-horowitz_deconvolution <- hrzn2
+morie_horowitz_deconvolution <- hrzn2

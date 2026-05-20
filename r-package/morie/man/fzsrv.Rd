@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzsrv.R
 \name{fzsrv}
 \alias{fzsrv}
-\alias{fauzi_survival_kernel}
+\alias{morie_fauzi_survival_kernel}
 \title{Fauzi: Kernel survival function estimator (Ch 4)}
 \usage{
 fzsrv(x, t = NULL, h = NULL)
 
-fauzi_survival_kernel(x, t = NULL, h = NULL)
+morie_fauzi_survival_kernel(x, t = NULL, h = NULL)
 }
 \arguments{
 \item{x}{Numeric vector (lifetimes).}

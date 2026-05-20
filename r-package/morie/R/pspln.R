@@ -57,4 +57,4 @@ pspln <- function(x, y, n_knots = 20L, degree = 3L, lam = 1) {
 #' @rdname pspln
 #' @keywords internal
 #' @export
-penalized_spline <- pspln
+morie_penalized_spline <- pspln

@@ -2,11 +2,11 @@
 # Tests for batch03: cnnge, cntgc, cntrl, cohrc, coitg, cokrg, confm,
 # copul, cov2s, covsp, cslat, cslnc, csphr, ctmed, ctrlc.
 
-test_that("cnn_genomic returns expected structure", {
+test_that("morie_cnn_genomic returns expected structure", {
   set.seed(7)
   M <- matrix(rnorm(160), 20, 8)
   y <- M[, 2] + M[, 4] + 0.2 * rnorm(20)
-  res <- cnn_genomic(rep(0, 20), y, M, n_epochs = 10, seed = 7)
+  res <- morie_cnn_genomic(rep(0, 20), y, M, n_epochs = 10, seed = 7)
   expect_true(is.list(res))
   expect_true(all(c(
     "estimate", "y_hat", "W_conv", "b_conv", "W1", "b1",
@@ -23,11 +23,11 @@ test_that("cnn_genomic returns expected structure", {
   expect_type(res$method, "character")
 })
 
-test_that("cnn_genomic respects hyperparameters and clamps kernel", {
+test_that("morie_cnn_genomic respects hyperparameters and clamps kernel", {
   set.seed(11)
   M <- matrix(rnorm(60), 15, 4)
   y <- as.numeric(M %*% c(1, -1, 0.5, 0) + 0.1 * rnorm(15))
-  res <- cnn_genomic(NULL, y, M,
+  res <- morie_cnn_genomic(NULL, y, M,
     n_filters = 4, kernel = 9,
     hidden = 5, n_epochs = 5, lr = 5e-3, l2 = 1e-2,
     seed = 1
@@ -39,18 +39,18 @@ test_that("cnn_genomic respects hyperparameters and clamps kernel", {
   expect_true(all(is.finite(res$loss_curve)))
 })
 
-test_that("cnn_genomic accepts a data.frame marker input", {
+test_that("morie_cnn_genomic accepts a data.frame marker input", {
   set.seed(3)
   M <- as.data.frame(matrix(rnorm(48), 12, 4))
   y <- rnorm(12)
-  res <- cnn_genomic(rep(0, 12), y, M, n_epochs = 4, seed = 3)
+  res <- morie_cnn_genomic(rep(0, 12), y, M, n_epochs = 4, seed = 3)
   expect_equal(res$n, 12L)
   expect_length(res$y_hat, 12L)
 })
 
-test_that("contingency_coefficient computes C and Cramer's V", {
+test_that("morie_contingency_coefficient computes C and Cramer's V", {
   tbl <- matrix(c(20, 10, 5, 8, 15, 12), nrow = 2, byrow = TRUE)
-  res <- contingency_coefficient(tbl)
+  res <- morie_contingency_coefficient(tbl)
   expect_true(is.list(res))
   expect_true(all(c(
     "statistic", "morie_cramers_v", "chi2", "p_value", "df",
@@ -67,24 +67,24 @@ test_that("contingency_coefficient computes C and Cramer's V", {
   expect_true(is.finite(res$max_C))
 })
 
-test_that("contingency_coefficient handles a square table", {
+test_that("morie_contingency_coefficient handles a square table", {
   tbl <- matrix(c(10, 5, 3, 4, 12, 6, 2, 7, 9), nrow = 3, byrow = TRUE)
-  res <- contingency_coefficient(tbl)
+  res <- morie_contingency_coefficient(tbl)
   expect_equal(res$df, 4L)
   expect_true(is.finite(res$statistic))
 })
 
-test_that("contingency_coefficient returns NA structure for empty input", {
-  res <- contingency_coefficient(matrix(numeric(0), 0, 0))
+test_that("morie_contingency_coefficient returns NA structure for empty input", {
+  res <- morie_contingency_coefficient(matrix(numeric(0), 0, 0))
   expect_true(is.na(res$statistic))
   expect_equal(res$n, 0L)
 })
 
-test_that("control_variates reduces variance with a correlated control", {
+test_that("morie_control_variates reduces variance with a correlated control", {
   set.seed(0)
   u <- runif(1000)
   y <- u + rnorm(1000, sd = 0.01)
-  res <- control_variates(y, u, 0.5)
+  res <- morie_control_variates(y, u, 0.5)
   expect_true(is.list(res))
   expect_true(all(c(
     "estimate", "se", "c_coef",
@@ -99,10 +99,10 @@ test_that("control_variates reduces variance with a correlated control", {
   expect_lt(abs(res$estimate - 0.5), 0.05)
 })
 
-test_that("control_variates flags bad input", {
-  res <- control_variates(c(1, 2, 3), c(1, 2), 0)
+test_that("morie_control_variates flags bad input", {
+  res <- morie_control_variates(c(1, 2, 3), c(1, 2), 0)
   expect_true(is.na(res$estimate))
-  res2 <- control_variates(1, 1, 0)
+  res2 <- morie_control_variates(1, 1, 0)
   expect_true(is.na(res2$estimate))
 })
 
@@ -150,12 +150,12 @@ test_that("morie_coherence errors on mismatched or short input", {
   expect_error(morie_coherence(rnorm(5), rnorm(5)), ">=8")
 })
 
-test_that("eg_coint returns Engle-Granger structure", {
+test_that("morie_eg_coint returns Engle-Granger structure", {
   set.seed(4)
   w <- cumsum(rnorm(120))
   y2 <- w + rnorm(120, sd = 0.5)
   y1 <- 2 * w + rnorm(120, sd = 0.5)
-  res <- eg_coint(y1, y2)
+  res <- morie_eg_coint(y1, y2)
   expect_true(is.list(res))
   expect_true(all(c(
     "adf_statistic", "p_value", "beta",
@@ -169,18 +169,18 @@ test_that("eg_coint returns Engle-Granger structure", {
   expect_length(res$critical_values, 3L)
 })
 
-test_that("eg_coint accepts an explicit max_lag", {
+test_that("morie_eg_coint accepts an explicit max_lag", {
   set.seed(6)
   y2 <- cumsum(rnorm(60))
   y1 <- y2 + rnorm(60, sd = 0.3)
-  res <- eg_coint(y1, y2, max_lag = 2)
+  res <- morie_eg_coint(y1, y2, max_lag = 2)
   expect_true(is.finite(res$adf_statistic))
   expect_equal(res$n, 60L)
 })
 
-test_that("eg_coint errors on mismatched or short series", {
-  expect_error(eg_coint(rnorm(30), rnorm(25)), "mismatch")
-  expect_error(eg_coint(rnorm(10), rnorm(10)), ">=20")
+test_that("morie_eg_coint errors on mismatched or short series", {
+  expect_error(morie_eg_coint(rnorm(30), rnorm(25)), "mismatch")
+  expect_error(morie_eg_coint(rnorm(10), rnorm(10)), ">=20")
 })
 
 test_that("cokrg predicts at a single target", {
@@ -214,12 +214,12 @@ test_that("cokrg predicts at multiple targets", {
   expect_true(all(res$se >= 0))
 })
 
-test_that("cokriging alias matches cokrg and validates dims", {
+test_that("morie_cokriging alias matches cokrg and validates dims", {
   set.seed(10)
   coords <- matrix(runif(24), 12, 2)
   x <- rnorm(12)
   y <- rnorm(12)
-  res <- cokriging(x, y, coords, target = c(0.3, 0.7))
+  res <- morie_cokriging(x, y, coords, target = c(0.3, 0.7))
   expect_true(is.finite(res$estimate))
   expect_error(
     cokrg(x, y, coords, target = c(0.3, 0.7, 0.1)),
@@ -231,10 +231,10 @@ test_that("cokriging alias matches cokrg and validates dims", {
   )
 })
 
-test_that("confusion_matrix_metrics computes accuracy and F1", {
+test_that("morie_confusion_matrix_metrics computes accuracy and F1", {
   yt <- c("a", "a", "b", "b", "c", "c", "a", "b")
   yp <- c("a", "b", "b", "b", "c", "a", "a", "b")
-  res <- confusion_matrix_metrics(yt, yp)
+  res <- morie_confusion_matrix_metrics(yt, yp)
   expect_true(is.list(res))
   expect_true(all(c(
     "estimate", "accuracy", "confusion_matrix", "labels",
@@ -252,26 +252,26 @@ test_that("confusion_matrix_metrics computes accuracy and F1", {
   expect_true(all(res$precision >= 0 & res$precision <= 1))
 })
 
-test_that("confusion_matrix_metrics honours explicit label ordering", {
+test_that("morie_confusion_matrix_metrics honours explicit label ordering", {
   yt <- c(1, 0, 1, 1, 0)
   yp <- c(1, 0, 0, 1, 0)
-  res <- confusion_matrix_metrics(yt, yp, labels = c(0, 1))
+  res <- morie_confusion_matrix_metrics(yt, yp, labels = c(0, 1))
   expect_equal(res$labels, c("0", "1"))
   expect_equal(dim(res$confusion_matrix), c(2L, 2L))
 })
 
-test_that("confusion_matrix_metrics handles a perfect classifier", {
+test_that("morie_confusion_matrix_metrics handles a perfect classifier", {
   yt <- c("x", "y", "x", "y")
-  res <- confusion_matrix_metrics(yt, yt)
+  res <- morie_confusion_matrix_metrics(yt, yt)
   expect_equal(res$accuracy, 1)
   expect_equal(res$macro_f1, 1)
 })
 
-test_that("copula_estimation works for the gaussian family", {
+test_that("morie_copula_estimation works for the gaussian family", {
   set.seed(0)
   x <- rnorm(300)
   y <- x + rnorm(300, sd = 0.5)
-  res <- copula_estimation(x, y, family = "gaussian")
+  res <- morie_copula_estimation(x, y, family = "gaussian")
   expect_true(is.list(res))
   expect_true(all(c(
     "estimate", "morie_kendall_tau", "se_tau", "u", "v",
@@ -285,12 +285,12 @@ test_that("copula_estimation works for the gaussian family", {
   expect_true(all(res$u > 0 & res$u < 1))
 })
 
-test_that("copula_estimation works for clayton and gumbel families", {
+test_that("morie_copula_estimation works for clayton and gumbel families", {
   set.seed(1)
   x <- rnorm(150)
   y <- x + rnorm(150, sd = 0.4)
-  rc <- copula_estimation(x, y, family = "clayton")
-  rg <- copula_estimation(x, y, family = "gumbel")
+  rc <- morie_copula_estimation(x, y, family = "clayton")
+  rg <- morie_copula_estimation(x, y, family = "gumbel")
   expect_equal(rc$family, "clayton")
   expect_equal(rg$family, "gumbel")
   expect_true(is.finite(rc$estimate) || is.infinite(rc$estimate))
@@ -303,11 +303,11 @@ test_that("copul internal helper flags too-few observations", {
   expect_equal(res$n, 2L)
 })
 
-test_that("two_sample_coverage tabulates block frequencies", {
+test_that("morie_two_sample_coverage tabulates block frequencies", {
   set.seed(12)
   x <- rnorm(10)
   y <- rnorm(25)
-  res <- two_sample_coverage(x, y)
+  res <- morie_two_sample_coverage(x, y)
   expect_true(is.list(res))
   expect_true(all(c(
     "block_freq", "block_prop", "expected_prop", "m",
@@ -322,16 +322,16 @@ test_that("two_sample_coverage tabulates block frequencies", {
   expect_equal(sum(res$block_prop), 1)
 })
 
-test_that("two_sample_coverage returns empty structure for empty input", {
-  res <- two_sample_coverage(numeric(0), rnorm(5))
+test_that("morie_two_sample_coverage returns empty structure for empty input", {
+  res <- morie_two_sample_coverage(numeric(0), rnorm(5))
   expect_length(res$block_freq, 0L)
   expect_true(is.na(res$expected_prop))
 })
 
-test_that("one_sample_coverage returns coverages and cumulative", {
+test_that("morie_one_sample_coverage returns coverages and cumulative", {
   set.seed(13)
   x <- rnorm(30)
-  res <- one_sample_coverage(x)
+  res <- morie_one_sample_coverage(x)
   expect_true(is.list(res))
   expect_true(all(c(
     "coverages", "cumulative", "expected", "n",
@@ -345,8 +345,8 @@ test_that("one_sample_coverage returns coverages and cumulative", {
   expect_gte(res$cumulative, 0)
 })
 
-test_that("one_sample_coverage handles too-short input", {
-  res <- one_sample_coverage(c(1))
+test_that("morie_one_sample_coverage handles too-short input", {
+  res <- morie_one_sample_coverage(c(1))
   expect_length(res$coverages, 0L)
   expect_true(is.na(res$cumulative))
 })
@@ -436,17 +436,17 @@ test_that("csphr handles NULL votes and single-class input", {
   expect_equal(res_one$correct_class, 10L)
 })
 
-test_that("cutting_plane_sphere alias accepts a vector x", {
-  res <- cutting_plane_sphere(rnorm(8), votes = c(1, 0, 1, 0, 1, 0, 1, 0))
+test_that("morie_cutting_plane_sphere alias accepts a vector x", {
+  res <- morie_cutting_plane_sphere(rnorm(8), votes = c(1, 0, 1, 0, 1, 0, 1, 0))
   expect_equal(res$p, 1L)
   expect_equal(res$n, 8L)
 })
 
-test_that("control_median_test runs Mood's median test", {
+test_that("morie_control_median_test runs Mood's median test", {
   set.seed(15)
   x <- rnorm(40, mean = 0)
   y <- rnorm(45, mean = 1)
-  res <- control_median_test(x, y)
+  res <- morie_control_median_test(x, y)
   expect_true(is.list(res))
   expect_true(all(c(
     "statistic", "p_value", "df", "n", "m", "n_y",
@@ -462,20 +462,20 @@ test_that("control_median_test runs Mood's median test", {
   expect_equal(sum(res$table), 85L)
 })
 
-test_that("control_median_test flags too-short input", {
-  res <- control_median_test(c(1), c(2, 3, 4))
+test_that("morie_control_median_test flags too-short input", {
+  res <- morie_control_median_test(c(1), c(2, 3, 4))
   expect_true(is.na(res$statistic))
   expect_equal(res$n, 4L)
 })
 
-test_that("control_comparison compares treatments to a control", {
+test_that("morie_control_comparison compares treatments to a control", {
   set.seed(16)
   groups <- list(
     control = rnorm(20, mean = 0),
     trt1    = rnorm(20, mean = 1),
     trt2    = rnorm(20, mean = 2)
   )
-  res <- control_comparison(groups)
+  res <- morie_control_comparison(groups)
   expect_true(is.list(res))
   expect_true(all(c(
     "statistic", "p_value", "p_adjusted", "n", "k",
@@ -491,28 +491,28 @@ test_that("control_comparison compares treatments to a control", {
   expect_equal(res$adjust, "bonferroni")
 })
 
-test_that("control_comparison supports adjust='none' and control_index", {
+test_that("morie_control_comparison supports adjust='none' and control_index", {
   set.seed(17)
   groups <- list(
     trt1    = rnorm(15, mean = 1),
     control = rnorm(15, mean = 0),
     trt2    = rnorm(15, mean = 2)
   )
-  res <- control_comparison(groups, control_index = 2L, adjust = "none")
+  res <- morie_control_comparison(groups, control_index = 2L, adjust = "none")
   expect_equal(res$adjust, "none")
   expect_equal(res$p_adjusted, res$p_value)
   expect_equal(res$k, 2L)
 })
 
-test_that("control_comparison returns empty structure for bad input", {
-  res <- control_comparison(list(rnorm(10)))
+test_that("morie_control_comparison returns empty structure for bad input", {
+  res <- morie_control_comparison(list(rnorm(10)))
   expect_equal(res$k, 0L)
   expect_length(res$statistic, 0L)
 })
 
-test_that("control_comparison flags groups too small for Wilcoxon", {
+test_that("morie_control_comparison flags groups too small for Wilcoxon", {
   groups <- list(control = c(1), trt1 = rnorm(10))
-  res <- control_comparison(groups)
+  res <- morie_control_comparison(groups)
   expect_true(is.na(res$statistic[1]))
   expect_true(is.na(res$p_value[1]))
 })

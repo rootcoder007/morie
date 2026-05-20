@@ -55,4 +55,4 @@ hrzk3 <- function(x, y, bandwidth = NULL, grid = NULL) {
 #' @rdname hrzk3
 #' @keywords internal
 #' @export
-horowitz_local_linear <- hrzk3
+morie_horowitz_local_linear <- hrzk3

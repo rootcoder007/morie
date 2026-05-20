@@ -10,9 +10,9 @@
 #'   max_C, n.
 #' @importFrom stats chisq.test
 #' @examples
-#' contingency_coefficient(x = matrix(sample(1:5, 50, TRUE), 10,      5))
+#' morie_contingency_coefficient(x = matrix(sample(1:5, 50, TRUE), 10, 5))
 #' @export
-contingency_coefficient <- function(x) {
+morie_contingency_coefficient <- function(x) {
   X <- as.matrix(x)
   if (length(dim(X)) != 2L || length(X) == 0L) {
     return(list(

@@ -42,4 +42,4 @@ rgcrl <- function(x, m = 3L, tau = 1L, n_r = 20L) {
 #' @rdname rgcrl
 #' @keywords internal
 #' @export
-rangayyan_correlation_dimension <- rgcrl
+morie_rangayyan_correlation_dimension <- rgcrl

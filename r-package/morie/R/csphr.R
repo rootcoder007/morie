@@ -21,7 +21,7 @@ csphr <- function(x, votes = NULL) {
     return(list(
       w = rep(0, p), c = NA_real_, midpoint = rep(NA_real_, p),
       correct_class = 0L, n = n, p = p,
-      method = "cutting_plane_sphere"
+      method = "morie_cutting_plane_sphere"
     ))
   }
   y <- as.integer(votes)
@@ -32,7 +32,7 @@ csphr <- function(x, votes = NULL) {
     return(list(
       w = rep(0, p), c = NA_real_, midpoint = rep(NA_real_, p),
       correct_class = as.integer(cc), n = n, p = p,
-      method = "cutting_plane_sphere"
+      method = "morie_cutting_plane_sphere"
     ))
   }
   mu_y <- colMeans(Xy)
@@ -53,11 +53,11 @@ csphr <- function(x, votes = NULL) {
   }
   list(
     w = w, c = c_int, midpoint = midpoint, correct_class = as.integer(cc),
-    n = n, p = p, method = "cutting_plane_sphere"
+    n = n, p = p, method = "morie_cutting_plane_sphere"
   )
 }
 
 #' @keywords internal
 #' @rdname csphr
 #' @export
-cutting_plane_sphere <- csphr
+morie_cutting_plane_sphere <- csphr

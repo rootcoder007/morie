@@ -46,4 +46,4 @@ fzqnt <- function(x, p = 0.5, h = NULL) {
 #' @rdname fzqnt
 #' @keywords internal
 #' @export
-fauzi_kernel_quantile_asymptotic <- fzqnt
+morie_fauzi_kernel_quantile_asymptotic <- fzqnt

@@ -26,9 +26,9 @@
 #'   t = rbinom(100, 1, 0.4),
 #'   ps = pmin(pmax(runif(100, 0.05, 0.95), 0.05), 0.95)
 #' )
-#' w <- calculate_ipw_weights(df, treatment = "t", ps_col = "ps")
+#' w <- morie_calculate_ipw_weights(df, treatment = "t", ps_col = "ps")
 #' summary(w)
-calculate_ipw_weights <- function(data, treatment, ps_col,
+morie_calculate_ipw_weights <- function(data, treatment, ps_col,
                                   stabilized = FALSE,
                                   trim_quantiles = NULL) {
   ps <- pmin(pmax(data[[ps_col]], 0.01), 0.99)

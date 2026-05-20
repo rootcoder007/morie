@@ -13,14 +13,14 @@ test_that("Butterworth + Savitzky-Golay filters run via the signal pkg", {
   expect_length(butthp(x, 600, 1)$filtered, 600L)
   expect_length(buttbp(x, 600, 3, 30)$filtered, 600L)
   expect_equal(buttbs(x, 600)$name, "butter_bandstop")
-  expect_length(pcg_filter(stats::rnorm(2000))$filtered, 2000L)
-  expect_equal(sgolay_smooth(x, 11L, 3L)$name, "savitzky_golay")
+  expect_length(morie_pcg_filter(stats::rnorm(2000))$filtered, 2000L)
+  expect_equal(morie_sgolay_smooth(x, 11L, 3L)$name, "savitzky_golay")
 })
 
-test_that("hurst_r estimates the Hurst exponent via pracma", {
+test_that("morie_hurst_r estimates the Hurst exponent via pracma", {
   skip_if_not_installed("pracma")
   set.seed(2)
-  r <- hurst_r(cumsum(stats::rnorm(2048)))
+  r <- morie_hurst_r(cumsum(stats::rnorm(2048)))
   expect_true(r$interpretation %in%
     c("persistent", "anti-persistent", "random"))
 })
@@ -61,10 +61,10 @@ test_that("filters fall back to the Python bridge without the signal pkg", {
   expect_equal(butthp(1:10, 100, 10), "bridge:butthp")
   expect_equal(buttbp(1:10, 100, 5, 20), "bridge:buttbp")
   expect_equal(buttbs(1:10, 100), "bridge:buttbs")
-  expect_equal(sgolay_smooth(1:20), "bridge:sgolay")
+  expect_equal(morie_sgolay_smooth(1:20), "bridge:sgolay")
 })
 
-test_that("hurst_r falls back to the Python bridge without pracma", {
+test_that("morie_hurst_r falls back to the Python bridge without pracma", {
   testthat::local_mocked_bindings(
     requireNamespace = function(package, ...) {
       if (identical(package, "pracma")) FALSE else TRUE
@@ -75,5 +75,5 @@ test_that("hurst_r falls back to the Python bridge without pracma", {
     .morie_py_call = function(fn_name, ...) "bridge:hurst",
     .package = "morie"
   )
-  expect_equal(hurst_r(cumsum(stats::rnorm(64))), "bridge:hurst")
+  expect_equal(morie_hurst_r(cumsum(stats::rnorm(64))), "bridge:hurst")
 })

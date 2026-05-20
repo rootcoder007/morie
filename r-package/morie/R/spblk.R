@@ -85,4 +85,4 @@ spblk <- function(x, coords, blocks, n_quad = 25,
 #' @rdname spblk
 #' @keywords internal
 #' @export
-spatial_block_kriging <- spblk
+morie_spatial_block_kriging <- spblk

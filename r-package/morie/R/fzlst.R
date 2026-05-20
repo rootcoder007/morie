@@ -72,4 +72,4 @@ fzlst <- function(x, score = NULL, n_quad = 200L) {
 #' @rdname fzlst
 #' @keywords internal
 #' @export
-fauzi_l_statistic <- fzlst
+morie_fauzi_l_statistic <- fzlst

@@ -25,8 +25,8 @@ NULL
 #' @examples
 #' morie_two_sample_t_test(rnorm(50, 0.5), rnorm(50, 0))
 morie_two_sample_t_test <- function(x1, x2,
-                              equal_var = FALSE,
-                              alternative = c("two.sided", "greater", "less")) {
+                                    equal_var = FALSE,
+                                    alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::t.test(x1, x2,
     var.equal = equal_var,
@@ -52,7 +52,7 @@ morie_two_sample_t_test <- function(x1, x2,
 #' morie_one_sample_t_test(x = rnorm(50))
 #' @export
 morie_one_sample_t_test <- function(x, mu0 = 0,
-                              alternative = c("two.sided", "greater", "less")) {
+                                    alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::t.test(x, mu = mu0, alternative = alternative)
   list(
@@ -74,7 +74,7 @@ morie_one_sample_t_test <- function(x, mu0 = 0,
 #' #   vignette(package = "morie")
 #' @export
 morie_paired_t_test <- function(x1, x2,
-                          alternative = c("two.sided", "greater", "less")) {
+                                alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::t.test(x1, x2, paired = TRUE, alternative = alternative)
   list(
@@ -95,7 +95,7 @@ morie_paired_t_test <- function(x1, x2,
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-chi_square_test <- function(observed, expected = NULL) {
+morie_chi_square_test <- function(observed, expected = NULL) {
   if (is.matrix(observed) || is.data.frame(observed)) {
     result <- stats::chisq.test(observed)
     v <- morie_cramers_v(as.matrix(observed))
@@ -124,7 +124,7 @@ chi_square_test <- function(observed, expected = NULL) {
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-fisher_exact_test <- function(table_2x2,
+morie_fisher_exact_test <- function(table_2x2,
                               alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::fisher.test(as.matrix(table_2x2), alternative = alternative)
@@ -142,8 +142,8 @@ fisher_exact_test <- function(table_2x2,
 #'   `morie_eta_squared`.
 #' @export
 #' @examples
-#' anova_one_way(rnorm(30, 0), rnorm(30, 0.5), rnorm(30, 1))
-anova_one_way <- function(...) {
+#' morie_anova_one_way(rnorm(30, 0), rnorm(30, 0.5), rnorm(30, 1))
+morie_anova_one_way <- function(...) {
   groups <- list(...)
   if (length(groups) < 2) stop("At least two groups required.")
   df_long <- do.call(rbind, lapply(seq_along(groups), function(i) {
@@ -197,7 +197,7 @@ morie_kruskal_wallis_test <- function(...) {
 #' #   vignette(package = "morie")
 #' @export
 morie_mann_whitney_test <- function(x1, x2,
-                              alternative = c("two.sided", "greater", "less")) {
+                                    alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::wilcox.test(x1, x2,
     alternative = alternative,
@@ -218,7 +218,7 @@ morie_mann_whitney_test <- function(x1, x2,
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-wilcoxon_signed_rank_test <- function(x1, x2,
+morie_wilcoxon_signed_rank_test <- function(x1, x2,
                                       alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::wilcox.test(x1, x2,
@@ -234,9 +234,9 @@ wilcoxon_signed_rank_test <- function(x1, x2,
 #' @param alpha Significance level for the `is_normal` flag (default 0.05).
 #' @return Named list: `W`, `p_value`, `is_normal`.
 #' @examples
-#' shapiro_wilk_test(x = rnorm(50))
+#' morie_shapiro_wilk_test(x = rnorm(50))
 #' @export
-shapiro_wilk_test <- function(x, alpha = 0.05) {
+morie_shapiro_wilk_test <- function(x, alpha = 0.05) {
   result <- stats::shapiro.test(x)
   list(
     W = as.numeric(result$statistic),
@@ -280,8 +280,8 @@ morie_levene_test <- function(...) {
 #' @return Named list: `p_hat`, `ci_lower`, `ci_upper`.
 #' @export
 #' @examples
-#' proportion_ci(35, 100)
-proportion_ci <- function(successes, n, alpha = 0.05,
+#' morie_proportion_ci(35, 100)
+morie_proportion_ci <- function(successes, n, alpha = 0.05,
                           method = c("wilson", "exact", "wald")) {
   method <- match.arg(method)
   p <- successes / n
@@ -315,7 +315,7 @@ proportion_ci <- function(successes, n, alpha = 0.05,
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-odds_ratio_ci <- function(table_2x2, alpha = 0.05) {
+morie_odds_ratio_ci <- function(table_2x2, alpha = 0.05) {
   m <- as.matrix(table_2x2)
   result <- stats::fisher.test(m)
   list(
@@ -335,7 +335,7 @@ odds_ratio_ci <- function(table_2x2, alpha = 0.05) {
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-risk_ratio_ci <- function(table_2x2, alpha = 0.05) {
+morie_risk_ratio_ci <- function(table_2x2, alpha = 0.05) {
   m <- as.matrix(table_2x2)
   a <- m[1, 1]
   b <- m[1, 2]
@@ -364,7 +364,7 @@ risk_ratio_ci <- function(table_2x2, alpha = 0.05) {
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-risk_difference_ci <- function(table_2x2, alpha = 0.05) {
+morie_risk_difference_ci <- function(table_2x2, alpha = 0.05) {
   m <- as.matrix(table_2x2)
   a <- m[1, 1]
   b <- m[1, 2]
@@ -482,9 +482,9 @@ morie_cramers_v <- function(contingency_table) {
 #' @param y Numeric vector.
 #' @return Named list: `rho`, `p_value`.
 #' @examples
-#' spearman_rho(x = rnorm(50), y = rnorm(50))
+#' morie_spearman_rho(x = rnorm(50), y = rnorm(50))
 #' @export
-spearman_rho <- function(x, y) {
+morie_spearman_rho <- function(x, y) {
   result <- stats::cor.test(x, y, method = "spearman", exact = FALSE)
   list(rho = as.numeric(result$estimate), p_value = result$p.value)
 }
@@ -511,7 +511,7 @@ morie_kendall_tau <- function(x, y) {
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-point_biserial_r <- function(binary_var, continuous_var) {
+morie_point_biserial_r <- function(binary_var, continuous_var) {
   result <- stats::cor.test(binary_var, continuous_var)
   list(r = as.numeric(result$estimate), p_value = result$p.value)
 }
@@ -538,9 +538,9 @@ point_biserial_r <- function(binary_var, continuous_var) {
 #' @examples
 #' morie_power_t_test(n = NULL, delta = 0.5, power = 0.80)
 morie_power_t_test <- function(n = NULL, delta = NULL, sd = 1,
-                         sig_level = 0.05, power = NULL,
-                         alternative = c("two.sided", "one.sided"),
-                         type = c("two.sample", "one.sample", "paired")) {
+                               sig_level = 0.05, power = NULL,
+                               alternative = c("two.sided", "one.sided"),
+                               type = c("two.sample", "one.sample", "paired")) {
   alternative <- match.arg(alternative)
   type <- match.arg(type)
   stats::power.t.test(
@@ -565,8 +565,8 @@ morie_power_t_test <- function(n = NULL, delta = NULL, sd = 1,
 #' @examples
 #' morie_power_prop_test(p1 = 0.30, p2 = 0.20, power = 0.80)
 morie_power_prop_test <- function(n = NULL, p1 = NULL, p2 = NULL,
-                            sig_level = 0.05, power = NULL,
-                            alternative = c("two.sided", "one.sided")) {
+                                  sig_level = 0.05, power = NULL,
+                                  alternative = c("two.sided", "one.sided")) {
   alternative <- match.arg(alternative)
   stats::power.prop.test(
     n = n, p1 = p1, p2 = p2,
@@ -594,7 +594,7 @@ morie_power_prop_test <- function(n = NULL, p1 = NULL, p2 = NULL,
 #'   Hsieh FY, Bloch DA, Larsen MD (1998). A simple method of sample size
 #'   calculation for linear and logistic regression.
 #'   *Statistics in Medicine*, 17(14):1623-1634.
-sample_size_logistic <- function(p0, or, alpha = 0.05, power = 0.80,
+morie_sample_size_logistic <- function(p0, or, alpha = 0.05, power = 0.80,
                                  two_sided = TRUE) {
   p1 <- (or * p0) / (1 - p0 + or * p0)
   z_a <- stats::qnorm(if (two_sided) 1 - alpha / 2 else 1 - alpha)

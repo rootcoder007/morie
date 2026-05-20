@@ -61,4 +61,4 @@ hrzt2 <- function(x, y, z, treatment) {
 #' @rdname hrzt2
 #' @keywords internal
 #' @export
-horowitz_local_ate <- hrzt2
+morie_horowitz_local_ate <- hrzt2

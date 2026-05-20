@@ -20,7 +20,7 @@
 #' city <- rep("A", 20)
 #' pred <- rep(c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0), 2)
 #' grp <- rep(c(rep("X", 5), rep("Y", 5)), 2)
-#' predpol_temporal_audit(period, city, pred, grp, privileged = "X")
+#' morie_predpol_temporal_audit(period, city, pred, grp, privileged = "X")
 #' @name frns_temporal
 NULL
 
@@ -48,9 +48,9 @@ NULL
 #' city <- rep("A", 20)
 #' pred <- rep(c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0), 2)
 #' grp <- rep(c(rep("X", 5), rep("Y", 5)), 2)
-#' res <- predpol_temporal_audit(period, city, pred, grp, privileged = "X")
+#' res <- morie_predpol_temporal_audit(period, city, pred, grp, privileged = "X")
 #' res$per_city$A$dir_range # 0 — disparity is stable across periods
-predpol_temporal_audit <- function(period, city, y_pred, group,
+morie_predpol_temporal_audit <- function(period, city, y_pred, group,
                                    privileged = NULL, favorable = 1) {
   n <- length(period)
   if (!(n == length(city) && n == length(y_pred) && n == length(group))) {
@@ -91,11 +91,11 @@ predpol_temporal_audit <- function(period, city, y_pred, group,
         skipped <- skipped + 1L
         next
       }
-      di <- fairness_disparate_impact(
+      di <- morie_fairness_disparate_impact(
         cy, cg,
         privileged = privileged, favorable = favorable
       )$value
-      pg <- fairness_demographic_parity(
+      pg <- morie_fairness_demographic_parity(
         cy, cg,
         privileged = privileged, favorable = favorable
       )$value
@@ -103,8 +103,8 @@ predpol_temporal_audit <- function(period, city, y_pred, group,
         cgu, function(g) mean(cy[cg == g] == favorable),
         numeric(1)
       )
-      gini <- fairness_gini(rate_vec)$value
-      bas <- fairness_bias_amplification(
+      gini <- morie_fairness_gini(rate_vec)$value
+      bas <- morie_fairness_bias_amplification(
         cy, cg,
         privileged = privileged, favorable = favorable
       )$value

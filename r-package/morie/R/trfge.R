@@ -17,10 +17,12 @@
 #' @return list(estimate, y_hat, beta, attention, context, se, n, method).
 #' @references Vaswani et al. (2017). Montesinos Lopez Ch 15.
 #' @examples
-#' transformer_genomic(x = rnorm(50), y = rnorm(50),
-#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4))
+#' morie_transformer_genomic(
+#'   x = rnorm(50), y = rnorm(50),
+#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4)
+#' )
 #' @export
-transformer_genomic <- function(x, y, markers, d_model = 8, lam = 1, seed = 0,
+morie_transformer_genomic <- function(x, y, markers, d_model = 8, lam = 1, seed = 0,
                                 deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
     morie::morie_det_rng("trfge", deterministic_seed)
@@ -90,4 +92,4 @@ transformer_genomic <- function(x, y, markers, d_model = 8, lam = 1, seed = 0,
 
 # CANONICAL TEST
 # set.seed(9); M <- matrix(rnorm(72), 12, 6); y <- M[,3] + 0.2*rnorm(12)
-# transformer_genomic(rep(0,12), y, M, seed=9)
+# morie_transformer_genomic(rep(0,12), y, M, seed=9)

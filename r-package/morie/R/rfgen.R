@@ -16,10 +16,12 @@
 #' @return list(estimate, y_hat, oob_score, feature_importance, se, n, method).
 #' @references Breiman (2001); Montesinos Lopez Ch 8.
 #' @examples
-#' random_forest_genomic(x = rnorm(50), y = rnorm(50),
-#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4))
+#' morie_random_forest_genomic(
+#'   x = rnorm(50), y = rnorm(50),
+#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4)
+#' )
 #' @export
-random_forest_genomic <- function(x, y, markers, n_trees = 100,
+morie_random_forest_genomic <- function(x, y, markers, n_trees = 100,
                                   max_depth = 10, min_samples = 2,
                                   mtry = NULL, seed = 0) {
   set.seed(seed)
@@ -91,4 +93,4 @@ random_forest_genomic <- function(x, y, markers, n_trees = 100,
 # CANONICAL TEST
 # set.seed(13); M <- matrix(rnorm(200), 40, 5)
 # y <- M[,1] + 0.5*M[,2]^2 + 0.2*rnorm(40)
-# random_forest_genomic(rep(0,40), y, M, n_trees=20, seed=13)
+# morie_random_forest_genomic(rep(0,40), y, M, n_trees=20, seed=13)

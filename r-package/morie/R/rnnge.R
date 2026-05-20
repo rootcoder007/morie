@@ -13,9 +13,9 @@
 #' @return list(estimate, y_hat, W_h, W_x, b_h, w_o, b_o, se, n, method).
 #' @references Montesinos Lopez Ch 14.
 #' @examples
-#' rnn_genomic(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2,      200, TRUE), 50, 4))
+#' morie_rnn_genomic(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 #' @export
-rnn_genomic <- function(x, y, markers, hidden = 8, n_epochs = 150,
+morie_rnn_genomic <- function(x, y, markers, hidden = 8, n_epochs = 150,
                         lr = 1e-2, l2 = 1e-3, seed = 0,
                         deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
@@ -89,4 +89,4 @@ rnn_genomic <- function(x, y, markers, hidden = 8, n_epochs = 150,
 
 # CANONICAL TEST
 # set.seed(8); M <- matrix(rnorm(90), 15, 6); y <- rowSums(M)+0.2*rnorm(15)
-# rnn_genomic(rep(0,15), y, M, n_epochs=20, seed=8)
+# morie_rnn_genomic(rep(0,15), y, M, n_epochs=20, seed=8)

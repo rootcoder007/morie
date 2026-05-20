@@ -20,12 +20,16 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-tsne_reduction <- function(x, n_components = 2L, perplexity = 30,
+morie_tsne_reduction <- function(x, n_components = 2L, perplexity = 30,
                            learning_rate = "auto", n_iter = 1000L,
                            seed = 0L,
                            deterministic_seed = NULL) {
+  x <- .morie_ensure_design_matrix(x)
+  n_rows <- nrow(as.matrix(x))
+  max_perplexity <- max(1, floor((n_rows - 1) / 3))
+  if (perplexity > max_perplexity) perplexity <- max_perplexity
   if (!requireNamespace("Rtsne", quietly = TRUE)) {
-    stop("Function 'tsne_reduction' requires package 'Rtsne'. Install with install.packages('Rtsne').")
+    stop("Function 'morie_tsne_reduction' requires package 'Rtsne'. Install with install.packages('Rtsne').")
   }
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)

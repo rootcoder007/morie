@@ -89,7 +89,7 @@ treat <- as.integer(plogis(0.5 * X1 - 0.3 * X2) > runif(n))
 y <- 1.0 * treat + 0.7 * X1 - 0.2 * X2 + rnorm(n, sd = 0.5)
 
 df_synth <- data.frame(y = y, treat = treat, X1 = X1, X2 = X2)
-result <- estimate_ate(
+result <- morie_estimate_ate(
   data       = df_synth,
   outcome    = "y",
   treatment  = "treat",
@@ -105,13 +105,13 @@ paper.
 
 # Companion estimators
 
-`estimate_att()`, `estimate_atc()`, and `estimate_aipw()` follow the
+`morie_estimate_att()`, `morie_estimate_atc()`, and `morie_estimate_aipw()` follow the
 same calling convention. The augmented IPW estimator
-(`estimate_aipw()`) is doubly robust under correct specification of
+(`morie_estimate_aipw()`) is doubly robust under correct specification of
 either the propensity model or the outcome model.
 
 ```{r aipw-synth, eval = FALSE}
-result_aipw <- estimate_aipw(
+result_aipw <- morie_estimate_aipw(
   data       = df_synth,
   outcome    = "y",
   treatment  = "treat",

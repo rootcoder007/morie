@@ -32,11 +32,11 @@ cndrc <- function(preference_matrix) {
   }
   list(
     winner = winner, n_candidates = n,
-    has_winner = winner > 0L, method = "condorcet_winner"
+    has_winner = winner > 0L, method = "morie_condorcet_winner"
   )
 }
 
 #' @keywords internal
 #' @rdname cndrc
 #' @export
-condorcet_winner <- cndrc
+morie_condorcet_winner <- cndrc

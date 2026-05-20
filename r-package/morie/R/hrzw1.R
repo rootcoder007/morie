@@ -53,4 +53,4 @@ hrzw1 <- function(x, y, residuals = NULL, B = 500, seed = 0) {
 #' @rdname hrzw1
 #' @keywords internal
 #' @export
-horowitz_wild_bootstrap <- hrzw1
+morie_horowitz_wild_bootstrap <- hrzw1

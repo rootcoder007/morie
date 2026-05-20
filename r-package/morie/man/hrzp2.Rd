@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzp2.R
 \name{hrzp2}
 \alias{hrzp2}
-\alias{horowitz_plr_bandwidth}
+\alias{morie_horowitz_plr_bandwidth}
 \title{Silverman bandwidth selector for PLR}
 \usage{
 hrzp2(x, y, c = 1.06)
 
-horowitz_plr_bandwidth(x, y, c = 1.06)
+morie_horowitz_plr_bandwidth(x, y, c = 1.06)
 }
 \arguments{
 \item{x}{Numeric vector.}

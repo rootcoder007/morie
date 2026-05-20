@@ -14,9 +14,9 @@
 #' @return Named list \code{(y, estimate, output_shape, method)}.
 #' @references Goodfellow et al. (2016), Deep Learning, Ch 9.
 #' @examples
-#' cnn2d_conv2d_forward(x = rnorm(50), w = rnorm(3))
+#' morie_cnn2d_conv2d_forward(x = rnorm(50), w = rnorm(3))
 #' @export
-cnn2d_conv2d_forward <- function(x, w, b = 0, stride = 1L, padding = 0L) {
+morie_cnn2d_conv2d_forward <- function(x, w, b = 0, stride = 1L, padding = 0L) {
   x <- as.matrix(x)
   w <- as.matrix(w)
   if (padding > 0) {
@@ -48,7 +48,7 @@ cnn2d_conv2d_forward <- function(x, w, b = 0, stride = 1L, padding = 0L) {
   )
 }
 
-#' @rdname cnn2d_conv2d_forward
+#' @rdname morie_cnn2d_conv2d_forward
 #' @keywords internal
 #' @export
-conv2d_forward <- cnn2d_conv2d_forward
+morie_conv2d_forward <- morie_cnn2d_conv2d_forward

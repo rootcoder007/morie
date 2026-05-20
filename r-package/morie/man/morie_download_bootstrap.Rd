@@ -29,7 +29,7 @@ Downloads large bootstrap weight CSVs that are too big to ship with the
 package. Data is cached in the user cache database for future use.
 }
 \examples{
-\dontrun{
+\donttest{
 # See the package vignettes for usage examples:
 #   vignette(package = "morie")
 }

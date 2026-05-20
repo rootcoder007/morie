@@ -8,9 +8,9 @@
 #' @return Named list with \code{alpha, beta, Gamma, Sigma, loglik, n, k,
 #'   rank, method}.
 #' @examples
-#' vecm(Y = matrix(rnorm(100), 50, 2))
+#' morie_vecm(Y = matrix(rnorm(100), 50, 2))
 #' @export
-vecm <- function(Y, k_ar = 1, coint_rank = 1) {
+morie_vecm <- function(Y, k_ar = 1, coint_rank = 1) {
   Y <- as.matrix(Y)
   if (nrow(Y) < ncol(Y)) Y <- t(Y)
   Tt <- nrow(Y)

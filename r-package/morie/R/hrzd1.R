@@ -68,4 +68,4 @@ hrzd1 <- function(t, x, event) {
 #' @rdname hrzd1
 #' @keywords internal
 #' @export
-horowitz_duration_model <- hrzd1
+morie_horowitz_duration_model <- hrzd1

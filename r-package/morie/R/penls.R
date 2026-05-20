@@ -18,8 +18,9 @@
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-penalized_regression <- function(x, y, alpha = 0.5, lam = 1.0,
+morie_penalized_regression <- function(x, y, alpha = 0.5, lam = 1.0,
                                  max_iter = 1000, tol = 1e-6) {
+  x <- .morie_ensure_design_matrix(x)
   X <- as.matrix(x)
   y <- as.numeric(y)
   n <- nrow(X)
@@ -91,4 +92,4 @@ penalized_regression <- function(x, y, alpha = 0.5, lam = 1.0,
 
 # CANONICAL TEST
 # set.seed(10); X <- matrix(rnorm(120), 30, 4); b <- c(1,0,-1,0)
-# y <- X %*% b + 0.1*rnorm(30); penalized_regression(X, y, alpha=1, lam=0.05)$beta
+# y <- X %*% b + 0.1*rnorm(30); morie_penalized_regression(X, y, alpha=1, lam=0.05)$beta

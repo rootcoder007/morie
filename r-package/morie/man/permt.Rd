@@ -2,7 +2,7 @@
 % Please edit documentation in R/permt.R
 \name{permt}
 \alias{permt}
-\alias{permutation_test_general}
+\alias{morie_permutation_test_general}
 \title{General two-sample permutation test (Good 2005)}
 \usage{
 permt(
@@ -14,7 +14,7 @@ permt(
   seed = 42L
 )
 
-permutation_test_general(
+morie_permutation_test_general(
   x,
   y,
   statistic = NULL,

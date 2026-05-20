@@ -43,21 +43,21 @@ test_that("build_assistant_prompt alias mirrors morie_build_prompt", {
   )
 })
 
-test_that("ask_percy is an exported function with the documented args", {
-  expect_true(is.function(ask_percy))
+test_that("morie_ask_percy is an exported function with the documented args", {
+  expect_true(is.function(morie_ask_percy))
   expect_true(all(c("question", "context", "python_bin") %in%
-    names(formals(ask_percy))))
+    names(formals(morie_ask_percy))))
   if (FALSE) {
-    ask_percy("hello")
+    morie_ask_percy("hello")
   }
   expect_true(TRUE)
 })
 
-test_that("rank_placements returns the documented structure", {
+test_that("morie_rank_placements returns the documented structure", {
   set.seed(1)
   x <- rnorm(15)
   y <- rnorm(12)
-  r <- rank_placements(x, y)
+  r <- morie_rank_placements(x, y)
   expect_type(r, "list")
   expect_named(r, c(
     "placements", "ranks_y", "U_y", "E_U", "Var_U",
@@ -69,17 +69,17 @@ test_that("rank_placements returns the documented structure", {
   expect_identical(r$n, length(y))
 })
 
-test_that("rank_placements computes U as the sum of placements", {
+test_that("morie_rank_placements computes U as the sum of placements", {
   x <- c(1, 2, 3, 4)
   y <- c(2.5, 3.5)
-  r <- rank_placements(x, y)
+  r <- morie_rank_placements(x, y)
   expect_equal(r$U_y, sum(r$placements))
   expect_equal(r$E_U, length(x) * length(y) / 2)
   expect_true(is.finite(r$Var_U) && r$Var_U > 0)
 })
 
-test_that("rank_placements handles empty input gracefully", {
-  r <- rank_placements(numeric(0), c(1, 2))
+test_that("morie_rank_placements handles empty input gracefully", {
+  r <- morie_rank_placements(numeric(0), c(1, 2))
   expect_length(r$placements, 0L)
   expect_true(is.na(r$U_y))
   expect_identical(r$m, 0L)
@@ -127,7 +127,7 @@ test_that("polrz computes a polarization index with median split", {
     "pooled_sd", "n_R", "n_D", "method"
   ))
   expect_true(is.finite(r$estimate) && r$estimate >= 0)
-  expect_identical(r$method, "polarization_index")
+  expect_identical(r$method, "morie_polarization_index")
 })
 
 test_that("polrz accepts an explicit two-level grouping vector", {
@@ -149,14 +149,14 @@ test_that("polrz errors on bad grouping vectors", {
   expect_error(polrz(c(1, 2, 3), group = c("a", "b", "c")), "2 levels")
 })
 
-test_that("polarization_index alias matches polrz", {
+test_that("morie_polarization_index alias matches polrz", {
   set.seed(6)
   x <- rnorm(30)
-  expect_equal(polarization_index(x)$estimate, polrz(x)$estimate)
+  expect_equal(morie_polarization_index(x)$estimate, polrz(x)$estimate)
 })
 
-test_that("posab_positional_encoding_abs returns a PE matrix of the right shape", {
-  r <- posab_positional_encoding_abs(seq_len = 8L, d_model = 4L)
+test_that("morie_posab_positional_encoding_abs returns a PE matrix of the right shape", {
+  r <- morie_posab_positional_encoding_abs(seq_len = 8L, d_model = 4L)
   expect_type(r, "list")
   expect_named(r, c("PE", "estimate", "seq_len", "d_model", "method"))
   expect_true(is.matrix(r$PE))
@@ -165,19 +165,19 @@ test_that("posab_positional_encoding_abs returns a PE matrix of the right shape"
   expect_true(all(abs(r$PE) <= 1 + 1e-9))
 })
 
-test_that("posab_positional_encoding_abs honours a custom base", {
-  r <- posab_positional_encoding_abs(6L, 6L, base = 100)
+test_that("morie_posab_positional_encoding_abs honours a custom base", {
+  r <- morie_posab_positional_encoding_abs(6L, 6L, base = 100)
   expect_identical(dim(r$PE), c(6L, 6L))
 })
 
-test_that("posab_positional_encoding_abs errors on non-positive dimensions", {
-  expect_error(posab_positional_encoding_abs(0L, 4L), "> 0")
-  expect_error(posab_positional_encoding_abs(4L, 0L), "> 0")
+test_that("morie_posab_positional_encoding_abs errors on non-positive dimensions", {
+  expect_error(morie_posab_positional_encoding_abs(0L, 4L), "> 0")
+  expect_error(morie_posab_positional_encoding_abs(4L, 0L), "> 0")
 })
 
-test_that("positional_encoding_abs alias matches the primary function", {
-  a <- positional_encoding_abs(5L, 4L)
-  b <- posab_positional_encoding_abs(5L, 4L)
+test_that("morie_positional_encoding_abs alias matches the primary function", {
+  a <- morie_positional_encoding_abs(5L, 4L)
+  b <- morie_posab_positional_encoding_abs(5L, 4L)
   expect_equal(a$PE, b$PE)
 })
 
@@ -203,11 +203,11 @@ test_that("perplexity_metric errors on empty input and bad base", {
   )
 })
 
-test_that("prophet_components decomposes a seasonal series", {
+test_that("morie_prophet_components decomposes a seasonal series", {
   set.seed(7)
   t <- 0:47
   x <- 0.1 * t + sin(2 * pi * t / 12) + rnorm(48, sd = 0.1)
-  r <- prophet_components(x, period = 12)
+  r <- morie_prophet_components(x, period = 12)
   expect_type(r, "list")
   expect_named(r, c(
     "trend", "seasonal", "residual", "slope", "intercept",
@@ -220,16 +220,16 @@ test_that("prophet_components decomposes a seasonal series", {
   expect_identical(r$n, 48L)
 })
 
-test_that("prophet_components reconstructs the series additively", {
+test_that("morie_prophet_components reconstructs the series additively", {
   set.seed(8)
   t <- 0:35
   x <- 0.05 * t + cos(2 * pi * t / 12) + rnorm(36, sd = 0.05)
-  r <- prophet_components(x, period = 12)
+  r <- morie_prophet_components(x, period = 12)
   expect_equal(unname(r$trend + r$seasonal + r$residual), x, tolerance = 1e-6)
 })
 
-test_that("prophet_components errors on a too-short series", {
-  expect_error(prophet_components(1:4, period = 12), "too short|short")
+test_that("morie_prophet_components errors on a too-short series", {
+  expect_error(morie_prophet_components(1:4, period = 12), "too short|short")
 })
 
 test_that("pspln fits a penalised spline and reports r2", {
@@ -255,12 +255,12 @@ test_that("pspln returns NA for a too-short series", {
   expect_true(grepl("too small", r$method))
 })
 
-test_that("penalized_spline alias matches pspln", {
+test_that("morie_penalized_spline alias matches pspln", {
   skip_if_not_installed("splines")
   set.seed(10)
   x <- seq(0, 1, length.out = 50)
   y <- x^2 + rnorm(50, sd = 0.05)
-  a <- penalized_spline(x, y, n_knots = 8L, lam = 1)
+  a <- morie_penalized_spline(x, y, n_knots = 8L, lam = 1)
   b <- morie:::pspln(x, y, n_knots = 8L, lam = 1)
   expect_equal(a$coef, b$coef)
 })
@@ -335,15 +335,15 @@ test_that("rcall handles NA absences", {
   expect_identical(r$n_abs, 2L)
 })
 
-test_that("roll_call_analysis alias matches rcall", {
+test_that("morie_roll_call_analysis alias matches rcall", {
   V <- matrix(c(1, 0, 1, 0), nrow = 2)
-  expect_equal(roll_call_analysis(V)$n_yea, rcall(V)$n_yea)
+  expect_equal(morie_roll_call_analysis(V)$n_yea, rcall(V)$n_yea)
 })
 
-test_that("regime_switching fits a 2-regime model via base-R EM", {
+test_that("morie_regime_switching fits a 2-regime model via base-R EM", {
   set.seed(15)
   x <- c(rnorm(30, 0, 0.5), rnorm(30, 0, 2))
-  r <- regime_switching(x, k_regimes = 2)
+  r <- morie_regime_switching(x, k_regimes = 2)
   expect_type(r, "list")
   expect_named(r, c(
     "mu", "sigma", "transition", "smoothed_probabilities",
@@ -357,8 +357,8 @@ test_that("regime_switching fits a 2-regime model via base-R EM", {
   expect_true(all(is.finite(r$mu)))
 })
 
-test_that("regime_switching errors on a too-short series", {
-  expect_error(regime_switching(rnorm(5), k_regimes = 2), "too short|short")
+test_that("morie_regime_switching errors on a too-short series", {
+  expect_error(morie_regime_switching(rnorm(5), k_regimes = 2), "too short|short")
 })
 
 test_that("retlv estimates a GEV return level", {
@@ -391,12 +391,12 @@ test_that("morie_return_level alias matches retlv", {
   expect_equal(a$estimate, b$estimate)
 })
 
-test_that("random_forest_ensemble runs a small regression forest", {
+test_that("morie_random_forest_ensemble runs a small regression forest", {
   skip_if_not_installed("randomForest")
   set.seed(19)
   X <- matrix(rnorm(120), ncol = 3)
   y <- X[, 1] + 0.5 * X[, 2] + rnorm(40, sd = 0.2)
-  r <- random_forest_ensemble(X, y,
+  r <- morie_random_forest_ensemble(X, y,
     n_estimators = 20L, task = "regression",
     seed = 19L
   )
@@ -413,12 +413,12 @@ test_that("random_forest_ensemble runs a small regression forest", {
   expect_true(is.finite(r$train_score))
 })
 
-test_that("random_forest_ensemble auto-detects a classification task", {
+test_that("morie_random_forest_ensemble auto-detects a classification task", {
   skip_if_not_installed("randomForest")
   set.seed(20)
   X <- matrix(rnorm(120), ncol = 3)
   y <- as.integer(X[, 1] > 0)
-  r <- random_forest_ensemble(X, y,
+  r <- morie_random_forest_ensemble(X, y,
     n_estimators = 20L, task = "auto",
     seed = 20L
   )
@@ -426,12 +426,12 @@ test_that("random_forest_ensemble auto-detects a classification task", {
   expect_true(r$train_score >= 0 && r$train_score <= 1)
 })
 
-test_that("random_forest_ensemble accepts a max_depth argument", {
+test_that("morie_random_forest_ensemble accepts a max_depth argument", {
   skip_if_not_installed("randomForest")
   set.seed(21)
   X <- matrix(rnorm(120), ncol = 3)
   y <- X[, 1] + rnorm(40, sd = 0.2)
-  r <- random_forest_ensemble(X, y,
+  r <- morie_random_forest_ensemble(X, y,
     n_estimators = 15L, max_depth = 3L,
     task = "regression", seed = 21L
   )
@@ -439,11 +439,11 @@ test_that("random_forest_ensemble accepts a max_depth argument", {
   expect_true(is.finite(r$estimate))
 })
 
-test_that("random_forest_genomic predicts from a marker matrix", {
+test_that("morie_random_forest_genomic predicts from a marker matrix", {
   set.seed(22)
   M <- matrix(rnorm(200), 40, 5)
   y <- M[, 1] + 0.5 * M[, 2]^2 + 0.2 * rnorm(40)
-  r <- random_forest_genomic(rep(0, 40), y, M, n_trees = 20, seed = 22)
+  r <- morie_random_forest_genomic(rep(0, 40), y, M, n_trees = 20, seed = 22)
   expect_type(r, "list")
   expect_named(r, c(
     "estimate", "y_hat", "oob_score", "feature_importance",
@@ -455,20 +455,20 @@ test_that("random_forest_genomic predicts from a marker matrix", {
   expect_true(r$se >= 0)
 })
 
-test_that("random_forest_genomic works with NULL fixed features", {
+test_that("morie_random_forest_genomic works with NULL fixed features", {
   set.seed(23)
   M <- matrix(rnorm(150), 30, 5)
   y <- M[, 1] + 0.2 * rnorm(30)
-  r <- random_forest_genomic(NULL, y, M, n_trees = 15, seed = 23)
+  r <- morie_random_forest_genomic(NULL, y, M, n_trees = 15, seed = 23)
   expect_length(r$y_hat, 30L)
   expect_true(is.finite(r$oob_score))
 })
 
-test_that("random_forest_genomic accepts a custom mtry", {
+test_that("morie_random_forest_genomic accepts a custom mtry", {
   set.seed(24)
   M <- matrix(rnorm(160), 32, 5)
   y <- M[, 2] + 0.2 * rnorm(32)
-  r <- random_forest_genomic(rep(0, 32), y, M,
+  r <- morie_random_forest_genomic(rep(0, 32), y, M,
     n_trees = 15, mtry = 2,
     seed = 24
   )
@@ -503,11 +503,11 @@ test_that("rgadp errors when x and reference differ in length", {
   expect_error(rgadp(rnorm(50), reference = rnorm(40)), "equal length")
 })
 
-test_that("rangayyan_adaptive_filter alias matches rgadp", {
+test_that("morie_rangayyan_adaptive_filter alias matches rgadp", {
   set.seed(27)
   noise <- rnorm(100)
   x <- sin(seq_len(100) / 8) + noise
-  a <- rangayyan_adaptive_filter(x, reference = noise, order = 8L)
+  a <- morie_rangayyan_adaptive_filter(x, reference = noise, order = 8L)
   b <- rgadp(x, reference = noise, order = 8L)
   expect_equal(a$signal, b$signal)
 })

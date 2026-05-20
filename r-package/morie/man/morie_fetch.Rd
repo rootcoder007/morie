@@ -51,7 +51,7 @@ Supported formats: \code{csv}, \code{tsv}, \code{json}, \code{xml},
 \code{arcgis} (delegates to \code{\link{morie_fetch_arcgis}}).
 }
 \examples{
-\dontrun{
+\donttest{
 # Auto-detected CSV:
 df <- morie_fetch("https://example.org/data.csv")
 # Force JSON parsing and pass an API parameter:

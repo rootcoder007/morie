@@ -64,4 +64,4 @@ indkr <- function(x, coords, threshold, target = NULL,
 #' @rdname indkr
 #' @keywords internal
 #' @export
-indicator_kriging <- indkr
+morie_indicator_kriging <- indkr

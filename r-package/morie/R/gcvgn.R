@@ -10,9 +10,9 @@
 #' @return list(estimate, r_per_fold, y_hat, mse, mspe, slope, n, K, method).
 #' @references Montesinos Lopez Ch 2.
 #' @examples
-#' genomic_cross_validation(x = rnorm(50), y = rnorm(50))
+#' morie_genomic_cross_validation(x = rnorm(50), y = rnorm(50))
 #' @export
-genomic_cross_validation <- function(x, y, K = 5, lam = 1.0, seed = 0) {
+morie_genomic_cross_validation <- function(x, y, K = 5, lam = 1.0, seed = 0) {
   set.seed(seed)
   X <- as.matrix(x)
   y <- as.numeric(y)
@@ -59,4 +59,4 @@ genomic_cross_validation <- function(x, y, K = 5, lam = 1.0, seed = 0) {
 
 # CANONICAL TEST
 # set.seed(15); X <- matrix(rnorm(200), 50, 4); b <- c(1,-1,0.5,0)
-# y <- X %*% b + 0.3*rnorm(50); genomic_cross_validation(X, y, K=5, seed=15)
+# y <- X %*% b + 0.3*rnorm(50); morie_genomic_cross_validation(X, y, K=5, seed=15)

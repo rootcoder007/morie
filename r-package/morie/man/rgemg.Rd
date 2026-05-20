@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgemg.R
 \name{rgemg}
 \alias{rgemg}
-\alias{rangayyan_emg_rms}
+\alias{morie_rangayyan_emg_rms}
 \title{EMG sliding-window RMS envelope -- Rangayyan Ch 8}
 \usage{
 rgemg(x, window = 64L, fs = 1)
 
-rangayyan_emg_rms(x, window = 64L, fs = 1)
+morie_rangayyan_emg_rms(x, window = 64L, fs = 1)
 }
 \arguments{
 \item{x}{Numeric vector.}

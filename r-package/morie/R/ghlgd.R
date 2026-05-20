@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Internal: penalised log-spline density negative log-likelihood.
-# Extracted from the ghosal_log_density() optimiser closure for direct
+# Extracted from the morie_ghosal_log_density() optimiser closure for direct
 # unit-testing. `Bx`/`Bg` are the data and grid basis matrices, `gz` the
 # standardised evaluation grid, `n` the sample size.
 .ghlgd_negll <- function(theta, Bx, Bg, gz, n) {
@@ -21,9 +21,9 @@
 #' @return Named list with estimate, theta, log_lik, grid, log_density, K, n, method.
 #' @importFrom utils head tail
 #' @examples
-#' ghosal_log_density(x = rnorm(50))
+#' morie_ghosal_log_density(x = rnorm(50))
 #' @export
-ghosal_log_density <- function(x, K = 5, grid = NULL) {
+morie_ghosal_log_density <- function(x, K = 5, grid = NULL) {
   x <- as.numeric(x)
   n <- length(x)
   if (n < 5) {

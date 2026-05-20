@@ -47,4 +47,4 @@ rgenv <- function(x) {
 #' @rdname rgenv
 #' @keywords internal
 #' @export
-rangayyan_envelope <- rgenv
+morie_rangayyan_envelope <- rgenv

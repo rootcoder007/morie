@@ -10,9 +10,9 @@
 #'   tau_xz, tau_yz, z, n.
 #' @importFrom stats cor pnorm
 #' @examples
-#' kendall_tau_partial(x = rnorm(50), y = rnorm(50), z = rnorm(50))
+#' morie_kendall_tau_partial(x = rnorm(50), y = rnorm(50), z = rnorm(50))
 #' @export
-kendall_tau_partial <- function(x, y, z) {
+morie_kendall_tau_partial <- function(x, y, z) {
   x <- as.numeric(x)
   y <- as.numeric(y)
   z <- as.numeric(z)

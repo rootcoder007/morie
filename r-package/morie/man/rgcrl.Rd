@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgcrl.R
 \name{rgcrl}
 \alias{rgcrl}
-\alias{rangayyan_correlation_dimension}
+\alias{morie_rangayyan_correlation_dimension}
 \title{Correlation dimension (Grassberger-Procaccia) -- Rangayyan Ch 7}
 \usage{
 rgcrl(x, m = 3L, tau = 1L, n_r = 20L)
 
-rangayyan_correlation_dimension(x, m = 3L, tau = 1L, n_r = 20L)
+morie_rangayyan_correlation_dimension(x, m = 3L, tau = 1L, n_r = 20L)
 }
 \arguments{
 \item{x}{Numeric vector.}

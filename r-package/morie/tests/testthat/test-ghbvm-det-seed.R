@@ -22,9 +22,9 @@ xs_fixture <- function() {
 test_that("ghbvm deterministic_seed is reproducible", {
   skip_if_no_hash()
   xs <- xs_fixture()
-  r1 <- ghosal_bernstein_von_mises(xs, B = 200, deterministic_seed = 42L)
-  r2 <- ghosal_bernstein_von_mises(xs, B = 200, deterministic_seed = 42L)
-  r3 <- ghosal_bernstein_von_mises(xs, B = 200, deterministic_seed = 999L)
+  r1 <- morie_ghosal_bernstein_von_mises(xs, B = 200, deterministic_seed = 42L)
+  r2 <- morie_ghosal_bernstein_von_mises(xs, B = 200, deterministic_seed = 42L)
+  r3 <- morie_ghosal_bernstein_von_mises(xs, B = 200, deterministic_seed = 999L)
   expect_equal(r1$estimate, r2$estimate)
   expect_equal(r1$se, r2$se)
   expect_false(isTRUE(all.equal(r1$se, r3$se)))
@@ -32,8 +32,8 @@ test_that("ghbvm deterministic_seed is reproducible", {
 
 test_that("ghbvm default (deterministic_seed = NULL) path is unchanged", {
   xs <- xs_fixture()
-  r1 <- ghosal_bernstein_von_mises(xs, B = 200, seed = 42L)
-  r2 <- ghosal_bernstein_von_mises(xs, B = 200, seed = 42L)
+  r1 <- morie_ghosal_bernstein_von_mises(xs, B = 200, seed = 42L)
+  r2 <- morie_ghosal_bernstein_von_mises(xs, B = 200, seed = 42L)
   expect_equal(r1$estimate, r2$estimate)
   expect_equal(r1$se, r2$se)
 })

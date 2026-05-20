@@ -2,12 +2,12 @@
 % Please edit documentation in R/cntrl.R
 \name{cntrl_estimator}
 \alias{cntrl_estimator}
-\alias{control_variates}
+\alias{morie_control_variates}
 \title{Control variates (Nelson 1990)}
 \usage{
 cntrl_estimator(y, c_var, mu_c)
 
-control_variates(y, c_var, mu_c)
+morie_control_variates(y, c_var, mu_c)
 }
 \arguments{
 \item{y}{numeric; outcome samples.}

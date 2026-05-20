@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgadp.R
 \name{rgadp}
 \alias{rgadp}
-\alias{rangayyan_adaptive_filter}
+\alias{morie_rangayyan_adaptive_filter}
 \title{LMS adaptive noise canceller -- Rangayyan Ch 11}
 \usage{
 rgadp(x, reference, mu = 0.01, order = 16L)
 
-rangayyan_adaptive_filter(x, reference, mu = 0.01, order = 16L)
+morie_rangayyan_adaptive_filter(x, reference, mu = 0.01, order = 16L)
 }
 \arguments{
 \item{x}{Numeric vector (target + correlated noise).}

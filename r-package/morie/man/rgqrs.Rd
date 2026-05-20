@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgqrs.R
 \name{rgqrs}
 \alias{rgqrs}
-\alias{rangayyan_qrs_detect}
+\alias{morie_rangayyan_qrs_detect}
 \title{Pan-Tompkins QRS detector -- Rangayyan Ch 6}
 \usage{
 rgqrs(x, fs = 360)
 
-rangayyan_qrs_detect(x, fs = 360)
+morie_rangayyan_qrs_detect(x, fs = 360)
 }
 \arguments{
 \item{x}{Numeric ECG vector.}

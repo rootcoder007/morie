@@ -2,12 +2,12 @@
 % Please edit documentation in R/rcall.R
 \name{rcall}
 \alias{rcall}
-\alias{roll_call_analysis}
+\alias{morie_roll_call_analysis}
 \title{Roll-call matrix summary (Armstrong Ch 2)}
 \usage{
 rcall(x)
 
-roll_call_analysis(x)
+morie_roll_call_analysis(x)
 }
 \arguments{
 \item{x}{Numeric matrix (n by m).}

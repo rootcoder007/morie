@@ -53,4 +53,4 @@ fzkdf <- function(x, t = NULL, h = NULL) {
 #' @rdname fzkdf
 #' @keywords internal
 #' @export
-fauzi_kdfe_properties <- fzkdf
+morie_fauzi_kdfe_properties <- fzkdf

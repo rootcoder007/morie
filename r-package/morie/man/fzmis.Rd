@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzmis.R
 \name{fzmis}
 \alias{fzmis}
-\alias{fauzi_mise_computation}
+\alias{morie_fauzi_mise_computation}
 \title{Fauzi: MISE decomposition for Gaussian KDE (Ch 1)}
 \usage{
 fzmis(x, h = NULL)
 
-fauzi_mise_computation(x, h = NULL)
+morie_fauzi_mise_computation(x, h = NULL)
 }
 \arguments{
 \item{x}{Numeric vector.}

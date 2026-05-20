@@ -94,28 +94,28 @@ make_raw_cpads <- function(n = 900L, seed = 202L) {
   res
 }
 
-test_that("list_morie_modules returns the documented 21-module surface", {
-  mods <- list_morie_modules()
+test_that("morie_list_morie_modules returns the documented 21-module surface", {
+  mods <- morie_list_morie_modules()
   expect_s3_class(mods, "data.frame")
   expect_equal(nrow(mods), 21L)
   expect_true(all(c("name", "description") %in% names(mods)))
 })
 
-test_that("cpads_contract / validate_cpads_data describe and check the contract", {
-  ct <- cpads_contract()
+test_that("morie_cpads_contract / morie_validate_cpads_data describe and check the contract", {
+  ct <- morie_cpads_contract()
   expect_type(ct, "list")
   expect_length(ct$required_variables, 11L)
   canonical <- make_canonical_cpads()
-  expect_length(validate_cpads_data(canonical, strict = TRUE), 0L)
+  expect_length(morie_validate_cpads_data(canonical, strict = TRUE), 0L)
   broken <- canonical[, setdiff(names(canonical), "ebac_tot"), drop = FALSE]
-  expect_true("ebac_tot" %in% validate_cpads_data(broken, strict = FALSE))
-  expect_error(validate_cpads_data(broken, strict = TRUE))
+  expect_true("ebac_tot" %in% morie_validate_cpads_data(broken, strict = FALSE))
+  expect_error(morie_validate_cpads_data(broken, strict = TRUE))
 })
 
-test_that("canonicalize_cpads_data runs on raw and already-canonical input", {
-  .cov_run(canonicalize_cpads_data(make_raw_cpads()))
+test_that("morie_canonicalize_cpads_data runs on raw and already-canonical input", {
+  .cov_run(morie_canonicalize_cpads_data(make_raw_cpads()))
   expect_s3_class(
-    canonicalize_cpads_data(make_canonical_cpads()),
+    morie_canonicalize_cpads_data(make_canonical_cpads()),
     "data.frame"
   )
 })
@@ -191,8 +191,8 @@ test_that("power-design helpers run", {
   ))
 })
 
-test_that("run_propensity_ipw_analysis runs", {
-  .cov_run(run_propensity_ipw_analysis(
+test_that("morie_run_propensity_ipw_analysis runs", {
+  .cov_run(morie_run_propensity_ipw_analysis(
     make_canonical_cpads(n = 1400L, seed = 707L)
   ))
 })
@@ -212,7 +212,7 @@ test_that("ipw micro-helpers run", {
   expect_true(is.na(es) || is.finite(es))
 })
 
-test_that("run_morie_module runs in-memory-safe modules via a raw CSV", {
+test_that("morie_run_morie_module runs in-memory-safe modules via a raw CSV", {
   skip_on_cran()
   csv <- tempfile("cpads-raw-", fileext = ".csv")
   utils::write.csv(make_raw_cpads(n = 1600L, seed = 909L), csv,
@@ -224,17 +224,17 @@ test_that("run_morie_module runs in-memory-safe modules via a raw CSV", {
     "frequentist-inference", "bayesian-inference",
     "dag-specification"
   )) {
-    .cov_run(run_morie_module(m, cpads_csv = csv))
+    .cov_run(morie_run_morie_module(m, cpads_csv = csv))
   }
   expect_error(suppressWarnings(
-    run_morie_module("not-a-real-module", cpads_csv = csv)
+    morie_run_morie_module("not-a-real-module", cpads_csv = csv)
   ))
 })
 
 test_that("real on-disk CPADS CSV workflow is documented but not run", {
   if (FALSE) {
-    real <- load_cpads_data()
-    run_morie_modules(cpads_csv = morie:::.cpads_default_csv())
+    real <- morie_load_cpads_data()
+    morie_run_morie_modules(cpads_csv = morie:::.cpads_default_csv())
   }
   expect_true(TRUE)
 })

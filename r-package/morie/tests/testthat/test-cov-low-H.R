@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Coverage lift batch H: frns_temporal, hrzi1, paths, rgcoh, rgpsd, rkhsf, gbgen, spblk, data_access, sptrn.
 
-test_that("predpol_temporal_audit errors on misaligned input lengths", {
+test_that("morie_predpol_temporal_audit errors on misaligned input lengths", {
   expect_error(
-    predpol_temporal_audit(
+    morie_predpol_temporal_audit(
       period = c("p1", "p2"),
       city = c("A"),
       y_pred = c(1, 0),
@@ -13,9 +13,9 @@ test_that("predpol_temporal_audit errors on misaligned input lengths", {
   )
 })
 
-test_that("predpol_temporal_audit errors on empty inputs", {
+test_that("morie_predpol_temporal_audit errors on empty inputs", {
   expect_error(
-    predpol_temporal_audit(
+    morie_predpol_temporal_audit(
       period = character(0),
       city = character(0),
       y_pred = integer(0),
@@ -103,18 +103,18 @@ test_that("rgpsd supports hamming and boxcar windows", {
   expect_true(is.finite(r_hamming$peak_freq))
 })
 
-test_that("rkhs_full runs on default kernel bandwidth", {
+test_that("morie_rkhs_full runs on default kernel bandwidth", {
   set.seed(1)
   M <- matrix(sample(0:2, 200, TRUE), 50, 4)
-  out <- rkhs_full(x = rnorm(50), y = rnorm(50), markers = M)
+  out <- morie_rkhs_full(x = rnorm(50), y = rnorm(50), markers = M)
   expect_equal(length(out$alpha), 50L)
   expect_equal(out$n, 50L)
 })
 
-test_that("gradient_boosting_genomic runs with default args", {
+test_that("morie_gradient_boosting_genomic runs with default args", {
   set.seed(1)
   M <- matrix(sample(0:2, 200, TRUE), 50, 4)
-  out <- gradient_boosting_genomic(
+  out <- morie_gradient_boosting_genomic(
     x = rnorm(50), y = rnorm(50), markers = M,
     n_estimators = 5, seed = 1
   )
