@@ -54,7 +54,7 @@
 #' @param progress Logical; print progress messages.
 #' @return Path to the written \code{SIU.csv}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Network: parses the full Ontario SIU corpus (~10-15 min).
 #' csv <- morie_fetch_siu(cache_dir = tempdir())
 #' siu <- utils::read.csv(csv)

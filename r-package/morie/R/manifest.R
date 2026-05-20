@@ -8,10 +8,8 @@ escape_regex <- function(x) {
 #' @param strict If `TRUE`, stop on validation failures.
 #' @return `TRUE` when validation passes.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 validate_outputs_manifest <- function(manifest, strict = TRUE) {
   required <- c("output", "public_path", "size_kb", "modified")
@@ -230,10 +228,8 @@ audit_public_outputs <- function(project_root = NULL, manifest = NULL) {
 #' @param audit_tbl Result from [audit_public_outputs()].
 #' @return Named list with high-level diagnostics.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 summarize_output_audit <- function(audit_tbl) {
   if (!is.data.frame(audit_tbl)) {

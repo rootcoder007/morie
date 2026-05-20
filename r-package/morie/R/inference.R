@@ -70,10 +70,8 @@ morie_one_sample_t_test <- function(x, mu0 = 0,
 #' @param alternative `"two.sided"`, `"greater"`, or `"less"`.
 #' @return Named list: `t`, `df`, `p_value`, `ci_diff`, `mean_diff`.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_paired_t_test <- function(x1, x2,
                           alternative = c("two.sided", "greater", "less")) {
@@ -94,10 +92,8 @@ morie_paired_t_test <- function(x1, x2,
 #' @param expected Expected counts for GOF (optional; uniform if NULL).
 #' @return Named list: `chi_sq`, `df`, `p_value`, `morie_cramers_v`.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 chi_square_test <- function(observed, expected = NULL) {
   if (is.matrix(observed) || is.data.frame(observed)) {
@@ -125,10 +121,8 @@ chi_square_test <- function(observed, expected = NULL) {
 #' @param alternative `"two.sided"`, `"greater"`, or `"less"`.
 #' @return Named list: `odds_ratio`, `ci`, `p_value`.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 fisher_exact_test <- function(table_2x2,
                               alternative = c("two.sided", "greater", "less")) {
@@ -176,10 +170,8 @@ anova_one_way <- function(...) {
 #' @param ... Numeric vectors, one per group.
 #' @return Named list: `H`, `df`, `p_value`.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_kruskal_wallis_test <- function(...) {
   groups <- list(...)
@@ -201,10 +193,8 @@ morie_kruskal_wallis_test <- function(...) {
 #' @param alternative `"two.sided"`, `"greater"`, or `"less"`.
 #' @return Named list: `W`, `p_value`, `r` (effect size).
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_mann_whitney_test <- function(x1, x2,
                               alternative = c("two.sided", "greater", "less")) {
@@ -225,10 +215,8 @@ morie_mann_whitney_test <- function(x1, x2,
 #' @param alternative `"two.sided"`, `"greater"`, or `"less"`.
 #' @return Named list: `V`, `p_value`.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 wilcoxon_signed_rank_test <- function(x1, x2,
                                       alternative = c("two.sided", "greater", "less")) {
@@ -262,10 +250,8 @@ shapiro_wilk_test <- function(x, alpha = 0.05) {
 #' @param ... Numeric vectors, one per group.
 #' @return Named list: `F`, `p_value`.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_levene_test <- function(...) {
   groups <- list(...)
@@ -326,10 +312,8 @@ proportion_ci <- function(successes, n, alpha = 0.05,
 #' @param alpha Significance level.
 #' @return Named list: `or`, `ci_lower`, `ci_upper`, `p_value`.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 odds_ratio_ci <- function(table_2x2, alpha = 0.05) {
   m <- as.matrix(table_2x2)
@@ -348,10 +332,8 @@ odds_ratio_ci <- function(table_2x2, alpha = 0.05) {
 #' @param alpha Significance level.
 #' @return Named list: `rr`, `ci_lower`, `ci_upper`.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 risk_ratio_ci <- function(table_2x2, alpha = 0.05) {
   m <- as.matrix(table_2x2)
@@ -379,10 +361,8 @@ risk_ratio_ci <- function(table_2x2, alpha = 0.05) {
 #' @param alpha Significance level.
 #' @return Named list: `rd`, `ci_lower`, `ci_upper`.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 risk_difference_ci <- function(table_2x2, alpha = 0.05) {
   m <- as.matrix(table_2x2)
@@ -416,10 +396,8 @@ risk_difference_ci <- function(table_2x2, alpha = 0.05) {
 #' @param pooled Use pooled SD (default `TRUE`). If `FALSE`, uses `sd(x2)`.
 #' @return Numeric Cohen's d.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_cohens_d <- function(x1, x2, pooled = TRUE) {
   m1 <- mean(x1, na.rm = TRUE)
@@ -441,10 +419,8 @@ morie_cohens_d <- function(x1, x2, pooled = TRUE) {
 #' @inheritParams morie_cohens_d
 #' @return Numeric Hedges' g.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_hedges_g <- function(x1, x2) {
   d <- morie_cohens_d(x1, x2, pooled = TRUE)
@@ -462,10 +438,8 @@ morie_hedges_g <- function(x1, x2) {
 #' @param df_within Degrees of freedom (denominator).
 #' @return Numeric eta-squared.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_eta_squared <- function(f_stat, df_between, df_within) {
   ss_between <- f_stat * df_between
@@ -490,10 +464,8 @@ morie_omega_squared <- function(f_stat, df_between, df_within, n) {
 #' @param contingency_table A numeric matrix of observed counts.
 #' @return Numeric Cramer's V in the interval \[0, 1\].
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_cramers_v <- function(contingency_table) {
   m <- as.matrix(contingency_table)
@@ -536,10 +508,8 @@ morie_kendall_tau <- function(x, y) {
 #' @param continuous_var Continuous numeric vector.
 #' @return Named list: `r`, `p_value`.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 point_biserial_r <- function(binary_var, continuous_var) {
   result <- stats::cor.test(binary_var, continuous_var)
@@ -617,10 +587,8 @@ morie_power_prop_test <- function(n = NULL, p1 = NULL, p2 = NULL,
 #' @param two_sided Logical.
 #' @return Integer sample size.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 #' @references
 #'   Hsieh FY, Bloch DA, Larsen MD (1998). A simple method of sample size

@@ -40,10 +40,8 @@ validate_workflow_map <- function(script_map) {
 #' @param verbose If `TRUE`, streams command output.
 #' @return Named list with step metadata and exit status.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 run_workflow_step <- function(
   step,

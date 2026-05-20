@@ -13,10 +13,8 @@
 #' @return Named list: estimate, coef_path, alphas, penalty, l1_ratio,
 #'   n, method.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 regularization_path <- function(x, y, penalty = c("ridge", "lasso", "elasticnet"),
                                 alphas = NULL, l1_ratio = 0.5) {

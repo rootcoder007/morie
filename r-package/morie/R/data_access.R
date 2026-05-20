@@ -201,7 +201,7 @@
 #' @return A data.frame for tabular formats; a list or document object
 #'   for non-tabular \code{json}/\code{xml}/\code{html}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Auto-detected CSV:
 #' df <- morie_fetch("https://example.org/data.csv")
 #' # Force JSON parsing and pass an API parameter:
@@ -287,7 +287,7 @@ morie_fetch <- function(url,
 #'   \code{url}. Feed \code{resource_id} into
 #'   \code{morie_fetch_ckan(resource_id = ...)}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' hits <- morie_ckan_search("cannabis survey", portal = "open.canada.ca")
 #' head(hits[, c("dataset_title", "resource_id", "format")])
 #' }
@@ -367,7 +367,7 @@ morie_ckan_search <- function(query, portal = "open.canada.ca",
 #'   \code{Inf} -- fetch the whole layer).
 #' @return A data.frame of feature attributes (geometry is dropped).
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' layer <- paste0(
 #'   "https://services.arcgis.com/ORG/arcgis/rest/",
 #'   "services/Assault/FeatureServer/0"

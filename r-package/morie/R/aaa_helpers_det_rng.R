@@ -26,10 +26,8 @@
 #' dependencies of `morie` ship with at least one of the two.
 #'
 #' @examples
-#' \dontrun{
 #' morie_det_rng("ksr07_bootstrap", 42L)
 #' rnorm(5) # reproducible draws keyed by ("ksr07_bootstrap", 42)
-#' }
 #' @export
 morie_det_rng <- function(name, seed) {
   stopifnot(is.character(name), length(name) == 1L)

@@ -14,10 +14,8 @@
 #' @return Named list: estimate, se, n, method.
 #' @references Schabenberger & Gotway (2005), Ch 4.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 spblk <- function(x, coords, blocks, n_quad = 25,
                   nugget = 0, sill = 1, range_ = 1) {

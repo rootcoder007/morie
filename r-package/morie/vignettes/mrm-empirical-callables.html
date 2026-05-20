@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>MRM empirical callables (OTIS / TPS / SIU)</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">MRM empirical callables (OTIS / TPS /
+SIU)</h1>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#overview" id="toc-overview">Overview</a></li>
+<li><a href="#otis-suite" id="toc-otis-suite">OTIS suite</a>
+<ul>
+<li><a href="#placement-count-concentration-on-b09" id="toc-placement-count-concentration-on-b09">Placement-count
+concentration on <code>b09</code></a></li>
+<li><a href="#segregation-duration-km-on-b01" id="toc-segregation-duration-km-on-b01">Segregation-duration KM on
+<code>b01</code></a></li>
+<li><a href="#mortification-co-occurrence-alert-columns" id="toc-mortification-co-occurrence-alert-columns">Mortification
+co-occurrence (alert columns)</a></li>
+<li><a href="#region-locality" id="toc-region-locality">Region
+locality</a></li>
+<li><a href="#mandela-classification" id="toc-mandela-classification">Mandela classification</a></li>
+</ul></li>
+<li><a href="#tps-suite" id="toc-tps-suite">TPS suite</a>
+<ul>
+<li><a href="#levy-flight-hill-exponent-on-inter-event-step-lengths" id="toc-levy-flight-hill-exponent-on-inter-event-step-lengths">Levy-flight
+Hill exponent on inter-event step lengths</a></li>
+<li><a href="#morans-i-dbscan-clustering" id="toc-morans-i-dbscan-clustering">Moran’s I + DBSCAN
+clustering</a></li>
+<li><a href="#neighbourhood-inter-event-recurrence" id="toc-neighbourhood-inter-event-recurrence">Neighbourhood inter-event
+recurrence</a></li>
+<li><a href="#hawkes-manifest-loader" id="toc-hawkes-manifest-loader">Hawkes manifest loader</a></li>
+</ul></li>
+<li><a href="#siu-suite" id="toc-siu-suite">SIU suite</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
+</ul>
+</div>
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>This vignette documents the <code>mrm_otis_*()</code>,
+<code>mrm_tps_*()</code>, and <code>mrm_siu_*()</code> empirical
+callables. Each function is a one-line entry point to a verified
+analysis used in the <em>MRM empirical paper</em> (Ruhela 2026, in
+preparation). Every example below runs on the small reference samples
+bundled with the package, so the vignette is network-free.</p>
+<p>For the full datasets:</p>
+<ul>
+<li>OTIS 192 <code>morie_load_dataset(&quot;otisb01&quot;)</code> (downloads via
+CKAN on first call; subsequent calls hit the local SQLite cache)</li>
+<li>TPS 192 <code>morie_fetch_tps(&quot;Assault&quot;)</code> (ArcGIS REST)</li>
+<li>SIU 192 <code>morie_fetch_siu()</code> (on-demand scrape of public
+reports)</li>
+</ul>
+<p>See <code>vignette(&quot;mrm-dataset-fetchers&quot;)</code> for the dataset
+side.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(morie)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>b01 <span class="ot">&lt;-</span> <span class="fu">morie_sample</span>(<span class="st">&quot;otis_b01&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>b09 <span class="ot">&lt;-</span> <span class="fu">morie_sample</span>(<span class="st">&quot;otis_b09&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>tps <span class="ot">&lt;-</span> <span class="fu">morie_sample</span>(<span class="st">&quot;tps_assault&quot;</span>)</span></code></pre></div>
+</div>
+<div id="otis-suite" class="section level1">
+<h1>OTIS suite</h1>
+<div id="placement-count-concentration-on-b09" class="section level2">
+<h2>Placement-count concentration on <code>b09</code></h2>
+<p>The b09 long-format file publishes per (fiscal year 0d7
+placement-count band 0d7 gender) counts of individuals in segregation.
+The callable expands the banded counts using midpoints and returns
+Hill-MLE Pareto exponent, Gini coefficient, mean placements per
+individual, and the top-k% concentration share.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">mrm_otis_placement_concentration</span>(b09)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt;     year n_individuals n_placements mean_per_individual   gini hill_alpha</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt; 1   2023         12647        55421            4.382146 0.5331     2.0174</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt; 2   2024         10881        47123            4.330760 0.5862     2.1599</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; 3   2025          9608        46893            4.880620 0.6057     2.0880</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; 4 pooled         33136       149437            4.509808 0.5748     2.0814</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt;   top_pct_share</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; 1        0.2932</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; 2        0.3351</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; 3        0.3215</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; 4        0.3180</span></span></code></pre></div>
+<p>The values are computed <em>within fiscal year</em>: OTIS
+<code>UniqueIndividual_ID</code> has format <code>YYYY-XXXXX-SG</code>
+and is randomly reassigned every fiscal year, so cross-year tracking is
+invalid by design.</p>
+</div>
+<div id="segregation-duration-km-on-b01" class="section level2">
+<h2>Segregation-duration KM on <code>b01</code></h2>
+<p><code>NumberConsecutiveDays_Segregation</code> is the duration in
+days of each placement (no censoring 014 all durations are observed).
+The callable reports the per-stratum mean, median, q25, and the fraction
+above the UN Mandela 15-day cutoff.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">mrm_otis_seg_duration_km</span>(b01)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt;   stratum    n mean_days median_days q25_days pct_above_mandela</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; 1  pooled 1000      3.03           2        3               0.7</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;   median_among_above_mandela</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; 1                         54</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="fu">mrm_otis_seg_duration_km</span>(b01, <span class="at">group_cols =</span> <span class="st">&quot;MentalHealth_Alert&quot;</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;   stratum   n mean_days median_days q25_days pct_above_mandela</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; 1      No 499      2.76           2        3               0.6</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; 2     Yes 501      3.29           2        4               0.8</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;   median_among_above_mandela</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; 1                       54.0</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; 2                       41.5</span></span></code></pre></div>
+<p>This callable replaces the misreading of <code>YYYY-XXXXX-SG</code>
+as a persistent person identifier, which produces a spurious cross-year
+“time-to-readmission” artifact.</p>
+</div>
+<div id="mortification-co-occurrence-alert-columns" class="section level2">
+<h2>Mortification co-occurrence (alert columns)</h2>
+<p>The three b01 alert flags (<code>MentalHealth_Alert</code>,
+<code>SuicideRisk_Alert</code>, <code>SuicideWatch_Alert</code>)
+co-occur to a degree well above independence. The substantive figure is
+<code>MentalHealth \u00d7 SuicideRisk</code> Cramer’s V.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">mrm_otis_mortification_cooccurrence</span>(b01)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt;              alert_a            alert_b    n   chi2 df   p_value</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; 1 MentalHealth_Alert  SuicideRisk_Alert 1000  33.25  1  8.12e-09</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; 2 MentalHealth_Alert SuicideWatch_Alert 1000  12.09  1  5.08e-04</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; 3  SuicideRisk_Alert SuicideWatch_Alert 1000 470.37  1 2.66e-104</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;   morie_cramers_v</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; 1          0.1823</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; 2          0.1099</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; 3          0.6858</span></span></code></pre></div>
+</div>
+<div id="region-locality" class="section level2">
+<h2>Region locality</h2>
+<p>Ontario provincial seg/RC placement is overwhelmingly
+locality-preserving 014 over 95% of placements remain within the same
+region in the full b01.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># (Region columns are present only in the full b01, not the bundled</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co"># sample; uncomment after morie_load_dataset(&quot;otisb01&quot;) or</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># morie_fetch_tps(...) if needed.)</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrm_otis_region_locality</span>(b01)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="fu">print</span>(res<span class="sc">$</span>table)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;diagonal share:&quot;</span>, res<span class="sc">$</span>diagonal_share, <span class="st">&quot;  V:&quot;</span>, res<span class="sc">$</span>morie_cramers_v, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+</div>
+<div id="mandela-classification" class="section level2">
+<h2>Mandela classification</h2>
+<p><code>mrm_classify_mandela()</code> shipped in v0.1.14 and remains
+the canonical Mandela classifier in v0.2.0. It supports three
+operationalisations:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">mrm_classify_mandela</span>(b01, <span class="at">denominator =</span> <span class="st">&quot;row&quot;</span>)           <span class="co"># per-placement</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt;     year denominator n_mandela        rate  pct n_broader_rc rate_broader</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; 1   2023         362         0 0.000000000 0.00            0  0.000000000</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; 2   2024         337         3 0.008902077 0.89            3  0.008902077</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; 3   2025         301         4 0.013289037 1.33            4  0.013289037</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; 4 pooled        1000         7 0.007000000 0.70            7  0.007000000</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="fu">mrm_classify_mandela</span>(b01, <span class="at">denominator =</span> <span class="st">&quot;individual_any&quot;</span>) <span class="co"># per-person</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt;     year denominator n_mandela        rate  pct n_broader_rc rate_broader</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; 1   2023         354         0 0.000000000 0.00            0  0.000000000</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; 2   2024         329         3 0.009118541 0.91            3  0.009118541</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; 3   2025         289         4 0.013840830 1.38            4  0.013840830</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; 4 pooled         972         7 0.007201646 0.72            7  0.007201646</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="fu">mrm_classify_mandela</span>(b01, <span class="at">denominator =</span> <span class="st">&quot;individual_cumulative&quot;</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt;     year denominator n_mandela        rate  pct n_broader_rc rate_broader</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; 1   2023         354         0 0.000000000 0.00            0  0.000000000</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; 2   2024         329         3 0.009118541 0.91            3  0.009118541</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; 3   2025         289         5 0.017301038 1.73            5  0.017301038</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; 4 pooled         972         8 0.008230453 0.82            8  0.008230453</span></span></code></pre></div>
+<p>The provincial-canonical 12.5/16.5/20.6 % torture rates from c11
+require the <code>c11</code> aggregate (loaded via
+<code>morie_sample(&quot;otis_c11&quot;)</code>); see the MRM empirical paper
+0a76.</p>
+</div>
+</div>
+<div id="tps-suite" class="section level1">
+<h1>TPS suite</h1>
+<div id="levy-flight-hill-exponent-on-inter-event-step-lengths" class="section level2">
+<h2>Levy-flight Hill exponent on inter-event step lengths</h2>
+<p>Treats consecutive events in chronological order as a single stream
+and computes the haversine inter-event step length (km). Returns the
+Hill-MLE exponent restricted to steps above
+<code>min_step_km</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">mrm_tps_levy_scaling</span>(tps)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; $n_events</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; [1] 1000</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; $n_steps_tail</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; [1] 995</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; $min_step_km</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; [1] 0.5</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; $hill_alpha</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; [1] 1.3043</span></span></code></pre></div>
+</div>
+<div id="morans-i-dbscan-clustering" class="section level2">
+<h2>Moran’s I + DBSCAN clustering</h2>
+<p>Grids the WGS84 extent into a coarse raster, counts events per cell,
+and computes the global Moran’s I via a rook-contiguity matrix. Also
+runs DBSCAN on the raw lat/long points (rescaled to km) for cluster
+counts.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">mrm_tps_moran_clustering</span>(tps, <span class="at">grid_resolution =</span> <span class="dv">20</span><span class="dt">L</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; $morans_I</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; [1] -0.000138</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; $morans_z</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; [1] 0.67</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; $dbscan_n_clusters</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; [1] 21</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; $dbscan_n_noise</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; [1] 730</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; $dbscan_largest</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; [1] 82</span></span></code></pre></div>
+<p>For the high-precision computation on the full 254,378-event Assault
+file, use the <code>morie</code> Python
+<code>tps_spatial_advanced</code> pipeline; the R version is for quick
+interactive auditing.</p>
+</div>
+<div id="neighbourhood-inter-event-recurrence" class="section level2">
+<h2>Neighbourhood inter-event recurrence</h2>
+<p>For each <code>HOOD_158</code> neighbourhood, sorts events
+chronologically and computes the gap (in days) between consecutive
+events.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">mrm_tps_neighbourhood_recurrence_km</span>(tps))</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt;   hood n_events n_gaps mean_gap_days median_gap_days p25_gap_days p75_gap_days</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; 1  001       17     16        267.06           213.5       101.00       356.75</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; 2  002       12     11        447.91           360.0        74.00       606.00</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; 3  003        5      4        887.75           869.0       557.75      1199.00</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; 4  004        3      2       1781.00          1781.0      1065.50      2496.50</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; 5  005        4      3        776.00           676.0       537.00       965.00</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; 6  006        5      4        845.00           731.0       289.50      1286.50</span></span></code></pre></div>
+</div>
+<div id="hawkes-manifest-loader" class="section level2">
+<h2>Hawkes manifest loader</h2>
+<p><code>mrm_tps_load_hawkes_refit(path)</code> reads
+<code>paper_hawkes_refit.json</code> (the per-category Hawkes refit
+table from the MRM empirical paper 0a77.1-7.2) and returns it as a tidy
+data.frame. Skipped here because the JSON is in the MOIRAIS data
+manifest, not bundled with the package.</p>
+</div>
+</div>
+<div id="siu-suite" class="section level1">
+<h1>SIU suite</h1>
+<p>The SIU callables operate on the SIU.csv file produced by
+<code>morie_fetch_siu()</code> (an on-demand scraper of the public
+Director’s Reports). The scraped corpus is not shipped, but the
+callables themselves do not depend on shipped data.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>siu_path <span class="ot">&lt;-</span> <span class="fu">morie_fetch_siu</span>()</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>siu <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(siu_path)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">mrm_siu_case_to_decision_km</span>(siu)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="fu">print</span>(res<span class="sc">$</span>pooled)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="fu">head</span>(res<span class="sc">$</span>by_service[<span class="fu">order</span>(<span class="sc">-</span>res<span class="sc">$</span>by_service<span class="sc">$</span>n),])</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="fu">mrm_siu_per_service_rate</span>(siu)</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="fu">mrm_siu_outcome_classifier</span>(siu)</span></code></pre></div>
+<p>The verified pooled median in our test snapshot is <strong>120 days
+from incident to Director’s decision</strong> (n = 1,711 cases).
+Per-service medians cluster tightly around 120, indicating a system-wide
+processing cadence rather than a per-jurisdiction effect.</p>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<ul>
+<li>MRM theoretical paper 014 Ruhela (2026), <em>MRM: Multilevel
+Reconciliation Methodology — A Multi-Source Statistical Foundation for
+Canadian Carceral, Police, and Oversight Data</em>, Zenodo <a href="https://doi.org/10.5281/zenodo.20096075">10.5281/zenodo.20096075</a>.</li>
+<li>MRM empirical paper 014 Ruhela (2026), <em>Solitary Confinement,
+Self-Excitation, and Institutional Churn: Empirical Applications of MRM
+to Canadian Carceral and Police Data</em>, Zenodo <a href="https://doi.org/10.5281/zenodo.20175689">10.5281/zenodo.20175689</a>.</li>
+<li>OTIS data dictionary 014
+<code>data.ontario.ca/dataset/data-on-inmates-in-ontario</code>.</li>
+<li>Toronto Police Open Data 014
+<code>data.torontopolice.on.ca/</code>.</li>
+<li>SIU public Director’s Reports 014
+<code>siu.on.ca/en/case_directors_reports.php</code>.</li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

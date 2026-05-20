@@ -62,10 +62,8 @@ diffu_heat_diffusion <- function(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
 #' @return Named list \code{(x_t, estimate, noise, alpha_bar, beta, method)}.
 #' @references Ho, Jain & Abbeel (2020), NeurIPS.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 diffu_diffusion_forward <- function(x0, t, betas = NULL, num_steps = 1000L,
                                     noise = NULL, seed = 0L) {

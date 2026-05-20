@@ -4,10 +4,8 @@
 #' @param context Optional context string.
 #' @return Character scalar prompt.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_build_prompt <- function(question, context = NULL) {
   question <- trimws(as.character(question)[1])
@@ -32,10 +30,8 @@ morie_build_prompt <- function(question, context = NULL) {
 #' @param python_bin Python executable to use. Defaults to `MORIE_PYTHON_BIN` or `python3`.
 #' @return Agent text response.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 ask_percy <- function(question, context = NULL, python_bin = Sys.getenv("MORIE_PYTHON_BIN", "python3")) {
   prompt <- morie_build_prompt(question, context = context)

@@ -12,10 +12,8 @@
 #' @return Named list with `ideal_points`, `n_respondents`, `k`,
 #'   `mean_stim_dist`, `method`.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 idlpt <- function(X_r, X_s = NULL) {
   Xr <- if (is.matrix(X_r)) X_r else matrix(as.numeric(X_r), ncol = 1L)

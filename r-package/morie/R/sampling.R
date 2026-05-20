@@ -101,10 +101,8 @@ morie_stratified_sample <- function(df, strata_col, n_per_stratum,
 #' @param seed Random seed.
 #' @return Data frame of selected units with `.weight` column.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_cluster_sample <- function(df, cluster_col, n_clusters, seed = 42L) {
   set.seed(seed)
@@ -130,10 +128,8 @@ morie_cluster_sample <- function(df, cluster_col, n_clusters, seed = 42L) {
 #' @param seed Random seed.
 #' @return Data frame of selected units with `.weight` (Hansen-Hurwitz weights).
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_pps_sample <- function(df, size_col, n, seed = 42L) {
   set.seed(seed)
@@ -194,10 +190,8 @@ morie_bootstrap_sample <- function(df, statistic, n_bootstrap = 1000L, seed = 42
 #' @param statistic A function taking a data frame and returning a scalar.
 #' @return Named list: `estimate`, `se`, `bias`.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 jackknife_estimate <- function(df, statistic) {
   n <- nrow(df)
@@ -221,10 +215,8 @@ jackknife_estimate <- function(df, statistic) {
 #' @param weights Numeric vector of sampling weights.
 #' @return Numeric ESS.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_effective_sample_size <- function(weights) {
   w <- as.numeric(weights)
@@ -237,10 +229,8 @@ morie_effective_sample_size <- function(weights) {
 #' @param weights Numeric vector of sampling weights.
 #' @return Numeric design effect (= n / ESS).
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 morie_design_effect <- function(weights) {
   w <- as.numeric(weights)
@@ -260,10 +250,8 @@ morie_design_effect <- function(weights) {
 #' @param population_sizes Named integer vector: stratum level -> population size.
 #' @return Numeric vector of design weights (same length as `nrow(df)`).
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 compute_design_weights <- function(df, strata_col, population_sizes) {
   strata <- df[[strata_col]]

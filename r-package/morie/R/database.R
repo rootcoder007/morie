@@ -263,7 +263,7 @@ morie_cache_file <- function(path, table_name, db_path = NULL, con = NULL) {
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return A data.frame with canonical CPADS columns.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Needs the CPADS PUMF (local file, cache, or a live CKAN fetch),
 #' # so it cannot run inside an offline R CMD check.
 #' cpads <- morie_load_cpads(use_ckan = TRUE)
@@ -320,7 +320,7 @@ morie_load_cpads <- function(db_path = NULL, use_ckan = TRUE, con = NULL) {
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return A data.frame.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Requires network access. Fetches the first 5000 rows of the
 #' # Canadian Postsecondary Alcohol and Drug Use Survey from the
 #' # Government of Canada CKAN datastore:
@@ -472,7 +472,7 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
 #'   and is unaffected by `con`.
 #' @return A data.frame.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' df <- morie_load_dataset("ocp21") # CPADS 2021-2022 (default DuckDB cache)
 #' df <- morie_load_dataset("ocp21", refresh = TRUE) # force re-fetch
 #'
@@ -659,7 +659,7 @@ morie_userguide <- function(name = NULL) {
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return Invisibly, the number of CSV files successfully downloaded.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' }

@@ -191,12 +191,10 @@
 #'   \code{branching_ratio}, \code{baseline_rate}, \code{n_events},
 #'   \code{converged} and the \code{backend} used.
 #' @examples
-#' \dontrun{
 #' set.seed(1)
 #' ev <- cumsum(rexp(200, rate = 2))
 #' fit <- morie_hawkes_fit(ev, kernel = "exponential")
 #' print(fit)
-#' }
 #' @export
 morie_hawkes_fit <- function(times, end_time = NULL,
                              kernel = c(

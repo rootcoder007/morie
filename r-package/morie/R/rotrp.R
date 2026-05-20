@@ -12,10 +12,8 @@
 #' @return Named list \code{(y, estimate, angles, method)}.
 #' @references Su et al. (2021), arXiv:2104.09864.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 rotrp_rotary_position_embedding <- function(x, base = 10000) {
   x <- as.matrix(x)

@@ -31,10 +31,8 @@ cpads_contract <- function() {
 #' @param strict If `TRUE`, stop when required variables are missing.
 #' @return Character vector of missing variable names.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 validate_cpads_data <- function(data, strict = TRUE) {
   required <- cpads_contract()$required_variables

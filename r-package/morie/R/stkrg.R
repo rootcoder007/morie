@@ -12,10 +12,8 @@
 #' @return Named list: estimate, se, n, method.
 #' @references Schabenberger & Gotway (2005), Ch 8.
 #' @examples
-#' \dontrun{
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
-#' }
 #' @export
 stkrg <- function(x, coords, times, target,
                   sill = 1, nugget = 0, range_s = 1, range_t = 1) {
