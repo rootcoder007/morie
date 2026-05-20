@@ -17,5 +17,6 @@ Named list of key paths.
 Resolve standard project paths
 }
 \examples{
-morie_paths()
+tryCatch(morie_paths(),
+  error = function(e) message("not inside a morie project tree"))
 }

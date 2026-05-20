@@ -54,7 +54,8 @@ morie_find_project_root <- function(start = getwd(), max_up = 10L) {
 #'   current working directory.
 #' @return Named list of key paths.
 #' @examples
-#' morie_paths()
+#' tryCatch(morie_paths(),
+#'   error = function(e) message("not inside a morie project tree"))
 #' @export
 morie_paths <- function(project_root = NULL) {
   root <- project_root %||% morie_find_project_root()

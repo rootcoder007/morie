@@ -1,5 +1,11 @@
 # morie
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/hadesllm/morie/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/hadesllm/morie/actions/workflows/r-cmd-check.yml)
+[![codecov](https://codecov.io/gh/hadesllm/morie/branch/main/graph/badge.svg)](https://codecov.io/gh/hadesllm/morie)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+<!-- badges: end -->
+
 `morie` is a dual-language (Python + R) scientific computing package for epidemiological and statistical modeling.
 
 ## What it does
