@@ -11,10 +11,7 @@
 #' @return list(estimate, y_hat, alpha, support_indices, se, n, method).
 #' @references Vapnik (1995); Montesinos Lopez Ch 7.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' svm_genomic(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2,      200, TRUE), 50, 4))
 #' @export
 svm_genomic <- function(x, y, markers, C = 1, epsilon = 0.1,
                         gamma = "scale") {

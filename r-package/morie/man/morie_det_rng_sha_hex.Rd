@@ -20,8 +20,5 @@ identical hex digests for the same \verb{(name, seed)} pair before either
 RNG is even consulted.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_det_rng_sha_hex(name = "example", seed = 1L)
 }

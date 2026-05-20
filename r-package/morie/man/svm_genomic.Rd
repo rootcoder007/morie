@@ -26,10 +26,7 @@ list(estimate, y_hat, alpha, support_indices, se, n, method).
 Support-vector regression for genomic prediction
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+svm_genomic(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2,      200, TRUE), 50, 4))
 }
 \references{
 Vapnik (1995); Montesinos Lopez Ch 7.

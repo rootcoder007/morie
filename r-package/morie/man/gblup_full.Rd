@@ -22,10 +22,7 @@ Named list (estimate, g_hat, beta, se, lambda_gblup, n, method).
 Solves Henderson's MME with VanRaden G.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+gblup_full(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2,      200, TRUE), 50, 4))
 }
 \references{
 Montesinos Lopez Ch 3.

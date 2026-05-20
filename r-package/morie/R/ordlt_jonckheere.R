@@ -14,10 +14,7 @@
 #' @return Named list: statistic, p_value, z, E_J, Var_J, n, k, method.
 #' @importFrom stats pnorm
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ordered_alternatives_test(groups = list(rnorm(20), rnorm(20),      rnorm(20)))
 #' @export
 ordered_alternatives_test <- function(groups) {
   if (!is.list(groups) || length(groups) < 2) {

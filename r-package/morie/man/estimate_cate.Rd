@@ -41,8 +41,8 @@ units, then predicts the counterfactual for each unit:
 The \strong{S-learner} fits one model with treatment as a feature.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+estimate_cate(data = data.frame(t = stats::rbinom(100, 1, 0.4),
+  y = stats::rbinom(100, 1, 0.3), x1 = stats::rnorm(100),
+  x2 = stats::rnorm(100)), treatment = "t", outcome = "y",
+  covariates = c("x1", "x2"))
 }

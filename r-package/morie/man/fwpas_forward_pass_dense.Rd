@@ -30,10 +30,7 @@ Pure-base-R parity for \code{morie.fn.fwpas.forward_pass_dense}.
 \deqn{z = W x + b, \quad a = \sigma(z)}
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+fwpas_forward_pass_dense(x = rnorm(50), w = rnorm(3), b = rnorm(3))
 }
 \references{
 Goodfellow, Bengio & Courville (2016), Deep Learning, Ch 6.

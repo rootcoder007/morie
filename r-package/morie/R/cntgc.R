@@ -10,10 +10,7 @@
 #'   max_C, n.
 #' @importFrom stats chisq.test
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' contingency_coefficient(x = matrix(sample(1:5, 50, TRUE), 10,      5))
 #' @export
 contingency_coefficient <- function(x) {
   X <- as.matrix(x)

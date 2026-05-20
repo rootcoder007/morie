@@ -23,7 +23,8 @@ is_absolute_path <- function(path) {
 #' @param max_up Maximum number of parent traversals.
 #' @return Absolute path to the detected project root.
 #' @examples
-#' morie_find_project_root()
+#' tryCatch(morie_find_project_root(),
+#'   error = function(e) message("not inside a morie project tree"))
 #' @export
 morie_find_project_root <- function(start = getwd(), max_up = 10L) {
   current <- normalizePath(start, winslash = "/", mustWork = FALSE)

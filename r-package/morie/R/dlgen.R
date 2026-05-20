@@ -17,10 +17,8 @@
 #' @return list(estimate, y_hat, beta, W1, b1, w2, b2, se, n, method).
 #' @references Montesinos Lopez Ch 12.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' deep_learning_genomic(x = rnorm(50), y = rnorm(50),
+#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 #' @export
 deep_learning_genomic <- function(x, y, markers, hidden = 16,
                                   n_epochs = 200, lr = 1e-2,

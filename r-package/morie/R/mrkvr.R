@@ -13,10 +13,8 @@
 #'   sigma_m2_naive, sum_2pq, p_freq, n, p, method).
 #' @references VanRaden (2008); Montesinos Lopez Ch 3.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' marker_variance(x = rnorm(50), y = rnorm(50),
+#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 #' @export
 marker_variance <- function(x, y, markers) {
   y <- as.numeric(y)

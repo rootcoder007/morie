@@ -14,10 +14,7 @@
 #' @return Named list: estimate, se, n, method.
 #' @references Schabenberger & Gotway (2005), Ch 4.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' okrig(x = rnorm(50), coords = matrix(runif(100), 50, 2), target = rnorm(50))
 #' @export
 okrig <- function(x, coords, target, model = "exponential",
                   nugget = 0, sill = 1, range_ = 1) {

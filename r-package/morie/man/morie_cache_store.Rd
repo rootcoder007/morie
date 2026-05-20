@@ -20,8 +20,5 @@ Number of rows written (invisible).
 Writes (or replaces) a table in the shared SQLite cache.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_cache_store(data = data.frame(x = rnorm(50), y = rnorm(50)),      table_name = "demo")
 }

@@ -40,10 +40,8 @@ Uses randomForest if available; otherwise a base-R bagged-tree
 fallback (regression CART approximation).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+random_forest_genomic(x = rnorm(50), y = rnorm(50),
+  markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 }
 \references{
 Breiman (2001); Montesinos Lopez Ch 8.

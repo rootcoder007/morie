@@ -15,10 +15,7 @@
 #' @return Named list: estimate, se, n, method.
 #' @references Schabenberger & Gotway (2005), Ch 4.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' cokrg(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100),      50, 2), target = rnorm(50))
 #' @export
 cokrg <- function(x, y, coords, target,
                   sill_p = 1, range_p = 1,

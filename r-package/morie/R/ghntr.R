@@ -8,10 +8,7 @@
 #' @param lam0 Optional baseline hazard rate.
 #' @return Named list with estimate, times, S_post, H_post, c, lam0, n, method.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ghosal_neutral_right(time = cumsum(rexp(50)))
 #' @export
 ghosal_neutral_right <- function(time, event = NULL, c = 1.0, lam0 = NULL) {
   s <- .gh_surv_post(time, event, c, lam0)

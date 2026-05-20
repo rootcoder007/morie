@@ -15,10 +15,7 @@
 #'   r_stability, n_steps, alpha, method)}.
 #' @references Crank (1975), Mathematics of Diffusion.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' diffu_heat_diffusion(T0 = rep(0, 10))
 #' @export
 diffu_heat_diffusion <- function(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
                                  n_steps = 100L) {

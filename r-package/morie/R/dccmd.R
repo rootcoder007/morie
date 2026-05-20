@@ -39,10 +39,7 @@
 #' @return Named list with \code{a, b, unconditional_correlation,
 #'   conditional_correlation, conditional_variance, loglik, n, k, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' dcc_multivariate_garch(x = matrix(rnorm(150), 50, 3))
 #' @export
 dcc_multivariate_garch <- function(x) {
   X <- as.matrix(x)

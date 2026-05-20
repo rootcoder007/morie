@@ -47,10 +47,7 @@ Named list: estimate, se, n, method.
 Z(s) = mu(s) + delta(s), mu(s) = sum_k beta_k f_k(s).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ukrig(x = rnorm(50), coords = matrix(runif(100), 50, 2), target = rnorm(50))
 }
 \references{
 Schabenberger & Gotway (2005), Ch 4.

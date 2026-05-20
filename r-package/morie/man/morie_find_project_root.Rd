@@ -20,5 +20,6 @@ Sphinx/package-root markers, while still tolerating legacy Quarto-era
 markers in older checkouts.
 }
 \examples{
-morie_find_project_root()
+tryCatch(morie_find_project_root(),
+  error = function(e) message("not inside a morie project tree"))
 }

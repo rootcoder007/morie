@@ -36,10 +36,7 @@ Encode I_i = 1(x_i <= threshold) and ordinary-krige the indicator
 field at each target s0 to obtain P_hat(Z(s0) <= threshold).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+indkr(x = rnorm(50), coords = matrix(runif(100), 50, 2), threshold = 0.5)
 }
 \references{
 Journel (1983); Schabenberger & Gotway (2005), Ch 4.

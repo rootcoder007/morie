@@ -23,9 +23,6 @@ majority voting. Returns the index of the Condorcet winner, or -1
 if none exists.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+cndrc(preference_matrix = matrix(rnorm(25), 5, 5))
 }
 \keyword{internal}

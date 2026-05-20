@@ -85,10 +85,7 @@ morie_db_connect <- function(db_path = NULL) {
 #' @param db_path Optional override for the database path.
 #' @return Number of rows written (invisible).
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_cache_store(data = data.frame(x = rnorm(50), y = rnorm(50)),      table_name = "demo")
 #' @export
 morie_cache_store <- function(data, table_name, db_path = NULL) {
   con <- morie_db_connect(db_path)
@@ -103,10 +100,7 @@ morie_cache_store <- function(data, table_name, db_path = NULL) {
 #' @param db_path Optional override for the database path.
 #' @return A data.frame, or \code{NULL} if the table does not exist.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_cache_load(table_name = "demo")
 #' @export
 morie_cache_load <- function(table_name, db_path = NULL) {
   con <- morie_db_connect(db_path)

@@ -17,8 +17,5 @@ Named list with \code{a, b, unconditional_correlation,
 Two-step DCC(1,1) on a panel of return series.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+dcc_multivariate_garch(x = matrix(rnorm(150), 50, 3))
 }

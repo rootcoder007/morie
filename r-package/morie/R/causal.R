@@ -320,10 +320,10 @@ estimate_gate <- function(data, treatment, outcome, covariates,
 #' @param meta_learner `"t_learner"` (default) or `"s_learner"`.
 #' @return Numeric vector of per-unit CATE estimates.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' estimate_cate(data = data.frame(t = stats::rbinom(100, 1, 0.4),
+#'   y = stats::rbinom(100, 1, 0.3), x1 = stats::rnorm(100),
+#'   x2 = stats::rnorm(100)), treatment = "t", outcome = "y",
+#'   covariates = c("x1", "x2"))
 #' @export
 estimate_cate <- function(data, treatment, outcome, covariates,
                           propensity_col = NULL,
@@ -505,10 +505,7 @@ morie_e_value <- function(rr, rr_lower = NULL) {
 #' @param gamma_range Numeric vector of \eqn{\Gamma} values to test.
 #' @return Data frame with columns: `gamma`, `p_lower`, `p_upper`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' sensitivity_rosenbaum(treated = rnorm(30, 0.5), control = rnorm(30))
 #' @export
 #' @references
 #'   Rosenbaum PR (2002). *Observational Studies* (2nd ed.). Springer.

@@ -30,10 +30,7 @@ update of \eqn{\partial_t T = \alpha \partial_x^2 T} with Dirichlet
 (fixed-endpoint) boundary conditions.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+diffu_heat_diffusion(T0 = rep(0, 10))
 }
 \references{
 Crank (1975), Mathematics of Diffusion.

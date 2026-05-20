@@ -23,8 +23,5 @@ E_J = (N^2 - sum n_i^2) / 4
 Var_J = (N^2 (2N + 3) - sum n_i^2 (2 n_i + 3)) / 72
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ordered_alternatives_test(groups = list(rnorm(20), rnorm(20),      rnorm(20)))
 }

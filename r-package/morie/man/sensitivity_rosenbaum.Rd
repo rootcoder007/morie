@@ -27,10 +27,7 @@ Uses Wilcoxon signed-rank statistic bounds for matched designs.
 For unmatched data, computes sign-score bounds.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+sensitivity_rosenbaum(treated = rnorm(30, 0.5), control = rnorm(30))
 }
 \references{
 Rosenbaum PR (2002). \emph{Observational Studies} (2nd ed.). Springer.

@@ -30,10 +30,7 @@ R parity for \code{morie.fn.cnn2d.conv2d_forward}.
 \deqn{y[i,j] = \sum_{m,n} w[m,n] x[i s + m, j s + n] + b}
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+cnn2d_conv2d_forward(x = rnorm(50), w = rnorm(3))
 }
 \references{
 Goodfellow et al. (2016), Deep Learning, Ch 9.

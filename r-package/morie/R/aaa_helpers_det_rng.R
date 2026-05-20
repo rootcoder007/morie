@@ -74,10 +74,7 @@ morie_det_rng <- function(name, seed) {
 #' @param seed Integer scalar.
 #' @return 64-character lowercase hex string.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_det_rng_sha_hex(name = "example", seed = 1L)
 #' @export
 morie_det_rng_sha_hex <- function(name, seed) {
   stopifnot(is.character(name), length(name) == 1L)

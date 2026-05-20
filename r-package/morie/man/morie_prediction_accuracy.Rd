@@ -20,10 +20,7 @@ Reports Pearson r, Spearman rho, MSE/MSPE, RMSE, R^2, calibration
 slope and intercept.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_prediction_accuracy(y_true = rbinom(50, 1, 0.5), y_pred = rbinom(50,      1, 0.5))
 }
 \references{
 Montesinos Lopez Ch 2.

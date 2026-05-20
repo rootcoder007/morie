@@ -21,10 +21,7 @@ Named list with estimate (total events), n, method.
 N(infty) = the count of events (sum of indicator delta_i = 1).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ksr17_kosorok_counting_process(t = seq(0, 1, length.out = 50),      event = rbinom(50, 1, 0.8))
 }
 \references{
 Kosorok (2008), Ch 8.

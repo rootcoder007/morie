@@ -30,10 +30,7 @@ so \code{D_loss = -V(D)}.  Two generator objectives are supported:
 \code{kind="nonsaturating"} (\code{G_loss = -E[log D(G(z))]}).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ganls_gan_loss(D_real = rnorm(20), D_fake = rnorm(20))
 }
 \references{
 Goodfellow et al. (2014), NeurIPS.

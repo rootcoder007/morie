@@ -16,10 +16,7 @@
 #' @return Named list \code{(d_loss, g_loss, v, estimate, kind, method)}.
 #' @references Goodfellow et al. (2014), NeurIPS.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ganls_gan_loss(D_real = rnorm(20), D_fake = rnorm(20))
 #' @export
 ganls_gan_loss <- function(D_real, D_fake, kind = "minimax") {
   D_real <- as.numeric(D_real)

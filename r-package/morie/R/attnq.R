@@ -14,10 +14,7 @@
 #' @return Named list \code{(output, estimate, attn, logits, d_k, method)}.
 #' @references Vaswani et al. (2017), NeurIPS.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' attnq_scaled_dot_product_attention(Q = matrix(rnorm(150), 50,      3))
 #' @export
 attnq_scaled_dot_product_attention <- function(Q, K = NULL, V = NULL,
                                                mask = NULL) {

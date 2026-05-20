@@ -10,10 +10,7 @@
 #' @return list(estimate, alpha, beta, K, f_hat, se, h, n, method).
 #' @references Gianola & van Kaam (2008). Montesinos Lopez Ch 5.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' rkhs_full(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2,      200, TRUE), 50, 4))
 #' @export
 rkhs_full <- function(x, y, markers, h = NULL, lam = 1) {
   y <- as.numeric(y)

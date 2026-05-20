@@ -12,10 +12,7 @@
 #' @return Named list: estimate, threshold, n, method.
 #' @references Journel (1983); Schabenberger & Gotway (2005), Ch 4.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' indkr(x = rnorm(50), coords = matrix(runif(100), 50, 2), threshold = 0.5)
 #' @export
 indkr <- function(x, coords, threshold, target = NULL,
                   nugget = 0, sill = 0.25, range_ = 1) {

@@ -46,10 +46,7 @@ Named list: estimate, se, n, method.
   \begin{bmatrix}c_0 \\ 1\end{bmatrix}}
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+okrig(x = rnorm(50), coords = matrix(runif(100), 50, 2), target = rnorm(50))
 }
 \references{
 Schabenberger & Gotway (2005), Ch 4.

@@ -21,10 +21,7 @@ Named list with estimate, se, n, method.
 S_C(t) by KM on (t_i, 1 - delta_i).  Greenwood SE.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ksr20_kosorok_censoring_survival(t = seq(0, 1, length.out = 50),      event = rbinom(50, 1, 0.8))
 }
 \references{
 Kosorok (2008), Ch 8.

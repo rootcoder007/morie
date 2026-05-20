@@ -23,8 +23,5 @@ Manually constructs the confusion matrix to avoid the caret dependency
 for what is fundamentally a tabulation.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+confusion_matrix_metrics(y_true = rbinom(50, 1, 0.5), y_pred = rbinom(50,      1, 0.5))
 }

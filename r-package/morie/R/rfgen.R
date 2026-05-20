@@ -16,10 +16,8 @@
 #' @return list(estimate, y_hat, oob_score, feature_importance, se, n, method).
 #' @references Breiman (2001); Montesinos Lopez Ch 8.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' random_forest_genomic(x = rnorm(50), y = rnorm(50),
+#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 #' @export
 random_forest_genomic <- function(x, y, markers, n_trees = 100,
                                   max_depth = 10, min_samples = 2,

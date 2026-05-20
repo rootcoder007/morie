@@ -27,8 +27,5 @@ Mann-Whitney vs. control for each treatment group; Bonferroni-
 adjusted p-values by default.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+control_comparison(groups = list(rnorm(20), rnorm(20), rnorm(20)))
 }

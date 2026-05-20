@@ -23,10 +23,8 @@ alongside the naive sigma_g^2 / p form. sigma_g^2 is obtained from a
 quick GBLUP fit.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+marker_variance(x = rnorm(50), y = rnorm(50),
+  markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 }
 \references{
 VanRaden (2008); Montesinos Lopez Ch 3.

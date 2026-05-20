@@ -14,10 +14,8 @@
 #' @return list(estimate, y_hat, train_loss, se, n, method).
 #' @references Friedman (2001); Montesinos Lopez Ch 9.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' gradient_boosting_genomic(x = rnorm(50), y = rnorm(50),
+#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 #' @export
 gradient_boosting_genomic <- function(x, y, markers, n_estimators = 100,
                                       learning_rate = 0.1, max_depth = 3,

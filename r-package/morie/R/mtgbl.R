@@ -10,10 +10,8 @@
 #' @return list(estimate, G_hat, B_hat, Sigma_g, Sigma_e, n, t, method).
 #' @references Montesinos Lopez Ch 10.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' multi_trait_gblup(x = rnorm(50), y = rnorm(50),
+#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 #' @export
 multi_trait_gblup <- function(x, y, markers, Sigma_g = NULL, Sigma_e = NULL) {
   Y <- as.matrix(y)

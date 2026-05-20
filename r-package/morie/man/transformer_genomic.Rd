@@ -39,10 +39,8 @@ list(estimate, y_hat, beta, attention, context, se, n, method).
 Random fixed projections + ridge head on the mean-pooled context vector.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+transformer_genomic(x = rnorm(50), y = rnorm(50),
+  markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 }
 \references{
 Vaswani et al. (2017). Montesinos Lopez Ch 15.

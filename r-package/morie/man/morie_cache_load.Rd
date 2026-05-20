@@ -18,8 +18,5 @@ A data.frame, or \code{NULL} if the table does not exist.
 Load a table from the MORIE cache
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_cache_load(table_name = "demo")
 }

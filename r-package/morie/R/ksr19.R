@@ -14,10 +14,8 @@
 #' @return Named list with estimate, se, n, method.
 #' @references Kosorok (2008), Ch 8.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ksr19_kosorok_cox_partial_likelihood(x = rnorm(50),
+#'   t = seq(0, 1, length.out = 50), event = rbinom(50, 1, 0.8))
 #' @export
 ksr19_kosorok_cox_partial_likelihood <- function(x, t, event,
                                                  tol = 1e-10,

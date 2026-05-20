@@ -13,10 +13,7 @@
 #' @return list(estimate, y_hat, W_h, W_x, b_h, w_o, b_o, se, n, method).
 #' @references Montesinos Lopez Ch 14.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' rnn_genomic(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2,      200, TRUE), 50, 4))
 #' @export
 rnn_genomic <- function(x, y, markers, hidden = 8, n_epochs = 150,
                         lr = 1e-2, l2 = 1e-3, seed = 0,

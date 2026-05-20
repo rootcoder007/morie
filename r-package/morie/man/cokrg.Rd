@@ -58,10 +58,7 @@ Named list: estimate, se, n, method.
 \deqn{[C_{pp} \; C_{ps}; C_{ps}^\top \; C_{ss}] [\lambda; \mu] = [c_{0p}; c_{0s}]}.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+cokrg(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100),      50, 2), target = rnorm(50))
 }
 \references{
 Schabenberger & Gotway (2005), Ch 4.

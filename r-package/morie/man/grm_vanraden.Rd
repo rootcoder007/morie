@@ -19,10 +19,7 @@ Computes G = ZZ' / (2 sum p_j(1-p_j)) for method 1 (default), or the
 per-locus-scaled variant for method 2.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+grm_vanraden(markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 }
 \references{
 VanRaden (2008) J Dairy Sci 91:4414. Montesinos Lopez Ch 3.

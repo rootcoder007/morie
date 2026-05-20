@@ -24,10 +24,7 @@ list(estimate, alpha, beta, K, f_hat, se, h, n, method).
 RKHS regression with Gaussian kernel
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+rkhs_full(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2,      200, TRUE), 50, 4))
 }
 \references{
 Gianola & van Kaam (2008). Montesinos Lopez Ch 5.
