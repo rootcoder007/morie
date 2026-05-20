@@ -138,10 +138,16 @@ jobs:
             any::rcmdcheck
             any::goodpractice
             any::cyclocomp
-            ropensci/pkgstats
-            ropensci/pkgcheck
+            ropensci-review-tools/pkgstats
+            ropensci-review-tools/pkgcheck
 
       - name: Run pkgcheck::pkgcheck() + checks_to_markdown()
+        env:
+          # pkgcheck queries the GitHub GraphQL API for repo metadata. Use
+          # the runner's auto-provided token instead of unauthenticated
+          # requests (which hit the 60-req/hr rate limit instantly).
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           Rscript -e 'cks <- pkgcheck::pkgcheck("."); md <- pkgcheck::checks_to_markdown(cks); writeLines(md, "pkgcheck.md"); cat(md)'
 

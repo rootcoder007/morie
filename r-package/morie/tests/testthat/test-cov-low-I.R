@@ -38,6 +38,11 @@ test_that("polrz error guards fire", {
 })
 
 test_that("xgboost_objective regression task on auto-detected continuous y", {
+  testthat::skip_if_not(
+    requireNamespace("xgboost", quietly = TRUE) ||
+      requireNamespace("gbm", quietly = TRUE),
+    "neither xgboost nor gbm installed"
+  )
   set.seed(1)
   x <- matrix(rnorm(200), 50, 4)
   y <- as.numeric(x %*% c(1, -1, 0.5, 0) + 0.3 * rnorm(50))

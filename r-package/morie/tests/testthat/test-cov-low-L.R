@@ -3,8 +3,10 @@
 
 # ==== dccmd.R ====
 test_that("dcc_multivariate_garch errors when n too small", {
+  # n=10 rows, k=2 cols: 20 values matches; n=10 < 30 triggers the guard
   expect_error(dcc_multivariate_garch(matrix(rnorm(20), 10, 2)), "Need n>=30")
-  expect_error(dcc_multivariate_garch(matrix(rnorm(60), 30, 1)), "Need n>=30")
+  # k=1 column: matrix(rnorm(30), 30, 1) is correct (30*1=30 values)
+  expect_error(dcc_multivariate_garch(matrix(rnorm(30), 30, 1)), "Need n>=30")
 })
 
 test_that(".dccmd_negll guards return 1e10 on out-of-domain parameters", {

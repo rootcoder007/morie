@@ -35,6 +35,7 @@ test_that("hawkes phi<->theta round-trip", {
 
 test_that("random_search_cv runs in regression mode", {
   testthat::skip_if_not_installed("caret")
+  testthat::skip_if_not_installed("elasticnet")
   set.seed(1)
   x <- matrix(rnorm(60), 30, 2)
   y <- x %*% c(1, -1) + rnorm(30, sd = 0.1)
@@ -87,8 +88,9 @@ test_that("stacv returns binned C matrix", {
 })
 
 test_that("stacv error on shape mismatch", {
+  # 5x2 coords (10 values) but rnorm(10) length-10 -> n mismatch
   expect_error(
-    stacv(rnorm(10), matrix(runif(20), 5, 2), seq_len(10)),
+    stacv(rnorm(10), matrix(runif(10), 5, 2), seq_len(10)),
     "shape mismatch"
   )
 })

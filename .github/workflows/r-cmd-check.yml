@@ -17,6 +17,11 @@ on:
     paths:
       - 'r-package/morie/**'
       - '.github/workflows/r-cmd-check.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'r-package/morie/**'
+      - '.github/workflows/r-cmd-check.yml'
   workflow_dispatch:
 
 permissions:
