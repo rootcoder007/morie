@@ -16,8 +16,8 @@
 #' @references Schabenberger & Gotway (2005), Ch 4.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 cokrg <- function(x, y, coords, target,
@@ -25,17 +25,24 @@ cokrg <- function(x, y, coords, target,
                   sill_s = 1, range_s = 1,
                   cross_sill = 0.5, cross_range = 1,
                   nugget = 0) {
-  x <- as.numeric(x); y <- as.numeric(y); n <- length(x)
-  coords <- if (is.matrix(coords)) coords else
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  n <- length(x)
+  coords <- if (is.matrix(coords)) {
+    coords
+  } else {
     matrix(as.numeric(unlist(coords)), nrow = n)
+  }
   if (!is.matrix(target)) {
     tv <- as.numeric(unlist(target))
-    if (length(tv) %% ncol(coords) != 0L)
+    if (length(tv) %% ncol(coords) != 0L) {
       stop("target/coords dim mismatch")
+    }
     target <- matrix(tv, ncol = ncol(coords), byrow = TRUE)
   }
-  if (length(y) != n || nrow(coords) != n)
+  if (length(y) != n || nrow(coords) != n) {
     stop("x, y, and coords must have matching n")
+  }
   if (ncol(target) != ncol(coords)) stop("target/coords dim mismatch")
   D <- as.matrix(stats::dist(coords))
   cov_exp <- function(D_, c0, c1, a) c1 * exp(-D_ / a) + ifelse(D_ == 0, c0, 0)
@@ -46,20 +53,24 @@ cokrg <- function(x, y, coords, target,
   z <- c(x, y)
   var0 <- sill_p
   m <- nrow(target)
-  ests <- numeric(m); ses <- numeric(m)
+  ests <- numeric(m)
+  ses <- numeric(m)
   for (k in seq_len(m)) {
-    d0 <- sqrt(colSums((t(coords) - target[k, ]) ^ 2))
+    d0 <- sqrt(colSums((t(coords) - target[k, ])^2))
     c0p <- cov_exp(d0, nugget, sill_p - nugget, range_p)
     c0s <- cross_sill * exp(-d0 / cross_range)
     c_vec <- c(c0p, c0s)
     w <- tryCatch(solve(C, c_vec),
-                  error = function(e) qr.solve(C, c_vec))
+      error = function(e) qr.solve(C, c_vec)
+    )
     ests[k] <- sum(w * z)
     ses[k] <- sqrt(max(var0 - sum(w * c_vec), 0))
   }
-  list(estimate = if (m == 1) ests[1] else ests,
-       se = if (m == 1) ses[1] else ses, n = n,
-       method = "Simple cokriging (linear coregionalization, exp. cov)")
+  list(
+    estimate = if (m == 1) ests[1] else ests,
+    se = if (m == 1) ses[1] else ses, n = n,
+    method = "Simple cokriging (linear coregionalization, exp. cov)"
+  )
 }
 
 #' @rdname cokrg

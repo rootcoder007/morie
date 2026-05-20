@@ -7,8 +7,10 @@ test_that("threshold_autoregression returns a SETAR fit on the default path", {
   x <- as.numeric(arima.sim(list(ar = 0.5), n = 120))
   fit <- threshold_autoregression(x)
   expect_type(fit, "list")
-  expect_named(fit, c("threshold", "phi_lower", "phi_upper", "p", "d",
-                      "regime_sizes", "sse", "n", "method"))
+  expect_named(fit, c(
+    "threshold", "phi_lower", "phi_upper", "p", "d",
+    "regime_sizes", "sse", "n", "method"
+  ))
   expect_true(is.finite(fit$threshold))
   expect_equal(fit$p, 1)
   expect_equal(fit$d, 1)
@@ -34,7 +36,9 @@ test_that("threshold_autoregression honours p, d and n_grid arguments", {
 
 test_that("threshold_autoregression errors on a too-short series", {
   expect_error(threshold_autoregression(1:6),
-               "too short", ignore.case = TRUE)
+    "too short",
+    ignore.case = TRUE
+  )
 })
 
 test_that("tgarch_model fits a GJR-GARCH(1,1) series", {
@@ -42,8 +46,10 @@ test_that("tgarch_model fits a GJR-GARCH(1,1) series", {
   x <- rnorm(150)
   fit <- tgarch_model(x)
   expect_type(fit, "list")
-  expect_named(fit, c("omega", "alpha", "gamma", "beta", "persistence",
-                      "loglik", "conditional_variance", "n", "method"))
+  expect_named(fit, c(
+    "omega", "alpha", "gamma", "beta", "persistence",
+    "loglik", "conditional_variance", "n", "method"
+  ))
   expect_true(is.finite(fit$omega))
   expect_true(is.finite(fit$alpha))
   expect_true(is.finite(fit$beta))
@@ -83,8 +89,10 @@ test_that("terry_hoeffding_test returns NA when a sample is too small", {
 test_that("bpe_tokenizer produces merges and vocab from a corpus string", {
   res <- morie:::bpe_tokenizer("low lower lowest low", num_merges = 5L)
   expect_type(res, "list")
-  expect_named(res, c("merges", "vocab", "corpus", "n_merges", "n_vocab",
-                      "method"))
+  expect_named(res, c(
+    "merges", "vocab", "corpus", "n_merges", "n_vocab",
+    "method"
+  ))
   expect_true(res$n_merges >= 0L && res$n_merges <= 5L)
   expect_equal(res$n_vocab, length(res$vocab))
   expect_equal(res$method, "BPE")
@@ -124,14 +132,18 @@ test_that("temperature_scaling with high temperature flattens the tensor", {
 
 test_that("temperature_scaling errors on a non-positive temperature", {
   expect_error(morie:::temperature_scaling(1:3, temperature = 0),
-               "Temperature", ignore.case = TRUE)
+    "Temperature",
+    ignore.case = TRUE
+  )
 })
 
 test_that("tolerance_limits computes Wilks coverage on the default path", {
   res <- tolerance_limits(1:100)
   expect_type(res, "list")
-  expect_named(res, c("lower", "upper", "coverage_requested",
-                      "confidence_achieved", "n", "method"))
+  expect_named(res, c(
+    "lower", "upper", "coverage_requested",
+    "confidence_achieved", "n", "method"
+  ))
   expect_equal(res$lower, 1)
   expect_equal(res$upper, 100)
   expect_equal(res$coverage_requested, 0.90)
@@ -204,8 +216,10 @@ test_that("thin_plate_spline fits a smooth surface", {
   yy <- xx[, 1] + xx[, 2] + rnorm(30, sd = 0.01)
   res <- thin_plate_spline(xx, yy, lam = 1e-6)
   expect_type(res, "list")
-  expect_named(res, c("a", "beta", "fitted", "residuals", "sse", "r2",
-                      "lambda", "estimate", "n", "d", "method"))
+  expect_named(res, c(
+    "a", "beta", "fitted", "residuals", "sse", "r2",
+    "lambda", "estimate", "n", "d", "method"
+  ))
   expect_length(res$fitted, length(yy))
   expect_length(res$residuals, length(yy))
   expect_true(is.finite(res$sse) && res$sse >= 0)
@@ -236,8 +250,10 @@ test_that("trfbl_transformer_block runs a post-LN encoder block", {
   x <- matrix(rnorm(24), nrow = 4, ncol = 6)
   res <- trfbl_transformer_block(x, num_heads = 2L, seed = 1L)
   expect_type(res, "list")
-  expect_named(res, c("output", "estimate", "h1", "num_heads", "d_ff",
-                      "method"))
+  expect_named(res, c(
+    "output", "estimate", "h1", "num_heads", "d_ff",
+    "method"
+  ))
   expect_equal(dim(res$output), dim(x))
   expect_equal(dim(res$h1), dim(x))
   expect_true(all(is.finite(res$output)))
@@ -266,8 +282,10 @@ test_that("transformer_genomic fits a 1-head attention genomic predictor", {
   y <- M[, 3] + 0.2 * rnorm(12)
   res <- transformer_genomic(rep(0, 12), y, M, seed = 9)
   expect_type(res, "list")
-  expect_named(res, c("estimate", "y_hat", "beta", "attention", "context",
-                      "se", "n", "method"))
+  expect_named(res, c(
+    "estimate", "y_hat", "beta", "attention", "context",
+    "se", "n", "method"
+  ))
   expect_true(is.finite(res$estimate))
   expect_length(res$y_hat, 12L)
   expect_equal(res$n, 12L)
@@ -297,11 +315,15 @@ test_that("tsne_reduction wraps Rtsne and returns an embedding", {
   skip_if_not_installed("Rtsne")
   set.seed(31)
   x <- matrix(rnorm(120), nrow = 30, ncol = 4)
-  res <- tsne_reduction(x, n_components = 2L, perplexity = 5,
-                        n_iter = 250L, seed = 1L)
+  res <- tsne_reduction(x,
+    n_components = 2L, perplexity = 5,
+    n_iter = 250L, seed = 1L
+  )
   expect_type(res, "list")
-  expect_named(res, c("estimate", "embedding", "kl_divergence", "perplexity",
-                      "n_components", "n", "method"))
+  expect_named(res, c(
+    "estimate", "embedding", "kl_divergence", "perplexity",
+    "n_components", "n", "method"
+  ))
   expect_equal(res$n, 30L)
   expect_equal(res$n_components, 2L)
   expect_equal(ncol(res$embedding), 2L)
@@ -322,8 +344,10 @@ test_that("unobserved_components decomposes a seasonal series", {
   y <- as.numeric(sin(2 * pi * (1:48) / 12)) + rnorm(48, sd = 0.1)
   res <- unobserved_components(y, period = 12)
   expect_type(res, "list")
-  expect_named(res, c("trend", "seasonal", "irregular", "loglik", "n",
-                      "period", "method"))
+  expect_named(res, c(
+    "trend", "seasonal", "irregular", "loglik", "n",
+    "period", "method"
+  ))
   expect_length(res$trend, 48L)
   expect_length(res$seasonal, 48L)
   expect_length(res$irregular, 48L)
@@ -343,12 +367,15 @@ test_that("unobserved_components handles the non-seasonal path (period <= 1)", {
 
 test_that("unobserved_components errors on a too-short series", {
   expect_error(unobserved_components(1:4, period = 12), "too short",
-               ignore.case = TRUE)
+    ignore.case = TRUE
+  )
 })
 
 test_that("ukrig predicts at a single target location", {
   res <- ukrig(c(1, 2, 3, 4, 5), matrix(0:4, ncol = 1),
-               matrix(2.5, 1, 1), trend_order = 1)
+    matrix(2.5, 1, 1),
+    trend_order = 1
+  )
   expect_type(res, "list")
   expect_named(res, c("estimate", "se", "n", "method"))
   expect_true(is.finite(res$estimate))
@@ -362,8 +389,10 @@ test_that("ukrig predicts at multiple targets and supports covariance models", {
   coords <- matrix(runif(20), ncol = 2)
   x <- rnorm(10)
   target <- matrix(runif(6), ncol = 2)
-  res_g <- universal_kriging(x, coords, target, model = "gaussian",
-                             trend_order = 0)
+  res_g <- universal_kriging(x, coords, target,
+    model = "gaussian",
+    trend_order = 0
+  )
   expect_length(res_g$estimate, 3L)
   expect_length(res_g$se, 3L)
   res_s <- ukrig(x, coords, target, model = "spherical", trend_order = 2)
@@ -373,11 +402,16 @@ test_that("ukrig predicts at multiple targets and supports covariance models", {
 
 test_that("ukrig errors on mismatched dimensions and unknown model", {
   expect_error(ukrig(1:5, matrix(0:7, ncol = 2), matrix(1, 1, 2)),
-               "coords rows", ignore.case = TRUE)
+    "coords rows",
+    ignore.case = TRUE
+  )
   expect_error(ukrig(1:4, matrix(0:7, ncol = 2), matrix(1, 1, 1)),
-               "dim mismatch", ignore.case = TRUE)
+    "dim mismatch",
+    ignore.case = TRUE
+  )
   expect_error(ukrig(1:4, matrix(0:7, ncol = 2), matrix(1, 1, 2),
-                     model = "bogus"), "unknown model")
+    model = "bogus"
+  ), "unknown model")
 })
 
 test_that("unfdl performs metric unfolding on a preference matrix", {

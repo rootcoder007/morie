@@ -3,7 +3,9 @@ inv_logit <- function(x) {
 }
 
 inject_special_codes <- function(x, rate = 0.02, codes = c(97L, 98L, 99L, 997L, 998L, 999L)) {
-  if (rate <= 0) return(x)
+  if (rate <= 0) {
+    return(x)
+  }
   n <- length(x)
   idx <- stats::runif(n) < rate
   if (any(idx)) {
@@ -140,7 +142,7 @@ generate_synthetic_data <- function(
     stop("`n` must be an integer >= 100.", call. = FALSE)
   }
   if (!is.numeric(special_code_rate) || length(special_code_rate) != 1 ||
-      is.na(special_code_rate) || special_code_rate < 0 || special_code_rate > 0.2) {
+    is.na(special_code_rate) || special_code_rate < 0 || special_code_rate > 0.2) {
     stop("`special_code_rate` must be in [0, 0.2].", call. = FALSE)
   }
 

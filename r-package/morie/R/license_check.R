@@ -32,12 +32,13 @@ NULL
 #' @return Character vector of SPDX identifiers.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_gpl_compatible_licenses <- function() {
-  c("GPL-2.0-only", "GPL-2.0-or-later",
+  c(
+    "GPL-2.0-only", "GPL-2.0-or-later",
     "GPL-3.0-only", "GPL-3.0-or-later",
     "LGPL-2.1-only", "LGPL-2.1-or-later",
     "LGPL-3.0-only", "LGPL-3.0-or-later",
@@ -46,7 +47,8 @@ morie_gpl_compatible_licenses <- function() {
     "MPL-2.0",
     "CC0-1.0",
     "Unlicense",
-    "Zlib")
+    "Zlib"
+  )
 }
 
 
@@ -57,8 +59,8 @@ morie_gpl_compatible_licenses <- function() {
 #'   compliance pipelines.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_license_metadata <- function() {
@@ -84,11 +86,12 @@ morie_license_metadata <- function() {
 #' @examples
 #' morie_check_plugin_license("MIT")
 #' \dontrun{
-#'   morie_check_plugin_license("LicenseRef-Proprietary",
-#'                              raise_on_incompatible = TRUE)
+#' morie_check_plugin_license("LicenseRef-Proprietary",
+#'   raise_on_incompatible = TRUE
+#' )
 #' }
 morie_check_plugin_license <- function(plugin_spdx,
-                                        raise_on_incompatible = FALSE) {
+                                       raise_on_incompatible = FALSE) {
   if (is.null(plugin_spdx) || !nzchar(plugin_spdx)) {
     msg <- "Plugin reports empty SPDX identifier."
     if (raise_on_incompatible) stop(msg) else warning(msg, call. = FALSE)

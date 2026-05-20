@@ -13,8 +13,9 @@ grouped_query_attention <- function(Q, K = NULL, V = NULL,
                                     n_heads = 8L, n_kv_heads = 2L) {
   if (is.null(K)) K <- Q
   if (is.null(V)) V <- Q
-  if (n_heads %% n_kv_heads != 0L)
+  if (n_heads %% n_kv_heads != 0L) {
     stop("n_heads must be a multiple of n_kv_heads")
+  }
   group <- n_heads %/% n_kv_heads
   # Ensure (n_heads, seq, d) and (n_kv_heads, seq, d) shapes.
   if (length(dim(Q)) == 2L) Q <- array(Q, dim = c(n_heads, dim(Q)))
@@ -23,16 +24,18 @@ grouped_query_attention <- function(Q, K = NULL, V = NULL,
   # Replicate KV across the group dimension.
   rep_axis0 <- function(A, g) {
     new <- array(0, dim = c(dim(A)[1L] * g, dim(A)[-1L]))
-    for (i in seq_len(dim(A)[1L]))
-      for (j in seq_len(g))
+    for (i in seq_len(dim(A)[1L])) {
+      for (j in seq_len(g)) {
         new[(i - 1L) * g + j, , ] <- A[i, , ]
+      }
+    }
     new
   }
   K_rep <- rep_axis0(K, group)
   V_rep <- rep_axis0(V, group)
   d_head <- dim(Q)[3L]
   attn <- array(0, dim = c(n_heads, dim(Q)[2L], dim(Q)[2L]))
-  out  <- array(0, dim = dim(Q))
+  out <- array(0, dim = dim(Q))
   scale <- 1 / sqrt(d_head)
   for (h in seq_len(n_heads)) {
     Qh <- matrix(Q[h, , ], nrow = dim(Q)[2L], ncol = d_head)
@@ -45,6 +48,8 @@ grouped_query_attention <- function(Q, K = NULL, V = NULL,
     attn[h, , ] <- a
     out[h, , ] <- a %*% Vh
   }
-  list(tensor = out, attn = attn, n_heads = n_heads,
-       n_kv_heads = n_kv_heads, group_size = group, method = "GQA")
+  list(
+    tensor = out, attn = attn, n_heads = n_heads,
+    n_kv_heads = n_kv_heads, group_size = group, method = "GQA"
+  )
 }

@@ -29,7 +29,8 @@ NULL
 
 
 .haversine_km_mat <- function(lat1, lon1, lat2, lon2) {
-  R <- 6371; rad <- pi / 180
+  R <- 6371
+  rad <- pi / 180
   dlat <- (lat2 - lat1) * rad
   dlon <- (lon2 - lon1) * rad
   a <- sin(dlat / 2)^2 + cos(lat1 * rad) * cos(lat2 * rad) * sin(dlon / 2)^2
@@ -38,10 +39,14 @@ NULL
 
 
 .poisson_lrt <- function(n_obs, n_in, n_exp, n_tot) {
-  if (n_in == 0 || n_obs == 0 || n_obs <= n_exp) return(0.0)
+  if (n_in == 0 || n_obs == 0 || n_obs <= n_exp) {
+    return(0.0)
+  }
   obs_out <- n_tot - n_obs
   exp_out <- n_tot - n_exp
-  if (obs_out == 0 || exp_out <= 0) return(0.0)
+  if (obs_out == 0 || exp_out <= 0) {
+    return(0.0)
+  }
   n_obs * log(n_obs / n_exp) + obs_out * log(obs_out / exp_out)
 }
 
@@ -70,8 +75,8 @@ NULL
 mrm_tps_kulldorff_scan <- function(
   data,
   date_col = "OCC_DATE",
-  lat_col  = "LAT_WGS84",
-  lon_col  = "LONG_WGS84",
+  lat_col = "LAT_WGS84",
+  lon_col = "LONG_WGS84",
   radii_km = c(1, 2, 3, 5, 8),
   window_years = 4,
   n_centers = 60L,
@@ -83,18 +88,22 @@ mrm_tps_kulldorff_scan <- function(
   set.seed(as.integer(seed))
 
   df <- data[, c(date_col, lat_col, lon_col)]
-  d  <- suppressWarnings(as.POSIXct(df[[date_col]],
-                                    format = "%m/%d/%Y %I:%M:%S %p",
-                                    tz = "UTC"))
+  d <- suppressWarnings(as.POSIXct(df[[date_col]],
+    format = "%m/%d/%Y %I:%M:%S %p",
+    tz = "UTC"
+  ))
   if (all(is.na(d))) d <- suppressWarnings(as.POSIXct(df[[date_col]], tz = "UTC"))
   df[[date_col]] <- as.Date(d)
   df <- df[stats::complete.cases(df), ]
   df <- df[order(df[[date_col]]), ]
   n <- nrow(df)
-  if (n < 100L) return(data.frame())
+  if (n < 100L) {
+    return(data.frame())
+  }
 
-  lat <- df[[lat_col]]; lon <- df[[lon_col]]
-  t   <- as.integer(df[[date_col]])
+  lat <- df[[lat_col]]
+  lon <- df[[lon_col]]
+  t <- as.integer(df[[date_col]])
   center_idx <- sample.int(n, min(n_centers, n))
   window_days <- round(window_years * 365.25)
   starts <- seq(min(t), max(t) - window_days, length.out = max(2L, (max(t) - min(t)) %/% window_days))
@@ -117,8 +126,10 @@ mrm_tps_kulldorff_scan <- function(
           n_exp <- n_space * sum(in_time) / n
           lrt <- .poisson_lrt(n_in_cyl, n_space, n_exp, n)
           if (lrt > best$lrt) {
-            best <- list(lrt = lrt, ci = ci, ri = ri, ti = ti,
-                         n_in = n_in_cyl, n_space = n_space)
+            best <- list(
+              lrt = lrt, ci = ci, ri = ri, ti = ti,
+              n_in = n_in_cyl, n_space = n_space
+            )
           }
         }
       }
@@ -126,29 +137,31 @@ mrm_tps_kulldorff_scan <- function(
     best
   }
 
-  obs  <- scan_one(t)
+  obs <- scan_one(t)
   null <- numeric(n_permutations)
   for (k in seq_len(n_permutations)) null[k] <- scan_one(sample(t))$lrt
   p_value <- (sum(null >= obs$lrt) + 1) / (n_permutations + 1)
 
-  if (obs$ci < 0) return(data.frame())
+  if (obs$ci < 0) {
+    return(data.frame())
+  }
 
-  r       <- radii_km[obs$ri]
+  r <- radii_km[obs$ri]
   t_start <- as.Date(obs$ti, origin = "1970-01-01")
-  t_end   <- as.Date(obs$ti + window_days, origin = "1970-01-01")
-  n_exp   <- obs$n_space * window_days / max(1L, max(t) - min(t))
-  rr      <- obs$n_in / n_exp
+  t_end <- as.Date(obs$ti + window_days, origin = "1970-01-01")
+  n_exp <- obs$n_space * window_days / max(1L, max(t) - min(t))
+  rr <- obs$n_in / n_exp
 
   data.frame(
-    center_lat   = lat[obs$ci],
-    center_lon   = lon[obs$ci],
-    radius_km    = r,
-    t_start      = t_start,
-    t_end        = t_end,
-    n_observed   = obs$n_in,
-    n_expected   = round(n_exp, 2),
+    center_lat = lat[obs$ci],
+    center_lon = lon[obs$ci],
+    radius_km = r,
+    t_start = t_start,
+    t_end = t_end,
+    n_observed = obs$n_in,
+    n_expected = round(n_exp, 2),
     relative_risk = round(rr, 3),
-    log_lrt      = round(obs$lrt, 2),
-    p_value      = round(p_value, 4)
+    log_lrt = round(obs$lrt, 2),
+    p_value = round(p_value, 4)
   )
 }

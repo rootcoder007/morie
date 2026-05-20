@@ -12,11 +12,15 @@
 #' @references Burg (1975); Marple (1987); Rangayyan Ch 4.
 #' @export
 #' @examples
-#' set.seed(0); r <- rgarb(rnorm(500), order = 4); length(r$ar_coeffs)
+#' set.seed(0)
+#' r <- rgarb(rnorm(500), order = 4)
+#' length(r$ar_coeffs)
 rgarb <- function(x, order = 10L) {
-  N <- length(x); p <- as.integer(order)
+  N <- length(x)
+  p <- as.integer(order)
   if (p < 1 || p >= N) stop("order must be 1 <= p < length(x).")
-  f <- as.numeric(x); b <- as.numeric(x)
+  f <- as.numeric(x)
+  b <- as.numeric(x)
   a <- c(1, rep(0, p))
   var_ <- mean(x^2)
   k <- numeric(p)

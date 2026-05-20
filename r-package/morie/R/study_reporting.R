@@ -135,7 +135,9 @@
     endpoint_df <- endpoint_df[stats::complete.cases(endpoint_df), , drop = FALSE]
     gsum <- do.call(rbind, lapply(levels(endpoint_df$gender_label), function(lvl) {
       sub <- endpoint_df[endpoint_df$gender_label == lvl, , drop = FALSE]
-      if (nrow(sub) == 0L) return(NULL)
+      if (nrow(sub) == 0L) {
+        return(NULL)
+      }
       est <- .weighted_binary_estimate(sub[[endpoint_name]], sub$weight)
       data.frame(gender = lvl, p = est$p, n = est$n, stringsAsFactors = FALSE)
     }))
@@ -403,7 +405,9 @@
   # installed package has no project root. Degrade to NA so callers
   # (.copy_legacy_artifacts) simply copy nothing rather than erroring.
   root <- tryCatch(find_project_root(), error = function(e) NA_character_)
-  if (is.na(root)) return(NA_character_)
+  if (is.na(root)) {
+    return(NA_character_)
+  }
   file.path(root, "migration_files", "one")
 }
 
@@ -587,7 +591,8 @@
   proj_root <- tryCatch(find_project_root(), error = function(e) NA_character_)
   user_guide_present <- !is.na(proj_root) && file.exists(file.path(
     proj_root, "docs", "source", "modules",
-    "20212022-cpads-pumf-user-guide.pdf"))
+    "20212022-cpads-pumf-user-guide.pdf"
+  ))
   audit_tbl <- data.frame(
     check_name = c("outputs_present", "user_guide_reference_present", "cpads_required_variables_present"),
     value = c(length(output_files), user_guide_present, all(cpads_contract()$required_variables %in% names(data))),

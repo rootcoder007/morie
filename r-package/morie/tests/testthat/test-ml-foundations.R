@@ -42,8 +42,10 @@ test_that("regularization_path returns a path matrix", {
   set.seed(0)
   X <- matrix(rnorm(1000), 200, 5)
   y <- X %*% c(1.0, 0.0, -0.5, 0.0, 2.0) + rnorm(200, sd = 0.1)
-  r <- regularization_path(X, y, penalty = "ridge",
-                            alphas = c(0.01, 0.1, 1.0, 10.0))
+  r <- regularization_path(X, y,
+    penalty = "ridge",
+    alphas = c(0.01, 0.1, 1.0, 10.0)
+  )
   expect_equal(dim(r$coef_path), c(4, 6))
   expect_length(r$alphas, 4)
 })
@@ -95,7 +97,7 @@ test_that("random_forest_ensemble fits a random forest", {
 
 test_that("gradient_boosting_ensemble fits a GBM", {
   testthat::skip_if(!requireNamespace("gbm", quietly = TRUE) &&
-                    !requireNamespace("xgboost", quietly = TRUE))
+    !requireNamespace("xgboost", quietly = TRUE))
   set.seed(0)
   X <- matrix(rnorm(1200), 300, 4)
   y <- as.integer(X[, 1] + 0.5 * X[, 2] - X[, 3] > 0)
@@ -105,7 +107,7 @@ test_that("gradient_boosting_ensemble fits a GBM", {
 
 test_that("xgboost_objective fits boosted trees", {
   testthat::skip_if(!requireNamespace("xgboost", quietly = TRUE) &&
-                    !requireNamespace("gbm", quietly = TRUE))
+    !requireNamespace("gbm", quietly = TRUE))
   set.seed(0)
   X <- matrix(rnorm(1200), 300, 4)
   y <- as.integer(X[, 1] + X[, 2] - X[, 3] > 0)
@@ -124,8 +126,10 @@ test_that("pca_dimension_reduction decomposes data", {
 test_that("tsne_reduction embeds points", {
   skip_if_no_pkg("Rtsne")
   set.seed(0)
-  X <- rbind(matrix(rnorm(250, mean = -3), 50, 5),
-             matrix(rnorm(250, mean = +3), 50, 5))
+  X <- rbind(
+    matrix(rnorm(250, mean = -3), 50, 5),
+    matrix(rnorm(250, mean = +3), 50, 5)
+  )
   r <- tsne_reduction(X, n_components = 2L, perplexity = 10, n_iter = 500L)
   expect_equal(r$estimate, c(100L, 2L))
 })
@@ -133,8 +137,9 @@ test_that("tsne_reduction embeds points", {
 test_that("kmeans_clustering finds three clusters", {
   set.seed(0)
   centres <- rbind(c(0, 0), c(5, 5), c(-5, 5))
-  X <- do.call(rbind, lapply(seq_len(3), function(i)
-    matrix(rnorm(80, mean = 0), 40, 2) + matrix(rep(centres[i, ], 40), 40, 2, byrow = TRUE)))
+  X <- do.call(rbind, lapply(seq_len(3), function(i) {
+    matrix(rnorm(80, mean = 0), 40, 2) + matrix(rep(centres[i, ], 40), 40, 2, byrow = TRUE)
+  }))
   r <- kmeans_clustering(X, n_clusters = 3L)
   expect_equal(length(unique(r$labels)), 3L)
 })

@@ -11,8 +11,8 @@
 #' @references Kosorok (2008), Ch 2.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr03_kosorok_glivenko_cantelli <- function(x, cdf = "pnorm") {

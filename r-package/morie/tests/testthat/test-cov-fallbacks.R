@@ -13,8 +13,11 @@
 .fail_ns <- function(...) {
   failed <- c(...)
   function(package, ...) {
-    if (package %in% failed) FALSE
-    else .real_rns(package, ...)
+    if (package %in% failed) {
+      FALSE
+    } else {
+      .real_rns(package, ...)
+    }
   }
 }
 
@@ -62,7 +65,8 @@ test_that("eg_coint base-R ADF-style fallback executes", {
   set.seed(5)
   trend <- cumsum(rnorm(120))
   .cov_fb(eg_coint(trend + rnorm(120) * 0.3, trend + rnorm(120) * 0.3,
-                   max_lag = 2))
+    max_lag = 2
+  ))
 })
 
 test_that("vecm base-R SVD-of-OLS-Pi fallback executes", {
@@ -79,7 +83,8 @@ test_that("gradient_boosting_genomic base-R stumps fallback executes", {
   M <- matrix(rnorm(120), 30, 4)
   y <- sign(M[, 1]) + 0.3 * rnorm(30)
   .cov_fb(gradient_boosting_genomic(rep(0, 30), y, M,
-                                    n_estimators = 10, seed = 14))
+    n_estimators = 10, seed = 14
+  ))
 })
 
 test_that("gradient_boosting_ensemble xgboost fallback executes", {
@@ -87,8 +92,10 @@ test_that("gradient_boosting_ensemble xgboost fallback executes", {
   set.seed(7)
   x <- matrix(rnorm(60), 30, 2)
   y <- x[, 1] + 0.2 * rnorm(30)
-  .cov_fb(gradient_boosting_ensemble(x, y, n_estimators = 10L,
-                                     task = "regression", seed = 7L))
+  .cov_fb(gradient_boosting_ensemble(x, y,
+    n_estimators = 10L,
+    task = "regression", seed = 7L
+  ))
 })
 
 test_that("xgboost_objective gbm fallback executes", {
@@ -96,8 +103,10 @@ test_that("xgboost_objective gbm fallback executes", {
   set.seed(8)
   x <- matrix(rnorm(60), 30, 2)
   y <- x[, 1] + 0.2 * rnorm(30)
-  .cov_fb(xgboost_objective(x, y, n_estimators = 10L,
-                            task = "regression", seed = 8L))
+  .cov_fb(xgboost_objective(x, y,
+    n_estimators = 10L,
+    task = "regression", seed = 8L
+  ))
 })
 
 test_that("random_forest_genomic base-R bagged-tree fallback executes", {
@@ -126,8 +135,10 @@ test_that("svm_genomic base-R kernel-ridge fallback executes", {
 
 test_that("sobls base-R Halton fallback executes", {
   .mock_fail("randtoolbox")
-  .cov_fb(morie:::sobls(N = 64L, d = 2L,
-                        f = function(u) u[1] * u[2], seed = 0L))
+  .cov_fb(morie:::sobls(
+    N = 64L, d = 2L,
+    f = function(u) u[1] * u[2], seed = 0L
+  ))
 })
 
 test_that("wavelet_time_series base-R Haar DWT fallback executes", {
@@ -159,7 +170,9 @@ test_that("dcc_multivariate_garch base-R two-step DCC fallback executes", {
   .mock_fail("rmgarch")
   set.seed(15)
   trend <- rnorm(120)
-  X <- cbind(0.02 * (rnorm(120) + 0.5 * trend),
-             0.02 * (rnorm(120) + 0.5 * trend))
+  X <- cbind(
+    0.02 * (rnorm(120) + 0.5 * trend),
+    0.02 * (rnorm(120) + 0.5 * trend)
+  )
   .cov_fb(dcc_multivariate_garch(X))
 })

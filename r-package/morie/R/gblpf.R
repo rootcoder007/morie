@@ -12,12 +12,13 @@
 #' @references Montesinos Lopez Ch 3.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 gblup_full <- function(x, y, markers, lambda_gblup = NULL) {
-  y <- as.numeric(y); n <- length(y)
+  y <- as.numeric(y)
+  n <- length(y)
   M <- as.matrix(markers)
   G <- grm_vanraden(M, method = 1)$estimate
   G <- G + 1e-6 * diag(n)
@@ -30,14 +31,16 @@ gblup_full <- function(x, y, markers, lambda_gblup = NULL) {
   X <- cand[, qrx$pivot[seq_len(qrx$rank)], drop = FALSE]
   if (is.null(lambda_gblup)) {
     var_y <- if (n > 1) stats::var(y) else 1
-    lam <- (0.5 * var_y) / (0.5 * var_y)  # = 1 with h^2=0.5
+    lam <- (0.5 * var_y) / (0.5 * var_y) # = 1 with h^2=0.5
   } else {
     lam <- as.numeric(lambda_gblup)
   }
   Ginv <- solve(G)
   p <- ncol(X)
-  C <- rbind(cbind(crossprod(X), t(X)),
-             cbind(X,            diag(n) + lam * Ginv))
+  C <- rbind(
+    cbind(crossprod(X), t(X)),
+    cbind(X, diag(n) + lam * Ginv)
+  )
   rhs <- c(crossprod(X, y), y)
   sol <- solve(C, rhs)
   beta <- sol[seq_len(p)]
@@ -45,10 +48,12 @@ gblup_full <- function(x, y, markers, lambda_gblup = NULL) {
   y_hat <- X %*% beta + g_hat
   resid <- y - as.numeric(y_hat)
   se <- sqrt(sum(resid^2) / max(n - p, 1))
-  list(estimate = mean(g_hat), g_hat = g_hat, beta = beta,
-       se = se, y_hat = as.numeric(y_hat),
-       lambda_gblup = lam, n = n,
-       method = "GBLUP with VanRaden G")
+  list(
+    estimate = mean(g_hat), g_hat = g_hat, beta = beta,
+    se = se, y_hat = as.numeric(y_hat),
+    lambda_gblup = lam, n = n,
+    method = "GBLUP with VanRaden G"
+  )
 }
 
 # CANONICAL TEST

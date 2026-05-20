@@ -17,9 +17,11 @@ mcint_crude <- function(f, a = 0, b = 1, N = 1000L, seed = 42L) {
   u <- stats::runif(N, a, b)
   fu <- vapply(u, f, numeric(1))
   est <- (b - a) * mean(fu)
-  se  <- (b - a) * stats::sd(fu) / sqrt(N)
-  list(estimate = as.numeric(est), se = as.numeric(se),
-       N = as.integer(N), method = "Monte Carlo integration (Rubinstein 1981)")
+  se <- (b - a) * stats::sd(fu) / sqrt(N)
+  list(
+    estimate = as.numeric(est), se = as.numeric(se),
+    N = as.integer(N), method = "Monte Carlo integration (Rubinstein 1981)"
+  )
 }
 
 # CANONICAL TEST

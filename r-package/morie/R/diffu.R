@@ -16,8 +16,8 @@
 #' @references Crank (1975), Mathematics of Diffusion.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 diffu_heat_diffusion <- function(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
@@ -25,8 +25,9 @@ diffu_heat_diffusion <- function(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
   T0 <- as.numeric(T0)
   if (length(T0) < 3L) stop("T0 must have at least 3 points.")
   r <- alpha * dt / (dx^2)
-  if (r > 0.5)
+  if (r > 0.5) {
     stop(sprintf("CFL violated: r=%.4f > 0.5. Reduce dt or increase dx.", r))
+  }
   n_x <- length(T0)
   Tt <- T0
   history <- matrix(0, n_steps + 1L, n_x)
@@ -38,10 +39,12 @@ diffu_heat_diffusion <- function(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
     Tt <- Tn
     history[k + 1L, ] <- Tt
   }
-  list(value = mean(Tt), T_final = Tt, T_initial = T0,
-       history = history, r_stability = r,
-       n_steps = as.integer(n_steps), alpha = alpha,
-       method = "1D Heat Diffusion (forward Euler)")
+  list(
+    value = mean(Tt), T_final = Tt, T_initial = T0,
+    history = history, r_stability = r,
+    n_steps = as.integer(n_steps), alpha = alpha,
+    method = "1D Heat Diffusion (forward Euler)"
+  )
 }
 
 #' DDPM forward (noising) process
@@ -63,8 +66,8 @@ diffu_heat_diffusion <- function(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
 #' @references Ho, Jain & Abbeel (2020), NeurIPS.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 diffu_diffusion_forward <- function(x0, t, betas = NULL, num_steps = 1000L,
@@ -72,8 +75,9 @@ diffu_diffusion_forward <- function(x0, t, betas = NULL, num_steps = 1000L,
   x0 <- as.numeric(x0)
   if (is.null(betas)) betas <- seq(1e-4, 0.02, length.out = num_steps)
   betas <- as.numeric(betas)
-  if (t < 1L || t > length(betas))
+  if (t < 1L || t > length(betas)) {
     stop(sprintf("t must be in [1, %d], got %d", length(betas), t))
+  }
   alphas <- 1 - betas
   alpha_bar <- prod(alphas[1:t])
   if (is.null(noise)) {
@@ -82,9 +86,11 @@ diffu_diffusion_forward <- function(x0, t, betas = NULL, num_steps = 1000L,
   }
   noise <- as.numeric(noise)
   x_t <- sqrt(alpha_bar) * x0 + sqrt(1 - alpha_bar) * noise
-  list(x_t = x_t, estimate = x_t, noise = noise,
-       alpha_bar = alpha_bar, beta = betas[t],
-       method = "DDPM forward diffusion")
+  list(
+    x_t = x_t, estimate = x_t, noise = noise,
+    alpha_bar = alpha_bar, beta = betas[t],
+    method = "DDPM forward diffusion"
+  )
 }
 
 #' @rdname diffu_heat_diffusion

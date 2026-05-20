@@ -40,17 +40,20 @@ preprocess_eeg <- function(record,
     cleaned$eeg[[key]] <- arr
   }
 
-  list(record = cleaned,
-       n_bad  = n_bad_total,
-       sfreq  = sfreq,
-       bandpass = bandpass,
-       notch    = notch,
-       asr_threshold = asr_threshold,
-       n_channels = n_chan,
-       warnings = warnings_vec,
-       interpretation = sprintf(
-         "EEG bandpass-filtered (%g-%g Hz) and notch-filtered at %g Hz; %d sample(s) reconstructed by toy ASR.",
-         bandpass[1], bandpass[2], notch, n_bad_total))
+  list(
+    record = cleaned,
+    n_bad = n_bad_total,
+    sfreq = sfreq,
+    bandpass = bandpass,
+    notch = notch,
+    asr_threshold = asr_threshold,
+    n_channels = n_chan,
+    warnings = warnings_vec,
+    interpretation = sprintf(
+      "EEG bandpass-filtered (%g-%g Hz) and notch-filtered at %g Hz; %d sample(s) reconstructed by toy ASR.",
+      bandpass[1], bandpass[2], notch, n_bad_total
+    )
+  )
 }
 
 
@@ -88,8 +91,10 @@ preprocess_fmri <- function(record,
       n_scrubbed <- n_scrubbed + sum(bad)
       if (any(bad)) arr[, bad] <- 0
     } else {
-      warnings_vec <- c(warnings_vec,
-                        sprintf("fmri.motion_fd_mm absent -- skipping scrubbing on %s", key))
+      warnings_vec <- c(
+        warnings_vec,
+        sprintf("fmri.motion_fd_mm absent -- skipping scrubbing on %s", key)
+      )
     }
     sv <- tryCatch(svd(arr), error = function(e) NULL)
     if (!is.null(sv)) {
@@ -103,15 +108,18 @@ preprocess_fmri <- function(record,
     cleaned$fmri[[key]] <- arr
   }
 
-  list(record = cleaned,
-       n_scrubbed = n_scrubbed,
-       motion_threshold_mm = motion_threshold_mm,
-       n_noise_components = n_noise_components,
-       n_parcels = n_parcels,
-       warnings = warnings_vec,
-       interpretation = sprintf(
-         "Motion-scrubbed %d volume(s) above %g mm FD; top-%d singular components projected out as toy ICA-AROMA stand-in.",
-         n_scrubbed, motion_threshold_mm, n_noise_components))
+  list(
+    record = cleaned,
+    n_scrubbed = n_scrubbed,
+    motion_threshold_mm = motion_threshold_mm,
+    n_noise_components = n_noise_components,
+    n_parcels = n_parcels,
+    warnings = warnings_vec,
+    interpretation = sprintf(
+      "Motion-scrubbed %d volume(s) above %g mm FD; top-%d singular components projected out as toy ICA-AROMA stand-in.",
+      n_scrubbed, motion_threshold_mm, n_noise_components
+    )
+  )
 }
 
 
@@ -142,9 +150,12 @@ preprocess_fmri <- function(record,
 .entheo_notch <- function(x, sfreq, freq, q = 30) {
   if (requireNamespace("signal", quietly = TRUE)) {
     bw <- freq / q
-    bf <- signal::butter(2, c((freq - bw / 2) / (sfreq / 2),
-                              (freq + bw / 2) / (sfreq / 2)),
-                         type = "stop")
+    bf <- signal::butter(2, c(
+      (freq - bw / 2) / (sfreq / 2),
+      (freq + bw / 2) / (sfreq / 2)
+    ),
+    type = "stop"
+    )
     out <- t(apply(x, 1, function(row) signal::filtfilt(bf, row)))
     return(out)
   }

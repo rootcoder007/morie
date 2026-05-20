@@ -11,23 +11,27 @@
 #' @importFrom stats chisq.test
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 contingency_coefficient <- function(x) {
   X <- as.matrix(x)
   if (length(dim(X)) != 2L || length(X) == 0L) {
-    return(list(statistic = NA_real_, cramers_v = NA_real_,
-                chi2 = NA_real_, p_value = NA_real_, df = NA_integer_,
-                max_C = NA_real_, n = 0L,
-                method = "Pearson contingency coefficient"))
+    return(list(
+      statistic = NA_real_, cramers_v = NA_real_,
+      chi2 = NA_real_, p_value = NA_real_, df = NA_integer_,
+      max_C = NA_real_, n = 0L,
+      method = "Pearson contingency coefficient"
+    ))
   }
   ct <- suppressWarnings(stats::chisq.test(X, correct = FALSE))
   n_total <- sum(X)
   chi2 <- as.numeric(ct$statistic)
   C <- sqrt(chi2 / (chi2 + n_total))
-  r <- nrow(X); c <- ncol(X); mn <- min(r, c)
+  r <- nrow(X)
+  c <- ncol(X)
+  mn <- min(r, c)
   V <- if (mn > 1) sqrt(chi2 / (n_total * (mn - 1))) else NA_real_
   max_C <- if (mn > 1) sqrt((mn - 1) / mn) else NA_real_
   list(

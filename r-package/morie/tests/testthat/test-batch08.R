@@ -8,9 +8,11 @@ test_that("ghosal_np_regression returns a well-formed GP posterior list", {
   y <- sin(x) + rnorm(40, sd = 0.1)
   res <- ghosal_np_regression(x, y)
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "se", "mu", "sd", "ci_lower", "ci_upper",
-                     "r2", "log_marginal", "length_scale", "noise", "n",
-                     "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "se", "mu", "sd", "ci_lower", "ci_upper",
+    "r2", "log_marginal", "length_scale", "noise", "n",
+    "method"
+  ) %in% names(res)))
   expect_equal(res$n, 40L)
   expect_length(res$mu, 40L)
   expect_length(res$sd, 40L)
@@ -29,8 +31,10 @@ test_that("ghosal_np_regression honours explicit hyperparameters", {
   set.seed(2)
   x <- sort(rnorm(30))
   y <- 2 * x + rnorm(30, sd = 0.2)
-  res <- ghosal_np_regression(x, y, length_scale = 0.8, sigma_f = 1.5,
-                              noise = 0.25)
+  res <- ghosal_np_regression(x, y,
+    length_scale = 0.8, sigma_f = 1.5,
+    noise = 0.25
+  )
   expect_true(is.list(res))
   expect_true(is.finite(res$length_scale))
   expect_true(is.finite(res$noise))
@@ -54,8 +58,10 @@ test_that("ghosal_survival_beta_process returns a posterior survival list", {
   event <- rbinom(50, 1, 0.7)
   res <- ghosal_survival_beta_process(time, event)
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "times", "S_post", "H_post", "c", "lam0",
-                     "n", "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "times", "S_post", "H_post", "c", "lam0",
+    "n", "method"
+  ) %in% names(res)))
   expect_equal(res$n, 50L)
   expect_true(is.finite(res$estimate))
   expect_gte(res$estimate, 0)
@@ -89,8 +95,10 @@ test_that("ghosal_stick_breaking_trunc returns a truncated DP draw", {
   x <- rnorm(60)
   res <- ghosal_stick_breaking_trunc(x, alpha = 1.0, K = 30, seed = 7)
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "weights", "atoms", "effective_K",
-                     "trunc_err_bound", "n", "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "weights", "atoms", "effective_K",
+    "trunc_err_bound", "n", "method"
+  ) %in% names(res)))
   expect_equal(res$n, 60L)
   expect_length(res$weights, 30L)
   expect_length(res$atoms, 30L)
@@ -107,8 +115,10 @@ test_that("ghosal_stick_breaking_trunc returns a truncated DP draw", {
 test_that("ghosal_stick_breaking_trunc honours explicit base measure", {
   set.seed(21)
   x <- rnorm(40, mean = 5)
-  res <- ghosal_stick_breaking_trunc(x, alpha = 2.0, K = 20, seed = 1,
-                                     base_mean = 5, base_sd = 1.5)
+  res <- ghosal_stick_breaking_trunc(x,
+    alpha = 2.0, K = 20, seed = 1,
+    base_mean = 5, base_sd = 1.5
+  )
   expect_true(is.list(res))
   expect_length(res$weights, 20L)
 })
@@ -134,8 +144,10 @@ test_that("ghosal_sieve_prior fits a Bernstein-polynomial sieve density", {
   x <- rbeta(80, 2, 3)
   res <- ghosal_sieve_prior(x)
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "log_lik_per_obs", "weights", "K", "n",
-                     "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "log_lik_per_obs", "weights", "K", "n",
+    "method"
+  ) %in% names(res)))
   expect_equal(res$n, 80L)
   expect_true(is.finite(res$estimate))
   expect_gte(res$estimate, 0)
@@ -166,8 +178,10 @@ test_that("ghosal_np_testing returns a Polya-tree Bayes factor", {
   x <- rnorm(100)
   res <- ghosal_np_testing(x)
   expect_true(is.list(res))
-  expect_true(all(c("statistic", "p_value", "BF10", "log_BF10", "n",
-                     "depth", "method") %in% names(res)))
+  expect_true(all(c(
+    "statistic", "p_value", "BF10", "log_BF10", "n",
+    "depth", "method"
+  ) %in% names(res)))
   expect_equal(res$n, 100L)
   expect_equal(res$depth, 6)
   expect_true(is.finite(res$statistic))
@@ -201,8 +215,10 @@ test_that("ghosal_wavelet_prior denoises a signal via Haar wavelets", {
   x <- sin(seq(0, 2 * pi, length.out = n)) + rnorm(n, sd = 0.2)
   res <- ghosal_wavelet_prior(x)
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "fitted", "noise", "sigma", "inclusion",
-                     "n", "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "fitted", "noise", "sigma", "inclusion",
+    "n", "method"
+  ) %in% names(res)))
   expect_equal(res$n, n)
   expect_length(res$fitted, n)
   expect_true(all(is.finite(res$fitted)))
@@ -234,9 +250,11 @@ test_that("generalized_pareto fits a GP to threshold exceedances", {
   x <- rexp(2000, rate = 1)
   res <- generalized_pareto(x, threshold = 0.5)
   expect_true(is.list(res))
-  expect_true(all(c("scale", "shape", "threshold", "n_exceedances",
-                     "se_sigma", "se_xi", "loglik", "estimate", "se",
-                     "method") %in% names(res)))
+  expect_true(all(c(
+    "scale", "shape", "threshold", "n_exceedances",
+    "se_sigma", "se_xi", "loglik", "estimate", "se",
+    "method"
+  ) %in% names(res)))
   expect_true(is.finite(res$scale))
   expect_true(is.finite(res$shape))
   expect_gt(res$scale, 0)
@@ -276,8 +294,10 @@ test_that("gradient_descent_vanilla recovers OLS coefficients", {
   y <- 1 + 2 * x[, 1] - 1.5 * x[, 2] + rnorm(100, sd = 0.05)
   res <- gradient_descent_vanilla(x, y, lr = 0.05, n_iter = 5000)
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "reference_ols", "n_iter", "loss", "n",
-                     "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "reference_ols", "n_iter", "loss", "n",
+    "method"
+  ) %in% names(res)))
   expect_equal(res$n, 100L)
   expect_length(res$estimate, 3L)
   expect_length(res$reference_ols, 3L)
@@ -315,8 +335,10 @@ test_that("gwreg fits local regressions at every site", {
   y <- 1 + 2 * X[, 2] + rnorm(n, sd = 0.1)
   res <- gwreg(X, y, coords)
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "se", "bandwidth", "kernel", "n",
-                     "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "se", "bandwidth", "kernel", "n",
+    "method"
+  ) %in% names(res)))
   expect_equal(res$n, n)
   expect_equal(dim(res$estimate), c(n, 2L))
   expect_equal(dim(res$se), c(n, 2L))
@@ -332,8 +354,10 @@ test_that("gwreg supports the bisquare kernel and explicit bandwidth", {
   coords <- matrix(runif(2 * n), ncol = 2)
   X <- cbind(1, rnorm(n))
   y <- X[, 2] + rnorm(n, sd = 0.1)
-  res <- geographically_weighted_regression(X, y, coords, bandwidth = 0.5,
-                                            kernel = "bisquare")
+  res <- geographically_weighted_regression(X, y, coords,
+    bandwidth = 0.5,
+    kernel = "bisquare"
+  )
   expect_true(is.list(res))
   expect_equal(res$kernel, "bisquare")
   expect_equal(res$bandwidth, 0.5)
@@ -348,13 +372,15 @@ test_that("gwreg canonical 1-D example yields finite fits", {
 })
 
 test_that("gxe_interaction_model computes GxE variance components", {
-  x   <- c(1, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 3)
+  x <- c(1, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 3)
   env <- c(1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2)
-  y   <- c(1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7)
+  y <- c(1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7)
   res <- gxe_interaction_model(x, y, env)
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "g", "e", "ge", "var_g", "var_e", "var_ge",
-                     "var_eps", "se", "n", "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "g", "e", "ge", "var_g", "var_e", "var_ge",
+    "var_eps", "se", "n", "method"
+  ) %in% names(res)))
   expect_equal(res$n, 12L)
   expect_true(is.finite(res$estimate))
   expect_length(res$g, 3L)
@@ -371,9 +397,9 @@ test_that("gxe_interaction_model computes GxE variance components", {
 
 test_that("gxe_interaction_model handles a larger replicated design", {
   set.seed(90)
-  g   <- rep(1:4, each = 6)
+  g <- rep(1:4, each = 6)
   env <- rep(rep(1:3, each = 2), times = 4)
-  y   <- 2 + g * 0.3 + env * 0.2 + rnorm(24, sd = 0.5)
+  y <- 2 + g * 0.3 + env * 0.2 + rnorm(24, sd = 0.5)
   res <- gxe_interaction_model(g, y, env)
   expect_true(is.list(res))
   expect_equal(res$n, 24L)
@@ -389,7 +415,7 @@ test_that("grucl_gru_cell runs a forward pass with default weights", {
   res <- grucl_gru_cell(x, hidden_size = 4L, seed = 1L)
   expect_true(is.list(res))
   expect_true(all(c("h", "estimate", "z", "r", "n", "method") %in%
-                    names(res)))
+    names(res)))
   expect_length(res$h, 4L)
   expect_length(res$z, 4L)
   expect_length(res$r, 4L)
@@ -403,7 +429,8 @@ test_that("grucl_gru_cell runs a forward pass with default weights", {
 
 test_that("gru_cell alias accepts supplied weights and previous state", {
   set.seed(101)
-  n_in <- 3L; H <- 4L
+  n_in <- 3L
+  H <- 4L
   x <- rnorm(n_in)
   h_prev <- rnorm(H)
   W <- matrix(rnorm(3 * H * n_in, 0, 0.1), 3 * H, n_in)
@@ -441,11 +468,14 @@ test_that("grid_search_cv runs a regression grid search", {
   y <- x[, 1] - x[, 2] + rnorm(40, sd = 0.2)
   res <- tryCatch(
     grid_search_cv(x, y, cv = 3L, task = "regression", seed = 1L),
-    error = function(e) NULL)
+    error = function(e) NULL
+  )
   skip_if(is.null(res), "grid_search_cv regression backend unavailable")
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "best_params", "best_score", "task", "n",
-                     "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "best_params", "best_score", "task", "n",
+    "method"
+  ) %in% names(res)))
   expect_equal(res$task, "regression")
   expect_equal(res$n, 40L)
   expect_true(is.finite(res$best_score))
@@ -453,8 +483,10 @@ test_that("grid_search_cv runs a regression grid search", {
 
 test_that("grid_search_cv errors clearly when caret is missing", {
   if (!requireNamespace("caret", quietly = TRUE)) {
-    expect_error(grid_search_cv(matrix(rnorm(20), ncol = 2), rnorm(10)),
-                 "caret")
+    expect_error(
+      grid_search_cv(matrix(rnorm(20), ncol = 2), rnorm(10)),
+      "caret"
+    )
   } else {
     succeed()
   }
@@ -462,12 +494,15 @@ test_that("grid_search_cv errors clearly when caret is missing", {
 
 test_that("gradient_clipping rescales gradients to the max norm", {
   fn <- tryCatch(get("gradient_clipping", envir = asNamespace("morie")),
-                 error = function(e) NULL)
+    error = function(e) NULL
+  )
   skip_if(is.null(fn), "gradient_clipping not in namespace")
   res <- fn(c(3, 4), max_norm = 1)
   expect_true(is.list(res))
-  expect_true(all(c("tensor", "clip_coef", "total_norm", "max_norm",
-                     "method") %in% names(res)))
+  expect_true(all(c(
+    "tensor", "clip_coef", "total_norm", "max_norm",
+    "method"
+  ) %in% names(res)))
   expect_equal(res$total_norm, 5, tolerance = 1e-8)
   expect_gte(res$clip_coef, 0)
   expect_lte(res$clip_coef, 1)
@@ -476,7 +511,8 @@ test_that("gradient_clipping rescales gradients to the max norm", {
 
 test_that("gradient_clipping leaves small gradients unchanged", {
   fn <- tryCatch(get("gradient_clipping", envir = asNamespace("morie")),
-                 error = function(e) NULL)
+    error = function(e) NULL
+  )
   skip_if(is.null(fn), "gradient_clipping not in namespace")
   res <- fn(c(0.1, 0.2), max_norm = 10)
   expect_equal(res$clip_coef, 1, tolerance = 1e-6)
@@ -487,16 +523,20 @@ test_that("gradient_clipping leaves small gradients unchanged", {
 
 test_that("grouped_query_attention produces attention weights", {
   fn <- tryCatch(get("grouped_query_attention", envir = asNamespace("morie")),
-                 error = function(e) NULL)
+    error = function(e) NULL
+  )
   skip_if(is.null(fn), "grouped_query_attention not in namespace")
   set.seed(120)
   Q <- matrix(rnorm(12), nrow = 4, ncol = 3)
   res <- tryCatch(fn(Q, n_heads = 4L, n_kv_heads = 2L),
-                  error = function(e) NULL)
+    error = function(e) NULL
+  )
   skip_if(is.null(res), "grouped_query_attention shape path unavailable")
   expect_true(is.list(res))
-  expect_true(all(c("tensor", "attn", "n_heads", "n_kv_heads", "group_size",
-                     "method") %in% names(res)))
+  expect_true(all(c(
+    "tensor", "attn", "n_heads", "n_kv_heads", "group_size",
+    "method"
+  ) %in% names(res)))
   expect_equal(res$n_heads, 4L)
   expect_equal(res$n_kv_heads, 2L)
   expect_equal(res$group_size, 2L)
@@ -504,7 +544,8 @@ test_that("grouped_query_attention produces attention weights", {
 
 test_that("grouped_query_attention rejects incompatible head counts", {
   fn <- tryCatch(get("grouped_query_attention", envir = asNamespace("morie")),
-                 error = function(e) NULL)
+    error = function(e) NULL
+  )
   skip_if(is.null(fn), "grouped_query_attention not in namespace")
   Q <- matrix(rnorm(6), nrow = 2, ncol = 3)
   expect_error(fn(Q, n_heads = 8L, n_kv_heads = 3L), "multiple")

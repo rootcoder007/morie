@@ -14,26 +14,31 @@
 antth <- function(x = NULL, f = NULL, N = 1000L, seed = 42L) {
   if (is.null(f)) f <- function(u) u
   set.seed(seed)
-  if (is.null(x)) u <- stats::runif(N) else {
+  if (is.null(x)) {
+    u <- stats::runif(N)
+  } else {
     u <- as.numeric(x)
-    if (min(u) < 0 || max(u) > 1)
+    if (min(u) < 0 || max(u) > 1) {
       u <- (rank(u)) / (length(u) + 1)
+    }
   }
   n <- length(u)
   fu <- vapply(u, f, numeric(1))
   fu_anti <- vapply(1 - u, f, numeric(1))
   paired <- 0.5 * (fu + fu_anti)
   est_av <- mean(paired)
-  se_av  <- stats::sd(paired) / sqrt(n)
+  se_av <- stats::sd(paired) / sqrt(n)
   est_crude <- mean(fu)
   var_crude <- stats::var(fu) / n
   ratio <- if (var_crude > 0) se_av^2 / var_crude else NA_real_
-  list(estimate = as.numeric(est_av),
-       estimate_crude = as.numeric(est_crude),
-       se = as.numeric(se_av),
-       var_ratio_av_over_crude = as.numeric(ratio),
-       n_pairs = as.integer(n),
-       method = "Antithetic variates (Hammersley & Morton 1956)")
+  list(
+    estimate = as.numeric(est_av),
+    estimate_crude = as.numeric(est_crude),
+    se = as.numeric(se_av),
+    var_ratio_av_over_crude = as.numeric(ratio),
+    n_pairs = as.integer(n),
+    method = "Antithetic variates (Hammersley & Morton 1956)"
+  )
 }
 
 # CANONICAL TEST

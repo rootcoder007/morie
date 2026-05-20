@@ -15,27 +15,38 @@
 #' @references Schabenberger & Gotway (2005), Ch 4.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 spblk <- function(x, coords, blocks, n_quad = 25,
                   nugget = 0, sill = 1, range_ = 1) {
-  x <- as.numeric(x); n <- length(x)
-  coords <- if (is.matrix(coords)) coords else
+  x <- as.numeric(x)
+  n <- length(x)
+  coords <- if (is.matrix(coords)) {
+    coords
+  } else {
     matrix(as.numeric(unlist(coords)), nrow = n)
+  }
   d <- ncol(coords)
-  c0 <- nugget; c1 <- sill - nugget; a <- range_
+  c0 <- nugget
+  c1 <- sill - nugget
+  a <- range_
   cov_fn <- function(h) c1 * exp(-h / a) + ifelse(h == 0, c0, 0)
   D <- as.matrix(stats::dist(coords))
   C <- cov_fn(D)
   A <- matrix(0, n + 1, n + 1)
-  A[1:n, 1:n] <- C; A[1:n, n + 1] <- 1; A[n + 1, 1:n] <- 1
+  A[1:n, 1:n] <- C
+  A[1:n, n + 1] <- 1
+  A[n + 1, 1:n] <- 1
   block_to_pts <- function(b) {
     b <- if (is.matrix(b)) b else matrix(as.numeric(unlist(b)), ncol = d)
     if (nrow(b) == 2 && ncol(b) == d) {
-      lo <- b[1, ]; hi <- b[2, ]
-      if (d == 1) return(matrix(seq(lo[1], hi[1], length.out = n_quad), ncol = 1))
+      lo <- b[1, ]
+      hi <- b[2, ]
+      if (d == 1) {
+        return(matrix(seq(lo[1], hi[1], length.out = n_quad), ncol = 1))
+      }
       if (d == 2) {
         k <- round(sqrt(n_quad))
         g1 <- seq(lo[1], hi[1], length.out = k)
@@ -47,9 +58,10 @@ spblk <- function(x, coords, blocks, n_quad = 25,
     b
   }
   m <- length(blocks)
-  ests <- numeric(m); ses <- numeric(m)
+  ests <- numeric(m)
+  ses <- numeric(m)
   pairwise_cov <- function(P, Q) {
-    DPQ <- sqrt(outer(rowSums(P ^ 2), rowSums(Q ^ 2), "+") - 2 * P %*% t(Q))
+    DPQ <- sqrt(outer(rowSums(P^2), rowSums(Q^2), "+") - 2 * P %*% t(Q))
     DPQ[DPQ < 0] <- 0
     cov_fn(DPQ)
   }
@@ -59,13 +71,17 @@ spblk <- function(x, coords, blocks, n_quad = 25,
     Cbar_BB <- mean(pairwise_cov(pts, pts))
     rhs <- c(Cbar_iB, 1)
     sol <- tryCatch(solve(A, rhs),
-                    error = function(e) qr.solve(A, rhs))
-    lam <- sol[1:n]; mu <- sol[n + 1]
+      error = function(e) qr.solve(A, rhs)
+    )
+    lam <- sol[1:n]
+    mu <- sol[n + 1]
     ests[b_idx] <- sum(lam * x)
     ses[b_idx] <- sqrt(max(Cbar_BB - sum(lam * Cbar_iB) - mu, 0))
   }
-  list(estimate = ests, se = ses, n = n,
-       method = "Ordinary block kriging (exp. cov, MC quadrature)")
+  list(
+    estimate = ests, se = ses, n = n,
+    method = "Ordinary block kriging (exp. cov, MC quadrature)"
+  )
 }
 
 #' @rdname spblk

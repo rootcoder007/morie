@@ -18,8 +18,8 @@
 #'   `method`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 wnom <- function(votes, x, z_yea, z_nay, beta = 15, w = NULL) {
@@ -29,7 +29,8 @@ wnom <- function(votes, x, z_yea, z_nay, beta = 15, w = NULL) {
   p <- ncol(X)
   if (is.null(w)) w <- rep(1, p)
   V <- if (is.matrix(votes)) votes else matrix(as.numeric(votes), nrow = nrow(X))
-  n_leg <- nrow(X); n_votes <- nrow(Zy)
+  n_leg <- nrow(X)
+  n_votes <- nrow(Zy)
   dy <- array(0, dim = c(n_leg, n_votes))
   dn <- array(0, dim = c(n_leg, n_votes))
   for (k in seq_len(p)) {
@@ -44,13 +45,15 @@ wnom <- function(votes, x, z_yea, z_nay, beta = 15, w = NULL) {
   P <- pmin(pmax(P, 1e-10), 1 - 1e-10)
   mask <- !is.na(V)
   ll <- sum(ifelse(mask & V == 1, log(P), 0)) +
-        sum(ifelse(mask & V == 0, log(1 - P), 0))
+    sum(ifelse(mask & V == 0, log(1 - P), 0))
   pred <- (P > 0.5) * 1L
   n_correct <- sum(mask & (pred == V))
   n_total <- sum(mask)
   GMP <- if (n_total > 0L) n_correct / n_total else 0
-  list(loglik = ll, GMP = GMP, n_correct = n_correct,
-       n_total = n_total, method = "wnominate_estimate")
+  list(
+    loglik = ll, GMP = GMP, n_correct = n_correct,
+    n_total = n_total, method = "wnominate_estimate"
+  )
 }
 
 #' @keywords internal

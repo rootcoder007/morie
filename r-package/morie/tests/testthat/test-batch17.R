@@ -70,8 +70,10 @@ test_that("rgcoh returns coherence bounded in [0, 1]", {
   b <- a + 0.2 * rnorm(n)
   r <- rgcoh(a, b, fs = 100)
   expect_type(r, "list")
-  expect_named(r, c("freqs", "coherence", "mean_coherence",
-                    "peak_freq", "peak_coherence"))
+  expect_named(r, c(
+    "freqs", "coherence", "mean_coherence",
+    "peak_freq", "peak_coherence"
+  ))
   ok <- is.finite(r$coherence)
   expect_true(all(r$coherence[ok] >= -1e-8 & r$coherence[ok] <= 1 + 1e-8))
   expect_length(r$freqs, length(r$coherence))
@@ -80,7 +82,8 @@ test_that("rgcoh returns coherence bounded in [0, 1]", {
 test_that("rgcoh honours explicit nperseg", {
   set.seed(7)
   n <- 400
-  x <- rnorm(n); y <- rnorm(n)
+  x <- rnorm(n)
+  y <- rnorm(n)
   r <- rgcoh(x, y, fs = 50, nperseg = 128L)
   expect_equal(length(r$freqs), 128L %/% 2L + 1L)
   expect_true(is.finite(r$mean_coherence))
@@ -203,8 +206,10 @@ test_that("rgenv returns envelope and instantaneous quantities (even N)", {
   x <- cos(2 * pi * 5 * tt) * (1 + 0.3 * cos(2 * pi * 0.5 * tt))
   r <- rgenv(x)
   expect_type(r, "list")
-  expect_named(r, c("envelope", "analytic", "instantaneous_phase",
-                    "instantaneous_freq"))
+  expect_named(r, c(
+    "envelope", "analytic", "instantaneous_phase",
+    "instantaneous_freq"
+  ))
   expect_length(r$envelope, 200L)
   expect_length(r$instantaneous_phase, 200L)
   expect_length(r$instantaneous_freq, 199L)
@@ -290,8 +295,10 @@ test_that("rghrv returns documented time-domain indices", {
   rr <- 800 + rnorm(200, sd = 40)
   r <- rghrv(rr)
   expect_type(r, "list")
-  expect_named(r, c("meanNN", "SDNN", "RMSSD", "pNN50",
-                    "heart_rate_bpm", "n"))
+  expect_named(r, c(
+    "meanNN", "SDNN", "RMSSD", "pNN50",
+    "heart_rate_bpm", "n"
+  ))
   expect_equal(r$n, 200L)
   expect_true(is.finite(r$meanNN) && r$meanNN > 0)
   expect_true(is.finite(r$SDNN) && r$SDNN >= 0)
@@ -380,8 +387,10 @@ test_that("rgpsd returns one-sided PSD with documented fields", {
   x <- sin(2 * pi * 10 * tt)
   r <- rgpsd(x, fs = fs, nperseg = 256L)
   expect_type(r, "list")
-  expect_named(r, c("freqs", "psd", "fs", "nperseg",
-                    "peak_freq", "total_power"))
+  expect_named(r, c(
+    "freqs", "psd", "fs", "nperseg",
+    "peak_freq", "total_power"
+  ))
   expect_equal(r$nperseg, 256L)
   expect_equal(length(r$freqs), 256L %/% 2L + 1L)
   expect_equal(length(r$psd), length(r$freqs))
@@ -408,12 +417,16 @@ test_that("rgqrs detects R-peaks on a synthetic ECG", {
   set.seed(29)
   fs <- 360
   tt <- seq(0, 5, length.out = 5 * fs)
-  ecg <- rowSums(vapply(seq(0.5, 4.5, by = 1.0),
-                        function(tk) exp(-((tt - tk) * 30)^2), numeric(length(tt))))
+  ecg <- rowSums(vapply(
+    seq(0.5, 4.5, by = 1.0),
+    function(tk) exp(-((tt - tk) * 30)^2), numeric(length(tt))
+  ))
   r <- rgqrs(ecg, fs = fs)
   expect_type(r, "list")
-  expect_named(r, c("r_peaks", "rr_intervals_ms", "heart_rate_bpm",
-                    "integrated", "fs"))
+  expect_named(r, c(
+    "r_peaks", "rr_intervals_ms", "heart_rate_bpm",
+    "integrated", "fs"
+  ))
   expect_equal(r$fs, fs)
   expect_true(is.numeric(r$r_peaks))
   expect_length(r$integrated, length(ecg))
@@ -424,8 +437,10 @@ test_that("rgqrs default fs argument path runs", {
   skip_if_not_installed("signal")
   set.seed(30)
   tt <- seq(0, 3, length.out = 3 * 360)
-  ecg <- rowSums(vapply(seq(0.5, 2.5, by = 1.0),
-                        function(tk) exp(-((tt - tk) * 30)^2), numeric(length(tt))))
+  ecg <- rowSums(vapply(
+    seq(0.5, 2.5, by = 1.0),
+    function(tk) exp(-((tt - tk) * 30)^2), numeric(length(tt))
+  ))
   r <- rgqrs(ecg)
   expect_equal(r$fs, 360.0)
   expect_true(is.na(r$heart_rate_bpm) || is.finite(r$heart_rate_bpm))

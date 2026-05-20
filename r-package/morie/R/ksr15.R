@@ -10,8 +10,8 @@
 #' @references Kosorok (2008), Ch 7.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr15_kosorok_one_step_estimator <- function(x, y = NULL) {
@@ -23,7 +23,7 @@ ksr15_kosorok_one_step_estimator <- function(x, y = NULL) {
   se <- stats::sd(x) / sqrt(n)
   list(
     estimate = theta_tilde, se = se, n = n,
-    method   = "One-step from median: theta + mean(x-theta)"
+    method = "One-step from median: theta + mean(x-theta)"
   )
 }
 

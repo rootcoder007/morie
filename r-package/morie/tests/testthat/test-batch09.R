@@ -24,8 +24,10 @@ test_that("morie_hawkes_fit fits an exponential-kernel Hawkes process", {
 test_that("morie_hawkes_fit honours the end_time argument", {
   set.seed(102)
   ev <- sort(cumsum(stats::rexp(40, rate = 2)))
-  fit <- morie_hawkes_fit(ev, end_time = ev[length(ev)] + 5,
-                          kernel = "exponential")
+  fit <- morie_hawkes_fit(ev,
+    end_time = ev[length(ev)] + 5,
+    kernel = "exponential"
+  )
   expect_equal(fit$end_time, ev[length(ev)] + 5)
   expect_s3_class(fit, "morie_hawkes_fit")
 })
@@ -46,8 +48,10 @@ test_that("morie_hawkes_fit rejects unsorted, NA and too-short inputs", {
   expect_error(morie_hawkes_fit(c(3, 1, 2)), "sorted")
   expect_error(morie_hawkes_fit(c(1, NA, 3)), "sorted")
   expect_error(morie_hawkes_fit(c(1)), "at least 2")
-  expect_error(morie_hawkes_fit(c(1, 2, 3), end_time = 2),
-               "end_time")
+  expect_error(
+    morie_hawkes_fit(c(1, 2, 3), end_time = 2),
+    "end_time"
+  )
 })
 
 test_that("print.morie_hawkes_fit returns its argument invisibly", {
@@ -77,16 +81,22 @@ test_that("internal hawkes likelihood + start helpers behave", {
   expect_length(st, 3L)
   expect_true(all(is.finite(st)))
 
-  pen <- morie:::.hawkes_nll_pureR(c(0, 1.5, 1), ev, ev[length(ev)],
-                                   "exponential")
+  pen <- morie:::.hawkes_nll_pureR(
+    c(0, 1.5, 1), ev, ev[length(ev)],
+    "exponential"
+  )
   expect_equal(pen, 1e12)
-  ok <- morie:::.hawkes_nll_pureR(c(-0.5, 0.3, 2), ev, ev[length(ev)],
-                                  "exponential")
+  ok <- morie:::.hawkes_nll_pureR(
+    c(-0.5, 0.3, 2), ev, ev[length(ev)],
+    "exponential"
+  )
   expect_true(is.finite(ok))
 
   expect_null(morie:::.hawkes_kernel_funs("exponential", c(0, 0.3, 0)))
-  expect_true(is.list(morie:::.hawkes_kernel_funs("gamma",
-                                                  c(0, 0.3, 1.5, 2))))
+  expect_true(is.list(morie:::.hawkes_kernel_funs(
+    "gamma",
+    c(0, 0.3, 1.5, 2)
+  )))
 
   lp <- morie:::.hawkes_loglik_poisson(20, ev[length(ev)])
   expect_true(is.finite(lp))
@@ -216,8 +226,10 @@ test_that("horowitz_censored_regression fits a censored LAD model", {
   ystar <- X %*% c(0.5, 1) + stats::rnorm(n)
   y <- pmax(as.numeric(ystar), 0)
   res <- horowitz_censored_regression(X, y, censor = 0)
-  expect_named(res, c("estimate", "se", "n", "n_uncensored", "censor",
-                      "method"))
+  expect_named(res, c(
+    "estimate", "se", "n", "n_uncensored", "censor",
+    "method"
+  ))
   expect_length(res$estimate, 2L)
   expect_equal(res$n, n)
   expect_equal(res$censor, 0)
@@ -280,8 +292,10 @@ test_that("horowitz_duration_model handles a single-covariate vector", {
 })
 
 test_that("horowitz_duration_model returns NA on insufficient data", {
-  res <- horowitz_duration_model(stats::rexp(6), stats::rnorm(6),
-                                 rep(1, 6))
+  res <- horowitz_duration_model(
+    stats::rexp(6), stats::rnorm(6),
+    rep(1, 6)
+  )
   expect_true(all(is.na(res$estimate)))
   expect_match(res$method, "insufficient")
 })
@@ -293,8 +307,10 @@ test_that("horowitz_index_model fits a single-index model", {
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
   y <- (X %*% c(1, 0.5))^2 + stats::rnorm(n, sd = 0.2)
   res <- horowitz_index_model(X, y)
-  expect_named(res, c("estimate", "se", "bandwidth", "n", "loss",
-                      "method"))
+  expect_named(res, c(
+    "estimate", "se", "bandwidth", "n", "loss",
+    "method"
+  ))
   expect_length(res$estimate, 2L)
   expect_equal(sqrt(sum(res$estimate^2)), 1, tolerance = 1e-6)
   expect_true(res$bandwidth > 0)
@@ -352,8 +368,10 @@ test_that("horowitz_kernel_density estimates at the sample points", {
   set.seed(214)
   x <- stats::rnorm(60)
   res <- horowitz_kernel_density(x)
-  expect_named(res, c("estimate", "se", "bandwidth", "n", "kernel",
-                      "method"))
+  expect_named(res, c(
+    "estimate", "se", "bandwidth", "n", "kernel",
+    "method"
+  ))
   expect_length(res$estimate, length(x))
   expect_true(all(res$estimate >= 0))
   expect_true(res$bandwidth > 0)
@@ -442,8 +460,10 @@ test_that("horowitz_mixture_model fits a 2-component mixture by default", {
   set.seed(221)
   y <- c(stats::rnorm(40, -3), stats::rnorm(40, 3))
   res <- horowitz_mixture_model(y)
-  expect_named(res, c("estimate", "log_likelihood", "n", "k", "iters",
-                      "method"))
+  expect_named(res, c(
+    "estimate", "log_likelihood", "n", "k", "iters",
+    "method"
+  ))
   expect_equal(res$k, 2L)
   expect_named(res$estimate, c("pi", "mu", "sigma"))
   expect_length(res$estimate$pi, 2L)
@@ -477,8 +497,10 @@ test_that("horowitz_nonparametric_iv fits an NPIV model", {
   x <- 0.7 * z + stats::rnorm(n, sd = 0.5)
   y <- x + stats::rnorm(n, sd = 0.3)
   res <- horowitz_nonparametric_iv(x, y, z, J = 4, .bootstrap = FALSE)
-  expect_named(res, c("estimate", "se", "grid", "J", "alpha", "n",
-                      "method"))
+  expect_named(res, c(
+    "estimate", "se", "grid", "J", "alpha", "n",
+    "method"
+  ))
   expect_length(res$estimate, length(res$grid))
   expect_equal(res$J, 4)
   expect_equal(res$n, n)
@@ -516,8 +538,10 @@ test_that("horowitz_deconvolution estimates a density with laplace noise", {
   set.seed(226)
   y <- stats::rnorm(80) + stats::rexp(80) - stats::rexp(80)
   res <- horowitz_deconvolution(y)
-  expect_named(res, c("estimate", "grid", "bandwidth", "sigma_u",
-                      "noise", "n", "method"))
+  expect_named(res, c(
+    "estimate", "grid", "bandwidth", "sigma_u",
+    "noise", "n", "method"
+  ))
   expect_length(res$estimate, length(res$grid))
   expect_true(all(res$estimate >= 0))
   expect_true(res$bandwidth > 0)
@@ -529,8 +553,10 @@ test_that("horowitz_deconvolution supports normal noise and custom args", {
   set.seed(227)
   y <- stats::rnorm(60, sd = 1.5)
   grid <- seq(-3, 3, length.out = 11)
-  res <- horowitz_deconvolution(y, sigma_u = 0.3, bandwidth = 1.2,
-                                grid = grid, noise = "normal")
+  res <- horowitz_deconvolution(y,
+    sigma_u = 0.3, bandwidth = 1.2,
+    grid = grid, noise = "normal"
+  )
   expect_equal(res$noise, "normal")
   expect_equal(res$bandwidth, 1.2)
   expect_equal(res$sigma_u, 0.3)
@@ -572,8 +598,10 @@ test_that("horowitz_plr_estimator handles a multi-column parametric part", {
 })
 
 test_that("horowitz_plr_estimator returns NA on insufficient data", {
-  res <- horowitz_plr_estimator(stats::rnorm(4), stats::rnorm(4),
-                                stats::rnorm(4))
+  res <- horowitz_plr_estimator(
+    stats::rnorm(4), stats::rnorm(4),
+    stats::rnorm(4)
+  )
   expect_true(is.na(res$estimate))
   expect_match(res$method, "insufficient")
 })

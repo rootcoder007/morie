@@ -25,19 +25,22 @@
 #' @importFrom stats predict
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 xgboost_objective <- function(x, y, n_estimators = 100L, learning_rate = 0.1,
-                               max_depth = 3L, reg_lambda = 1.0,
-                               reg_alpha = 0.0, task = "auto", seed = 0L,
-                               deterministic_seed = NULL) {
+                              max_depth = 3L, reg_lambda = 1.0,
+                              reg_alpha = 0.0, task = "auto", seed = 0L,
+                              deterministic_seed = NULL) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)
   if (identical(task, "auto")) {
-    task <- if (is.factor(y) || all(y %in% c(0L, 1L)) || is.integer(y))
-              "classification" else "regression"
+    task <- if (is.factor(y) || all(y %in% c(0L, 1L)) || is.integer(y)) {
+      "classification"
+    } else {
+      "regression"
+    }
   }
   if (!is.null(deterministic_seed)) {
     morie_det_rng("xgbst", deterministic_seed)
@@ -52,10 +55,14 @@ xgboost_objective <- function(x, y, n_estimators = 100L, learning_rate = 0.1,
     # 2.0 (data/label -> x/y) and rejects numeric y with binary:logistic,
     # which is what the previous wrapper hit on macOS R CMD check.
     dtrain <- xgboost::xgb.DMatrix(data = x, label = yv)
-    params <- list(objective = obj, eta = learning_rate,
-                   max_depth = max_depth, lambda = reg_lambda, alpha = reg_alpha)
-    fit <- xgboost::xgb.train(params = params, data = dtrain,
-                              nrounds = n_estimators, verbose = 0L)
+    params <- list(
+      objective = obj, eta = learning_rate,
+      max_depth = max_depth, lambda = reg_lambda, alpha = reg_alpha
+    )
+    fit <- xgboost::xgb.train(
+      params = params, data = dtrain,
+      nrounds = n_estimators, verbose = 0L
+    )
     p <- predict(fit, x)
     if (task == "classification") {
       preds <- as.integer(p > 0.5)
@@ -75,12 +82,15 @@ xgboost_objective <- function(x, y, n_estimators = 100L, learning_rate = 0.1,
       stop("install 'xgboost' (preferred) or 'gbm' for xgboost_objective")
     }
     yv <- if (task == "classification") factor(y) else as.numeric(y)
-    df <- as.data.frame(x); df$.y <- yv
+    df <- as.data.frame(x)
+    df$.y <- yv
     distribution <- if (task == "classification") "bernoulli" else "gaussian"
-    fit <- gbm::gbm(.y ~ ., data = df, distribution = distribution,
-                    n.trees = n_estimators, interaction.depth = max_depth,
-                    shrinkage = learning_rate, bag.fraction = 1.0,
-                    verbose = FALSE)
+    fit <- gbm::gbm(.y ~ .,
+      data = df, distribution = distribution,
+      n.trees = n_estimators, interaction.depth = max_depth,
+      shrinkage = learning_rate, bag.fraction = 1.0,
+      verbose = FALSE
+    )
     p <- gbm::predict.gbm(fit, df, n.trees = n_estimators, type = "response")
     if (task == "classification") {
       preds <- as.integer(p > 0.5)

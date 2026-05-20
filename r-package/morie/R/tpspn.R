@@ -12,28 +12,36 @@
 #' @keywords internal
 tpspn <- function(x, y, lam = 0) {
   if (!is.matrix(x)) x <- matrix(x, ncol = 1)
-  y <- as.numeric(y); n <- nrow(x); d <- ncol(x)
-  if (n < d + 2L || length(y) != n)
+  y <- as.numeric(y)
+  n <- nrow(x)
+  d <- ncol(x)
+  if (n < d + 2L || length(y) != n) {
     return(list(estimate = NA_real_, n = n, method = "TPS (n too small)"))
+  }
   R <- as.matrix(stats::dist(x))
   phi <- function(r) ifelse(r > 0, r^2 * log(r), 0)
   K <- phi(R) + lam * diag(n)
   Tmat <- cbind(1, x)
-  A <- rbind(cbind(K, Tmat),
-             cbind(t(Tmat), matrix(0, d + 1, d + 1)))
+  A <- rbind(
+    cbind(K, Tmat),
+    cbind(t(Tmat), matrix(0, d + 1, d + 1))
+  )
   rhs <- c(y, rep(0, d + 1))
   sol <- as.numeric(MASS::ginv(A) %*% rhs)
   a <- sol[seq_len(n)]
   beta <- sol[(n + 1):length(sol)]
   fitted <- as.numeric(K %*% a + Tmat %*% beta)
   resid <- y - fitted
-  sse <- sum(resid^2); sst <- sum((y - mean(y))^2)
+  sse <- sum(resid^2)
+  sst <- sum((y - mean(y))^2)
   r2 <- if (sst > 0) 1 - sse / sst else NA_real_
-  list(a = a, beta = beta, fitted = fitted, residuals = resid,
-       sse = sse, r2 = as.numeric(r2), lambda = lam,
-       estimate = mean(fitted),
-       n = as.integer(n), d = as.integer(d),
-       method = "Thin-plate spline (Duchon 1977)")
+  list(
+    a = a, beta = beta, fitted = fitted, residuals = resid,
+    sse = sse, r2 = as.numeric(r2), lambda = lam,
+    estimate = mean(fitted),
+    n = as.integer(n), d = as.integer(d),
+    method = "Thin-plate spline (Duchon 1977)"
+  )
 }
 
 # CANONICAL TEST

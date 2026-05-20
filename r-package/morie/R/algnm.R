@@ -12,28 +12,37 @@
 #'   `method`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 algnm <- function(x, party = NULL) {
   X <- if (is.matrix(x)) x else as.numeric(x)
   if (!is.matrix(X)) {
     valid <- X[!is.na(X)]
-    if (length(valid) == 0L)
+    if (length(valid) == 0L) {
       return(list(estimate = NA_real_, n = 0L, method = "rice_cohesion"))
-    p_yea <- mean(valid == 1); p_nay <- mean(valid == 0)
-    return(list(estimate = abs(p_yea - p_nay), pct_yea = p_yea,
-                pct_nay = p_nay, n = length(valid),
-                method = "rice_cohesion"))
+    }
+    p_yea <- mean(valid == 1)
+    p_nay <- mean(valid == 0)
+    return(list(
+      estimate = abs(p_yea - p_nay), pct_yea = p_yea,
+      pct_nay = p_nay, n = length(valid),
+      method = "rice_cohesion"
+    ))
   }
-  n <- nrow(X); m <- ncol(X)
+  n <- nrow(X)
+  m <- ncol(X)
   per <- list()
   rice_for <- function(sub) {
     vapply(seq_len(m), function(j) {
-      col <- sub[, j]; col <- col[!is.na(col)]
-      if (length(col) == 0L) NA_real_
-      else abs(mean(col == 1) - mean(col == 0))
+      col <- sub[, j]
+      col <- col[!is.na(col)]
+      if (length(col) == 0L) {
+        NA_real_
+      } else {
+        abs(mean(col == 1) - mean(col == 0))
+      }
     }, numeric(1))
   }
   if (is.null(party)) {
@@ -44,12 +53,15 @@ algnm <- function(x, party = NULL) {
     if (length(party) != n) stop("party length must match n rows")
     for (lbl in unique(party)) {
       per[[as.character(lbl)]] <- mean(rice_for(X[party == lbl, , drop = FALSE]),
-                                      na.rm = TRUE)
+        na.rm = TRUE
+      )
     }
     overall <- mean(unlist(per), na.rm = TRUE)
   }
-  list(estimate = overall, per_party = per, n = n, m = m,
-       method = "rice_cohesion")
+  list(
+    estimate = overall, per_party = per, n = n, m = m,
+    method = "rice_cohesion"
+  )
 }
 
 #' @keywords internal

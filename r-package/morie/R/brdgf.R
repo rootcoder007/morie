@@ -19,20 +19,24 @@
 #' @references Meuwissen-Hayes-Goddard (2001) Genetics 157:1819.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 bayes_ridge_gibbs <- function(x, y, n_iter = 200, burn = 50,
-                               df0 = 4, S0 = NULL, seed = 0,
-                               deterministic_seed = NULL) {
+                              df0 = 4, S0 = NULL, seed = 0,
+                              deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
     morie::morie_det_rng("brdgf", deterministic_seed)
   } else {
     set.seed(seed)
   }
-  X <- as.matrix(x); y <- as.numeric(y); n <- nrow(X); p <- ncol(X)
-  ym <- mean(y); yc <- y - ym
+  X <- as.matrix(x)
+  y <- as.numeric(y)
+  n <- nrow(X)
+  p <- ncol(X)
+  ym <- mean(y)
+  yc <- y - ym
   Xc <- sweep(X, 2, colMeans(X))
   var_y <- if (n > 1) stats::var(yc) else 1
   if (is.null(S0)) S0 <- max((var_y / max(p, 1)) * (df0 - 2) / df0, 1e-6)
@@ -41,7 +45,9 @@ bayes_ridge_gibbs <- function(x, y, n_iter = 200, burn = 50,
   sigma2 <- var_y
   xtx_diag <- colSums(Xc^2)
   resid <- yc - as.numeric(Xc %*% beta)
-  bsum <- matrix(0, 0, p); sj_sum <- matrix(0, 0, p); ssum <- numeric(0)
+  bsum <- matrix(0, 0, p)
+  sj_sum <- matrix(0, 0, p)
+  ssum <- numeric(0)
   for (it in seq_len(n_iter)) {
     for (j in seq_len(p)) {
       xj <- Xc[, j]
@@ -55,24 +61,28 @@ bayes_ridge_gibbs <- function(x, y, n_iter = 200, burn = 50,
     scale_post <- (S0 * df0 + beta^2) / df_post
     chi2 <- stats::rchisq(p, df_post)
     sigma_j2 <- pmax(scale_post * df_post / pmax(chi2, 1e-8), 1e-12)
-    df_e <- 4; Se <- var_y * (df_e - 2) / df_e
+    df_e <- 4
+    Se <- var_y * (df_e - 2) / df_e
     df_post_e <- n + df_e
     scale_post_e <- (sum(resid^2) + df_e * Se) / df_post_e
     sigma2 <- max(scale_post_e * df_post_e /
-                    max(stats::rchisq(1, df_post_e), 1e-8), 1e-12)
+      max(stats::rchisq(1, df_post_e), 1e-8), 1e-12)
     if (it > burn) {
-      bsum <- rbind(bsum, beta); sj_sum <- rbind(sj_sum, sigma_j2)
+      bsum <- rbind(bsum, beta)
+      sj_sum <- rbind(sj_sum, sigma_j2)
       ssum <- c(ssum, sigma2)
     }
   }
   beta_hat <- colMeans(bsum)
   beta_se <- if (nrow(bsum) > 1) apply(bsum, 2, stats::sd) else rep(0, p)
   sigma_j2_hat <- colMeans(sj_sum)
-  list(estimate = mean(abs(beta_hat)), beta = beta_hat, beta_se = beta_se,
-       se = mean(beta_se), sigma_j2 = sigma_j2_hat,
-       sigma2 = mean(ssum), intercept = ym,
-       n_iter = length(ssum), n = n, p = p,
-       method = "BayesA short Gibbs (Meuwissen-Hayes-Goddard)")
+  list(
+    estimate = mean(abs(beta_hat)), beta = beta_hat, beta_se = beta_se,
+    se = mean(beta_se), sigma_j2 = sigma_j2_hat,
+    sigma2 = mean(ssum), intercept = ym,
+    n_iter = length(ssum), n = n, p = p,
+    method = "BayesA short Gibbs (Meuwissen-Hayes-Goddard)"
+  )
 }
 
 # CANONICAL TEST

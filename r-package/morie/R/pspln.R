@@ -13,30 +13,40 @@
 #' @importFrom splines bs
 #' @keywords internal
 pspln <- function(x, y, n_knots = 20L, degree = 3L, lam = 1) {
-  x <- as.numeric(x); y <- as.numeric(y); n <- length(x)
-  if (n < degree + 2L || length(y) != n)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  n <- length(x)
+  if (n < degree + 2L || length(y) != n) {
     return(list(estimate = NA_real_, n = n, method = "P-spline (n too small)"))
+  }
   knots <- seq(min(x), max(x), length.out = n_knots)
-  B <- splines::bs(x, knots = knots[-c(1, length(knots))],
-                   Boundary.knots = range(knots),
-                   degree = degree, intercept = TRUE)
-  B <- as.matrix(B); k <- ncol(B)
+  B <- splines::bs(x,
+    knots = knots[-c(1, length(knots))],
+    Boundary.knots = range(knots),
+    degree = degree, intercept = TRUE
+  )
+  B <- as.matrix(B)
+  k <- ncol(B)
   D <- diff(diag(k), differences = 2L)
-  BtB <- crossprod(B); BtY <- crossprod(B, y)
+  BtB <- crossprod(B)
+  BtY <- crossprod(B, y)
   coef <- as.numeric(solve(BtB + lam * crossprod(D), BtY))
   fitted <- as.numeric(B %*% coef)
   resid <- y - fitted
-  sse <- sum(resid^2); sst <- sum((y - mean(y))^2)
+  sse <- sum(resid^2)
+  sst <- sum((y - mean(y))^2)
   r2 <- if (sst > 0) 1 - sse / sst else NA_real_
   H <- B %*% solve(BtB + lam * crossprod(D), t(B))
   edf <- sum(diag(H))
-  list(coef = coef, fitted = fitted, residuals = resid,
-       sse = sse, r2 = as.numeric(r2),
-       edf = as.numeric(edf), lambda = lam,
-       estimate = mean(fitted),
-       se = sqrt(sse / max(1, n - edf)) / sqrt(n),
-       n = as.integer(n),
-       method = "P-spline (Eilers & Marx 1996)")
+  list(
+    coef = coef, fitted = fitted, residuals = resid,
+    sse = sse, r2 = as.numeric(r2),
+    edf = as.numeric(edf), lambda = lam,
+    estimate = mean(fitted),
+    se = sqrt(sse / max(1, n - edf)) / sqrt(n),
+    n = as.integer(n),
+    method = "P-spline (Eilers & Marx 1996)"
+  )
 }
 
 # CANONICAL TEST

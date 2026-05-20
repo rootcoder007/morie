@@ -9,17 +9,21 @@
 #' @return Named list: placements, ranks_y, U_y, E_U, Var_U, m, n.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 rank_placements <- function(x, y) {
-  x <- as.numeric(x); y <- as.numeric(y)
-  m <- length(x); n <- length(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  m <- length(x)
+  n <- length(y)
   if (m < 1 || n < 1) {
-    return(list(placements = integer(0), ranks_y = numeric(0),
-                U_y = NA_real_, E_U = NA_real_, Var_U = NA_real_,
-                m = m, n = n, method = "Rank placements"))
+    return(list(
+      placements = integer(0), ranks_y = numeric(0),
+      U_y = NA_real_, E_U = NA_real_, Var_U = NA_real_,
+      m = m, n = n, method = "Rank placements"
+    ))
   }
   xs <- sort(x)
   placements <- as.integer(findInterval(y, xs, left.open = FALSE))

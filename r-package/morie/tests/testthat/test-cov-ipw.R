@@ -17,8 +17,10 @@ test_that("validate_cpads_data flags missing variables and respects strict", {
   broken <- d[, setdiff(names(d), c("ebac_tot", "gender")), drop = FALSE]
   miss <- validate_cpads_data(broken, strict = FALSE)
   expect_true(all(c("ebac_tot", "gender") %in% miss))
-  expect_error(validate_cpads_data(broken, strict = TRUE),
-               "missing required variables")
+  expect_error(
+    validate_cpads_data(broken, strict = TRUE),
+    "missing required variables"
+  )
 })
 
 test_that(".weighted_prop and .ess compute on simple inputs", {
@@ -40,12 +42,15 @@ test_that("run_propensity_ipw_analysis returns IPW tables, writes CSVs", {
 
 test_that("run_ebac_selection_ipw_analysis errors without the survey pkg", {
   testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...)
-      if (identical(package, "survey")) FALSE else TRUE,
-    .package = "base")
+    requireNamespace = function(package, ...) {
+      if (identical(package, "survey")) FALSE else TRUE
+    },
+    .package = "base"
+  )
   expect_error(
     run_ebac_selection_ipw_analysis(make_canonical_cpads(n = 200L)),
-    "survey")
+    "survey"
+  )
 })
 
 test_that("run_ebac_selection_ipw_analysis runs the selection-adjusted IPW", {
@@ -53,10 +58,13 @@ test_that("run_ebac_selection_ipw_analysis runs the selection-adjusted IPW", {
   d <- make_canonical_cpads(n = 1600L, seed = 404L)
   od <- tempfile("ebac-")
   res <- suppressWarnings(
-    run_ebac_selection_ipw_analysis(d, output_dir = od))
-  expect_named(res, c("analysis_frame", "ebac_final_ipw_diagnostics",
-                      "ebac_final_ipw_or", "ebac_final_ipw_linear",
-                      "ebac_final_ipw_comparison"))
+    run_ebac_selection_ipw_analysis(d, output_dir = od)
+  )
+  expect_named(res, c(
+    "analysis_frame", "ebac_final_ipw_diagnostics",
+    "ebac_final_ipw_or", "ebac_final_ipw_linear",
+    "ebac_final_ipw_comparison"
+  ))
   expect_equal(nrow(res$ebac_final_ipw_diagnostics), 8L)
   expect_equal(res$ebac_final_ipw_or$model, "selection_adjusted_ipw")
   expect_equal(nrow(res$ebac_final_ipw_comparison), 2L)

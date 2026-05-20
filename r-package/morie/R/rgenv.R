@@ -15,13 +15,15 @@
 #' @examples
 #' t <- seq(0, 1, length.out = 200)
 #' x <- cos(2 * pi * 5 * t) * (1 + 0.3 * cos(2 * pi * 0.5 * t))
-#' r <- rgenv(x); length(r$envelope)
+#' r <- rgenv(x)
+#' length(r$envelope)
 rgenv <- function(x) {
   N <- length(x)
   X <- stats::fft(x)
   h <- numeric(N)
   if (N %% 2 == 0) {
-    h[1] <- 1; h[N / 2 + 1] <- 1
+    h[1] <- 1
+    h[N / 2 + 1] <- 1
     h[2:(N / 2)] <- 2
   } else {
     h[1] <- 1
@@ -35,9 +37,11 @@ rgenv <- function(x) {
   dphi <- ((dphi + pi) %% (2 * pi)) - pi
   phase_unwrapped <- cumsum(c(phase[1], dphi))
   inst_freq <- diff(phase_unwrapped) / (2 * pi)
-  list(envelope = env, analytic = z,
-       instantaneous_phase = phase_unwrapped,
-       instantaneous_freq = inst_freq)
+  list(
+    envelope = env, analytic = z,
+    instantaneous_phase = phase_unwrapped,
+    instantaneous_freq = inst_freq
+  )
 }
 
 #' @rdname rgenv

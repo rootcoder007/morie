@@ -14,14 +14,16 @@
 #'   \code{n_iter}, \code{loss}, \code{n}, \code{method}.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 gradient_descent_vanilla <- function(x, y, lr = 0.01, n_iter = 1000, tol = 1e-8) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
-  x <- as.matrix(x); y <- as.numeric(y)
-  n <- nrow(x); p <- ncol(x)
+  x <- as.matrix(x)
+  y <- as.numeric(y)
+  n <- nrow(x)
+  p <- ncol(x)
   X1 <- cbind(1, x)
   theta <- rep(0.0, p + 1)
   it <- 0L

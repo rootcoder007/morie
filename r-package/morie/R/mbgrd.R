@@ -12,15 +12,17 @@
 #'   loss, n, method.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 mini_batch_gradient <- function(x, y, lr = 0.01, n_epochs = 200,
                                 batch_size = 32L, seed = 0L) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
-  x <- as.matrix(x); y <- as.numeric(y)
-  n <- nrow(x); p <- ncol(x)
+  x <- as.matrix(x)
+  y <- as.numeric(y)
+  n <- nrow(x)
+  p <- ncol(x)
   X1 <- cbind(1, x)
   theta <- rep(0.0, p + 1)
   set.seed(seed)
@@ -29,7 +31,8 @@ mini_batch_gradient <- function(x, y, lr = 0.01, n_epochs = 200,
     starts <- seq.int(1L, n, by = batch_size)
     for (s in starts) {
       j <- idx[s:min(s + batch_size - 1L, n)]
-      xb <- X1[j, , drop = FALSE]; yb <- y[j]
+      xb <- X1[j, , drop = FALSE]
+      yb <- y[j]
       grad <- (2 / length(j)) * crossprod(xb, xb %*% theta - yb)
       theta <- theta - lr * as.numeric(grad)
     }

@@ -11,11 +11,16 @@
 
 test_that("morie_cache_dir honours XDG_CACHE_HOME then falls back to ~", {
   old <- Sys.getenv("XDG_CACHE_HOME", unset = NA)
-  on.exit(if (is.na(old)) Sys.unsetenv("XDG_CACHE_HOME") else
-    Sys.setenv(XDG_CACHE_HOME = old), add = TRUE)
+  on.exit(if (is.na(old)) {
+    Sys.unsetenv("XDG_CACHE_HOME")
+  } else {
+    Sys.setenv(XDG_CACHE_HOME = old)
+  }, add = TRUE)
   Sys.setenv(XDG_CACHE_HOME = file.path(tempdir(), "xdg"))
-  expect_equal(morie:::morie_cache_dir(),
-               file.path(tempdir(), "xdg", "morie"))
+  expect_equal(
+    morie:::morie_cache_dir(),
+    file.path(tempdir(), "xdg", "morie")
+  )
   Sys.unsetenv("XDG_CACHE_HOME")
   expect_match(morie:::morie_cache_dir(), "morie$")
 })
@@ -28,7 +33,8 @@ test_that("morie_builtin_db returns a morie.db path", {
 
 test_that("morie_db_connect errors clearly without DBI / RSQLite", {
   testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...) FALSE, .package = "base")
+    requireNamespace = function(package, ...) FALSE, .package = "base"
+  )
   expect_error(morie_db_connect(tempfile(fileext = ".db")), "DBI")
 })
 
@@ -83,8 +89,10 @@ test_that(".fuzzy_match_key resolves exact, legacy and substring keys", {
 })
 
 test_that("morie_load_dataset errors on an unknown key", {
-  expect_error(morie_load_dataset("not-a-real-dataset-key-xyzzy"),
-               "Unknown dataset key")
+  expect_error(
+    morie_load_dataset("not-a-real-dataset-key-xyzzy"),
+    "Unknown dataset key"
+  )
 })
 
 test_that("morie_load_dataset loads a seeded table from the user cache", {
@@ -95,7 +103,8 @@ test_that("morie_load_dataset loads a seeded table from the user cache", {
   tn <- cat$table_name[cat$key == "ocp21"][1]
   morie_cache_store(data.frame(SEQID = 1:3, v = 4:6), tn, db_path = db)
   d <- tryCatch(morie_load_dataset("ocp21", db_path = db),
-                error = function(e) NULL)
+    error = function(e) NULL
+  )
   # the built-in DB (if shipped) or our seeded cache supplies the rows
   expect_true(is.null(d) || is.data.frame(d))
 })
@@ -109,30 +118,38 @@ test_that("morie_load_cpads returns NULL when offline and use_ckan = FALSE", {
   old <- setwd(withr)
   on.exit(setwd(old), add = TRUE)
   res <- tryCatch(morie_load_cpads(db_path = db, use_ckan = FALSE),
-                  error = function(e) e)
+    error = function(e) e
+  )
   expect_true(is.null(res) || inherits(res, "error") ||
-                is.data.frame(res))
+    is.data.frame(res))
 })
 
 test_that("morie_fetch_ckan paginates a mocked CKAN datastore", {
   .cdb_have_db()
   skip_if_not_installed("jsonlite")
-  page1 <- paste0('{"success":true,"result":{"total":3,"records":',
-                  '[{"_id":1,"SEQID":"a"},{"_id":2,"SEQID":"b"}]}}')
-  page2 <- paste0('{"success":true,"result":{"total":3,"records":',
-                  '[{"_id":3,"SEQID":"c"}]}}')
+  page1 <- paste0(
+    '{"success":true,"result":{"total":3,"records":',
+    '[{"_id":1,"SEQID":"a"},{"_id":2,"SEQID":"b"}]}}'
+  )
+  page2 <- paste0(
+    '{"success":true,"result":{"total":3,"records":',
+    '[{"_id":3,"SEQID":"c"}]}}'
+  )
   page_empty <- '{"success":true,"result":{"total":3,"records":[]}}'
   calls <- 0L
   testthat::local_mocked_bindings(
     readLines = function(con, ...) {
       calls <<- calls + 1L
       if (calls == 1L) page1 else if (calls == 2L) page2 else page_empty
-    }, .package = "base")
+    }, .package = "base"
+  )
   db <- tempfile(fileext = ".db")
   on.exit(unlink(db), add = TRUE)
-  dat <- morie_fetch_ckan(dataset_key = "cpads",
-                          resource_id = "fake-resource-id",
-                          db_path = db)
+  dat <- morie_fetch_ckan(
+    dataset_key = "cpads",
+    resource_id = "fake-resource-id",
+    db_path = db
+  )
   expect_s3_class(dat, "data.frame")
   expect_equal(nrow(dat), 3L)
   expect_false("_id" %in% names(dat))
@@ -143,11 +160,16 @@ test_that("morie_fetch_ckan errors when the datastore yields no records", {
   .cdb_have_db()
   skip_if_not_installed("jsonlite")
   testthat::local_mocked_bindings(
-    readLines = function(con, ...)
-      '{"success":true,"result":{"total":0,"records":[]}}',
-    .package = "base")
+    readLines = function(con, ...) {
+      '{"success":true,"result":{"total":0,"records":[]}}'
+    },
+    .package = "base"
+  )
   expect_error(
-    morie_fetch_ckan(dataset_key = "cpads", resource_id = "fake",
-                     db_path = tempfile(fileext = ".db")),
-    "0 records")
+    morie_fetch_ckan(
+      dataset_key = "cpads", resource_id = "fake",
+      db_path = tempfile(fileext = ".db")
+    ),
+    "0 records"
+  )
 })

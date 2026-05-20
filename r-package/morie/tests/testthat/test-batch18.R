@@ -86,8 +86,10 @@ test_that("rgwav wavelet path returns positive threshold and sigma", {
 })
 
 test_that("rgwav MA fallback warns when wavelets unavailable", {
-  skip_if(requireNamespace("wavelets", quietly = TRUE),
-          "wavelets installed; fallback path not exercised")
+  skip_if(
+    requireNamespace("wavelets", quietly = TRUE),
+    "wavelets installed; fallback path not exercised"
+  )
   set.seed(2)
   x <- rnorm(64)
   expect_warning(r <- rgwav(x), "fallback")
@@ -129,13 +131,16 @@ test_that("rangayyan_zero_crossing alias is identical to rgzcr", {
 test_that("regularization_path runs ridge with glmnet", {
   skip_if_not_installed("glmnet")
   set.seed(0)
-  n <- 40; p <- 3
+  n <- 40
+  p <- 3
   x <- matrix(rnorm(n * p), n, p)
   y <- as.numeric(x %*% c(1, -0.5, 0.25) + rnorm(n))
   r <- regularization_path(x, y, penalty = "ridge")
   expect_type(r, "list")
-  expect_named(r, c("estimate", "coef_path", "alphas", "penalty",
-                    "l1_ratio", "n", "method"))
+  expect_named(r, c(
+    "estimate", "coef_path", "alphas", "penalty",
+    "l1_ratio", "n", "method"
+  ))
   expect_identical(r$penalty, "ridge")
   expect_true(is.matrix(r$coef_path))
   expect_equal(ncol(r$coef_path), p + 1)
@@ -170,8 +175,10 @@ test_that("rkhsc fits Gaussian RKHS with default sigma", {
   y <- sin(2 * pi * x) + rnorm(50, sd = 0.05)
   r <- morie:::rkhsc(x, y, lam = 1e-4)
   expect_type(r, "list")
-  expect_named(r, c("alpha", "fitted", "residuals", "sigma", "lambda",
-                    "sse", "r2", "estimate", "se", "n", "method"))
+  expect_named(r, c(
+    "alpha", "fitted", "residuals", "sigma", "lambda",
+    "sse", "r2", "estimate", "se", "n", "method"
+  ))
   expect_length(r$fitted, 50)
   expect_identical(r$n, 50L)
   expect_true(is.finite(r$r2))
@@ -202,8 +209,10 @@ test_that("rkhs_full returns documented structure", {
   M <- matrix(sample(0:2, 20, TRUE), 5, 4)
   r <- rkhs_full(rep(0, 5), c(1, 2, 1.5, 2.5, 2), M)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "alpha", "beta", "K", "f_hat",
-                    "se", "h", "n", "method"))
+  expect_named(r, c(
+    "estimate", "alpha", "beta", "K", "f_hat",
+    "se", "h", "n", "method"
+  ))
   expect_identical(r$n, 5L)
   expect_true(is.matrix(r$K))
   expect_identical(dim(r$K), c(5L, 5L))
@@ -275,13 +284,16 @@ test_that("random_search_cv runs a small regression search", {
   skip_if_not_installed("glmnet")
   skip_if_not_installed("elasticnet")
   set.seed(0)
-  n <- 40; p <- 3
+  n <- 40
+  p <- 3
   x <- matrix(rnorm(n * p), n, p)
   y <- as.numeric(x %*% c(1, -0.5, 0.25) + rnorm(n))
   r <- random_search_cv(x, y, n_iter = 3L, cv = 3L, task = "regression")
   expect_type(r, "list")
-  expect_named(r, c("estimate", "best_params", "best_score", "sampled_params",
-                    "sampled_scores", "n_iter", "task", "n", "method"))
+  expect_named(r, c(
+    "estimate", "best_params", "best_score", "sampled_params",
+    "sampled_scores", "n_iter", "task", "n", "method"
+  ))
   expect_identical(r$task, "regression")
   expect_equal(r$n, n)
   expect_identical(r$n_iter, 3L)
@@ -293,7 +305,8 @@ test_that("random_search_cv auto-detects classification task", {
   skip_if_not_installed("glmnet")
   skip_if_not_installed("elasticnet")
   set.seed(1)
-  n <- 40; p <- 3
+  n <- 40
+  p <- 3
   x <- matrix(rnorm(n * p), n, p)
   y <- rbinom(n, 1, 0.5)
   r <- random_search_cv(x, y, n_iter = 3L, cv = 3L, task = "auto")
@@ -330,8 +343,10 @@ test_that("rank_order_statistics returns documented structure", {
   x <- c(1.5, -2.0, 3.0, -0.5, 2.5)
   r <- rank_order_statistics(x)
   expect_type(r, "list")
-  expect_named(r, c("signed_ranks", "abs_ranks", "W_plus", "W_minus",
-                    "n_nonzero", "n", "method"))
+  expect_named(r, c(
+    "signed_ranks", "abs_ranks", "W_plus", "W_minus",
+    "n_nonzero", "n", "method"
+  ))
   expect_length(r$signed_ranks, length(x))
   expect_length(r$abs_ranks, length(x))
   expect_identical(r$n, 5L)
@@ -359,8 +374,10 @@ test_that("rnn_genomic trains and returns documented structure", {
   y <- rowSums(M) + 0.2 * rnorm(15)
   r <- rnn_genomic(rep(0, 15), y, M, hidden = 4, n_epochs = 15, seed = 8)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "y_hat", "W_h", "W_x", "b_h", "w_o", "b_o",
-                    "loss_curve", "se", "n", "method"))
+  expect_named(r, c(
+    "estimate", "y_hat", "W_h", "W_x", "b_h", "w_o", "b_o",
+    "loss_curve", "se", "n", "method"
+  ))
   expect_identical(r$n, 15L)
   expect_length(r$y_hat, 15)
   expect_identical(dim(r$W_h), c(4L, 4L))
@@ -374,11 +391,16 @@ test_that("rnn_genomic accepts a deterministic_seed", {
   set.seed(9)
   M <- matrix(rnorm(60), 12, 5)
   y <- rowSums(M) + 0.1 * rnorm(12)
-  ok <- tryCatch({
-    r <- rnn_genomic(rep(0, 12), y, M, hidden = 3, n_epochs = 8,
-                     deterministic_seed = 123L)
-    is.list(r) && length(r$y_hat) == 12
-  }, error = function(e) NA)
+  ok <- tryCatch(
+    {
+      r <- rnn_genomic(rep(0, 12), y, M,
+        hidden = 3, n_epochs = 8,
+        deterministic_seed = 123L
+      )
+      is.list(r) && length(r$y_hat) == 12
+    },
+    error = function(e) NA
+  )
   if (isTRUE(ok)) expect_true(ok) else expect_true(TRUE)
 })
 
@@ -389,8 +411,10 @@ test_that("roc_auc_score returns documented structure", {
   y_score <- c(rnorm(20, 0), rnorm(20, 1.5))
   r <- roc_auc_score(y_true, y_score)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "auc", "fpr", "tpr", "thresholds",
-                    "n", "n_positive", "n_negative", "method"))
+  expect_named(r, c(
+    "estimate", "auc", "fpr", "tpr", "thresholds",
+    "n", "n_positive", "n_negative", "method"
+  ))
   expect_true(r$auc >= 0 && r$auc <= 1)
   expect_identical(r$n, 40L)
   expect_identical(r$n_positive, 20L)
@@ -401,8 +425,10 @@ test_that("roc_auc_score returns documented structure", {
 
 test_that("roc_auc_score errors on non-binary y_true", {
   skip_if_not_installed("pROC")
-  expect_error(roc_auc_score(c(0, 1, 2, 1), c(0.1, 0.2, 0.3, 0.4)),
-               "binary")
+  expect_error(
+    roc_auc_score(c(0, 1, 2, 1), c(0.1, 0.2, 0.3, 0.4)),
+    "binary"
+  )
 })
 
 test_that("rotrp_rotary_position_embedding returns documented structure", {

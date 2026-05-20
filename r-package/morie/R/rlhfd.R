@@ -13,6 +13,8 @@ rlhf_reward <- function(x, w = NULL, b = 0) {
   if (is.null(w)) w <- rep(1 / d, d)
   if (length(w) != d) stop(sprintf("w must have length %d", d))
   r <- as.numeric(xm %*% w + b)
-  list(value = r[1L], tensor = r,
-       w = as.numeric(w), b = b, method = "rlhf-reward-head")
+  list(
+    value = r[1L], tensor = r,
+    w = as.numeric(w), b = b, method = "rlhf-reward-head"
+  )
 }

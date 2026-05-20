@@ -44,19 +44,25 @@ NULL
 .gini_int <- function(x) {
   x <- sort(as.numeric(x))
   n <- length(x)
-  if (n == 0L || sum(x) == 0) return(NA_real_)
+  if (n == 0L || sum(x) == 0) {
+    return(NA_real_)
+  }
   (2 * sum(seq_len(n) * x) - (n + 1) * sum(x)) / (n * sum(x))
 }
 
 .hill_mle <- function(x, x_min) {
   x <- x[x >= x_min]
   n <- length(x)
-  if (n < 2L) return(NA_real_)
+  if (n < 2L) {
+    return(NA_real_)
+  }
   1 + n / sum(log(x / x_min))
 }
 
 .cramer_v <- function(tbl) {
-  if (any(dim(tbl) < 2L)) return(NA_real_)
+  if (any(dim(tbl) < 2L)) {
+    return(NA_real_)
+  }
   chi <- suppressWarnings(stats::chisq.test(tbl, correct = FALSE))
   k <- min(dim(tbl))
   sqrt(as.numeric(chi$statistic) / (sum(tbl) * (k - 1)))
@@ -130,7 +136,9 @@ mrm_otis_placement_concentration <- function(
       return(mean(nums))
     }
     nums <- as.numeric(regmatches(s, regexpr("[0-9]+", s)))
-    if (length(nums) == 0L) return(NA_real_)
+    if (length(nums) == 0L) {
+      return(NA_real_)
+    }
     nums[1]
   }
 
@@ -157,10 +165,12 @@ mrm_otis_placement_concentration <- function(
     x <- x[is.finite(x) & x > 0]
     n <- length(x)
     if (n == 0L) {
-      return(data.frame(year = label, n_individuals = 0,
-                        n_placements = 0, mean_per_individual = NA_real_,
-                        gini = NA_real_, hill_alpha = NA_real_,
-                        top_pct_share = NA_real_))
+      return(data.frame(
+        year = label, n_individuals = 0,
+        n_placements = 0, mean_per_individual = NA_real_,
+        gini = NA_real_, hill_alpha = NA_real_,
+        top_pct_share = NA_real_
+      ))
     }
     x_sorted <- sort(x, decreasing = TRUE)
     cut <- max(1L, ceiling(top_pct * n))
@@ -241,10 +251,12 @@ mrm_otis_seg_duration_km <- function(
     d <- d[!is.na(d) & d > 0]
     n <- length(d)
     if (n == 0L) {
-      return(data.frame(stratum = s, n = 0, mean_days = NA_real_,
-                        median_days = NA_real_, q25_days = NA_real_,
-                        pct_above_mandela = NA_real_,
-                        median_among_above_mandela = NA_real_))
+      return(data.frame(
+        stratum = s, n = 0, mean_days = NA_real_,
+        median_days = NA_real_, q25_days = NA_real_,
+        pct_above_mandela = NA_real_,
+        median_among_above_mandela = NA_real_
+      ))
     }
     above <- d > mandela_threshold
     data.frame(
@@ -296,7 +308,8 @@ mrm_otis_mortification_cooccurrence <- function(
   names(bins) <- alert_cols
   pairs <- utils::combn(alert_cols, 2L, simplify = FALSE)
   rows <- lapply(pairs, function(p) {
-    a <- bins[[p[1]]]; b <- bins[[p[2]]]
+    a <- bins[[p[1]]]
+    b <- bins[[p[2]]]
     keep <- !is.na(a) & !is.na(b)
     tbl <- table(a[keep], b[keep])
     chi <- suppressWarnings(stats::chisq.test(tbl, correct = FALSE))

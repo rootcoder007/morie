@@ -12,8 +12,8 @@
 #' @references Armstrong et al. (2014), Ch 2.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 mdvtr <- function(x) {
@@ -21,15 +21,19 @@ mdvtr <- function(x) {
   x <- x[is.finite(x)]
   n <- length(x)
   if (n == 0L) {
-    return(list(estimate = NA_real_, se = NA_real_, ci_lower = NA_real_,
-                ci_upper = NA_real_, n = 0L, method = "median_voter"))
+    return(list(
+      estimate = NA_real_, se = NA_real_, ci_lower = NA_real_,
+      ci_upper = NA_real_, n = 0L, method = "median_voter"
+    ))
   }
   est <- stats::median(x)
-  se  <- if (n > 1L) 1.2533141373 * stats::sd(x) / sqrt(n) else NA_real_
+  se <- if (n > 1L) 1.2533141373 * stats::sd(x) / sqrt(n) else NA_real_
   ci_lo <- if (is.finite(se)) est - 1.96 * se else NA_real_
   ci_hi <- if (is.finite(se)) est + 1.96 * se else NA_real_
-  list(estimate = est, se = se, ci_lower = ci_lo, ci_upper = ci_hi,
-       n = n, method = "Median voter theorem")
+  list(
+    estimate = est, se = se, ci_lower = ci_lo, ci_upper = ci_hi,
+    n = n, method = "Median voter theorem"
+  )
 }
 
 #' @keywords internal

@@ -16,15 +16,19 @@ test_that("estimate_irm errors without Suggests packages or returns valid list",
 
   if (!have_all) {
     expect_error(
-      estimate_irm(df, treatment = "T", outcome = "Y",
-                   covariates = c("X1", "X2", "X3")),
+      estimate_irm(df,
+        treatment = "T", outcome = "Y",
+        covariates = c("X1", "X2", "X3")
+      ),
       "required for estimate_irm"
     )
   } else {
     skip_if_not_installed("data.table")
-    res <- estimate_irm(df, treatment = "T", outcome = "Y",
-                        covariates = c("X1", "X2", "X3"),
-                        n_folds = 2L, random_state = 7L)
+    res <- estimate_irm(df,
+      treatment = "T", outcome = "Y",
+      covariates = c("X1", "X2", "X3"),
+      n_folds = 2L, random_state = 7L
+    )
     expect_type(res, "list")
     expect_named(res, c("ate", "se", "ci_lower", "ci_upper", "n", "method"))
     expect_true(is.finite(res$ate))
@@ -37,7 +41,8 @@ test_that("estimate_irm errors without Suggests packages or returns valid list",
 
 test_that("irtsp fits a 2PL spatial model and returns expected structure", {
   set.seed(11)
-  n <- 25L; m <- 6L
+  n <- 25L
+  m <- 6L
   ideal <- rnorm(n)
   diff <- rnorm(m)
   disc <- runif(m, 0.5, 1.5)
@@ -83,8 +88,10 @@ test_that("isotn produces a monotone increasing fit", {
   y <- c(1, 3, 2, 5, 4, 6, 7, 8, 7, 10)
   res <- morie:::isotn(x, y)
   expect_type(res, "list")
-  expect_named(res, c("x_sorted", "fitted", "residuals", "sse", "r2",
-                      "estimate", "n", "method"))
+  expect_named(res, c(
+    "x_sorted", "fitted", "residuals", "sse", "r2",
+    "estimate", "n", "method"
+  ))
   expect_true(all(diff(res$fitted) >= -1e-9))
   expect_length(res$fitted, length(x))
   expect_equal(res$n, 10L)
@@ -113,8 +120,10 @@ test_that("isotonic_regression alias is identical to isotn", {
 test_that("jkest computes jackknife bias and variance for the mean", {
   res <- morie:::jkest(c(3, 5, 7, 9, 11))
   expect_type(res, "list")
-  expect_named(res, c("estimate", "theta_hat", "bias", "var", "se",
-                      "n", "method"))
+  expect_named(res, c(
+    "estimate", "theta_hat", "bias", "var", "se",
+    "n", "method"
+  ))
   expect_equal(res$theta_hat, 7)
   expect_lt(abs(res$bias), 1e-9)
   expect_equal(res$n, 5L)
@@ -150,8 +159,10 @@ test_that("johansen_cointegration runs on a small I(1) system", {
 
   res <- johansen_cointegration(Y, k_ar_diff = 1)
   expect_type(res, "list")
-  expect_named(res, c("eigenvalues", "trace_stat", "crit_values",
-                      "rank", "n", "k", "method"))
+  expect_named(res, c(
+    "eigenvalues", "trace_stat", "crit_values",
+    "rank", "n", "k", "method"
+  ))
   expect_equal(res$n, Tt)
   expect_equal(res$k, 3L)
   expect_true(res$rank >= 0L && res$rank <= res$k)
@@ -159,8 +170,10 @@ test_that("johansen_cointegration runs on a small I(1) system", {
 })
 
 test_that("johansen_cointegration errors on too-few rows or columns", {
-  expect_error(johansen_cointegration(matrix(rnorm(20), 10, 2)),
-               "T>=20")
+  expect_error(
+    johansen_cointegration(matrix(rnorm(20), 10, 2)),
+    "T>=20"
+  )
   set.seed(32)
   oneCol <- matrix(cumsum(rnorm(40)), ncol = 1L)
   expect_error(johansen_cointegration(oneCol), "k>=2")
@@ -168,8 +181,10 @@ test_that("johansen_cointegration errors on too-few rows or columns", {
 
 test_that("johansen_cointegration transposes a wide matrix", {
   set.seed(33)
-  wide <- t(cbind(cumsum(rnorm(40)), cumsum(rnorm(40)),
-                  cumsum(rnorm(40))))
+  wide <- t(cbind(
+    cumsum(rnorm(40)), cumsum(rnorm(40)),
+    cumsum(rnorm(40))
+  ))
   res <- johansen_cointegration(wide)
   expect_equal(res$n, 40L)
   expect_equal(res$k, 3L)
@@ -180,8 +195,10 @@ test_that("kalman_filter runs a default local-level model", {
   x <- cumsum(rnorm(30))
   res <- kalman_filter(x)
   expect_type(res, "list")
-  expect_named(res, c("state", "state_cov", "innovations",
-                      "innovation_variance", "loglik", "n", "method"))
+  expect_named(res, c(
+    "state", "state_cov", "innovations",
+    "innovation_variance", "loglik", "n", "method"
+  ))
   expect_equal(res$n, 30L)
   expect_equal(nrow(res$state), 30L)
   expect_equal(dim(res$state_cov)[1], 30L)
@@ -192,9 +209,11 @@ test_that("kalman_filter runs a default local-level model", {
 test_that("kalman_filter accepts explicit system matrices", {
   set.seed(42)
   x <- cumsum(rnorm(25))
-  res <- kalman_filter(x, transition = matrix(1), H = matrix(1),
-                       Q = matrix(0.5), R = matrix(1),
-                       x0 = 0, P0 = matrix(10))
+  res <- kalman_filter(x,
+    transition = matrix(1), H = matrix(1),
+    Q = matrix(0.5), R = matrix(1),
+    x0 = 0, P0 = matrix(10)
+  )
   expect_equal(res$n, 25L)
   expect_equal(nrow(res$innovations), 25L)
 })
@@ -205,13 +224,19 @@ test_that("kalman_filter errors with fewer than two observations", {
 
 test_that("kmeans_clustering clusters a small numeric matrix", {
   set.seed(51)
-  X <- rbind(matrix(rnorm(40, 0), 20, 2),
-             matrix(rnorm(40, 6), 20, 2))
-  res <- kmeans_clustering(X, n_clusters = 2L, n_init = 3L,
-                           max_iter = 50L, seed = 1L)
+  X <- rbind(
+    matrix(rnorm(40, 0), 20, 2),
+    matrix(rnorm(40, 6), 20, 2)
+  )
+  res <- kmeans_clustering(X,
+    n_clusters = 2L, n_init = 3L,
+    max_iter = 50L, seed = 1L
+  )
   expect_type(res, "list")
-  expect_named(res, c("estimate", "labels", "centers", "inertia",
-                      "n_iter", "n_clusters", "n", "method"))
+  expect_named(res, c(
+    "estimate", "labels", "centers", "inertia",
+    "n_iter", "n_clusters", "n", "method"
+  ))
   expect_length(res$labels, 40L)
   expect_true(all(res$labels %in% c(0L, 1L)))
   expect_equal(res$n_clusters, 2L)
@@ -251,8 +276,10 @@ test_that("ksr01_kosorok_empirical_process supports f and mu0 arguments", {
 })
 
 test_that("kosorok_empirical_process alias matches", {
-  expect_identical(kosorok_empirical_process,
-                   ksr01_kosorok_empirical_process)
+  expect_identical(
+    kosorok_empirical_process,
+    ksr01_kosorok_empirical_process
+  )
 })
 
 test_that("ksr02_kosorok_donsker_class returns a finite bracketing integral", {
@@ -280,8 +307,10 @@ test_that("ksr03_kosorok_glivenko_cantelli accepts an alternate cdf", {
   xs <- runif(100)
   res <- ksr03_kosorok_glivenko_cantelli(xs, cdf = "punif")
   expect_true(is.finite(res$statistic))
-  expect_identical(kosorok_glivenko_cantelli,
-                   ksr03_kosorok_glivenko_cantelli)
+  expect_identical(
+    kosorok_glivenko_cantelli,
+    ksr03_kosorok_glivenko_cantelli
+  )
 })
 
 test_that("ksr04_kosorok_vc_dimension returns d+1 for matrices and vectors", {
@@ -306,8 +335,10 @@ test_that("ksr05_kosorok_bracketing_number returns ceil(1/e^2)", {
 
   res2 <- ksr05_kosorok_bracketing_number(1:5)
   expect_equal(res2$estimate, 100L)
-  expect_identical(kosorok_bracketing_number,
-                   ksr05_kosorok_bracketing_number)
+  expect_identical(
+    kosorok_bracketing_number,
+    ksr05_kosorok_bracketing_number
+  )
 })
 
 test_that("ksr06_kosorok_maximal_inequality returns a finite RHS bound", {
@@ -321,8 +352,10 @@ test_that("ksr06_kosorok_maximal_inequality returns a finite RHS bound", {
 
   res1 <- ksr06_kosorok_maximal_inequality(c(2))
   expect_true(is.na(res1$estimate))
-  expect_identical(kosorok_maximal_inequality,
-                   ksr06_kosorok_maximal_inequality)
+  expect_identical(
+    kosorok_maximal_inequality,
+    ksr06_kosorok_maximal_inequality
+  )
 })
 
 test_that("ksr07_kosorok_bootstrap_empirical returns mean/SD of G_n", {
@@ -338,13 +371,17 @@ test_that("ksr07_kosorok_bootstrap_empirical returns mean/SD of G_n", {
 
 test_that("ksr07_kosorok_bootstrap_empirical supports deterministic_seed", {
   if (FALSE) {
-    res <- ksr07_kosorok_bootstrap_empirical(rnorm(50), B = 50,
-                                             deterministic_seed = 1L)
+    res <- ksr07_kosorok_bootstrap_empirical(rnorm(50),
+      B = 50,
+      deterministic_seed = 1L
+    )
     expect_true(is.finite(res$estimate))
   }
   expect_true(TRUE)
-  expect_identical(kosorok_bootstrap_empirical,
-                   ksr07_kosorok_bootstrap_empirical)
+  expect_identical(
+    kosorok_bootstrap_empirical,
+    ksr07_kosorok_bootstrap_empirical
+  )
 })
 
 test_that("ksr08_kosorok_multiplier_bootstrap returns mean/SD of G_n", {
@@ -360,11 +397,15 @@ test_that("ksr08_kosorok_multiplier_bootstrap returns mean/SD of G_n", {
 
 test_that("ksr08_kosorok_multiplier_bootstrap supports deterministic_seed", {
   if (FALSE) {
-    res <- ksr08_kosorok_multiplier_bootstrap(rnorm(50), B = 50,
-                                              deterministic_seed = 1L)
+    res <- ksr08_kosorok_multiplier_bootstrap(rnorm(50),
+      B = 50,
+      deterministic_seed = 1L
+    )
     expect_true(is.finite(res$estimate))
   }
   expect_true(TRUE)
-  expect_identical(kosorok_multiplier_bootstrap,
-                   ksr08_kosorok_multiplier_bootstrap)
+  expect_identical(
+    kosorok_multiplier_bootstrap,
+    ksr08_kosorok_multiplier_bootstrap
+  )
 })

@@ -8,7 +8,7 @@
 
 skip_if_no_hash <- function() {
   ok <- requireNamespace("digest", quietly = TRUE) ||
-        requireNamespace("openssl", quietly = TRUE)
+    requireNamespace("openssl", quietly = TRUE)
   testthat::skip_if_not(ok, "neither 'digest' nor 'openssl' available")
 }
 
@@ -27,9 +27,9 @@ test_that("bysid deterministic_seed is reproducible", {
   r3 <- bysid(Y, n_iter = 120L, burn = 20L, deterministic_seed = 999L)
 
   expect_equal(r1$x_mean, r2$x_mean)
-  expect_equal(r1$x_sd,   r2$x_sd)
-  expect_equal(r1$alpha,  r2$alpha)
-  expect_equal(r1$beta,   r2$beta)
+  expect_equal(r1$x_sd, r2$x_sd)
+  expect_equal(r1$alpha, r2$alpha)
+  expect_equal(r1$beta, r2$beta)
 
   expect_false(isTRUE(all.equal(r1$x_mean, r3$x_mean)))
 })
@@ -39,5 +39,5 @@ test_that("bysid default (deterministic_seed = NULL) path is unchanged", {
   r1 <- bysid(Y, n_iter = 120L, burn = 20L, seed = 42L)
   r2 <- bysid(Y, n_iter = 120L, burn = 20L, seed = 42L)
   expect_equal(r1$x_mean, r2$x_mean)
-  expect_equal(r1$x_sd,   r2$x_sd)
+  expect_equal(r1$x_sd, r2$x_sd)
 })

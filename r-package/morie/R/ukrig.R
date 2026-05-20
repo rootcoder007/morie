@@ -13,37 +13,52 @@
 #' @references Schabenberger & Gotway (2005), Ch 4.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ukrig <- function(x, coords, target, model = "exponential",
                   nugget = 0, sill = 1, range_ = 1, trend_order = 1) {
-  x <- as.numeric(x); n <- length(x)
-  coords <- if (is.matrix(coords)) coords else
+  x <- as.numeric(x)
+  n <- length(x)
+  coords <- if (is.matrix(coords)) {
+    coords
+  } else {
     matrix(as.numeric(unlist(coords)), nrow = n)
-  target <- if (is.matrix(target)) target else
+  }
+  target <- if (is.matrix(target)) {
+    target
+  } else {
     matrix(as.numeric(unlist(target)), ncol = ncol(coords))
+  }
   if (nrow(coords) != n) stop("coords rows must match length(x)")
   if (ncol(target) != ncol(coords)) stop("target dim mismatch")
-  c0 <- nugget; c1 <- sill - nugget; a <- range_
+  c0 <- nugget
+  c1 <- sill - nugget
+  a <- range_
   cov_fn <- function(h) {
     switch(model,
-           exponential = c1 * exp(-h / a) + ifelse(h == 0, c0, 0),
-           gaussian    = c1 * exp(-(h ^ 2) / (a ^ 2)) + ifelse(h == 0, c0, 0),
-           spherical   = ifelse(h <= a,
-                                c1 * (1 - 1.5 * h / a + 0.5 * (h / a) ^ 3),
-                                0) + ifelse(h == 0, c0, 0),
-           stop("unknown model"))
+      exponential = c1 * exp(-h / a) + ifelse(h == 0, c0, 0),
+      gaussian = c1 * exp(-(h^2) / (a^2)) + ifelse(h == 0, c0, 0),
+      spherical = ifelse(h <= a,
+        c1 * (1 - 1.5 * h / a + 0.5 * (h / a)^3),
+        0
+      ) + ifelse(h == 0, c0, 0),
+      stop("unknown model")
+    )
   }
   trend_design <- function(C) {
     C <- if (is.matrix(C)) C else matrix(C, ncol = ncol(coords))
     n_ <- nrow(C)
     ones <- matrix(1, n_, 1)
-    if (trend_order == 0) return(ones)
-    if (trend_order == 1) return(cbind(ones, C))
+    if (trend_order == 0) {
+      return(ones)
+    }
+    if (trend_order == 1) {
+      return(cbind(ones, C))
+    }
     if (trend_order == 2) {
-      sq <- C ^ 2
+      sq <- C^2
       cross <- if (ncol(C) >= 2) C[, 1] * C[, 2] else NULL
       return(cbind(ones, C, sq, cross))
     }
@@ -59,22 +74,26 @@ ukrig <- function(x, coords, target, model = "exponential",
   K[(n + 1):(n + p), 1:n] <- t(F_)
   total_var <- c0 + c1
   m <- nrow(target)
-  ests <- numeric(m); ses <- numeric(m)
+  ests <- numeric(m)
+  ses <- numeric(m)
   for (k in seq_len(m)) {
-    d0 <- sqrt(colSums((t(coords) - target[k, ]) ^ 2))
+    d0 <- sqrt(colSums((t(coords) - target[k, ])^2))
     c_vec <- cov_fn(d0)
     f0 <- as.numeric(trend_design(matrix(target[k, ], 1)))
     rhs <- c(c_vec, f0)
     sol <- tryCatch(solve(K, rhs),
-                    error = function(e) qr.solve(K, rhs))
+      error = function(e) qr.solve(K, rhs)
+    )
     lam <- sol[1:n]
     ests[k] <- sum(lam * x)
     ses[k] <- sqrt(max(total_var - sum(sol * rhs), 0))
   }
-  list(estimate = if (m == 1) ests[1] else ests,
-       se = if (m == 1) ses[1] else ses,
-       n = n,
-       method = sprintf("Universal kriging (%s, trend_order=%d)", model, trend_order))
+  list(
+    estimate = if (m == 1) ests[1] else ests,
+    se = if (m == 1) ses[1] else ses,
+    n = n,
+    method = sprintf("Universal kriging (%s, trend_order=%d)", model, trend_order)
+  )
 }
 
 # CANONICAL TEST

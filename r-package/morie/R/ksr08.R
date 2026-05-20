@@ -15,8 +15,8 @@
 #' @references Kosorok (2008), Ch 10.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr08_kosorok_multiplier_bootstrap <- function(x, B = 1000, seed = 0,

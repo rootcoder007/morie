@@ -14,29 +14,37 @@
 #' @references Montesinos Lopez Ch 13.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 cnn_genomic <- function(x, y, markers, n_filters = 8, kernel = 3,
-                         hidden = 8, n_epochs = 150, lr = 1e-2,
-                         l2 = 1e-3, seed = 0,
-                         deterministic_seed = NULL) {
+                        hidden = 8, n_epochs = 150, lr = 1e-2,
+                        l2 = 1e-3, seed = 0,
+                        deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
     morie::morie_det_rng("cnnge", deterministic_seed)
   } else {
     set.seed(seed)
   }
-  y <- as.numeric(y); n <- length(y)
-  M <- as.matrix(markers); m <- ncol(M)
+  y <- as.numeric(y)
+  n <- length(y)
+  M <- as.matrix(markers)
+  m <- ncol(M)
   if (kernel > m) kernel <- max(1, m)
-  M_mu <- colMeans(M); M_sd <- apply(M, 2, stats::sd); M_sd[M_sd == 0] <- 1
+  M_mu <- colMeans(M)
+  M_sd <- apply(M, 2, stats::sd)
+  M_sd[M_sd == 0] <- 1
   Ms <- sweep(sweep(M, 2, M_mu), 2, M_sd, "/")
-  Wc <- matrix(stats::rnorm(kernel * n_filters, 0, 1 / sqrt(kernel)),
-               kernel, n_filters)
+  Wc <- matrix(
+    stats::rnorm(kernel * n_filters, 0, 1 / sqrt(kernel)),
+    kernel, n_filters
+  )
   bc <- rep(0, n_filters)
-  W1 <- matrix(stats::rnorm(n_filters * hidden, 0, 1 / sqrt(n_filters)),
-               n_filters, hidden)
+  W1 <- matrix(
+    stats::rnorm(n_filters * hidden, 0, 1 / sqrt(n_filters)),
+    n_filters, hidden
+  )
   b1 <- rep(0, hidden)
   w2 <- stats::rnorm(hidden, 0, 1 / sqrt(hidden))
   b2 <- mean(y)
@@ -60,9 +68,12 @@ cnn_genomic <- function(x, y, markers, n_filters = 8, kernel = 3,
     y_hat <- as.numeric(h %*% w2) + b2
     resid <- y_hat - y
     dy <- resid / n
-    dw2 <- as.numeric(crossprod(h, dy)) + l2 * w2; db2 <- sum(dy)
-    dh <- outer(dy, w2); dh_pre <- dh * (1 - h^2)
-    dW1 <- crossprod(p_mat, dh_pre) + l2 * W1; db1 <- colSums(dh_pre)
+    dw2 <- as.numeric(crossprod(h, dy)) + l2 * w2
+    db2 <- sum(dy)
+    dh <- outer(dy, w2)
+    dh_pre <- dh * (1 - h^2)
+    dW1 <- crossprod(p_mat, dh_pre) + l2 * W1
+    db1 <- colSums(dh_pre)
     dp <- dh_pre %*% t(W1)
     da <- array(0, dim = c(n, L, n_filters))
     for (s in seq_len(L)) da[, s, ] <- dp / L
@@ -74,19 +85,26 @@ cnn_genomic <- function(x, y, markers, n_filters = 8, kernel = 3,
       dWc <- dWc + crossprod(seg, dz[, s, ])
     }
     dWc <- dWc + l2 * Wc
-    Wc <- Wc - lr * dWc; bc <- bc - lr * dbc
-    W1 <- W1 - lr * dW1; b1 <- b1 - lr * db1
-    w2 <- w2 - lr * dw2; b2 <- b2 - lr * db2
+    Wc <- Wc - lr * dWc
+    bc <- bc - lr * dbc
+    W1 <- W1 - lr * dW1
+    b1 <- b1 - lr * db1
+    w2 <- w2 - lr * dw2
+    b2 <- b2 - lr * db2
     losses[ep] <- mean(resid^2)
   }
-  z <- conv(Ms); a <- pmax(z, 0); p_mat <- apply(a, c(1, 3), mean)
+  z <- conv(Ms)
+  a <- pmax(z, 0)
+  p_mat <- apply(a, c(1, 3), mean)
   h <- tanh(sweep(p_mat %*% W1, 2, b1, "+"))
   y_hat <- as.numeric(h %*% w2) + b2
   resid <- y - y_hat
-  list(estimate = mean(y_hat), y_hat = y_hat,
-       W_conv = Wc, b_conv = bc, W1 = W1, b1 = b1, w2 = w2, b2 = b2,
-       loss_curve = losses, se = sqrt(mean(resid^2)),
-       n = n, method = "Conv1D + GAP + dense (base R)")
+  list(
+    estimate = mean(y_hat), y_hat = y_hat,
+    W_conv = Wc, b_conv = bc, W1 = W1, b1 = b1, w2 = w2, b2 = b2,
+    loss_curve = losses, se = sqrt(mean(resid^2)),
+    n = n, method = "Conv1D + GAP + dense (base R)"
+  )
 }
 
 # CANONICAL TEST

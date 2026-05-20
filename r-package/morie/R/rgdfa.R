@@ -9,7 +9,8 @@
 #' @references Peng et al. (1994), Phys Rev E 49:1685; Rangayyan Ch 7.
 #' @export
 #' @examples
-#' set.seed(0); rgdfa(rnorm(500))$alpha
+#' set.seed(0)
+#' rgdfa(rnorm(500))$alpha
 rgdfa <- function(x, scales = NULL, order = 1L) {
   N <- length(x)
   if (N < 32) stop("DFA needs at least 32 samples.")
@@ -24,7 +25,10 @@ rgdfa <- function(x, scales = NULL, order = 1L) {
   for (j in seq_along(scales)) {
     n <- scales[j]
     nseg <- N %/% n
-    if (nseg < 1) { fluct[j] <- NA_real_; next }
+    if (nseg < 1) {
+      fluct[j] <- NA_real_
+      next
+    }
     rms <- numeric(nseg)
     for (k in seq_len(nseg)) {
       seg <- y[((k - 1) * n + 1):(k * n)]
@@ -35,11 +39,14 @@ rgdfa <- function(x, scales = NULL, order = 1L) {
     fluct[j] <- sqrt(mean(rms))
   }
   mask <- is.finite(fluct) & fluct > 0
-  log_n <- log(scales[mask]); log_F <- log(fluct[mask])
+  log_n <- log(scales[mask])
+  log_F <- log(fluct[mask])
   fit <- stats::lm(log_F ~ log_n)
-  list(alpha = unname(stats::coef(fit)[2]),
-       scales = scales, fluct = fluct,
-       log_scales = log_n, log_F = log_F)
+  list(
+    alpha = unname(stats::coef(fit)[2]),
+    scales = scales, fluct = fluct,
+    log_scales = log_n, log_F = log_F
+  )
 }
 
 #' @rdname rgdfa

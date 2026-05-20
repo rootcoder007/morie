@@ -48,9 +48,11 @@ test_that("bandpass / notch fall back to FFT masks without the signal pkg", {
   set.seed(2)
   m <- matrix(stats::rnorm(20 * 64), 20, 64)
   testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...)
-      if (identical(package, "signal")) FALSE else TRUE,
-    .package = "base")
+    requireNamespace = function(package, ...) {
+      if (identical(package, "signal")) FALSE else TRUE
+    },
+    .package = "base"
+  )
   expect_equal(dim(morie:::.entheo_bandpass(m, 250, 1, 40)), dim(m))
   expect_equal(dim(morie:::.entheo_notch(m, 250, 60)), dim(m))
 })
@@ -67,6 +69,7 @@ test_that("dcc_multivariate_garch runs on a small bivariate series", {
   set.seed(4)
   x <- matrix(stats::rnorm(400), 200, 2)
   res <- tryCatch(suppressWarnings(dcc_multivariate_garch(x)),
-                  error = function(e) e)
+    error = function(e) e
+  )
   expect_true(is.list(res) || inherits(res, "error"))
 })

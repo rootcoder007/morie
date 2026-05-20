@@ -16,40 +16,48 @@
 #'   cv_results_params, cv_results_mean_score, task, n, method.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 grid_search_cv <- function(x, y, method = NULL, tune_grid = NULL,
-                            cv = 5L, task = "auto", seed = 0L) {
+                           cv = 5L, task = "auto", seed = 0L) {
   if (!requireNamespace("caret", quietly = TRUE)) {
     stop("Function 'grid_search_cv' requires package 'caret'. Install with install.packages('caret').")
   }
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
-  x <- as.matrix(x); colnames(x) <- colnames(x) %||% paste0("x", seq_len(ncol(x)) - 1L)
+  x <- as.matrix(x)
+  colnames(x) <- colnames(x) %||% paste0("x", seq_len(ncol(x)) - 1L)
   if (identical(task, "auto")) {
-    task <- if (is.factor(y) || all(y %in% c(0L, 1L)) || is.integer(y))
-              "classification" else "regression"
+    task <- if (is.factor(y) || all(y %in% c(0L, 1L)) || is.integer(y)) {
+      "classification"
+    } else {
+      "regression"
+    }
   }
   set.seed(seed)
   ctrl <- caret::trainControl(method = "cv", number = cv, classProbs = FALSE)
   if (is.null(method)) {
     if (task == "classification") {
       method <- "glmnet"
-      if (is.null(tune_grid))
+      if (is.null(tune_grid)) {
         tune_grid <- expand.grid(alpha = 1, lambda = c(0.01, 0.1, 1.0, 10.0))
+      }
       y_use <- factor(make.names(as.character(y)))
     } else {
       method <- "ridge"
-      if (is.null(tune_grid))
+      if (is.null(tune_grid)) {
         tune_grid <- expand.grid(lambda = c(0.01, 0.1, 1.0, 10.0))
+      }
       y_use <- as.numeric(y)
     }
   } else {
     y_use <- if (task == "classification") factor(make.names(as.character(y))) else as.numeric(y)
   }
-  fit <- caret::train(x = x, y = y_use, method = method,
-                       tuneGrid = tune_grid, trControl = ctrl)
+  fit <- caret::train(
+    x = x, y = y_use, method = method,
+    tuneGrid = tune_grid, trControl = ctrl
+  )
   best <- fit$bestTune
   results <- fit$results
   metric <- if (task == "classification") "Accuracy" else "RMSE"

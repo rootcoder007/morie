@@ -1,7 +1,11 @@
 # Internal infix helper for defaults.
 `%||%` <- function(x, y) {
-  if (is.null(x) || length(x) == 0) return(y)
-  if (length(x) == 1 && (is.na(x) || identical(x, ""))) return(y)
+  if (is.null(x) || length(x) == 0) {
+    return(y)
+  }
+  if (length(x) == 1 && (is.na(x) || identical(x, ""))) {
+    return(y)
+  }
   x
 }
 
@@ -20,8 +24,8 @@ is_absolute_path <- function(path) {
 #' @return Absolute path to the detected project root.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 find_project_root <- function(start = getwd(), max_up = 10L) {
@@ -53,8 +57,8 @@ find_project_root <- function(start = getwd(), max_up = 10L) {
 #' @return Named list of key paths.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_paths <- function(project_root = NULL) {

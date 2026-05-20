@@ -12,21 +12,26 @@
 #' @importFrom stats qnorm pnorm
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 terry_hoeffding_test <- function(x, y) {
-  x <- as.numeric(x); y <- as.numeric(y)
-  m <- length(x); n <- length(y); N <- m + n
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  m <- length(x)
+  n <- length(y)
+  N <- m + n
   if (m < 2 || n < 2) {
-    return(list(statistic = NA_real_, p_value = NA_real_, z = NA_real_,
-                n = N, m = m,
-                method = "Terry-Hoeffding (Fisher-Yates) normal-scores test"))
+    return(list(
+      statistic = NA_real_, p_value = NA_real_, z = NA_real_,
+      n = N, m = m,
+      method = "Terry-Hoeffding (Fisher-Yates) normal-scores test"
+    ))
   }
   pooled <- c(x, y)
   ranks <- rank(pooled)
-  a <- stats::qnorm((ranks - 3/8) / (N + 1/4))
+  a <- stats::qnorm((ranks - 3 / 8) / (N + 1 / 4))
   stat_t <- sum(a[1:m])
   sum_a2 <- sum(a^2)
   Var_T <- (m * n / (N * (N - 1))) * sum_a2

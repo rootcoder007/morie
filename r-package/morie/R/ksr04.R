@@ -9,15 +9,17 @@
 #' @references Kosorok (2008), Ch 2; Vapnik & Chervonenkis (1971).
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr04_kosorok_vc_dimension <- function(x) {
   if (is.null(dim(x))) {
-    d <- 1L; n <- length(x)
+    d <- 1L
+    n <- length(x)
   } else {
-    n <- nrow(x); d <- ncol(x)
+    n <- nrow(x)
+    d <- ncol(x)
   }
   list(
     estimate = as.integer(d + 1L),

@@ -111,9 +111,11 @@ test_that("marker_variance() reports the VanRaden / naive split", {
   y <- as.numeric(M %*% rnorm(8L) + 0.5 * rnorm(20L))
   res <- marker_variance(rep(0, 20L), y, M)
   expect_type(res, "list")
-  expect_named(res, c("estimate", "sigma_g2", "sigma_e2", "h2",
-                      "sigma_m2_vanraden", "sigma_m2_naive", "sum_2pq",
-                      "p_freq", "n", "p", "method"))
+  expect_named(res, c(
+    "estimate", "sigma_g2", "sigma_e2", "h2",
+    "sigma_m2_vanraden", "sigma_m2_naive", "sum_2pq",
+    "p_freq", "n", "p", "method"
+  ))
   expect_equal(res$n, 20L)
   expect_equal(res$p, 8L)
   expect_equal(length(res$p_freq), 8L)
@@ -198,24 +200,32 @@ test_that(".knn_weights_lisa() builds a row-normalised weight matrix", {
 
 test_that("mrm_tps_lisa() computes per-polygon local Moran's I", {
   set.seed(2026)
-  grid <- expand.grid(lat = 43.6 + (0:3) * 0.02,
-                      lon = -79.4 + (0:3) * 0.02)
+  grid <- expand.grid(
+    lat = 43.6 + (0:3) * 0.02,
+    lon = -79.4 + (0:3) * 0.02
+  )
   grid$ASSAULT_2024 <- rpois(nrow(grid), lambda = grid$lat * 12)
-  res <- mrm_tps_lisa(grid, count_col = "ASSAULT_2024",
-                      lat_col = "lat", lon_col = "lon",
-                      k = 4L, n_permutations = 99L, seed = 42L)
+  res <- mrm_tps_lisa(grid,
+    count_col = "ASSAULT_2024",
+    lat_col = "lat", lon_col = "lon",
+    k = 4L, n_permutations = 99L, seed = 42L
+  )
   expect_type(res, "list")
-  expect_named(res, c("n_polygons", "global_moran_I", "permutations",
-                      "knn_k", "table", "quadrants_all",
-                      "quadrants_significant_p05", "n_significant_p05"))
+  expect_named(res, c(
+    "n_polygons", "global_moran_I", "permutations",
+    "knn_k", "table", "quadrants_all",
+    "quadrants_significant_p05", "n_significant_p05"
+  ))
   expect_equal(res$n_polygons, 16L)
   expect_equal(res$permutations, 99L)
   expect_equal(res$knn_k, 4L)
   expect_s3_class(res$table, "data.frame")
   expect_equal(nrow(res$table), 16L)
-  expect_named(res$table, c("id", "lat", "lon", "x", "z", "lag_z",
-                            "I_local", "quadrant", "p_value",
-                            "significant_p05"))
+  expect_named(res$table, c(
+    "id", "lat", "lon", "x", "z", "lag_z",
+    "I_local", "quadrant", "p_value",
+    "significant_p05"
+  ))
   expect_true(all(res$table$quadrant %in% c("HH", "HL", "LH", "LL")))
   expect_true(all(res$table$p_value > 0 & res$table$p_value <= 1))
   expect_true(is.finite(res$global_moran_I))
@@ -224,41 +234,54 @@ test_that("mrm_tps_lisa() computes per-polygon local Moran's I", {
 
 test_that("mrm_tps_lisa() honours an id_col passthrough", {
   set.seed(2027)
-  grid <- expand.grid(lat = 43.6 + (0:2) * 0.02,
-                      lon = -79.4 + (0:2) * 0.02)
+  grid <- expand.grid(
+    lat = 43.6 + (0:2) * 0.02,
+    lon = -79.4 + (0:2) * 0.02
+  )
   grid$ASSAULT <- rpois(nrow(grid), lambda = 8)
   grid$hood <- paste0("H", seq_len(nrow(grid)))
-  res <- mrm_tps_lisa(grid, count_col = "ASSAULT", id_col = "hood",
-                      lat_col = "lat", lon_col = "lon",
-                      k = 3L, n_permutations = 49L, seed = 1L)
+  res <- mrm_tps_lisa(grid,
+    count_col = "ASSAULT", id_col = "hood",
+    lat_col = "lat", lon_col = "lon",
+    k = 3L, n_permutations = 49L, seed = 1L
+  )
   expect_true(all(res$table$id %in% grid$hood))
 })
 
 test_that("mrm_tps_lisa() errors on too-few polygons", {
-  small <- data.frame(lat = 43.6 + (0:2) * 0.01,
-                      lon = -79.4 + (0:2) * 0.01,
-                      ASSAULT = c(1, 2, 3))
+  small <- data.frame(
+    lat = 43.6 + (0:2) * 0.01,
+    lon = -79.4 + (0:2) * 0.01,
+    ASSAULT = c(1, 2, 3)
+  )
   expect_error(
-    mrm_tps_lisa(small, count_col = "ASSAULT", lat_col = "lat",
-                 lon_col = "lon", n_permutations = 9L),
+    mrm_tps_lisa(small,
+      count_col = "ASSAULT", lat_col = "lat",
+      lon_col = "lon", n_permutations = 9L
+    ),
     "5 polygons"
   )
 })
 
 test_that("mrm_tps_lisa() validates column presence", {
   grid <- data.frame(lat = 1:6, lon = 1:6)
-  expect_error(mrm_tps_lisa(grid, count_col = "missing",
-                            lat_col = "lat", lon_col = "lon"))
+  expect_error(mrm_tps_lisa(grid,
+    count_col = "missing",
+    lat_col = "lat", lon_col = "lon"
+  ))
 })
 
 test_that("mrm_tps_polygon_moran_per_year() loops over year columns", {
   set.seed(2026)
-  grid <- expand.grid(lat = 43.6 + (0:3) * 0.02,
-                      lon = -79.4 + (0:3) * 0.02)
+  grid <- expand.grid(
+    lat = 43.6 + (0:3) * 0.02,
+    lon = -79.4 + (0:3) * 0.02
+  )
   grid$ASSAULT_2023 <- rpois(nrow(grid), lambda = grid$lat * 10)
   grid$ASSAULT_2024 <- rpois(nrow(grid), lambda = grid$lat * 12)
   res <- mrm_tps_polygon_moran_per_year(
-    grid, year_cols = c("ASSAULT_2023", "ASSAULT_2024"),
+    grid,
+    year_cols = c("ASSAULT_2023", "ASSAULT_2024"),
     lat_col = "lat", lon_col = "lon",
     k = 4L, n_permutations = 49L, seed = 42L
   )
@@ -272,11 +295,14 @@ test_that("mrm_tps_polygon_moran_per_year() loops over year columns", {
 
 test_that("mrm_tps_polygon_moran_per_year() skips failing year columns", {
   set.seed(2028)
-  small <- data.frame(lat = 43.6 + (0:2) * 0.01,
-                      lon = -79.4 + (0:2) * 0.01,
-                      ASSAULT_2024 = c(1, 2, 3))
+  small <- data.frame(
+    lat = 43.6 + (0:2) * 0.01,
+    lon = -79.4 + (0:2) * 0.01,
+    ASSAULT_2024 = c(1, 2, 3)
+  )
   res <- mrm_tps_polygon_moran_per_year(
-    small, year_cols = "ASSAULT_2024",
+    small,
+    year_cols = "ASSAULT_2024",
     lat_col = "lat", lon_col = "lon", n_permutations = 9L
   )
   expect_null(res)
@@ -299,12 +325,14 @@ test_that("mrm_otis_mandela_spectrum() returns the tidy long grid", {
   b01 <- make_b01()
   spec <- mrm_otis_mandela_spectrum(b01)
   expect_s3_class(spec, "data.frame")
-  expect_named(spec, c("year", "denominator", "contact_proxy",
-                       "n_eligible", "n_mandela", "rate", "pct"))
+  expect_named(spec, c(
+    "year", "denominator", "contact_proxy",
+    "n_eligible", "n_mandela", "rate", "pct"
+  ))
   expect_equal(nrow(spec), 3L * 3L * 3L)
   expect_true(all(spec$contact_proxy %in% c("none", "any_alert", "no_alert")))
   expect_true(all(spec$denominator %in%
-                    c("row", "individual_any", "individual_cumulative")))
+    c("row", "individual_any", "individual_cumulative")))
   expect_true(all(spec$n_mandela <= spec$n_eligible))
   fin <- spec$rate[is.finite(spec$rate)]
   expect_true(all(fin >= 0 & fin <= 1))
@@ -314,7 +342,8 @@ test_that("mrm_otis_mandela_spectrum() returns the tidy long grid", {
 test_that("mrm_otis_mandela_spectrum() accepts a subset of proxies/denoms", {
   b01 <- make_b01()
   spec <- mrm_otis_mandela_spectrum(
-    b01, contact_proxies = "none", denominators = "row"
+    b01,
+    contact_proxies = "none", denominators = "row"
   )
   expect_true(all(spec$contact_proxy == "none"))
   expect_true(all(spec$denominator == "row"))
@@ -325,12 +354,15 @@ test_that("mrm_otis_mandela_spectrum() handles a c11_aggregate denominator", {
   c11 <- data.frame(
     EndFiscalYear = c(2023L, 2023L, 2024L, 2024L),
     NumberIndividuals_Segregation = c(10L, 5L, 8L, 6L),
-    Aggregate_Duration = c("1 to 14 days", "Greater than 15 days",
-                           "1 to 14 days", "Greater than 15 days"),
+    Aggregate_Duration = c(
+      "1 to 14 days", "Greater than 15 days",
+      "1 to 14 days", "Greater than 15 days"
+    ),
     stringsAsFactors = FALSE
   )
   spec <- mrm_otis_mandela_spectrum(
-    b01, denominators = c("row", "c11_aggregate"),
+    b01,
+    denominators = c("row", "c11_aggregate"),
     contact_proxies = "none", c11_data = c11
   )
   expect_true("c11_aggregate" %in% spec$denominator)
@@ -372,9 +404,11 @@ test_that("mrm_otis_placement_concentration() summarises b09 bands", {
   )
   res <- mrm_otis_placement_concentration(b09)
   expect_s3_class(res, "data.frame")
-  expect_named(res, c("year", "n_individuals", "n_placements",
-                      "mean_per_individual", "gini", "hill_alpha",
-                      "top_pct_share"))
+  expect_named(res, c(
+    "year", "n_individuals", "n_placements",
+    "mean_per_individual", "gini", "hill_alpha",
+    "top_pct_share"
+  ))
   expect_true("pooled" %in% res$year)
   expect_true(all(res$n_individuals >= 0))
   fin <- res$gini[is.finite(res$gini)]
@@ -392,7 +426,8 @@ test_that("mrm_otis_placement_concentration() honours a gender filter", {
     stringsAsFactors = FALSE
   )
   res <- mrm_otis_placement_concentration(
-    b09, gender_col = "Gender", gender_keep = "Male"
+    b09,
+    gender_col = "Gender", gender_keep = "Male"
   )
   expect_s3_class(res, "data.frame")
   expect_true(all(res$n_individuals >= 0))
@@ -410,9 +445,11 @@ test_that("mrm_otis_seg_duration_km() pools durations by default", {
   res <- mrm_otis_seg_duration_km(b01)
   expect_s3_class(res, "data.frame")
   expect_equal(nrow(res), 1L)
-  expect_named(res, c("stratum", "n", "mean_days", "median_days",
-                      "q25_days", "pct_above_mandela",
-                      "median_among_above_mandela"))
+  expect_named(res, c(
+    "stratum", "n", "mean_days", "median_days",
+    "q25_days", "pct_above_mandela",
+    "median_among_above_mandela"
+  ))
   expect_equal(res$stratum, "pooled")
   expect_true(res$n > 0)
   expect_true(res$pct_above_mandela >= 0 && res$pct_above_mandela <= 100)
@@ -446,8 +483,10 @@ test_that("mrm_otis_mortification_cooccurrence() reports pairwise Cramer's V", {
   res <- mrm_otis_mortification_cooccurrence(b01)
   expect_s3_class(res, "data.frame")
   expect_equal(nrow(res), 3L)
-  expect_named(res, c("alert_a", "alert_b", "n", "chi2", "df",
-                      "p_value", "cramers_v"))
+  expect_named(res, c(
+    "alert_a", "alert_b", "n", "chi2", "df",
+    "p_value", "cramers_v"
+  ))
   fin <- res$cramers_v[is.finite(res$cramers_v)]
   expect_true(all(fin >= 0 & fin <= 1))
   expect_true(all(res$n > 0))
@@ -466,8 +505,10 @@ test_that("mrm_otis_region_locality() reports the contingency summary", {
   )
   res <- mrm_otis_region_locality(b01)
   expect_type(res, "list")
-  expect_named(res, c("table", "chi2", "df", "p_value", "cramers_v",
-                      "diagonal_share", "off_diagonal_share"))
+  expect_named(res, c(
+    "table", "chi2", "df", "p_value", "cramers_v",
+    "diagonal_share", "off_diagonal_share"
+  ))
   expect_true(is.table(res$table))
   expect_true(is.finite(res$chi2))
   expect_true(res$diagonal_share >= 0 && res$diagonal_share <= 1)
@@ -499,8 +540,10 @@ test_that("morie_sample() loads a bundled reference CSV", {
 test_that("morie_fetch_tps() and morie_fetch_siu() are network fetchers", {
   if (FALSE) {
     expect_error(morie_fetch_tps("NotACategory"), "Unknown TPS category")
-    csv <- morie_fetch_tps("Assault", cache_dir = tempdir(),
-                           where = "OCC_YEAR = 2024")
+    csv <- morie_fetch_tps("Assault",
+      cache_dir = tempdir(),
+      where = "OCC_YEAR = 2024"
+    )
     siu <- morie_fetch_siu(years = 2023:2024, cache_dir = tempdir())
   }
   expect_true(TRUE)
@@ -534,8 +577,10 @@ test_that("mrm_siu_case_to_decision_km() reports pooled + per-service KM", {
   expect_named(res, c("pooled", "by_service"))
   expect_s3_class(res$pooled, "data.frame")
   expect_equal(nrow(res$pooled), 1L)
-  expect_named(res$pooled, c("stratum", "n", "n_censored", "median_days",
-                             "mean_days", "p25_days", "p75_days", "max_days"))
+  expect_named(res$pooled, c(
+    "stratum", "n", "n_censored", "median_days",
+    "mean_days", "p25_days", "p75_days", "max_days"
+  ))
   expect_equal(res$pooled$stratum, "pooled")
   expect_true(res$pooled$n > 0)
   expect_true(res$pooled$median_days >= 0)
@@ -581,11 +626,13 @@ test_that("mrm_siu_outcome_classifier() cross-tabs Director's decisions", {
   siu <- make_siu()
   res <- mrm_siu_outcome_classifier(siu)
   expect_s3_class(res, "data.frame")
-  expect_named(res, c("service", "outcome", "n_cases",
-                      "share_within_service"))
+  expect_named(res, c(
+    "service", "outcome", "n_cases",
+    "share_within_service"
+  ))
   expect_true(all(res$n_cases > 0))
   expect_true(all(res$share_within_service > 0 &
-                    res$share_within_service <= 1))
+    res$share_within_service <= 1))
 })
 
 test_that("mrm_siu_outcome_classifier() falls back to alternative columns", {

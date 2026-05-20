@@ -11,17 +11,22 @@
 #' @importFrom stats qnorm pnorm
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 van_der_waerden_test <- function(x, y) {
-  x <- as.numeric(x); y <- as.numeric(y)
-  m <- length(x); n <- length(y); N <- m + n
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  m <- length(x)
+  n <- length(y)
+  N <- m + n
   if (m < 2 || n < 2) {
-    return(list(statistic = NA_real_, p_value = NA_real_, z = NA_real_,
-                n = N, m = m,
-                method = "Van der Waerden normal-scores test"))
+    return(list(
+      statistic = NA_real_, p_value = NA_real_, z = NA_real_,
+      n = N, m = m,
+      method = "Van der Waerden normal-scores test"
+    ))
   }
   pooled <- c(x, y)
   ranks <- rank(pooled)

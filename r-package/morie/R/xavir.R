@@ -18,24 +18,27 @@
 #' @references Glorot & Bengio (2010), AISTATS.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 xavir_xavier_init <- function(fan_in, fan_out, seed = 42L, uniform = TRUE) {
-  if (fan_in <= 0 || fan_out <= 0)
+  if (fan_in <= 0 || fan_out <= 0) {
     stop(sprintf("fan_in and fan_out must be > 0, got %d, %d", fan_in, fan_out))
+  }
   old <- .Random.seed_safe()
   on.exit(.Random.seed_restore(old))
   set.seed(seed)
   if (uniform) {
     limit <- sqrt(6 / (fan_in + fan_out))
     W <- matrix(stats::runif(fan_in * fan_out, -limit, limit),
-                nrow = fan_in, ncol = fan_out)
+      nrow = fan_in, ncol = fan_out
+    )
   } else {
     sd <- sqrt(2 / (fan_in + fan_out))
     W <- matrix(stats::rnorm(fan_in * fan_out, 0, sd),
-                nrow = fan_in, ncol = fan_out)
+      nrow = fan_in, ncol = fan_out
+    )
   }
   list(
     weights = W, value = stats::sd(W),
@@ -47,15 +50,18 @@ xavir_xavier_init <- function(fan_in, fan_out, seed = 42L, uniform = TRUE) {
 }
 
 .Random.seed_safe <- function() {
-  if (exists(".Random.seed", envir = globalenv()))
+  if (exists(".Random.seed", envir = globalenv())) {
     get(".Random.seed", envir = globalenv())
-  else NULL
+  } else {
+    NULL
+  }
 }
 
 .Random.seed_restore <- function(old) {
   if (is.null(old)) {
-    if (exists(".Random.seed", envir = globalenv()))
+    if (exists(".Random.seed", envir = globalenv())) {
       rm(".Random.seed", envir = globalenv())
+    }
   } else {
     assign(".Random.seed", old, envir = globalenv())
   }

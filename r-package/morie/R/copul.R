@@ -13,22 +13,30 @@
 #' @keywords internal
 copul <- function(x, y, family = c("gaussian", "clayton", "gumbel")) {
   family <- match.arg(family)
-  x <- as.numeric(x); y <- as.numeric(y); n <- min(length(x), length(y))
-  if (n < 3L)
-    return(list(estimate = NA_real_, n = n,
-                method = paste0("copula-", family, " (n<3)")))
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  n <- min(length(x), length(y))
+  if (n < 3L) {
+    return(list(
+      estimate = NA_real_, n = n,
+      method = paste0("copula-", family, " (n<3)")
+    ))
+  }
   tau <- stats::cor(x[seq_len(n)], y[seq_len(n)], method = "kendall")
   theta <- switch(family,
-                  gaussian = sin(pi * tau / 2),
-                  clayton  = if (tau < 1) 2 * tau / (1 - tau) else Inf,
-                  gumbel   = if (tau < 1) 1 / (1 - tau) else Inf)
+    gaussian = sin(pi * tau / 2),
+    clayton  = if (tau < 1) 2 * tau / (1 - tau) else Inf,
+    gumbel   = if (tau < 1) 1 / (1 - tau) else Inf
+  )
   u <- (rank(x[seq_len(n)]) - 0.5) / n
   v <- (rank(y[seq_len(n)]) - 0.5) / n
-  list(estimate = as.numeric(theta),
-       kendall_tau = as.numeric(tau),
-       se_tau = sqrt((1 - tau^2) / n),
-       u = u, v = v, family = family, n = as.integer(n),
-       method = paste0("Copula ", family, " (rank-based; Nelsen 2006)"))
+  list(
+    estimate = as.numeric(theta),
+    kendall_tau = as.numeric(tau),
+    se_tau = sqrt((1 - tau^2) / n),
+    u = u, v = v, family = family, n = as.integer(n),
+    method = paste0("Copula ", family, " (rank-based; Nelsen 2006)")
+  )
 }
 
 # CANONICAL TEST

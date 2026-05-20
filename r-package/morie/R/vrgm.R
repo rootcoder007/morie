@@ -13,24 +13,29 @@
 #' @references Matheron (1962); Schabenberger & Gotway (2005), Ch 3.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 vrgm <- function(x, coords, n_bins = 10, max_dist = NULL) {
-  x <- as.numeric(x); n <- length(x)
-  coords <- if (is.matrix(coords)) coords else
+  x <- as.numeric(x)
+  n <- length(x)
+  coords <- if (is.matrix(coords)) {
+    coords
+  } else {
     matrix(as.numeric(unlist(coords)), nrow = n)
+  }
   if (nrow(coords) != n) stop("coords rows must match length(x)")
   if (n < 2) stop("need at least 2 points")
   D <- as.matrix(stats::dist(coords))
   iu <- which(upper.tri(D), arr.ind = TRUE)
   dists <- D[iu]
-  diffs2 <- (x[iu[, 1]] - x[iu[, 2]]) ^ 2
+  diffs2 <- (x[iu[, 1]] - x[iu[, 2]])^2
   if (is.null(max_dist)) max_dist <- max(dists) / 2
   edges <- seq(0, max_dist, length.out = n_bins + 1)
   mids <- 0.5 * (edges[-1] + edges[-(n_bins + 1)])
-  gamma <- rep(NA_real_, n_bins); npairs <- integer(n_bins)
+  gamma <- rep(NA_real_, n_bins)
+  npairs <- integer(n_bins)
   for (k in seq_len(n_bins)) {
     m <- dists > edges[k] & dists <= edges[k + 1]
     npairs[k] <- sum(m)

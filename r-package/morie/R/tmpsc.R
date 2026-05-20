@@ -10,7 +10,8 @@ temperature_scaling <- function(x, temperature = 1) {
   if (temperature <= 0) stop("Temperature must be > 0")
   z <- as.numeric(x) / temperature
   z <- z - max(z)
-  p <- exp(z); p <- p / sum(p)
+  p <- exp(z)
+  p <- p / sum(p)
   H <- -sum(ifelse(p > 0, p * log(p), 0))
   list(tensor = p, entropy = H, temperature = temperature, method = "temperature-softmax")
 }

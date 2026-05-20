@@ -9,12 +9,19 @@
 #' @keywords internal
 repetition_penalty <- function(x, generated, alpha = 1.2) {
   z <- as.numeric(x)
-  if (alpha == 1) return(list(tensor = z, penalised_idx = integer(0),
-                               alpha = alpha, method = "rep-penalty"))
+  if (alpha == 1) {
+    return(list(
+      tensor = z, penalised_idx = integer(0),
+      alpha = alpha, method = "rep-penalty"
+    ))
+  }
   idx <- unique(as.integer(generated))
   idx <- idx[idx >= 0L & idx < length(z)]
-  for (i in idx)
+  for (i in idx) {
     z[i + 1L] <- if (z[i + 1L] > 0) z[i + 1L] / alpha else z[i + 1L] * alpha
-  list(tensor = z, penalised_idx = idx, alpha = alpha,
-       method = "rep-penalty")
+  }
+  list(
+    tensor = z, penalised_idx = idx, alpha = alpha,
+    method = "rep-penalty"
+  )
 }

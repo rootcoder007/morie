@@ -10,14 +10,16 @@
 #' @references Kosorok (2008), Ch 7.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr16_kosorok_influence_function <- function(x, y) {
-  x <- as.numeric(x); y <- as.numeric(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
   n <- length(x)
-  xc <- x - mean(x); yc <- y - mean(y)
+  xc <- x - mean(x)
+  yc <- y - mean(y)
   var_x <- sum(xc^2) / n
   beta <- sum(xc * yc) / sum(xc^2)
   resid <- yc - beta * xc

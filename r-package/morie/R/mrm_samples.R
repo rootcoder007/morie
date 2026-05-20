@@ -69,8 +69,8 @@ morie_sample <- function(name = c("otis_b01", "otis_b09", "otis_c11", "tps_assau
 #'   FeatureServer layer roots.
 #' @examples
 #' urls <- morie_tps_layer_urls()
-#' names(urls)          # categories: Assault, AutoTheft, Homicide, ...
-#' length(urls)         # number of layers
+#' names(urls) # categories: Assault, AutoTheft, Homicide, ...
+#' length(urls) # number of layers
 #' @export
 morie_tps_layer_urls <- function() {
   c(
@@ -112,13 +112,15 @@ morie_tps_layer_urls <- function() {
 #' @return Path to the CSV.
 #' @examples
 #' \dontrun{
-#'   # Network: fetches major-crime indicators from the Toronto Police
-#'   # ArcGIS open-data layer.
-#'   csv <- morie_fetch_tps(category = "Assault",
-#'                          cache_dir = tempdir(),
-#'                          where = "OCC_YEAR = 2024")
-#'   tps <- utils::read.csv(csv)
-#'   nrow(tps)
+#' # Network: fetches major-crime indicators from the Toronto Police
+#' # ArcGIS open-data layer.
+#' csv <- morie_fetch_tps(
+#'   category = "Assault",
+#'   cache_dir = tempdir(),
+#'   where = "OCC_YEAR = 2024"
+#' )
+#' tps <- utils::read.csv(csv)
+#' nrow(tps)
 #' }
 #' @export
 morie_fetch_tps <- function(
@@ -130,8 +132,10 @@ morie_fetch_tps <- function(
 ) {
   urls <- morie_tps_layer_urls()
   if (!category %in% names(urls)) {
-    stop("Unknown TPS category. Known: ",
-         paste(names(urls), collapse = ", "))
+    stop(
+      "Unknown TPS category. Known: ",
+      paste(names(urls), collapse = ", ")
+    )
   }
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop("jsonlite required for morie_fetch_tps().")
@@ -139,7 +143,9 @@ morie_fetch_tps <- function(
   cache_dir <- path.expand(cache_dir)
   dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
   out <- file.path(cache_dir, paste0("tps_", category, ".csv"))
-  if (file.exists(out) && !overwrite) return(out)
+  if (file.exists(out) && !overwrite) {
+    return(out)
+  }
 
   base <- urls[[category]]
   offset <- 0L
@@ -150,13 +156,16 @@ morie_fetch_tps <- function(
       base, utils::URLencode(where, reserved = TRUE), max_per_page, offset
     )
     page <- tryCatch(jsonlite::fromJSON(url, simplifyVector = FALSE),
-                     error = function(e) NULL)
+      error = function(e) NULL
+    )
     if (is.null(page)) {
       # Abort loudly rather than silently caching a partial download:
       # a transient failure mid-paging must not be written to disk and
       # then returned as if it were the complete layer.
-      stop("morie_fetch_tps(): TPS ArcGIS request failed at offset ",
-           offset, " for category '", category, "'.")
+      stop(
+        "morie_fetch_tps(): TPS ArcGIS request failed at offset ",
+        offset, " for category '", category, "'."
+      )
     }
     feats <- page$features
     if (length(feats) == 0L) break
@@ -164,7 +173,7 @@ morie_fetch_tps <- function(
       r <- f$properties
       if (!is.null(f$geometry) && identical(f$geometry$type, "Point")) {
         r$LONG_WGS84 <- f$geometry$coordinates[[1]]
-        r$LAT_WGS84  <- f$geometry$coordinates[[2]]
+        r$LAT_WGS84 <- f$geometry$coordinates[[2]]
       }
       rows[[length(rows) + 1L]] <- r
     }

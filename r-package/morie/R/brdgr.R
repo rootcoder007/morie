@@ -11,34 +11,43 @@
 #'   `n2`, `method`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 brdgr <- function(x, y = NULL) {
   if (is.null(y)) {
     xb <- as.logical(x)
-    return(list(n_bridges = sum(xb), bridge_ids = which(xb),
-                share = sum(xb) / max(length(xb), 1L),
-                n1 = length(xb), n2 = length(xb),
-                method = "bridge_observations"))
+    return(list(
+      n_bridges = sum(xb), bridge_ids = which(xb),
+      share = sum(xb) / max(length(xb), 1L),
+      n1 = length(xb), n2 = length(xb),
+      method = "bridge_observations"
+    ))
   }
   if (!is.matrix(x) && !is.matrix(y)) {
-    s1 <- unique(x); s2 <- unique(y); common <- sort(intersect(s1, s2))
-    return(list(n_bridges = length(common), bridge_ids = common,
-                share = length(common) / max(length(s1), 1L),
-                n1 = length(s1), n2 = length(s2),
-                method = "bridge_observations"))
+    s1 <- unique(x)
+    s2 <- unique(y)
+    common <- sort(intersect(s1, s2))
+    return(list(
+      n_bridges = length(common), bridge_ids = common,
+      share = length(common) / max(length(s1), 1L),
+      n1 = length(s1), n2 = length(s2),
+      method = "bridge_observations"
+    ))
   }
-  if (!is.matrix(x) || !is.matrix(y) || nrow(x) != nrow(y))
+  if (!is.matrix(x) || !is.matrix(y) || nrow(x) != nrow(y)) {
     stop("x and y must be matrices with matching n rows")
+  }
   has1 <- rowSums(!is.na(x)) > 0
   has2 <- rowSums(!is.na(y)) > 0
   bridges <- has1 & has2
-  list(n_bridges = sum(bridges), bridge_ids = which(bridges),
-       share = sum(bridges) / max(nrow(x), 1L),
-       n1 = sum(has1), n2 = sum(has2),
-       method = "bridge_observations")
+  list(
+    n_bridges = sum(bridges), bridge_ids = which(bridges),
+    share = sum(bridges) / max(nrow(x), 1L),
+    n1 = sum(has1), n2 = sum(has2),
+    method = "bridge_observations"
+  )
 }
 
 #' @keywords internal

@@ -2,7 +2,7 @@
 
 skip_if_no_hash <- function() {
   ok <- requireNamespace("digest", quietly = TRUE) ||
-        requireNamespace("openssl", quietly = TRUE)
+    requireNamespace("openssl", quietly = TRUE)
   testthat::skip_if_not(ok, "neither 'digest' nor 'openssl' available")
 }
 
@@ -17,12 +17,18 @@ bglup_fixture <- function() {
 test_that("bglup deterministic_seed is reproducible", {
   skip_if_no_hash()
   fx <- bglup_fixture()
-  r1 <- bayes_cpi_genomic(fx$X, fx$y, n_iter = 80, burn = 30,
-                          deterministic_seed = 42L)
-  r2 <- bayes_cpi_genomic(fx$X, fx$y, n_iter = 80, burn = 30,
-                          deterministic_seed = 42L)
-  r3 <- bayes_cpi_genomic(fx$X, fx$y, n_iter = 80, burn = 30,
-                          deterministic_seed = 999L)
+  r1 <- bayes_cpi_genomic(fx$X, fx$y,
+    n_iter = 80, burn = 30,
+    deterministic_seed = 42L
+  )
+  r2 <- bayes_cpi_genomic(fx$X, fx$y,
+    n_iter = 80, burn = 30,
+    deterministic_seed = 42L
+  )
+  r3 <- bayes_cpi_genomic(fx$X, fx$y,
+    n_iter = 80, burn = 30,
+    deterministic_seed = 999L
+  )
   expect_equal(r1$estimate, r2$estimate)
   expect_equal(r1$beta, r2$beta)
   expect_false(isTRUE(all.equal(r1$estimate, r3$estimate)))

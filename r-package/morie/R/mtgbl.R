@@ -11,24 +11,31 @@
 #' @references Montesinos Lopez Ch 10.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 multi_trait_gblup <- function(x, y, markers, Sigma_g = NULL, Sigma_e = NULL) {
-  Y <- as.matrix(y); n <- nrow(Y); t <- ncol(Y)
+  Y <- as.matrix(y)
+  n <- nrow(Y)
+  t <- ncol(Y)
   M <- as.matrix(markers)
   G_mat <- grm_vanraden(M, method = 1)$estimate + 1e-6 * diag(n)
   cand <- if (is.null(x) || (is.numeric(x) && length(x) == 0)) {
     matrix(1, n, 1)
-  } else cbind(1, as.matrix(x))
-  qrx <- qr(cand); X <- cand[, qrx$pivot[seq_len(qrx$rank)], drop = FALSE]
+  } else {
+    cbind(1, as.matrix(x))
+  }
+  qrx <- qr(cand)
+  X <- cand[, qrx$pivot[seq_len(qrx$rank)], drop = FALSE]
   if (is.null(Sigma_g) || is.null(Sigma_e)) {
     h2 <- 0.5
     S_y <- if (t > 1) stats::cov(Y) else matrix(stats::var(as.numeric(Y)), 1, 1)
-    Sigma_g <- h2 * S_y; Sigma_e <- (1 - h2) * S_y
+    Sigma_g <- h2 * S_y
+    Sigma_e <- (1 - h2) * S_y
   }
-  Sigma_g <- as.matrix(Sigma_g); Sigma_e <- as.matrix(Sigma_e)
+  Sigma_g <- as.matrix(Sigma_g)
+  Sigma_e <- as.matrix(Sigma_e)
   B <- stats::lsfit(X, Y, intercept = FALSE)$coefficients
   if (!is.matrix(B)) B <- matrix(B, ncol = t)
   R <- Y - X %*% B
@@ -37,9 +44,11 @@ multi_trait_gblup <- function(x, y, markers, Sigma_g = NULL, Sigma_e = NULL) {
   SG <- kronecker(Sigma_g, G_mat)
   g_vec <- SG %*% solve(V, vec_R)
   G_hat <- matrix(g_vec, n, t)
-  list(estimate = mean(G_hat), G_hat = G_hat, B_hat = B,
-       Sigma_g = Sigma_g, Sigma_e = Sigma_e,
-       n = n, t = t, method = "Multi-trait GBLUP (vec-stacked MME)")
+  list(
+    estimate = mean(G_hat), G_hat = G_hat, B_hat = B,
+    Sigma_g = Sigma_g, Sigma_e = Sigma_e,
+    n = n, t = t, method = "Multi-trait GBLUP (vec-stacked MME)"
+  )
 }
 
 # CANONICAL TEST

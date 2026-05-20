@@ -13,8 +13,10 @@ test_that(".resolve_cpads_csv resolves an existing file, errors otherwise", {
   file.create(f)
   on.exit(unlink(f), add = TRUE)
   expect_equal(morie:::.resolve_cpads_csv(f), normalizePath(f))
-  expect_error(morie:::.resolve_cpads_csv("no-such-cpads-xyzzy.csv"),
-               "not found")
+  expect_error(
+    morie:::.resolve_cpads_csv("no-such-cpads-xyzzy.csv"),
+    "not found"
+  )
 })
 
 test_that("canonicalize_cpads_data passes through already-canonical data", {
@@ -25,8 +27,10 @@ test_that("canonicalize_cpads_data passes through already-canonical data", {
 
 test_that("canonicalize_cpads_data maps raw CPADS columns", {
   out <- canonicalize_cpads_data(make_raw_cpads(n = 300L))
-  expect_true(all(c("weight", "alcohol_past12m", "cannabis_any_use",
-                    "heavy_drinking_30d") %in% names(out)))
+  expect_true(all(c(
+    "weight", "alcohol_past12m", "cannabis_any_use",
+    "heavy_drinking_30d"
+  ) %in% names(out)))
 })
 
 test_that("load_cpads_data reads and canonicalizes a raw CPADS csv", {
@@ -39,9 +43,11 @@ test_that("load_cpads_data reads and canonicalizes a raw CPADS csv", {
 })
 
 test_that(".write_module_outputs: no dir returns as-is; a dir writes files", {
-  outs <- list(tbl = data.frame(a = 1:2),
-               note = "a one-line note",
-               `pre.csv` = data.frame(z = 1))
+  outs <- list(
+    tbl = data.frame(a = 1:2),
+    note = "a one-line note",
+    `pre.csv` = data.frame(z = 1)
+  )
   expect_identical(morie:::.write_module_outputs(outs, NULL), outs)
   od <- tempfile("mods-")
   morie:::.write_module_outputs(outs, od)
@@ -56,7 +62,8 @@ test_that("run_morie_module errors on an unknown module name", {
   on.exit(unlink(csv), add = TRUE)
   expect_error(
     suppressWarnings(run_morie_module("not-a-real-module", cpads_csv = csv)),
-    "Unknown module")
+    "Unknown module"
+  )
 })
 
 test_that("run_morie_modules runs a set of in-memory-safe modules", {
@@ -66,7 +73,8 @@ test_that("run_morie_modules runs a set of in-memory-safe modules", {
   on.exit(unlink(csv), add = TRUE)
   res <- suppressWarnings(run_morie_modules(
     modules = c("descriptive-statistics", "distribution-tests"),
-    cpads_csv = csv))
+    cpads_csv = csv
+  ))
   expect_named(res, c("descriptive-statistics", "distribution-tests"))
   expect_true(is.list(res))
 })

@@ -14,8 +14,11 @@ top_k_decoding <- function(x, k = 5L, temperature = 1) {
   thresh <- sort(z, decreasing = TRUE)[k]
   z_f <- ifelse(z >= thresh, z, -Inf)
   z_f <- z_f - max(z_f)
-  e <- exp(z_f); p <- e / sum(e)
+  e <- exp(z_f)
+  p <- e / sum(e)
   topk_idx <- order(z, decreasing = TRUE)[seq_len(k)]
-  list(tensor = p, topk_indices = topk_idx - 1L,
-       topk_logits = z[topk_idx], k = k, method = "top-k")
+  list(
+    tensor = p, topk_indices = topk_idx - 1L,
+    topk_logits = z[topk_idx], k = k, method = "top-k"
+  )
 }

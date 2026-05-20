@@ -4,14 +4,16 @@
 
 test_that("vaenc_vae_elbo returns the documented named list (vector input)", {
   set.seed(1)
-  x       <- rnorm(8)
+  x <- rnorm(8)
   x_recon <- x + rnorm(8, sd = 0.1)
-  mu      <- rnorm(8)
+  mu <- rnorm(8)
   log_var <- rnorm(8, sd = 0.2)
   r <- vaenc_vae_elbo(x, x_recon, mu, log_var)
   expect_type(r, "list")
-  expect_named(r, c("elbo", "estimate", "loss", "recon_loss",
-                    "kl_divergence", "method"))
+  expect_named(r, c(
+    "elbo", "estimate", "loss", "recon_loss",
+    "kl_divergence", "method"
+  ))
   expect_true(is.finite(r$elbo))
   expect_equal(r$estimate, r$elbo)
   expect_equal(r$loss, -r$elbo)
@@ -30,20 +32,23 @@ test_that("vaenc_vae_elbo perfect reconstruction gives zero recon loss", {
 
 test_that("vaenc_vae_elbo handles matrix input and reduction='sum'", {
   set.seed(2)
-  x       <- matrix(rnorm(12), nrow = 3)
+  x <- matrix(rnorm(12), nrow = 3)
   x_recon <- x + 0.05
-  mu      <- matrix(rnorm(12), nrow = 3)
+  mu <- matrix(rnorm(12), nrow = 3)
   log_var <- matrix(rnorm(12, sd = 0.1), nrow = 3)
   r_mean <- vaenc_vae_elbo(x, x_recon, mu, log_var, reduction = "mean")
-  r_sum  <- vaenc_vae_elbo(x, x_recon, mu, log_var, reduction = "sum")
+  r_sum <- vaenc_vae_elbo(x, x_recon, mu, log_var, reduction = "sum")
   expect_true(is.finite(r_mean$elbo))
   expect_true(is.finite(r_sum$elbo))
 })
 
 test_that("vaenc_vae_elbo rejects an unknown reduction", {
-  expect_error(vaenc_vae_elbo(1:4, 1:4, rep(0, 4), rep(0, 4),
-                              reduction = "median"),
-               "reduction")
+  expect_error(
+    vaenc_vae_elbo(1:4, 1:4, rep(0, 4), rep(0, 4),
+      reduction = "median"
+    ),
+    "reduction"
+  )
 })
 
 test_that("vae_elbo alias is identical to vaenc_vae_elbo", {
@@ -77,12 +82,15 @@ test_that("van_der_waerden_test returns NA stats for too-short samples", {
 test_that("vecm returns the documented structure on a small I(1) system", {
   set.seed(4)
   Tt <- 60
-  e1 <- cumsum(rnorm(Tt)); e2 <- e1 + rnorm(Tt, sd = 0.3)
+  e1 <- cumsum(rnorm(Tt))
+  e2 <- e1 + rnorm(Tt, sd = 0.3)
   Y <- cbind(e1, e2)
   r <- vecm(Y, k_ar = 1, coint_rank = 1)
   expect_type(r, "list")
-  expect_true(all(c("alpha", "beta", "Sigma", "n", "k", "rank",
-                    "method") %in% names(r)))
+  expect_true(all(c(
+    "alpha", "beta", "Sigma", "n", "k", "rank",
+    "method"
+  ) %in% names(r)))
   expect_equal(r$n, Tt)
   expect_equal(r$k, 2L)
   expect_equal(r$rank, 1L)
@@ -105,8 +113,10 @@ test_that("vines computes partial-correlation matrix and loglik", {
   z <- MASS::mvrnorm(200, c(0, 0, 0), Sigma)
   r <- morie:::vines(z)
   expect_type(r, "list")
-  expect_true(all(c("partial_corr", "R", "loglik", "estimate",
-                    "n", "d", "method") %in% names(r)))
+  expect_true(all(c(
+    "partial_corr", "R", "loglik", "estimate",
+    "n", "d", "method"
+  ) %in% names(r)))
   expect_equal(dim(r$partial_corr), c(3L, 3L))
   expect_equal(r$d, 3L)
   expect_equal(r$n, 200L)
@@ -145,8 +155,10 @@ test_that("vrgm uses default max_dist when NULL", {
 })
 
 test_that("vrgm errors on mismatched coords or too few points", {
-  expect_error(vrgm(c(1, 2, 3), matrix(0:1, ncol = 1)),
-               "coords rows")
+  expect_error(
+    vrgm(c(1, 2, 3), matrix(0:1, ncol = 1)),
+    "coords rows"
+  )
   expect_error(vrgm(1, matrix(0, ncol = 1)), "at least 2")
 })
 
@@ -161,8 +173,10 @@ test_that("vrgft fits an exponential variogram model", {
   r <- vrgft(x, coords, model = "exponential", n_bins = 6)
   expect_type(r, "list")
   expect_named(r, c("estimate", "n", "method"))
-  expect_named(r$estimate, c("model", "nugget", "sill", "range",
-                             "params", "converged"))
+  expect_named(r$estimate, c(
+    "model", "nugget", "sill", "range",
+    "params", "converged"
+  ))
   expect_identical(r$estimate$model, "exponential")
   expect_true(is.finite(r$estimate$nugget))
   expect_true(is.finite(r$estimate$sill))
@@ -184,7 +198,8 @@ test_that("vrgft supports gaussian and spherical models", {
 test_that("vrgft errors when too few non-empty bins are available", {
   expect_error(
     vrgft(c(1, 2), matrix(0:1, ncol = 1), n_bins = 3),
-    "3 non-empty bins|at least 2 points")
+    "3 non-empty bins|at least 2 points"
+  )
 })
 
 test_that("variogram_fitting alias is identical to vrgft", {
@@ -194,8 +209,10 @@ test_that("variogram_fitting alias is identical to vrgft", {
 test_that("vtpwr returns exact Banzhaf and Shapley-Shubik indices", {
   r <- vtpwr(c(4, 3, 2, 1))
   expect_type(r, "list")
-  expect_named(r, c("banzhaf", "shapley_shubik", "quota",
-                    "weights", "method"))
+  expect_named(r, c(
+    "banzhaf", "shapley_shubik", "quota",
+    "weights", "method"
+  ))
   expect_equal(length(r$banzhaf), 4L)
   expect_equal(length(r$shapley_shubik), 4L)
   expect_true(all(is.finite(r$banzhaf)))
@@ -234,8 +251,10 @@ test_that("wavelet_time_series returns the documented structure", {
   x <- rnorm(64)
   r <- wavelet_time_series(x)
   expect_type(r, "list")
-  expect_true(all(c("approximation", "details", "energies", "level",
-                    "n", "wavelet", "method") %in% names(r)))
+  expect_true(all(c(
+    "approximation", "details", "energies", "level",
+    "n", "wavelet", "method"
+  ) %in% names(r)))
   expect_equal(r$n, 64L)
   expect_true(r$level >= 1)
   expect_true(is.list(r$details))
@@ -256,8 +275,10 @@ test_that("wavelet_time_series errors on too-short series", {
 })
 
 test_that("word_embedding looks up rows with a random embedding matrix", {
-  r <- morie:::word_embedding(c(0L, 5L, 99L), vocab_size = 100L,
-                              d_model = 8L, seed = 1L)
+  r <- morie:::word_embedding(c(0L, 5L, 99L),
+    vocab_size = 100L,
+    d_model = 8L, seed = 1L
+  )
   expect_type(r, "list")
   expect_named(r, c("tensor", "E", "ids", "shape", "method"))
   expect_equal(dim(r$tensor), c(3L, 8L))
@@ -282,12 +303,14 @@ test_that("word_embedding errors on out-of-range token ids", {
 
 test_that("wnom computes the NOMINATE log-likelihood and GMP", {
   set.seed(11)
-  n_leg <- 12; n_votes <- 8
+  n_leg <- 12
+  n_votes <- 8
   x <- matrix(rnorm(n_leg), ncol = 1)
   z_yea <- matrix(rnorm(n_votes), ncol = 1)
   z_nay <- matrix(rnorm(n_votes), ncol = 1)
   votes <- matrix(sample(c(0L, 1L), n_leg * n_votes, replace = TRUE),
-                  nrow = n_leg)
+    nrow = n_leg
+  )
   r <- wnom(votes, x, z_yea, z_nay)
   expect_type(r, "list")
   expect_named(r, c("loglik", "GMP", "n_correct", "n_total", "method"))
@@ -300,12 +323,15 @@ test_that("wnom computes the NOMINATE log-likelihood and GMP", {
 
 test_that("wnom handles NA votes and custom salience weights", {
   set.seed(12)
-  n_leg <- 10; n_votes <- 6; p <- 2
+  n_leg <- 10
+  n_votes <- 6
+  p <- 2
   x <- matrix(rnorm(n_leg * p), ncol = p)
   z_yea <- matrix(rnorm(n_votes * p), ncol = p)
   z_nay <- matrix(rnorm(n_votes * p), ncol = p)
   votes <- matrix(sample(c(0L, 1L, NA), n_leg * n_votes, replace = TRUE),
-                  nrow = n_leg)
+    nrow = n_leg
+  )
   r <- wnom(votes, x, z_yea, z_nay, beta = 10, w = c(1, 0.5))
   expect_true(is.finite(r$loglik))
   expect_true(r$n_total <= n_leg * n_votes)
@@ -319,8 +345,10 @@ test_that("wnominate aliases are identical to wnom", {
 test_that("default_workflow_map returns the documented named vector", {
   m <- default_workflow_map()
   expect_type(m, "character")
-  expect_true(all(c("modules", "publish", "render",
-                    "readiness") %in% names(m)))
+  expect_true(all(c(
+    "modules", "publish", "render",
+    "readiness"
+  ) %in% names(m)))
   expect_true(all(nzchar(m)))
 })
 
@@ -335,12 +363,16 @@ test_that("run_workflow_step rejects a missing or empty step", {
 })
 
 test_that("run_workflow_step rejects an invalid script_map", {
-  expect_error(run_workflow_step("modules", script_map = c("a", "b")),
-               "named character")
+  expect_error(
+    run_workflow_step("modules", script_map = c("a", "b")),
+    "named character"
+  )
   bad <- c("a")
   names(bad) <- ""
-  expect_error(run_workflow_step("modules", script_map = bad),
-               "empty step names")
+  expect_error(
+    run_workflow_step("modules", script_map = bad),
+    "empty step names"
+  )
 })
 
 test_that("run_workflow_step errors when the script file is absent", {
@@ -348,21 +380,28 @@ test_that("run_workflow_step errors when the script file is absent", {
   dir.create(tmp)
   expect_error(
     run_workflow_step("modules", project_root = tmp),
-    "not found")
+    "not found"
+  )
 })
 
 test_that("run_pipeline rejects unknown or empty steps", {
-  expect_error(run_pipeline(steps = c("modules", "ghost")),
-               "Unknown steps")
-  expect_error(run_pipeline(steps = character(0)),
-               "non-empty character")
+  expect_error(
+    run_pipeline(steps = c("modules", "ghost")),
+    "Unknown steps"
+  )
+  expect_error(
+    run_pipeline(steps = character(0)),
+    "non-empty character"
+  )
 })
 
 test_that("run_pipeline returns a data frame of step statuses", {
   tmp <- tempfile("morie-pipe-")
   dir.create(tmp)
-  df <- run_pipeline(steps = "modules", project_root = tmp,
-                     stop_on_error = TRUE, verbose = FALSE)
+  df <- run_pipeline(
+    steps = "modules", project_root = tmp,
+    stop_on_error = TRUE, verbose = FALSE
+  )
   expect_s3_class(df, "data.frame")
   expect_true(all(c("step", "script", "status", "error") %in% names(df)))
   expect_equal(df$step[1], "modules")
@@ -371,8 +410,10 @@ test_that("run_pipeline returns a data frame of step statuses", {
 test_that("wilcoxon_power returns the documented Monte-Carlo structure", {
   r <- wilcoxon_power(rep(0, 15), effect_size = 0.6, nsim = 60, seed = 1)
   expect_type(r, "list")
-  expect_named(r, c("statistic", "n", "effect_size", "alpha",
-                    "nsim", "se", "method"))
+  expect_named(r, c(
+    "statistic", "n", "effect_size", "alpha",
+    "nsim", "se", "method"
+  ))
   expect_true(r$statistic >= 0 && r$statistic <= 1)
   expect_equal(r$n, 15L)
   expect_equal(r$effect_size, 0.6)
@@ -396,8 +437,10 @@ test_that("wilcoxon_power runs without a fixed seed", {
 test_that("xavir_xavier_init returns the documented uniform-init list", {
   r <- xavir_xavier_init(8, 4, seed = 42L, uniform = TRUE)
   expect_type(r, "list")
-  expect_named(r, c("weights", "value", "fan_in", "fan_out",
-                    "mean", "std", "shape", "method"))
+  expect_named(r, c(
+    "weights", "value", "fan_in", "fan_out",
+    "mean", "std", "shape", "method"
+  ))
   expect_equal(dim(r$weights), c(8L, 4L))
   expect_equal(r$fan_in, 8)
   expect_equal(r$fan_out, 4)
@@ -433,11 +476,15 @@ test_that("xgboost_objective fits a regression model", {
   set.seed(13)
   x <- matrix(rnorm(80), ncol = 4)
   y <- x[, 1] + rnorm(20, sd = 0.1)
-  r <- xgboost_objective(x, y, n_estimators = 10L, max_depth = 2L,
-                         task = "regression")
+  r <- xgboost_objective(x, y,
+    n_estimators = 10L, max_depth = 2L,
+    task = "regression"
+  )
   expect_type(r, "list")
-  expect_true(all(c("estimate", "train_score", "feature_importances",
-                    "backend", "task", "n", "method") %in% names(r)))
+  expect_true(all(c(
+    "estimate", "train_score", "feature_importances",
+    "backend", "task", "n", "method"
+  ) %in% names(r)))
   expect_true(is.finite(r$estimate))
   expect_equal(r$task, "regression")
   expect_equal(r$n, 20L)
@@ -449,8 +496,10 @@ test_that("xgboost_objective fits a classification model", {
   set.seed(14)
   x <- matrix(rnorm(80), ncol = 4)
   y <- as.integer(x[, 1] > 0)
-  r <- xgboost_objective(x, y, n_estimators = 10L, max_depth = 2L,
-                         task = "classification")
+  r <- xgboost_objective(x, y,
+    n_estimators = 10L, max_depth = 2L,
+    task = "classification"
+  )
   expect_equal(r$task, "classification")
   expect_true(r$train_score >= 0 && r$train_score <= 1)
 })
@@ -467,8 +516,10 @@ test_that("xgboost_objective auto-detects the task and coerces a vector x", {
 
 test_that("xgboost_objective errors when no boosting backend is installed", {
   if (FALSE) {
-    expect_error(xgboost_objective(matrix(1:4, ncol = 1), 1:4),
-                 "xgboost.*gbm")
+    expect_error(
+      xgboost_objective(matrix(1:4, ncol = 1), 1:4),
+      "xgboost.*gbm"
+    )
   }
   expect_true(TRUE)
 })

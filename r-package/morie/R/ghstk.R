@@ -16,21 +16,22 @@
 #'   trunc_err_bound, n, method.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ghosal_stick_breaking_trunc <- function(x, alpha = 1.0, K = 50, seed = 0,
-                                          base_mean = NULL, base_sd = NULL,
-                                          deterministic_seed = NULL) {
+                                        base_mean = NULL, base_sd = NULL,
+                                        deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
     morie::morie_det_rng("ghstk", deterministic_seed)
   } else {
     set.seed(seed)
   }
-  x <- as.numeric(x); n <- length(x)
+  x <- as.numeric(x)
+  n <- length(x)
   if (is.null(base_mean)) base_mean <- if (n) mean(x) else 0
-  if (is.null(base_sd))   base_sd   <- if (n > 1) sd(x) else 1
+  if (is.null(base_sd)) base_sd <- if (n > 1) sd(x) else 1
   base_sd <- max(base_sd, 1e-6)
   V <- stats::rbeta(K, 1, alpha)
   log_cum <- c(0, cumsum(log1p(-V[-K])))
@@ -39,8 +40,10 @@ ghosal_stick_breaking_trunc <- function(x, alpha = 1.0, K = 50, seed = 0,
   t0 <- if (n) mean(x) else base_mean
   est <- sum(w * (theta <= t0))
   trunc_bound <- (alpha / (alpha + 1))^K
-  list(estimate = est, weights = w, atoms = theta,
-       effective_K = sum(w > 1e-3),
-       trunc_err_bound = trunc_bound, n = n,
-       method = "Truncated stick-breaking DP draw (Sethuraman 1994)")
+  list(
+    estimate = est, weights = w, atoms = theta,
+    effective_K = sum(w > 1e-3),
+    trunc_err_bound = trunc_bound, n = n,
+    method = "Truncated stick-breaking DP draw (Sethuraman 1994)"
+  )
 }

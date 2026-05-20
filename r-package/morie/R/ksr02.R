@@ -10,15 +10,17 @@
 #' @references Kosorok (2008), Ch 2 (Theorem 2.5.2).
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr02_kosorok_donsker_class <- function(x) {
   x <- as.numeric(x)
   integrand <- function(e) sqrt(log(2) - 2 * log(e))
-  j <- stats::integrate(integrand, lower = 1e-8, upper = 1.0,
-                        subdivisions = 200L)$value
+  j <- stats::integrate(integrand,
+    lower = 1e-8, upper = 1.0,
+    subdivisions = 200L
+  )$value
   list(
     estimate = j,
     n        = length(x),

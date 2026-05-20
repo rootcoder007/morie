@@ -20,8 +20,10 @@
 #' @examples
 #' set.seed(2026)
 #' n <- 30L
-#' df <- data.frame(y = c(rnorm(n, 0), rnorm(n, 0.5), rnorm(n, 1)),
-#'                  g = rep(c("A", "B", "C"), each = n))
+#' df <- data.frame(
+#'   y = c(rnorm(n, 0), rnorm(n, 0.5), rnorm(n, 1)),
+#'   g = rep(c("A", "B", "C"), each = n)
+#' )
 #' mrm_anova_bonferroni(df, response_col = "y", group_col = "g")$alpha_per_pair
 #' @name mrm_doe
 NULL
@@ -43,17 +45,19 @@ NULL
 #'   g = rep(c("A", "B", "C"), each = n)
 #' )
 #' res <- mrm_anova_bonferroni(df, response_col = "y", group_col = "g")
-#' res$alpha_per_pair    # Bonferroni-corrected per-pair alpha
-#' res$pairs             # per-pair t-tests with adjusted significance flags
+#' res$alpha_per_pair # Bonferroni-corrected per-pair alpha
+#' res$pairs # per-pair t-tests with adjusted significance flags
 #' @export
 mrm_anova_bonferroni <- function(data, response_col, group_col, alpha = 0.05) {
   d <- data[, c(response_col, group_col)]
   d <- d[stats::complete.cases(d), , drop = FALSE]
   d[[group_col]] <- factor(d[[group_col]])
   fit <- stats::aov(stats::as.formula(paste(response_col, "~", group_col)),
-                     data = d)
+    data = d
+  )
   summ <- summary(fit)[[1]]
-  f <- summ[["F value"]][1]; p_anova <- summ[["Pr(>F)"]][1]
+  f <- summ[["F value"]][1]
+  p_anova <- summ[["Pr(>F)"]][1]
   groups <- levels(d[[group_col]])
   pairs_list <- list()
   k <- 0L
@@ -104,25 +108,33 @@ mrm_anova_bonferroni <- function(data, response_col, group_col, alpha = 0.05) {
 #'   n_blocks, interpretation.
 #' @examples
 #' set.seed(2026)
-#' df <- expand.grid(treatment = c("A", "B", "C"),
-#'                   block = c("B1", "B2", "B3", "B4"))
+#' df <- expand.grid(
+#'   treatment = c("A", "B", "C"),
+#'   block = c("B1", "B2", "B3", "B4")
+#' )
 #' # Treatment effect + block effect + noise
 #' df$y <- as.numeric(df$treatment) * 2 +
 #'   as.numeric(df$block) * 0.5 + rnorm(nrow(df), 0, 0.3)
-#' res <- mrm_rcbd(df, response_col = "y",
-#'                 treatment_col = "treatment", block_col = "block")
+#' res <- mrm_rcbd(df,
+#'   response_col = "y",
+#'   treatment_col = "treatment", block_col = "block"
+#' )
 #' res$anova
 #' @export
 mrm_rcbd <- function(data, response_col, treatment_col, block_col) {
   d <- data[, c(response_col, treatment_col, block_col)]
   d <- d[stats::complete.cases(d), , drop = FALSE]
   d[[treatment_col]] <- factor(d[[treatment_col]])
-  d[[block_col]]    <- factor(d[[block_col]])
-  fit <- stats::aov(stats::as.formula(paste(
-    response_col, "~", block_col, "+", treatment_col)),
-    data = d)
+  d[[block_col]] <- factor(d[[block_col]])
+  fit <- stats::aov(
+    stats::as.formula(paste(
+      response_col, "~", block_col, "+", treatment_col
+    )),
+    data = d
+  )
   summ <- as.data.frame(summary(fit)[[1]])
-  summ$source <- trimws(rownames(summ)); rownames(summ) <- NULL
+  summ$source <- trimws(rownames(summ))
+  rownames(summ) <- NULL
   list(
     anova = summ,
     n = nrow(d),
@@ -151,21 +163,27 @@ mrm_rcbd <- function(data, response_col, treatment_col, block_col) {
 #' df$treatment <- LETTERS[as.integer(as.vector(sq)) + 1L]
 #' set.seed(2026)
 #' df$y <- match(df$treatment, LETTERS) * 1.5 + rnorm(16, 0, 0.4)
-#' res <- mrm_latin_square(df, response_col = "y",
-#'                         row_col = "row", col_col = "col",
-#'                         treatment_col = "treatment")
+#' res <- mrm_latin_square(df,
+#'   response_col = "y",
+#'   row_col = "row", col_col = "col",
+#'   treatment_col = "treatment"
+#' )
 #' res$anova
 #' @export
 mrm_latin_square <- function(data, response_col, row_col, col_col,
-                              treatment_col) {
+                             treatment_col) {
   d <- data[, c(response_col, row_col, col_col, treatment_col)]
   d <- d[stats::complete.cases(d), , drop = FALSE]
   for (c in c(row_col, col_col, treatment_col)) d[[c]] <- factor(d[[c]])
-  fit <- stats::aov(stats::as.formula(paste(
-    response_col, "~", row_col, "+", col_col, "+", treatment_col)),
-    data = d)
+  fit <- stats::aov(
+    stats::as.formula(paste(
+      response_col, "~", row_col, "+", col_col, "+", treatment_col
+    )),
+    data = d
+  )
   summ <- as.data.frame(summary(fit)[[1]])
-  summ$source <- trimws(rownames(summ)); rownames(summ) <- NULL
+  summ$source <- trimws(rownames(summ))
+  rownames(summ) <- NULL
   list(
     anova = summ,
     n = nrow(d),
@@ -187,36 +205,46 @@ mrm_latin_square <- function(data, response_col, row_col, col_col,
 #' @examples
 #' # Hardcoded 4 x 4 orthogonal Graeco-Latin square (two random Latin
 #' # squares are generally NOT orthogonal, so we use a known pair):
-#' L <- matrix(c("A","B","C","D",
-#'               "B","A","D","C",
-#'               "C","D","A","B",
-#'               "D","C","B","A"), nrow = 4L, byrow = TRUE)
-#' G <- matrix(c("a","b","c","d",
-#'               "c","d","a","b",
-#'               "d","c","b","a",
-#'               "b","a","d","c"), nrow = 4L, byrow = TRUE)
+#' L <- matrix(c(
+#'   "A", "B", "C", "D",
+#'   "B", "A", "D", "C",
+#'   "C", "D", "A", "B",
+#'   "D", "C", "B", "A"
+#' ), nrow = 4L, byrow = TRUE)
+#' G <- matrix(c(
+#'   "a", "b", "c", "d",
+#'   "c", "d", "a", "b",
+#'   "d", "c", "b", "a",
+#'   "b", "a", "d", "c"
+#' ), nrow = 4L, byrow = TRUE)
 #' set.seed(2026)
 #' df <- expand.grid(row = paste0("R", 1:4), col = paste0("C", 1:4))
 #' df$latin <- as.vector(L)
 #' df$greek <- as.vector(G)
 #' df$y <- match(df$latin, LETTERS) * 1.2 +
 #'   match(df$greek, letters) * 0.5 + rnorm(16, 0, 0.3)
-#' res <- mrm_graeco_latin(df, response_col = "y",
-#'                         row_col = "row", col_col = "col",
-#'                         latin_col = "latin", greek_col = "greek")
+#' res <- mrm_graeco_latin(df,
+#'   response_col = "y",
+#'   row_col = "row", col_col = "col",
+#'   latin_col = "latin", greek_col = "greek"
+#' )
 #' res$anova
 #' @export
 mrm_graeco_latin <- function(data, response_col, row_col, col_col,
-                              latin_col, greek_col) {
+                             latin_col, greek_col) {
   d <- data[, c(response_col, row_col, col_col, latin_col, greek_col)]
   d <- d[stats::complete.cases(d), , drop = FALSE]
   for (c in c(row_col, col_col, latin_col, greek_col)) d[[c]] <- factor(d[[c]])
-  fit <- stats::aov(stats::as.formula(paste(
-    response_col, "~", row_col, "+", col_col, "+",
-    latin_col, "+", greek_col)),
-    data = d)
+  fit <- stats::aov(
+    stats::as.formula(paste(
+      response_col, "~", row_col, "+", col_col, "+",
+      latin_col, "+", greek_col
+    )),
+    data = d
+  )
   summ <- as.data.frame(summary(fit)[[1]])
-  summ$source <- trimws(rownames(summ)); rownames(summ) <- NULL
+  summ$source <- trimws(rownames(summ))
+  rownames(summ) <- NULL
   list(
     anova = summ,
     n = nrow(d),
@@ -250,12 +278,14 @@ mrm_graeco_latin <- function(data, response_col, row_col, col_col,
 #'   C = c(1, -1, -1, 1)
 #' )
 #' df$y <- 5 + 2 * df$A + 1.5 * df$B + rnorm(4, 0, 0.3)
-#' res <- mrm_fractional_factorial(df, response_col = "y",
-#'                                 factor_cols = c("A", "B", "C"))
+#' res <- mrm_fractional_factorial(df,
+#'   response_col = "y",
+#'   factor_cols = c("A", "B", "C")
+#' )
 #' res$main_effects
 #' @export
 mrm_fractional_factorial <- function(data, response_col, factor_cols,
-                                      generator = NULL) {
+                                     generator = NULL) {
   d <- data[, c(response_col, factor_cols), drop = FALSE]
   d <- d[stats::complete.cases(d), , drop = FALSE]
   y <- d[[response_col]]
@@ -296,12 +326,16 @@ mrm_fractional_factorial <- function(data, response_col, factor_cols,
 #' @examples
 #' # Central composite design on (x1, x2) with quadratic response.
 #' set.seed(2026)
-#' df <- expand.grid(x1 = c(-1.4, -1, 0, 1, 1.4),
-#'                   x2 = c(-1.4, -1, 0, 1, 1.4))
+#' df <- expand.grid(
+#'   x1 = c(-1.4, -1, 0, 1, 1.4),
+#'   x2 = c(-1.4, -1, 0, 1, 1.4)
+#' )
 #' df$y <- 10 + 2 * df$x1 + 1.5 * df$x2 -
 #'   df$x1^2 - 1.2 * df$x2^2 + rnorm(nrow(df), 0, 0.2)
-#' res <- mrm_response_surface(df, response_col = "y",
-#'                             factor_cols = c("x1", "x2"))
+#' res <- mrm_response_surface(df,
+#'   response_col = "y",
+#'   factor_cols = c("x1", "x2")
+#' )
 #' res$stationary_point
 #' res$stationary_nature
 #' @export
@@ -314,7 +348,7 @@ mrm_response_surface <- function(data, response_col, factor_cols) {
 
   cols <- list(intercept = rep(1, nrow(X)))
   for (i in seq_len(k)) cols[[factor_cols[i]]] <- X[, i]
-  for (i in seq_len(k)) cols[[paste0(factor_cols[i], "^2")]] <- X[, i] ^ 2
+  for (i in seq_len(k)) cols[[paste0(factor_cols[i], "^2")]] <- X[, i]^2
   for (i in seq_len(k - 1L)) {
     for (j in seq.int(i + 1L, k)) {
       cols[[paste0(factor_cols[i], ":", factor_cols[j])]] <- X[, i] * X[, j]
@@ -341,13 +375,20 @@ mrm_response_surface <- function(data, response_col, factor_cols) {
     y_star <- NA_real_
   }
   eigvals <- eigen(B, symmetric = TRUE, only.values = TRUE)$values
-  nature <- if (all(eigvals < 0)) "maximum"
-            else if (all(eigvals > 0)) "minimum"
-            else "saddle"
+  nature <- if (all(eigvals < 0)) {
+    "maximum"
+  } else if (all(eigvals > 0)) {
+    "minimum"
+  } else {
+    "saddle"
+  }
   list(
     coefficients = as.list(round(beta, 6)),
-    stationary_point = if (is.null(x_star)) NULL else
-      setNames(as.list(round(as.numeric(x_star), 4)), factor_cols),
+    stationary_point = if (is.null(x_star)) {
+      NULL
+    } else {
+      setNames(as.list(round(as.numeric(x_star), 4)), factor_cols)
+    },
     stationary_y = if (is.null(x_star)) NULL else round(y_star, 4),
     stationary_nature = nature,
     eigenvalues = round(eigvals, 4),
@@ -371,22 +412,27 @@ mrm_response_surface <- function(data, response_col, factor_cols) {
 #' @examples
 #' # Power to detect a medium effect (Cohen's f = 0.25) with 4 groups
 #' # of 30 each at alpha = 0.05:
-#' res <- mrm_anova_power(k_groups = 4, n_per_group = 30,
-#'                        effect_size_f = 0.25, alpha = 0.05)
+#' res <- mrm_anova_power(
+#'   k_groups = 4, n_per_group = 30,
+#'   effect_size_f = 0.25, alpha = 0.05
+#' )
 #' res$power
 #' res$F_critical
 #'
 #' # Sample-size sensitivity: what power do I get with smaller groups?
-#' sapply(c(10, 20, 30, 50, 100), function(n)
-#'   mrm_anova_power(k_groups = 3, n_per_group = n,
-#'                   effect_size_f = 0.25)$power)
+#' sapply(c(10, 20, 30, 50, 100), function(n) {
+#'   mrm_anova_power(
+#'     k_groups = 3, n_per_group = n,
+#'     effect_size_f = 0.25
+#'   )$power
+#' })
 #' @export
 mrm_anova_power <- function(k_groups, n_per_group, effect_size_f,
-                             alpha = 0.05) {
+                            alpha = 0.05) {
   df1 <- k_groups - 1L
   N <- k_groups * n_per_group
   df2 <- N - k_groups
-  ncp <- N * effect_size_f ^ 2
+  ncp <- N * effect_size_f^2
   F_crit <- stats::qf(1 - alpha, df1, df2)
   power <- 1 - stats::pf(F_crit, df1, df2, ncp = ncp)
   list(
@@ -424,13 +470,16 @@ mrm_anova_power <- function(k_groups, n_per_group, effect_size_f,
 #' }
 #' res <- mrm_mc_power(my_sim, n_sims = 500L, alpha = 0.05)
 #' res$empirical_power
-#' res$ci95_lower; res$ci95_upper
+#' res$ci95_lower
+#' res$ci95_upper
 #' @export
 mrm_mc_power <- function(simulator, n_sims = 1000L, alpha = 0.05, seed = 42L) {
   set.seed(seed)
-  p_values <- vapply(seq_len(n_sims),
-                      function(i) simulator(sample.int(.Machine$integer.max, 1)),
-                      numeric(1))
+  p_values <- vapply(
+    seq_len(n_sims),
+    function(i) simulator(sample.int(.Machine$integer.max, 1)),
+    numeric(1)
+  )
   pwr <- mean(p_values < alpha)
   se <- sqrt(pwr * (1 - pwr) / n_sims)
   list(
@@ -460,20 +509,24 @@ mrm_mc_power <- function(simulator, n_sims = 1000L, alpha = 0.05, seed = 42L) {
 #'   interpretation.
 #' @examples
 #' set.seed(2026)
-#' df <- expand.grid(block = paste0("B", 1:6),
-#'                   treatment = c("ctrl", "drug"))
+#' df <- expand.grid(
+#'   block = paste0("B", 1:6),
+#'   treatment = c("ctrl", "drug")
+#' )
 #' # Block-level baseline + treatment effect
 #' df$y <- as.numeric(df$block) * 1.2 +
 #'   ifelse(df$treatment == "drug", 0.7, 0) +
 #'   rnorm(nrow(df), 0, 0.4)
-#' res <- mrm_perm_block(df, response_col = "y",
-#'                       treatment_col = "treatment",
-#'                       block_col = "block",
-#'                       n_perm = 500L)
+#' res <- mrm_perm_block(df,
+#'   response_col = "y",
+#'   treatment_col = "treatment",
+#'   block_col = "block",
+#'   n_perm = 500L
+#' )
 #' res$p_value
 #' @export
 mrm_perm_block <- function(data, response_col, treatment_col, block_col,
-                            n_perm = 1000L, seed = 42L) {
+                           n_perm = 1000L, seed = 42L) {
   d <- data[, c(response_col, treatment_col, block_col)]
   d <- d[stats::complete.cases(d), , drop = FALSE]
   trt <- d[[treatment_col]]
@@ -524,14 +577,18 @@ mrm_perm_block <- function(data, response_col, treatment_col, block_col,
 #' mrm_random_latin(k = 4, seed = 42L)
 #'
 #' # Reproducible across runs with the same seed:
-#' identical(mrm_random_latin(5, seed = 7),
-#'           mrm_random_latin(5, seed = 7))
+#' identical(
+#'   mrm_random_latin(5, seed = 7),
+#'   mrm_random_latin(5, seed = 7)
+#' )
 #' @export
 mrm_random_latin <- function(k, seed = 42L) {
   set.seed(seed)
   base <- matrix(0L, k, k)
-  for (i in seq_len(k)) for (j in seq_len(k)) {
-    base[i, j] <- ((i + j - 2L) %% k)
+  for (i in seq_len(k)) {
+    for (j in seq_len(k)) {
+      base[i, j] <- ((i + j - 2L) %% k)
+    }
   }
   row_perm <- sample.int(k)
   col_perm <- sample.int(k)

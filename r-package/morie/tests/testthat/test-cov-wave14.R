@@ -4,19 +4,24 @@
 
 test_that("dcc_multivariate_garch validates panel dimensions", {
   expect_error(dcc_multivariate_garch(matrix(1:10, 5, 2)), "n>=30")
-  expect_error(dcc_multivariate_garch(matrix(stats::rnorm(30), 30, 1)),
-               "k>=2")
+  expect_error(
+    dcc_multivariate_garch(matrix(stats::rnorm(30), 30, 1)),
+    "k>=2"
+  )
 })
 
 test_that("dcc_multivariate_garch runs the base-R DCC fallback", {
   set.seed(1)
   x <- matrix(stats::rnorm(140), 70, 2)
   testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...)
-      if (package %in% c("rmgarch", "rugarch")) FALSE else TRUE,
-    .package = "base")
+    requireNamespace = function(package, ...) {
+      if (package %in% c("rmgarch", "rugarch")) FALSE else TRUE
+    },
+    .package = "base"
+  )
   res <- tryCatch(suppressWarnings(dcc_multivariate_garch(x)),
-                  error = function(e) e)
+    error = function(e) e
+  )
   expect_true(is.list(res) || inherits(res, "error"))
   if (is.list(res)) {
     expect_match(res$method, "base R")
@@ -30,13 +35,15 @@ test_that("vrgft fits variogram models on point data", {
   x <- stats::rnorm(40)
   for (m in c("exponential", "gaussian", "spherical")) {
     r <- tryCatch(vrgft(x, coords, model = m, n_bins = 7),
-                  error = function(e) e)
+      error = function(e) e
+    )
     expect_true(is.list(r) || inherits(r, "error"))
     if (is.list(r)) expect_equal(r$estimate$model, m)
   }
   # too few points -> not enough non-empty bins -> error
   r2 <- tryCatch(vrgft(c(1, 2, 3), matrix(c(0, 1, 2), 3, 1)),
-                 error = function(e) e)
+    error = function(e) e
+  )
   expect_true(is.list(r2) || inherits(r2, "error"))
 })
 
@@ -49,20 +56,27 @@ test_that("fzmrl computes kernel MRL across its branches", {
   # an evaluation point just above the maximum
   edge <- fzmrl(c(1, 2, 3, 4, 5), t = 5.0001)
   expect_true(grepl("no x>t", edge$method) ||
-                grepl("S\\(t\\)", edge$method) ||
-                is.numeric(edge$estimate))
+    grepl("S\\(t\\)", edge$method) ||
+    is.numeric(edge$estimate))
 })
 
 test_that("estimate_irm errors when DoubleML is unavailable", {
   testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...)
-      if (package %in% c("DoubleML", "mlr3", "mlr3learners")) FALSE
-      else TRUE,
-    .package = "base")
+    requireNamespace = function(package, ...) {
+      if (package %in% c("DoubleML", "mlr3", "mlr3learners")) {
+        FALSE
+      } else {
+        TRUE
+      }
+    },
+    .package = "base"
+  )
   expect_error(
     estimate_irm(data.frame(Y = 1, T = 1, X1 = 1),
-                 treatment = "T", outcome = "Y", covariates = "X1"),
-    "required")
+      treatment = "T", outcome = "Y", covariates = "X1"
+    ),
+    "required"
+  )
 })
 
 test_that("estimate_irm runs the DoubleML IRM when packages are present", {
@@ -77,9 +91,12 @@ test_that("estimate_irm runs the DoubleML IRM when packages are present", {
   Y <- 0.5 * Tr + X[, 1] + stats::rnorm(n)
   df <- data.frame(Y = Y, T = Tr, X)
   res <- tryCatch(
-    suppressWarnings(estimate_irm(df, treatment = "T", outcome = "Y",
-                                  covariates = paste0("X", 1:4))),
-    error = function(e) e)
+    suppressWarnings(estimate_irm(df,
+      treatment = "T", outcome = "Y",
+      covariates = paste0("X", 1:4)
+    )),
+    error = function(e) e
+  )
   expect_true(is.list(res) || inherits(res, "error"))
   if (is.list(res)) expect_equal(res$method, "IRM (DoubleML)")
 })

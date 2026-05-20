@@ -18,7 +18,9 @@
 #' @examples
 #' calculate_ebac(drinks = 4, weight_lbs = 180, hours = 2, gender_constant = 0.73)
 calculate_ebac <- function(drinks, weight_lbs, hours, gender_constant) {
-  if (weight_lbs <= 0) return(0.0)
+  if (weight_lbs <= 0) {
+    return(0.0)
+  }
   ebac <- (drinks * 5.14) / (weight_lbs * gender_constant) - (0.015 * hours)
   max(0.0, ebac)
 }

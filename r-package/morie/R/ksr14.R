@@ -11,14 +11,16 @@
 #' @references Kosorok (2008), Ch 7.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr14_kosorok_profile_likelihood <- function(x, y) {
-  x <- as.numeric(x); y <- as.numeric(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
   n <- length(x)
-  xc <- x - mean(x); yc <- y - mean(y)
+  xc <- x - mean(x)
+  yc <- y - mean(y)
   Sxx <- sum(xc^2)
   beta <- sum(xc * yc) / Sxx
   resid <- yc - beta * xc
@@ -26,7 +28,7 @@ ksr14_kosorok_profile_likelihood <- function(x, y) {
   se <- sqrt(sigma2 / Sxx)
   list(
     estimate = beta, se = se, n = n,
-    method   = "Profile likelihood for OLS slope (eta=sigma^2 profiled)"
+    method = "Profile likelihood for OLS slope (eta=sigma^2 profiled)"
   )
 }
 

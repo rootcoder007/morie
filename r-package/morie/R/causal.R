@@ -49,7 +49,7 @@ NULL
 #' @return Numeric vector of propensity scores (same length as `nrow(data)`).
 #' @export
 #' @examples
-#' df <- data.frame(t = c(0,1,0,1,0,1), x = rnorm(6))
+#' df <- data.frame(t = c(0, 1, 0, 1, 0, 1), x = rnorm(6))
 #' ps <- estimate_propensity_scores(df, "t", "x")
 estimate_propensity_scores <- function(data, treatment, covariates,
                                        trim = c(0.01, 0.99)) {
@@ -103,8 +103,10 @@ estimate_ate <- function(data, treatment, outcome, covariates,
   ci <- .wald_ci(ate, se)
   ess <- (sum(w)^2) / sum(w^2)
 
-  list(ate = ate, se = se, ci_lower = ci[1], ci_upper = ci[2],
-       n = length(y), ess = ess)
+  list(
+    ate = ate, se = se, ci_lower = ci[1], ci_upper = ci[2],
+    n = length(y), ess = ess
+  )
 }
 
 
@@ -143,7 +145,7 @@ estimate_att <- function(data, treatment, outcome, covariates,
   n1 <- sum(t == 1)
   # Delta-method SE approximation
   se <- sqrt(stats::var(y[t == 1]) / n1 +
-             stats::var(w_ctrl[t == 0] * y[t == 0]) / sum(t == 0))
+    stats::var(w_ctrl[t == 0] * y[t == 0]) / sum(t == 0))
   ci <- .wald_ci(att, se)
 
   list(att = att, se = se, ci_lower = ci[1], ci_upper = ci[2], n_treated = n1)
@@ -183,7 +185,7 @@ estimate_atc <- function(data, treatment, outcome, covariates,
 
   n0 <- sum(t == 0)
   se <- sqrt(stats::var(y[t == 0]) / n0 +
-             stats::var(w_trt[t == 1] * y[t == 1]) / sum(t == 1))
+    stats::var(w_trt[t == 1] * y[t == 1]) / sum(t == 1))
   ci <- .wald_ci(atc, se)
 
   list(atc = atc, se = se, ci_lower = ci[1], ci_upper = ci[2], n_control = n0)
@@ -225,8 +227,10 @@ estimate_aipw <- function(data, treatment, outcome, covariates,
     paste(outcome, "~", paste(c(treatment, covariates), collapse = " + "))
   )
   fit <- stats::glm(formula, data = data, family = fam)
-  data1 <- data; data1[[treatment]] <- 1
-  data0 <- data; data0[[treatment]] <- 0
+  data1 <- data
+  data1[[treatment]] <- 1
+  data0 <- data
+  data0[[treatment]] <- 0
   mu1 <- as.numeric(stats::predict(fit, newdata = data1, type = "response"))
   mu0 <- as.numeric(stats::predict(fit, newdata = data0, type = "response"))
 
@@ -281,10 +285,15 @@ estimate_gate <- function(data, treatment, outcome, covariates,
     }
     est <- tryCatch(
       estimate_aipw(sub, treatment, outcome, covariates,
-                    propensity_col = propensity_col,
-                    outcome_model = outcome_model),
-      error = function(e) list(ate = NA_real_, se = NA_real_,
-                               ci_lower = NA_real_, ci_upper = NA_real_)
+        propensity_col = propensity_col,
+        outcome_model = outcome_model
+      ),
+      error = function(e) {
+        list(
+          ate = NA_real_, se = NA_real_,
+          ci_lower = NA_real_, ci_upper = NA_real_
+        )
+      }
     )
     results[[i]] <- data.frame(
       group = g, ate = est$ate, se = est$se,
@@ -312,8 +321,8 @@ estimate_gate <- function(data, treatment, outcome, covariates,
 #' @return Numeric vector of per-unit CATE estimates.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 estimate_cate <- function(data, treatment, outcome, covariates,
@@ -321,7 +330,7 @@ estimate_cate <- function(data, treatment, outcome, covariates,
                           outcome_model = c("linear", "logistic"),
                           meta_learner = c("t_learner", "s_learner")) {
   outcome_model <- match.arg(outcome_model)
-  meta_learner  <- match.arg(meta_learner)
+  meta_learner <- match.arg(meta_learner)
   fam <- if (outcome_model == "logistic") stats::binomial() else stats::gaussian()
   t <- as.numeric(data[[treatment]])
 
@@ -338,8 +347,10 @@ estimate_cate <- function(data, treatment, outcome, covariates,
       paste(outcome, "~", paste(c(treatment, covariates), collapse = " + "))
     )
     fit <- stats::glm(formula_s, data = data, family = fam)
-    data1 <- data; data1[[treatment]] <- 1
-    data0 <- data; data0[[treatment]] <- 0
+    data1 <- data
+    data1[[treatment]] <- 1
+    data0 <- data
+    data0[[treatment]] <- 0
     mu1 <- as.numeric(stats::predict(fit, newdata = data1, type = "response"))
     mu0 <- as.numeric(stats::predict(fit, newdata = data0, type = "response"))
   }
@@ -387,8 +398,10 @@ estimate_late <- function(data, treatment, outcome, instrument,
 
   # First-stage F statistic (strength of instrument)
   fs_formula <- stats::as.formula(
-    paste(treatment, "~", instrument,
-          if (!is.null(covariates)) paste("+", paste(covariates, collapse = " + ")) else "")
+    paste(
+      treatment, "~", instrument,
+      if (!is.null(covariates)) paste("+", paste(covariates, collapse = " + ")) else ""
+    )
   )
   fs_fit <- stats::lm(fs_formula, data = data)
   fs_f <- summary(fs_fit)$fstatistic[1]
@@ -412,10 +425,11 @@ estimate_late <- function(data, treatment, outcome, instrument,
     )
     if (requireNamespace("ivreg", quietly = TRUE)) {
       fit_iv <- ivreg::ivreg(
-        stats::as.formula(iv_formula_str), data = data
+        stats::as.formula(iv_formula_str),
+        data = data
       )
       late <- stats::coef(fit_iv)[treatment]
-      se   <- sqrt(stats::vcov(fit_iv)[treatment, treatment])
+      se <- sqrt(stats::vcov(fit_iv)[treatment, treatment])
     } else {
       # Fallback: manual 2SLS
       t_hat <- stats::fitted(fs_fit)
@@ -423,17 +437,22 @@ estimate_late <- function(data, treatment, outcome, instrument,
       data2[[paste0(treatment, "_hat")]] <- t_hat
       rhs2 <- paste(c(paste0(treatment, "_hat"), covariates), collapse = " + ")
       ss_fit <- stats::lm(
-        stats::as.formula(paste(outcome, "~", rhs2)), data = data2
+        stats::as.formula(paste(outcome, "~", rhs2)),
+        data = data2
       )
       late <- stats::coef(ss_fit)[paste0(treatment, "_hat")]
-      se   <- sqrt(stats::vcov(ss_fit)[paste0(treatment, "_hat"),
-                                        paste0(treatment, "_hat")])
+      se <- sqrt(stats::vcov(ss_fit)[
+        paste0(treatment, "_hat"),
+        paste0(treatment, "_hat")
+      ])
     }
   }
 
   ci <- .wald_ci(late, se)
-  list(late = late, se = se, ci_lower = ci[1], ci_upper = ci[2],
-       first_stage_f = as.numeric(fs_f), n = length(y))
+  list(
+    late = late, se = se, ci_lower = ci[1], ci_upper = ci[2],
+    first_stage_f = as.numeric(fs_f), n = length(y)
+  )
 }
 
 
@@ -487,8 +506,8 @@ e_value <- function(rr, rr_lower = NULL) {
 #' @return Data frame with columns: `gamma`, `p_lower`, `p_upper`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 #' @references
@@ -506,12 +525,12 @@ sensitivity_rosenbaum <- function(treated, control,
     n_pairs <- n1 * n0
 
     # Upper bound: p-value under maximum assignment probability
-    p_plus  <- gamma / (1 + gamma)
+    p_plus <- gamma / (1 + gamma)
     p_minus <- 1 / (1 + gamma)
 
     # Expected value and variance under gamma
-    E_upper <- sum(p_plus  * (signs > 0) + p_minus * (signs < 0))
-    E_lower <- sum(p_minus * (signs > 0) + p_plus  * (signs < 0))
+    E_upper <- sum(p_plus * (signs > 0) + p_minus * (signs < 0))
+    E_lower <- sum(p_minus * (signs > 0) + p_plus * (signs < 0))
     V <- n_pairs * p_plus * p_minus
 
     T_stat <- sum(signs > 0)
@@ -549,8 +568,10 @@ estimate_g_computation <- function(data, treatment, outcome, covariates,
     paste(outcome, "~", paste(c(treatment, covariates), collapse = " + "))
   )
   fit <- stats::glm(formula, data = data, family = fam)
-  data1 <- data; data1[[treatment]] <- 1
-  data0 <- data; data0[[treatment]] <- 0
+  data1 <- data
+  data1[[treatment]] <- 1
+  data0 <- data
+  data0[[treatment]] <- 0
   mu1 <- as.numeric(stats::predict(fit, newdata = data1, type = "response"))
   mu0 <- as.numeric(stats::predict(fit, newdata = data0, type = "response"))
   diffs <- mu1 - mu0

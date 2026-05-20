@@ -108,7 +108,7 @@ mrm_classify_mandela <- function(
       vapply(alert_cols, function(c) as.integer(data[[c]] > 0), integer(nrow(data)))
     )
     broader_row <- strict_row | (alerts_count >= 2L & !is.na(dur) &
-                                  dur > threshold_days)
+      dur > threshold_days)
   } else {
     broader_row <- strict_row
   }
@@ -145,7 +145,7 @@ mrm_classify_mandela <- function(
       denom <- length(ids)
       n_m <- length(ids_m)
       n_b <- length(ids_b)
-    } else {  # individual_cumulative
+    } else { # individual_cumulative
       ids <- unique(sub[[id_col]])
       cum_dur <- tapply(dur[mask], sub[[id_col]], sum, na.rm = TRUE)
       denom <- length(ids)

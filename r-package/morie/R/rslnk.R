@@ -12,18 +12,21 @@
 #' @references He, Zhang, Ren & Sun (2016), CVPR.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 rslnk_residual_connection <- function(x, f = NULL) {
   x <- as.array(x)
   Fx <- if (is.null(f)) x else as.array(f(x))
-  if (!identical(dim(Fx), dim(x)) && length(Fx) != length(x))
+  if (!identical(dim(Fx), dim(x)) && length(Fx) != length(x)) {
     stop("Residual branch shape does not match identity shape.")
+  }
   y <- Fx + x
-  list(y = y, estimate = y, Fx = Fx,
-       method = "Residual identity shortcut")
+  list(
+    y = y, estimate = y, Fx = Fx,
+    method = "Residual identity shortcut"
+  )
 }
 
 #' @rdname rslnk_residual_connection

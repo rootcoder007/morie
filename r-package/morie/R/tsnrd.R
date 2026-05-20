@@ -18,14 +18,14 @@
 #'   perplexity, n_components, n, method.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 tsne_reduction <- function(x, n_components = 2L, perplexity = 30,
-                            learning_rate = "auto", n_iter = 1000L,
-                            seed = 0L,
-                            deterministic_seed = NULL) {
+                           learning_rate = "auto", n_iter = 1000L,
+                           seed = 0L,
+                           deterministic_seed = NULL) {
   if (!requireNamespace("Rtsne", quietly = TRUE)) {
     stop("Function 'tsne_reduction' requires package 'Rtsne'. Install with install.packages('Rtsne').")
   }
@@ -37,9 +37,11 @@ tsne_reduction <- function(x, n_components = 2L, perplexity = 30,
   } else {
     set.seed(seed)
   }
-  ts <- Rtsne::Rtsne(x, dims = n_components, perplexity = perplexity,
-                     max_iter = n_iter, check_duplicates = FALSE,
-                     verbose = FALSE, pca = TRUE)
+  ts <- Rtsne::Rtsne(x,
+    dims = n_components, perplexity = perplexity,
+    max_iter = n_iter, check_duplicates = FALSE,
+    verbose = FALSE, pca = TRUE
+  )
   emb <- ts$Y
   list(
     estimate      = dim(emb),

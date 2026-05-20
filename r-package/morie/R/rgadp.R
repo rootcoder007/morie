@@ -11,21 +11,28 @@
 #' @references Widrow & Stearns (1985); Rangayyan Ch 11.
 #' @export
 #' @examples
-#' set.seed(0); n <- rnorm(200)
+#' set.seed(0)
+#' n <- rnorm(200)
 #' x <- sin(2 * pi * seq_len(200) / 20) + n
-#' r <- rgadp(x, reference = n, mu = 0.01, order = 8); length(r$signal)
+#' r <- rgadp(x, reference = n, mu = 0.01, order = 8)
+#' length(r$signal)
 rgadp <- function(x, reference, mu = 0.01, order = 16L) {
   if (length(x) != length(reference)) stop("x and reference must have equal length.")
-  M <- as.integer(order); N <- length(x)
-  w <- numeric(M); y <- numeric(N); e <- numeric(N)
+  M <- as.integer(order)
+  N <- length(x)
+  w <- numeric(M)
+  y <- numeric(N)
+  e <- numeric(N)
   for (n in M:N) {
     rv <- reference[(n - M + 1):n][seq.int(M, 1L)]
     y[n] <- sum(w * rv)
     e[n] <- x[n] - y[n]
     w <- w + 2 * mu * e[n] * rv
   }
-  list(signal = e, noise_estimate = y, weights = w,
-       mu = mu, order = M)
+  list(
+    signal = e, noise_estimate = y, weights = w,
+    mu = mu, order = M
+  )
 }
 
 #' @rdname rgadp

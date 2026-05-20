@@ -13,25 +13,32 @@
 #' @importFrom stats median pnorm
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 fzbrd <- function(x, t = NULL, h = NULL, c = 2) {
-  x <- as.numeric(x); n <- length(x)
-  if (n < 2L) return(list(estimate = NA_real_, n = n,
-                           method = "fzbrd - too few obs"))
+  x <- as.numeric(x)
+  n <- length(x)
+  if (n < 2L) {
+    return(list(
+      estimate = NA_real_, n = n,
+      method = "fzbrd - too few obs"
+    ))
+  }
   if (is.null(t)) t <- stats::median(x)
   if (is.null(h)) h <- .morie_silverman_h(x)
   if (c <= 1) stop("c must be > 1")
-  F_h  <- mean(stats::pnorm((t - x) / h))
+  F_h <- mean(stats::pnorm((t - x) / h))
   F_ch <- mean(stats::pnorm((t - x) / (c * h)))
   F_br <- (c^2 * F_h - F_ch) / (c^2 - 1)
   var_F <- F_h * (1 - F_h) / n
   var_inflate <- (c^4 + 1) / (c^2 - 1)^2
-  list(estimate = F_br, F_h = F_h, F_ch = F_ch,
-       se = sqrt(var_F * var_inflate), h = h, c = c, t = t, n = n,
-       method = "Fauzi bias-reduced KDFE (Ch 2)")
+  list(
+    estimate = F_br, F_h = F_h, F_ch = F_ch,
+    se = sqrt(var_F * var_inflate), h = h, c = c, t = t, n = n,
+    method = "Fauzi bias-reduced KDFE (Ch 2)"
+  )
 }
 
 # CANONICAL TEST

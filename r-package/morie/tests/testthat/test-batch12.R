@@ -16,7 +16,8 @@ test_that("ksr09_kosorok_z_estimator: location path (y NULL)", {
 
 test_that("ksr09_kosorok_z_estimator: OLS slope path (y supplied)", {
   set.seed(2)
-  x <- rnorm(150); y <- 1.5 * x + rnorm(150)
+  x <- rnorm(150)
+  y <- 1.5 * x + rnorm(150)
   r <- ksr09_kosorok_z_estimator(x, y)
   expect_named(r, c("estimate", "se", "n", "method"))
   expect_equal(r$n, 150L)
@@ -66,7 +67,8 @@ test_that("ksr10_kosorok_m_estimator: alias identity", {
 
 test_that("ksr11_kosorok_efficient_score: standard path", {
   set.seed(5)
-  x <- rnorm(150); y <- 1.5 * x + rnorm(150)
+  x <- rnorm(150)
+  y <- 1.5 * x + rnorm(150)
   r <- ksr11_kosorok_efficient_score(x, y)
   expect_type(r, "list")
   expect_named(r, c("estimate", "se", "n", "method"))
@@ -77,7 +79,8 @@ test_that("ksr11_kosorok_efficient_score: standard path", {
 
 test_that("ksr11_kosorok_efficient_score: mean efficient score near zero at MLE", {
   set.seed(6)
-  x <- rnorm(200); y <- 0.8 * x + rnorm(200)
+  x <- rnorm(200)
+  y <- 0.8 * x + rnorm(200)
   r <- ksr11_kosorok_efficient_score(x, y)
   expect_lt(abs(r$estimate), 1e-6)
 })
@@ -88,7 +91,8 @@ test_that("ksr11_kosorok_efficient_score: alias identity", {
 
 test_that("ksr12_kosorok_information_bound: standard path", {
   set.seed(7)
-  x <- rnorm(150); y <- 1.5 * x + rnorm(150)
+  x <- rnorm(150)
+  y <- 1.5 * x + rnorm(150)
   r <- ksr12_kosorok_information_bound(x, y)
   expect_type(r, "list")
   expect_named(r, c("estimate", "n", "method"))
@@ -123,7 +127,8 @@ test_that("ksr13_kosorok_tangent_space: alias identity", {
 
 test_that("ksr14_kosorok_profile_likelihood: standard path", {
   set.seed(10)
-  x <- rnorm(150); y <- 1.5 * x + rnorm(150)
+  x <- rnorm(150)
+  y <- 1.5 * x + rnorm(150)
   r <- ksr14_kosorok_profile_likelihood(x, y)
   expect_type(r, "list")
   expect_named(r, c("estimate", "se", "n", "method"))
@@ -160,7 +165,8 @@ test_that("ksr15_kosorok_one_step_estimator: alias identity", {
 
 test_that("ksr16_kosorok_influence_function: standard path", {
   set.seed(12)
-  x <- rnorm(150); y <- 1.5 * x + rnorm(150)
+  x <- rnorm(150)
+  y <- 1.5 * x + rnorm(150)
   r <- ksr16_kosorok_influence_function(x, y)
   expect_type(r, "list")
   expect_named(r, c("estimate", "n", "method"))
@@ -170,7 +176,8 @@ test_that("ksr16_kosorok_influence_function: standard path", {
 
 test_that("ksr16_kosorok_influence_function: mean IF near zero", {
   set.seed(13)
-  x <- rnorm(200); y <- 0.5 * x + rnorm(200)
+  x <- rnorm(200)
+  y <- 0.5 * x + rnorm(200)
   r <- ksr16_kosorok_influence_function(x, y)
   expect_lt(abs(r$estimate), 1e-6)
 })
@@ -243,7 +250,8 @@ test_that("ksr19_kosorok_cox_partial_likelihood: custom tol / max_iter", {
   x <- rnorm(60)
   t <- rexp(60, rate = exp(0.3 * x))
   r <- ksr19_kosorok_cox_partial_likelihood(x, t, rep(1, 60),
-                                            tol = 1e-6, max_iter = 30)
+    tol = 1e-6, max_iter = 30
+  )
   expect_equal(r$n, 60L)
   expect_true(is.finite(r$estimate))
 })
@@ -259,8 +267,10 @@ test_that("ksr19_kosorok_cox_partial_likelihood: censored observations", {
 })
 
 test_that("ksr19_kosorok_cox_partial_likelihood: alias identity", {
-  expect_identical(kosorok_cox_partial_likelihood,
-                   ksr19_kosorok_cox_partial_likelihood)
+  expect_identical(
+    kosorok_cox_partial_likelihood,
+    ksr19_kosorok_cox_partial_likelihood
+  )
 })
 
 test_that("ksr20_kosorok_censoring_survival: standard path", {
@@ -296,8 +306,10 @@ test_that("kendall_tau_partial: standard path", {
   y <- z + rnorm(60)
   r <- kendall_tau_partial(x, y, z)
   expect_type(r, "list")
-  expect_named(r, c("statistic", "p_value", "tau_xy", "tau_xz",
-                    "tau_yz", "z", "n", "method"))
+  expect_named(r, c(
+    "statistic", "p_value", "tau_xy", "tau_xz",
+    "tau_yz", "z", "n", "method"
+  ))
   expect_equal(r$n, 60L)
   expect_true(is.finite(r$statistic) && abs(r$statistic) <= 1)
   expect_true(is.finite(r$p_value) && r$p_value >= 0 && r$p_value <= 1)

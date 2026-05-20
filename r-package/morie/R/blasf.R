@@ -16,27 +16,34 @@
 #' @references Park & Casella (2008) JASA 103:681. Montesinos Lopez Ch 4.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 bayesian_lasso_full <- function(x, y, n_iter = 200, burn = 50,
-                                 lam = NULL, seed = 0,
-                                 deterministic_seed = NULL) {
+                                lam = NULL, seed = 0,
+                                deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
     morie::morie_det_rng("blasf", deterministic_seed)
   } else {
     set.seed(seed)
   }
-  X <- as.matrix(x); y <- as.numeric(y); n <- nrow(X); p <- ncol(X)
-  ym <- mean(y); yc <- y - ym
+  X <- as.matrix(x)
+  y <- as.numeric(y)
+  n <- nrow(X)
+  p <- ncol(X)
+  ym <- mean(y)
+  yc <- y - ym
   Xc <- sweep(X, 2, colMeans(X))
   beta <- rep(0, p)
   sigma2 <- if (n > 1) stats::var(yc) else 1
   tau2 <- rep(1, p)
   lam_val <- if (is.null(lam)) 1 else as.numeric(lam)
-  XtX <- crossprod(Xc); Xty <- crossprod(Xc, yc)
-  bsum <- matrix(0, 0, p); ssum <- numeric(0); lsum <- numeric(0)
+  XtX <- crossprod(Xc)
+  Xty <- crossprod(Xc, yc)
+  bsum <- matrix(0, 0, p)
+  ssum <- numeric(0)
+  lsum <- numeric(0)
   for (it in seq_len(n_iter)) {
     Dinv <- diag(1 / tau2)
     A <- XtX + Dinv
@@ -52,7 +59,7 @@ bayesian_lasso_full <- function(x, y, n_iter = 200, burn = 50,
     u <- stats::rchisq(p, 1)
     y_ig <- mu_pr + (mu_pr^2 * u) / (2 * lam_pr) -
       (mu_pr / (2 * lam_pr)) *
-      sqrt(4 * mu_pr * lam_pr * u + mu_pr^2 * u^2)
+        sqrt(4 * mu_pr * lam_pr * u + mu_pr^2 * u^2)
     z2 <- stats::runif(p)
     x_ig <- ifelse(z2 <= mu_pr / (mu_pr + y_ig), y_ig, mu_pr^2 / y_ig)
     x_ig <- pmax(x_ig, 1e-8)
@@ -68,16 +75,20 @@ bayesian_lasso_full <- function(x, y, n_iter = 200, burn = 50,
       lam_val <- sqrt(max(lam2, 1e-8))
     }
     if (it > burn) {
-      bsum <- rbind(bsum, beta); ssum <- c(ssum, sigma2); lsum <- c(lsum, lam_val)
+      bsum <- rbind(bsum, beta)
+      ssum <- c(ssum, sigma2)
+      lsum <- c(lsum, lam_val)
     }
   }
   beta_hat <- colMeans(bsum)
   beta_se <- if (nrow(bsum) > 1) apply(bsum, 2, stats::sd) else rep(0, p)
-  list(estimate = mean(abs(beta_hat)), beta = beta_hat, intercept = ym,
-       se = mean(beta_se), beta_se = beta_se,
-       lam = mean(lsum), sigma2 = mean(ssum),
-       n_iter = length(ssum), n = n, p = p,
-       method = "Bayesian LASSO (Park-Casella short Gibbs)")
+  list(
+    estimate = mean(abs(beta_hat)), beta = beta_hat, intercept = ym,
+    se = mean(beta_se), beta_se = beta_se,
+    lam = mean(lsum), sigma2 = mean(ssum),
+    n_iter = length(ssum), n = n, p = p,
+    method = "Bayesian LASSO (Park-Casella short Gibbs)"
+  )
 }
 
 # CANONICAL TEST

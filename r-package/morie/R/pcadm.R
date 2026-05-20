@@ -12,14 +12,15 @@
 #'   n, method.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 pca_dimension_reduction <- function(x, n_components = NULL, seed = 0L) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)
-  n <- nrow(x); p <- ncol(x)
+  n <- nrow(x)
+  p <- ncol(x)
   k <- if (is.null(n_components)) min(n, p) else n_components
   pc <- stats::prcomp(x, center = TRUE, scale. = FALSE, rank. = k)
   sv <- pc$sdev[seq_len(k)]
@@ -33,7 +34,7 @@ pca_dimension_reduction <- function(x, n_components = NULL, seed = 0L) {
     components               = components,
     explained_variance       = as.numeric(ev),
     explained_variance_ratio = as.numeric(ratio),
-    singular_values          = as.numeric(sv * sqrt(n - 1)),  # match sklearn's S
+    singular_values          = as.numeric(sv * sqrt(n - 1)), # match sklearn's S
     scores                   = scores,
     n_components             = as.integer(k),
     n                        = n,

@@ -39,13 +39,15 @@ NULL
 #'   methods that share the same underlying RNG state.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_sync_rng <- function(seed) {
-  stopifnot(is.numeric(seed), length(seed) == 1L, seed >= 0,
-            seed == as.integer(seed))
+  stopifnot(
+    is.numeric(seed), length(seed) == 1L, seed >= 0,
+    seed == as.integer(seed)
+  )
   env <- new.env(parent = emptyenv())
 
   # The synchronised L'Ecuyer-CMRG stream is kept privately in
@@ -55,23 +57,30 @@ morie_sync_rng <- function(seed) {
   .restore <- function(kind, seed_val) {
     RNGkind(kind[1L], kind[2L], kind[3L])
     if (is.null(seed_val)) {
-      if (exists(".Random.seed", globalenv(), inherits = FALSE))
+      if (exists(".Random.seed", globalenv(), inherits = FALSE)) {
         rm(".Random.seed", envir = globalenv())
+      }
     } else {
       assign(".Random.seed", seed_val, envir = globalenv())
     }
   }
   old_kind <- RNGkind()
-  old_seed <- if (exists(".Random.seed", globalenv(), inherits = FALSE))
-    get(".Random.seed", globalenv()) else NULL
+  old_seed <- if (exists(".Random.seed", globalenv(), inherits = FALSE)) {
+    get(".Random.seed", globalenv())
+  } else {
+    NULL
+  }
   set.seed(as.integer(seed), kind = "L'Ecuyer-CMRG")
   env$.state <- get(".Random.seed", globalenv())
   .restore(old_kind, old_seed)
 
   .draw <- function(fun) {
     cur_kind <- RNGkind()
-    cur_seed <- if (exists(".Random.seed", globalenv(), inherits = FALSE))
-      get(".Random.seed", globalenv()) else NULL
+    cur_seed <- if (exists(".Random.seed", globalenv(), inherits = FALSE)) {
+      get(".Random.seed", globalenv())
+    } else {
+      NULL
+    }
     on.exit(.restore(cur_kind, cur_seed), add = TRUE)
     RNGkind("L'Ecuyer-CMRG")
     assign(".Random.seed", env$.state, envir = globalenv())
@@ -79,12 +88,15 @@ morie_sync_rng <- function(seed) {
     env$.state <- get(".Random.seed", globalenv())
     out
   }
-  env$rnorm  <- function(n, mean = 0, sd = 1)
+  env$rnorm <- function(n, mean = 0, sd = 1) {
     .draw(function() stats::rnorm(n, mean, sd))
-  env$runif  <- function(n, min = 0, max = 1)
+  }
+  env$runif <- function(n, min = 0, max = 1) {
     .draw(function() stats::runif(n, min, max))
-  env$sample <- function(x, size, replace = FALSE)
+  }
+  env$sample <- function(x, size, replace = FALSE) {
     .draw(function() base::sample(x, size, replace))
+  }
   env
 }
 
@@ -99,16 +111,16 @@ morie_sync_rng <- function(seed) {
 #' @return A p x p numeric matrix A.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_generate_ar_coefficients <- function(p, rng,
-                                            spectral_radius = 0.8,
-                                            diagonal_bias = 0.4) {
+                                           spectral_radius = 0.8,
+                                           diagonal_bias = 0.4) {
   stopifnot(p >= 1, spectral_radius > 0, spectral_radius < 1)
   A_diag <- diagonal_bias * diag(p)
-  A_off  <- (1 - diagonal_bias) * matrix(rng$rnorm(p * p) * 0.3, p, p)
+  A_off <- (1 - diagonal_bias) * matrix(rng$rnorm(p * p) * 0.3, p, p)
   diag(A_off) <- 0
   A <- A_diag + A_off
   rho <- max(Mod(eigen(A, only.values = TRUE)$values))
@@ -127,17 +139,18 @@ morie_generate_ar_coefficients <- function(p, rng,
 #' @return A list of length \code{lags}, each a p x p matrix.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_generate_var_coefficients <- function(p, lags, rng,
-                                             spectral_radius = 0.8,
-                                             decay = 0.6) {
+                                            spectral_radius = 0.8,
+                                            decay = 0.6) {
   stopifnot(lags >= 1)
   lapply(seq_len(lags) - 1L, function(l) {
     morie_generate_ar_coefficients(p, rng,
-                                    spectral_radius = spectral_radius * decay^l)
+      spectral_radius = spectral_radius * decay^l
+    )
   })
 }
 
@@ -154,21 +167,23 @@ morie_generate_var_coefficients <- function(p, lags, rng,
 #' @return An n x p matrix of samples.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_mvn_with_covariance <- function(n, p, rng,
-                                       kernel = c("ar1", "independent", "compound", "toeplitz"),
-                                       rho = 0.5, mean = NULL) {
+                                      kernel = c("ar1", "independent", "compound", "toeplitz"),
+                                      rho = 0.5, mean = NULL) {
   kernel <- match.arg(kernel)
   if (is.null(mean)) mean <- rep(0, p)
   sigma <- switch(kernel,
     independent = diag(p),
-    ar1         = ,
-    toeplitz    = rho ^ abs(outer(seq_len(p), seq_len(p), "-")),
-    compound    = (function() {
-      m <- matrix(rho, p, p); diag(m) <- 1; m
+    ar1 = ,
+    toeplitz = rho^abs(outer(seq_len(p), seq_len(p), "-")),
+    compound = (function() {
+      m <- matrix(rho, p, p)
+      diag(m) <- 1
+      m
     })()
   )
   L <- chol(sigma)
@@ -209,13 +224,15 @@ morie_simulate_longitudinal_panel <- function(
   seed = 42L
 ) {
   rng <- morie_sync_rng(seed)
-  A   <- morie_generate_var_coefficients(p_variables, ar_lags, rng,
-                                          spectral_radius = ar_spectral_radius,
-                                          decay = ar_decay)
+  A <- morie_generate_var_coefficients(p_variables, ar_lags, rng,
+    spectral_radius = ar_spectral_radius,
+    decay = ar_decay
+  )
   panel <- array(0, dim = c(n_individuals, n_timepoints, p_variables))
   for (i in seq_len(n_individuals)) {
     eps <- morie_mvn_with_covariance(n_timepoints, p_variables, rng,
-                                      kernel = cov_kernel, rho = cov_rho)
+      kernel = cov_kernel, rho = cov_rho
+    )
     history <- vector("list", n_timepoints)
     for (t in seq_len(n_timepoints)) {
       x_new <- eps[t, ]
@@ -235,10 +252,12 @@ morie_simulate_longitudinal_panel <- function(
     omask <- array(rng$runif(prod(dim(panel))) < outlier_fraction, dim(panel))
     panel[omask] <- panel[omask] * outlier_scale
   }
-  out <- expand.grid(subject_id = seq_len(n_individuals) - 1L,
-                     t = seq_len(n_timepoints) - 1L,
-                     variable = seq_len(p_variables) - 1L,
-                     KEEP.OUT.ATTRS = FALSE)
+  out <- expand.grid(
+    subject_id = seq_len(n_individuals) - 1L,
+    t = seq_len(n_timepoints) - 1L,
+    variable = seq_len(p_variables) - 1L,
+    KEEP.OUT.ATTRS = FALSE
+  )
   out$value <- as.numeric(panel)
   out[order(out$subject_id, out$t, out$variable), ]
 }

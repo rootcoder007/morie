@@ -11,7 +11,8 @@ test_that("morie_fetch_ckan pulls CPADS PUMF from the open.canada.ca datastore",
   testthat::skip_if_offline("open.canada.ca")
   dat <- tryCatch(
     morie_fetch_ckan(dataset_key = "cpads", limit = 1000L),
-    error = function(e) NULL)
+    error = function(e) NULL
+  )
   skip_if(is.null(dat), "CKAN datastore_search API unreachable")
   expect_s3_class(dat, "data.frame")
   expect_true(nrow(dat) > 0)

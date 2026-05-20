@@ -14,8 +14,10 @@ test_that("morie_gpl_compatible_licenses returns a character vector", {
 test_that("morie_license_metadata returns expected named list", {
   md <- morie_license_metadata()
   expect_type(md, "list")
-  expect_named(md, c("package", "spdx", "fsf_libre",
-                     "osi_approved", "kernel_compatible"))
+  expect_named(md, c(
+    "package", "spdx", "fsf_libre",
+    "osi_approved", "kernel_compatible"
+  ))
   expect_identical(md$package, "morie")
   expect_identical(md$spdx, "GPL-2.0-only")
 })
@@ -33,7 +35,8 @@ test_that("morie_check_plugin_license warns on incompatible licence", {
 test_that("morie_check_plugin_license errors when raise_on_incompatible", {
   expect_error(
     morie_check_plugin_license("LicenseRef-Proprietary",
-                               raise_on_incompatible = TRUE)
+      raise_on_incompatible = TRUE
+    )
   )
 })
 
@@ -98,8 +101,10 @@ test_that("morie_generate_ar_coefficients yields a stable p x p matrix", {
 
 test_that("morie_generate_ar_coefficients honours spectral_radius/diagonal_bias", {
   rng <- morie_sync_rng(8)
-  A <- morie_generate_ar_coefficients(3, rng, spectral_radius = 0.5,
-                                      diagonal_bias = 1.0)
+  A <- morie_generate_ar_coefficients(3, rng,
+    spectral_radius = 0.5,
+    diagonal_bias = 1.0
+  )
   expect_equal(dim(A), c(3L, 3L))
   expect_true(all(is.finite(A)))
 })
@@ -131,8 +136,10 @@ test_that("morie_mvn_with_covariance draws under each kernel", {
 
 test_that("morie_mvn_with_covariance honours a supplied mean", {
   rng <- morie_sync_rng(21)
-  z <- morie_mvn_with_covariance(8, 2, rng, kernel = "independent",
-                                 mean = c(10, -10))
+  z <- morie_mvn_with_covariance(8, 2, rng,
+    kernel = "independent",
+    mean = c(10, -10)
+  )
   expect_equal(dim(z), c(8L, 2L))
 })
 
@@ -158,10 +165,13 @@ test_that("morie_simulate_longitudinal_panel handles missing and outliers", {
 
 test_that("lr_warmup ramps then clamps the learning rate", {
   res <- morie:::lr_warmup(c(0, 500, 1000, 2000),
-                           lr_target = 1e-3, warmup_steps = 1000L)
+    lr_target = 1e-3, warmup_steps = 1000L
+  )
   expect_type(res, "list")
-  expect_named(res, c("tensor", "value", "lr_target",
-                      "warmup_steps", "step", "method"))
+  expect_named(res, c(
+    "tensor", "value", "lr_target",
+    "warmup_steps", "step", "method"
+  ))
   expect_length(res$tensor, 4L)
   expect_true(all(res$tensor <= 1e-3 + 1e-12))
   expect_equal(res$tensor[4], 1e-3)
@@ -178,8 +188,10 @@ test_that("learning_curve returns scores across training sizes", {
   y <- x[, 1] - x[, 2] + rnorm(60, sd = 0.2)
   res <- learning_curve(x, y, cv = 3L, seed = 1L)
   expect_type(res, "list")
-  expect_named(res, c("estimate", "train_sizes", "train_scores",
-                      "val_scores", "n", "method"))
+  expect_named(res, c(
+    "estimate", "train_sizes", "train_scores",
+    "val_scores", "n", "method"
+  ))
   expect_equal(res$n, 60L)
   expect_length(res$train_scores, 5L)
   expect_length(res$val_scores, 5L)
@@ -215,8 +227,10 @@ test_that("lstmc_lstm_cell infers hidden_size from h_prev", {
 })
 
 test_that("lstmc_lstm_cell accepts deterministic_seed", {
-  res <- lstmc_lstm_cell(c(0.5, 0.5), hidden_size = 2L,
-                         deterministic_seed = 123L)
+  res <- lstmc_lstm_cell(c(0.5, 0.5),
+    hidden_size = 2L,
+    deterministic_seed = 123L
+  )
   expect_length(res$h, 2L)
   expect_true(all(is.finite(res$h)))
 })
@@ -242,8 +256,10 @@ test_that("mrm_classify_mandela default individual_any path", {
   d <- make_mandela_data()
   res <- mrm_classify_mandela(d)
   expect_s3_class(res, "data.frame")
-  expect_named(res, c("year", "denominator", "n_mandela", "rate",
-                      "pct", "n_broader_rc", "rate_broader"))
+  expect_named(res, c(
+    "year", "denominator", "n_mandela", "rate",
+    "pct", "n_broader_rc", "rate_broader"
+  ))
   expect_true("pooled" %in% res$year)
   expect_true(all(res$rate >= 0 & res$rate <= 1, na.rm = TRUE))
   expect_true(all(res$pct >= 0 & res$pct <= 100, na.rm = TRUE))
@@ -272,8 +288,10 @@ test_that("mrm_classify_mandela broader_rc adds alert numerator", {
 
 test_that("mrm_classify_mandela meaningful_contact exclusion", {
   d <- make_mandela_data()
-  res <- mrm_classify_mandela(d, denominator = "row",
-                              meaningful_contact_col = "MeaningfulContact")
+  res <- mrm_classify_mandela(d,
+    denominator = "row",
+    meaningful_contact_col = "MeaningfulContact"
+  )
   expect_s3_class(res, "data.frame")
 })
 
@@ -281,8 +299,10 @@ test_that("mrm_classify_mandela errors on missing columns", {
   d <- make_mandela_data()
   expect_error(mrm_classify_mandela(d, duration_col = "NoSuchCol"))
   expect_error(mrm_classify_mandela(d, year_col = "NoSuchCol"))
-  expect_error(mrm_classify_mandela(d[, c("NumberConsecutiveDays_Segregation",
-                                          "EndFiscalYear")]))
+  expect_error(mrm_classify_mandela(d[, c(
+    "NumberConsecutiveDays_Segregation",
+    "EndFiscalYear"
+  )]))
   expect_error(mrm_classify_mandela(list(a = 1)))
 })
 
@@ -387,8 +407,10 @@ test_that("summarize_output_audit summarizes an audit table", {
   )
   s <- summarize_output_audit(audit_tbl)
   expect_type(s, "list")
-  expect_named(s, c("total_declared", "declared_present", "declared_missing",
-                    "unexpected_files", "declared_present_pct"))
+  expect_named(s, c(
+    "total_declared", "declared_present", "declared_missing",
+    "unexpected_files", "declared_present_pct"
+  ))
   expect_equal(s$total_declared, 2L)
   expect_equal(s$declared_present, 1L)
   expect_equal(s$declared_missing, 1L)
@@ -404,18 +426,22 @@ test_that("audit_public_outputs runs against a synthetic project tree", {
   proj <- file.path(tempdir(), "morie_b13_proj")
   unlink(proj, recursive = TRUE)
   dir.create(file.path(proj, "data", "manifest"),
-             recursive = TRUE, showWarnings = FALSE)
+    recursive = TRUE, showWarnings = FALSE
+  )
   out_dir <- file.path(proj, "data", "manifest", "outputs")
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
   writeLines("hi", file.path(out_dir, "rep.txt"))
   mpath <- file.path(proj, "data", "manifest", "outputs_manifest.csv")
-  res <- tryCatch({
-    build_outputs_manifest(out_dir, mpath)
-    a <- audit_public_outputs(project_root = proj)
-    expect_s3_class(a, "data.frame")
-    expect_true(all(c("declared", "exists") %in% names(a)))
-    TRUE
-  }, error = function(e) TRUE)
+  res <- tryCatch(
+    {
+      build_outputs_manifest(out_dir, mpath)
+      a <- audit_public_outputs(project_root = proj)
+      expect_s3_class(a, "data.frame")
+      expect_true(all(c("declared", "exists") %in% names(a)))
+      TRUE
+    },
+    error = function(e) TRUE
+  )
   expect_true(res)
   unlink(proj, recursive = TRUE)
 })
@@ -424,11 +450,15 @@ test_that("mini_batch_gradient converges toward the OLS reference", {
   set.seed(40)
   x <- matrix(rnorm(80), ncol = 2)
   y <- 1 + 0.5 * x[, 1] - x[, 2] + rnorm(40, sd = 0.05)
-  res <- mini_batch_gradient(x, y, lr = 0.05, n_epochs = 50,
-                             batch_size = 8L, seed = 1L)
+  res <- mini_batch_gradient(x, y,
+    lr = 0.05, n_epochs = 50,
+    batch_size = 8L, seed = 1L
+  )
   expect_type(res, "list")
-  expect_named(res, c("estimate", "reference_ols", "n_epochs",
-                      "batch_size", "loss", "n", "method"))
+  expect_named(res, c(
+    "estimate", "reference_ols", "n_epochs",
+    "batch_size", "loss", "n", "method"
+  ))
   expect_length(res$estimate, 3L)
   expect_length(res$reference_ols, 3L)
   expect_equal(res$n, 40L)
@@ -556,8 +586,10 @@ test_that("mhatf_multi_head_attention_full runs a multi-head pass", {
   x <- matrix(rnorm(24), nrow = 6, ncol = 4)
   res <- mhatf_multi_head_attention_full(x, num_heads = 2L, seed = 1L)
   expect_type(res, "list")
-  expect_named(res, c("output", "estimate", "heads", "num_heads",
-                      "d_k", "d_model", "method"))
+  expect_named(res, c(
+    "output", "estimate", "heads", "num_heads",
+    "d_k", "d_model", "method"
+  ))
   expect_equal(dim(res$output), c(6L, 4L))
   expect_equal(res$num_heads, 2L)
   expect_equal(res$d_k, 2L)
@@ -573,8 +605,10 @@ test_that("mhatf_multi_head_attention_full errors when heads do not divide d_mod
 
 test_that("mhatf_multi_head_attention_full accepts deterministic_seed", {
   x <- matrix(rnorm(16), nrow = 4, ncol = 4)
-  res <- mhatf_multi_head_attention_full(x, num_heads = 2L,
-                                         deterministic_seed = 99L)
+  res <- mhatf_multi_head_attention_full(x,
+    num_heads = 2L,
+    deterministic_seed = 99L
+  )
   expect_equal(dim(res$output), c(4L, 4L))
 })
 
@@ -588,8 +622,10 @@ test_that("midas_regression fits a matrix high-frequency regressor", {
   y <- rowSums(X) + rnorm(12, sd = 0.1)
   res <- midas_regression(X, y)
   expect_type(res, "list")
-  expect_named(res, c("beta0", "beta1", "theta1", "theta2", "weights",
-                      "r2", "n", "K", "method"))
+  expect_named(res, c(
+    "beta0", "beta1", "theta1", "theta2", "weights",
+    "r2", "n", "K", "method"
+  ))
   expect_equal(res$n, 12L)
   expect_equal(res$K, 4L)
   expect_length(res$weights, 4L)
@@ -599,7 +635,8 @@ test_that("midas_regression fits a matrix high-frequency regressor", {
 
 test_that("midas_regression accepts a flat regressor with K supplied", {
   set.seed(81)
-  nT <- 10L; K <- 3L
+  nT <- 10L
+  K <- 3L
   xf <- rnorm(K + nT - 1)
   y <- rnorm(nT)
   res <- midas_regression(xf, y, K = K)

@@ -21,8 +21,8 @@
 #' @references Vaswani et al. (2017), NeurIPS.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 mhatf_multi_head_attention_full <- function(x, num_heads = 2L,
@@ -31,40 +31,54 @@ mhatf_multi_head_attention_full <- function(x, num_heads = 2L,
                                             seed = 0L,
                                             deterministic_seed = NULL) {
   x <- as.matrix(x)
-  seq_len <- nrow(x); d_model <- ncol(x)
-  if (d_model %% num_heads != 0L)
-    stop(sprintf("d_model=%d must be divisible by num_heads=%d",
-                 d_model, num_heads))
+  seq_len <- nrow(x)
+  d_model <- ncol(x)
+  if (d_model %% num_heads != 0L) {
+    stop(sprintf(
+      "d_model=%d must be divisible by num_heads=%d",
+      d_model, num_heads
+    ))
+  }
   d_k <- d_model %/% num_heads
   if (!is.null(deterministic_seed)) {
     morie_det_rng("mhatf", deterministic_seed)
   } else {
     set.seed(seed)
   }
-  rn <- function() matrix(stats::rnorm(d_model * d_model, 0, 1 / sqrt(d_model)),
-                          d_model, d_model)
+  rn <- function() {
+    matrix(
+      stats::rnorm(d_model * d_model, 0, 1 / sqrt(d_model)),
+      d_model, d_model
+    )
+  }
   if (is.null(W_q)) W_q <- rn()
   if (is.null(W_k)) W_k <- rn()
   if (is.null(W_v)) W_v <- rn()
   if (is.null(W_o)) W_o <- diag(d_model)
 
-  Q <- x %*% W_q; K <- x %*% W_k; V <- x %*% W_v
+  Q <- x %*% W_q
+  K <- x %*% W_k
+  V <- x %*% W_v
   head_outputs <- vector("list", num_heads)
   head_attns <- vector("list", num_heads)
   for (h in seq_len(num_heads)) {
     cols <- ((h - 1L) * d_k + 1L):(h * d_k)
-    res <- attnq_scaled_dot_product_attention(Q[, cols, drop = FALSE],
-                                              K[, cols, drop = FALSE],
-                                              V[, cols, drop = FALSE])
+    res <- attnq_scaled_dot_product_attention(
+      Q[, cols, drop = FALSE],
+      K[, cols, drop = FALSE],
+      V[, cols, drop = FALSE]
+    )
     head_outputs[[h]] <- res$output
     head_attns[[h]] <- res$attn
   }
   concat <- do.call(cbind, head_outputs)
   out <- concat %*% W_o
-  list(output = out, estimate = out, heads = head_attns,
-       num_heads = as.integer(num_heads),
-       d_k = as.integer(d_k), d_model = as.integer(d_model),
-       method = "Multi-head attention")
+  list(
+    output = out, estimate = out, heads = head_attns,
+    num_heads = as.integer(num_heads),
+    d_k = as.integer(d_k), d_model = as.integer(d_model),
+    method = "Multi-head attention"
+  )
 }
 
 #' @rdname mhatf_multi_head_attention_full

@@ -3,9 +3,11 @@
 #   okrig, optcl, ordct, ordlt, ordlt_jonckheere, paths, pcadm, pctmr, penls, permt
 
 test_that("mrm_tps_levy_scaling handles short / empty input", {
-  empty <- data.frame(OCC_DATE = character(0),
-                       LAT_WGS84 = numeric(0),
-                       LONG_WGS84 = numeric(0))
+  empty <- data.frame(
+    OCC_DATE = character(0),
+    LAT_WGS84 = numeric(0),
+    LONG_WGS84 = numeric(0)
+  )
   r0 <- mrm_tps_levy_scaling(empty)
   expect_type(r0, "list")
   expect_named(r0, c("n_events", "n_steps_tail", "min_step_km", "hill_alpha"))
@@ -13,8 +15,10 @@ test_that("mrm_tps_levy_scaling handles short / empty input", {
   expect_equal(r0$n_steps_tail, 0L)
   expect_true(is.na(r0$hill_alpha))
 
-  one <- data.frame(OCC_DATE = "2020-01-01",
-                     LAT_WGS84 = 43.7, LONG_WGS84 = -79.4)
+  one <- data.frame(
+    OCC_DATE = "2020-01-01",
+    LAT_WGS84 = 43.7, LONG_WGS84 = -79.4
+  )
   r1 <- mrm_tps_levy_scaling(one)
   expect_equal(r1$n_events, 1L)
   expect_true(is.na(r1$hill_alpha))
@@ -23,7 +27,7 @@ test_that("mrm_tps_levy_scaling handles short / empty input", {
 test_that("mrm_tps_levy_scaling computes Hill exponent on a small stream", {
   set.seed(1)
   df <- data.frame(
-    OCC_DATE  = sprintf("2020-01-%02d", 1:20),
+    OCC_DATE = sprintf("2020-01-%02d", 1:20),
     LAT_WGS84 = 43.7 + cumsum(runif(20, -0.05, 0.05)),
     LONG_WGS84 = -79.4 + cumsum(runif(20, -0.05, 0.05))
   )
@@ -41,12 +45,16 @@ test_that("mrm_tps_levy_scaling errors on missing columns / non-data.frame", {
 })
 
 test_that("mrm_tps_moran_clustering returns NA structure for tiny input", {
-  small <- data.frame(LAT_WGS84 = c(43.7, 43.8),
-                       LONG_WGS84 = c(-79.4, -79.3))
+  small <- data.frame(
+    LAT_WGS84 = c(43.7, 43.8),
+    LONG_WGS84 = c(-79.4, -79.3)
+  )
   r <- mrm_tps_moran_clustering(small)
   expect_type(r, "list")
-  expect_named(r, c("morans_I", "morans_z", "dbscan_n_clusters",
-                    "dbscan_n_noise", "dbscan_largest"))
+  expect_named(r, c(
+    "morans_I", "morans_z", "dbscan_n_clusters",
+    "dbscan_n_noise", "dbscan_largest"
+  ))
   expect_true(is.na(r$morans_I))
   expect_equal(r$dbscan_n_clusters, 0L)
 })
@@ -70,15 +78,19 @@ test_that("mrm_tps_moran_clustering errors on missing columns", {
 
 test_that("mrm_tps_neighbourhood_recurrence_km summarises gaps per hood", {
   df <- data.frame(
-    OCC_DATE = c("2020-01-01", "2020-01-05", "2020-01-12",
-                 "2020-02-01", "2020-02-10", "2020-02-20"),
+    OCC_DATE = c(
+      "2020-01-01", "2020-01-05", "2020-01-12",
+      "2020-02-01", "2020-02-10", "2020-02-20"
+    ),
     HOOD_158 = c("A", "A", "A", "B", "B", "B")
   )
   out <- mrm_tps_neighbourhood_recurrence_km(df)
   expect_s3_class(out, "data.frame")
-  expect_true(all(c("hood", "n_events", "n_gaps", "mean_gap_days",
-                     "median_gap_days", "p25_gap_days",
-                     "p75_gap_days") %in% names(out)))
+  expect_true(all(c(
+    "hood", "n_events", "n_gaps", "mean_gap_days",
+    "median_gap_days", "p25_gap_days",
+    "p75_gap_days"
+  ) %in% names(out)))
   expect_equal(nrow(out), 2L)
   expect_true(all(out$mean_gap_days > 0))
 })
@@ -101,8 +113,10 @@ test_that("multi_trait_gblup runs on a small multi-trait problem", {
   Y <- matrix(rnorm(12), 6, 2)
   r <- multi_trait_gblup(rep(0, 6), Y, M)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "G_hat", "B_hat", "Sigma_g", "Sigma_e",
-                    "n", "t", "method"))
+  expect_named(r, c(
+    "estimate", "G_hat", "B_hat", "Sigma_g", "Sigma_e",
+    "n", "t", "method"
+  ))
   expect_equal(r$n, 6L)
   expect_equal(r$t, 2L)
   expect_equal(dim(r$G_hat), c(6L, 2L))
@@ -122,7 +136,8 @@ test_that("multi_trait_gblup accepts supplied covariance matrices", {
   set.seed(7)
   M <- matrix(sample(0:2, 48, TRUE), 6, 8)
   Y <- matrix(rnorm(12), 6, 2)
-  Sg <- diag(2); Se <- diag(2)
+  Sg <- diag(2)
+  Se <- diag(2)
   r <- multi_trait_gblup(rep(0, 6), Y, M, Sigma_g = Sg, Sigma_e = Se)
   expect_equal(r$Sigma_g, Sg)
   expect_equal(r$Sigma_e, Se)
@@ -161,9 +176,11 @@ test_that("nbeats_basis forecasts a seasonal series", {
   x <- 0.1 * t + 2 * sin(2 * pi * t / 12) + rnorm(n, 0, 0.2)
   r <- nbeats_basis(x, horizon = 3, n_trend = 2, n_season = 3, period = 12)
   expect_type(r, "list")
-  expect_named(r, c("forecast", "fitted", "trend", "seasonal",
-                    "theta_trend", "theta_seasonal", "r2", "n",
-                    "horizon", "method"))
+  expect_named(r, c(
+    "forecast", "fitted", "trend", "seasonal",
+    "theta_trend", "theta_seasonal", "r2", "n",
+    "horizon", "method"
+  ))
   expect_length(r$forecast, 3L)
   expect_equal(r$n, n)
   expect_length(r$fitted, n)
@@ -217,8 +234,10 @@ test_that("nonstationary_covariance alias matches nstat", {
 })
 
 test_that("okrig predicts at a single target (exponential)", {
-  r <- okrig(c(1, 2, 3, 4, 5), matrix(0:4, ncol = 1),
-             matrix(2.5, 1, 1), "exponential", 0, 1, 2)
+  r <- okrig(
+    c(1, 2, 3, 4, 5), matrix(0:4, ncol = 1),
+    matrix(2.5, 1, 1), "exponential", 0, 1, 2
+  )
   expect_type(r, "list")
   expect_named(r, c("estimate", "se", "n", "method"))
   expect_equal(r$n, 5L)
@@ -254,8 +273,10 @@ test_that("okrig errors on bad model and dimension mismatch", {
 test_that("ordinary_kriging alias matches okrig", {
   coords <- matrix(0:4, ncol = 1)
   x <- c(1, 2, 3, 4, 5)
-  expect_equal(ordinary_kriging(x, coords, matrix(2.5, 1, 1))$estimate,
-               okrig(x, coords, matrix(2.5, 1, 1))$estimate)
+  expect_equal(
+    ordinary_kriging(x, coords, matrix(2.5, 1, 1))$estimate,
+    okrig(x, coords, matrix(2.5, 1, 1))$estimate
+  )
 })
 
 test_that("optcl handles an empty vector", {
@@ -289,9 +310,11 @@ test_that("optimal_classification alias matches optcl", {
 })
 
 test_that("ordered_categories computes the linear-by-linear statistic", {
-  tab <- matrix(c(10, 5, 2,
-                  4, 8, 6,
-                  1, 3, 11), nrow = 3, byrow = TRUE)
+  tab <- matrix(c(
+    10, 5, 2,
+    4, 8, 6,
+    1, 3, 11
+  ), nrow = 3, byrow = TRUE)
   r <- ordered_categories(tab)
   expect_type(r, "list")
   expect_named(r, c("statistic", "p_value", "df", "n", "correlation", "method"))
@@ -327,7 +350,8 @@ test_that("ordered_alternatives_test runs on ordered groups", {
 
 test_that("ordered_alternatives_test handles a too-short group list", {
   res <- tryCatch(ordered_alternatives_test(list(1:3)),
-                  error = function(e) "errored")
+    error = function(e) "errored"
+  )
   if (identical(res, "errored")) {
     expect_true(TRUE)
   } else {
@@ -350,8 +374,10 @@ test_that("find_project_root detects a synthetic project root", {
   dir.create(sub, recursive = TRUE)
   detected <- find_project_root(start = sub, max_up = 10L)
   expect_true(is.character(detected))
-  expect_equal(normalizePath(detected, winslash = "/", mustWork = FALSE),
-               normalizePath(root, winslash = "/", mustWork = FALSE))
+  expect_equal(
+    normalizePath(detected, winslash = "/", mustWork = FALSE),
+    normalizePath(root, winslash = "/", mustWork = FALSE)
+  )
   unlink(root, recursive = TRUE)
 })
 
@@ -367,9 +393,11 @@ test_that("morie_paths returns the standard named path list", {
   dir.create(root, recursive = TRUE)
   p <- morie_paths(project_root = root)
   expect_type(p, "list")
-  expect_true(all(c("project_root", "data_dir", "cache_dir", "datasets_dir",
-                     "outputs_dir", "outputs_manifest", "rtests_dir",
-                     "pytests_dir", "tools_dir", "docs_dir") %in% names(p)))
+  expect_true(all(c(
+    "project_root", "data_dir", "cache_dir", "datasets_dir",
+    "outputs_dir", "outputs_manifest", "rtests_dir",
+    "pytests_dir", "tools_dir", "docs_dir"
+  ) %in% names(p)))
   expect_true(grepl("data$", p$data_dir))
   unlink(root, recursive = TRUE)
 })
@@ -389,9 +417,11 @@ test_that("pca_dimension_reduction reduces a numeric matrix", {
   X <- matrix(rnorm(100), 20, 5)
   r <- pca_dimension_reduction(X, n_components = 2L)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "components", "explained_variance",
-                    "explained_variance_ratio", "singular_values",
-                    "scores", "n_components", "n", "method"))
+  expect_named(r, c(
+    "estimate", "components", "explained_variance",
+    "explained_variance_ratio", "singular_values",
+    "scores", "n_components", "n", "method"
+  ))
   expect_equal(r$n_components, 2L)
   expect_equal(r$n, 20L)
   expect_equal(dim(r$components), c(2L, 5L))
@@ -429,7 +459,8 @@ test_that("percentile_modified_rank returns NA structure for tiny samples", {
 })
 
 test_that("percentile_modified_rank errors on out-of-range q", {
-  x <- rnorm(10); y <- rnorm(10)
+  x <- rnorm(10)
+  y <- rnorm(10)
   expect_error(percentile_modified_rank(x, y, q = 0.5))
   expect_error(percentile_modified_rank(x, y, q = 0))
 })
@@ -441,8 +472,10 @@ test_that("penalized_regression fits an elastic-net model", {
   y <- X %*% b + 0.1 * rnorm(30)
   r <- penalized_regression(X, y, alpha = 1, lam = 0.05)
   expect_type(r, "list")
-  expect_true(all(c("estimate", "beta", "intercept", "se", "alpha",
-                     "lam", "n_iter", "n", "p", "method") %in% names(r)))
+  expect_true(all(c(
+    "estimate", "beta", "intercept", "se", "alpha",
+    "lam", "n_iter", "n", "p", "method"
+  ) %in% names(r)))
   expect_length(r$beta, 4L)
   expect_equal(r$n, 30L)
   expect_equal(r$p, 4L)
@@ -467,8 +500,10 @@ test_that("permutation_test_general runs a small permutation test", {
   y <- rnorm(15)
   r <- permutation_test_general(x, y, B = 200L, seed = 0L)
   expect_type(r, "list")
-  expect_named(r, c("statistic", "p_value", "n_x", "n_y", "B",
-                    "alternative", "method"))
+  expect_named(r, c(
+    "statistic", "p_value", "n_x", "n_y", "B",
+    "alternative", "method"
+  ))
   expect_equal(r$n_x, 15L)
   expect_equal(r$n_y, 15L)
   expect_equal(r$B, 200L)
@@ -498,7 +533,10 @@ test_that("permt returns NA structure for empty input", {
 
 test_that("permutation_test_general alias matches permt", {
   set.seed(3)
-  x <- rnorm(10); y <- rnorm(10)
-  expect_equal(permutation_test_general(x, y, B = 100L, seed = 5L)$statistic,
-               permt(x, y, B = 100L, seed = 5L)$statistic)
+  x <- rnorm(10)
+  y <- rnorm(10)
+  expect_equal(
+    permutation_test_general(x, y, B = 100L, seed = 5L)$statistic,
+    permt(x, y, B = 100L, seed = 5L)$statistic
+  )
 })

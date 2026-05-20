@@ -13,25 +13,34 @@
 #' @importFrom stats sd
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 fzmis <- function(x, h = NULL) {
-  x <- as.numeric(x); n <- length(x)
-  if (n < 5L) return(list(estimate = NA_real_, n = n,
-                           method = "fzmis - too few obs"))
-  sigma <- stats::sd(x); if (sigma <= 0) sigma <- 1
-  mu2 <- 1; R_K <- 1 / (2 * sqrt(pi))
+  x <- as.numeric(x)
+  n <- length(x)
+  if (n < 5L) {
+    return(list(
+      estimate = NA_real_, n = n,
+      method = "fzmis - too few obs"
+    ))
+  }
+  sigma <- stats::sd(x)
+  if (sigma <= 0) sigma <- 1
+  mu2 <- 1
+  R_K <- 1 / (2 * sqrt(pi))
   R_fpp <- 3 / (8 * sqrt(pi) * sigma^5)
   if (is.null(h)) h <- .morie_silverman_h(x)
   bias_part <- (h^4 / 4) * mu2^2 * R_fpp
-  var_part  <- R_K / (n * h)
+  var_part <- R_K / (n * h)
   mise <- bias_part + var_part
-  h_opt <- (R_K / (n * mu2^2 * R_fpp))^(1/5)
-  list(estimate = mise, bias_part = bias_part, var_part = var_part,
-       h = h, h_opt = h_opt, R_fpp = R_fpp, sigma = sigma, n = n,
-       method = "Fauzi MISE decomposition (Ch 1)")
+  h_opt <- (R_K / (n * mu2^2 * R_fpp))^(1 / 5)
+  list(
+    estimate = mise, bias_part = bias_part, var_part = var_part,
+    h = h, h_opt = h_opt, R_fpp = R_fpp, sigma = sigma, n = n,
+    method = "Fauzi MISE decomposition (Ch 1)"
+  )
 }
 
 # CANONICAL TEST

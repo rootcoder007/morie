@@ -10,18 +10,24 @@
 #' @return Named list with estimate, log_rate_correction, parametric_rate, n, beta, d, method.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ghosal_contraction_rate <- function(x, beta = 1.0, d = 1) {
   n <- length(x)
-  if (n <= 1) return(list(estimate = NA_real_, n = n,
-                          method = "Contraction rate (n too small)"))
+  if (n <= 1) {
+    return(list(
+      estimate = NA_real_, n = n,
+      method = "Contraction rate (n too small)"
+    ))
+  }
   eps_n <- n^(-beta / (2 * beta + d))
-  list(estimate = eps_n,
-       log_rate_correction = (log(n))^(beta/(2*beta+d)) * eps_n,
-       parametric_rate = n^(-0.5),
-       n = n, beta = beta, d = d,
-       method = "Minimax contraction rate n^{-beta/(2beta+d)}")
+  list(
+    estimate = eps_n,
+    log_rate_correction = (log(n))^(beta / (2 * beta + d)) * eps_n,
+    parametric_rate = n^(-0.5),
+    n = n, beta = beta, d = d,
+    method = "Minimax contraction rate n^{-beta/(2beta+d)}"
+  )
 }

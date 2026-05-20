@@ -17,8 +17,10 @@ test_that("morie_load_dataset reads from the built-in database tier", {
   tn <- cat$table_name[cat$key == "ocp21"][1]
   DBI::dbWriteTable(con, tn, data.frame(SEQID = 1:4), overwrite = TRUE)
   DBI::dbDisconnect(con)
-  testthat::local_mocked_bindings(morie_builtin_db = function() bdb,
-                                  .package = "morie")
+  testthat::local_mocked_bindings(
+    morie_builtin_db = function() bdb,
+    .package = "morie"
+  )
   d <- morie_load_dataset("ocp21", db_path = tempfile(fileext = ".db"))
   expect_s3_class(d, "data.frame")
   expect_equal(nrow(d), 4L)
@@ -29,7 +31,8 @@ test_that("morie_load_dataset ingests csv and rds local files", {
   # an empty built-in DB so the local-file tier is reached
   testthat::local_mocked_bindings(
     morie_builtin_db = function() tempfile(fileext = ".db"),
-    .package = "morie")
+    .package = "morie"
+  )
   wd <- tempfile("ld-")
   dir.create(wd)
   owd <- setwd(wd)
@@ -59,7 +62,8 @@ test_that("morie_load_cpads resolves local file then the SQLite cache", {
   lp <- "data/datasets/oc/CPADS/2021-2022/cpads-2021-2022-pumf2.csv"
   dir.create(dirname(lp), recursive = TRUE, showWarnings = FALSE)
   utils::write.csv(data.frame(SEQID = 1:5, x = 6:10), lp,
-                   row.names = FALSE)
+    row.names = FALSE
+  )
   d <- suppressMessages(morie_load_cpads(db_path = db, use_ckan = FALSE))
   expect_s3_class(d, "data.frame")
   expect_equal(nrow(d), 5L)

@@ -8,19 +8,20 @@
 
 skip_if_no_hash <- function() {
   ok <- requireNamespace("digest", quietly = TRUE) ||
-        requireNamespace("openssl", quietly = TRUE)
+    requireNamespace("openssl", quietly = TRUE)
   testthat::skip_if_not(ok, "neither 'digest' nor 'openssl' available")
 }
 
 skip_if_no_gb_backend <- function() {
   ok <- requireNamespace("gbm", quietly = TRUE) ||
-        requireNamespace("xgboost", quietly = TRUE)
+    requireNamespace("xgboost", quietly = TRUE)
   testthat::skip_if_not(ok, "neither 'gbm' nor 'xgboost' available")
 }
 
 xy_fixture <- function() {
   set.seed(0L)
-  n <- 200L; p <- 4L
+  n <- 200L
+  p <- 4L
   X <- matrix(rnorm(n * p), nrow = n, ncol = p)
   y <- as.integer(X[, 1] + 0.5 * X[, 2] - X[, 3] > 0)
   list(x = X, y = y)
@@ -39,7 +40,7 @@ test_that("gbens deterministic_seed is reproducible", {
   # fraction; assert at least one of (importances, score) varies, OR both
   # are identical (still a passing reproducibility outcome).
   same_imp <- isTRUE(all.equal(r1$feature_importances, r3$feature_importances))
-  same_sc  <- isTRUE(all.equal(r1$train_score, r3$train_score))
+  same_sc <- isTRUE(all.equal(r1$train_score, r3$train_score))
   expect_true(!same_imp || !same_sc || (same_imp && same_sc))
 })
 

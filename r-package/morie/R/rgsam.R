@@ -15,7 +15,8 @@
 #' @references Richman & Moorman (2000), AJP Heart 278:H2039.
 #' @export
 #' @examples
-#' set.seed(0); rgsam(rnorm(100), m = 2)$SampEn
+#' set.seed(0)
+#' rgsam(rnorm(100), m = 2)$SampEn
 rgsam <- function(x, m = 2L, r = NULL) {
   N <- length(x)
   if (is.null(r)) r <- 0.2 * stats::sd(x)
@@ -32,7 +33,8 @@ rgsam <- function(x, m = 2L, r = NULL) {
     }
     cnt
   }
-  B <- matches(m); A <- matches(m + 1L)
+  B <- matches(m)
+  A <- matches(m + 1L)
   sampen <- if (A == 0 || B == 0) Inf else -log(A / B)
   list(SampEn = sampen, A = A, B = B, m = m, r = r, n = N)
 }

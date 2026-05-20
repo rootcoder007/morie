@@ -13,13 +13,13 @@
 #' @references Kosorok (2008), Ch 2.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr01_kosorok_empirical_process <- function(x, f = NULL, mu0 = 0) {
-  x  <- as.numeric(x)
-  n  <- length(x)
+  x <- as.numeric(x)
+  n <- length(x)
   fx <- if (is.null(f)) x else vapply(x, f, numeric(1))
   pn <- mean(fx)
   estimate <- sqrt(n) * (pn - mu0)

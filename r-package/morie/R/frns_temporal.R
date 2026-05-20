@@ -49,7 +49,7 @@ NULL
 #' pred <- rep(c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0), 2)
 #' grp <- rep(c(rep("X", 5), rep("Y", 5)), 2)
 #' res <- predpol_temporal_audit(period, city, pred, grp, privileged = "X")
-#' res$per_city$A$dir_range   # 0 — disparity is stable across periods
+#' res$per_city$A$dir_range # 0 — disparity is stable across periods
 predpol_temporal_audit <- function(period, city, y_pred, group,
                                    privileged = NULL, favorable = 1) {
   n <- length(period)
@@ -64,12 +64,17 @@ predpol_temporal_audit <- function(period, city, y_pred, group,
   warnings <- character(0)
   if (is.null(privileged)) {
     gs <- unique(group)
-    rates <- vapply(gs, function(g) mean(y_pred[group == g] == favorable),
-                    numeric(1))
+    rates <- vapply(
+      gs, function(g) mean(y_pred[group == g] == favorable),
+      numeric(1)
+    )
     privileged <- gs[which.max(rates)]
     warnings <- c(warnings, sprintf(
-      paste0("`privileged` not given; inferred globally as '%s' so every ",
-             "cell uses the same reference group."), privileged))
+      paste0(
+        "`privileged` not given; inferred globally as '%s' so every ",
+        "cell uses the same reference group."
+      ), privileged
+    ))
   } else {
     privileged <- as.character(privileged)
   }
@@ -87,23 +92,33 @@ predpol_temporal_audit <- function(period, city, y_pred, group,
         next
       }
       di <- fairness_disparate_impact(
-        cy, cg, privileged = privileged, favorable = favorable)$value
+        cy, cg,
+        privileged = privileged, favorable = favorable
+      )$value
       pg <- fairness_demographic_parity(
-        cy, cg, privileged = privileged, favorable = favorable)$value
-      rate_vec <- vapply(cgu, function(g) mean(cy[cg == g] == favorable),
-                         numeric(1))
+        cy, cg,
+        privileged = privileged, favorable = favorable
+      )$value
+      rate_vec <- vapply(
+        cgu, function(g) mean(cy[cg == g] == favorable),
+        numeric(1)
+      )
       gini <- fairness_gini(rate_vec)$value
       bas <- fairness_bias_amplification(
-        cy, cg, privileged = privileged, favorable = favorable)$value
+        cy, cg,
+        privileged = privileged, favorable = favorable
+      )$value
       cells[[length(cells) + 1L]] <- list(
         city = cc, period = pp, n = sum(m),
-        dir = di, parity_gap = pg, gini = gini, bas = bas)
+        dir = di, parity_gap = pg, gini = gini, bas = bas
+      )
     }
   }
   if (skipped > 0L) {
     warnings <- c(warnings, sprintf(
       "%d (city, period) cell(s) were skipped (fewer than two groups, or the privileged group absent).",
-      skipped))
+      skipped
+    ))
   }
   if (length(cells) == 0L) {
     stop("no (city, period) cell had enough groups to audit", call. = FALSE)
@@ -135,20 +150,28 @@ predpol_temporal_audit <- function(period, city, y_pred, group,
   mean_dirs_f <- mean_dirs[is.finite(mean_dirs)]
   cross <- if (length(mean_dirs_f) >= 2L) {
     max(mean_dirs_f) - min(mean_dirs_f)
-  } else 0
+  } else {
+    0
+  }
 
   stab <- if (is.finite(worst_range) && worst_range >= 0.5) {
-    sprintf(paste0("Bias is temporally unstable: the Disparate Impact ",
-                   "Ratio swings by up to %.3f across periods within a ",
-                   "single city; the metric must be recomputed every ",
-                   "period."), worst_range)
+    sprintf(paste0(
+      "Bias is temporally unstable: the Disparate Impact ",
+      "Ratio swings by up to %.3f across periods within a ",
+      "single city; the metric must be recomputed every ",
+      "period."
+    ), worst_range)
   } else {
     "The Disparate Impact Ratio is reasonably stable across periods."
   }
   div <- if (length(per_city) >= 2L && cross >= 0.3) {
-    sprintf(paste0(" Bias also diverges across cities: mean annual DIR ",
-                   "spans %.3f between cities."), cross)
-  } else ""
+    sprintf(paste0(
+      " Bias also diverges across cities: mean annual DIR ",
+      "spans %.3f between cities."
+    ), cross)
+  } else {
+    ""
+  }
 
   list(
     value = worst_range,

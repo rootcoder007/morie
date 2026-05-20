@@ -83,7 +83,8 @@ test_that("proportion_ci methods produce bounds in [0, 1]", {
   for (m in c("wilson", "exact", "wald")) {
     r <- proportion_ci(10, 100, method = m)
     expect_true(r$ci_lower >= 0 && r$ci_upper <= 1,
-                info = paste("method =", m))
+      info = paste("method =", m)
+    )
   }
 })
 
@@ -113,7 +114,8 @@ test_that("cohens_d is near 1 for shift of one SD", {
 # ── hedges_g ─────────────────────────────────────────────────────────────────
 
 test_that("hedges_g is slightly smaller than cohens_d", {
-  a <- rnorm(20, 1); b <- rnorm(20, 0)
+  a <- rnorm(20, 1)
+  b <- rnorm(20, 0)
   expect_lt(abs(hedges_g(a, b)), abs(cohens_d(a, b)) + 0.01)
 })
 
@@ -133,15 +135,19 @@ test_that("cramers_v is near 0 for independent table", {
 # ── power_t_test ──────────────────────────────────────────────────────────────
 
 test_that("power_t_test solves for n correctly", {
-  result <- power_t_test(n = NULL, delta = 0.5, sd = 1,
-                          sig_level = 0.05, power = 0.80)
+  result <- power_t_test(
+    n = NULL, delta = 0.5, sd = 1,
+    sig_level = 0.05, power = 0.80
+  )
   # Expected n ≈ 64 per group
   expect_true(result$n >= 50 && result$n <= 80)
 })
 
 test_that("power_t_test solves for power correctly", {
-  result <- power_t_test(n = 100, delta = 0.5, sd = 1,
-                          sig_level = 0.05, power = NULL)
+  result <- power_t_test(
+    n = 100, delta = 0.5, sd = 1,
+    sig_level = 0.05, power = NULL
+  )
   expect_gt(result$power, 0.80)
 })
 

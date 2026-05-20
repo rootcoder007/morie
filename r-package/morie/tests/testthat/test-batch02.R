@@ -9,8 +9,10 @@ test_that("bayes_cpi_genomic returns a well-formed list", {
   y <- as.numeric(X %*% b + 0.1 * rnorm(30))
   res <- bayes_cpi_genomic(X, y, n_iter = 80, burn = 30, seed = 11)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "beta", "beta_pip", "pi", "sigma_b2",
-                      "sigma2", "intercept", "n_iter", "n", "p", "method"))
+  expect_named(res, c(
+    "estimate", "beta", "beta_pip", "pi", "sigma_b2",
+    "sigma2", "intercept", "n_iter", "n", "p", "method"
+  ))
   expect_length(res$beta, 6)
   expect_length(res$beta_pip, 6)
   expect_true(all(is.finite(res$beta)))
@@ -25,8 +27,10 @@ test_that("bayes_cpi_genomic respects pi_init and is finite", {
   set.seed(5)
   X <- matrix(rnorm(120), 20, 6)
   y <- as.numeric(X %*% c(0.8, -0.6, 0, 0, 0, 0) + 0.2 * rnorm(20))
-  res <- bayes_cpi_genomic(X, y, n_iter = 60, burn = 20,
-                           pi_init = 0.3, seed = 7)
+  res <- bayes_cpi_genomic(X, y,
+    n_iter = 60, burn = 20,
+    pi_init = 0.3, seed = 7
+  )
   expect_true(is.finite(res$estimate))
   expect_true(is.finite(res$pi))
   expect_gte(res$pi, 0)
@@ -42,8 +46,10 @@ test_that("bkprp_backpropagation sigmoid path returns gradients", {
   w <- matrix(rnorm(8), 2, 4)
   b <- rnorm(2)
   res <- bkprp_backpropagation(x, y, w = w, b = b, activation = "sigmoid")
-  expect_named(res, c("loss", "estimate", "dW", "db", "dx", "a", "z",
-                      "method"))
+  expect_named(res, c(
+    "loss", "estimate", "dW", "db", "dx", "a", "z",
+    "method"
+  ))
   expect_true(is.finite(res$loss))
   expect_gte(res$loss, 0)
   expect_equal(dim(res$dW), c(2, 4))
@@ -88,8 +94,10 @@ test_that("bayesian_lasso_full returns a well-formed list", {
   X <- matrix(rnorm(100), 20, 5)
   y <- as.numeric(X %*% c(1, -1, 0, 0, 0) + 0.2 * rnorm(20))
   res <- bayesian_lasso_full(X, y, n_iter = 80, burn = 20, seed = 3)
-  expect_named(res, c("estimate", "beta", "intercept", "se", "beta_se",
-                      "lam", "sigma2", "n_iter", "n", "p", "method"))
+  expect_named(res, c(
+    "estimate", "beta", "intercept", "se", "beta_se",
+    "lam", "sigma2", "n_iter", "n", "p", "method"
+  ))
   expect_length(res$beta, 5)
   expect_length(res$beta_se, 5)
   expect_true(all(is.finite(res$beta)))
@@ -102,8 +110,10 @@ test_that("bayesian_lasso_full accepts a fixed lambda", {
   set.seed(8)
   X <- matrix(rnorm(80), 20, 4)
   y <- as.numeric(X %*% c(0.5, -0.5, 0, 0) + 0.2 * rnorm(20))
-  res <- bayesian_lasso_full(X, y, n_iter = 60, burn = 15, lam = 2,
-                             seed = 8)
+  res <- bayesian_lasso_full(X, y,
+    n_iter = 60, burn = 15, lam = 2,
+    seed = 8
+  )
   expect_true(is.finite(res$estimate))
   expect_equal(res$lam, 2)
   expect_true(all(res$beta_se >= 0))
@@ -113,8 +123,10 @@ test_that("bnfwd_batch_norm_forward normalizes per feature", {
   set.seed(1)
   x <- matrix(rnorm(40), 10, 4)
   res <- bnfwd_batch_norm_forward(x)
-  expect_named(res, c("y", "estimate", "x_hat", "mu", "var", "eps",
-                      "method"))
+  expect_named(res, c(
+    "y", "estimate", "x_hat", "mu", "var", "eps",
+    "method"
+  ))
   expect_equal(dim(res$y), c(10, 4))
   expect_length(res$mu, 4)
   expect_length(res$var, 4)
@@ -125,8 +137,10 @@ test_that("bnfwd_batch_norm_forward normalizes per feature", {
 test_that("bnfwd_batch_norm_forward applies gamma and beta", {
   set.seed(2)
   x <- matrix(rnorm(30), 10, 3)
-  res <- bnfwd_batch_norm_forward(x, gamma = c(2, 2, 2),
-                                  beta = c(1, 1, 1), eps = 1e-3)
+  res <- bnfwd_batch_norm_forward(x,
+    gamma = c(2, 2, 2),
+    beta = c(1, 1, 1), eps = 1e-3
+  )
   expect_equal(res$eps, 1e-3)
   expect_true(all(is.finite(res$y)))
   expect_equal(dim(res$y), c(10, 3))
@@ -141,8 +155,10 @@ test_that("bayes_ridge_gibbs returns a well-formed list", {
   X <- matrix(rnorm(100), 20, 5)
   y <- as.numeric(X %*% c(1, -1, 0.5, 0, 0) + 0.2 * rnorm(20))
   res <- bayes_ridge_gibbs(X, y, n_iter = 80, burn = 20, seed = 4)
-  expect_named(res, c("estimate", "beta", "beta_se", "se", "sigma_j2",
-                      "sigma2", "intercept", "n_iter", "n", "p", "method"))
+  expect_named(res, c(
+    "estimate", "beta", "beta_se", "se", "sigma_j2",
+    "sigma2", "intercept", "n_iter", "n", "p", "method"
+  ))
   expect_length(res$beta, 5)
   expect_length(res$sigma_j2, 5)
   expect_true(all(is.finite(res$beta)))
@@ -156,8 +172,10 @@ test_that("bayes_ridge_gibbs accepts custom df0 and S0", {
   set.seed(9)
   X <- matrix(rnorm(80), 20, 4)
   y <- as.numeric(X %*% c(0.7, -0.3, 0, 0) + 0.2 * rnorm(20))
-  res <- bayes_ridge_gibbs(X, y, n_iter = 60, burn = 15,
-                           df0 = 6, S0 = 0.05, seed = 9)
+  res <- bayes_ridge_gibbs(X, y,
+    n_iter = 60, burn = 15,
+    df0 = 6, S0 = 0.05, seed = 9
+  )
   expect_true(is.finite(res$estimate))
   expect_true(all(res$beta_se >= 0))
 })
@@ -165,8 +183,10 @@ test_that("bayes_ridge_gibbs accepts custom df0 and S0", {
 test_that("brdgr with single logical vector counts non-empty entries", {
   v <- c(TRUE, FALSE, TRUE, TRUE, FALSE)
   res <- brdgr(v)
-  expect_named(res, c("n_bridges", "bridge_ids", "share", "n1", "n2",
-                      "method"))
+  expect_named(res, c(
+    "n_bridges", "bridge_ids", "share", "n1", "n2",
+    "method"
+  ))
   expect_equal(res$n_bridges, 3)
   expect_equal(res$bridge_ids, c(1L, 3L, 4L))
   expect_equal(res$share, 3 / 5)
@@ -205,8 +225,10 @@ test_that("bayesian_ridge_regression returns a well-formed list", {
   X <- matrix(rnorm(100), 20, 5)
   y <- as.numeric(X %*% c(1, -1, 0.5, 0, 0) + 0.1 * rnorm(20))
   res <- bayesian_ridge_regression(X, y)
-  expect_named(res, c("estimate", "beta", "intercept", "se", "beta_se",
-                      "lam", "n", "p", "method"))
+  expect_named(res, c(
+    "estimate", "beta", "intercept", "se", "beta_se",
+    "lam", "n", "p", "method"
+  ))
   expect_length(res$beta, 5)
   expect_true(all(is.finite(res$beta)))
   expect_true(all(res$beta_se >= 0))
@@ -228,8 +250,10 @@ test_that("btsrp percentile method brackets the estimate", {
   set.seed(0)
   x <- rnorm(100)
   res <- btsrp(x, B = 400, seed = 0, method = "percentile")
-  expect_named(res, c("estimate", "se", "ci_lower", "ci_upper", "alpha",
-                      "B", "n", "method"))
+  expect_named(res, c(
+    "estimate", "se", "ci_lower", "ci_upper", "alpha",
+    "B", "n", "method"
+  ))
   expect_equal(res$estimate, mean(x))
   expect_true(res$ci_lower < res$estimate)
   expect_true(res$estimate < res$ci_upper)
@@ -276,8 +300,10 @@ test_that("bysid returns ideal-point estimates from a vote matrix", {
   set.seed(1)
   M <- matrix(rbinom(120, 1, 0.5), 20, 6)
   res <- bysid(M, n_iter = 120, burn = 40, seed = 1)
-  expect_named(res, c("x_mean", "x_sd", "x_ci", "alpha", "beta",
-                      "n_iter", "method"))
+  expect_named(res, c(
+    "x_mean", "x_sd", "x_ci", "alpha", "beta",
+    "n_iter", "method"
+  ))
   expect_length(res$x_mean, 20)
   expect_length(res$x_sd, 20)
   expect_equal(dim(res$x_ci), c(20, 2))
@@ -361,21 +387,25 @@ test_that("estimate_aipw returns doubly-robust ATE (linear)", {
 
 test_that("estimate_aipw supports a logistic outcome model", {
   set.seed(5)
-  df <- data.frame(t = rbinom(200, 1, 0.4),
-                   y = rbinom(200, 1, 0.5),
-                   x = rnorm(200))
+  df <- data.frame(
+    t = rbinom(200, 1, 0.4),
+    y = rbinom(200, 1, 0.5),
+    x = rnorm(200)
+  )
   res <- estimate_aipw(df, "t", "y", "x", outcome_model = "logistic")
   expect_true(is.finite(res$ate))
 })
 
 test_that("estimate_gate returns one row per group", {
   set.seed(3)
-  df <- data.frame(t = rbinom(300, 1, 0.4), y = rnorm(300), x = rnorm(300),
-                   g = sample(c("A", "B"), 300, replace = TRUE))
+  df <- data.frame(
+    t = rbinom(300, 1, 0.4), y = rnorm(300), x = rnorm(300),
+    g = sample(c("A", "B"), 300, replace = TRUE)
+  )
   res <- estimate_gate(df, "t", "y", "x", "g")
   expect_s3_class(res, "data.frame")
   expect_true(all(c("group", "ate", "se", "ci_lower", "ci_upper", "n")
-                  %in% names(res)))
+  %in% names(res)))
   expect_equal(nrow(res), 2)
 })
 
@@ -403,8 +433,10 @@ test_that("estimate_late returns Wald estimate without covariates", {
   y <- 2 * t + rnorm(n)
   df <- data.frame(t = t, y = y, z = z)
   res <- estimate_late(df, "t", "y", "z")
-  expect_named(res, c("late", "se", "ci_lower", "ci_upper",
-                      "first_stage_f", "n"))
+  expect_named(res, c(
+    "late", "se", "ci_lower", "ci_upper",
+    "first_stage_f", "n"
+  ))
   expect_true(is.finite(res$late))
   expect_true(res$first_stage_f > 0)
   expect_equal(res$n, n)
@@ -442,7 +474,8 @@ test_that("sensitivity_rosenbaum returns a gamma grid data frame", {
   treated <- rnorm(20, mean = 1)
   control <- rnorm(25, mean = 0)
   res <- sensitivity_rosenbaum(treated, control,
-                               gamma_range = c(1, 1.5, 2))
+    gamma_range = c(1, 1.5, 2)
+  )
   expect_s3_class(res, "data.frame")
   expect_named(res, c("gamma", "p_lower", "p_upper"))
   expect_equal(nrow(res), 3)
@@ -461,21 +494,28 @@ test_that("estimate_g_computation returns outcome-regression ATE", {
 
 test_that("estimate_g_computation supports a logistic outcome model", {
   set.seed(12)
-  df <- data.frame(t = rbinom(200, 1, 0.4),
-                   y = rbinom(200, 1, 0.5),
-                   x = rnorm(200))
+  df <- data.frame(
+    t = rbinom(200, 1, 0.4),
+    y = rbinom(200, 1, 0.5),
+    x = rnorm(200)
+  )
   res <- estimate_g_computation(df, "t", "y", "x",
-                                outcome_model = "logistic")
+    outcome_model = "logistic"
+  )
   expect_true(is.finite(res$ate))
 })
 
 test_that("concordance_incomplete returns W for complete rankings", {
-  X <- matrix(c(1, 2, 3, 4,
-                1, 2, 3, 4,
-                2, 1, 4, 3), nrow = 4)
+  X <- matrix(c(
+    1, 2, 3, 4,
+    1, 2, 3, 4,
+    2, 1, 4, 3
+  ), nrow = 4)
   res <- concordance_incomplete(X)
-  expect_named(res, c("statistic", "p_value", "df", "chi2", "n", "k",
-                      "method"))
+  expect_named(res, c(
+    "statistic", "p_value", "df", "chi2", "n", "k",
+    "method"
+  ))
   expect_true(res$statistic >= 0 && res$statistic <= 1)
   expect_true(res$p_value >= 0 && res$p_value <= 1)
   expect_equal(res$n, 4)
@@ -484,9 +524,11 @@ test_that("concordance_incomplete returns W for complete rankings", {
 })
 
 test_that("concordance_incomplete handles incomplete rankings with NA", {
-  X <- matrix(c(1, 2, 3, 4,
-                NA, 1, 2, 3,
-                2, 1, NA, 3), nrow = 4)
+  X <- matrix(c(
+    1, 2, 3, 4,
+    NA, 1, 2, 3,
+    2, 1, NA, 3
+  ), nrow = 4)
   res <- concordance_incomplete(X)
   expect_true(is.finite(res$statistic) || is.na(res$statistic))
 })
@@ -499,9 +541,11 @@ test_that("concordance_incomplete handles degenerate small input", {
 })
 
 test_that("cndrc detects a Condorcet winner", {
-  M <- matrix(c(0, 60, 70,
-                40, 0, 55,
-                30, 45, 0), nrow = 3, byrow = TRUE)
+  M <- matrix(c(
+    0, 60, 70,
+    40, 0, 55,
+    30, 45, 0
+  ), nrow = 3, byrow = TRUE)
   res <- cndrc(M)
   expect_named(res, c("winner", "n_candidates", "has_winner", "method"))
   expect_equal(res$winner, 1L)
@@ -510,9 +554,11 @@ test_that("cndrc detects a Condorcet winner", {
 })
 
 test_that("cndrc reports no winner for a cycle", {
-  M <- matrix(c(0, 60, 40,
-                40, 0, 60,
-                60, 40, 0), nrow = 3, byrow = TRUE)
+  M <- matrix(c(
+    0, 60, 40,
+    40, 0, 60,
+    60, 40, 0
+  ), nrow = 3, byrow = TRUE)
   res <- cndrc(M)
   expect_equal(res$winner, -1L)
   expect_false(res$has_winner)
@@ -567,8 +613,10 @@ test_that("cnn2d_conv2d_forward respects stride and padding", {
 })
 
 test_that("cnn2d_conv2d_forward errors when input smaller than kernel", {
-  expect_error(cnn2d_conv2d_forward(matrix(1:4, 2, 2),
-                                    matrix(1:9, 3, 3)))
+  expect_error(cnn2d_conv2d_forward(
+    matrix(1:4, 2, 2),
+    matrix(1:9, 3, 3)
+  ))
 })
 
 test_that("conv2d_forward alias is identical", {

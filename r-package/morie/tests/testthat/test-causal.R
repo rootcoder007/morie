@@ -7,8 +7,10 @@ make_df <- function(n = 300, seed = 42) {
   ps_true <- 1 / (1 + exp(-0.5 * x))
   t <- rbinom(n, 1, ps_true)
   y <- 0.3 * t + 0.5 * x + rnorm(n, sd = 0.5)
-  data.frame(t = t, y = y, x = x,
-             g = sample(c("A", "B"), n, replace = TRUE))
+  data.frame(
+    t = t, y = y, x = x,
+    g = sample(c("A", "B"), n, replace = TRUE)
+  )
 }
 
 df <- make_df()
@@ -77,7 +79,7 @@ test_that("estimate_gate returns a data frame with group column", {
   expect_s3_class(result, "data.frame")
   expect_true("group" %in% names(result))
   expect_true("ate" %in% names(result))
-  expect_equal(nrow(result), 2)  # Two groups: A and B
+  expect_equal(nrow(result), 2) # Two groups: A and B
 })
 
 # ── estimate_cate ─────────────────────────────────────────────────────────────
@@ -103,15 +105,17 @@ test_that("mean CATE is approximately the ATE", {
 test_that("estimate_late (Wald) returns LATE near 0.3", {
   set.seed(99)
   n <- 500
-  z <- rbinom(n, 1, 0.5)            # instrument
+  z <- rbinom(n, 1, 0.5) # instrument
   t <- rbinom(n, 1, 0.2 + 0.5 * z) # compliance rate 50%
   y <- 0.3 * t + rnorm(n, sd = 0.5)
   d <- data.frame(t = t, y = y, z = z)
   result <- estimate_late(d, "t", "y", "z")
-  expect_named(result, c("late", "se", "ci_lower", "ci_upper",
-                          "first_stage_f", "n"))
+  expect_named(result, c(
+    "late", "se", "ci_lower", "ci_upper",
+    "first_stage_f", "n"
+  ))
   expect_lt(abs(result$late - 0.3), 0.3)
-  expect_gt(result$first_stage_f, 4)   # relevant instrument
+  expect_gt(result$first_stage_f, 4) # relevant instrument
 })
 
 # ── e_value ───────────────────────────────────────────────────────────────────
@@ -140,7 +144,8 @@ test_that("sensitivity_rosenbaum returns data frame with expected columns", {
   treated <- rnorm(50, mean = 0.3)
   control <- rnorm(50, mean = 0.0)
   result <- sensitivity_rosenbaum(treated, control,
-                                   gamma_range = c(1.0, 1.5, 2.0))
+    gamma_range = c(1.0, 1.5, 2.0)
+  )
   expect_s3_class(result, "data.frame")
   expect_equal(nrow(result), 3)
   expect_true(all(c("gamma", "p_lower", "p_upper") %in% names(result)))

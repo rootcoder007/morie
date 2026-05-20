@@ -23,9 +23,11 @@ btsrp <- function(x, statistic = NULL, B = 2000L, alpha = 0.05,
   x <- as.numeric(x)
   n <- length(x)
   if (n < 2L) {
-    return(list(estimate = NA_real_, se = NA_real_,
-                ci_lower = NA_real_, ci_upper = NA_real_,
-                n = n, method = method))
+    return(list(
+      estimate = NA_real_, se = NA_real_,
+      ci_lower = NA_real_, ci_upper = NA_real_,
+      n = n, method = method
+    ))
   }
   if (is.null(statistic)) statistic <- mean
   set.seed(seed)
@@ -33,9 +35,12 @@ btsrp <- function(x, statistic = NULL, B = 2000L, alpha = 0.05,
   boot <- replicate(B, statistic(sample(x, n, replace = TRUE)))
   se <- stats::sd(boot)
   if (method == "percentile") {
-    ci <- stats::quantile(boot, probs = c(alpha / 2, 1 - alpha / 2),
-                          names = FALSE)
-    lo <- ci[1]; hi <- ci[2]
+    ci <- stats::quantile(boot,
+      probs = c(alpha / 2, 1 - alpha / 2),
+      names = FALSE
+    )
+    lo <- ci[1]
+    hi <- ci[2]
   } else if (method == "bca") {
     z0 <- stats::qnorm(mean(boot < theta_hat))
     jk <- vapply(seq_len(n), function(i) statistic(x[-i]), numeric(1))
@@ -48,27 +53,35 @@ btsrp <- function(x, statistic = NULL, B = 2000L, alpha = 0.05,
     a1 <- stats::pnorm(z0 + (z0 + z_lo) / (1 - a * (z0 + z_lo)))
     a2 <- stats::pnorm(z0 + (z0 + z_hi) / (1 - a * (z0 + z_hi)))
     ci <- stats::quantile(boot, probs = c(a1, a2), names = FALSE)
-    lo <- ci[1]; hi <- ci[2]
-  } else {                     # studentized
+    lo <- ci[1]
+    hi <- ci[2]
+  } else { # studentized
     B2 <- max(50, B %/% 10)
     t_stars <- numeric(B)
     for (b in seq_len(B)) {
       idx <- sample.int(n, n, replace = TRUE)
-      xb <- x[idx]; theta_b <- statistic(xb)
-      inner <- replicate(B2,
-                         statistic(sample(xb, n, replace = TRUE)))
+      xb <- x[idx]
+      theta_b <- statistic(xb)
+      inner <- replicate(
+        B2,
+        statistic(sample(xb, n, replace = TRUE))
+      )
       se_b <- stats::sd(inner)
       t_stars[b] <- if (se_b > 0) (theta_b - theta_hat) / se_b else 0
     }
-    qs <- stats::quantile(t_stars, probs = c(alpha / 2, 1 - alpha / 2),
-                          names = FALSE)
+    qs <- stats::quantile(t_stars,
+      probs = c(alpha / 2, 1 - alpha / 2),
+      names = FALSE
+    )
     lo <- theta_hat - qs[2] * se
     hi <- theta_hat - qs[1] * se
   }
-  list(estimate = as.numeric(theta_hat), se = as.numeric(se),
-       ci_lower = as.numeric(lo), ci_upper = as.numeric(hi),
-       alpha = alpha, B = as.integer(B), n = as.integer(n),
-       method = paste0("Bootstrap CI (", method, ")"))
+  list(
+    estimate = as.numeric(theta_hat), se = as.numeric(se),
+    ci_lower = as.numeric(lo), ci_upper = as.numeric(hi),
+    alpha = alpha, B = as.integer(B), n = as.integer(n),
+    method = paste0("Bootstrap CI (", method, ")")
+  )
 }
 
 # CANONICAL TEST

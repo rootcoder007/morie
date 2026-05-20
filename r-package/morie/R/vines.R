@@ -11,9 +11,11 @@
 #' @keywords internal
 vines <- function(x) {
   x <- as.matrix(x)
-  if (nrow(x) < 3L || ncol(x) < 2L)
+  if (nrow(x) < 3L || ncol(x) < 2L) {
     return(list(estimate = NA_real_, method = "vine copula (n<3 or d<2)"))
-  n <- nrow(x); d <- ncol(x)
+  }
+  n <- nrow(x)
+  d <- ncol(x)
   # pseudo-observations
   u <- apply(x, 2, function(z) (rank(z)) / (n + 1))
   z <- stats::qnorm(u)
@@ -25,10 +27,10 @@ vines <- function(x) {
         P[i, i + jj] <- R[i, i + jj]
       } else {
         cond <- (i + 1):(i + jj - 1)
-        idx  <- c(i, i + jj, cond)
-        sub  <- R[idx, idx]
-        inv  <- MASS::ginv(sub)
-        pc   <- -inv[1, 2] / sqrt(inv[1, 1] * inv[2, 2])
+        idx <- c(i, i + jj, cond)
+        sub <- R[idx, idx]
+        inv <- MASS::ginv(sub)
+        pc <- -inv[1, 2] / sqrt(inv[1, 1] * inv[2, 2])
         P[i, i + jj] <- pc
       }
       P[i + jj, i] <- P[i, i + jj]
@@ -42,10 +44,12 @@ vines <- function(x) {
   } else {
     loglik <- NA_real_
   }
-  list(partial_corr = P, R = R, loglik = as.numeric(loglik),
-       estimate = mean(abs(P[upper.tri(P)])),
-       n = as.integer(n), d = as.integer(d),
-       method = "Gaussian D-vine copula (Aas et al. 2009)")
+  list(
+    partial_corr = P, R = R, loglik = as.numeric(loglik),
+    estimate = mean(abs(P[upper.tri(P)])),
+    n = as.integer(n), d = as.integer(d),
+    method = "Gaussian D-vine copula (Aas et al. 2009)"
+  )
 }
 
 # CANONICAL TEST

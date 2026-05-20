@@ -10,12 +10,13 @@
 #' @references Kosorok (2008), Ch 8.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr17_kosorok_counting_process <- function(t, event) {
-  t <- as.numeric(t); event <- as.integer(event)
+  t <- as.numeric(t)
+  event <- as.integer(event)
   list(
     estimate = as.integer(sum(event)),
     n        = length(t),

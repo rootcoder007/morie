@@ -8,19 +8,20 @@
 
 skip_if_no_hash <- function() {
   ok <- requireNamespace("digest", quietly = TRUE) ||
-        requireNamespace("openssl", quietly = TRUE)
+    requireNamespace("openssl", quietly = TRUE)
   testthat::skip_if_not(ok, "neither 'digest' nor 'openssl' available")
 }
 
 skip_if_no_xgb_backend <- function() {
   ok <- requireNamespace("xgboost", quietly = TRUE) ||
-        requireNamespace("gbm", quietly = TRUE)
+    requireNamespace("gbm", quietly = TRUE)
   testthat::skip_if_not(ok, "neither 'xgboost' nor 'gbm' available")
 }
 
 xy_fixture <- function() {
   set.seed(0L)
-  n <- 200L; p <- 4L
+  n <- 200L
+  p <- 4L
   X <- matrix(rnorm(n * p), nrow = n, ncol = p)
   y <- as.integer(X[, 1] + X[, 2] - X[, 3] > 0)
   list(x = X, y = y)
@@ -38,7 +39,7 @@ test_that("xgbst deterministic_seed is reproducible", {
   # XGBoost with subsample=1 / colsample_bytree=1 is deterministic; accept
   # either outcome as long as same-seed runs match.
   same_imp <- isTRUE(all.equal(r1$feature_importances, r3$feature_importances))
-  same_sc  <- isTRUE(all.equal(r1$train_score, r3$train_score))
+  same_sc <- isTRUE(all.equal(r1$train_score, r3$train_score))
   expect_true(!same_imp || !same_sc || (same_imp && same_sc))
 })
 

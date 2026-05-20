@@ -13,25 +13,33 @@
 #' @importFrom stats pnorm
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 fzsgn <- function(x, theta0 = 0, h = NULL, alternative = "two-sided") {
-  x <- as.numeric(x); n <- length(x)
-  if (n < 5L) return(list(statistic = NA_real_, p_value = NA_real_, n = n,
-                           method = "fzsgn - too few obs"))
+  x <- as.numeric(x)
+  n <- length(x)
+  if (n < 5L) {
+    return(list(
+      statistic = NA_real_, p_value = NA_real_, n = n,
+      method = "fzsgn - too few obs"
+    ))
+  }
   if (is.null(h)) h <- .morie_silverman_h(x)
   S_n <- sum(stats::pnorm((x - theta0) / h))
   z <- (S_n - n / 2) / sqrt(n / 4)
   p <- switch(alternative,
-              "two-sided" = 2 * (1 - stats::pnorm(abs(z))),
-              "greater"   = 1 - stats::pnorm(z),
-              "less"      = stats::pnorm(z),
-              stop("alternative must be two-sided/greater/less"))
-  list(statistic = S_n, z = z, p_value = p,
-       theta0 = theta0, h = h, n = n,
-       method = sprintf("Fauzi smoothed sign test (%s) (Ch 5)", alternative))
+    "two-sided" = 2 * (1 - stats::pnorm(abs(z))),
+    "greater"   = 1 - stats::pnorm(z),
+    "less"      = stats::pnorm(z),
+    stop("alternative must be two-sided/greater/less")
+  )
+  list(
+    statistic = S_n, z = z, p_value = p,
+    theta0 = theta0, h = h, n = n,
+    method = sprintf("Fauzi smoothed sign test (%s) (Ch 5)", alternative)
+  )
 }
 
 # CANONICAL TEST

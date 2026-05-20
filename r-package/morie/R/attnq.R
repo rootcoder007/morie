@@ -15,8 +15,8 @@
 #' @references Vaswani et al. (2017), NeurIPS.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 attnq_scaled_dot_product_attention <- function(Q, K = NULL, V = NULL,
@@ -32,9 +32,11 @@ attnq_scaled_dot_product_attention <- function(Q, K = NULL, V = NULL,
   e <- exp(sweep(logits, 1L, m, "-"))
   attn <- sweep(e, 1L, rowSums(e), "/")
   out <- attn %*% V
-  list(output = out, estimate = out, attn = attn, logits = logits,
-       d_k = as.integer(d_k),
-       method = "Scaled dot-product attention")
+  list(
+    output = out, estimate = out, attn = attn, logits = logits,
+    d_k = as.integer(d_k),
+    method = "Scaled dot-product attention"
+  )
 }
 
 #' @rdname attnq_scaled_dot_product_attention

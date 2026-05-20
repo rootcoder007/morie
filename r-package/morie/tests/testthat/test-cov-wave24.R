@@ -36,9 +36,11 @@ test_that("estimate_late runs the covariate-adjusted 2SLS path", {
   expect_true(is.finite(iv$late))
   # force the manual 2SLS fallback by hiding ivreg
   testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...)
-      if (identical(package, "ivreg")) FALSE else TRUE,
-    .package = "base")
+    requireNamespace = function(package, ...) {
+      if (identical(package, "ivreg")) FALSE else TRUE
+    },
+    .package = "base"
+  )
   man <- estimate_late(df, "t", "y", "z", covariates = "x")
   expect_true(is.finite(man$late))
 })
@@ -60,7 +62,8 @@ test_that(".run_data_wrangling_module_internal builds its logs", {
 
 test_that(".run_treatment_effects_module_internal runs on canonical data", {
   expect_true(is.list(
-    morie:::.run_treatment_effects_module_internal(make_canonical_cpads())))
+    morie:::.run_treatment_effects_module_internal(make_canonical_cpads())
+  ))
 })
 
 test_that(".run_meta_synthesis_module_internal copies legacy artifacts", {
@@ -68,20 +71,25 @@ test_that(".run_meta_synthesis_module_internal copies legacy artifacts", {
   dir.create(od, recursive = TRUE)
   expect_true(is.list(
     morie:::.run_meta_synthesis_module_internal(make_canonical_cpads(),
-                                                output_dir = od)))
+      output_dir = od
+    )
+  ))
 })
 
 test_that(".run_ebac_core_module_internal: empty-eligible guard + happy path", {
   # no eligible eBAC observations -> the guard stop fires
   d0 <- make_canonical_cpads()
   d0$ebac_tot <- NA_real_
-  expect_error(morie:::.run_ebac_core_module_internal(d0),
-               "non-missing eBAC")
+  expect_error(
+    morie:::.run_ebac_core_module_internal(d0),
+    "non-missing eBAC"
+  )
   # canonical data -> the distribution table and weighted-group loop run.
   # suppressWarnings(): survey-weighted binomial glm emits base-R's benign
   # "non-integer #successes" notice, intrinsic to the runner, not the test.
   res <- suppressWarnings(
-    morie:::.run_ebac_core_module_internal(make_canonical_cpads()))
+    morie:::.run_ebac_core_module_internal(make_canonical_cpads())
+  )
   expect_true(is.list(res))
 })
 
@@ -89,7 +97,8 @@ test_that(".run_ebac_core_module_internal: empty-eligible guard + happy path", {
 
 test_that("morie_builtin_db falls back to the per-user cache path", {
   testthat::local_mocked_bindings(
-    system.file = function(...) "", .package = "base")
+    system.file = function(...) "", .package = "base"
+  )
   p <- morie_builtin_db()
   expect_true(grepl("morie\\.db$", p))
 })
@@ -106,7 +115,7 @@ test_that(".fuzzy_match_key resolves a dataset-name substring", {
 })
 
 test_that("morie_userguide accepts a name argument", {
-  expect_type(morie_userguide(), "character")          # NULL -> directory list
+  expect_type(morie_userguide(), "character") # NULL -> directory list
   expect_error(morie_userguide("definitely-not-a-guide.pdf"))
 })
 
@@ -115,7 +124,8 @@ test_that("morie_load_cpads reaches the CKAN branch when local+cache miss", {
   testthat::skip_if_not_installed("RSQLite")
   testthat::local_mocked_bindings(
     morie_fetch_ckan = function(...) data.frame(seqid = 1:5),
-    .package = "morie")
+    .package = "morie"
+  )
   dat <- morie_load_cpads(db_path = tempfile(fileext = ".db"), use_ckan = TRUE)
   expect_s3_class(dat, "data.frame")
 })

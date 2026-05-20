@@ -10,8 +10,8 @@
 #' @references Kosorok (2008), Ch 2.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr06_kosorok_maximal_inequality <- function(x) {
@@ -20,8 +20,10 @@ ksr06_kosorok_maximal_inequality <- function(x) {
   sigma_n <- if (n > 1L) stats::sd(x) else NA_real_
   theta_n <- 0.5
   integrand <- function(e) sqrt(log(2) - 2 * log(e))
-  j <- stats::integrate(integrand, lower = 1e-8, upper = theta_n,
-                        subdivisions = 200L)$value
+  j <- stats::integrate(integrand,
+    lower = 1e-8, upper = theta_n,
+    subdivisions = 200L
+  )$value
   list(
     estimate = j * sigma_n,
     n        = n,

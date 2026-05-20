@@ -22,7 +22,7 @@ test_that("hurst_r estimates the Hurst exponent via pracma", {
   set.seed(2)
   r <- hurst_r(cumsum(stats::rnorm(2048)))
   expect_true(r$interpretation %in%
-                c("persistent", "anti-persistent", "random"))
+    c("persistent", "anti-persistent", "random"))
 })
 
 test_that(".morie_py_call builds the bridge command and shells out", {
@@ -31,7 +31,8 @@ test_that(".morie_py_call builds the bridge command and shells out", {
     system2 = function(command, args, ...) {
       captured <<- args
       "bridge-result"
-    }, .package = "base")
+    }, .package = "base"
+  )
   out <- morie:::.morie_py_call("hfd", c(1, 2, 3), 10L)
   expect_equal(out, "bridge-result")
   # a multi-element numeric arg is formatted as [1,2,3]
@@ -40,18 +41,22 @@ test_that(".morie_py_call builds the bridge command and shells out", {
 
 test_that("hfd delegates to the Python bridge", {
   testthat::local_mocked_bindings(
-    system2 = function(command, args, ...) "1.42", .package = "base")
+    system2 = function(command, args, ...) "1.42", .package = "base"
+  )
   expect_equal(hfd(cumsum(stats::rnorm(50)), kmax = 5L), "1.42")
 })
 
 test_that("filters fall back to the Python bridge without the signal pkg", {
   testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...)
-      if (identical(package, "signal")) FALSE else TRUE,
-    .package = "base")
+    requireNamespace = function(package, ...) {
+      if (identical(package, "signal")) FALSE else TRUE
+    },
+    .package = "base"
+  )
   testthat::local_mocked_bindings(
     .morie_py_call = function(fn_name, ...) paste0("bridge:", fn_name),
-    .package = "morie")
+    .package = "morie"
+  )
   expect_equal(buttlp(1:10, 100, 10), "bridge:buttlp")
   expect_equal(butthp(1:10, 100, 10), "bridge:butthp")
   expect_equal(buttbp(1:10, 100, 5, 20), "bridge:buttbp")
@@ -61,11 +66,14 @@ test_that("filters fall back to the Python bridge without the signal pkg", {
 
 test_that("hurst_r falls back to the Python bridge without pracma", {
   testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...)
-      if (identical(package, "pracma")) FALSE else TRUE,
-    .package = "base")
+    requireNamespace = function(package, ...) {
+      if (identical(package, "pracma")) FALSE else TRUE
+    },
+    .package = "base"
+  )
   testthat::local_mocked_bindings(
     .morie_py_call = function(fn_name, ...) "bridge:hurst",
-    .package = "morie")
+    .package = "morie"
+  )
   expect_equal(hurst_r(cumsum(stats::rnorm(64))), "bridge:hurst")
 })

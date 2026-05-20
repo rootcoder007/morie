@@ -9,7 +9,9 @@
 #' @references Rangayyan Ch 8.
 #' @export
 #' @examples
-#' set.seed(0); r <- rgemg(rnorm(500), window = 32); length(r$rms)
+#' set.seed(0)
+#' r <- rgemg(rnorm(500), window = 32)
+#' length(r$rms)
 rgemg <- function(x, window = 64L, fs = 1.0) {
   W <- as.integer(window)
   if (W < 1) stop("window must be >= 1")

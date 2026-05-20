@@ -16,8 +16,8 @@
 #' @references Goodfellow, Bengio & Courville (2016), Deep Learning, Ch 6.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 fwpas_forward_pass_dense <- function(x, w, b, activation = "sigmoid") {
@@ -35,19 +35,21 @@ fwpas_forward_pass_dense <- function(x, w, b, activation = "sigmoid") {
   z <- sweep(z, 2L, b, "+")
   a <- switch(activation,
     "identity" = z,
-    "linear"   = z,
-    "none"     = z,
-    "sigmoid"  = 1 / (1 + exp(-z)),
-    "tanh"     = tanh(z),
-    "relu"     = pmax(z, 0),
-    "softmax"  = {
+    "linear" = z,
+    "none" = z,
+    "sigmoid" = 1 / (1 + exp(-z)),
+    "tanh" = tanh(z),
+    "relu" = pmax(z, 0),
+    "softmax" = {
       ez <- exp(z - apply(z, 1L, max))
       sweep(ez, 1L, rowSums(ez), "/")
     },
     stop(sprintf("Unknown activation: %s", activation))
   )
-  list(z = z, a = a, estimate = a, activation = activation,
-       method = "Dense layer forward pass")
+  list(
+    z = z, a = a, estimate = a, activation = activation,
+    method = "Dense layer forward pass"
+  )
 }
 
 #' @rdname fwpas_forward_pass_dense

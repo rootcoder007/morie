@@ -28,7 +28,7 @@
 #' @examples
 #' \dontrun{
 #' morie_det_rng("ksr07_bootstrap", 42L)
-#' rnorm(5)  # reproducible draws keyed by ("ksr07_bootstrap", 42)
+#' rnorm(5) # reproducible draws keyed by ("ksr07_bootstrap", 42)
 #' }
 #' @export
 morie_det_rng <- function(name, seed) {
@@ -75,8 +75,8 @@ morie_det_rng <- function(name, seed) {
 #' @return 64-character lowercase hex string.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_det_rng_sha_hex <- function(name, seed) {

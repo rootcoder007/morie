@@ -15,14 +15,16 @@
 #' @references Goodfellow et al. (2016), Deep Learning, Ch 9.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 cnn1d_conv1d_forward <- function(x, w, b = 0, stride = 1L, padding = 0L) {
-  x <- as.numeric(x); w <- as.numeric(w)
+  x <- as.numeric(x)
+  w <- as.numeric(w)
   if (padding > 0) x <- c(rep(0, padding), x, rep(0, padding))
-  K <- length(w); N <- length(x)
+  K <- length(w)
+  N <- length(x)
   if (N < K) stop(sprintf("Input length %d < kernel length %d", N, K))
   out_len <- (N - K) %/% stride + 1L
   y <- numeric(out_len)
@@ -30,8 +32,10 @@ cnn1d_conv1d_forward <- function(x, w, b = 0, stride = 1L, padding = 0L) {
     i0 <- (j - 1L) * stride + 1L
     y[j] <- sum(w * x[i0:(i0 + K - 1L)]) + b
   }
-  list(y = y, estimate = y, output_length = out_len,
-       method = "Conv1D forward (cross-correlation)")
+  list(
+    y = y, estimate = y, output_length = out_len,
+    method = "Conv1D forward (cross-correlation)"
+  )
 }
 
 #' @rdname cnn1d_conv1d_forward

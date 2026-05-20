@@ -11,14 +11,16 @@
 #' @references Kosorok (2008), Ch 6.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr12_kosorok_information_bound <- function(x, y) {
-  x <- as.numeric(x); y <- as.numeric(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
   n <- length(x)
-  xc <- x - mean(x); yc <- y - mean(y)
+  xc <- x - mean(x)
+  yc <- y - mean(y)
   beta <- sum(xc * yc) / sum(xc^2)
   resid <- yc - beta * xc
   sigma2 <- sum(resid^2) / (n - 2)

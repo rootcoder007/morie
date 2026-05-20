@@ -9,23 +9,27 @@
 #' @return list: estimate, estimate_sn, se, ess, n, method.
 #' @keywords internal
 impsm <- function(x, h = NULL, p = NULL, q = NULL) {
-  x <- as.numeric(x); n <- length(x)
-  if (n < 1L)
+  x <- as.numeric(x)
+  n <- length(x)
+  if (n < 1L) {
     return(list(estimate = NA_real_, n = 0L, method = "impsm (empty)"))
+  }
   if (is.null(h)) h <- function(z) z
   if (is.null(p)) p <- function(z) stats::dnorm(z)
   if (is.null(q)) q <- function(z) stats::dnorm(z)
   hx <- vapply(x, h, numeric(1))
   px <- vapply(x, p, numeric(1))
   qx <- vapply(x, q, numeric(1))
-  w  <- px / qx
-  est    <- mean(w * hx)
+  w <- px / qx
+  est <- mean(w * hx)
   est_sn <- sum(w * hx) / sum(w)
-  se     <- stats::sd(w * hx) / sqrt(n)
-  ess    <- sum(w)^2 / sum(w^2)
-  list(estimate = as.numeric(est), estimate_sn = as.numeric(est_sn),
-       se = as.numeric(se), ess = as.numeric(ess), n = as.integer(n),
-       method = "Importance sampling (Geweke 1989)")
+  se <- stats::sd(w * hx) / sqrt(n)
+  ess <- sum(w)^2 / sum(w^2)
+  list(
+    estimate = as.numeric(est), estimate_sn = as.numeric(est_sn),
+    se = as.numeric(se), ess = as.numeric(ess), n = as.integer(n),
+    method = "Importance sampling (Geweke 1989)"
+  )
 }
 
 # CANONICAL TEST

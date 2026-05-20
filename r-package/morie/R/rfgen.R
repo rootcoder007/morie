@@ -17,18 +17,22 @@
 #' @references Breiman (2001); Montesinos Lopez Ch 8.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 random_forest_genomic <- function(x, y, markers, n_trees = 100,
-                                   max_depth = 10, min_samples = 2,
-                                   mtry = NULL, seed = 0) {
+                                  max_depth = 10, min_samples = 2,
+                                  mtry = NULL, seed = 0) {
   set.seed(seed)
-  y <- as.numeric(y); n <- length(y)
+  y <- as.numeric(y)
+  n <- length(y)
   M <- as.matrix(markers)
-  feats <- if (is.null(x) || (is.numeric(x) && length(x) == 0)) M
-           else cbind(as.matrix(x), M)
+  feats <- if (is.null(x) || (is.numeric(x) && length(x) == 0)) {
+    M
+  } else {
+    cbind(as.matrix(x), M)
+  }
   p <- ncol(feats)
   if (is.null(mtry)) mtry <- max(floor(sqrt(p)), 1L)
   if (requireNamespace("randomForest", quietly = TRUE)) {
@@ -39,13 +43,14 @@ random_forest_genomic <- function(x, y, markers, n_trees = 100,
     y_hat <- as.numeric(stats::predict(rf, feats))
     oob_pred <- rf$predicted
     oob <- as.numeric(1 - sum((y - oob_pred)^2) /
-                        max(sum((y - mean(y))^2), 1e-12))
+      max(sum((y - mean(y))^2), 1e-12))
     imp <- as.numeric(randomForest::importance(rf)[, 1])
     method_used <- "randomForest::randomForest"
   } else {
     method_used <- "base-R bagged regression-tree fallback"
     trees <- vector("list", n_trees)
-    oob_preds <- rep(0, n); oob_count <- rep(0, n)
+    oob_preds <- rep(0, n)
+    oob_count <- rep(0, n)
     for (b in seq_len(n_trees)) {
       boot <- sample.int(n, n, replace = TRUE)
       oob_mask <- !(seq_len(n) %in% boot)
@@ -63,20 +68,26 @@ random_forest_genomic <- function(x, y, markers, n_trees = 100,
     oob_count[oob_count == 0] <- 1
     oob_pred_avg <- oob_preds / oob_count
     oob <- as.numeric(1 - sum((y - oob_pred_avg)^2) /
-                        max(sum((y - mean(y))^2), 1e-12))
-    df_all <- data.frame(feats); names(df_all) <- names(tr_df)[-1]
-    yh_acc <- rep(0, n); cnt <- 0
-    for (tr in trees) if (!is.null(tr)) {
-      yh_acc <- yh_acc + as.numeric(stats::predict(tr, df_all))
-      cnt <- cnt + 1
+      max(sum((y - mean(y))^2), 1e-12))
+    df_all <- data.frame(feats)
+    names(df_all) <- names(tr_df)[-1]
+    yh_acc <- rep(0, n)
+    cnt <- 0
+    for (tr in trees) {
+      if (!is.null(tr)) {
+        yh_acc <- yh_acc + as.numeric(stats::predict(tr, df_all))
+        cnt <- cnt + 1
+      }
     }
     y_hat <- yh_acc / max(cnt, 1)
     imp <- rep(NA_real_, p)
   }
   resid <- y - y_hat
-  list(estimate = mean(y_hat), y_hat = y_hat, oob_score = oob,
-       feature_importance = imp, se = sqrt(mean(resid^2)),
-       n = n, method = method_used)
+  list(
+    estimate = mean(y_hat), y_hat = y_hat, oob_score = oob,
+    feature_importance = imp, se = sqrt(mean(resid^2)),
+    n = n, method = method_used
+  )
 }
 
 # CANONICAL TEST

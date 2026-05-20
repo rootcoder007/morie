@@ -41,8 +41,8 @@ validate_workflow_map <- function(script_map) {
 #' @return Named list with step metadata and exit status.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 run_workflow_step <- function(
@@ -104,8 +104,8 @@ run_workflow_step <- function(
 #' @return Data frame of step statuses.
 #' @examples
 #' \dontrun{
-#'   # Runs the workflow scripts end to end in a morie project tree:
-#'   run_pipeline(project_root = ".")
+#' # Runs the workflow scripts end to end in a morie project tree:
+#' run_pipeline(project_root = ".")
 #' }
 #' @export
 run_pipeline <- function(

@@ -6,11 +6,16 @@ test_that("sptau computes Moran's I on a simple linear weight chain", {
   x <- c(1, 2, 3, 4, 5)
   n <- 5L
   W <- matrix(0, n, n)
-  for (i in 1:(n - 1)) { W[i, i + 1] <- 1; W[i + 1, i] <- 1 }
+  for (i in 1:(n - 1)) {
+    W[i, i + 1] <- 1
+    W[i + 1, i] <- 1
+  }
   res <- sptau(x, W)
   expect_type(res, "list")
-  expect_named(res, c("statistic", "p_value", "expectation", "variance",
-                       "z_score", "n", "method"))
+  expect_named(res, c(
+    "statistic", "p_value", "expectation", "variance",
+    "z_score", "n", "method"
+  ))
   expect_equal(res$n, n)
   expect_true(is.finite(res$statistic))
   expect_true(is.character(res$method))
@@ -34,7 +39,10 @@ test_that("sptau returns NA list when weights or variance vanish", {
   res <- sptau(1:5, W0)
   expect_true(is.na(res$statistic))
   W <- matrix(0, n, n)
-  for (i in 1:(n - 1)) { W[i, i + 1] <- 1; W[i + 1, i] <- 1 }
+  for (i in 1:(n - 1)) {
+    W[i, i + 1] <- 1
+    W[i + 1, i] <- 1
+  }
   res2 <- sptau(rep(2, n), W)
   expect_true(is.na(res2$statistic))
 })
@@ -70,8 +78,10 @@ test_that("sptrn errors when order exceeds 3 or n < p", {
   set.seed(2)
   coords <- cbind(runif(20), runif(20))
   expect_error(sptrn(rnorm(20), coords, order = 4), "trend_order")
-  expect_error(sptrn(c(1, 2), matrix(c(0, 1, 0, 1), ncol = 2), order = 2),
-               "need n")
+  expect_error(
+    sptrn(c(1, 2), matrix(c(0, 1, 0, 1), ncol = 2), order = 2),
+    "need n"
+  )
 })
 
 test_that("spatial_trend_surface is an alias of sptrn", {
@@ -83,8 +93,10 @@ test_that("state_space_model runs the base-R Kalman path", {
   y <- cumsum(rnorm(40))
   res <- state_space_model(y)
   expect_type(res, "list")
-  expect_named(res, c("filtered_state", "filtered_state_variance",
-                      "smoothed_state", "loglik", "Q", "R", "n", "method"))
+  expect_named(res, c(
+    "filtered_state", "filtered_state_variance",
+    "smoothed_state", "loglik", "Q", "R", "n", "method"
+  ))
   expect_equal(res$n, 40L)
   expect_length(res$filtered_state, 40L)
   expect_length(res$smoothed_state, 40L)
@@ -153,7 +165,8 @@ test_that("stkrg predicts at multiple targets with custom variogram", {
   x <- rnorm(n)
   target <- list(s0 = cbind(runif(3), runif(3)), t0 = c(1, 2, 3))
   res <- stkrg(x, coords, times, target,
-               sill = 2, nugget = 0.3, range_s = 0.5, range_t = 2)
+    sill = 2, nugget = 0.3, range_s = 0.5, range_t = 2
+  )
   expect_length(res$estimate, 3L)
   expect_length(res$se, 3L)
   expect_true(all(res$se >= 0))
@@ -163,16 +176,22 @@ test_that("stkrg errors on shape and dimension mismatches", {
   coords <- cbind(runif(10), runif(10))
   expect_error(
     stkrg(rnorm(8), coords, runif(10),
-          target = list(s0 = matrix(c(0, 0), 1), t0 = 1)),
-    "mismatch")
+      target = list(s0 = matrix(c(0, 0), 1), t0 = 1)
+    ),
+    "mismatch"
+  )
   expect_error(
     stkrg(rnorm(10), coords, runif(10),
-          target = list(s0 = matrix(0, 1, 3), t0 = 1)),
-    "dim mismatch")
+      target = list(s0 = matrix(0, 1, 3), t0 = 1)
+    ),
+    "dim mismatch"
+  )
   expect_error(
     stkrg(rnorm(10), coords, runif(10),
-          target = list(s0 = cbind(c(0, 1), c(0, 1)), t0 = 1)),
-    "align")
+      target = list(s0 = cbind(c(0, 1), c(0, 1)), t0 = 1)
+    ),
+    "align"
+  )
 })
 
 test_that("spatiotemporal_kriging is an alias of stkrg", {
@@ -180,20 +199,26 @@ test_that("spatiotemporal_kriging is an alias of stkrg", {
 })
 
 test_that("strat computes stratified mean with proportional weights", {
-  df <- data.frame(y = c(1, 2, 3, 10, 11, 12),
-                   stratum = c("a", "a", "a", "b", "b", "b"))
+  df <- data.frame(
+    y = c(1, 2, 3, 10, 11, 12),
+    stratum = c("a", "a", "a", "b", "b", "b")
+  )
   res <- strat(df, "y", "stratum")
   expect_type(res, "list")
-  expect_named(res, c("estimate", "se", "ci_lower", "ci_upper", "weights",
-                      "strata_means", "n_strata", "method"))
+  expect_named(res, c(
+    "estimate", "se", "ci_lower", "ci_upper", "weights",
+    "strata_means", "n_strata", "method"
+  ))
   expect_equal(res$estimate, 6.5, tolerance = 1e-9)
   expect_equal(res$n_strata, 2L)
   expect_true(res$ci_lower <= res$estimate && res$estimate <= res$ci_upper)
 })
 
 test_that("strat accepts explicit population sizes", {
-  df <- data.frame(y = c(1, 2, 3, 10, 11, 12),
-                   stratum = c("a", "a", "a", "b", "b", "b"))
+  df <- data.frame(
+    y = c(1, 2, 3, 10, 11, 12),
+    stratum = c("a", "a", "a", "b", "b", "b")
+  )
   res <- strat(df, "y", "stratum", pop_sizes = c(a = 300, b = 100))
   expect_true(is.finite(res$estimate))
   expect_equal(res$estimate, 0.75 * 2 + 0.25 * 11, tolerance = 1e-9)
@@ -283,8 +308,10 @@ test_that("stvar computes empirical spatiotemporal semivariogram", {
   expect_type(res, "list")
   expect_named(res, c("estimate", "n", "method"))
   expect_equal(res$n, n)
-  expect_named(res$estimate, c("gamma", "spatial_bins", "temporal_bins",
-                               "counts"))
+  expect_named(res$estimate, c(
+    "gamma", "spatial_bins", "temporal_bins",
+    "counts"
+  ))
   expect_equal(dim(res$estimate$gamma), c(4L, 3L))
   expect_true(all(res$estimate$gamma[is.finite(res$estimate$gamma)] >= 0))
 })
@@ -329,8 +356,10 @@ test_that("svm_genomic runs (e1071 path or kernel-ridge fallback)", {
   y <- sin(M[, 1]) + 0.2 * rnorm(25)
   res <- svm_genomic(rep(0, 25), y, M)
   expect_type(res, "list")
-  expect_named(res, c("estimate", "y_hat", "alpha", "support_indices",
-                      "intercept", "se", "n", "method"))
+  expect_named(res, c(
+    "estimate", "y_hat", "alpha", "support_indices",
+    "intercept", "se", "n", "method"
+  ))
   expect_equal(res$n, 25L)
   expect_length(res$y_hat, 25L)
   expect_true(is.finite(res$estimate))
@@ -354,8 +383,10 @@ test_that("svm_hinge_primal fits a linear SVM when e1071 is available", {
   y <- rep(c(1L, 0L), each = 20)
   res <- svm_hinge_primal(x, y, C = 1)
   expect_type(res, "list")
-  expect_named(res, c("estimate", "intercept", "weights", "train_accuracy",
-                      "C", "classes", "n", "method"))
+  expect_named(res, c(
+    "estimate", "intercept", "weights", "train_accuracy",
+    "C", "classes", "n", "method"
+  ))
   expect_equal(res$n, 40L)
   expect_length(res$classes, 2L)
   expect_true(res$train_accuracy >= 0 && res$train_accuracy <= 1)
@@ -385,8 +416,10 @@ test_that("svm_kernel_trick fits each supported kernel", {
   for (k in c("rbf", "poly", "sigmoid", "linear")) {
     res <- svm_kernel_trick(x, y, kernel = k)
     expect_type(res, "list")
-    expect_named(res, c("estimate", "train_accuracy", "n_support", "kernel",
-                        "C", "gamma", "degree", "n", "method"))
+    expect_named(res, c(
+      "estimate", "train_accuracy", "n_support", "kernel",
+      "C", "gamma", "degree", "n", "method"
+    ))
     expect_equal(res$kernel, k)
     expect_equal(res$n, 60L)
     expect_true(res$train_accuracy >= 0 && res$train_accuracy <= 1)
@@ -419,8 +452,10 @@ test_that("swiglu_activation accepts explicit weights and biases", {
   x <- matrix(rnorm(8), 2, 4)
   W <- matrix(rnorm(12), 4, 3)
   V <- matrix(rnorm(12), 4, 3)
-  res <- morie:::swiglu_activation(x, W = W, V = V, b = rep(0.1, 3),
-                                   c = rep(-0.1, 3))
+  res <- morie:::swiglu_activation(x,
+    W = W, V = V, b = rep(0.1, 3),
+    c = rep(-0.1, 3)
+  )
   expect_equal(dim(res$tensor), c(2L, 3L))
 })
 
@@ -456,8 +491,10 @@ test_that("generate_synthetic_data respects the legacy naming profile", {
 
 test_that("generate_synthetic_data validates n and special_code_rate", {
   expect_error(generate_synthetic_data(n = 10L), "integer >= 100")
-  expect_error(generate_synthetic_data(n = 150L, special_code_rate = 0.5),
-               "0, 0.2")
+  expect_error(
+    generate_synthetic_data(n = 150L, special_code_rate = 0.5),
+    "0, 0.2"
+  )
 })
 
 test_that("generate_synthetic_data accepts a custom name map", {
@@ -470,14 +507,18 @@ test_that("generate_synthetic_data accepts a custom name map", {
 
 test_that("resolve_synthetic_name_map rejects malformed maps", {
   bad_missing <- c(id = "id")
-  expect_error(morie:::resolve_synthetic_name_map(bad_missing, "generic"),
-               "missing required keys")
+  expect_error(
+    morie:::resolve_synthetic_name_map(bad_missing, "generic"),
+    "missing required keys"
+  )
   full <- default_synthetic_name_map("generic")
   dup <- full
   dup[["weight"]] <- dup[["id"]]
   expect_error(morie:::resolve_synthetic_name_map(dup, "generic"), "unique")
-  expect_error(morie:::resolve_synthetic_name_map(123, "generic"),
-               "named character vector")
+  expect_error(
+    morie:::resolve_synthetic_name_map(123, "generic"),
+    "named character vector"
+  )
 })
 
 test_that("synthetic helpers inv_logit and inject_special_codes behave", {
@@ -497,8 +538,10 @@ test_that("write_synthetic_data writes a CSV and guards existing files", {
   expect_true(file.exists(p))
   back <- utils::read.csv(p)
   expect_equal(nrow(back), 110L)
-  expect_error(write_synthetic_data(tmp, n = 110L, seed = 5L),
-               "already exists")
+  expect_error(
+    write_synthetic_data(tmp, n = 110L, seed = 5L),
+    "already exists"
+  )
   p2 <- write_synthetic_data(tmp, n = 110L, seed = 5L, overwrite = TRUE)
   expect_true(file.exists(p2))
   unlink(tmp)

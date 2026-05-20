@@ -26,10 +26,12 @@ test_that("morie_download_bootstrap validates the survey argument", {
   # the legacy bootstrap keys are not current catalog keys, so each
   # target falls through the 'unknown key' branch -- still exercised.
   res <- suppressMessages(
-    morie_download_bootstrap("csus_2023", db_path = tempfile(fileext = ".db")))
+    morie_download_bootstrap("csus_2023", db_path = tempfile(fileext = ".db"))
+  )
   expect_null(res)
   res_all <- suppressMessages(
-    morie_download_bootstrap("all", db_path = tempfile(fileext = ".db")))
+    morie_download_bootstrap("all", db_path = tempfile(fileext = ".db"))
+  )
   expect_null(res_all)
 })
 
@@ -45,9 +47,12 @@ test_that("morie_load_dataset resolves the direct-download tier", {
   .cdb2_have_db()
   testthat::local_mocked_bindings(
     morie_fetch = function(url, ...) data.frame(a = 1:4),
-    .package = "morie")
-  d <- morie_load_dataset("cu23bt", db_path = tempfile(fileext = ".db"),
-                          refresh = TRUE)
+    .package = "morie"
+  )
+  d <- morie_load_dataset("cu23bt",
+    db_path = tempfile(fileext = ".db"),
+    refresh = TRUE
+  )
   expect_s3_class(d, "data.frame")
   expect_equal(nrow(d), 4L)
 })
@@ -56,9 +61,12 @@ test_that("morie_load_dataset resolves the ArcGIS tier", {
   .cdb2_have_db()
   testthat::local_mocked_bindings(
     morie_fetch_arcgis = function(layer_url, ...) data.frame(b = 1:7),
-    .package = "morie")
-  d <- morie_load_dataset("tpsassault", db_path = tempfile(fileext = ".db"),
-                          refresh = TRUE)
+    .package = "morie"
+  )
+  d <- morie_load_dataset("tpsassault",
+    db_path = tempfile(fileext = ".db"),
+    refresh = TRUE
+  )
   expect_s3_class(d, "data.frame")
   expect_equal(nrow(d), 7L)
 })

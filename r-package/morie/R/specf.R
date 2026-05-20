@@ -9,12 +9,13 @@
 #'   fs, n, method}.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 spectral_density <- function(x, fs = 1, nperseg = NULL) {
-  r <- as.numeric(x); n <- length(r)
+  r <- as.numeric(x)
+  n <- length(r)
   if (n < 8) stop("Need >=8 obs.")
   if (is.null(nperseg)) nperseg <- max(n %/% 4, 8)
   nperseg <- min(nperseg, n)
@@ -22,10 +23,12 @@ spectral_density <- function(x, fs = 1, nperseg = NULL) {
   win <- 0.5 - 0.5 * cos(2 * pi * (0:(nperseg - 1)) / max(nperseg - 1, 1))
   U <- sum(win^2)
   nfreq <- nperseg %/% 2 + 1
-  S <- numeric(nfreq); nseg <- 0; start <- 1
+  S <- numeric(nfreq)
+  nseg <- 0
+  start <- 1
   while (start + nperseg - 1 <= n) {
     seg <- (r[start:(start + nperseg - 1)] -
-            mean(r[start:(start + nperseg - 1)])) * win
+      mean(r[start:(start + nperseg - 1)])) * win
     Fk <- fft(seg)[1:nfreq]
     S <- S + Mod(Fk)^2
     nseg <- nseg + 1
@@ -33,7 +36,9 @@ spectral_density <- function(x, fs = 1, nperseg = NULL) {
   }
   S <- S / (nseg * U * fs)
   freqs <- seq(0, fs / 2, length.out = nfreq)
-  list(frequencies = freqs, psd = S, n_segments = nseg,
-       nperseg = nperseg, fs = fs, n = n,
-       method = "Welch PSD (Hann window, 50% overlap, base R)")
+  list(
+    frequencies = freqs, psd = S, n_segments = nseg,
+    nperseg = nperseg, fs = fs, n = n,
+    method = "Welch PSD (Hann window, 50% overlap, base R)"
+  )
 }

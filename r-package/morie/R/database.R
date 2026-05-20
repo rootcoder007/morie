@@ -23,13 +23,15 @@ morie_cache_dir <- function() {
 #' @return File path string.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_builtin_db <- function() {
   db <- system.file("extdata", "morie.db", package = "morie")
-  if (nzchar(db)) return(db)
+  if (nzchar(db)) {
+    return(db)
+  }
   # Source-checkout / dev fallback: the per-user cache copy.
   file.path(morie_cache_dir(), "morie.db")
 }
@@ -47,21 +49,23 @@ morie_builtin_db <- function() {
 #' @return A DBI connection object.
 #' @examples
 #' \donttest{
-#'   if (requireNamespace("DBI", quietly = TRUE) &&
-#'       requireNamespace("RSQLite", quietly = TRUE)) {
-#'     tmp <- tempfile(fileext = ".db")
-#'     con <- morie_db_connect(db_path = tmp)
-#'     DBI::dbListTables(con)
-#'     DBI::dbDisconnect(con)
-#'     file.remove(tmp)
-#'   }
+#' if (requireNamespace("DBI", quietly = TRUE) &&
+#'   requireNamespace("RSQLite", quietly = TRUE)) {
+#'   tmp <- tempfile(fileext = ".db")
+#'   con <- morie_db_connect(db_path = tmp)
+#'   DBI::dbListTables(con)
+#'   DBI::dbDisconnect(con)
+#'   file.remove(tmp)
+#' }
 #' }
 #' @export
 morie_db_connect <- function(db_path = NULL) {
   if (!requireNamespace("DBI", quietly = TRUE) ||
-      !requireNamespace("RSQLite", quietly = TRUE)) {
+    !requireNamespace("RSQLite", quietly = TRUE)) {
     stop("Packages 'DBI' and 'RSQLite' are required. Install with:\n",
-         "  install.packages(c('DBI', 'RSQLite'))", call. = FALSE)
+      "  install.packages(c('DBI', 'RSQLite'))",
+      call. = FALSE
+    )
   }
   if (is.null(db_path)) {
     db_path <- Sys.getenv("MORIE_CACHE_DB", "")
@@ -85,8 +89,8 @@ morie_db_connect <- function(db_path = NULL) {
 #' @return Number of rows written (invisible).
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_cache_store <- function(data, table_name, db_path = NULL) {
@@ -103,8 +107,8 @@ morie_cache_store <- function(data, table_name, db_path = NULL) {
 #' @return A data.frame, or \code{NULL} if the table does not exist.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_cache_load <- function(table_name, db_path = NULL) {
@@ -122,8 +126,8 @@ morie_cache_load <- function(table_name, db_path = NULL) {
 #' @return A data.frame with columns \code{table} and \code{rows}.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_cache_list <- function(db_path = NULL) {
@@ -150,8 +154,8 @@ morie_cache_list <- function(db_path = NULL) {
 #' @return Number of rows cached (invisible).
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_cache_file <- function(path, table_name, db_path = NULL) {
@@ -181,10 +185,10 @@ morie_cache_file <- function(path, table_name, db_path = NULL) {
 #' @return A data.frame with canonical CPADS columns.
 #' @examples
 #' \dontrun{
-#'   # Needs the CPADS PUMF (local file, cache, or a live CKAN fetch),
-#'   # so it cannot run inside an offline R CMD check.
-#'   cpads <- morie_load_cpads(use_ckan = TRUE)
-#'   if (!is.null(cpads)) head(cpads)
+#' # Needs the CPADS PUMF (local file, cache, or a live CKAN fetch),
+#' # so it cannot run inside an offline R CMD check.
+#' cpads <- morie_load_cpads(use_ckan = TRUE)
+#' if (!is.null(cpads)) head(cpads)
 #' }
 #' @export
 morie_load_cpads <- function(db_path = NULL, use_ckan = TRUE) {
@@ -235,11 +239,11 @@ morie_load_cpads <- function(db_path = NULL, use_ckan = TRUE) {
 #' @return A data.frame.
 #' @examples
 #' \dontrun{
-#'   # Requires network access. Fetches the first 5000 rows of the
-#'   # Canadian Postsecondary Alcohol and Drug Use Survey from the
-#'   # Government of Canada CKAN datastore:
-#'   cpads <- morie_fetch_ckan(dataset_key = "cpads", limit = 5000L)
-#'   nrow(cpads)
+#' # Requires network access. Fetches the first 5000 rows of the
+#' # Canadian Postsecondary Alcohol and Drug Use Survey from the
+#' # Government of Canada CKAN datastore:
+#' cpads <- morie_fetch_ckan(dataset_key = "cpads", limit = 5000L)
+#' nrow(cpads)
 #' }
 #' @export
 morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
@@ -260,13 +264,17 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
 
   # A catalog-supplied resource id is used directly; otherwise fall back
   # to the survey-keyed lookup, then to package-metadata resolution.
-  rid <- if (!is.null(resource_id) && nzchar(resource_id)) resource_id
-         else resource_ids[[dataset_key]]
+  rid <- if (!is.null(resource_id) && nzchar(resource_id)) {
+    resource_id
+  } else {
+    resource_ids[[dataset_key]]
+  }
   if (is.null(rid) || !nzchar(rid)) {
     # Resolve from package metadata.
     meta_url <- metadata_urls[[dataset_key]]
-    if (is.null(meta_url))
+    if (is.null(meta_url)) {
       stop("Unknown dataset / no CKAN resource id: ", dataset_key, call. = FALSE)
+    }
     meta_raw <- readLines(url(meta_url), warn = FALSE)
     meta <- jsonlite::fromJSON(paste(meta_raw, collapse = ""))
     resources <- meta$result$resources
@@ -276,15 +284,17 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
 
   # CKAN datastore_search caps a single request at 32000 rows, so page
   # through with `offset` until the whole resource (or `limit`) is read.
-  cap      <- as.integer(min(limit, .Machine$integer.max))
-  page     <- min(cap, 32000L)
+  cap <- as.integer(min(limit, .Machine$integer.max))
+  page <- min(cap, 32000L)
   message("Fetching from CKAN datastore: resource_id=", rid)
-  pages    <- list()
-  fetched  <- 0L
-  total    <- NA_real_
+  pages <- list()
+  fetched <- 0L
+  total <- NA_real_
   repeat {
-    api_url <- sprintf("%s?resource_id=%s&limit=%d&offset=%d",
-                       ckan_base, rid, page, fetched)
+    api_url <- sprintf(
+      "%s?resource_id=%s&limit=%d&offset=%d",
+      ckan_base, rid, page, fetched
+    )
     raw <- readLines(url(api_url), warn = FALSE)
     payload <- jsonlite::fromJSON(paste(raw, collapse = ""))
     recs <- payload$result$records
@@ -292,14 +302,21 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
     pages[[length(pages) + 1L]] <- recs
     fetched <- fetched + NROW(recs)
     if (is.na(total)) {
-      total <- if (!is.null(payload$result$total))
-        as.numeric(payload$result$total) else fetched
+      total <- if (!is.null(payload$result$total)) {
+        as.numeric(payload$result$total)
+      } else {
+        fetched
+      }
     }
     if (fetched >= total || fetched >= cap) break
   }
-  records <- if (length(pages) == 0L) NULL
-             else if (length(pages) == 1L) pages[[1L]]
-             else do.call(rbind, pages)
+  records <- if (length(pages) == 0L) {
+    NULL
+  } else if (length(pages) == 1L) {
+    pages[[1L]]
+  } else {
+    do.call(rbind, pages)
+  }
 
   if (is.null(records) || NROW(records) == 0L) {
     stop("CKAN returned 0 records for ", dataset_key, call. = FALSE)
@@ -327,19 +344,27 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
   key_lower <- tolower(gsub("-", "_", key))
   # Exact match on new short keys.
   idx <- which(catalog$key == key_lower)
-  if (length(idx) == 1L) return(catalog$key[idx])
+  if (length(idx) == 1L) {
+    return(catalog$key[idx])
+  }
   # Backward-compat: resolve old long keys to new short keys.
   if (key_lower %in% names(.OLD_TO_SHORT)) {
     short <- .OLD_TO_SHORT[[key_lower]]
     idx <- which(catalog$key == short)
-    if (length(idx) == 1L) return(catalog$key[idx])
+    if (length(idx) == 1L) {
+      return(catalog$key[idx])
+    }
   }
   # Substring match on keys.
   idx <- which(grepl(key_lower, catalog$key, fixed = TRUE))
-  if (length(idx) >= 1L) return(catalog$key[idx[1L]])
+  if (length(idx) >= 1L) {
+    return(catalog$key[idx[1L]])
+  }
   # Substring match on dataset names.
   idx <- which(grepl(key_lower, tolower(catalog$name), fixed = TRUE))
-  if (length(idx) >= 1L) return(catalog$key[idx[1L]])
+  if (length(idx) >= 1L) {
+    return(catalog$key[idx[1L]])
+  }
   NULL
 }
 
@@ -359,8 +384,8 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
 #' @return A data.frame.
 #' @examples
 #' \dontrun{
-#'   df <- morie_load_dataset("ocp21")                  # CPADS 2021-2022
-#'   df <- morie_load_dataset("ocp21", refresh = TRUE)  # force re-fetch
+#' df <- morie_load_dataset("ocp21") # CPADS 2021-2022
+#' df <- morie_load_dataset("ocp21", refresh = TRUE) # force re-fetch
 #' }
 #' @seealso \code{\link{morie_fetch}}, \code{\link{morie_ckan_search}}
 #' @export
@@ -379,13 +404,15 @@ morie_load_dataset <- function(key, db_path = NULL, refresh = FALSE) {
     # 1. Built-in database (ships with package).
     builtin_path <- tryCatch(morie_builtin_db(), error = function(e) NULL)
     if (!is.null(builtin_path) && requireNamespace("DBI", quietly = TRUE) &&
-        requireNamespace("RSQLite", quietly = TRUE)) {
+      requireNamespace("RSQLite", quietly = TRUE)) {
       bcon <- DBI::dbConnect(RSQLite::SQLite(), dbname = builtin_path)
       on.exit(DBI::dbDisconnect(bcon), add = TRUE)
       if (DBI::dbExistsTable(bcon, entry$table_name)) {
         data <- DBI::dbReadTable(bcon, entry$table_name)
-        message("Loaded ", matched, " from built-in DB (", nrow(data),
-                " rows)")
+        message(
+          "Loaded ", matched, " from built-in DB (", nrow(data),
+          " rows)"
+        )
         return(data)
       }
     }
@@ -422,9 +449,11 @@ morie_load_dataset <- function(key, db_path = NULL, refresh = FALSE) {
   #    matching the Python load_dataset() design (no built-in DB needed).
   if (has("ckan_resource_id")) {
     message("Fetching ", matched, " from the CKAN datastore ...")
-    data <- morie_fetch_ckan(dataset_key = matched,
-                             resource_id = entry$ckan_resource_id,
-                             db_path = db_path)
+    data <- morie_fetch_ckan(
+      dataset_key = matched,
+      resource_id = entry$ckan_resource_id,
+      db_path = db_path
+    )
     morie_cache_store(data, entry$table_name, db_path)
     return(data)
   }
@@ -436,8 +465,9 @@ morie_load_dataset <- function(key, db_path = NULL, refresh = FALSE) {
     zm <- if ("zip_member" %in% names(entry)) entry$zip_member else ""
     is_zip <- grepl("\\.zip$", entry$download_url, ignore.case = TRUE)
     data <- morie_fetch(entry$download_url,
-                        format = if (is_zip) "zip" else "auto",
-                        zip_member = zm)
+      format = if (is_zip) "zip" else "auto",
+      zip_member = zm
+    )
     morie_cache_store(data, entry$table_name, db_path)
     return(data)
   }
@@ -451,8 +481,10 @@ morie_load_dataset <- function(key, db_path = NULL, refresh = FALSE) {
   }
 
   stop("Dataset '", matched, "' not found locally, in cache, via CKAN, ",
-       "via a direct download URL, or via an ArcGIS layer.\n",
-       "Run: Rscript data-raw/ingest_datasets.R --only ", matched, call. = FALSE)
+    "via a direct download URL, or via an ArcGIS layer.\n",
+    "Run: Rscript data-raw/ingest_datasets.R --only ", matched,
+    call. = FALSE
+  )
 }
 
 #' List all datasets with cache status
@@ -462,16 +494,19 @@ morie_load_dataset <- function(key, db_path = NULL, refresh = FALSE) {
 #'   cached (logical), rows (integer or NA).
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_list_datasets <- function(db_path = NULL) {
   catalog <- morie_dataset_catalog()
-  cached_tables <- tryCatch({
-    cl <- morie_cache_list(db_path)
-    stats::setNames(cl$rows, cl$table)
-  }, error = function(e) stats::setNames(integer(0), character(0)))
+  cached_tables <- tryCatch(
+    {
+      cl <- morie_cache_list(db_path)
+      stats::setNames(cl$rows, cl$table)
+    },
+    error = function(e) stats::setNames(integer(0), character(0))
+  )
 
   catalog$cached <- catalog$table_name %in% names(cached_tables)
   catalog$rows <- as.integer(cached_tables[catalog$table_name])
@@ -485,7 +520,8 @@ morie_list_datasets <- function(db_path = NULL) {
 #' @examples
 #' # Use a real catalog key (run `morie_dataset_catalog()$key` to list them):
 #' info <- morie_dataset_info("ocp21")
-#' info$source; info$year
+#' info$source
+#' info$year
 #' # Fuzzy match works for partial / forgiving keys:
 #' morie_dataset_info("cpads")$key
 #' @export
@@ -507,8 +543,8 @@ morie_dataset_info <- function(key) {
 #' @return File path string, or character vector of filenames.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_userguide <- function(name = NULL) {
@@ -532,8 +568,8 @@ morie_userguide <- function(name = NULL) {
 #' @return Invisibly, the number of CSV files successfully downloaded.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 morie_download_bootstrap <- function(survey = "all", limit = 32000L, db_path = NULL) {
@@ -571,13 +607,16 @@ morie_download_bootstrap <- function(survey = "all", limit = 32000L, db_path = N
     # Try CKAN.
     if (nzchar(entry$ckan_resource_id)) {
       message("Downloading ", key, " from CKAN (limit=", limit, ")...")
-      tryCatch({
-        data <- morie_fetch_ckan(entry$survey, limit = limit, db_path = db_path)
-        morie_cache_store(data, entry$table_name, db_path)
-        message("  OK: ", nrow(data), " rows cached as ", entry$table_name)
-      }, error = function(e) {
-        message("  ERROR: ", conditionMessage(e))
-      })
+      tryCatch(
+        {
+          data <- morie_fetch_ckan(entry$survey, limit = limit, db_path = db_path)
+          morie_cache_store(data, entry$table_name, db_path)
+          message("  OK: ", nrow(data), " rows cached as ", entry$table_name)
+        },
+        error = function(e) {
+          message("  ERROR: ", conditionMessage(e))
+        }
+      )
     } else {
       message("  ", key, ": no CKAN resource ID. Download CSV manually to ", entry$local_path)
     }

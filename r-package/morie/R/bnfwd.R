@@ -14,8 +14,8 @@
 #' @references Ioffe & Szegedy (2015), ICML.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 bnfwd_batch_norm_forward <- function(x, gamma = NULL, beta = NULL,
@@ -30,8 +30,10 @@ bnfwd_batch_norm_forward <- function(x, gamma = NULL, beta = NULL,
   x_hat <- sweep(x_hat, 2L, sqrt(var + eps), "/")
   y <- sweep(x_hat, 2L, gamma, "*")
   y <- sweep(y, 2L, beta, "+")
-  list(y = y, estimate = y, x_hat = x_hat, mu = mu, var = var, eps = eps,
-       method = "Batch normalization forward")
+  list(
+    y = y, estimate = y, x_hat = x_hat, mu = mu, var = var, eps = eps,
+    method = "Batch normalization forward"
+  )
 }
 
 #' @rdname bnfwd_batch_norm_forward

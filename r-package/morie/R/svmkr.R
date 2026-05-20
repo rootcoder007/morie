@@ -16,23 +16,25 @@
 #' @importFrom stats predict
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 svm_kernel_trick <- function(x, y, kernel = "rbf", C = 1.0,
-                              gamma = "scale", degree = 3L, seed = 0L) {
+                             gamma = "scale", degree = 3L, seed = 0L) {
   if (!requireNamespace("e1071", quietly = TRUE)) {
     stop("Function 'svm_kernel_trick' requires package 'e1071'. Install with install.packages('e1071').")
   }
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
-  x <- as.matrix(x); y <- as.factor(y)
+  x <- as.matrix(x)
+  y <- as.factor(y)
   p <- ncol(x)
   e1071_kernel <- switch(kernel,
-                         rbf = "radial",
-                         poly = "polynomial",
-                         sigmoid = "sigmoid",
-                         linear = "linear")
+    rbf = "radial",
+    poly = "polynomial",
+    sigmoid = "sigmoid",
+    linear = "linear"
+  )
   if (identical(gamma, "scale")) {
     g <- 1 / (p * stats::var(as.numeric(x)))
   } else if (identical(gamma, "auto")) {
@@ -41,8 +43,10 @@ svm_kernel_trick <- function(x, y, kernel = "rbf", C = 1.0,
     g <- as.numeric(gamma)
   }
   set.seed(seed)
-  fit <- e1071::svm(x = x, y = y, kernel = e1071_kernel, cost = C,
-                    gamma = g, degree = degree, scale = FALSE)
+  fit <- e1071::svm(
+    x = x, y = y, kernel = e1071_kernel, cost = C,
+    gamma = g, degree = degree, scale = FALSE
+  )
   preds <- predict(fit, x)
   acc <- mean(preds == y)
   list(

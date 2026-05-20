@@ -65,7 +65,8 @@ test_that("horowitz_quantile_regression flags insufficient data", {
 
 test_that("horowitz_quantile_regression flags invalid tau", {
   set.seed(5)
-  x <- rnorm(50); y <- x + rnorm(50)
+  x <- rnorm(50)
+  y <- x + rnorm(50)
   r <- horowitz_quantile_regression(x, y, tau = 1.5)
   expect_true(all(is.na(r$estimate)))
 })
@@ -105,7 +106,9 @@ test_that("horowitz_sample_selection flags insufficient data", {
 test_that("horowitz_sample_selection flags too few selected", {
   set.seed(8)
   n <- 60
-  x <- rnorm(n); y <- rnorm(n); z <- rnorm(n)
+  x <- rnorm(n)
+  y <- rnorm(n)
+  z <- rnorm(n)
   d <- c(rep(1, 3), rep(0, n - 3))
   r <- horowitz_sample_selection(x, y, z, d)
   expect_true(is.na(r$estimate))
@@ -165,8 +168,10 @@ test_that("horowitz_local_ate returns a LATE estimate", {
   y <- 1 + 0.7 * D + rnorm(n)
   r <- horowitz_local_ate(NULL, y, z, D)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "se", "first_stage", "reduced_form",
-                    "n", "method"))
+  expect_named(r, c(
+    "estimate", "se", "first_stage", "reduced_form",
+    "n", "method"
+  ))
   expect_true(is.finite(r$estimate))
   expect_true(is.finite(r$se) && r$se >= 0)
 })
@@ -204,8 +209,10 @@ test_that("horowitz_wild_bootstrap returns estimate and CI", {
   y <- 2 * x + rnorm(80)
   r <- horowitz_wild_bootstrap(x, y, B = 60)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "se", "ci_lower", "ci_upper",
-                    "boot_mean", "B", "n", "method"))
+  expect_named(r, c(
+    "estimate", "se", "ci_lower", "ci_upper",
+    "boot_mean", "B", "n", "method"
+  ))
   expect_true(is.finite(r$estimate))
   expect_true(r$se >= 0)
   expect_true(r$ci_lower <= r$ci_upper)
@@ -244,8 +251,10 @@ test_that("horowitz_bandwidth_bootstrap selects a bandwidth", {
   y <- sin(x) + rnorm(60, sd = 0.2)
   r <- horowitz_bandwidth_bootstrap(x, y, B = 10, n_h = 8)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "h_silverman", "mise_curve", "h_grid",
-                    "n", "B", "method"))
+  expect_named(r, c(
+    "estimate", "h_silverman", "mise_curve", "h_grid",
+    "n", "B", "method"
+  ))
   expect_true(is.finite(r$estimate) && r$estimate > 0)
   expect_length(r$h_grid, 8)
   expect_length(r$mise_curve, 8)
@@ -262,8 +271,10 @@ test_that("idlpt recovers ideal points from a coordinate matrix", {
   Xr <- matrix(c(0, 1, 2, 0, 1, 2), ncol = 2)
   r <- idlpt(Xr)
   expect_type(r, "list")
-  expect_named(r, c("ideal_points", "n_respondents", "k",
-                    "mean_stim_dist", "method"))
+  expect_named(r, c(
+    "ideal_points", "n_respondents", "k",
+    "mean_stim_dist", "method"
+  ))
   expect_equal(r$n_respondents, 3L)
   expect_equal(r$k, 2L)
   expect_true(is.na(r$mean_stim_dist))
@@ -309,8 +320,10 @@ test_that("importance_sampling estimates E[X^2] under N(0,1)", {
 test_that("importance_sampling accepts custom p and q", {
   set.seed(21)
   x <- rnorm(500)
-  r <- importance_sampling(x, p = function(z) dnorm(z, 0, 1),
-                           q = function(z) dnorm(z, 0, 1))
+  r <- importance_sampling(x,
+    p = function(z) dnorm(z, 0, 1),
+    q = function(z) dnorm(z, 0, 1)
+  )
   expect_true(is.finite(r$estimate_sn))
 })
 
@@ -345,19 +358,26 @@ test_that("indicator_kriging single target returns a scalar", {
   set.seed(24)
   coords <- cbind(runif(10), runif(10))
   x <- rnorm(10)
-  r <- indicator_kriging(x, coords, threshold = 0,
-                         target = matrix(c(0.5, 0.5), ncol = 2))
+  r <- indicator_kriging(x, coords,
+    threshold = 0,
+    target = matrix(c(0.5, 0.5), ncol = 2)
+  )
   expect_length(r$estimate, 1)
 })
 
 test_that("indicator_kriging errors on dimension mismatch", {
   coords <- cbind(runif(10), runif(10))
-  expect_error(indicator_kriging(rnorm(8), coords, threshold = 0),
-               "coords rows")
   expect_error(
-    indicator_kriging(rnorm(10), coords, threshold = 0,
-                      target = matrix(runif(9), ncol = 3)),
-    "dim mismatch")
+    indicator_kriging(rnorm(8), coords, threshold = 0),
+    "coords rows"
+  )
+  expect_error(
+    indicator_kriging(rnorm(10), coords,
+      threshold = 0,
+      target = matrix(runif(9), ncol = 3)
+    ),
+    "dim mismatch"
+  )
 })
 
 test_that("two_sample_t_test returns tidy fields", {
@@ -372,7 +392,8 @@ test_that("two_sample_t_test returns tidy fields", {
 test_that("two_sample_t_test supports equal_var and alternative", {
   set.seed(26)
   r <- two_sample_t_test(rnorm(40, 1), rnorm(40, 0),
-                         equal_var = TRUE, alternative = "greater")
+    equal_var = TRUE, alternative = "greater"
+  )
   expect_true(is.finite(r$t))
 })
 
@@ -385,7 +406,8 @@ test_that("one_sample_t_test returns t, df, p, ci", {
 
 test_that("paired_t_test returns mean_diff", {
   set.seed(28)
-  x1 <- rnorm(30); x2 <- x1 + rnorm(30, 0.5)
+  x1 <- rnorm(30)
+  x2 <- x1 + rnorm(30, 0.5)
   r <- paired_t_test(x1, x2)
   expect_named(r, c("t", "df", "p_value", "ci_diff", "mean_diff"))
   expect_true(is.finite(r$mean_diff))
@@ -414,8 +436,10 @@ test_that("fisher_exact_test returns odds ratio and CI", {
 test_that("anova_one_way returns F and eta_squared", {
   set.seed(29)
   r <- anova_one_way(rnorm(30, 0), rnorm(30, 0.5), rnorm(30, 1))
-  expect_named(r, c("F", "df_between", "df_within", "p_value",
-                    "eta_squared"))
+  expect_named(r, c(
+    "F", "df_between", "df_within", "p_value",
+    "eta_squared"
+  ))
   expect_true(is.finite(r$F))
   expect_true(r$eta_squared >= 0 && r$eta_squared <= 1)
 })
@@ -440,7 +464,8 @@ test_that("mann_whitney_test returns W and effect size r", {
 
 test_that("wilcoxon_signed_rank_test returns V", {
   set.seed(32)
-  x1 <- rnorm(25); x2 <- x1 + rnorm(25, 0.4)
+  x1 <- rnorm(25)
+  x2 <- x1 + rnorm(25, 0.4)
   r <- wilcoxon_signed_rank_test(x1, x2)
   expect_named(r, c("V", "p_value"))
   expect_true(r$p_value >= 0 && r$p_value <= 1)
@@ -499,14 +524,16 @@ test_that("risk_difference_ci returns rd and ordered CI", {
 
 test_that("cohens_d pooled and unpooled both return finite values", {
   set.seed(35)
-  x1 <- rnorm(40, 1); x2 <- rnorm(40, 0)
+  x1 <- rnorm(40, 1)
+  x2 <- rnorm(40, 0)
   expect_true(is.finite(cohens_d(x1, x2)))
   expect_true(is.finite(cohens_d(x1, x2, pooled = FALSE)))
 })
 
 test_that("hedges_g applies the bias correction", {
   set.seed(36)
-  x1 <- rnorm(40, 1); x2 <- rnorm(40, 0)
+  x1 <- rnorm(40, 1)
+  x2 <- rnorm(40, 0)
   g <- hedges_g(x1, x2)
   d <- cohens_d(x1, x2)
   expect_true(is.finite(g))
@@ -528,7 +555,8 @@ test_that("cramers_v returns a value in [0, 1]", {
 
 test_that("spearman_rho and kendall_tau return correlation + p", {
   set.seed(37)
-  x <- rnorm(50); y <- x + rnorm(50)
+  x <- rnorm(50)
+  y <- x + rnorm(50)
   rs <- suppressWarnings(spearman_rho(x, y))
   rk <- suppressWarnings(kendall_tau(x, y))
   expect_named(rs, c("rho", "p_value"))
@@ -579,7 +607,8 @@ test_that("inspect_output reads a JSON file", {
   skip_if_not_installed("jsonlite")
   tmp <- tempfile(fileext = ".json")
   jsonlite::write_json(list(estimate = 0.123, se = 0.045), tmp,
-                       auto_unbox = TRUE)
+    auto_unbox = TRUE
+  )
   on.exit(unlink(tmp), add = TRUE)
   r <- inspect_output(tmp)
   expect_true(r$exists)
@@ -617,7 +646,9 @@ test_that("verify_statistical_output passes a clean output", {
   tmp <- tempfile(fileext = ".json")
   jsonlite::write_json(
     list(ate = 0.5, se = 0.1, ci_lower = 0.3, ci_upper = 0.7, n = 200),
-    tmp, auto_unbox = TRUE)
+    tmp,
+    auto_unbox = TRUE
+  )
   on.exit(unlink(tmp), add = TRUE)
   r <- verify_statistical_output(tmp)
   expect_true(r$passed)
@@ -629,7 +660,9 @@ test_that("verify_statistical_output fails a bad CI ordering", {
   tmp <- tempfile(fileext = ".json")
   jsonlite::write_json(
     list(ate = 0.5, se = -0.1, ci_lower = 0.9, ci_upper = 0.1, n = 0),
-    tmp, auto_unbox = TRUE)
+    tmp,
+    auto_unbox = TRUE
+  )
   on.exit(unlink(tmp), add = TRUE)
   r <- verify_statistical_output(tmp)
   expect_false(r$passed)
@@ -648,11 +681,15 @@ test_that("run_weighted_logistic_analysis fits a weighted glm", {
     x1 = rnorm(200), x2 = rnorm(200),
     w = runif(200, 0.5, 1.5)
   )
-  r <- run_weighted_logistic_analysis(df, outcome = "y",
-                                      predictors = c("x1", "x2"),
-                                      weights_col = "w")
-  expect_named(r, c("coefficients", "std_errors", "p_values",
-                    "n", "method"))
+  r <- run_weighted_logistic_analysis(df,
+    outcome = "y",
+    predictors = c("x1", "x2"),
+    weights_col = "w"
+  )
+  expect_named(r, c(
+    "coefficients", "std_errors", "p_values",
+    "n", "method"
+  ))
   expect_true(all(is.finite(r$coefficients)))
   expect_equal(r$n, 200)
 })
@@ -660,8 +697,10 @@ test_that("run_weighted_logistic_analysis fits a weighted glm", {
 test_that("run_weighted_logistic_analysis falls back to unweighted glm", {
   set.seed(40)
   df <- data.frame(y = rbinom(150, 1, 0.5), x1 = rnorm(150))
-  r <- run_weighted_logistic_analysis(df, outcome = "y",
-                                      predictors = "x1")
+  r <- run_weighted_logistic_analysis(df,
+    outcome = "y",
+    predictors = "x1"
+  )
   expect_equal(r$method, "glm-unweighted")
 })
 
@@ -672,11 +711,15 @@ test_that("compare_nested_logistic_models runs an LRT", {
     x1 = rnorm(200), x2 = rnorm(200), x3 = rnorm(200)
   )
   r <- compare_nested_logistic_models(
-    df, outcome = "y",
+    df,
+    outcome = "y",
     predictors_full = c("x1", "x2", "x3"),
-    predictors_reduced = c("x1"))
-  expect_named(r, c("chi_sq", "df", "p_value", "aic_full",
-                    "aic_reduced", "n"))
+    predictors_reduced = c("x1")
+  )
+  expect_named(r, c(
+    "chi_sq", "df", "p_value", "aic_full",
+    "aic_reduced", "n"
+  ))
   expect_equal(r$df, 2)
   expect_true(r$p_value >= 0 && r$p_value <= 1)
 })
@@ -684,10 +727,13 @@ test_that("compare_nested_logistic_models runs an LRT", {
 test_that("compare_nested_logistic_models errors on non-subset reduced model", {
   df <- data.frame(y = rbinom(50, 1, 0.5), x1 = rnorm(50), x2 = rnorm(50))
   expect_error(
-    compare_nested_logistic_models(df, outcome = "y",
-                                   predictors_full = c("x1"),
-                                   predictors_reduced = c("x2")),
-    "subset")
+    compare_nested_logistic_models(df,
+      outcome = "y",
+      predictors_full = c("x1"),
+      predictors_reduced = c("x2")
+    ),
+    "subset"
+  )
 })
 
 test_that("run_treatment_effects_analysis returns ate with CI", {
@@ -699,9 +745,12 @@ test_that("run_treatment_effects_analysis returns ate with CI", {
     x1 = rnorm(200), x2 = rnorm(200)
   )
   r <- tryCatch(
-    run_treatment_effects_analysis(df, treatment = "t", outcome = "y",
-                                   covariates = c("x1", "x2")),
-    error = function(e) NULL)
+    run_treatment_effects_analysis(df,
+      treatment = "t", outcome = "y",
+      covariates = c("x1", "x2")
+    ),
+    error = function(e) NULL
+  )
   skip_if(is.null(r), "estimate_ate unavailable")
   expect_named(r, c("ate", "se", "ci_lower", "ci_upper", "n", "method"))
   expect_true(is.finite(r$ate))
@@ -709,8 +758,10 @@ test_that("run_treatment_effects_analysis returns ate with CI", {
 
 test_that("cpads_contract returns the data contract", {
   r <- cpads_contract()
-  expect_named(r, c("source_kind", "expected_wrangled_path",
-                    "required_variables", "note"))
+  expect_named(r, c(
+    "source_kind", "expected_wrangled_path",
+    "required_variables", "note"
+  ))
   expect_true("weight" %in% r$required_variables)
 })
 
@@ -723,14 +774,17 @@ test_that("validate_cpads_data returns missing variable names", {
 
 test_that("validate_cpads_data errors in strict mode when fields missing", {
   df <- data.frame(weight = 1)
-  expect_error(validate_cpads_data(df, strict = TRUE),
-               "missing required variables")
+  expect_error(
+    validate_cpads_data(df, strict = TRUE),
+    "missing required variables"
+  )
 })
 
 test_that("validate_cpads_data passes a complete frame", {
   req <- cpads_contract()$required_variables
   df <- as.data.frame(setNames(
-    rep(list(rep(1, 3)), length(req)), req))
+    rep(list(rep(1, 3)), length(req)), req
+  ))
   expect_length(validate_cpads_data(df, strict = TRUE), 0)
 })
 
@@ -783,8 +837,10 @@ test_that("calculate_ipw_weights supports stabilized weights", {
     t = rbinom(100, 1, 0.4),
     ps = runif(100, 0.1, 0.9)
   )
-  w <- calculate_ipw_weights(df, treatment = "t", ps_col = "ps",
-                             stabilized = TRUE)
+  w <- calculate_ipw_weights(df,
+    treatment = "t", ps_col = "ps",
+    stabilized = TRUE
+  )
   expect_length(w, 100)
   expect_true(all(is.finite(w)))
 })
@@ -796,8 +852,10 @@ test_that("calculate_ipw_weights applies trimming quantiles", {
     ps = runif(200, 0.02, 0.98)
   )
   w_raw <- calculate_ipw_weights(df, treatment = "t", ps_col = "ps")
-  w_trim <- calculate_ipw_weights(df, treatment = "t", ps_col = "ps",
-                                  trim_quantiles = c(0.05, 0.95))
+  w_trim <- calculate_ipw_weights(df,
+    treatment = "t", ps_col = "ps",
+    trim_quantiles = c(0.05, 0.95)
+  )
   expect_length(w_trim, 200)
   expect_true(max(w_trim) <= max(w_raw))
 })
@@ -805,7 +863,10 @@ test_that("calculate_ipw_weights applies trimming quantiles", {
 test_that("calculate_ipw_weights errors on bad trim_quantiles length", {
   df <- data.frame(t = rbinom(20, 1, 0.5), ps = runif(20, 0.1, 0.9))
   expect_error(
-    calculate_ipw_weights(df, treatment = "t", ps_col = "ps",
-                          trim_quantiles = c(0.05)),
-    "length 2")
+    calculate_ipw_weights(df,
+      treatment = "t", ps_col = "ps",
+      trim_quantiles = c(0.05)
+    ),
+    "length 2"
+  )
 })

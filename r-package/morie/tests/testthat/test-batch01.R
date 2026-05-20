@@ -60,8 +60,10 @@ test_that("grm_vanraden method 1 returns a valid GRM list", {
   M <- matrix(sample(0:2, 100, TRUE), nrow = 10, ncol = 10)
   res <- grm_vanraden(M)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "diag_mean", "off_mean",
-                      "p", "n", "m", "method"))
+  expect_named(res, c(
+    "estimate", "diag_mean", "off_mean",
+    "p", "n", "m", "method"
+  ))
   expect_true(is.matrix(res$estimate))
   expect_equal(dim(res$estimate), c(10L, 10L))
   expect_true(all(is.finite(res$estimate)))
@@ -97,7 +99,8 @@ test_that("morie_sample errors on unknown sample name", {
 
 test_that("morie_sample bundled-CSV path is structurally valid", {
   path <- system.file("extdata", "samples", "otis_b01_sample.csv",
-                       package = "morie")
+    package = "morie"
+  )
   expect_type(path, "character")
   if (FALSE) {
     df <- morie_sample("otis_b01")
@@ -111,9 +114,11 @@ test_that("prediction_accuracy returns full metric list", {
   yhat <- c(1.1, 1.9, 3.2, 3.8, 5.1)
   res <- prediction_accuracy(y, yhat)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "pearson_r", "spearman_rho",
-                      "mse", "mspe", "rmse", "r2", "slope",
-                      "intercept", "n", "method"))
+  expect_named(res, c(
+    "estimate", "pearson_r", "spearman_rho",
+    "mse", "mspe", "rmse", "r2", "slope",
+    "intercept", "n", "method"
+  ))
   expect_equal(res$n, 5L)
   expect_equal(res$mse, res$mspe)
   expect_true(is.finite(res$pearson_r))
@@ -131,8 +136,10 @@ test_that("prediction_accuracy handles n<2 gracefully", {
 })
 
 test_that("prediction_accuracy errors on length mismatch", {
-  expect_error(prediction_accuracy(c(1, 2, 3), c(1, 2)),
-               "same length")
+  expect_error(
+    prediction_accuracy(c(1, 2, 3), c(1, 2)),
+    "same length"
+  )
 })
 
 test_that("prediction_accuracy handles constant predictions", {
@@ -143,11 +150,15 @@ test_that("prediction_accuracy handles constant predictions", {
 })
 
 test_that("agset returns a chosen proposal within the win set", {
-  res <- agset(options = seq(0, 10, by = 0.5),
-               setter_ideal = 8, reversion = 2)
+  res <- agset(
+    options = seq(0, 10, by = 0.5),
+    setter_ideal = 8, reversion = 2
+  )
   expect_true(is.list(res))
-  expect_named(res, c("chosen", "power", "setter_ideal", "reversion",
-                      "win_set_size", "win_set_bounds", "method"))
+  expect_named(res, c(
+    "chosen", "power", "setter_ideal", "reversion",
+    "win_set_size", "win_set_bounds", "method"
+  ))
   expect_true(is.finite(res$chosen))
   expect_gte(res$power, 0)
   expect_equal(res$power, abs(res$chosen - res$reversion))
@@ -157,8 +168,10 @@ test_that("agset returns a chosen proposal within the win set", {
 })
 
 test_that("agset returns reversion when win set is empty", {
-  res <- agset(options = c(50, 60, 70),
-               setter_ideal = 8, reversion = 2)
+  res <- agset(
+    options = c(50, 60, 70),
+    setter_ideal = 8, reversion = 2
+  )
   expect_equal(res$chosen, 2)
   expect_equal(res$power, 0)
 })
@@ -254,8 +267,10 @@ test_that("anisotropy_test is an alias of aniso", {
 test_that("antithetic_variates estimates E[f(U)] with variance reduction", {
   res <- antithetic_variates(N = 2000L, seed = 0L)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "estimate_crude", "se",
-                      "var_ratio_av_over_crude", "n_pairs", "method"))
+  expect_named(res, c(
+    "estimate", "estimate_crude", "se",
+    "var_ratio_av_over_crude", "n_pairs", "method"
+  ))
   expect_true(is.finite(res$estimate))
   expect_lt(abs(res$estimate - 0.5), 0.05)
   expect_gte(res$se, 0)
@@ -283,8 +298,10 @@ test_that("arch_in_mean fits an ARCH(1)-in-mean model", {
   y <- rnorm(120, sd = 1.2)
   res <- arch_in_mean(y)
   expect_true(is.list(res))
-  expect_named(res, c("mu", "delta", "omega", "alpha", "loglik",
-                      "conditional_variance", "n", "method"))
+  expect_named(res, c(
+    "mu", "delta", "omega", "alpha", "loglik",
+    "conditional_variance", "n", "method"
+  ))
   expect_true(is.finite(res$mu))
   expect_true(is.finite(res$delta))
   expect_gt(res$omega, 0)
@@ -305,8 +322,10 @@ test_that("attnq_scaled_dot_product_attention computes self-attention", {
   Q <- matrix(rnorm(12), nrow = 3, ncol = 4)
   res <- attnq_scaled_dot_product_attention(Q)
   expect_true(is.list(res))
-  expect_named(res, c("output", "estimate", "attn", "logits",
-                      "d_k", "method"))
+  expect_named(res, c(
+    "output", "estimate", "attn", "logits",
+    "d_k", "method"
+  ))
   expect_true(is.matrix(res$output))
   expect_equal(dim(res$output), c(3L, 4L))
   expect_identical(res$output, res$estimate)
@@ -340,6 +359,8 @@ test_that("attnq_scaled_dot_product_attention applies an additive mask", {
 })
 
 test_that("scaled_dot_product_attention is an alias", {
-  expect_identical(scaled_dot_product_attention,
-                   attnq_scaled_dot_product_attention)
+  expect_identical(
+    scaled_dot_product_attention,
+    attnq_scaled_dot_product_attention
+  )
 })

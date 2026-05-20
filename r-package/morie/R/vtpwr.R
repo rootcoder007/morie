@@ -22,16 +22,21 @@
   for (idx in ord) {
     prev <- cum
     cum <- cum + w[idx]
-    if (prev < quota && quota <= cum) return(idx)
+    if (prev < quota && quota <= cum) {
+      return(idx)
+    }
   }
   NA_integer_
 }
 
 # Internal: all permutations of a vector, as a matrix (one per row).
 .vtpwr_perms <- function(v) {
-  if (length(v) == 1L) return(matrix(v, 1L, 1L))
-  do.call(rbind, lapply(seq_along(v), function(i)
-    cbind(v[i], .vtpwr_perms(v[-i]))))
+  if (length(v) == 1L) {
+    return(matrix(v, 1L, 1L))
+  }
+  do.call(rbind, lapply(seq_along(v), function(i) {
+    cbind(v[i], .vtpwr_perms(v[-i]))
+  }))
 }
 
 # Internal: Monte-Carlo voting-power indices for large games (n > 10).
@@ -46,9 +51,11 @@
     piv <- .vtpwr_pivot(sample.int(n), w, quota)
     if (!is.na(piv)) ss[piv] <- ss[piv] + 1L
   }
-  list(banzhaf = swings / max(sum(swings), 1),
-       shapley_shubik = ss / n_mc, quota = quota, weights = w,
-       method = "voting_power_index_mc")
+  list(
+    banzhaf = swings / max(sum(swings), 1),
+    shapley_shubik = ss / n_mc, quota = quota, weights = w,
+    method = "voting_power_index_mc"
+  )
 }
 
 # Internal: exact voting-power indices by full enumeration (n <= 10).
@@ -64,9 +71,11 @@
     piv <- .vtpwr_pivot(perms[r, ], w, quota)
     if (!is.na(piv)) shapley[piv] <- shapley[piv] + 1L
   }
-  list(banzhaf = swings / max(sum(swings), 1),
-       shapley_shubik = shapley / factorial(n), quota = quota, weights = w,
-       method = "voting_power_index_exact")
+  list(
+    banzhaf = swings / max(sum(swings), 1),
+    shapley_shubik = shapley / factorial(n), quota = quota, weights = w,
+    method = "voting_power_index_exact"
+  )
 }
 
 #' Banzhaf and Shapley-Shubik voting-power indices (Armstrong Ch 10)
@@ -80,16 +89,20 @@
 #'   `weights`, `method`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 vtpwr <- function(x, quota = NULL) {
-  w <- as.numeric(x); n <- length(w)
-  if (n == 0L)
-    return(list(banzhaf = numeric(0), shapley_shubik = numeric(0),
-                quota = NA_real_, weights = w,
-                method = "voting_power_index"))
+  w <- as.numeric(x)
+  n <- length(w)
+  if (n == 0L) {
+    return(list(
+      banzhaf = numeric(0), shapley_shubik = numeric(0),
+      quota = NA_real_, weights = w,
+      method = "voting_power_index"
+    ))
+  }
   if (is.null(quota)) quota <- sum(w) / 2 + 1e-9
   if (n > 10L) .vtpwr_mc(w, quota, n) else .vtpwr_exact(w, quota, n)
 }

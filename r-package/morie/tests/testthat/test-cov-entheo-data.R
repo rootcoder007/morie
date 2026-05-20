@@ -16,8 +16,10 @@ test_that("load_dmt_imaging falls back to synthetic records with no root", {
 test_that("load_dmt_imaging with NULL subject id uses the default panel", {
   res <- load_dmt_imaging(root = tempfile("no-dmt-"))
   expect_true(length(res$records) >= 10L)
-  expect_true(all(vapply(res$records, function(r) r$.synthetic,
-                         logical(1))))
+  expect_true(all(vapply(
+    res$records, function(r) r$.synthetic,
+    logical(1)
+  )))
 })
 
 test_that(".entheo_synthetic_record builds eeg / fmri / behavioural blocks", {
@@ -30,20 +32,26 @@ test_that(".entheo_synthetic_record builds eeg / fmri / behavioural blocks", {
 })
 
 test_that(".entheo_list_subjects reads ids from a fMRI directory", {
-  expect_equal(morie:::.entheo_list_subjects(tempfile("none-")),
-               character(0))
+  expect_equal(
+    morie:::.entheo_list_subjects(tempfile("none-")),
+    character(0)
+  )
   root <- tempfile("dmt-root-")
   dir.create(file.path(root, "fMRI"), recursive = TRUE)
-  file.create(file.path(root, "fMRI",
-    c("LongS05DMT.mat", "LongS05PCB.mat", "LongS12DMT.mat")))
+  file.create(file.path(
+    root, "fMRI",
+    c("LongS05DMT.mat", "LongS05PCB.mat", "LongS12DMT.mat")
+  ))
   expect_equal(morie:::.entheo_list_subjects(root), c("05", "12"))
 })
 
 test_that(".entheo_load_real returns NULL without R.matlab", {
   testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...)
-      if (identical(package, "R.matlab")) FALSE else TRUE,
-    .package = "base")
+    requireNamespace = function(package, ...) {
+      if (identical(package, "R.matlab")) FALSE else TRUE
+    },
+    .package = "base"
+  )
   expect_null(morie:::.entheo_load_real("05", tempfile("r-")))
 })
 
@@ -58,12 +66,19 @@ test_that("load_dmt_imaging reads a real subject via a mocked R.matlab", {
   skip_if_not_installed("R.matlab")
   root <- tempfile("dmt-real-")
   dir.create(file.path(root, "fMRI"), recursive = TRUE)
-  file.create(file.path(root, "fMRI",
-                        c("LongS05DMT.mat", "LongS05PCB.mat")))
+  file.create(file.path(
+    root, "fMRI",
+    c("LongS05DMT.mat", "LongS05PCB.mat")
+  ))
   testthat::local_mocked_bindings(
-    readMat = function(con, ...) list(big = matrix(stats::rnorm(200),
-                                                   10, 20)),
-    .package = "R.matlab")
+    readMat = function(con, ...) {
+      list(big = matrix(
+        stats::rnorm(200),
+        10, 20
+      ))
+    },
+    .package = "R.matlab"
+  )
   res <- load_dmt_imaging(subject_id = 5, root = root)
   expect_false(is.na(res$root))
   expect_false(res$records[[1]]$.synthetic)

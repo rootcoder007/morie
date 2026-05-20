@@ -22,8 +22,11 @@ NULL
 }
 
 .gh_surv_post <- function(t, ev, c, lam0) {
-  t <- as.numeric(t); n <- length(t)
-  if (n == 0) return(NULL)
+  t <- as.numeric(t)
+  n <- length(t)
+  if (n == 0) {
+    return(NULL)
+  }
   if (is.null(ev)) ev <- rep(1L, n)
   if (is.null(lam0)) lam0 <- 1 / max(mean(t), 1e-6)
   uniq <- sort(unique(t))
@@ -36,9 +39,11 @@ NULL
 }
 
 .gh_haar_dwt <- function(y) {
-  L <- 1L; while (L < length(y)) L <- 2L * L
+  L <- 1L
+  while (L < length(y)) L <- 2L * L
   if (L > length(y)) y <- c(y, rep(0, L - length(y)))
-  coeffs <- list(); cur <- y
+  coeffs <- list()
+  cur <- y
   while (length(cur) > 1L) {
     a <- (cur[seq(1, length(cur), by = 2)] + cur[seq(2, length(cur), by = 2)]) / sqrt(2)
     d <- (cur[seq(1, length(cur), by = 2)] - cur[seq(2, length(cur), by = 2)]) / sqrt(2)

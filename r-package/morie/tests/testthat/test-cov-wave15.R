@@ -40,9 +40,11 @@ test_that("eg_coint validates input and tests cointegration", {
   expect_true(is.numeric(r$p_value))
   # plain-ADF fallback (urca mocked absent)
   testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...)
-      if (identical(package, "urca")) FALSE else TRUE,
-    .package = "base")
+    requireNamespace = function(package, ...) {
+      if (identical(package, "urca")) FALSE else TRUE
+    },
+    .package = "base"
+  )
   r2 <- eg_coint(y1, y2)
   expect_true(is.numeric(r2$adf_statistic))
 })
@@ -53,8 +55,10 @@ test_that("ordered_categories runs the linear-by-linear trend test", {
   expect_equal(r$df, 1L)
   expect_true(is.numeric(r$statistic))
   expect_true(abs(r$correlation) <= 1)
-  expect_true(is.list(ordered_categories(tbl, row_scores = c(1, 2, 4),
-                                         col_scores = c(0, 1, 3))))
+  expect_true(is.list(ordered_categories(tbl,
+    row_scores = c(1, 2, 4),
+    col_scores = c(0, 1, 3)
+  )))
   small <- ordered_categories(matrix(1, 1, 1))
   expect_true(is.na(small$statistic))
   onerow <- matrix(c(0, 0, 0, 5, 6, 7, 0, 0, 0), 3, 3, byrow = TRUE)

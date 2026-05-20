@@ -9,9 +9,10 @@
 #' @importFrom stats sd quantile
 #' @noRd
 .morie_silverman_h <- function(x) {
-  n <- length(x); s <- stats::sd(x)
+  n <- length(x)
+  s <- stats::sd(x)
   iq <- diff(stats::quantile(x, c(.25, .75), names = FALSE)) / 1.34
   sigma <- if (iq > 0) min(s, iq) else s
   if (sigma <= 0) sigma <- 1
-  1.06 * sigma * n^(-1/5)
+  1.06 * sigma * n^(-1 / 5)
 }

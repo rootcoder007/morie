@@ -3,7 +3,9 @@
 }
 
 .safe_divide <- function(num, den) {
-  if (is.na(den) || den == 0) return(NA_real_)
+  if (is.na(den) || den == 0) {
+    return(NA_real_)
+  }
   as.numeric(num) / as.numeric(den)
 }
 
@@ -618,7 +620,7 @@
   ate_ipw <- prop_out$ipw_results$estimate[1]
   se_ipw <- prop_out$ipw_results$se[1]
 
-    out_model <- stats::glm(
+  out_model <- stats::glm(
     heavy_drinking_30d ~ cannabis_any_use + age_group_label + gender_label + province_region_label + mental_health_label + physical_health_label,
     data = frame,
     family = stats::quasibinomial(),
@@ -706,17 +708,21 @@
   }
   list(
     treatment_effects_summary = summary_tbl,
-    cate_subgroup_estimates = if (length(cate_rows) > 0L) do.call(rbind, cate_rows) else data.frame(
-      subgroup_var = character(),
-      subgroup_level = character(),
-      n_treated = integer(),
-      n_control = integer(),
-      cate = numeric(),
-      se = numeric(),
-      ci_lower = numeric(),
-      ci_upper = numeric(),
-      stringsAsFactors = FALSE
-    )
+    cate_subgroup_estimates = if (length(cate_rows) > 0L) {
+      do.call(rbind, cate_rows)
+    } else {
+      data.frame(
+        subgroup_var = character(),
+        subgroup_level = character(),
+        n_treated = integer(),
+        n_control = integer(),
+        cate = numeric(),
+        se = numeric(),
+        ci_lower = numeric(),
+        ci_upper = numeric(),
+        stringsAsFactors = FALSE
+      )
+    }
   )
 }
 

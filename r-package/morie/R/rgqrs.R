@@ -12,12 +12,15 @@
 #' @export
 #' @examples
 #' \donttest{
-#'   if (requireNamespace("signal", quietly = TRUE)) {
-#'     fs <- 360; t <- seq(0, 5, length.out = 5 * fs)
-#'     ecg <- rowSums(sapply(seq(0.5, 4.5, by = 1.0),
-#'                           function(tk) exp(-((t - tk) * 30)^2)))
-#'     rgqrs(ecg, fs = fs)$r_peaks
-#'   }
+#' if (requireNamespace("signal", quietly = TRUE)) {
+#'   fs <- 360
+#'   t <- seq(0, 5, length.out = 5 * fs)
+#'   ecg <- rowSums(sapply(
+#'     seq(0.5, 4.5, by = 1.0),
+#'     function(tk) exp(-((t - tk) * 30)^2)
+#'   ))
+#'   rgqrs(ecg, fs = fs)$r_peaks
+#' }
 #' }
 rgqrs <- function(x, fs = 360.0) {
   if (!requireNamespace("signal", quietly = TRUE)) {
@@ -52,13 +55,16 @@ rgqrs <- function(x, fs = 360.0) {
   # refine each to local |bp| max within +/-50 ms
   half <- as.integer(round(0.05 * fs))
   refined <- vapply(peaks, function(p) {
-    lo <- max(1L, p - half); hi <- min(N, p + half)
+    lo <- max(1L, p - half)
+    hi <- min(N, p + half)
     lo + which.max(abs(bp[lo:hi])) - 1L
   }, integer(1))
   rr_ms <- if (length(refined) > 1) diff(refined) * 1000 / fs else numeric(0)
   hr <- if (length(rr_ms)) 60000 / mean(rr_ms) else NA_real_
-  list(r_peaks = refined, rr_intervals_ms = rr_ms,
-       heart_rate_bpm = hr, integrated = integ, fs = fs)
+  list(
+    r_peaks = refined, rr_intervals_ms = rr_ms,
+    heart_rate_bpm = hr, integrated = integ, fs = fs
+  )
 }
 
 #' @rdname rgqrs

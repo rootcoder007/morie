@@ -12,18 +12,22 @@
 #'   cumulative, method.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 two_sample_coverage <- function(x, y) {
-  x <- as.numeric(x); y <- as.numeric(y)
-  m <- length(x); n <- length(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  m <- length(x)
+  n <- length(y)
   if (m < 1 || n < 1) {
-    return(list(block_freq = integer(0), block_prop = numeric(0),
-                expected_prop = NA_real_, m = m, n = n,
-                cumulative = 0L,
-                method = "Two-sample coverage probability"))
+    return(list(
+      block_freq = integer(0), block_prop = numeric(0),
+      expected_prop = NA_real_, m = m, n = n,
+      cumulative = 0L,
+      method = "Two-sample coverage probability"
+    ))
   }
   xs <- sort(x)
   # findInterval(y, xs) gives 0..m where 0 means y <= xs[1]-eps and m means y > xs[m]

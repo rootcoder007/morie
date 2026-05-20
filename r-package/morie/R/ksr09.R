@@ -11,8 +11,8 @@
 #' @references Kosorok (2008), Ch 5.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr09_kosorok_z_estimator <- function(x, y = NULL) {
@@ -21,20 +21,25 @@ ksr09_kosorok_z_estimator <- function(x, y = NULL) {
     n <- length(x)
     theta <- mean(x)
     psi <- x - theta
-    se  <- sqrt(mean(psi^2) / n)
-    list(estimate = theta, se = se, n = n,
-         method = "Z-estimator: psi(x;theta) = x - theta")
+    se <- sqrt(mean(psi^2) / n)
+    list(
+      estimate = theta, se = se, n = n,
+      method = "Z-estimator: psi(x;theta) = x - theta"
+    )
   } else {
     y <- as.numeric(y)
     n <- length(x)
-    xc <- x - mean(x); yc <- y - mean(y)
+    xc <- x - mean(x)
+    yc <- y - mean(y)
     beta <- sum(xc * yc) / sum(xc^2)
     resid <- yc - beta * xc
     A <- mean(xc^2)
     B <- mean((xc^2) * (resid^2))
     se <- sqrt(B / (A^2) / n)
-    list(estimate = beta, se = se, n = n,
-         method = "Z-estimator: psi(x,y;beta) = x(y - beta x)")
+    list(
+      estimate = beta, se = se, n = n,
+      method = "Z-estimator: psi(x,y;beta) = x(y - beta x)"
+    )
   }
 }
 

@@ -12,14 +12,16 @@
 #' @return Named list: estimate, se, feature_names, degree, n, method.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 polynomial_regression <- function(x, y, degree = 2L) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
-  x <- as.matrix(x); y <- as.numeric(y)
-  n <- nrow(x); p <- ncol(x)
+  x <- as.matrix(x)
+  y <- as.numeric(y)
+  n <- nrow(x)
+  p <- ncol(x)
   cols <- list()
   names_ <- character()
   for (j in seq_len(p)) {
@@ -32,14 +34,16 @@ polynomial_regression <- function(x, y, degree = 2L) {
   if (p > 1L && degree >= 2L) {
     combos <- utils::combn(p, 2)
     for (k in seq_len(ncol(combos))) {
-      i1 <- combos[1, k]; i2 <- combos[2, k]
+      i1 <- combos[1, k]
+      i2 <- combos[2, k]
       cols[[length(cols) + 1L]] <- x[, i1] * x[, i2]
       names_ <- c(names_, paste0("x", i1 - 1L, " x", i2 - 1L))
     }
   }
   Xp <- do.call(cbind, cols)
   colnames(Xp) <- names_
-  df <- as.data.frame(Xp); df$.y <- y
+  df <- as.data.frame(Xp)
+  df$.y <- y
   fit <- stats::lm(.y ~ ., data = df)
   s <- summary(fit)
   list(

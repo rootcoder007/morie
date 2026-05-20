@@ -14,10 +14,10 @@
 #' \donttest{
 #' if (requireNamespace("signal", quietly = TRUE)) {
 #'   set.seed(1)
-#'   t  <- seq(0, 1, length.out = 500)
-#'   x  <- sin(2 * pi * 5 * t) + 0.5 * sin(2 * pi * 60 * t)  # 5 Hz + 60 Hz
-#'   y  <- buttlp(x, fs = 500, cutoff = 20)
-#'   length(y$filtered)  # 500
+#'   t <- seq(0, 1, length.out = 500)
+#'   x <- sin(2 * pi * 5 * t) + 0.5 * sin(2 * pi * 60 * t) # 5 Hz + 60 Hz
+#'   y <- buttlp(x, fs = 500, cutoff = 20)
+#'   length(y$filtered) # 500
 #' }
 #' }
 buttlp <- function(x, fs, cutoff, order = 4L) {
@@ -46,7 +46,7 @@ buttlp <- function(x, fs, cutoff, order = 4L) {
 #' if (requireNamespace("signal", quietly = TRUE)) {
 #'   set.seed(1)
 #'   t <- seq(0, 1, length.out = 500)
-#'   x <- 5 * t + sin(2 * pi * 10 * t)   # linear drift + 10 Hz signal
+#'   x <- 5 * t + sin(2 * pi * 10 * t) # linear drift + 10 Hz signal
 #'   y <- butthp(x, fs = 500, cutoff = 1)
 #'   length(y$filtered)
 #' }
@@ -79,7 +79,7 @@ butthp <- function(x, fs, cutoff, order = 4L) {
 #'   t <- seq(0, 1, length.out = 1000)
 #'   # 2 Hz drift + 10 Hz band of interest + 60 Hz noise
 #'   x <- sin(2 * pi * 2 * t) + sin(2 * pi * 10 * t) +
-#'        0.3 * sin(2 * pi * 60 * t)
+#'     0.3 * sin(2 * pi * 60 * t)
 #'   y <- buttbp(x, fs = 1000, low = 5, high = 20)
 #'   length(y$filtered)
 #' }
@@ -111,7 +111,7 @@ buttbp <- function(x, fs, low, high, order = 4L) {
 #'   set.seed(1)
 #'   t <- seq(0, 1, length.out = 1000)
 #'   x <- sin(2 * pi * 10 * t) + sin(2 * pi * 60 * t)
-#'   y <- buttbs(x, fs = 1000)  # remove 60 Hz mains
+#'   y <- buttbs(x, fs = 1000) # remove 60 Hz mains
 #'   length(y$filtered)
 #' }
 #' }
@@ -169,7 +169,7 @@ sgolay_smooth <- function(x, window_length = 11L, polyorder = 3L) {
 #' \donttest{
 #' if (requireNamespace("pracma", quietly = TRUE)) {
 #'   set.seed(1)
-#'   x <- cumsum(rnorm(2048))   # Brownian motion, expected H ~ 0.5
+#'   x <- cumsum(rnorm(2048)) # Brownian motion, expected H ~ 0.5
 #'   res <- hurst_r(x)
 #'   res$interpretation
 #' }
@@ -178,7 +178,8 @@ hurst_r <- function(x) {
   if (requireNamespace("pracma", quietly = TRUE)) {
     result <- pracma::hurstexp(x, display = FALSE)
     return(list(H = result$Hs, interpretation = ifelse(result$Hs > 0.55, "persistent",
-                                                        ifelse(result$Hs < 0.45, "anti-persistent", "random"))))
+      ifelse(result$Hs < 0.45, "anti-persistent", "random")
+    )))
   }
   .morie_py_call("hurst", x)
 }
@@ -220,7 +221,7 @@ hfd <- function(x, kmax = 10L) {
 #' \donttest{
 #' if (requireNamespace("signal", quietly = TRUE)) {
 #'   set.seed(1)
-#'   x <- rnorm(2000)            # 1 second of white-noise PCG-like input
+#'   x <- rnorm(2000) # 1 second of white-noise PCG-like input
 #'   y <- pcg_filter(x)
 #'   length(y$filtered)
 #' }

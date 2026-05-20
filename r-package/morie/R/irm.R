@@ -46,8 +46,8 @@
 #' @examples
 #' \donttest{
 #' if (requireNamespace("DoubleML", quietly = TRUE) &&
-#'     requireNamespace("mlr3", quietly = TRUE) &&
-#'     requireNamespace("mlr3learners", quietly = TRUE)) {
+#'   requireNamespace("mlr3", quietly = TRUE) &&
+#'   requireNamespace("mlr3learners", quietly = TRUE)) {
 #'   set.seed(1)
 #'   n <- 200
 #'   X <- matrix(rnorm(n * 5), n, 5)
@@ -55,8 +55,10 @@
 #'   T <- rbinom(n, 1, ps)
 #'   Y <- 0.5 * T + X[, 1] + rnorm(n)
 #'   df <- data.frame(Y = Y, T = T, X)
-#'   estimate_irm(df, treatment = "T", outcome = "Y",
-#'                covariates = paste0("X", 1:5))
+#'   estimate_irm(df,
+#'     treatment = "T", outcome = "Y",
+#'     covariates = paste0("X", 1:5)
+#'   )
 #' }
 #' }
 estimate_irm <- function(data, treatment, outcome, covariates,
@@ -74,8 +76,9 @@ estimate_irm <- function(data, treatment, outcome, covariates,
   frame <- stats::na.omit(data[, cols, drop = FALSE])
 
   for (col in covariates) {
-    if (!is.numeric(frame[[col]]))
+    if (!is.numeric(frame[[col]])) {
       frame[[col]] <- as.numeric(as.factor(frame[[col]]))
+    }
   }
 
   set.seed(random_state)
@@ -94,8 +97,8 @@ estimate_irm <- function(data, treatment, outcome, covariates,
   dml_irm$fit()
 
   ate <- as.numeric(dml_irm$coef)[[1L]]
-  se  <- as.numeric(dml_irm$se)[[1L]]
-  z   <- 1.959964
+  se <- as.numeric(dml_irm$se)[[1L]]
+  z <- 1.959964
 
   list(
     ate      = ate,

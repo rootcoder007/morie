@@ -8,9 +8,11 @@ test_that("cnn_genomic returns expected structure", {
   y <- M[, 2] + M[, 4] + 0.2 * rnorm(20)
   res <- cnn_genomic(rep(0, 20), y, M, n_epochs = 10, seed = 7)
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "y_hat", "W_conv", "b_conv", "W1", "b1",
-                    "w2", "b2", "loss_curve", "se", "n", "method") %in%
-                    names(res)))
+  expect_true(all(c(
+    "estimate", "y_hat", "W_conv", "b_conv", "W1", "b1",
+    "w2", "b2", "loss_curve", "se", "n", "method"
+  ) %in%
+    names(res)))
   expect_equal(res$n, 20L)
   expect_length(res$y_hat, 20L)
   expect_true(all(is.finite(res$y_hat)))
@@ -25,9 +27,11 @@ test_that("cnn_genomic respects hyperparameters and clamps kernel", {
   set.seed(11)
   M <- matrix(rnorm(60), 15, 4)
   y <- as.numeric(M %*% c(1, -1, 0.5, 0) + 0.1 * rnorm(15))
-  res <- cnn_genomic(NULL, y, M, n_filters = 4, kernel = 9,
-                     hidden = 5, n_epochs = 5, lr = 5e-3, l2 = 1e-2,
-                     seed = 1)
+  res <- cnn_genomic(NULL, y, M,
+    n_filters = 4, kernel = 9,
+    hidden = 5, n_epochs = 5, lr = 5e-3, l2 = 1e-2,
+    seed = 1
+  )
   expect_equal(res$n, 15L)
   expect_equal(nrow(res$W_conv), 4L)
   expect_equal(ncol(res$W_conv), 4L)
@@ -48,8 +52,10 @@ test_that("contingency_coefficient computes C and Cramer's V", {
   tbl <- matrix(c(20, 10, 5, 8, 15, 12), nrow = 2, byrow = TRUE)
   res <- contingency_coefficient(tbl)
   expect_true(is.list(res))
-  expect_true(all(c("statistic", "cramers_v", "chi2", "p_value", "df",
-                    "max_C", "n", "method") %in% names(res)))
+  expect_true(all(c(
+    "statistic", "cramers_v", "chi2", "p_value", "df",
+    "max_C", "n", "method"
+  ) %in% names(res)))
   expect_gte(res$statistic, 0)
   expect_lte(res$statistic, 1)
   expect_gte(res$cramers_v, 0)
@@ -80,9 +86,11 @@ test_that("control_variates reduces variance with a correlated control", {
   y <- u + rnorm(1000, sd = 0.01)
   res <- control_variates(y, u, 0.5)
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "se", "c_coef",
-                    "var_ratio_cv_over_crude", "n", "method") %in%
-                    names(res)))
+  expect_true(all(c(
+    "estimate", "se", "c_coef",
+    "var_ratio_cv_over_crude", "n", "method"
+  ) %in%
+    names(res)))
   expect_equal(res$n, 1000L)
   expect_true(is.finite(res$estimate))
   expect_gte(res$se, 0)
@@ -115,8 +123,10 @@ test_that("coherence returns frequencies and bounded coherence", {
   y <- sin(2 * pi * t / 20 + 0.5) + rnorm(n, sd = 0.3)
   res <- coherence(x, y)
   expect_true(is.list(res))
-  expect_true(all(c("frequencies", "coherence", "n_segments", "nperseg",
-                    "fs", "n", "method") %in% names(res)))
+  expect_true(all(c(
+    "frequencies", "coherence", "n_segments", "nperseg",
+    "fs", "n", "method"
+  ) %in% names(res)))
   expect_equal(res$n, n)
   expect_equal(length(res$frequencies), length(res$coherence))
   expect_true(all(is.finite(res$coherence)))
@@ -147,8 +157,10 @@ test_that("eg_coint returns Engle-Granger structure", {
   y1 <- 2 * w + rnorm(120, sd = 0.5)
   res <- eg_coint(y1, y2)
   expect_true(is.list(res))
-  expect_true(all(c("adf_statistic", "p_value", "beta",
-                    "critical_values", "n", "method") %in% names(res)))
+  expect_true(all(c(
+    "adf_statistic", "p_value", "beta",
+    "critical_values", "n", "method"
+  ) %in% names(res)))
   expect_true(is.finite(res$adf_statistic))
   expect_gte(res$p_value, 0)
   expect_lte(res$p_value, 1)
@@ -191,10 +203,11 @@ test_that("cokrg predicts at multiple targets", {
   y <- rnorm(15)
   target <- matrix(runif(8), 4, 2)
   res <- cokrg(x, y, coords, target,
-               sill_p = 2, range_p = 1.5,
-               sill_s = 1.5, range_s = 1,
-               cross_sill = 0.4, cross_range = 1.2,
-               nugget = 0.1)
+    sill_p = 2, range_p = 1.5,
+    sill_s = 1.5, range_s = 1,
+    cross_sill = 0.4, cross_range = 1.2,
+    nugget = 0.1
+  )
   expect_length(res$estimate, 4L)
   expect_length(res$se, 4L)
   expect_true(all(is.finite(res$estimate)))
@@ -204,13 +217,18 @@ test_that("cokrg predicts at multiple targets", {
 test_that("cokriging alias matches cokrg and validates dims", {
   set.seed(10)
   coords <- matrix(runif(24), 12, 2)
-  x <- rnorm(12); y <- rnorm(12)
+  x <- rnorm(12)
+  y <- rnorm(12)
   res <- cokriging(x, y, coords, target = c(0.3, 0.7))
   expect_true(is.finite(res$estimate))
-  expect_error(cokrg(x, y, coords, target = c(0.3, 0.7, 0.1)),
-               "dim mismatch")
-  expect_error(cokrg(x[1:5], y, coords, target = c(0.3, 0.7)),
-               "matching n")
+  expect_error(
+    cokrg(x, y, coords, target = c(0.3, 0.7, 0.1)),
+    "dim mismatch"
+  )
+  expect_error(
+    cokrg(x[1:5], y, coords, target = c(0.3, 0.7)),
+    "matching n"
+  )
 })
 
 test_that("confusion_matrix_metrics computes accuracy and F1", {
@@ -218,10 +236,12 @@ test_that("confusion_matrix_metrics computes accuracy and F1", {
   yp <- c("a", "b", "b", "b", "c", "a", "a", "b")
   res <- confusion_matrix_metrics(yt, yp)
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "accuracy", "confusion_matrix", "labels",
-                    "precision", "recall", "f1", "macro_precision",
-                    "macro_recall", "macro_f1", "weighted_f1", "n",
-                    "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "accuracy", "confusion_matrix", "labels",
+    "precision", "recall", "f1", "macro_precision",
+    "macro_recall", "macro_f1", "weighted_f1", "n",
+    "method"
+  ) %in% names(res)))
   expect_equal(res$accuracy, res$estimate)
   expect_gte(res$accuracy, 0)
   expect_lte(res$accuracy, 1)
@@ -253,8 +273,10 @@ test_that("copula_estimation works for the gaussian family", {
   y <- x + rnorm(300, sd = 0.5)
   res <- copula_estimation(x, y, family = "gaussian")
   expect_true(is.list(res))
-  expect_true(all(c("estimate", "kendall_tau", "se_tau", "u", "v",
-                    "family", "n", "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "kendall_tau", "se_tau", "u", "v",
+    "family", "n", "method"
+  ) %in% names(res)))
   expect_equal(res$family, "gaussian")
   expect_equal(res$n, 300L)
   expect_true(is.finite(res$estimate))
@@ -287,8 +309,10 @@ test_that("two_sample_coverage tabulates block frequencies", {
   y <- rnorm(25)
   res <- two_sample_coverage(x, y)
   expect_true(is.list(res))
-  expect_true(all(c("block_freq", "block_prop", "expected_prop", "m",
-                    "n", "cumulative", "method") %in% names(res)))
+  expect_true(all(c(
+    "block_freq", "block_prop", "expected_prop", "m",
+    "n", "cumulative", "method"
+  ) %in% names(res)))
   expect_equal(res$m, 10L)
   expect_equal(res$n, 25L)
   expect_length(res$block_freq, 11L)
@@ -309,8 +333,10 @@ test_that("one_sample_coverage returns coverages and cumulative", {
   x <- rnorm(30)
   res <- one_sample_coverage(x)
   expect_true(is.list(res))
-  expect_true(all(c("coverages", "cumulative", "expected", "n",
-                    "sample_min", "sample_max", "method") %in% names(res)))
+  expect_true(all(c(
+    "coverages", "cumulative", "expected", "n",
+    "sample_min", "sample_max", "method"
+  ) %in% names(res)))
   expect_equal(res$n, 30L)
   expect_length(res$coverages, 31L)
   expect_equal(sum(res$coverages), 1)
@@ -343,12 +369,16 @@ test_that("causal_attention_mask infers length from a vector", {
 
 test_that("cosine_lr_schedule decays from lr_max", {
   steps <- c(0, 250, 500, 750, 1000)
-  res <- morie:::cosine_lr_schedule(steps, lr_max = 1e-3,
-                                    total_steps = 1000L)
+  res <- morie:::cosine_lr_schedule(steps,
+    lr_max = 1e-3,
+    total_steps = 1000L
+  )
   expect_true(is.list(res))
-  expect_true(all(c("value", "tensor", "step", "lr_max", "lr_min",
-                    "total_steps", "warmup_steps", "method") %in%
-                    names(res)))
+  expect_true(all(c(
+    "value", "tensor", "step", "lr_max", "lr_min",
+    "total_steps", "warmup_steps", "method"
+  ) %in%
+    names(res)))
   expect_length(res$tensor, 5L)
   expect_true(all(is.finite(res$tensor)))
   expect_true(all(res$tensor >= 0))
@@ -358,29 +388,37 @@ test_that("cosine_lr_schedule decays from lr_max", {
 
 test_that("cosine_lr_schedule applies a warmup ramp", {
   res <- morie:::cosine_lr_schedule(c(0, 50, 100, 500),
-                                    lr_max = 1e-2, lr_min = 1e-4,
-                                    total_steps = 1000L,
-                                    warmup_steps = 100L)
+    lr_max = 1e-2, lr_min = 1e-4,
+    total_steps = 1000L,
+    warmup_steps = 100L
+  )
   expect_true(res$tensor[1] <= res$tensor[2])
   expect_equal(res$warmup_steps, 100L)
 })
 
 test_that("cosine_lr_schedule errors when warmup exceeds total", {
   expect_error(
-    morie:::cosine_lr_schedule(c(1, 2), total_steps = 10L,
-                               warmup_steps = 20L),
-    "total_steps")
+    morie:::cosine_lr_schedule(c(1, 2),
+      total_steps = 10L,
+      warmup_steps = 20L
+    ),
+    "total_steps"
+  )
 })
 
 test_that("csphr fits a separating hyperplane", {
   set.seed(14)
-  X <- rbind(matrix(rnorm(40, mean = 2), 20, 2),
-             matrix(rnorm(40, mean = -2), 20, 2))
+  X <- rbind(
+    matrix(rnorm(40, mean = 2), 20, 2),
+    matrix(rnorm(40, mean = -2), 20, 2)
+  )
   votes <- c(rep(1L, 20), rep(0L, 20))
   res <- csphr(X, votes)
   expect_true(is.list(res))
-  expect_true(all(c("w", "c", "midpoint", "correct_class", "n", "p",
-                    "method") %in% names(res)))
+  expect_true(all(c(
+    "w", "c", "midpoint", "correct_class", "n", "p",
+    "method"
+  ) %in% names(res)))
   expect_equal(res$n, 40L)
   expect_equal(res$p, 2L)
   expect_length(res$w, 2L)
@@ -410,8 +448,10 @@ test_that("control_median_test runs Mood's median test", {
   y <- rnorm(45, mean = 1)
   res <- control_median_test(x, y)
   expect_true(is.list(res))
-  expect_true(all(c("statistic", "p_value", "df", "n", "m", "n_y",
-                    "grand_median", "table", "method") %in% names(res)))
+  expect_true(all(c(
+    "statistic", "p_value", "df", "n", "m", "n_y",
+    "grand_median", "table", "method"
+  ) %in% names(res)))
   expect_true(is.finite(res$statistic))
   expect_gte(res$p_value, 0)
   expect_lte(res$p_value, 1)
@@ -437,8 +477,10 @@ test_that("control_comparison compares treatments to a control", {
   )
   res <- control_comparison(groups)
   expect_true(is.list(res))
-  expect_true(all(c("statistic", "p_value", "p_adjusted", "n", "k",
-                    "control_n", "adjust", "method") %in% names(res)))
+  expect_true(all(c(
+    "statistic", "p_value", "p_adjusted", "n", "k",
+    "control_n", "adjust", "method"
+  ) %in% names(res)))
   expect_equal(res$k, 2L)
   expect_equal(res$control_n, 20L)
   expect_length(res$statistic, 2L)

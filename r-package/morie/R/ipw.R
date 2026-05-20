@@ -3,8 +3,8 @@
 #' @return Named list describing the expected local CPADS contract.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 cpads_contract <- function() {
@@ -35,8 +35,8 @@ cpads_contract <- function() {
 #' @return Character vector of missing variable names.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 validate_cpads_data <- function(data, strict = TRUE) {
@@ -69,8 +69,8 @@ validate_cpads_data <- function(data, strict = TRUE) {
 #' @return Named list of output tables and the analysis data.
 #' @examples
 #' \dontrun{
-#'   # Full propensity-weighted analysis on a canonical CPADS frame:
-#'   run_propensity_ipw_analysis(load_cpads_data())
+#' # Full propensity-weighted analysis on a canonical CPADS frame:
+#' run_propensity_ipw_analysis(load_cpads_data())
 #' }
 #' @export
 run_propensity_ipw_analysis <- function(
@@ -148,8 +148,8 @@ run_propensity_ipw_analysis <- function(
 #' @return Named list of output tables and the observed-domain analysis frame.
 #' @examples
 #' \dontrun{
-#'   # eBAC selection-adjusted IPW analysis on a canonical CPADS frame:
-#'   run_ebac_selection_ipw_analysis(load_cpads_data())
+#' # eBAC selection-adjusted IPW analysis on a canonical CPADS frame:
+#' run_ebac_selection_ipw_analysis(load_cpads_data())
 #' }
 #' @export
 run_ebac_selection_ipw_analysis <- function(

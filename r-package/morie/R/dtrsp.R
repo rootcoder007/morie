@@ -16,31 +16,37 @@
 #' @importFrom stats predict
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 decision_tree_split <- function(x, y, criterion = "gini", max_depth = 30L,
-                                 seed = 0L) {
+                                seed = 0L) {
   if (!requireNamespace("rpart", quietly = TRUE)) {
     stop("Function 'decision_tree_split' requires package 'rpart'. Install with install.packages('rpart').")
   }
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
-  x <- as.matrix(x); yf <- as.factor(y)
+  x <- as.matrix(x)
+  yf <- as.factor(y)
   colnames(x) <- colnames(x) %||% paste0("x", seq_len(ncol(x)) - 1L)
   parms_split <- if (criterion == "entropy") "information" else "gini"
   set.seed(seed)
-  df <- as.data.frame(x); df$.y <- yf
-  ctrl <- rpart::rpart.control(maxdepth = max_depth, cp = 0,
-                               minsplit = 2L, minbucket = 1L,
-                               xval = 0L)
-  fit <- rpart::rpart(.y ~ ., data = df, method = "class",
-                      parms = list(split = parms_split), control = ctrl)
+  df <- as.data.frame(x)
+  df$.y <- yf
+  ctrl <- rpart::rpart.control(
+    maxdepth = max_depth, cp = 0,
+    minsplit = 2L, minbucket = 1L,
+    xval = 0L
+  )
+  fit <- rpart::rpart(.y ~ .,
+    data = df, method = "class",
+    parms = list(split = parms_split), control = ctrl
+  )
   fr <- fit$frame
   root <- fr[1, , drop = FALSE]
   # rpart variable names are factor codes via fit$splits / fit$frame$var
   root_feat_name <- as.character(root$var)
-  root_feat <- match(root_feat_name, colnames(x)) - 1L  # 0-indexed parity
+  root_feat <- match(root_feat_name, colnames(x)) - 1L # 0-indexed parity
   splits <- fit$splits
   if (!is.null(splits) && nrow(splits) > 0) {
     root_thr <- as.numeric(splits[1, "index"])
@@ -50,8 +56,11 @@ decision_tree_split <- function(x, y, criterion = "gini", max_depth = 30L,
   # rpart impurity = root yval2 deviance / wt; surrogate: Gini at root
   tab <- table(yf)
   pk <- tab / sum(tab)
-  root_imp <- if (criterion == "entropy") -sum(ifelse(pk > 0, pk * log(pk), 0))
-              else 1 - sum(pk^2)
+  root_imp <- if (criterion == "entropy") {
+    -sum(ifelse(pk > 0, pk * log(pk), 0))
+  } else {
+    1 - sum(pk^2)
+  }
   preds <- predict(fit, df, type = "class")
   acc <- mean(preds == yf)
   fi <- fit$variable.importance

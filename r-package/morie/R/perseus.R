@@ -5,8 +5,8 @@
 #' @return Character scalar prompt.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 build_prompt <- function(question, context = NULL) {
@@ -33,8 +33,8 @@ build_prompt <- function(question, context = NULL) {
 #' @return Agent text response.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ask_percy <- function(question, context = NULL, python_bin = Sys.getenv("MORIE_PYTHON_BIN", "python3")) {

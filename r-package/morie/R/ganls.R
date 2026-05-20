@@ -17,12 +17,13 @@
 #' @references Goodfellow et al. (2014), NeurIPS.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ganls_gan_loss <- function(D_real, D_fake, kind = "minimax") {
-  D_real <- as.numeric(D_real); D_fake <- as.numeric(D_fake)
+  D_real <- as.numeric(D_real)
+  D_fake <- as.numeric(D_fake)
   clip_log <- function(p) log(pmin(pmax(p, 1e-12), 1.0))
   v_real <- mean(clip_log(D_real))
   v_fake_neg <- mean(clip_log(1 - D_fake))
@@ -33,9 +34,11 @@ ganls_gan_loss <- function(D_real, D_fake, kind = "minimax") {
     "nonsaturating" = -mean(clip_log(D_fake)),
     stop(sprintf("kind must be 'minimax' or 'nonsaturating', got %s", kind))
   )
-  list(d_loss = d_loss, g_loss = g_loss, v = V,
-       estimate = d_loss, kind = kind,
-       method = sprintf("GAN %s loss", kind))
+  list(
+    d_loss = d_loss, g_loss = g_loss, v = V,
+    estimate = d_loss, kind = kind,
+    method = sprintf("GAN %s loss", kind)
+  )
 }
 
 #' @rdname ganls_gan_loss

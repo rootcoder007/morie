@@ -19,19 +19,22 @@
 #' @references Vaswani et al. (2017), NeurIPS.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 trfbl_transformer_block <- function(x, num_heads = 2L, d_ff = NULL,
                                     seed = 0L,
                                     deterministic_seed = NULL) {
   x <- as.matrix(x)
-  seq_len <- nrow(x); d_model <- ncol(x)
+  seq_len <- nrow(x)
+  d_model <- ncol(x)
   if (is.null(d_ff)) d_ff <- 4L * d_model
 
-  attn <- mhatf_multi_head_attention_full(x, num_heads = num_heads, seed = seed,
-                                          deterministic_seed = deterministic_seed)
+  attn <- mhatf_multi_head_attention_full(x,
+    num_heads = num_heads, seed = seed,
+    deterministic_seed = deterministic_seed
+  )
   h1 <- .trfbl_layer_norm(x + attn$output)
 
   if (!is.null(deterministic_seed)) {
@@ -44,10 +47,12 @@ trfbl_transformer_block <- function(x, num_heads = 2L, d_ff = NULL,
   ffn <- .trfbl_gelu(h1 %*% W1) %*% W2
   h2 <- .trfbl_layer_norm(h1 + ffn)
 
-  list(output = h2, estimate = h2, h1 = h1,
-       num_heads = as.integer(num_heads),
-       d_ff = as.integer(d_ff),
-       method = "Transformer encoder block (post-LN)")
+  list(
+    output = h2, estimate = h2, h1 = h1,
+    num_heads = as.integer(num_heads),
+    d_ff = as.integer(d_ff),
+    method = "Transformer encoder block (post-LN)"
+  )
 }
 
 .trfbl_layer_norm <- function(x, eps = 1e-5) {

@@ -6,9 +6,11 @@ test_that("morie_dataset_catalog returns a well-formed data.frame", {
   cat <- morie_dataset_catalog()
   expect_s3_class(cat, "data.frame")
   expect_gt(nrow(cat), 30L)
-  expect_true(all(c("key", "name", "source", "survey", "year", "format",
-                    "type", "large_file", "local_path", "table_name",
-                    "ckan_resource_id") %in% names(cat)))
+  expect_true(all(c(
+    "key", "name", "source", "survey", "year", "format",
+    "type", "large_file", "local_path", "table_name",
+    "ckan_resource_id"
+  ) %in% names(cat)))
 })
 
 test_that("morie_dataset_catalog keys are unique and non-empty", {
@@ -67,9 +69,11 @@ test_that("profile_dataset numeric columns carry summary stats", {
   )
   p <- profile_dataset(df)
   col_a <- p$columns$a
-  expect_true(all(c("name", "dtype", "measurement_level", "n_missing",
-                    "n_unique", "mean", "sd", "min", "max",
-                    "q25", "q50", "q75") %in% names(col_a)))
+  expect_true(all(c(
+    "name", "dtype", "measurement_level", "n_missing",
+    "n_unique", "mean", "sd", "min", "max",
+    "q25", "q50", "q75"
+  ) %in% names(col_a)))
   expect_true(is.finite(col_a$mean))
   expect_true(is.finite(col_a$sd))
   expect_lte(col_a$q25, col_a$q50)
@@ -112,7 +116,8 @@ test_that("suggest_analysis_plan flags missing values and ordinal vars", {
   df <- data.frame(
     num = c(rnorm(29), NA),
     ord = ordered(sample(c("lo", "mid", "hi"), 30, replace = TRUE),
-                  levels = c("lo", "mid", "hi"))
+      levels = c("lo", "mid", "hi")
+    )
   )
   s <- suggest_analysis_plan(profile_dataset(df))
   expect_true(any(grepl("[Mm]issing", s)))
@@ -133,9 +138,11 @@ test_that("dbscan_clustering returns expected structure", {
   )
   res <- dbscan_clustering(x, eps = 0.6, min_samples = 4L)
   expect_type(res, "list")
-  expect_true(all(c("estimate", "labels", "n_clusters", "n_noise",
-                    "core_sample_indices", "eps", "min_samples",
-                    "n", "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "labels", "n_clusters", "n_noise",
+    "core_sample_indices", "eps", "min_samples",
+    "n", "method"
+  ) %in% names(res)))
   expect_equal(res$n, nrow(x))
   expect_length(res$labels, nrow(x))
   expect_gte(res$n_clusters, 0L)
@@ -157,9 +164,11 @@ test_that("dcc_multivariate_garch returns expected structure", {
   x <- matrix(rnorm(120 * 3, 0, 0.5), ncol = 3)
   res <- dcc_multivariate_garch(x)
   expect_type(res, "list")
-  expect_true(all(c("a", "b", "unconditional_correlation",
-                    "conditional_correlation", "conditional_variance",
-                    "loglik", "n", "k", "method") %in% names(res)))
+  expect_true(all(c(
+    "a", "b", "unconditional_correlation",
+    "conditional_correlation", "conditional_variance",
+    "loglik", "n", "k", "method"
+  ) %in% names(res)))
   expect_equal(res$n, 120L)
   expect_equal(res$k, 3L)
   expect_true(is.finite(res$a))
@@ -176,12 +185,16 @@ test_that("dcc_multivariate_garch errors when too small", {
 
 test_that("diffu_heat_diffusion returns expected structure", {
   T0 <- c(0, 0, 100, 100, 100, 0, 0)
-  res <- diffu_heat_diffusion(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
-                              n_steps = 50L)
+  res <- diffu_heat_diffusion(T0,
+    alpha = 0.01, dx = 0.1, dt = 0.01,
+    n_steps = 50L
+  )
   expect_type(res, "list")
-  expect_true(all(c("value", "T_final", "T_initial", "history",
-                    "r_stability", "n_steps", "alpha", "method") %in%
-                    names(res)))
+  expect_true(all(c(
+    "value", "T_final", "T_initial", "history",
+    "r_stability", "n_steps", "alpha", "method"
+  ) %in%
+    names(res)))
   expect_length(res$T_final, length(T0))
   expect_equal(res$T_initial, as.numeric(T0))
   expect_equal(dim(res$history), c(51L, length(T0)))
@@ -194,7 +207,8 @@ test_that("diffu_heat_diffusion returns expected structure", {
 test_that("diffu_heat_diffusion enforces CFL and minimum length", {
   expect_error(diffu_heat_diffusion(c(1, 2)))
   expect_error(diffu_heat_diffusion(c(0, 50, 100, 50, 0),
-                                    alpha = 100, dx = 0.1, dt = 0.5))
+    alpha = 100, dx = 0.1, dt = 0.5
+  ))
 })
 
 test_that("diffusion_forward alias equals diffu_heat_diffusion", {
@@ -210,8 +224,10 @@ test_that("diffu_diffusion_forward returns expected structure", {
   x0 <- rnorm(8)
   res <- diffu_diffusion_forward(x0, t = 100L, num_steps = 1000L, seed = 1L)
   expect_type(res, "list")
-  expect_true(all(c("x_t", "estimate", "noise", "alpha_bar", "beta",
-                    "method") %in% names(res)))
+  expect_true(all(c(
+    "x_t", "estimate", "noise", "alpha_bar", "beta",
+    "method"
+  ) %in% names(res)))
   expect_length(res$x_t, length(x0))
   expect_true(all(is.finite(res$x_t)))
   expect_gte(res$alpha_bar, 0)
@@ -233,8 +249,10 @@ test_that("dimrd works on a data matrix", {
   x <- matrix(rnorm(100 * 5), ncol = 5)
   res <- dimrd(x, threshold = 1)
   expect_type(res, "list")
-  expect_true(all(c("n_dims", "eigenvalues", "threshold", "scree_gap",
-                    "method") %in% names(res)))
+  expect_true(all(c(
+    "n_dims", "eigenvalues", "threshold", "scree_gap",
+    "method"
+  ) %in% names(res)))
   expect_equal(res$threshold, 1)
   expect_gte(res$n_dims, 0L)
   expect_true(all(is.finite(res$eigenvalues)))
@@ -262,11 +280,15 @@ test_that("deep_learning_genomic returns expected structure", {
   set.seed(6)
   M <- matrix(rnorm(20 * 5), 20, 5)
   y <- M[, 1] + 0.3 * rnorm(20)
-  res <- deep_learning_genomic(rep(0, 20), y, M, hidden = 8,
-                               n_epochs = 30, seed = 6)
+  res <- deep_learning_genomic(rep(0, 20), y, M,
+    hidden = 8,
+    n_epochs = 30, seed = 6
+  )
   expect_type(res, "list")
-  expect_true(all(c("estimate", "y_hat", "beta", "W1", "b1", "w2", "b2",
-                    "loss_curve", "se", "n", "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "y_hat", "beta", "W1", "b1", "w2", "b2",
+    "loss_curve", "se", "n", "method"
+  ) %in% names(res)))
   expect_equal(res$n, 20L)
   expect_length(res$y_hat, 20L)
   expect_true(all(is.finite(res$y_hat)))
@@ -282,8 +304,10 @@ test_that("deep_learning_genomic loss generally decreases", {
   set.seed(7)
   M <- matrix(rnorm(30 * 4), 30, 4)
   y <- M[, 2] + 0.2 * rnorm(30)
-  res <- deep_learning_genomic(rep(0, 30), y, M, hidden = 6,
-                               n_epochs = 100, lr = 1e-2, seed = 7)
+  res <- deep_learning_genomic(rep(0, 30), y, M,
+    hidden = 6,
+    n_epochs = 100, lr = 1e-2, seed = 7
+  )
   expect_lte(res$loss_curve[length(res$loss_curve)], res$loss_curve[1])
 })
 
@@ -292,8 +316,10 @@ test_that("drpfw_dropout_forward returns expected structure in training", {
   x <- array(rnorm(24), dim = c(4, 6))
   res <- drpfw_dropout_forward(x, p = 0.3, seed = 1L, training = TRUE)
   expect_type(res, "list")
-  expect_true(all(c("y", "estimate", "mask", "p", "kept_fraction",
-                    "method") %in% names(res)))
+  expect_true(all(c(
+    "y", "estimate", "mask", "p", "kept_fraction",
+    "method"
+  ) %in% names(res)))
   expect_equal(dim(res$y), dim(x))
   expect_equal(dim(res$mask), dim(x))
   expect_true(all(res$mask %in% c(0, 1)))
@@ -326,10 +352,12 @@ test_that("decision_tree_split returns expected structure", {
   y <- factor(ifelse(x[, 1] + rnorm(80, 0, 0.1) > 0, "pos", "neg"))
   res <- decision_tree_split(x, y, criterion = "gini", seed = 0L)
   expect_type(res, "list")
-  expect_true(all(c("estimate", "train_accuracy", "root_feature",
-                    "root_threshold", "root_impurity", "n_leaves",
-                    "feature_importances", "criterion", "n",
-                    "method") %in% names(res)))
+  expect_true(all(c(
+    "estimate", "train_accuracy", "root_feature",
+    "root_threshold", "root_impurity", "n_leaves",
+    "feature_importances", "criterion", "n",
+    "method"
+  ) %in% names(res)))
   expect_equal(res$n, 80L)
   expect_gte(res$train_accuracy, 0)
   expect_lte(res$train_accuracy, 1)
@@ -354,8 +382,10 @@ test_that("dwnmn smooths a scalar series", {
   x <- cumsum(rnorm(30))
   res <- dwnmn(x, sigma_w = 0.1)
   expect_type(res, "list")
-  expect_true(all(c("smoothed", "raw", "P_smoothed", "sigma_w",
-                    "n_periods", "method") %in% names(res)))
+  expect_true(all(c(
+    "smoothed", "raw", "P_smoothed", "sigma_w",
+    "n_periods", "method"
+  ) %in% names(res)))
   expect_length(res$smoothed, length(x))
   expect_true(all(is.finite(res$smoothed)))
   expect_equal(res$n_periods, 30L)
@@ -382,8 +412,10 @@ test_that("dwnmn handles empty input and alias works", {
 })
 
 test_that("calculate_ebac returns a non-negative scalar", {
-  v <- calculate_ebac(drinks = 4, weight_lbs = 180, hours = 2,
-                      gender_constant = 0.73)
+  v <- calculate_ebac(
+    drinks = 4, weight_lbs = 180, hours = 2,
+    gender_constant = 0.73
+  )
   expect_type(v, "double")
   expect_length(v, 1L)
   expect_gte(v, 0)
@@ -392,18 +424,24 @@ test_that("calculate_ebac returns a non-negative scalar", {
 
 test_that("calculate_ebac clips at zero and guards bad weight", {
   expect_equal(
-    calculate_ebac(drinks = 1, weight_lbs = 200, hours = 100,
-                   gender_constant = 0.73),
+    calculate_ebac(
+      drinks = 1, weight_lbs = 200, hours = 100,
+      gender_constant = 0.73
+    ),
     0
   )
   expect_equal(
-    calculate_ebac(drinks = 4, weight_lbs = 0, hours = 1,
-                   gender_constant = 0.73),
+    calculate_ebac(
+      drinks = 4, weight_lbs = 0, hours = 1,
+      gender_constant = 0.73
+    ),
     0
   )
   expect_equal(
-    calculate_ebac(drinks = 4, weight_lbs = -10, hours = 1,
-                   gender_constant = 0.73),
+    calculate_ebac(
+      drinks = 4, weight_lbs = -10, hours = 1,
+      gender_constant = 0.73
+    ),
     0
   )
 })
@@ -420,9 +458,11 @@ test_that("egarch_model returns expected structure", {
   r <- rnorm(150, 0, 1)
   res <- egarch_model(r)
   expect_type(res, "list")
-  expect_true(all(c("omega", "alpha", "gamma", "beta", "loglik",
-                    "conditional_variance", "n", "method") %in%
-                    names(res)))
+  expect_true(all(c(
+    "omega", "alpha", "gamma", "beta", "loglik",
+    "conditional_variance", "n", "method"
+  ) %in%
+    names(res)))
   expect_equal(res$n, 150L)
   expect_length(res$conditional_variance, 150L)
   expect_true(all(is.finite(res$conditional_variance)))
@@ -492,8 +532,10 @@ test_that("morie_list_datasets reports catalog with cache status", {
   on.exit(unlink(tmp), add = TRUE)
   ds <- morie_list_datasets(db_path = tmp)
   expect_s3_class(ds, "data.frame")
-  expect_true(all(c("key", "name", "source", "survey", "year", "type",
-                    "cached", "rows") %in% names(ds)))
+  expect_true(all(c(
+    "key", "name", "source", "survey", "year", "type",
+    "cached", "rows"
+  ) %in% names(ds)))
   expect_type(ds$cached, "logical")
 })
 

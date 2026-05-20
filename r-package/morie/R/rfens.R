@@ -20,22 +20,25 @@
 #' @importFrom stats predict
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 random_forest_ensemble <- function(x, y, n_estimators = 100L,
-                                    max_depth = NULL, task = "auto",
-                                    seed = 0L,
-                                    deterministic_seed = NULL) {
+                                   max_depth = NULL, task = "auto",
+                                   seed = 0L,
+                                   deterministic_seed = NULL) {
   if (!requireNamespace("randomForest", quietly = TRUE)) {
     stop("Function 'random_forest_ensemble' requires package 'randomForest'. Install with install.packages('randomForest').")
   }
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)
   if (identical(task, "auto")) {
-    task <- if (is.factor(y) || all(y %in% c(0L, 1L)) || is.integer(y))
-              "classification" else "regression"
+    task <- if (is.factor(y) || all(y %in% c(0L, 1L)) || is.integer(y)) {
+      "classification"
+    } else {
+      "regression"
+    }
   }
   y_use <- if (task == "classification") as.factor(y) else as.numeric(y)
   if (!is.null(deterministic_seed)) {

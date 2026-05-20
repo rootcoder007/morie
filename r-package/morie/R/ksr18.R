@@ -10,16 +10,19 @@
 #' @references Kosorok (2008), Ch 8.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr18_kosorok_nelson_aalen <- function(t, event) {
-  t <- as.numeric(t); event <- as.integer(event)
+  t <- as.numeric(t)
+  event <- as.integer(event)
   n <- length(t)
   ord <- order(t)
-  t <- t[ord]; event <- event[ord]
-  cum_h <- 0; cum_v <- 0
+  t <- t[ord]
+  event <- event[ord]
+  cum_h <- 0
+  cum_v <- 0
   i <- 1L
   while (i <= n) {
     j <- i

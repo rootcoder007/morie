@@ -25,8 +25,10 @@ test_that("repetition_penalty: positive logits divided, negative multiplied", {
 
 test_that("repetition_penalty: out-of-range / duplicate generated ids dropped", {
   z <- c(1, 2, 3)
-  res <- morie:::repetition_penalty(z, generated = c(0L, 0L, 99L, -5L),
-                                    alpha = 1.2)
+  res <- morie:::repetition_penalty(z,
+    generated = c(0L, 0L, 99L, -5L),
+    alpha = 1.2
+  )
   expect_equal(res$penalised_idx, 0L)
   expect_length(res$tensor, 3L)
 })
@@ -100,8 +102,10 @@ test_that("stratified_sample: proportional allocation uses total n", {
 test_that("stratified_sample: proportional with vector n_per_stratum errors", {
   df <- data.frame(g = c("A", "A", "B"), x = 1:3)
   expect_error(
-    stratified_sample(df, "g", n_per_stratum = c(A = 1, B = 1),
-                      proportional = TRUE),
+    stratified_sample(df, "g",
+      n_per_stratum = c(A = 1, B = 1),
+      proportional = TRUE
+    ),
     "proportional"
   )
 })
@@ -142,11 +146,15 @@ test_that("pps_sample: non-positive size errors", {
 test_that("bootstrap_sample: returns estimate, se, CI and distribution", {
   set.seed(1)
   df <- data.frame(x = rnorm(40))
-  res <- bootstrap_sample(df, statistic = function(d) mean(d$x),
-                          n_bootstrap = 50L)
+  res <- bootstrap_sample(df,
+    statistic = function(d) mean(d$x),
+    n_bootstrap = 50L
+  )
   expect_type(res, "list")
-  expect_named(res, c("estimate", "se", "ci_lower", "ci_upper",
-                      "distribution"))
+  expect_named(res, c(
+    "estimate", "se", "ci_lower", "ci_upper",
+    "distribution"
+  ))
   expect_true(is.finite(res$estimate))
   expect_true(res$se >= 0)
   expect_true(res$ci_lower <= res$ci_upper)
@@ -183,7 +191,8 @@ test_that("design_effect: unequal weights give DEFF >= 1", {
 test_that("compute_design_weights: inverse-probability weights", {
   df <- data.frame(g = c(rep("A", 4), rep("B", 6)))
   w <- compute_design_weights(df, "g",
-                              population_sizes = c(A = 100L, B = 300L))
+    population_sizes = c(A = 100L, B = 300L)
+  )
   expect_type(w, "double")
   expect_length(w, 10L)
   expect_true(all(w > 0))
@@ -191,8 +200,10 @@ test_that("compute_design_weights: inverse-probability weights", {
 
 test_that("calibration_weights: default unit start, converges to totals", {
   df <- data.frame(g = c(rep("f", 5), rep("m", 5)))
-  w <- calibration_weights(df, aux_vars = "g",
-                           population_totals = list(g_f = 200, g_m = 100))
+  w <- calibration_weights(df,
+    aux_vars = "g",
+    population_totals = list(g_f = 200, g_m = 100)
+  )
   expect_length(w, 10L)
   expect_equal(sum(w[df$g == "f"]), 200)
   expect_equal(sum(w[df$g == "m"]), 100)
@@ -200,10 +211,12 @@ test_that("calibration_weights: default unit start, converges to totals", {
 
 test_that("calibration_weights: honours supplied initial weights", {
   df <- data.frame(g = c("a", "a", "b", "b"))
-  w <- calibration_weights(df, aux_vars = "g",
-                           population_totals = list(g_a = 10),
-                           initial_weights = c(1, 1, 2, 2),
-                           max_iter = 5L)
+  w <- calibration_weights(df,
+    aux_vars = "g",
+    population_totals = list(g_a = 10),
+    initial_weights = c(1, 1, 2, 2),
+    max_iter = 5L
+  )
   expect_length(w, 4L)
   expect_equal(sum(w[df$g == "a"]), 10)
 })
@@ -277,8 +290,10 @@ test_that("sglm: Gaussian fit recovers a coefficient vector", {
   y <- 1 + 2 * seq_len(n) + rnorm(n, sd = 0.2)
   res <- sglm(X, y, coords)
   expect_type(res, "list")
-  expect_named(res, c("estimate", "se", "sigma2", "phi", "tau2", "n",
-                      "method"))
+  expect_named(res, c(
+    "estimate", "se", "sigma2", "phi", "tau2", "n",
+    "method"
+  ))
   expect_length(res$estimate, 2L)
   expect_true(all(is.finite(res$estimate)))
   expect_true(all(res$se >= 0))
@@ -416,7 +431,7 @@ test_that("hurst_r: returns H and interpretation", {
   expect_type(res, "list")
   expect_named(res, c("H", "interpretation"))
   expect_true(res$interpretation %in%
-                c("persistent", "anti-persistent", "random"))
+    c("persistent", "anti-persistent", "random"))
 })
 
 test_that("hfd: Python-bridge path is not exercised offline", {
@@ -440,8 +455,10 @@ test_that("smixd: REML fit returns coefficient list", {
   y <- 1 + 2 * seq_len(n) + rnorm(n, sd = 0.3)
   res <- smixd(X, y, coords)
   expect_type(res, "list")
-  expect_named(res, c("estimate", "se", "sigma2", "tau2", "phi", "n",
-                      "method"))
+  expect_named(res, c(
+    "estimate", "se", "sigma2", "tau2", "phi", "n",
+    "method"
+  ))
   expect_length(res$estimate, 2L)
   expect_true(all(is.finite(res$estimate)))
   expect_true(all(res$se >= 0))
@@ -476,8 +493,10 @@ test_that("sobls: default sample is N-by-d in the unit cube", {
 })
 
 test_that("sobls: integrand path adds estimate and se", {
-  res <- morie:::sobls(N = 128L, d = 2L,
-                       f = function(u) u[1] * u[2], seed = 0L)
+  res <- morie:::sobls(
+    N = 128L, d = 2L,
+    f = function(u) u[1] * u[2], seed = 0L
+  )
   expect_true(is.finite(res$estimate))
   expect_true(res$se >= 0)
   expect_true(abs(res$estimate - 0.25) < 0.1)
@@ -581,8 +600,10 @@ test_that("spectral_density: default arguments give Welch PSD", {
   x <- sin(2 * pi * 0.1 * seq_len(128)) + rnorm(128, sd = 0.3)
   res <- spectral_density(x)
   expect_type(res, "list")
-  expect_named(res, c("frequencies", "psd", "n_segments", "nperseg",
-                      "fs", "n", "method"))
+  expect_named(res, c(
+    "frequencies", "psd", "n_segments", "nperseg",
+    "fs", "n", "method"
+  ))
   expect_equal(length(res$frequencies), length(res$psd))
   expect_true(all(res$psd >= 0))
   expect_true(all(is.finite(res$frequencies)))
@@ -616,10 +637,14 @@ test_that("sparse_attention: scalar N gives N-by-N mask", {
 })
 
 test_that("sparse_attention: random links increase density", {
-  d0 <- morie:::sparse_attention(20L, window = 1L, stride = 50L,
-                                 n_random = 0L)$density
-  d1 <- morie:::sparse_attention(20L, window = 1L, stride = 50L,
-                                 n_random = 5L, seed = 1L)$density
+  d0 <- morie:::sparse_attention(20L,
+    window = 1L, stride = 50L,
+    n_random = 0L
+  )$density
+  d1 <- morie:::sparse_attention(20L,
+    window = 1L, stride = 50L,
+    n_random = 5L, seed = 1L
+  )$density
   expect_true(d1 >= d0)
 })
 
@@ -629,10 +654,12 @@ test_that("sparse_attention: vector input uses its length as N", {
 })
 
 test_that("sptag: pairwise vote agreement matrix is symmetric", {
-  M <- matrix(c(1, 1, 0,
-                1, 0, 0,
-                0, 1, 1,
-                1, 1, 1), nrow = 4, byrow = TRUE)
+  M <- matrix(c(
+    1, 1, 0,
+    1, 0, 0,
+    0, 1, 1,
+    1, 1, 1
+  ), nrow = 4, byrow = TRUE)
   res <- sptag(M)
   expect_type(res, "list")
   expect_named(res, c("agreement", "mean_agreement", "n", "m", "method"))
@@ -651,9 +678,11 @@ test_that("sptag: single-row input returns NA mean agreement", {
 })
 
 test_that("sptag: mutually-absent pair yields NA cell", {
-  M <- matrix(c(1,  NA,
-                NA, 0,
-                1,  1), nrow = 3, byrow = TRUE)
+  M <- matrix(c(
+    1, NA,
+    NA, 0,
+    1, 1
+  ), nrow = 3, byrow = TRUE)
   res <- sptag(M)
   expect_true(is.na(res$agreement[1, 2]))
   expect_true(is.finite(res$mean_agreement))

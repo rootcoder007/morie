@@ -13,8 +13,9 @@
 test_that(".frns helpers cover empty / degenerate inputs", {
   expect_error(
     morie:::.frns_check_aligned(list("a", integer(0)), list("b", integer(0))),
-    "empty")
-  expect_equal(morie:::.frns_gini(5), 0)          # single element -> 0
+    "empty"
+  )
+  expect_equal(morie:::.frns_gini(5), 0) # single element -> 0
   expect_equal(morie:::.frns_gini(numeric(0)), 0) # empty -> 0
   expect_true(is.na(morie:::.frns_worst_abs(c(NA_real_, NaN, Inf, -Inf))))
 })
@@ -24,37 +25,46 @@ test_that(".frns helpers cover empty / degenerate inputs", {
 test_that("fairness_disparate_impact: zero-base, adverse, inferred priv", {
   # privileged group has a zero favourable-outcome rate -> undefined ratios
   z <- fairness_disparate_impact(c(0, 0, 0, 1, 1, 0),
-                                 c("A", "A", "A", "B", "B", "B"),
-                                 privileged = "A")
+    c("A", "A", "A", "B", "B", "B"),
+    privileged = "A"
+  )
   expect_true(any(grepl("zero favourable", z$warnings)))
   expect_true(is.na(z$value))
   expect_match(z$interpretation, "could not be computed")
 
   # clear adverse impact: B rate 0.25 vs A rate 1.0
   a <- fairness_disparate_impact(c(1, 1, 1, 1, 1, 0, 0, 0),
-                                 c(rep("A", 4), rep("B", 4)),
-                                 privileged = "A")
+    c(rep("A", 4), rep("B", 4)),
+    privileged = "A"
+  )
   expect_true(a$adverse_impact)
   expect_match(a$interpretation, "Adverse impact detected")
 
   # privileged = NULL -> the inferred-reference warning path
-  inf <- fairness_disparate_impact(c(1, 1, 0, 0, 1, 0),
-                                   c("A", "A", "A", "B", "B", "B"))
+  inf <- fairness_disparate_impact(
+    c(1, 1, 0, 0, 1, 0),
+    c("A", "A", "A", "B", "B", "B")
+  )
   expect_true(any(grepl("inferred", inf$warnings)))
 })
 
 # ---- fairness_demographic_parity ------------------------------------------
 
 test_that("fairness_demographic_parity: <2 groups, inferred priv, gap interp", {
-  expect_error(fairness_demographic_parity(c(1, 0), c("A", "A")),
-               "at least two groups")
-  res <- fairness_demographic_parity(c(1, 1, 1, 1, 0, 0, 0, 0),
-                                     c(rep("A", 4), rep("B", 4)))
+  expect_error(
+    fairness_demographic_parity(c(1, 0), c("A", "A")),
+    "at least two groups"
+  )
+  res <- fairness_demographic_parity(
+    c(1, 1, 1, 1, 0, 0, 0, 0),
+    c(rep("A", 4), rep("B", 4))
+  )
   expect_true(any(grepl("inferred", res$warnings)))
   expect_match(res$interpretation, "differ materially")
   near <- fairness_demographic_parity(c(1, 1, 1, 0, 1, 1, 0, 1),
-                                      c(rep("A", 4), rep("B", 4)),
-                                      privileged = "A")
+    c(rep("A", 4), rep("B", 4)),
+    privileged = "A"
+  )
   expect_match(near$interpretation, "close to parity")
 })
 
@@ -63,20 +73,23 @@ test_that("fairness_demographic_parity: <2 groups, inferred priv, gap interp", {
 test_that("fairness_equalized_odds: undefined-rate warning + violation", {
   expect_error(
     fairness_equalized_odds(c(1, 0), c(1, 0), c("A", "A")),
-    "at least two groups")
+    "at least two groups"
+  )
   # group B has no positive ground-truth cases -> NA TPR -> warning
   eo <- fairness_equalized_odds(
     y_true = c(1, 1, 0, 0, 0, 0, 0, 0),
     y_pred = c(1, 0, 1, 0, 1, 1, 0, 1),
-    group  = c(rep("A", 4), rep("B", 4)),
-    privileged = "A")
+    group = c(rep("A", 4), rep("B", 4)),
+    privileged = "A"
+  )
   expect_true(any(grepl("undefined", eo$warnings)))
   # a large, well-defined gap -> the violation interpretation
   viol <- fairness_equalized_odds(
     y_true = c(1, 1, 0, 0, 1, 1, 0, 0),
     y_pred = c(1, 1, 0, 0, 0, 0, 1, 1),
-    group  = c(rep("A", 4), rep("B", 4)),
-    privileged = "A")
+    group = c(rep("A", 4), rep("B", 4)),
+    privileged = "A"
+  )
   expect_true(viol$violation)
   expect_match(viol$interpretation, "differ substantially")
 })
@@ -85,7 +98,8 @@ test_that("fairness_average_odds_difference runs with inferred privileged", {
   aod <- fairness_average_odds_difference(
     y_true = c(1, 1, 0, 0, 1, 1, 0, 0),
     y_pred = c(1, 1, 0, 0, 0, 0, 1, 1),
-    group  = c(rep("A", 4), rep("B", 4)))
+    group  = c(rep("A", 4), rep("B", 4))
+  )
   expect_true(is.numeric(aod$value))
   expect_match(aod$interpretation, "average odds difference")
 })
@@ -94,11 +108,14 @@ test_that("fairness_average_odds_difference runs with inferred privileged", {
 
 test_that("fairness_bias_amplification: amplified and quiet regimes", {
   amp <- fairness_bias_amplification(c(1, 1, 1, 1, 0, 0, 0, 0),
-                                     c(rep("A", 4), rep("B", 4)),
-                                     privileged = "A")
+    c(rep("A", 4), rep("B", 4)),
+    privileged = "A"
+  )
   expect_match(amp$interpretation, "directional disparity")
-  quiet <- fairness_bias_amplification(c(1, 1, 1, 0, 1, 1, 0, 1),
-                                       c(rep("A", 4), rep("B", 4)))
+  quiet <- fairness_bias_amplification(
+    c(1, 1, 1, 0, 1, 1, 0, 1),
+    c(rep("A", 4), rep("B", 4))
+  )
   expect_match(quiet$interpretation, "little amplification")
 })
 
@@ -111,11 +128,14 @@ test_that(".run_power_design_module_extended runs on canonical CPADS data", {
 
 test_that(".run_tables_module_internal runs with and without an output dir", {
   expect_true(is.list(morie:::.run_tables_module_internal(
-    make_canonical_cpads())))
+    make_canonical_cpads()
+  )))
   od <- tempfile("morie-tables-")
   dir.create(od, recursive = TRUE)
   expect_true(is.list(morie:::.run_tables_module_internal(
-    make_canonical_cpads(), output_dir = od)))
+    make_canonical_cpads(),
+    output_dir = od
+  )))
 })
 
 test_that(".run_final_report_module_internal builds the coverage report", {
@@ -128,9 +148,12 @@ test_that(".run_final_report_module_internal builds the coverage report", {
   od <- tempfile("morie-final-")
   dir.create(od, recursive = TRUE)
   utils::write.csv(data.frame(a = 1:3, b = 4:6),
-                   file.path(od, "binomial_summaries.csv"), row.names = FALSE)
-  dir.create(file.path(od, "broken.csv"))   # read.csv on a dir -> NULL -> next
+    file.path(od, "binomial_summaries.csv"),
+    row.names = FALSE
+  )
+  dir.create(file.path(od, "broken.csv")) # read.csv on a dir -> NULL -> next
   r2 <- morie:::.run_final_report_module_internal(make_canonical_cpads(),
-                                                  output_dir = od)
+    output_dir = od
+  )
   expect_true(nrow(r2$ebac_final_output_shapes) >= 1L)
 })

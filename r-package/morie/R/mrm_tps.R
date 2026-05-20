@@ -87,11 +87,16 @@ mrm_tps_levy_scaling <- function(
   lat <- data[[lat_col]][ord]
   lon <- data[[lon_col]][ord]
   keep <- is.finite(lat) & is.finite(lon)
-  lat <- lat[keep]; lon <- lon[keep]
+  lat <- lat[keep]
+  lon <- lon[keep]
 
   n <- length(lat)
-  if (n < 2L) return(list(n_events = n, n_steps_tail = 0L,
-                          min_step_km = min_step_km, hill_alpha = NA_real_))
+  if (n < 2L) {
+    return(list(
+      n_events = n, n_steps_tail = 0L,
+      min_step_km = min_step_km, hill_alpha = NA_real_
+    ))
+  }
   step <- .haversine_km(lat[-n], lon[-n], lat[-1], lon[-1])
   tail <- step[step >= min_step_km]
   alpha <- if (length(tail) >= 2L) 1 + length(tail) / sum(log(tail / x_min)) else NA_real_
@@ -145,14 +150,18 @@ mrm_tps_moran_clustering <- function(
 ) {
   stopifnot(is.data.frame(data))
   stopifnot(all(c(lat_col, lon_col) %in% names(data)))
-  lat <- data[[lat_col]]; lon <- data[[lon_col]]
+  lat <- data[[lat_col]]
+  lon <- data[[lon_col]]
   keep <- is.finite(lat) & is.finite(lon)
-  lat <- lat[keep]; lon <- lon[keep]
+  lat <- lat[keep]
+  lon <- lon[keep]
   n <- length(lat)
   if (n < 10L) {
-    return(list(morans_I = NA_real_, morans_z = NA_real_,
-                dbscan_n_clusters = 0L, dbscan_n_noise = 0L,
-                dbscan_largest = 0L))
+    return(list(
+      morans_I = NA_real_, morans_z = NA_real_,
+      dbscan_n_clusters = 0L, dbscan_n_noise = 0L,
+      dbscan_largest = 0L
+    ))
   }
 
   # --- Moran via raster counts ---
@@ -165,18 +174,21 @@ mrm_tps_moran_clustering <- function(
   z <- as.vector(counts) - mean(counts)
   N <- length(z)
   # rook contiguity neighbour pairs
-  W_sum <- 0; num <- 0
-  for (i in seq_len(grid_resolution)) for (j in seq_len(grid_resolution)) {
-    if (i < grid_resolution) {
-      num <- num + z[(j - 1) * grid_resolution + i] * z[(j - 1) * grid_resolution + i + 1L]
-      W_sum <- W_sum + 1
-    }
-    if (j < grid_resolution) {
-      num <- num + z[(j - 1) * grid_resolution + i] * z[j * grid_resolution + i]
-      W_sum <- W_sum + 1
+  W_sum <- 0
+  num <- 0
+  for (i in seq_len(grid_resolution)) {
+    for (j in seq_len(grid_resolution)) {
+      if (i < grid_resolution) {
+        num <- num + z[(j - 1) * grid_resolution + i] * z[(j - 1) * grid_resolution + i + 1L]
+        W_sum <- W_sum + 1
+      }
+      if (j < grid_resolution) {
+        num <- num + z[(j - 1) * grid_resolution + i] * z[j * grid_resolution + i]
+        W_sum <- W_sum + 1
+      }
     }
   }
-  num <- 2 * num   # rook is symmetric
+  num <- 2 * num # rook is symmetric
   W_sum <- 2 * W_sum
   morans_I <- (N / W_sum) * num / sum(z^2)
   # Approximate z-score under randomisation H0 (E[I] = -1/(N-1))
@@ -193,7 +205,9 @@ mrm_tps_moran_clustering <- function(
     n_noise <- sum(cl == 0L)
     largest <- if (n_clusters > 0L) max(table(cl[cl != 0L])) else 0L
   } else {
-    n_clusters <- NA_integer_; n_noise <- NA_integer_; largest <- NA_integer_
+    n_clusters <- NA_integer_
+    n_noise <- NA_integer_
+    largest <- NA_integer_
   }
 
   list(
@@ -249,14 +263,20 @@ mrm_tps_neighbourhood_recurrence_km <- function(
   d <- as.Date(d)
   h <- data[[hood_col]]
   ok <- !is.na(d) & !is.na(h)
-  d <- d[ok]; h <- h[ok]
+  d <- d[ok]
+  h <- h[ok]
   ord <- order(h, d)
-  h <- h[ord]; d <- d[ord]
+  h <- h[ord]
+  d <- d[ord]
   rows <- by(d, h, function(dd) {
-    if (length(dd) < 2L) return(NULL)
+    if (length(dd) < 2L) {
+      return(NULL)
+    }
     gaps <- as.numeric(diff(dd))
     gaps <- gaps[gaps >= min_gap_days]
-    if (length(gaps) == 0L) return(NULL)
+    if (length(gaps) == 0L) {
+      return(NULL)
+    }
     data.frame(
       n_events = length(dd),
       n_gaps = length(gaps),
@@ -266,8 +286,10 @@ mrm_tps_neighbourhood_recurrence_km <- function(
       p75_gap_days = stats::quantile(gaps, 0.75, names = FALSE)
     )
   }, simplify = FALSE)
-  out <- do.call(rbind, Map(cbind, hood = names(rows[!vapply(rows, is.null, logical(1))]),
-                            rows[!vapply(rows, is.null, logical(1))]))
+  out <- do.call(rbind, Map(cbind,
+    hood = names(rows[!vapply(rows, is.null, logical(1))]),
+    rows[!vapply(rows, is.null, logical(1))]
+  ))
   rownames(out) <- NULL
   out
 }

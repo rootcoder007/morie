@@ -8,8 +8,10 @@ test_that("fzkdf returns a structured KDFE bias-variance list", {
   x <- rnorm(300)
   r <- fzkdf(x, t = 0)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "bias", "variance", "se", "h", "t", "n",
-                     "method"))
+  expect_named(r, c(
+    "estimate", "bias", "variance", "se", "h", "t", "n",
+    "method"
+  ))
   expect_true(is.finite(r$estimate))
   expect_gte(r$estimate, 0)
   expect_lte(r$estimate, 1)
@@ -108,8 +110,10 @@ test_that("fzmis returns a MISE decomposition with positive parts", {
   x <- rnorm(250)
   r <- fzmis(x)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "bias_part", "var_part", "h", "h_opt",
-                     "R_fpp", "sigma", "n", "method"))
+  expect_named(r, c(
+    "estimate", "bias_part", "var_part", "h", "h_opt",
+    "R_fpp", "sigma", "n", "method"
+  ))
   expect_gt(r$bias_part, 0)
   expect_gt(r$var_part, 0)
   expect_equal(r$estimate, r$bias_part + r$var_part, tolerance = 1e-10)
@@ -207,8 +211,10 @@ test_that("fzqnt estimates the kernel median", {
   x <- rnorm(400)
   r <- fzqnt(x, p = 0.5)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "se", "p", "h", "density_at_Q", "n",
-                     "method"))
+  expect_named(r, c(
+    "estimate", "se", "p", "h", "density_at_Q", "n",
+    "method"
+  ))
   expect_true(is.finite(r$estimate))
   expect_lt(abs(r$estimate), 0.5)
   expect_equal(r$p, 0.5)
@@ -240,8 +246,10 @@ test_that("fzsgn runs the smoothed sign test two-sided", {
   x <- rnorm(300)
   r <- fzsgn(x, theta0 = 0)
   expect_type(r, "list")
-  expect_named(r, c("statistic", "z", "p_value", "theta0", "h", "n",
-                     "method"))
+  expect_named(r, c(
+    "statistic", "z", "p_value", "theta0", "h", "n",
+    "method"
+  ))
   expect_true(is.finite(r$z))
   expect_gte(r$p_value, 0)
   expect_lte(r$p_value, 1)
@@ -252,8 +260,10 @@ test_that("fzsgn supports greater and less alternatives", {
   x <- rnorm(200)
   rg <- fzsgn(x, alternative = "greater")
   rl <- fzsgn(x, alternative = "less")
-  expect_gte(rg$p_value, 0); expect_lte(rg$p_value, 1)
-  expect_gte(rl$p_value, 0); expect_lte(rl$p_value, 1)
+  expect_gte(rg$p_value, 0)
+  expect_lte(rg$p_value, 1)
+  expect_gte(rl$p_value, 0)
+  expect_lte(rl$p_value, 1)
   expect_error(fzsgn(x, alternative = "bogus"))
 })
 
@@ -272,8 +282,10 @@ test_that("fzsrv estimates the kernel survival with a 95% CI", {
   x <- rexp(500, 1)
   r <- fzsrv(x, t = 1)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "se", "ci_lower", "ci_upper", "t", "h", "n",
-                     "method"))
+  expect_named(r, c(
+    "estimate", "se", "ci_lower", "ci_upper", "t", "h", "n",
+    "method"
+  ))
   expect_gte(r$estimate, 0)
   expect_lte(r$estimate, 1)
   expect_gte(r$ci_lower, 0)
@@ -304,8 +316,10 @@ test_that("fzwlc runs the smoothed Wilcoxon signed-rank test", {
   x <- rnorm(120)
   r <- fzwlc(x, theta0 = 0)
   expect_type(r, "list")
-  expect_named(r, c("statistic", "z", "p_value", "theta0", "h", "n",
-                     "method"))
+  expect_named(r, c(
+    "statistic", "z", "p_value", "theta0", "h", "n",
+    "method"
+  ))
   expect_true(is.finite(r$z))
   expect_gte(r$p_value, 0)
   expect_lte(r$p_value, 1)
@@ -316,8 +330,10 @@ test_that("fzwlc supports greater and less alternatives", {
   x <- rnorm(100)
   rg <- fzwlc(x, alternative = "greater")
   rl <- fzwlc(x, alternative = "less")
-  expect_gte(rg$p_value, 0); expect_lte(rg$p_value, 1)
-  expect_gte(rl$p_value, 0); expect_lte(rl$p_value, 1)
+  expect_gte(rg$p_value, 0)
+  expect_lte(rg$p_value, 1)
+  expect_gte(rl$p_value, 0)
+  expect_lte(rl$p_value, 1)
   expect_error(fzwlc(x, alternative = "bogus"))
 })
 
@@ -366,8 +382,10 @@ test_that("garch_fit fits a GARCH(1,1) return series", {
   x <- rnorm(300, sd = 0.02)
   r <- garch_fit(x)
   expect_type(r, "list")
-  expect_true(all(c("omega", "alpha", "beta", "persistence", "loglik",
-                     "conditional_variance", "n", "method") %in% names(r)))
+  expect_true(all(c(
+    "omega", "alpha", "beta", "persistence", "loglik",
+    "conditional_variance", "n", "method"
+  ) %in% names(r)))
   expect_gt(r$omega, 0)
   expect_gte(r$alpha, 0)
   expect_gte(r$beta, 0)
@@ -386,11 +404,15 @@ test_that("gradient_boosting_ensemble fits a regression task", {
   set.seed(25)
   x <- matrix(rnorm(200), ncol = 4)
   y <- x[, 1] + 0.3 * rnorm(50)
-  r <- gradient_boosting_ensemble(x, y, n_estimators = 20L, task = "regression",
-                                  seed = 25L)
+  r <- gradient_boosting_ensemble(x, y,
+    n_estimators = 20L, task = "regression",
+    seed = 25L
+  )
   expect_type(r, "list")
-  expect_true(all(c("estimate", "train_score", "feature_importances",
-                     "n_estimators", "task", "n", "method") %in% names(r)))
+  expect_true(all(c(
+    "estimate", "train_score", "feature_importances",
+    "n_estimators", "task", "n", "method"
+  ) %in% names(r)))
   expect_equal(r$task, "regression")
   expect_length(r$feature_importances, 4L)
   expect_true(is.finite(r$estimate))
@@ -412,8 +434,10 @@ test_that("gradient_boosting_genomic predicts from a marker matrix", {
   set.seed(14)
   M <- matrix(rnorm(160), 40, 4)
   y <- sign(M[, 1]) + 0.3 * rnorm(40)
-  r <- gradient_boosting_genomic(rep(0, 40), y, M, n_estimators = 20,
-                                 seed = 14)
+  r <- gradient_boosting_genomic(rep(0, 40), y, M,
+    n_estimators = 20,
+    seed = 14
+  )
   expect_type(r, "list")
   expect_named(r, c("estimate", "y_hat", "train_loss", "se", "n", "method"))
   expect_length(r$y_hat, 40L)
@@ -437,8 +461,10 @@ test_that("gblup_full solves the mixed model with default lambda", {
   y <- M %*% rnorm(5) + rnorm(40)
   r <- gblup_full(rep(0, 40), as.numeric(y), M)
   expect_type(r, "list")
-  expect_true(all(c("estimate", "g_hat", "beta", "se", "y_hat",
-                     "lambda_gblup", "n", "method") %in% names(r)))
+  expect_true(all(c(
+    "estimate", "g_hat", "beta", "se", "y_hat",
+    "lambda_gblup", "n", "method"
+  ) %in% names(r)))
   expect_length(r$g_hat, 40L)
   expect_length(r$y_hat, 40L)
   expect_true(all(is.finite(r$y_hat)))

@@ -10,17 +10,19 @@
 #' @importFrom stats cor.test
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 rank_based_test <- function(x) {
   x <- as.numeric(x)
   n <- length(x)
   if (n < 3) {
-    return(list(statistic = NA_real_, p_value = NA_real_, n = n,
-                inversions = 0L, z = NA_real_,
-                method = "Mann's rank test for randomness"))
+    return(list(
+      statistic = NA_real_, p_value = NA_real_, n = n,
+      inversions = 0L, z = NA_real_,
+      method = "Mann's rank test for randomness"
+    ))
   }
   t <- seq_len(n)
   ct <- suppressWarnings(stats::cor.test(t, x, method = "kendall"))

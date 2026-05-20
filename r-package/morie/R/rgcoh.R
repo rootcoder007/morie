@@ -15,9 +15,12 @@
 #' @export
 #' @examples
 #' \donttest{
-#'   set.seed(0); fs <- 100; t <- seq(0, 10, length.out = 1024)
-#'   a <- sin(2 * pi * 10 * t); b <- a + 0.1 * rnorm(length(t))
-#'   rgcoh(a, b, fs = fs)$peak_coherence > 0.5
+#' set.seed(0)
+#' fs <- 100
+#' t <- seq(0, 10, length.out = 1024)
+#' a <- sin(2 * pi * 10 * t)
+#' b <- a + 0.1 * rnorm(length(t))
+#' rgcoh(a, b, fs = fs)$peak_coherence > 0.5
 #' }
 rgcoh <- function(x, y, fs = 1.0, nperseg = NULL) {
   N <- length(x)
@@ -31,7 +34,8 @@ rgcoh <- function(x, y, fs = 1.0, nperseg = NULL) {
   W <- sum(w^2)
   nf <- nperseg %/% 2L + 1L
   freqs <- seq(0, fs / 2, length.out = nf)
-  Sxx <- Syy <- numeric(nf); Sxy <- complex(nf)
+  Sxx <- Syy <- numeric(nf)
+  Sxy <- complex(nf)
   for (s in starts) {
     sx <- (x[s:(s + nperseg - 1)] - mean(x[s:(s + nperseg - 1)])) * w
     sy <- (y[s:(s + nperseg - 1)] - mean(y[s:(s + nperseg - 1)])) * w
@@ -43,10 +47,12 @@ rgcoh <- function(x, y, fs = 1.0, nperseg = NULL) {
   }
   Cxy <- Mod(Sxy)^2 / (Sxx * Syy)
   peak <- which.max(Cxy)
-  list(freqs = freqs, coherence = Cxy,
-       mean_coherence = mean(Cxy),
-       peak_freq = freqs[peak],
-       peak_coherence = Cxy[peak])
+  list(
+    freqs = freqs, coherence = Cxy,
+    mean_coherence = mean(Cxy),
+    peak_freq = freqs[peak],
+    peak_coherence = Cxy[peak]
+  )
 }
 
 #' @rdname rgcoh

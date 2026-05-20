@@ -2,7 +2,7 @@
 
 skip_if_no_hash <- function() {
   ok <- requireNamespace("digest", quietly = TRUE) ||
-        requireNamespace("openssl", quietly = TRUE)
+    requireNamespace("openssl", quietly = TRUE)
   testthat::skip_if_not(ok, "neither 'digest' nor 'openssl' available")
 }
 

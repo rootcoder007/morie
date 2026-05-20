@@ -8,7 +8,7 @@
 
 skip_if_no_hash <- function() {
   ok <- requireNamespace("digest", quietly = TRUE) ||
-        requireNamespace("openssl", quietly = TRUE)
+    requireNamespace("openssl", quietly = TRUE)
   testthat::skip_if_not(ok, "neither 'digest' nor 'openssl' available")
 }
 
@@ -81,8 +81,10 @@ test_that("different names yield distinct streams that LOOK uniform", {
 
 test_that("different seeds with same name produce independent streams", {
   skip_if_no_hash()
-  morie_det_rng("xgbst", 1L); u1 <- runif(10000)
-  morie_det_rng("xgbst", 2L); u2 <- runif(10000)
+  morie_det_rng("xgbst", 1L)
+  u1 <- runif(10000)
+  morie_det_rng("xgbst", 2L)
+  u2 <- runif(10000)
   expect_false(identical(u1, u2))
   expect_lt(abs(stats::cor(u1, u2)), 0.05)
 })
@@ -117,8 +119,10 @@ test_that("morie_det_rng_sha_hex matches Python for several seeds", {
   # These hex values were computed with hashlib.sha256(b"<name>:<seed>") on
   # the Python side; the R helper must agree exactly.
   cases <- list(
-    list(name = "ksr07_bootstrap", seed = 42L,
-         hex = NA_character_),  # filled in below
+    list(
+      name = "ksr07_bootstrap", seed = 42L,
+      hex = NA_character_
+    ), # filled in below
     list(name = "trfge", seed = 1L, hex = NA_character_)
   )
   # Compute via openssl if present, else digest, to derive expected
@@ -134,7 +138,8 @@ test_that("morie_det_rng_sha_hex matches Python for several seeds", {
   } else if (requireNamespace("digest", quietly = TRUE)) {
     for (c in cases) {
       expected <- digest::digest(
-        paste0(c$name, ":", c$seed), algo = "sha256", serialize = FALSE
+        paste0(c$name, ":", c$seed),
+        algo = "sha256", serialize = FALSE
       )
       expect_equal(morie_det_rng_sha_hex(c$name, c$seed), expected, ignore_attr = TRUE)
     }

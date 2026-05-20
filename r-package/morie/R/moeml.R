@@ -9,37 +9,48 @@
 #' @return Named list with tensor, gate, topk_idx, load, method.
 #' @keywords internal
 mixture_of_experts <- function(x, W_gate = NULL, experts = NULL,
-                                top_k = 2L) {
+                               top_k = 2L) {
   xm <- as.matrix(x)
-  B <- nrow(xm); d_in <- ncol(xm)
+  B <- nrow(xm)
+  d_in <- ncol(xm)
   if (is.null(W_gate)) {
-    n_experts <- 2L; W_gate <- matrix(0, d_in, n_experts)
+    n_experts <- 2L
+    W_gate <- matrix(0, d_in, n_experts)
   }
   n_experts <- ncol(W_gate)
   if (is.null(experts)) {
     experts <- replicate(n_experts,
-                         list(W = diag(d_in), b = rep(0, d_in)),
-                         simplify = FALSE)
+      list(W = diag(d_in), b = rep(0, d_in)),
+      simplify = FALSE
+    )
   }
   gate_logits <- xm %*% W_gate
   gate <- t(apply(gate_logits, 1L, function(v) {
-    v <- v - max(v); e <- exp(v); e / sum(e)
+    v <- v - max(v)
+    e <- exp(v)
+    e / sum(e)
   }))
   k <- max(1L, min(as.integer(top_k), n_experts))
   topk_idx <- matrix(0L, B, k)
-  for (b in seq_len(B))
+  for (b in seq_len(B)) {
     topk_idx[b, ] <- order(-gate[b, ])[seq_len(k)]
+  }
   sparse <- matrix(0, B, n_experts)
-  for (b in seq_len(B))
+  for (b in seq_len(B)) {
     sparse[b, topk_idx[b, ]] <- gate[b, topk_idx[b, ]]
+  }
   sparse <- sparse / rowSums(sparse)
-  expert_outs <- lapply(experts, function(e)
-    sweep(xm %*% e$W, 2L, e$b, "+"))
+  expert_outs <- lapply(experts, function(e) {
+    sweep(xm %*% e$W, 2L, e$b, "+")
+  })
   d_out <- ncol(expert_outs[[1L]])
   y <- matrix(0, B, d_out)
-  for (e in seq_len(n_experts))
+  for (e in seq_len(n_experts)) {
     y <- y + sweep(expert_outs[[e]], 1L, sparse[, e], "*")
+  }
   load <- colSums(sparse) / B
-  list(tensor = y, gate = sparse,
-       topk_idx = topk_idx - 1L, load = load, method = "MoE")
+  list(
+    tensor = y, gate = sparse,
+    topk_idx = topk_idx - 1L, load = load, method = "MoE"
+  )
 }

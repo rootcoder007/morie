@@ -14,21 +14,29 @@
 #'   `c("binary", "nominal", "ordinal", "interval", "ratio")`.
 #' @export
 #' @examples
-#' infer_measurement_level(c(0, 1, 1, 0))               # "binary"
-#' infer_measurement_level(factor(c("a", "b", "c")))    # "nominal"
+#' infer_measurement_level(c(0, 1, 1, 0)) # "binary"
+#' infer_measurement_level(factor(c("a", "b", "c"))) # "nominal"
 #' infer_measurement_level(ordered(c("low", "med", "high"))) # "ordinal"
-#' infer_measurement_level(c(1.2, 3.4, 5.6))            # "ratio"
-#' infer_measurement_level(c(-1.5, 0.0, 2.3))           # "interval"
+#' infer_measurement_level(c(1.2, 3.4, 5.6)) # "ratio"
+#' infer_measurement_level(c(-1.5, 0.0, 2.3)) # "interval"
 infer_measurement_level <- function(x) {
-  if (is.logical(x)) return("binary")
-  uniq <- unique(stats::na.omit(x))
-  if (length(uniq) == 2L && all(uniq %in% c(0, 1, "0", "1", TRUE, FALSE)))
+  if (is.logical(x)) {
     return("binary")
-  if (is.ordered(x)) return("ordinal")
-  if (is.factor(x) || is.character(x))
+  }
+  uniq <- unique(stats::na.omit(x))
+  if (length(uniq) == 2L && all(uniq %in% c(0, 1, "0", "1", TRUE, FALSE))) {
+    return("binary")
+  }
+  if (is.ordered(x)) {
+    return("ordinal")
+  }
+  if (is.factor(x) || is.character(x)) {
     return(if (length(uniq) == 2L) "binary" else "nominal")
+  }
   if (is.numeric(x)) {
-    if (length(uniq) == 2L) return("binary")
+    if (length(uniq) == 2L) {
+      return("binary")
+    }
     return(if (all(x >= 0, na.rm = TRUE)) "ratio" else "interval")
   }
   "nominal"
@@ -65,15 +73,17 @@ profile_dataset <- function(df) {
       n_unique          = length(unique(stats::na.omit(x)))
     )
     if (is.numeric(x)) {
-      qs <- stats::quantile(x, probs = c(0.25, 0.5, 0.75), na.rm = TRUE,
-                            names = FALSE)
+      qs <- stats::quantile(x,
+        probs = c(0.25, 0.5, 0.75), na.rm = TRUE,
+        names = FALSE
+      )
       base$mean <- mean(x, na.rm = TRUE)
-      base$sd   <- stats::sd(x, na.rm = TRUE)
-      base$min  <- min(x, na.rm = TRUE)
-      base$max  <- max(x, na.rm = TRUE)
-      base$q25  <- qs[[1L]]
-      base$q50  <- qs[[2L]]
-      base$q75  <- qs[[3L]]
+      base$sd <- stats::sd(x, na.rm = TRUE)
+      base$min <- min(x, na.rm = TRUE)
+      base$max <- max(x, na.rm = TRUE)
+      base$q25 <- qs[[1L]]
+      base$q50 <- qs[[2L]]
+      base$q75 <- qs[[3L]]
     }
     base
   })
@@ -94,41 +104,61 @@ profile_dataset <- function(df) {
 #' @examples
 #' suggest_analysis_plan(profile_dataset(iris))
 suggest_analysis_plan <- function(profile) {
-  if (!is.list(profile) || is.null(profile$columns))
+  if (!is.list(profile) || is.null(profile$columns)) {
     stop("profile must be a list returned by profile_dataset().", call. = FALSE)
+  }
 
   suggestions <- character(0)
   cols <- profile$columns
   levels <- vapply(cols, `[[`, character(1L), "measurement_level")
 
-  n_binary  <- sum(levels == "binary")
+  n_binary <- sum(levels == "binary")
   n_numeric <- sum(levels %in% c("ratio", "interval"))
   n_nominal <- sum(levels == "nominal")
   n_ordinal <- sum(levels == "ordinal")
 
-  if (n_binary >= 1L && n_numeric >= 1L)
-    suggestions <- c(suggestions,
-      "Binary outcome + numeric predictors detected. Logistic regression (glm with family=binomial) is appropriate.")
-  if (n_binary >= 2L)
-    suggestions <- c(suggestions,
-      "Two or more binary variables. Consider chi-square test, Fisher's exact test, or risk-difference / odds-ratio CIs.")
-  if (n_numeric >= 2L)
-    suggestions <- c(suggestions,
-      "Multiple numeric variables. Consider linear regression (lm), Pearson correlation, or principal-components analysis.")
-  if (n_nominal >= 1L && n_numeric >= 1L)
-    suggestions <- c(suggestions,
-      "Nominal grouping + numeric outcome. Consider one-way ANOVA, Kruskal-Wallis, or per-group descriptives.")
-  if (n_ordinal >= 1L)
-    suggestions <- c(suggestions,
-      "Ordinal variable detected. Consider Spearman or Kendall's tau correlation, or proportional-odds models.")
+  if (n_binary >= 1L && n_numeric >= 1L) {
+    suggestions <- c(
+      suggestions,
+      "Binary outcome + numeric predictors detected. Logistic regression (glm with family=binomial) is appropriate."
+    )
+  }
+  if (n_binary >= 2L) {
+    suggestions <- c(
+      suggestions,
+      "Two or more binary variables. Consider chi-square test, Fisher's exact test, or risk-difference / odds-ratio CIs."
+    )
+  }
+  if (n_numeric >= 2L) {
+    suggestions <- c(
+      suggestions,
+      "Multiple numeric variables. Consider linear regression (lm), Pearson correlation, or principal-components analysis."
+    )
+  }
+  if (n_nominal >= 1L && n_numeric >= 1L) {
+    suggestions <- c(
+      suggestions,
+      "Nominal grouping + numeric outcome. Consider one-way ANOVA, Kruskal-Wallis, or per-group descriptives."
+    )
+  }
+  if (n_ordinal >= 1L) {
+    suggestions <- c(
+      suggestions,
+      "Ordinal variable detected. Consider Spearman or Kendall's tau correlation, or proportional-odds models."
+    )
+  }
 
   any_missing <- any(vapply(cols, function(c) c$n_missing > 0L, logical(1L)))
-  if (any_missing)
-    suggestions <- c(suggestions,
-      "Missing values present. Consider multiple imputation (e.g. mice) or complete-case sensitivity analysis.")
+  if (any_missing) {
+    suggestions <- c(
+      suggestions,
+      "Missing values present. Consider multiple imputation (e.g. mice) or complete-case sensitivity analysis."
+    )
+  }
 
-  if (length(suggestions) == 0L)
+  if (length(suggestions) == 0L) {
     suggestions <- "No standard analysis pattern triggered. Inspect the profile manually."
+  }
 
   suggestions
 }

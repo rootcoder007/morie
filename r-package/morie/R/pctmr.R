@@ -12,20 +12,26 @@
 #' @importFrom stats pnorm
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 percentile_modified_rank <- function(x, y, q = 0.25) {
-  x <- as.numeric(x); y <- as.numeric(y)
-  m <- length(x); n <- length(y); N <- m + n
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  m <- length(x)
+  n <- length(y)
+  N <- m + n
   if (m < 2 || n < 2) {
-    return(list(statistic = NA_real_, p_value = NA_real_, z = NA_real_,
-                n = N, m = m, q = q,
-                method = "Percentile-modified rank test"))
+    return(list(
+      statistic = NA_real_, p_value = NA_real_, z = NA_real_,
+      n = N, m = m, q = q,
+      method = "Percentile-modified rank test"
+    ))
   }
-  if (!(q > 0 && q < 0.5))
+  if (!(q > 0 && q < 0.5)) {
     stop("q must lie strictly between 0 and 0.5")
+  }
   pooled <- c(x, y)
   R <- rank(pooled)
   upper_cut <- (1 - q) * (N + 1)

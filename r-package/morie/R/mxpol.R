@@ -13,17 +13,19 @@
 #' @references Goodfellow et al. (2016), Deep Learning, Ch 9.3.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 mxpol_maxpool_forward <- function(x, kernel_size = 2L, stride = NULL) {
   x <- as.matrix(x)
   k <- as.integer(kernel_size)
   s <- if (is.null(stride)) k else as.integer(stride)
-  H <- nrow(x); W <- ncol(x)
-  if (H < k || W < k)
+  H <- nrow(x)
+  W <- ncol(x)
+  if (H < k || W < k) {
     stop(sprintf("Input (%d,%d) smaller than kernel %d", H, W, k))
+  }
   out_h <- (H - k) %/% s + 1L
   out_w <- (W - k) %/% s + 1L
   y <- matrix(0, out_h, out_w)
@@ -37,9 +39,11 @@ mxpol_maxpool_forward <- function(x, kernel_size = 2L, stride = NULL) {
       argmax[i, j] <- which.max(block) - 1L
     }
   }
-  list(y = y, estimate = y, argmax = argmax,
-       output_shape = c(out_h, out_w),
-       method = "MaxPool2D forward")
+  list(
+    y = y, estimate = y, argmax = argmax,
+    output_shape = c(out_h, out_w),
+    method = "MaxPool2D forward"
+  )
 }
 
 #' @rdname mxpol_maxpool_forward

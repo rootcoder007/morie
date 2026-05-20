@@ -9,8 +9,10 @@ test_that("genomic_cross_validation returns a well-formed list", {
   y <- as.numeric(X %*% b + 0.3 * rnorm(50))
   res <- genomic_cross_validation(X, y, K = 5, seed = 15)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "r_per_fold", "y_hat", "mse", "mspe",
-                      "slope", "n", "K", "method"))
+  expect_named(res, c(
+    "estimate", "r_per_fold", "y_hat", "mse", "mspe",
+    "slope", "n", "K", "method"
+  ))
   expect_type(res$method, "character")
   expect_identical(res$n, 50L)
   expect_identical(res$K, 5)
@@ -46,8 +48,10 @@ test_that("ghosal_adaptation returns rates over a default beta grid", {
   x <- rnorm(100)
   res <- ghosal_adaptation(x)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "betas", "rates", "best_beta",
-                      "n", "d", "method"))
+  expect_named(res, c(
+    "estimate", "betas", "rates", "best_beta",
+    "n", "d", "method"
+  ))
   expect_identical(res$n, 100L)
   expect_identical(res$d, 1)
   expect_length(res$betas, 11L)
@@ -73,9 +77,11 @@ test_that("ghosal_bernstein_von_mises returns BvM diagnostics", {
   x <- rnorm(80)
   res <- ghosal_bernstein_von_mises(x, B = 100, seed = 3)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "se", "theta_hat", "z_ks_stat",
-                      "z_ks_pvalue", "wald", "wald_pvalue", "n", "B",
-                      "method"))
+  expect_named(res, c(
+    "estimate", "se", "theta_hat", "z_ks_stat",
+    "z_ks_pvalue", "wald", "wald_pvalue", "n", "B",
+    "method"
+  ))
   expect_identical(res$n, 80L)
   expect_identical(res$B, 100)
   expect_true(is.finite(res$estimate))
@@ -105,9 +111,12 @@ test_that("ghosal_bernstein_von_mises handles n<2 gracefully", {
 })
 
 test_that("ghosal_bernstein_von_mises supports deterministic_seed path", {
-  skip_if_not(exists("morie_det_rng",
-                      where = asNamespace("morie"), inherits = FALSE),
-              "morie_det_rng unavailable")
+  skip_if_not(
+    exists("morie_det_rng",
+      where = asNamespace("morie"), inherits = FALSE
+    ),
+    "morie_det_rng unavailable"
+  )
   set.seed(5)
   x <- rnorm(40)
   res <- ghosal_bernstein_von_mises(x, B = 60, deterministic_seed = 11L)
@@ -121,8 +130,10 @@ test_that("ghosal_np_classification returns probit-GP results", {
   y <- rbinom(40, 1, plogis(x[, 1]))
   res <- ghosal_np_classification(x, y, n_iter = 50, seed = 6)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "p_hat", "accuracy", "length_scale",
-                      "n", "method"))
+  expect_named(res, c(
+    "estimate", "p_hat", "accuracy", "length_scale",
+    "n", "method"
+  ))
   expect_identical(res$n, 40L)
   expect_length(res$p_hat, 40L)
   expect_true(all(res$p_hat >= 0 & res$p_hat <= 1))
@@ -136,8 +147,10 @@ test_that("ghosal_np_classification honours a user length_scale", {
   set.seed(8)
   x <- matrix(rnorm(60), 30, 2)
   y <- rbinom(30, 1, 0.5)
-  res <- ghosal_np_classification(x, y, length_scale = 1.5,
-                                  sigma_f = 2.0, n_iter = 40, seed = 8)
+  res <- ghosal_np_classification(x, y,
+    length_scale = 1.5,
+    sigma_f = 2.0, n_iter = 40, seed = 8
+  )
   expect_equal(res$length_scale, 1.5)
   expect_length(res$p_hat, 30L)
 })
@@ -147,8 +160,10 @@ test_that("ghosal_posterior_consistency returns Schwartz diagnostics", {
   x <- rnorm(70)
   res <- ghosal_posterior_consistency(x, K = 50, seed = 9)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "ks_mean", "ks_se", "schwartz_bound",
-                      "n", "eps", "method"))
+  expect_named(res, c(
+    "estimate", "ks_mean", "ks_se", "schwartz_bound",
+    "n", "eps", "method"
+  ))
   expect_identical(res$n, 70L)
   expect_identical(res$eps, 0.1)
   expect_gte(res$estimate, 0)
@@ -162,8 +177,10 @@ test_that("ghosal_posterior_consistency returns Schwartz diagnostics", {
 test_that("ghosal_posterior_consistency uses a parametric reference", {
   set.seed(10)
   x <- rnorm(50)
-  res <- ghosal_posterior_consistency(x, ref_loc = 0, ref_scale = 1,
-                                      eps = 0.2, K = 40, seed = 10)
+  res <- ghosal_posterior_consistency(x,
+    ref_loc = 0, ref_scale = 1,
+    eps = 0.2, K = 40, seed = 10
+  )
   expect_identical(res$eps, 0.2)
   expect_true(is.finite(res$ks_mean))
 })
@@ -177,8 +194,10 @@ test_that("ghosal_posterior_consistency handles empty input", {
 test_that("ghosal_contraction_rate returns minimax rate", {
   res <- ghosal_contraction_rate(rnorm(100))
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "log_rate_correction", "parametric_rate",
-                      "n", "beta", "d", "method"))
+  expect_named(res, c(
+    "estimate", "log_rate_correction", "parametric_rate",
+    "n", "beta", "d", "method"
+  ))
   expect_identical(res$n, 100L)
   expect_identical(res$beta, 1.0)
   expect_identical(res$d, 1)
@@ -206,8 +225,10 @@ test_that("ghosal_dirichlet_posterior returns conjugate DP posterior", {
   x <- rnorm(40)
   res <- ghosal_dirichlet_posterior(x, alpha = 1.0)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "alpha_post", "n", "cdf_grid",
-                      "cdf_post", "cdf_var", "method"))
+  expect_named(res, c(
+    "estimate", "alpha_post", "n", "cdf_grid",
+    "cdf_post", "cdf_var", "method"
+  ))
   expect_identical(res$n, 40L)
   expect_equal(res$alpha_post, 41)
   expect_length(res$cdf_grid, 51L)
@@ -223,8 +244,10 @@ test_that("ghosal_dirichlet_posterior accepts a custom grid", {
   set.seed(12)
   x <- rnorm(30)
   g <- seq(-4, 4, length.out = 25)
-  res <- ghosal_dirichlet_posterior(x, alpha = 2.5, base_mean = 0.5,
-                                    base_sd = 2, grid = g)
+  res <- ghosal_dirichlet_posterior(x,
+    alpha = 2.5, base_mean = 0.5,
+    base_sd = 2, grid = g
+  )
   expect_identical(res$cdf_grid, g)
   expect_length(res$cdf_post, 25L)
 })
@@ -241,8 +264,10 @@ test_that("ghosal_dpmixture_density returns a density estimate", {
   x <- rnorm(30)
   res <- ghosal_dpmixture_density(x, n_iter = 30, burn = 10, seed = 13)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "grid", "density", "k_post", "n",
-                      "alpha", "sigma", "method"))
+  expect_named(res, c(
+    "estimate", "grid", "density", "k_post", "n",
+    "alpha", "sigma", "method"
+  ))
   expect_identical(res$n, 30L)
   expect_length(res$grid, 51L)
   expect_length(res$density, 51L)
@@ -258,8 +283,10 @@ test_that("ghosal_dpmixture_density accepts custom sigma and grid", {
   set.seed(14)
   x <- rnorm(25)
   g <- seq(-3, 3, length.out = 41)
-  res <- ghosal_dpmixture_density(x, alpha = 2.0, sigma = 0.5, grid = g,
-                                  n_iter = 25, burn = 8, seed = 14)
+  res <- ghosal_dpmixture_density(x,
+    alpha = 2.0, sigma = 0.5, grid = g,
+    n_iter = 25, burn = 8, seed = 14
+  )
   expect_equal(res$sigma, 0.5)
   expect_identical(res$grid, g)
   expect_length(res$density, 41L)
@@ -272,13 +299,18 @@ test_that("ghosal_dpmixture_density handles empty input", {
 })
 
 test_that("ghosal_dpmixture_density supports deterministic_seed path", {
-  skip_if_not(exists("morie_det_rng",
-                      where = asNamespace("morie"), inherits = FALSE),
-              "morie_det_rng unavailable")
+  skip_if_not(
+    exists("morie_det_rng",
+      where = asNamespace("morie"), inherits = FALSE
+    ),
+    "morie_det_rng unavailable"
+  )
   set.seed(16)
   x <- rnorm(20)
-  res <- ghosal_dpmixture_density(x, n_iter = 25, burn = 8,
-                                  deterministic_seed = 22L)
+  res <- ghosal_dpmixture_density(x,
+    n_iter = 25, burn = 8,
+    deterministic_seed = 22L
+  )
   expect_identical(res$n, 20L)
   expect_length(res$density, 51L)
 })
@@ -288,8 +320,10 @@ test_that("ghosal_empirical_bayes returns alpha-hat via optimisation", {
   x <- round(rnorm(60), 1)
   res <- ghosal_empirical_bayes(x)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "K_n", "log_lik_at_estimate", "n",
-                      "method"))
+  expect_named(res, c(
+    "estimate", "K_n", "log_lik_at_estimate", "n",
+    "method"
+  ))
   expect_identical(res$n, 60L)
   expect_true(is.finite(res$estimate))
   expect_gt(res$estimate, 0)
@@ -318,8 +352,10 @@ test_that("ghosal_gp_matern returns GP posterior with default nu", {
   y <- sin(x) + 0.1 * rnorm(30)
   res <- ghosal_gp_matern(x, y)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "se", "mu", "sd", "length_scale",
-                      "nu", "noise", "n", "method"))
+  expect_named(res, c(
+    "estimate", "se", "mu", "sd", "length_scale",
+    "nu", "noise", "n", "method"
+  ))
   expect_identical(res$n, 30L)
   expect_identical(res$nu, 1.5)
   expect_length(res$mu, 30L)
@@ -346,8 +382,10 @@ test_that("ghosal_gp_matern handles the general besselK branch", {
   set.seed(21)
   x <- sort(rnorm(20))
   y <- x^2 + 0.1 * rnorm(20)
-  res <- ghosal_gp_matern(x, y, nu = 1.0, length_scale = 1.0,
-                          noise = 0.2)
+  res <- ghosal_gp_matern(x, y,
+    nu = 1.0, length_scale = 1.0,
+    noise = 0.2
+  )
   expect_identical(res$nu, 1.0)
   expect_equal(res$length_scale, 1.0)
   expect_equal(res$noise, 0.2)
@@ -371,8 +409,10 @@ test_that("ghosal_gp_squared_exponential returns GP posterior", {
   y <- sin(x) + 0.1 * rnorm(30)
   res <- ghosal_gp_squared_exponential(x, y)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "se", "mu", "sd", "length_scale",
-                      "noise", "n", "method"))
+  expect_named(res, c(
+    "estimate", "se", "mu", "sd", "length_scale",
+    "noise", "n", "method"
+  ))
   expect_identical(res$n, 30L)
   expect_length(res$mu, 30L)
   expect_true(all(is.finite(res$mu)))
@@ -385,9 +425,11 @@ test_that("ghosal_gp_squared_exponential honours optional args", {
   x <- matrix(rnorm(40), 20, 2)
   y <- rowSums(x) + 0.1 * rnorm(20)
   xs <- matrix(rnorm(8), 4, 2)
-  res <- ghosal_gp_squared_exponential(x, y, length_scale = 2.0,
-                                       sigma_f = 1.5, noise = 0.3,
-                                       x_star = xs)
+  res <- ghosal_gp_squared_exponential(x, y,
+    length_scale = 2.0,
+    sigma_f = 1.5, noise = 0.3,
+    x_star = xs
+  )
   expect_equal(res$length_scale, 2.0)
   expect_equal(res$noise, 0.3)
   expect_length(res$mu, 4L)
@@ -398,8 +440,10 @@ test_that("ghosal_hierarchical_bayes returns alpha posterior summary", {
   x <- round(rnorm(50), 1)
   res <- ghosal_hierarchical_bayes(x, M = 120, seed = 25)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "alpha_se", "alpha_draws", "K_n",
-                      "n", "method"))
+  expect_named(res, c(
+    "estimate", "alpha_se", "alpha_draws", "K_n",
+    "n", "method"
+  ))
   expect_identical(res$n, 50L)
   expect_true(is.finite(res$estimate))
   expect_gt(res$estimate, 0)
@@ -412,8 +456,10 @@ test_that("ghosal_hierarchical_bayes returns alpha posterior summary", {
 test_that("ghosal_hierarchical_bayes accepts custom hyperpriors", {
   set.seed(26)
   x <- round(rnorm(40), 1)
-  res <- ghosal_hierarchical_bayes(x, a_prior = 2.0, b_prior = 0.5,
-                                   M = 100, seed = 26)
+  res <- ghosal_hierarchical_bayes(x,
+    a_prior = 2.0, b_prior = 0.5,
+    M = 100, seed = 26
+  )
   expect_true(is.finite(res$estimate))
   expect_true(all(is.finite(res$alpha_draws)))
 })
@@ -425,9 +471,12 @@ test_that("ghosal_hierarchical_bayes handles n<2", {
 })
 
 test_that("ghosal_hierarchical_bayes supports deterministic_seed path", {
-  skip_if_not(exists("morie_det_rng",
-                      where = asNamespace("morie"), inherits = FALSE),
-              "morie_det_rng unavailable")
+  skip_if_not(
+    exists("morie_det_rng",
+      where = asNamespace("morie"), inherits = FALSE
+    ),
+    "morie_det_rng unavailable"
+  )
   set.seed(27)
   x <- round(rnorm(30), 1)
   res <- ghosal_hierarchical_bayes(x, M = 80, deterministic_seed = 33L)
@@ -440,8 +489,10 @@ test_that("ghosal_log_density returns a log-spline density", {
   x <- rnorm(80)
   res <- ghosal_log_density(x, K = 4)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "theta", "log_lik", "grid",
-                      "log_density", "K", "n", "method"))
+  expect_named(res, c(
+    "estimate", "theta", "log_lik", "grid",
+    "log_density", "K", "n", "method"
+  ))
   expect_identical(res$n, 80L)
   expect_identical(res$K, 4)
   expect_length(res$theta, 4L)
@@ -472,8 +523,10 @@ test_that("ghosal_moment_matching returns DP moment-matching summary", {
   x <- rnorm(50)
   res <- ghosal_moment_matching(x)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "se", "prior_mean", "prior_var",
-                      "n_A", "n", "alpha", "method"))
+  expect_named(res, c(
+    "estimate", "se", "prior_mean", "prior_var",
+    "n_A", "n", "alpha", "method"
+  ))
   expect_identical(res$n, 50L)
   expect_identical(res$alpha, 1.0)
   expect_gte(res$estimate, 0)
@@ -488,8 +541,10 @@ test_that("ghosal_moment_matching returns DP moment-matching summary", {
 test_that("ghosal_moment_matching honours explicit set bounds", {
   set.seed(31)
   x <- rnorm(40)
-  res <- ghosal_moment_matching(x, alpha = 3.0, A_lower = -1, A_upper = 1,
-                                base_mean = 0.5, base_sd = 2)
+  res <- ghosal_moment_matching(x,
+    alpha = 3.0, A_lower = -1, A_upper = 1,
+    base_mean = 0.5, base_sd = 2
+  )
   expect_identical(res$alpha, 3.0)
   expect_gte(res$n_A, 0L)
   expect_lte(res$n_A, 40L)
@@ -507,8 +562,10 @@ test_that("ghosal_neutral_right returns NTR posterior survival", {
   time <- rexp(50, rate = 0.5)
   res <- ghosal_neutral_right(time)
   expect_true(is.list(res))
-  expect_named(res, c("estimate", "times", "S_post", "H_post", "c",
-                      "lam0", "n", "method"))
+  expect_named(res, c(
+    "estimate", "times", "S_post", "H_post", "c",
+    "lam0", "n", "method"
+  ))
   expect_identical(res$n, 50L)
   expect_identical(res$c, 1.0)
   expect_gt(res$lam0, 0)

@@ -10,23 +10,30 @@
 #' @importFrom stats wilcox.test median
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 sukhatme_test <- function(x, y) {
-  x <- as.numeric(x); y <- as.numeric(y)
-  m <- length(x); n <- length(y); N <- m + n
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  m <- length(x)
+  n <- length(y)
+  N <- m + n
   if (m < 2 || n < 2) {
-    return(list(statistic = NA_real_, p_value = NA_real_, U = NA_real_,
-                n = N, m = m,
-                method = "Sukhatme scale test"))
+    return(list(
+      statistic = NA_real_, p_value = NA_real_, U = NA_real_,
+      n = N, m = m,
+      method = "Sukhatme scale test"
+    ))
   }
   pooled_med <- stats::median(c(x, y))
   ax <- abs(x - pooled_med)
   ay <- abs(y - pooled_med)
-  tst <- suppressWarnings(stats::wilcox.test(ax, ay, exact = FALSE,
-                                              correct = FALSE))
+  tst <- suppressWarnings(stats::wilcox.test(ax, ay,
+    exact = FALSE,
+    correct = FALSE
+  ))
   U <- as.numeric(tst$statistic)
   E_U <- m * n / 2
   Var_U <- m * n * (N + 1) / 12

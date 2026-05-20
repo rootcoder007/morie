@@ -9,22 +9,26 @@
 #' @return Named list: midranks, n, ties, tie_correction.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 midranks <- function(x) {
   x <- as.numeric(x)
   n <- length(x)
   if (n < 1) {
-    return(list(midranks = numeric(0), n = 0L, ties = list(),
-                tie_correction = 0,
-                method = "Midranks"))
+    return(list(
+      midranks = numeric(0), n = 0L, ties = list(),
+      tie_correction = 0,
+      method = "Midranks"
+    ))
   }
   mr <- rank(x, ties.method = "average")
   tab <- table(x)
-  ties <- Filter(function(z) z[[2]] > 1, Map(function(v, c) list(as.numeric(v), as.integer(c)),
-                                              names(tab), tab))
+  ties <- Filter(function(z) z[[2]] > 1, Map(
+    function(v, c) list(as.numeric(v), as.integer(c)),
+    names(tab), tab
+  ))
   tied <- as.numeric(tab[tab > 1])
   tie_correction <- if (length(tied) == 0L) 0 else sum(tied^3 - tied)
   list(

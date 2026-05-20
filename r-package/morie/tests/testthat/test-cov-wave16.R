@@ -8,7 +8,8 @@ test_that("inspect_output reports on json / csv / rds inputs", {
 
   jf <- tempfile(fileext = ".json")
   jsonlite::write_json(list(estimate = 0.1, se = 0.05), jf,
-                       auto_unbox = TRUE)
+    auto_unbox = TRUE
+  )
   on.exit(unlink(jf), add = TRUE)
   ij <- inspect_output(jf)
   expect_equal(ij$status, "ok")
@@ -48,8 +49,12 @@ test_that("verify_statistical_output runs its quality gates", {
 
   vf <- tempfile(fileext = ".json")
   jsonlite::write_json(
-    list(ate = 0.5, se = 0.1, ci_lower = 0.3, ci_upper = 0.7,
-         n = 200, p_value = 0.04), vf, auto_unbox = TRUE)
+    list(
+      ate = 0.5, se = 0.1, ci_lower = 0.3, ci_upper = 0.7,
+      n = 200, p_value = 0.04
+    ), vf,
+    auto_unbox = TRUE
+  )
   on.exit(unlink(vf), add = TRUE)
   v <- verify_statistical_output(vf)
   expect_true(v$passed)
@@ -60,7 +65,9 @@ test_that("verify_statistical_output runs its quality gates", {
   bf <- tempfile(fileext = ".json")
   jsonlite::write_json(
     list(ate = 0.5, se = -1, ci_lower = 0.9, ci_upper = 0.1, n = -5),
-    bf, auto_unbox = TRUE)
+    bf,
+    auto_unbox = TRUE
+  )
   on.exit(unlink(bf), add = TRUE)
   expect_false(verify_statistical_output(bf)$passed)
 
@@ -73,9 +80,12 @@ test_that("verify_statistical_output runs its quality gates", {
 test_that("predpol_temporal_audit validates its inputs", {
   expect_error(predpol_temporal_audit(1:5, 1:6, 1:5, 1:5), "align")
   expect_error(
-    predpol_temporal_audit(character(0), character(0), numeric(0),
-                           character(0)),
-    "empty")
+    predpol_temporal_audit(
+      character(0), character(0), numeric(0),
+      character(0)
+    ),
+    "empty"
+  )
 })
 
 test_that("predpol_temporal_audit audits multi-city temporal disparity", {
@@ -86,7 +96,8 @@ test_that("predpol_temporal_audit audits multi-city temporal disparity", {
   group <- sample(c("X", "Y"), n, replace = TRUE)
   y_pred <- stats::rbinom(n, 1, ifelse(group == "X", 0.7, 0.4))
   res <- predpol_temporal_audit(period, city, y_pred, group,
-                                privileged = "X")
+    privileged = "X"
+  )
   expect_true(is.list(res))
   expect_false(is.null(res$per_city))
   expect_true(nzchar(res$interpretation))
@@ -98,6 +109,9 @@ test_that("predpol_temporal_audit audits multi-city temporal disparity", {
 test_that("predpol_temporal_audit errors when no cell is auditable", {
   expect_error(
     predpol_temporal_audit(rep("p1", 10), rep("A", 10), rep(1, 10),
-                           rep("X", 10), privileged = "X"),
-    "cell")
+      rep("X", 10),
+      privileged = "X"
+    ),
+    "cell"
+  )
 })

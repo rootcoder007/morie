@@ -10,17 +10,20 @@
 #' @references Kosorok (2008), Ch 8.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 ksr20_kosorok_censoring_survival <- function(t, event) {
-  t <- as.numeric(t); event <- as.integer(event)
+  t <- as.numeric(t)
+  event <- as.integer(event)
   n <- length(t)
   c_indic <- 1L - event
   ord <- order(t)
-  t <- t[ord]; c_indic <- c_indic[ord]
-  S <- 1; var_factor <- 0
+  t <- t[ord]
+  c_indic <- c_indic[ord]
+  S <- 1
+  var_factor <- 0
   i <- 1L
   while (i <= n) {
     j <- i

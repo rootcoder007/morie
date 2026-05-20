@@ -4,8 +4,9 @@
 # branches, and the remaining defensive paths.
 
 ok <- function(label, expr) {
-  invisible(tryCatch(expr, error = function(e)
-    message("WAVE29-ERR [", label, "]: ", conditionMessage(e))))
+  invisible(tryCatch(expr, error = function(e) {
+    message("WAVE29-ERR [", label, "]: ", conditionMessage(e))
+  }))
 }
 
 # ---- extreme-value objective helpers -------------------------------------
@@ -30,7 +31,9 @@ test_that("GEV / GP log-density helpers cover the xi ~ 0 + support branches", {
 test_that("kernel callables recompute a non-positive supplied bandwidth", {
   set.seed(29)
   n <- 60L
-  X <- matrix(rnorm(n * 2), n, 2); y <- rnorm(n); z <- rbinom(n, 1, 0.5)
+  X <- matrix(rnorm(n * 2), n, 2)
+  y <- rnorm(n)
+  z <- rbinom(n, 1, 0.5)
   coords <- matrix(runif(n * 2), n, 2)
   mk <- matrix(rbinom(n * 4, 2, 0.3), n, 4)
   ok("hrzi2", morie:::hrzi2(X, y, bandwidth = -1))
@@ -48,8 +51,10 @@ test_that("kernel callables recompute a non-positive supplied bandwidth", {
 # ---- misc internal-helper guard branches ---------------------------------
 
 test_that("backprop activation switch stops on an unknown activation", {
-  expect_error(morie:::.bkprp_sigma_prime(0.5, "not-an-activation", 0.5),
-               "Unknown activation")
+  expect_error(
+    morie:::.bkprp_sigma_prime(0.5, "not-an-activation", 0.5),
+    "Unknown activation"
+  )
 })
 
 test_that("Horowitz single-index handles a near-zero lm.fit coefficient", {
@@ -63,35 +68,45 @@ test_that("Horowitz single-index handles a near-zero lm.fit coefficient", {
 # ---- database remaining branches -----------------------------------------
 
 test_that("morie_builtin_db dev fallback + .fuzzy_match_key name match", {
-  testthat::local_mocked_bindings(system.file = function(...) "",
-                                  .package = "base")
+  testthat::local_mocked_bindings(
+    system.file = function(...) "",
+    .package = "base"
+  )
   expect_match(morie_builtin_db(), "morie\\.db$")
 })
 
 test_that("morie_load_dataset: unsupported-format and not-found stops", {
   testthat::skip_if_not_installed("DBI")
   cat <- morie_dataset_catalog()
-  ld <- tempfile("ld-"); dir.create(ld)
-  bad <- file.path(ld, "x.parquet"); writeLines("x", bad)
+  ld <- tempfile("ld-")
+  dir.create(ld)
+  bad <- file.path(ld, "x.parquet")
+  writeLines("x", bad)
   mk_entry <- function(local, ck, dl) {
     c0 <- cat[1, , drop = FALSE]
-    c0$key <- "covtest"; c0$local_path <- local
-    c0$ckan_resource_id <- ck; c0$download_url <- dl
+    c0$key <- "covtest"
+    c0$local_path <- local
+    c0$ckan_resource_id <- ck
+    c0$download_url <- dl
     if ("arcgis_url" %in% names(c0)) c0$arcgis_url <- ""
     c0
   }
   testthat::local_mocked_bindings(
     morie_builtin_db = function(...) tempfile(fileext = ".db"),
     morie_cache_load = function(...) NULL,
-    .package = "morie")
+    .package = "morie"
+  )
   testthat::local_mocked_bindings(
     morie_dataset_catalog = function(...) mk_entry(bad, "", ""),
-    .package = "morie")
+    .package = "morie"
+  )
   expect_error(morie_load_dataset("covtest"), "Unsupported format")
   testthat::local_mocked_bindings(
-    morie_dataset_catalog = function(...)
-      mk_entry(file.path(ld, "missing.csv"), "", ""),
-    .package = "morie")
+    morie_dataset_catalog = function(...) {
+      mk_entry(file.path(ld, "missing.csv"), "", "")
+    },
+    .package = "morie"
+  )
   expect_error(morie_load_dataset("covtest"), "not found")
 })
 
@@ -99,9 +114,11 @@ test_that("morie_load_dataset: unsupported-format and not-found stops", {
 
 test_that("mrm SIU / TPS empty-stratum branches return cleanly", {
   ok("siu_km_empty", morie:::mrm_siu_case_to_decision_km(data.frame(
-    case_number = "C1", incident_date = NA, decision_date = NA)))
+    case_number = "C1", incident_date = NA, decision_date = NA
+  )))
   ok("tps_recur", morie:::mrm_tps_neighbourhood_recurrence_km(data.frame(
-    lat = runif(3), lon = runif(3), date = Sys.Date() + 1:3)))
+    lat = runif(3), lon = runif(3), date = Sys.Date() + 1:3
+  )))
   expect_true(TRUE)
 })
 

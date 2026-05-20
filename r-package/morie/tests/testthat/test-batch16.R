@@ -46,7 +46,7 @@ test_that("build_assistant_prompt alias mirrors build_prompt", {
 test_that("ask_percy is an exported function with the documented args", {
   expect_true(is.function(ask_percy))
   expect_true(all(c("question", "context", "python_bin") %in%
-                    names(formals(ask_percy))))
+    names(formals(ask_percy))))
   if (FALSE) {
     ask_percy("hello")
   }
@@ -55,11 +55,14 @@ test_that("ask_percy is an exported function with the documented args", {
 
 test_that("rank_placements returns the documented structure", {
   set.seed(1)
-  x <- rnorm(15); y <- rnorm(12)
+  x <- rnorm(15)
+  y <- rnorm(12)
   r <- rank_placements(x, y)
   expect_type(r, "list")
-  expect_named(r, c("placements", "ranks_y", "U_y", "E_U", "Var_U",
-                    "m", "n", "method"))
+  expect_named(r, c(
+    "placements", "ranks_y", "U_y", "E_U", "Var_U",
+    "m", "n", "method"
+  ))
   expect_length(r$placements, length(y))
   expect_length(r$ranks_y, length(y))
   expect_identical(r$m, length(x))
@@ -98,7 +101,8 @@ test_that("polynomial_regression fits a degree-2 model on a vector", {
 
 test_that("polynomial_regression honours a custom degree", {
   set.seed(3)
-  x <- rnorm(30); y <- rnorm(30)
+  x <- rnorm(30)
+  y <- rnorm(30)
   r <- polynomial_regression(x, y, degree = 3L)
   expect_identical(r$degree, 3L)
   expect_true(grepl("degree=3", r$method))
@@ -118,8 +122,10 @@ test_that("polrz computes a polarization index with median split", {
   x <- c(rnorm(20, -1), rnorm(20, 1))
   r <- polrz(x)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "mean_R", "mean_D", "sd_R", "sd_D",
-                    "pooled_sd", "n_R", "n_D", "method"))
+  expect_named(r, c(
+    "estimate", "mean_R", "mean_D", "sd_R", "sd_D",
+    "pooled_sd", "n_R", "n_D", "method"
+  ))
   expect_true(is.finite(r$estimate) && r$estimate >= 0)
   expect_identical(r$method, "polarization_index")
 })
@@ -191,8 +197,10 @@ test_that("perplexity_metric accepts base 2", {
 
 test_that("perplexity_metric errors on empty input and bad base", {
   expect_error(morie:::perplexity_metric(numeric(0)), "at least one")
-  expect_error(morie:::perplexity_metric(c(-1, -1), base = "10"),
-               "'e' or '2'")
+  expect_error(
+    morie:::perplexity_metric(c(-1, -1), base = "10"),
+    "'e' or '2'"
+  )
 })
 
 test_that("prophet_components decomposes a seasonal series", {
@@ -201,8 +209,10 @@ test_that("prophet_components decomposes a seasonal series", {
   x <- 0.1 * t + sin(2 * pi * t / 12) + rnorm(48, sd = 0.1)
   r <- prophet_components(x, period = 12)
   expect_type(r, "list")
-  expect_named(r, c("trend", "seasonal", "residual", "slope", "intercept",
-                    "fourier_terms", "period", "n", "method"))
+  expect_named(r, c(
+    "trend", "seasonal", "residual", "slope", "intercept",
+    "fourier_terms", "period", "n", "method"
+  ))
   expect_length(r$trend, 48L)
   expect_length(r$seasonal, 48L)
   expect_length(r$residual, 48L)
@@ -229,8 +239,10 @@ test_that("pspln fits a penalised spline and reports r2", {
   y <- sin(3 * x) + rnorm(60, sd = 0.05)
   r <- morie:::pspln(x, y, n_knots = 10L, lam = 0.1)
   expect_type(r, "list")
-  expect_named(r, c("coef", "fitted", "residuals", "sse", "r2", "edf",
-                    "lambda", "estimate", "se", "n", "method"))
+  expect_named(r, c(
+    "coef", "fitted", "residuals", "sse", "r2", "edf",
+    "lambda", "estimate", "se", "n", "method"
+  ))
   expect_length(r$fitted, 60L)
   expect_true(is.finite(r$r2))
   expect_true(is.finite(r$edf) && r$edf > 0)
@@ -258,8 +270,10 @@ test_that("quntf computes quantiles with asymptotic SEs (default taus)", {
   x <- rnorm(300)
   r <- morie:::quntf(x)
   expect_type(r, "list")
-  expect_named(r, c("taus", "quantiles", "se", "bandwidth", "estimate",
-                    "n", "method"))
+  expect_named(r, c(
+    "taus", "quantiles", "se", "bandwidth", "estimate",
+    "n", "method"
+  ))
   expect_length(r$taus, 5L)
   expect_length(r$quantiles, 5L)
   expect_length(r$se, 5L)
@@ -285,8 +299,10 @@ test_that("quntf returns NA for n < 2", {
 test_that("quantile_function alias matches quntf", {
   set.seed(13)
   x <- rnorm(150)
-  expect_equal(quantile_function(x, taus = 0.5)$quantiles,
-               morie:::quntf(x, taus = 0.5)$quantiles)
+  expect_equal(
+    quantile_function(x, taus = 0.5)$quantiles,
+    morie:::quntf(x, taus = 0.5)$quantiles
+  )
 })
 
 test_that("rcall summarises a 0/1 vote matrix", {
@@ -294,8 +310,10 @@ test_that("rcall summarises a 0/1 vote matrix", {
   V <- matrix(sample(c(0, 1), 60, replace = TRUE), nrow = 10)
   r <- rcall(V)
   expect_type(r, "list")
-  expect_named(r, c("n", "m", "n_yea", "n_nay", "n_abs", "marginal_yea",
-                    "marginal_nay", "pct_yea", "lopsided_pct", "method"))
+  expect_named(r, c(
+    "n", "m", "n_yea", "n_nay", "n_abs", "marginal_yea",
+    "marginal_nay", "pct_yea", "lopsided_pct", "method"
+  ))
   expect_identical(r$n, 10L)
   expect_identical(r$m, 6L)
   expect_identical(r$n_yea + r$n_nay + r$n_abs, 60L)
@@ -327,8 +345,10 @@ test_that("regime_switching fits a 2-regime model via base-R EM", {
   x <- c(rnorm(30, 0, 0.5), rnorm(30, 0, 2))
   r <- regime_switching(x, k_regimes = 2)
   expect_type(r, "list")
-  expect_named(r, c("mu", "sigma", "transition", "smoothed_probabilities",
-                    "loglik", "n", "k_regimes", "method"))
+  expect_named(r, c(
+    "mu", "sigma", "transition", "smoothed_probabilities",
+    "loglik", "n", "k_regimes", "method"
+  ))
   expect_length(r$mu, 2L)
   expect_length(r$sigma, 2L)
   expect_identical(dim(r$transition), c(2L, 2L))
@@ -376,12 +396,16 @@ test_that("random_forest_ensemble runs a small regression forest", {
   set.seed(19)
   X <- matrix(rnorm(120), ncol = 3)
   y <- X[, 1] + 0.5 * X[, 2] + rnorm(40, sd = 0.2)
-  r <- random_forest_ensemble(X, y, n_estimators = 20L, task = "regression",
-                              seed = 19L)
+  r <- random_forest_ensemble(X, y,
+    n_estimators = 20L, task = "regression",
+    seed = 19L
+  )
   expect_type(r, "list")
-  expect_named(r, c("estimate", "train_score", "oob_score",
-                    "feature_importances", "n_estimators", "task",
-                    "n", "method"))
+  expect_named(r, c(
+    "estimate", "train_score", "oob_score",
+    "feature_importances", "n_estimators", "task",
+    "n", "method"
+  ))
   expect_identical(r$task, "regression")
   expect_identical(r$n_estimators, 20L)
   expect_identical(r$n, 40L)
@@ -394,8 +418,10 @@ test_that("random_forest_ensemble auto-detects a classification task", {
   set.seed(20)
   X <- matrix(rnorm(120), ncol = 3)
   y <- as.integer(X[, 1] > 0)
-  r <- random_forest_ensemble(X, y, n_estimators = 20L, task = "auto",
-                              seed = 20L)
+  r <- random_forest_ensemble(X, y,
+    n_estimators = 20L, task = "auto",
+    seed = 20L
+  )
   expect_identical(r$task, "classification")
   expect_true(r$train_score >= 0 && r$train_score <= 1)
 })
@@ -405,8 +431,10 @@ test_that("random_forest_ensemble accepts a max_depth argument", {
   set.seed(21)
   X <- matrix(rnorm(120), ncol = 3)
   y <- X[, 1] + rnorm(40, sd = 0.2)
-  r <- random_forest_ensemble(X, y, n_estimators = 15L, max_depth = 3L,
-                              task = "regression", seed = 21L)
+  r <- random_forest_ensemble(X, y,
+    n_estimators = 15L, max_depth = 3L,
+    task = "regression", seed = 21L
+  )
   expect_identical(r$task, "regression")
   expect_true(is.finite(r$estimate))
 })
@@ -417,8 +445,10 @@ test_that("random_forest_genomic predicts from a marker matrix", {
   y <- M[, 1] + 0.5 * M[, 2]^2 + 0.2 * rnorm(40)
   r <- random_forest_genomic(rep(0, 40), y, M, n_trees = 20, seed = 22)
   expect_type(r, "list")
-  expect_named(r, c("estimate", "y_hat", "oob_score", "feature_importance",
-                    "se", "n", "method"))
+  expect_named(r, c(
+    "estimate", "y_hat", "oob_score", "feature_importance",
+    "se", "n", "method"
+  ))
   expect_length(r$y_hat, 40L)
   expect_identical(r$n, 40L)
   expect_true(is.finite(r$estimate))
@@ -438,8 +468,10 @@ test_that("random_forest_genomic accepts a custom mtry", {
   set.seed(24)
   M <- matrix(rnorm(160), 32, 5)
   y <- M[, 2] + 0.2 * rnorm(32)
-  r <- random_forest_genomic(rep(0, 32), y, M, n_trees = 15, mtry = 2,
-                             seed = 24)
+  r <- random_forest_genomic(rep(0, 32), y, M,
+    n_trees = 15, mtry = 2,
+    seed = 24
+  )
   expect_length(r$y_hat, 32L)
 })
 

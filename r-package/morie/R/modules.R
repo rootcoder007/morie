@@ -3,8 +3,8 @@
 #' @return Data frame describing the implemented module surface.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 list_morie_modules <- function() {
@@ -65,7 +65,9 @@ list_morie_modules <- function() {
     "data/datasets/oc/CPADS/2021-2022/cpads-2021-2022-pumf2.csv"
   )
   for (p in candidates) {
-    if (file.exists(p)) return(p)
+    if (file.exists(p)) {
+      return(p)
+    }
   }
   # Fallback: first candidate (will be resolved by .resolve_cpads_csv).
   candidates[1L]
@@ -96,8 +98,8 @@ list_morie_modules <- function() {
 #' @return Data frame with canonical MORIE analysis columns.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 canonicalize_cpads_data <- function(data) {
@@ -146,8 +148,8 @@ canonicalize_cpads_data <- function(data) {
 #' @return Canonicalized CPADS data frame.
 #' @examples
 #' \dontrun{
-#'   # Reads and canonicalises the CPADS PUMF CSV from a project tree:
-#'   load_cpads_data()
+#' # Reads and canonicalises the CPADS PUMF CSV from a project tree:
+#' load_cpads_data()
 #' }
 #' @export
 load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
@@ -181,15 +183,14 @@ load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
 #' @return Named list of data-frame outputs.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 run_morie_module <- function(module_name, cpads_csv = .cpads_default_csv(), output_dir = NULL) {
   data <- load_cpads_data(cpads_csv)
 
-  outputs <- switch(
-    module_name,
+  outputs <- switch(module_name,
     "data-wrangling" = .run_data_wrangling_module_internal(data, cpads_csv = cpads_csv, output_dir = output_dir),
     "descriptive-statistics" = .run_descriptive_statistics_module_internal(data),
     "distribution-tests" = .run_distribution_tests_module_internal(data),
@@ -226,8 +227,8 @@ run_morie_module <- function(module_name, cpads_csv = .cpads_default_csv(), outp
 #' @return Named list of module outputs.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 run_morie_modules <- function(

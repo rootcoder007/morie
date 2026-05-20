@@ -9,8 +9,8 @@ escape_regex <- function(x) {
 #' @return `TRUE` when validation passes.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 validate_outputs_manifest <- function(manifest, strict = TRUE) {
@@ -46,8 +46,8 @@ validate_outputs_manifest <- function(manifest, strict = TRUE) {
 #' @return Manifest data frame.
 #' @examples
 #' \dontrun{
-#'   # Reads outputs_manifest.csv from a morie project tree:
-#'   read_outputs_manifest(project_root = ".")
+#' # Reads outputs_manifest.csv from a morie project tree:
+#' read_outputs_manifest(project_root = ".")
 #' }
 #' @export
 read_outputs_manifest <- function(project_root = NULL, manifest_path = NULL, validate = TRUE) {
@@ -77,8 +77,8 @@ read_outputs_manifest <- function(project_root = NULL, manifest_path = NULL, val
 #' @return Manifest data frame.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 build_outputs_manifest <- function(
@@ -133,8 +133,8 @@ build_outputs_manifest <- function(
 #' @return Data frame containing declared and observed output status.
 #' @examples
 #' \dontrun{
-#'   # Audits declared vs. observed outputs in a morie project tree:
-#'   audit_public_outputs(project_root = ".")
+#' # Audits declared vs. observed outputs in a morie project tree:
+#' audit_public_outputs(project_root = ".")
 #' }
 #' @export
 audit_public_outputs <- function(project_root = NULL, manifest = NULL) {
@@ -216,8 +216,8 @@ audit_public_outputs <- function(project_root = NULL, manifest = NULL) {
 #' @return Named list with high-level diagnostics.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 summarize_output_audit <- function(audit_tbl) {

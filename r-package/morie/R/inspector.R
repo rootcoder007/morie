@@ -30,32 +30,35 @@ inspect_output <- function(path) {
     return(result)
   }
   ext <- tolower(tools::file_ext(path))
-  result$contents_preview <- tryCatch({
-    if (ext == "json") {
-      if (!requireNamespace("jsonlite", quietly = TRUE)) {
-        result$status <- "jsonlite-unavailable"
+  result$contents_preview <- tryCatch(
+    {
+      if (ext == "json") {
+        if (!requireNamespace("jsonlite", quietly = TRUE)) {
+          result$status <- "jsonlite-unavailable"
+          return(result)
+        }
+        obj <- jsonlite::fromJSON(path)
+        if (is.list(obj)) names(obj) else utils::head(obj)
+      } else if (ext == "csv") {
+        df <- utils::read.csv(path, nrows = 5L)
+        result$n_columns <- ncol(df)
+        utils::head(df)
+      } else if (ext == "rds") {
+        obj <- readRDS(path)
+        result$class <- class(obj)
+        if (is.data.frame(obj)) utils::head(obj) else utils::head(names(obj))
+      } else {
+        result$status <- paste0("unsupported-extension: ", ext)
         return(result)
       }
-      obj <- jsonlite::fromJSON(path)
-      if (is.list(obj)) names(obj) else utils::head(obj)
-    } else if (ext == "csv") {
-      df <- utils::read.csv(path, nrows = 5L)
-      result$n_columns <- ncol(df)
-      utils::head(df)
-    } else if (ext == "rds") {
-      obj <- readRDS(path)
-      result$class <- class(obj)
-      if (is.data.frame(obj)) utils::head(obj) else utils::head(names(obj))
-    } else {
-      result$status <- paste0("unsupported-extension: ", ext)
-      return(result)
+    },
+    error = function(e) {
+      # <<- so the read-error status reaches the enclosing `result`;
+      # a plain <- would assign only in this handler's environment.
+      result$status <<- paste0("read-error: ", conditionMessage(e))
+      NULL
     }
-  }, error = function(e) {
-    # <<- so the read-error status reaches the enclosing `result`;
-    # a plain <- would assign only in this handler's environment.
-    result$status <<- paste0("read-error: ", conditionMessage(e))
-    NULL
-  })
+  )
   if (is.null(result$status)) result$status <- "ok"
   result
 }
@@ -81,7 +84,8 @@ inspect_output <- function(path) {
 #' if (requireNamespace("jsonlite", quietly = TRUE)) {
 #'   jsonlite::write_json(
 #'     list(ate = 0.5, se = 0.1, ci_lower = 0.3, ci_upper = 0.7, n = 200),
-#'     tmp, auto_unbox = TRUE
+#'     tmp,
+#'     auto_unbox = TRUE
 #'   )
 #'   verify_statistical_output(tmp)
 #'   unlink(tmp)
@@ -92,9 +96,11 @@ verify_statistical_output <- function(path) {
     out$checks$file_exists <- FALSE
     return(out)
   }
-  if (!requireNamespace("jsonlite", quietly = TRUE))
+  if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop("jsonlite is required for verify_statistical_output().",
-         call. = FALSE)
+      call. = FALSE
+    )
+  }
 
   obj <- tryCatch(jsonlite::fromJSON(path), error = function(e) NULL)
   if (is.null(obj)) {
@@ -105,25 +111,30 @@ verify_statistical_output <- function(path) {
 
   has <- function(k) !is.null(obj[[k]]) && length(obj[[k]]) >= 1L
 
-  if (has("se"))
+  if (has("se")) {
     out$checks$se_nonneg <- isTRUE(as.numeric(obj$se) >= 0)
-  if (has("ci_lower") && has("ci_upper"))
+  }
+  if (has("ci_lower") && has("ci_upper")) {
     out$checks$ci_ordered <- isTRUE(as.numeric(obj$ci_lower) <
-                                    as.numeric(obj$ci_upper))
-  if (has("ate") && has("ci_lower") && has("ci_upper"))
+      as.numeric(obj$ci_upper))
+  }
+  if (has("ate") && has("ci_lower") && has("ci_upper")) {
     out$checks$estimate_in_ci <-
       isTRUE(as.numeric(obj$ate) >= as.numeric(obj$ci_lower) &&
-             as.numeric(obj$ate) <= as.numeric(obj$ci_upper))
-  if (has("n"))
+        as.numeric(obj$ate) <= as.numeric(obj$ci_upper))
+  }
+  if (has("n")) {
     out$checks$n_positive <- isTRUE(as.numeric(obj$n) > 0)
+  }
   if (has("p_value")) {
     p <- as.numeric(obj$p_value)
     out$checks$p_in_unit <- isTRUE(p >= 0 && p <= 1)
   }
-  if (has("ate"))
+  if (has("ate")) {
     out$checks$estimate_finite <- isTRUE(is.finite(as.numeric(obj$ate)))
+  }
 
   out$passed <- length(out$checks) > 0L &&
-                all(unlist(out$checks))
+    all(unlist(out$checks))
   out
 }

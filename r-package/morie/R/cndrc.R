@@ -12,22 +12,31 @@
 #'   `has_winner`, `method`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 cndrc <- function(preference_matrix) {
   M <- as.matrix(preference_matrix)
-  n <- nrow(M); winner <- -1L
+  n <- nrow(M)
+  winner <- -1L
   for (i in seq_len(n)) {
     beats_all <- TRUE
     for (j in seq_len(n)) {
-      if (i != j && M[i, j] <= M[j, i]) { beats_all <- FALSE; break }
+      if (i != j && M[i, j] <= M[j, i]) {
+        beats_all <- FALSE
+        break
+      }
     }
-    if (beats_all) { winner <- i; break }
+    if (beats_all) {
+      winner <- i
+      break
+    }
   }
-  list(winner = winner, n_candidates = n,
-       has_winner = winner > 0L, method = "condorcet_winner")
+  list(
+    winner = winner, n_candidates = n,
+    has_winner = winner > 0L, method = "condorcet_winner"
+  )
 }
 
 #' @keywords internal

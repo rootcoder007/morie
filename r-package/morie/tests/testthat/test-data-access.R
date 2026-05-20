@@ -19,8 +19,10 @@ test_that(".morie_ckan_portal resolves names and passes through URLs", {
   f <- morie:::.morie_ckan_portal
   expect_equal(f("open.canada.ca"), "https://open.canada.ca/data/en")
   expect_equal(f("data.ontario.ca"), "https://data.ontario.ca")
-  expect_equal(f("https://catalogue.example.org/"),
-               "https://catalogue.example.org")
+  expect_equal(
+    f("https://catalogue.example.org/"),
+    "https://catalogue.example.org"
+  )
   expect_error(f("not-a-portal"))
 })
 
@@ -32,15 +34,16 @@ test_that(".morie_detect_format falls back to the URL extension", {
   expect_equal(f("file:///tmp/x.xlsx"), "xlsx")
   expect_equal(f("file:///tmp/x.zip"), "zip")
   expect_equal(f("file:///tmp/x.xml"), "xml")
-  expect_equal(f("file:///tmp/x.unknownext"), "csv")  # last-resort default
+  expect_equal(f("file:///tmp/x.unknownext"), "csv") # last-resort default
 })
 
 test_that("morie_fetch reads csv and json over file://", {
   csv <- tempfile(fileext = ".csv")
   utils::write.csv(data.frame(a = 1:3, b = letters[1:3]), csv,
-                   row.names = FALSE)
+    row.names = FALSE
+  )
   on.exit(unlink(csv), add = TRUE)
-  d <- morie_fetch(paste0("file://", csv))            # auto-detected
+  d <- morie_fetch(paste0("file://", csv)) # auto-detected
   expect_s3_class(d, "data.frame")
   expect_equal(nrow(d), 3L)
   expect_equal(nrow(morie_fetch(paste0("file://", csv), format = "csv")), 3L)
@@ -65,8 +68,10 @@ test_that("morie_fetch extracts a member from a zip over file://", {
   setwd(dirname(csv))
   on.exit(setwd(owd), add = TRUE)
   utils::zip(zp, basename(csv), flags = "-q")
-  z <- morie_fetch(paste0("file://", zp), format = "zip",
-                   zip_member = basename(csv))
+  z <- morie_fetch(paste0("file://", zp),
+    format = "zip",
+    zip_member = basename(csv)
+  )
   expect_equal(nrow(z), 4L)
   # A zip fetch with no member named is an error.
   expect_error(morie_fetch(paste0("file://", zp), format = "zip"))
@@ -84,21 +89,25 @@ test_that("morie_ckan_search returns resource rows (network)", {
   skip_on_cran()
   testthat::skip_if_offline("open.canada.ca")
   hits <- tryCatch(morie_ckan_search("cannabis", rows = 3),
-                   error = function(e) NULL)
+    error = function(e) NULL
+  )
   skip_if(is.null(hits), "CKAN package_search unreachable")
   expect_s3_class(hits, "data.frame")
   expect_true(all(c("dataset_title", "resource_id", "format") %in%
-                    names(hits)))
+    names(hits)))
 })
 
 test_that("morie_fetch_arcgis paginates a FeatureServer layer (network)", {
   skip_on_cran()
   testthat::skip_if_offline("services.arcgis.com")
-  layer <- paste0("https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/",
-                  "rest/services/Homicides_Open_Data_ASR_RC_TBL_002/",
-                  "FeatureServer/0")
+  layer <- paste0(
+    "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/",
+    "rest/services/Homicides_Open_Data_ASR_RC_TBL_002/",
+    "FeatureServer/0"
+  )
   df <- tryCatch(morie_fetch_arcgis(layer, max_records = 30),
-                 error = function(e) NULL)
+    error = function(e) NULL
+  )
   skip_if(is.null(df), "ArcGIS layer unreachable")
   expect_s3_class(df, "data.frame")
   expect_true(nrow(df) > 0 && nrow(df) <= 30)

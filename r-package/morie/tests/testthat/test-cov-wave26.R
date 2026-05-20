@@ -9,12 +9,16 @@
 # ---- missing-package stop() guards ----------------------------------------
 
 test_that("optional-package guards stop() when the package is absent", {
-  pkgs <- c("dbscan", "rpart", "caret", "glmnet", "pROC", "randomForest",
-            "e1071", "Rtsne", "signal", "gbm", "xgboost")
+  pkgs <- c(
+    "dbscan", "rpart", "caret", "glmnet", "pROC", "randomForest",
+    "e1071", "Rtsne", "signal", "gbm", "xgboost"
+  )
   testthat::local_mocked_bindings(
     requireNamespace = function(package, ...) !(package %in% pkgs),
-    .package = "base")
-  x <- matrix(rnorm(40), 20, 2); y <- rbinom(20, 1, 0.5)
+    .package = "base"
+  )
+  x <- matrix(rnorm(40), 20, 2)
+  y <- rbinom(20, 1, 0.5)
   expect_error(dbscan_clustering(x))
   expect_error(decision_tree_split(x, y))
   expect_error(grid_search_cv(x, y))
@@ -34,46 +38,53 @@ test_that("optional-package guards stop() when the package is absent", {
 
 test_that(".morie_sha256_hex falls back to openssl, then stops", {
   testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...)
-      if (identical(package, "digest")) FALSE else TRUE,
-    .package = "base")
-  expect_type(morie:::.morie_sha256_hex("abc"), "character")  # openssl path
+    requireNamespace = function(package, ...) {
+      if (identical(package, "digest")) FALSE else TRUE
+    },
+    .package = "base"
+  )
+  expect_type(morie:::.morie_sha256_hex("abc"), "character") # openssl path
   testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...)
-      !(package %in% c("digest", "openssl")), .package = "base")
+    requireNamespace = function(package, ...) {
+      !(package %in% c("digest", "openssl"))
+    }, .package = "base"
+  )
   expect_error(morie:::.morie_sha256_hex("abc"), "digest")
 })
 
 test_that("jsonlite-dependent entrypoints stop without jsonlite", {
   testthat::local_mocked_bindings(
     requireNamespace = function(package, ...) !identical(package, "jsonlite"),
-    .package = "base")
+    .package = "base"
+  )
   expect_error(morie_fetch_tps(category = "Assault"), "jsonlite")
-  mf <- tempfile(fileext = ".json"); writeLines("{}", mf)
+  mf <- tempfile(fileext = ".json")
+  writeLines("{}", mf)
   expect_error(mrm_tps_load_hawkes_refit(mf), "jsonlite")
-  jf <- tempfile(fileext = ".json"); writeLines("{}", jf)
+  jf <- tempfile(fileext = ".json")
+  writeLines("{}", jf)
   ir <- inspect_output(jf)
-  expect_true(is.list(ir))                                    # jsonlite-unavailable
+  expect_true(is.list(ir)) # jsonlite-unavailable
   expect_error(verify_statistical_output(jf), "jsonlite")
 })
 
 # ---- internal helpers: Horowitz / Ghosal / time-series -------------------
 
 test_that("Horowitz internal helpers cover their edge branches", {
-  expect_equal(morie:::.hrz_silverman(5), 1.0)               # n < 2
-  expect_true(morie:::.hrz_silverman(rep(3, 8)) > 0)         # sigma <= 0
+  expect_equal(morie:::.hrz_silverman(5), 1.0) # n < 2
+  expect_true(morie:::.hrz_silverman(rep(3, 8)) > 0) # sigma <= 0
   expect_true(is.numeric(morie:::.hrz_gauss_kernel(0.3)))
   z <- matrix(rnorm(20), 10, 2)
-  expect_length(morie:::.hrz_nw_loo(z, rnorm(10), 0.5), 10)  # matrix path
+  expect_length(morie:::.hrz_nw_loo(z, rnorm(10), 0.5), 10) # matrix path
 })
 
 test_that(".gh_haar_dwt zero-pads a non-power-of-two input", {
   expect_true(is.list(morie:::.gh_haar_dwt(c(1, 2, 3))) ||
-              is.numeric(morie:::.gh_haar_dwt(c(1, 2, 3))))
+    is.numeric(morie:::.gh_haar_dwt(c(1, 2, 3))))
 })
 
 test_that("grm_vanraden guards a zero allele-variance denominator", {
-  g <- morie:::grm_vanraden(matrix(0L, 6, 4))                # denom <= 0
+  g <- morie:::grm_vanraden(matrix(0L, 6, 4)) # denom <= 0
   expect_false(is.null(g))
 })
 
@@ -85,12 +96,13 @@ test_that(".morie_beta_weights normalises MIDAS weights", {
 # ---- entheo align / binding / san edge paths -----------------------------
 
 test_that("entheo align/binding/san cover empty + short-frame branches", {
-  expect_type(morie:::.entheo_align(numeric(0), numeric(0)), "list")  # n == 0
-  al <- morie:::.entheo_align(rnorm(10), rnorm(8))           # step <= 1
+  expect_type(morie:::.entheo_align(numeric(0), numeric(0)), "list") # n == 0
+  al <- morie:::.entheo_align(rnorm(10), rnorm(8)) # step <= 1
   expect_equal(length(al$e), length(al$f))
   # rows long enough for the width-5 envelope filter, but only 3 aligned
   # frames so the n < 4 early-return fires.
-  eeg <- matrix(rnorm(2 * 6), 2, 6); fmri <- matrix(rnorm(2 * 3), 2, 3)
+  eeg <- matrix(rnorm(2 * 6), 2, 6)
+  fmri <- matrix(rnorm(2 * 3), 2, 3)
   expect_true(is.numeric(morie:::.entheo_binding_per_frame(eeg, fmri)))
   expect_true(is.numeric(morie:::.entheo_san_per_frame(eeg, fmri)))
 })
@@ -103,15 +115,17 @@ test_that("data_access: download ext fallback + remaining format switch", {
   expect_equal(morie:::.morie_detect_format("file:///x/y.htm"), "html")
   expect_equal(morie:::.morie_detect_format("http://h/q?a=1"), "csv")
   skip_if_not_installed("readxl")
-  p <- readxl::readxl_example("datasets.xlsx")               # ships with readxl
+  p <- readxl::readxl_example("datasets.xlsx") # ships with readxl
   expect_s3_class(morie:::.morie_parse_file(p, "xlsx", TRUE), "data.frame")
 })
 
 # ---- database remaining branches -----------------------------------------
 
 test_that("morie_builtin_db / .fuzzy_match_key cover their tails", {
-  testthat::local_mocked_bindings(system.file = function(...) "",
-                                  .package = "base")
+  testthat::local_mocked_bindings(
+    system.file = function(...) "",
+    .package = "base"
+  )
   expect_match(morie_builtin_db(), "morie\\.db$")
   # a key that is only a substring of a dataset NAME, not of any key
   cat <- morie_dataset_catalog()
@@ -119,7 +133,8 @@ test_that("morie_builtin_db / .fuzzy_match_key cover their tails", {
 })
 
 test_that("morie_load_dataset covers the local-xlsx, CKAN and final stop", {
-  testthat::skip_if_not_installed("DBI"); testthat::skip_if_not_installed("RSQLite")
+  testthat::skip_if_not_installed("DBI")
+  testthat::skip_if_not_installed("RSQLite")
   cat <- morie_dataset_catalog()
   # CKAN datastore branch: a key with a ckan_resource_id, no local file
   ck <- cat$key[nzchar(cat$ckan_resource_id) & !file.exists(cat$local_path)]
@@ -130,7 +145,8 @@ test_that("morie_load_dataset covers the local-xlsx, CKAN and final stop", {
     morie_fetch_ckan = function(...) data.frame(z = 1:3),
     morie_fetch = function(...) data.frame(z = 1:3),
     morie_fetch_arcgis = function(...) data.frame(z = 1:3),
-    .package = "morie")
+    .package = "morie"
+  )
   if (length(ck)) {
     d <- morie_load_dataset(ck[1], db_path = tempfile(fileext = ".db"))
     expect_s3_class(d, "data.frame")
@@ -142,9 +158,11 @@ test_that("morie_download_bootstrap covers the unknown-key + CKAN-error path", {
   testthat::skip_if_not_installed("DBI")
   testthat::local_mocked_bindings(
     morie_fetch_ckan = function(...) stop("simulated CKAN failure"),
-    .package = "morie")
+    .package = "morie"
+  )
   expect_null(suppressMessages(
-    morie_download_bootstrap("csads_2021", db_path = tempfile(fileext = ".db"))))
+    morie_download_bootstrap("csads_2021", db_path = tempfile(fileext = ".db"))
+  ))
 })
 
 # ---- frns: metrics + predpol + temporal ----------------------------------
@@ -152,17 +170,21 @@ test_that("morie_download_bootstrap covers the unknown-key + CKAN-error path", {
 test_that("fairness metrics cover the remaining interpretation branches", {
   # no adverse impact -> the >= 0.80 interpretation line
   ok <- fairness_disparate_impact(c(1, 1, 1, 0, 1, 1, 1, 0),
-                                  c(rep("A", 4), rep("B", 4)),
-                                  privileged = "A")
+    c(rep("A", 4), rep("B", 4)),
+    privileged = "A"
+  )
   expect_match(ok$interpretation, "No adverse impact")
   # equalized odds with inferred privileged + a close-rates interpretation
   eo <- fairness_equalized_odds(
     y_true = c(1, 0, 1, 0, 1, 0, 1, 0),
     y_pred = c(1, 0, 1, 0, 1, 0, 1, 0),
-    group  = c(rep("A", 4), rep("B", 4)))
+    group  = c(rep("A", 4), rep("B", 4))
+  )
   expect_match(eo$interpretation, "close across groups")
-  expect_error(fairness_average_odds_difference(c(1, 0), c(1, 0), c("a", "a")),
-               "two groups")
+  expect_error(
+    fairness_average_odds_difference(c(1, 0), c(1, 0), c("a", "a")),
+    "two groups"
+  )
   expect_error(fairness_bias_amplification(c(1, 0), c("a", "a")), "two groups")
 })
 
@@ -172,19 +194,23 @@ test_that(".frns_worst_abs_named returns NA on an all-non-finite input", {
 
 test_that("predpol_calibration_audit covers drop-to-<2, calibration tiers", {
   set.seed(20)
-  ar <- paste0("A", 1:14); g <- rep(c("x", "y"), 7)
+  ar <- paste0("A", 1:14)
+  g <- rep(c("x", "y"), 7)
   # only one finite area remains -> the <2-areas stop
   expect_error(
     predpol_calibration_audit(ar, c(1, rep(NA, 13)), runif(14), g),
-    "fewer than two areas")
+    "fewer than two areas"
+  )
   # well-calibrated: risk and outcome strongly concordant -> rho >= 0.7
-  rk <- 1:14; oc <- 1:14 + rnorm(14, 0, 0.3)
+  rk <- 1:14
+  oc <- 1:14 + rnorm(14, 0, 0.3)
   wc <- predpol_calibration_audit(ar, rk, oc, g)
   expect_match(wc$interpretation, "well calibrated")
   # weak calibration: moderate concordance
   oc2 <- c(1:7, sample(8:14))
   expect_true(is.character(
-    predpol_calibration_audit(ar, rk, oc2, g)$interpretation))
+    predpol_calibration_audit(ar, rk, oc2, g)$interpretation
+  ))
 })
 
 test_that("predpol_score_disparity covers the single-group-after-drop stop", {
@@ -200,7 +226,8 @@ test_that("predpol_temporal_audit produces its instability interpretation", {
   pred <- rbinom(80, 1, 0.5)
   grp <- rep(c("a", "b"), 40)
   res <- tryCatch(predpol_temporal_audit(periods, city, pred, grp),
-                  error = function(e) NULL)
+    error = function(e) NULL
+  )
   expect_true(is.null(res) || is.list(res))
 })
 
@@ -212,8 +239,10 @@ test_that("hawkes: lomax/gamma degenerate kernels + nll guards", {
   set.seed(22)
   tm <- sort(cumsum(rexp(30)))
   # null kernel -> the 1e12 guard
-  expect_equal(morie:::.hawkes_nll_pureR(c(0, 0.3, 0), tm, max(tm),
-                                         "exponential"), 1e12)
+  expect_equal(morie:::.hawkes_nll_pureR(
+    c(0, 0.3, 0), tm, max(tm),
+    "exponential"
+  ), 1e12)
   fit <- morie_hawkes_fit(cumsum(rexp(80, 2)), kernel = "weibull")
   expect_s3_class(fit, "morie_hawkes_fit")
 })
@@ -221,20 +250,27 @@ test_that("hawkes: lomax/gamma degenerate kernels + nll guards", {
 # ---- study_core: data-wrangling output_dir block -------------------------
 
 test_that(".run_data_wrangling_module_internal writes into a project tree", {
-  proj <- tempfile("proj-"); dir.create(file.path(proj, "docs", "source"),
-                                        recursive = TRUE)
+  proj <- tempfile("proj-")
+  dir.create(file.path(proj, "docs", "source"),
+    recursive = TRUE
+  )
   file.create(file.path(proj, "pyproject.toml"))
-  od <- file.path(proj, "out"); dir.create(od)
+  od <- file.path(proj, "out")
+  dir.create(od)
   out <- morie:::.run_data_wrangling_module_internal(
-    make_canonical_cpads(), output_dir = od)
+    make_canonical_cpads(),
+    output_dir = od
+  )
   expect_true(is.list(out))
 })
 
 # ---- C++ guard branches --------------------------------------------------
 
 test_that("Rcpp kernels hit their argument guards", {
-  expect_error(morie:::morie_normal_pdf_cpp(c(0, 1), 0, -1),
-               "sd must be positive")
+  expect_error(
+    morie:::morie_normal_pdf_cpp(c(0, 1), 0, -1),
+    "sd must be positive"
+  )
   expect_true(is.na(morie:::morie_cor_pearson_cpp(c(1, 2, 3), c(1, 2))))
 })
 
@@ -250,25 +286,33 @@ test_that("chi_square_test runs with an explicit expected vector", {
 # tryCatch keeps the wave green irrespective of the numeric outcome.
 
 test_that("long-tail degenerate-input guard branches execute", {
-  call <- function(expr) invisible(tryCatch(expr, error = function(e) NULL,
-                                            warning = function(w) NULL))
+  call <- function(expr) {
+    invisible(tryCatch(expr,
+      error = function(e) NULL,
+      warning = function(w) NULL
+    ))
+  }
   set.seed(23)
-  v <- rnorm(40); vpos <- abs(rnorm(40)) + 0.1
+  v <- rnorm(40)
+  vpos <- abs(rnorm(40)) + 0.1
   m <- matrix(rnorm(80), 40, 2)
   coords <- matrix(runif(80), 40, 2)
 
   call(party_alignment <- morie:::party_alignment)
-  call(anisotropy_test(rnorm(3), coords[1:3, ]))             # insufficient pairs
+  call(anisotropy_test(rnorm(3), coords[1:3, ])) # insufficient pairs
   call(arch_in_mean(v))
   call(cokriging(coords, m, coords))
   call(cutting_plane_sphere(matrix(rnorm(20), 10, 2)))
   call(infer_measurement_level(factor(sample(letters[1:3], 30, TRUE))))
   call(suggest_analysis_plan(profile_dataset(
-    data.frame(a = rbinom(30, 1, .5), b = rbinom(30, 1, .5)))))
+    data.frame(a = rbinom(30, 1, .5), b = rbinom(30, 1, .5))
+  )))
   call(egarch_model(v))
   call(extvm(vpos))
   call(fwpas_forward_pass_dense(v, matrix(rnorm(40), 40, 1), 0))
-  call(fzlst(v)); call(fzmis(rep(2, 20))); call(fzmrb(v))
+  call(fzlst(v))
+  call(fzmis(rep(2, 20)))
+  call(fzmrb(v))
   call(gpfit(vpos))
   call(gradient_boosting_genomic(m, rbinom(40, 1, .5), markers = 1:2))
   call(genomic_cross_validation(m, v, K = 3))
@@ -279,8 +323,10 @@ test_that("long-tail degenerate-input guard branches execute", {
   call(ghosal_gp_squared_exponential(v, v, x_star = 0.5))
   call(ghosal_hierarchical_bayes(v))
   call(ghosal_sieve_prior(v))
-  call(estimate_irm(data.frame(t = rbinom(40, 1, .5), y = v, x = letters[1:2]),
-                    "t", "y", "x"))
+  call(estimate_irm(
+    data.frame(t = rbinom(40, 1, .5), y = v, x = letters[1:2]),
+    "t", "y", "x"
+  ))
   call(irtsp(matrix(rbinom(120, 1, .5), 30, 4)))
   call(kalman_filter(v))
   call(ksr10_kosorok_m_estimator(v, v))
@@ -293,12 +339,20 @@ test_that("long-tail degenerate-input guard branches execute", {
   call(quntf(v))
   call(return_level(vpos))
   call(rkhs_full(m, v, markers = 1:2))
-  call(rgcoh(v, v)); call(rgcrl(v)); call(rgdfa(v)); call(rgeeg(v, fs = 64))
-  call(rghfd(v)); call(rglyp(v)); call(rgpsd(v)); call(rgstf(v))
-  call(spatial_ar_lag(v, coords)); call(spatial_ar_error(v, coords))
+  call(rgcoh(v, v))
+  call(rgcrl(v))
+  call(rgdfa(v))
+  call(rgeeg(v, fs = 64))
+  call(rghfd(v))
+  call(rglyp(v))
+  call(rgpsd(v))
+  call(rgstf(v))
+  call(spatial_ar_lag(v, coords))
+  call(spatial_ar_error(v, coords))
   call(spatial_glm(rbinom(40, 1, .5), coords))
   call(spatial_mixed_model(v, coords))
-  call(spblk(v, coords, blocks = 3)); call(sptau(v, matrix(runif(1600), 40)))
+  call(spblk(v, coords, blocks = 3))
+  call(sptau(v, matrix(runif(1600), 40)))
   call(svm_genomic(m, v, markers = 1:2))
   call(threshold_autoregression(v))
   call(bpe_tokenizer("a b c a b c a b"))
@@ -315,10 +369,13 @@ test_that("long-tail degenerate-input guard branches execute", {
 test_that("workflow + synthetic + module-resolver guard branches execute", {
   call <- function(expr) invisible(tryCatch(expr, error = function(e) NULL))
   expect_error(morie:::validate_workflow_map(c(a = "")), "empty")
-  expect_error(morie:::validate_workflow_map(c(a = "x.R", a = "y.R")),
-               "unique")
   expect_error(
-    morie:::resolve_synthetic_name_map(list(x = ""), profile = "default"))
+    morie:::validate_workflow_map(c(a = "x.R", a = "y.R")),
+    "unique"
+  )
+  expect_error(
+    morie:::resolve_synthetic_name_map(list(x = ""), profile = "default")
+  )
   call(morie:::run_workflow_step(list(step = "s", script = tempfile())))
   call(morie:::.resolve_cpads_csv(tempfile(fileext = ".csv")))
   call(morie:::.cpads_default_csv())
@@ -327,23 +384,33 @@ test_that("workflow + synthetic + module-resolver guard branches execute", {
 # ---- mrm + siu remaining branches ----------------------------------------
 
 test_that("mrm OTIS / TPS / SIU degenerate branches execute", {
-  call <- function(expr) invisible(tryCatch(expr, error = function(e) NULL,
-                                            warning = function(w) NULL))
+  call <- function(expr) {
+    invisible(tryCatch(expr,
+      error = function(e) NULL,
+      warning = function(w) NULL
+    ))
+  }
   call(mrm_otis_placement_concentration(data.frame(
     EndFiscalYear = 2023,
     NumberPlacements_Segregation = "no-numbers-here",
-    NumberIndividuals_Segregation = 4)))
+    NumberIndividuals_Segregation = 4
+  )))
   call(mrm_siu_case_to_decision_km(data.frame(
     case_number = character(0), incident_date = as.Date(character(0)),
-    decision_date = as.Date(character(0)))))
-  call(mrm_response_surface(data.frame(y = rnorm(20), a = rnorm(20)),
-                            "y", "a"))
+    decision_date = as.Date(character(0))
+  )))
+  call(mrm_response_surface(
+    data.frame(y = rnorm(20), a = rnorm(20)),
+    "y", "a"
+  ))
   call(mrm_tps_moran_clustering(data.frame(lat = runif(5), lon = runif(5))))
   call(mrm_tps_neighbourhood_recurrence_km(data.frame(
-    lat = runif(3), lon = runif(3), date = Sys.Date() + 1:3)))
+    lat = runif(3), lon = runif(3), date = Sys.Date() + 1:3
+  )))
   call(mrm_median_causal_effect(
     data.frame(t = rbinom(30, 1, .5), y = rnorm(30), x = rnorm(30)),
-    "t", "y", "x"))
+    "t", "y", "x"
+  ))
   expect_true(TRUE)
 })
 

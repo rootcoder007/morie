@@ -19,17 +19,20 @@
 #' @references Rumelhart, Hinton & Williams (1986); Goodfellow et al. (2016).
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
                                   activation = "sigmoid") {
-  x <- as.matrix(x); y <- as.matrix(y)
-  n_in <- ncol(x); n_out <- ncol(y)
+  x <- as.matrix(x)
+  y <- as.matrix(y)
+  n_in <- ncol(x)
+  n_out <- ncol(y)
   if (is.null(w)) w <- diag(1, n_out, n_in)
   if (is.null(b)) b <- rep(0, n_out)
-  w <- as.matrix(w); b <- as.numeric(b)
+  w <- as.matrix(w)
+  b <- as.numeric(b)
   z <- sweep(x %*% t(w), 2L, b, "+")
   a <- .bkprp_sigma(z, activation)
   dsig <- .bkprp_sigma_prime(z, activation, a)
@@ -40,13 +43,17 @@ bkprp_backpropagation <- function(x, y, w = NULL, b = NULL,
   dW <- t(delta) %*% x / batch
   db <- colSums(delta) / batch
   dx <- delta %*% w / batch
-  list(loss = loss, estimate = loss, dW = dW, db = db, dx = dx, a = a, z = z,
-       method = "Backpropagation gradient computation")
+  list(
+    loss = loss, estimate = loss, dW = dW, db = db, dx = dx, a = a, z = z,
+    method = "Backpropagation gradient computation"
+  )
 }
 
 .bkprp_sigma <- function(z, activation) {
   switch(activation,
-    "identity" = z, "linear" = z, "none" = z,
+    "identity" = z,
+    "linear" = z,
+    "none" = z,
     "sigmoid" = 1 / (1 + exp(-z)),
     "tanh" = tanh(z),
     "relu" = pmax(0, z),

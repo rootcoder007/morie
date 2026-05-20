@@ -25,11 +25,13 @@ NULL
 #' @examples
 #' two_sample_t_test(rnorm(50, 0.5), rnorm(50, 0))
 two_sample_t_test <- function(x1, x2,
-                               equal_var = FALSE,
-                               alternative = c("two.sided", "greater", "less")) {
+                              equal_var = FALSE,
+                              alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
-  result <- stats::t.test(x1, x2, var.equal = equal_var,
-                          alternative = alternative)
+  result <- stats::t.test(x1, x2,
+    var.equal = equal_var,
+    alternative = alternative
+  )
   d <- cohens_d(x1, x2)
   list(
     t = as.numeric(result$statistic),
@@ -48,12 +50,12 @@ two_sample_t_test <- function(x1, x2,
 #' @return Named list: `t`, `df`, `p_value`, `ci`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 one_sample_t_test <- function(x, mu0 = 0,
-                               alternative = c("two.sided", "greater", "less")) {
+                              alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::t.test(x, mu = mu0, alternative = alternative)
   list(
@@ -72,12 +74,12 @@ one_sample_t_test <- function(x, mu0 = 0,
 #' @return Named list: `t`, `df`, `p_value`, `ci_diff`, `mean_diff`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 paired_t_test <- function(x1, x2,
-                           alternative = c("two.sided", "greater", "less")) {
+                          alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::t.test(x1, x2, paired = TRUE, alternative = alternative)
   list(
@@ -96,8 +98,8 @@ paired_t_test <- function(x1, x2,
 #' @return Named list: `chi_sq`, `df`, `p_value`, `cramers_v`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 chi_square_test <- function(observed, expected = NULL) {
@@ -127,12 +129,12 @@ chi_square_test <- function(observed, expected = NULL) {
 #' @return Named list: `odds_ratio`, `ci`, `p_value`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 fisher_exact_test <- function(table_2x2,
-                               alternative = c("two.sided", "greater", "less")) {
+                              alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::fisher.test(as.matrix(table_2x2), alternative = alternative)
   list(
@@ -159,15 +161,15 @@ anova_one_way <- function(...) {
   fit <- stats::aov(y ~ grp, data = df_long)
   s <- summary(fit)[[1]]
   f_val <- s["grp", "F value"]
-  df_b  <- s["grp", "Df"]
-  df_w  <- s["Residuals", "Df"]
-  ss_b  <- s["grp", "Sum Sq"]
-  ss_t  <- sum(s[, "Sum Sq"])
+  df_b <- s["grp", "Df"]
+  df_w <- s["Residuals", "Df"]
+  ss_b <- s["grp", "Sum Sq"]
+  ss_t <- sum(s[, "Sum Sq"])
   list(
     F = f_val,
     df_between = df_b,
-    df_within  = df_w,
-    p_value    = s["grp", "Pr(>F)"],
+    df_within = df_w,
+    p_value = s["grp", "Pr(>F)"],
     eta_squared = ss_b / ss_t
   )
 }
@@ -178,8 +180,8 @@ anova_one_way <- function(...) {
 #' @return Named list: `H`, `df`, `p_value`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 kruskal_wallis_test <- function(...) {
@@ -203,15 +205,17 @@ kruskal_wallis_test <- function(...) {
 #' @return Named list: `W`, `p_value`, `r` (effect size).
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 mann_whitney_test <- function(x1, x2,
-                               alternative = c("two.sided", "greater", "less")) {
+                              alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
-  result <- stats::wilcox.test(x1, x2, alternative = alternative,
-                                exact = FALSE)
+  result <- stats::wilcox.test(x1, x2,
+    alternative = alternative,
+    exact = FALSE
+  )
   n <- length(x1) * length(x2)
   r_effect <- abs(stats::qnorm(result$p.value / 2)) / sqrt(n)
   list(W = as.numeric(result$statistic), p_value = result$p.value, r = r_effect)
@@ -225,15 +229,17 @@ mann_whitney_test <- function(x1, x2,
 #' @return Named list: `V`, `p_value`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 wilcoxon_signed_rank_test <- function(x1, x2,
-                                       alternative = c("two.sided", "greater", "less")) {
+                                      alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
-  result <- stats::wilcox.test(x1, x2, paired = TRUE,
-                                alternative = alternative, exact = FALSE)
+  result <- stats::wilcox.test(x1, x2,
+    paired = TRUE,
+    alternative = alternative, exact = FALSE
+  )
   list(V = as.numeric(result$statistic), p_value = result$p.value)
 }
 
@@ -244,8 +250,8 @@ wilcoxon_signed_rank_test <- function(x1, x2,
 #' @return Named list: `W`, `p_value`, `is_normal`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 shapiro_wilk_test <- function(x, alpha = 0.05) {
@@ -263,8 +269,8 @@ shapiro_wilk_test <- function(x, alpha = 0.05) {
 #' @return Named list: `F`, `p_value`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 levene_test <- function(...) {
@@ -296,7 +302,7 @@ levene_test <- function(...) {
 #' @examples
 #' proportion_ci(35, 100)
 proportion_ci <- function(successes, n, alpha = 0.05,
-                           method = c("wilson", "exact", "wald")) {
+                          method = c("wilson", "exact", "wald")) {
   method <- match.arg(method)
   p <- successes / n
   z <- stats::qnorm(1 - alpha / 2)
@@ -307,9 +313,11 @@ proportion_ci <- function(successes, n, alpha = 0.05,
     margin <- z * sqrt(p * (1 - p) / n + z^2 / (4 * n^2)) / denom
     ci <- c(centre - margin, centre + margin)
   } else if (method == "exact") {
-    ci <- stats::qbeta(c(alpha / 2, 1 - alpha / 2),
-                       c(successes, successes + 1),
-                       c(n - successes + 1, n - successes))
+    ci <- stats::qbeta(
+      c(alpha / 2, 1 - alpha / 2),
+      c(successes, successes + 1),
+      c(n - successes + 1, n - successes)
+    )
   } else {
     margin <- z * sqrt(p * (1 - p) / n)
     ci <- c(p - margin, p + margin)
@@ -325,8 +333,8 @@ proportion_ci <- function(successes, n, alpha = 0.05,
 #' @return Named list: `or`, `ci_lower`, `ci_upper`, `p_value`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 odds_ratio_ci <- function(table_2x2, alpha = 0.05) {
@@ -336,7 +344,7 @@ odds_ratio_ci <- function(table_2x2, alpha = 0.05) {
     or = as.numeric(result$estimate),
     ci_lower = result$conf.int[1],
     ci_upper = result$conf.int[2],
-    p_value  = result$p.value
+    p_value = result$p.value
   )
 }
 
@@ -347,17 +355,22 @@ odds_ratio_ci <- function(table_2x2, alpha = 0.05) {
 #' @return Named list: `rr`, `ci_lower`, `ci_upper`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 risk_ratio_ci <- function(table_2x2, alpha = 0.05) {
   m <- as.matrix(table_2x2)
-  a <- m[1, 1]; b <- m[1, 2]; c <- m[2, 1]; d <- m[2, 2]
-  n1 <- a + b; n2 <- c + d
-  p1 <- a / n1; p2 <- c / n2
+  a <- m[1, 1]
+  b <- m[1, 2]
+  c <- m[2, 1]
+  d <- m[2, 2]
+  n1 <- a + b
+  n2 <- c + d
+  p1 <- a / n1
+  p2 <- c / n2
   rr <- p1 / p2
-  log_se <- sqrt(1/a - 1/n1 + 1/c - 1/n2)
+  log_se <- sqrt(1 / a - 1 / n1 + 1 / c - 1 / n2)
   z <- stats::qnorm(1 - alpha / 2)
   list(
     rr = rr,
@@ -373,15 +386,20 @@ risk_ratio_ci <- function(table_2x2, alpha = 0.05) {
 #' @return Named list: `rd`, `ci_lower`, `ci_upper`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 risk_difference_ci <- function(table_2x2, alpha = 0.05) {
   m <- as.matrix(table_2x2)
-  a <- m[1, 1]; b <- m[1, 2]; c <- m[2, 1]; d <- m[2, 2]
-  n1 <- a + b; n2 <- c + d
-  p1 <- a / n1; p2 <- c / n2
+  a <- m[1, 1]
+  b <- m[1, 2]
+  c <- m[2, 1]
+  d <- m[2, 2]
+  n1 <- a + b
+  n2 <- c + d
+  p1 <- a / n1
+  p2 <- c / n2
   rd <- p1 - p2
   z <- stats::qnorm(1 - alpha / 2)
   se <- sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2)
@@ -405,17 +423,22 @@ risk_difference_ci <- function(table_2x2, alpha = 0.05) {
 #' @return Numeric Cohen's d.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 cohens_d <- function(x1, x2, pooled = TRUE) {
-  m1 <- mean(x1, na.rm = TRUE); m2 <- mean(x2, na.rm = TRUE)
-  n1 <- sum(!is.na(x1)); n2 <- sum(!is.na(x2))
-  s1 <- stats::sd(x1, na.rm = TRUE); s2 <- stats::sd(x2, na.rm = TRUE)
+  m1 <- mean(x1, na.rm = TRUE)
+  m2 <- mean(x2, na.rm = TRUE)
+  n1 <- sum(!is.na(x1))
+  n2 <- sum(!is.na(x2))
+  s1 <- stats::sd(x1, na.rm = TRUE)
+  s2 <- stats::sd(x2, na.rm = TRUE)
   sd_denom <- if (pooled) {
     sqrt(((n1 - 1) * s1^2 + (n2 - 1) * s2^2) / (n1 + n2 - 2))
-  } else s2
+  } else {
+    s2
+  }
   (m1 - m2) / sd_denom
 }
 
@@ -425,13 +448,14 @@ cohens_d <- function(x1, x2, pooled = TRUE) {
 #' @return Numeric Hedges' g.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 hedges_g <- function(x1, x2) {
   d <- cohens_d(x1, x2, pooled = TRUE)
-  n1 <- sum(!is.na(x1)); n2 <- sum(!is.na(x2))
+  n1 <- sum(!is.na(x1))
+  n2 <- sum(!is.na(x2))
   df <- n1 + n2 - 2
   correction <- 1 - 3 / (4 * df - 1)
   d * correction
@@ -445,13 +469,13 @@ hedges_g <- function(x1, x2) {
 #' @return Numeric eta-squared.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 eta_squared <- function(f_stat, df_between, df_within) {
   ss_between <- f_stat * df_between
-  ss_total   <- ss_between + df_within
+  ss_total <- ss_between + df_within
   ss_between / ss_total
 }
 
@@ -473,16 +497,16 @@ omega_squared <- function(f_stat, df_between, df_within, n) {
 #' @return Numeric Cramer's V in the interval \[0, 1\].
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 cramers_v <- function(contingency_table) {
   m <- as.matrix(contingency_table)
   result <- stats::chisq.test(m, correct = FALSE)
   chi2 <- as.numeric(result$statistic)
-  n    <- sum(m)
-  k    <- min(nrow(m), ncol(m))
+  n <- sum(m)
+  k <- min(nrow(m), ncol(m))
   sqrt(chi2 / (n * (k - 1)))
 }
 
@@ -493,8 +517,8 @@ cramers_v <- function(contingency_table) {
 #' @return Named list: `rho`, `p_value`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 spearman_rho <- function(x, y) {
@@ -509,8 +533,8 @@ spearman_rho <- function(x, y) {
 #' @return Named list: `tau`, `p_value`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 kendall_tau <- function(x, y) {
@@ -525,8 +549,8 @@ kendall_tau <- function(x, y) {
 #' @return Named list: `r`, `p_value`.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 point_biserial_r <- function(binary_var, continuous_var) {
@@ -556,9 +580,9 @@ point_biserial_r <- function(binary_var, continuous_var) {
 #' @examples
 #' power_t_test(n = NULL, delta = 0.5, power = 0.80)
 power_t_test <- function(n = NULL, delta = NULL, sd = 1,
-                          sig_level = 0.05, power = NULL,
-                          alternative = c("two.sided", "one.sided"),
-                          type = c("two.sample", "one.sample", "paired")) {
+                         sig_level = 0.05, power = NULL,
+                         alternative = c("two.sided", "one.sided"),
+                         type = c("two.sample", "one.sample", "paired")) {
   alternative <- match.arg(alternative)
   type <- match.arg(type)
   stats::power.t.test(
@@ -583,8 +607,8 @@ power_t_test <- function(n = NULL, delta = NULL, sd = 1,
 #' @examples
 #' power_prop_test(p1 = 0.30, p2 = 0.20, power = 0.80)
 power_prop_test <- function(n = NULL, p1 = NULL, p2 = NULL,
-                             sig_level = 0.05, power = NULL,
-                             alternative = c("two.sided", "one.sided")) {
+                            sig_level = 0.05, power = NULL,
+                            alternative = c("two.sided", "one.sided")) {
   alternative <- match.arg(alternative)
   stats::power.prop.test(
     n = n, p1 = p1, p2 = p2,
@@ -606,8 +630,8 @@ power_prop_test <- function(n = NULL, p1 = NULL, p2 = NULL,
 #' @return Integer sample size.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 #' @references
@@ -615,7 +639,7 @@ power_prop_test <- function(n = NULL, p1 = NULL, p2 = NULL,
 #'   calculation for linear and logistic regression.
 #'   *Statistics in Medicine*, 17(14):1623-1634.
 sample_size_logistic <- function(p0, or, alpha = 0.05, power = 0.80,
-                                  two_sided = TRUE) {
+                                 two_sided = TRUE) {
   p1 <- (or * p0) / (1 - p0 + or * p0)
   z_a <- stats::qnorm(if (two_sided) 1 - alpha / 2 else 1 - alpha)
   z_b <- stats::qnorm(power)

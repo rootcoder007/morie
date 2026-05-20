@@ -7,13 +7,14 @@
 
 skip_if_no_hash <- function() {
   ok <- requireNamespace("digest", quietly = TRUE) ||
-        requireNamespace("openssl", quietly = TRUE)
+    requireNamespace("openssl", quietly = TRUE)
   testthat::skip_if_not(ok, "neither 'digest' nor 'openssl' available")
 }
 
 xy_fixture <- function() {
   set.seed(0L)
-  n <- 120L; p <- 3L
+  n <- 120L
+  p <- 3L
   X <- matrix(rnorm(n * p), nrow = n, ncol = p)
   y <- as.integer(X[, 1] + X[, 2] > 0)
   list(x = X, y = y)

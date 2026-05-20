@@ -12,18 +12,21 @@
 #' @importFrom stats pchisq
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 concordance_incomplete <- function(x) {
   X <- as.matrix(x)
   storage.mode(X) <- "numeric"
-  n <- nrow(X); k <- ncol(X)
+  n <- nrow(X)
+  k <- ncol(X)
   if (n < 2 || k < 2) {
-    return(list(statistic = NA_real_, p_value = NA_real_, df = n - 1L,
-                chi2 = NA_real_, n = n, k = k,
-                method = "Kendall's coefficient of concordance W"))
+    return(list(
+      statistic = NA_real_, p_value = NA_real_, df = n - 1L,
+      chi2 = NA_real_, n = n, k = k,
+      method = "Kendall's coefficient of concordance W"
+    ))
   }
   R <- matrix(NA_real_, n, k)
   for (j in seq_len(k)) {
@@ -39,7 +42,8 @@ concordance_incomplete <- function(x) {
     W <- 12 * S / (k^2 * (n^3 - n))
   } else {
     expected <- (n + 1) / 2
-    S <- 0; norm <- 0
+    S <- 0
+    norm <- 0
     for (i in seq_len(n)) {
       ri <- R[i, !is.na(R[i, ])]
       if (length(ri) > 0) {

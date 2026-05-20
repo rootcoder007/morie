@@ -17,30 +17,37 @@
 #' @references VanRaden (2008) J Dairy Sci 91:4414. Montesinos Lopez Ch 3.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 grm_vanraden <- function(markers, method = 1) {
-  M <- as.matrix(markers); storage.mode(M) <- "double"
-  n <- nrow(M); m <- ncol(M)
+  M <- as.matrix(markers)
+  storage.mode(M) <- "double"
+  n <- nrow(M)
+  m <- ncol(M)
   p <- colMeans(M) / 2
   Z <- sweep(M, 2, 2 * p, "-")
   if (identical(method, 2)) {
-    s <- sqrt(2 * p * (1 - p)); s[s <= 0] <- 1
+    s <- sqrt(2 * p * (1 - p))
+    s[s <= 0] <- 1
     Z <- sweep(Z, 2, s, "/")
     denom <- m
     method_str <- "VanRaden method 2 (per-locus scaled)"
   } else {
-    denom <- 2 * sum(p * (1 - p)); if (denom <= 0) denom <- 1
+    denom <- 2 * sum(p * (1 - p))
+    if (denom <= 0) denom <- 1
     method_str <- "VanRaden method 1 (sum-2pq)"
   }
   G <- tcrossprod(Z) / denom
   diag_mean <- mean(diag(G))
-  off <- G; diag(off) <- 0
+  off <- G
+  diag(off) <- 0
   off_mean <- if (n > 1) sum(off) / (n * (n - 1)) else 0
-  list(estimate = G, diag_mean = diag_mean, off_mean = off_mean,
-       p = p, n = n, m = m, method = method_str)
+  list(
+    estimate = G, diag_mean = diag_mean, off_mean = off_mean,
+    p = p, n = n, m = m, method = method_str
+  )
 }
 
 # CANONICAL TEST

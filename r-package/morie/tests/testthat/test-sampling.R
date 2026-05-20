@@ -47,8 +47,10 @@ test_that("stratified_sample returns correct stratum sizes", {
 })
 
 test_that("stratified_sample proportional allocation returns ~n rows", {
-  s <- stratified_sample(df100, "group", n_per_stratum = 30,
-                          proportional = TRUE)
+  s <- stratified_sample(df100, "group",
+    n_per_stratum = 30,
+    proportional = TRUE
+  )
   expect_true(nrow(s) >= 28 && nrow(s) <= 32)
 })
 
@@ -82,10 +84,14 @@ test_that("pps_sample adds .weight column", {
 # ── bootstrap_sample ──────────────────────────────────────────────────────────
 
 test_that("bootstrap_sample returns correct fields", {
-  result <- bootstrap_sample(df100, statistic = function(d) mean(d$x),
-                              n_bootstrap = 200L)
-  expect_named(result, c("estimate", "se", "ci_lower", "ci_upper",
-                          "distribution"))
+  result <- bootstrap_sample(df100,
+    statistic = function(d) mean(d$x),
+    n_bootstrap = 200L
+  )
+  expect_named(result, c(
+    "estimate", "se", "ci_lower", "ci_upper",
+    "distribution"
+  ))
   expect_length(result$distribution, 200L)
   expect_lt(result$ci_lower, result$ci_upper)
 })

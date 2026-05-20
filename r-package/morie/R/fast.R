@@ -51,7 +51,9 @@ morie_var <- function(x, ddof = 1) {
     morie_var_cpp(as.numeric(x), as.integer(ddof))
   } else {
     n <- length(x)
-    if (n - ddof <= 0) return(NA_real_)
+    if (n - ddof <= 0) {
+      return(NA_real_)
+    }
     sum((x - mean(x))^2) / (n - ddof)
   }
 }
@@ -71,10 +73,13 @@ morie_cor_pearson <- function(x, y) {
 
 # Internal: detect whether the Rcpp .so was successfully built.
 .cpp_available <- function() {
-  tryCatch({
-    exists("morie_normal_pdf_cpp", mode = "function") &&
-      is.function(get("morie_normal_pdf_cpp"))
-  }, error = function(e) FALSE)
+  tryCatch(
+    {
+      exists("morie_normal_pdf_cpp", mode = "function") &&
+        is.function(get("morie_normal_pdf_cpp"))
+    },
+    error = function(e) FALSE
+  )
 }
 
 #' Is the R-side JIT acceleration active?

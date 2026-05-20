@@ -7,14 +7,15 @@
 # and spatial-weights matrices.
 .sarla_negll <- function(rho, e0, e1, n, I, W) {
   e <- e0 - rho * e1
-  sigma2 <- as.numeric(sum(e ^ 2)) / n
+  sigma2 <- as.numeric(sum(e^2)) / n
   A <- I - rho * W
   det_sign <- determinant(A, logarithm = TRUE)
   # !is.finite(modulus) catches a singular A (det == 0), for which
   # determinant() still reports sign = +1; without it the -logdetA term
   # below would be +Inf rather than the intended penalty.
-  if (det_sign$sign <= 0 || sigma2 <= 0 || !is.finite(det_sign$modulus))
+  if (det_sign$sign <= 0 || sigma2 <= 0 || !is.finite(det_sign$modulus)) {
     return(1e12)
+  }
   logdetA <- as.numeric(det_sign$modulus)
   0.5 * n * log(2 * pi * sigma2) - logdetA + 0.5 * n
 }
@@ -31,15 +32,19 @@
 #' @references Anselin (1988); Schabenberger & Gotway (2005), Ch 7.
 #' @examples
 #' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' }
 #' @export
 sarla <- function(x, y, w) {
-  X <- as.matrix(x); y <- as.numeric(y); W <- as.matrix(w)
-  n <- length(y); p <- ncol(X)
-  if (nrow(X) != n || any(dim(W) != c(n, n)))
+  X <- as.matrix(x)
+  y <- as.numeric(y)
+  W <- as.matrix(w)
+  n <- length(y)
+  p <- ncol(X)
+  if (nrow(X) != n || any(dim(W) != c(n, n))) {
     stop("shape mismatch among x, y, w")
+  }
   I <- diag(n)
   XtX_inv <- solve(crossprod(X))
   M <- I - X %*% XtX_inv %*% t(X)
@@ -52,11 +57,13 @@ sarla <- function(x, y, w) {
   y_star <- as.numeric(y - rho * Wy)
   beta <- as.numeric(XtX_inv %*% crossprod(X, y_star))
   e <- y_star - as.numeric(X %*% beta)
-  sigma2 <- sum(e ^ 2) / max(n - p - 1, 1)
+  sigma2 <- sum(e^2) / max(n - p - 1, 1)
   cov_b <- sigma2 * XtX_inv
   se <- sqrt(pmax(diag(cov_b), 0))
-  list(estimate = beta, se = se, rho = rho, sigma2 = sigma2, n = n,
-       method = "SAR lag (ML, concentrated log-likelihood)")
+  list(
+    estimate = beta, se = se, rho = rho, sigma2 = sigma2, n = n,
+    method = "SAR lag (ML, concentrated log-likelihood)"
+  )
 }
 
 # CANONICAL TEST  (with row-standardised path graph)

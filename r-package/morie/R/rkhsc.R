@@ -12,9 +12,11 @@
 #' @keywords internal
 rkhsc <- function(x, y, sigma = NULL, lam = 1e-3) {
   if (!is.matrix(x)) x <- matrix(x, ncol = 1)
-  y <- as.numeric(y); n <- nrow(x)
-  if (n < 2L || length(y) != n)
+  y <- as.numeric(y)
+  n <- nrow(x)
+  if (n < 2L || length(y) != n) {
     return(list(estimate = NA_real_, n = n, method = "RKHS KRR (n<2)"))
+  }
   D2 <- as.matrix(stats::dist(x))^2
   if (is.null(sigma)) {
     med <- stats::median(sqrt(D2[D2 > 0]))
@@ -24,15 +26,18 @@ rkhsc <- function(x, y, sigma = NULL, lam = 1e-3) {
   alpha <- solve(K + n * lam * diag(n), y)
   fitted <- as.numeric(K %*% alpha)
   resid <- y - fitted
-  sse <- sum(resid^2); sst <- sum((y - mean(y))^2)
+  sse <- sum(resid^2)
+  sst <- sum((y - mean(y))^2)
   r2 <- if (sst > 0) 1 - sse / sst else NA_real_
-  list(alpha = alpha, fitted = fitted, residuals = resid,
-       sigma = as.numeric(sigma), lambda = lam,
-       sse = sse, r2 = as.numeric(r2),
-       estimate = mean(fitted),
-       se = sqrt(sse / max(1, n - 1)) / sqrt(n),
-       n = as.integer(n),
-       method = "RKHS kernel ridge (Wahba 1990)")
+  list(
+    alpha = alpha, fitted = fitted, residuals = resid,
+    sigma = as.numeric(sigma), lambda = lam,
+    sse = sse, r2 = as.numeric(r2),
+    estimate = mean(fitted),
+    se = sqrt(sse / max(1, n - 1)) / sqrt(n),
+    n = as.integer(n),
+    method = "RKHS kernel ridge (Wahba 1990)"
+  )
 }
 
 # CANONICAL TEST
