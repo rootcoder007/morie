@@ -4,7 +4,12 @@
 \alias{morie_download_bootstrap}
 \title{Download bootstrap weight files from CKAN API}
 \usage{
-morie_download_bootstrap(survey = "all", limit = 32000L, db_path = NULL)
+morie_download_bootstrap(
+  survey = "all",
+  limit = 32000L,
+  db_path = NULL,
+  con = NULL
+)
 }
 \arguments{
 \item{survey}{One of \code{"csads_2021"}, \code{"csads_2023"},
@@ -12,7 +17,9 @@ morie_download_bootstrap(survey = "all", limit = 32000L, db_path = NULL)
 
 \item{limit}{Max records per CKAN request (default 32000).}
 
-\item{db_path}{Optional override for cache database path.}
+\item{db_path}{Optional path to a SQLite/DuckDB file (default backend).}
+
+\item{con}{Optional pre-opened DBI connection (overrides \code{db_path}).}
 }
 \value{
 Invisibly, the number of CSV files successfully downloaded.

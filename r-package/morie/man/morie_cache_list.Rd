@@ -4,10 +4,12 @@
 \alias{morie_cache_list}
 \title{List all tables in the MORIE cache}
 \usage{
-morie_cache_list(db_path = NULL)
+morie_cache_list(db_path = NULL, con = NULL)
 }
 \arguments{
-\item{db_path}{Optional override for the database path.}
+\item{db_path}{Optional path to a SQLite file (default backend).}
+
+\item{con}{Optional pre-opened DBI connection (overrides \code{db_path}).}
 }
 \value{
 A data.frame with columns \code{table} and \code{rows}.

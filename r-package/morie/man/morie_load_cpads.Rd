@@ -4,13 +4,15 @@
 \alias{morie_load_cpads}
 \title{Load CPADS data: local files -> cache -> CKAN API}
 \usage{
-morie_load_cpads(db_path = NULL, use_ckan = TRUE)
+morie_load_cpads(db_path = NULL, use_ckan = TRUE, con = NULL)
 }
 \arguments{
-\item{db_path}{Optional override for the database path.}
+\item{db_path}{Optional path to a SQLite/DuckDB file (default backend).}
 
 \item{use_ckan}{Logical; if TRUE and data not found locally or in cache,
 attempt to fetch from the CKAN API.}
+
+\item{con}{Optional pre-opened DBI connection (overrides \code{db_path}).}
 }
 \value{
 A data.frame with canonical CPADS columns.

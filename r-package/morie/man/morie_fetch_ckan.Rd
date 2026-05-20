@@ -8,7 +8,8 @@ morie_fetch_ckan(
   dataset_key = "cpads",
   limit = Inf,
   db_path = NULL,
-  resource_id = NULL
+  resource_id = NULL,
+  con = NULL
 )
 }
 \arguments{

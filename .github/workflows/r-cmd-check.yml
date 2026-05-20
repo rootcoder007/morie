@@ -72,3 +72,65 @@ jobs:
           # vignettes/PDFs in CI.
           args: 'c("--no-manual")'
           error-on: '"error"'
+
+  # Separate Linux-only job that spins up a live PostgreSQL service and
+  # exercises the PG branch of the DBI cache layer. The PG testthat
+  # block in tests/testthat/test-db-backends.R is gated on
+  # MORIE_PG_TEST=true; this job sets that env var so the tests run.
+  # The default R-CMD-check matrix above does NOT set MORIE_PG_TEST,
+  # so the PG block correctly skips there.
+  R-CMD-check-postgres:
+    runs-on: ubuntu-latest
+    name: ubuntu-latest (release) + postgres-15
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      _R_CHECK_FORCE_SUGGESTS_: false
+      R_KEEP_PKG_SOURCE: yes
+      MORIE_PG_TEST: "true"
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: password
+      PGDATABASE: testdb
+
+    defaults:
+      run:
+        working-directory: r-package/morie
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - uses: r-lib/actions/setup-pandoc@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+
+      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          working-directory: r-package/morie
+          extra-packages: any::rcmdcheck any::RPostgres any::duckdb any::withr
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          working-directory: r-package/morie
+          upload-snapshots: true
+          args: 'c("--no-manual")'
+          error-on: '"error"'

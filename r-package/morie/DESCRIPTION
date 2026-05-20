@@ -52,6 +52,8 @@ Suggests:
   MatchIt,
   DBI,
   RSQLite,
+  duckdb,
+  RPostgres,
   jsonlite,
   xml2,
   rvest,
@@ -91,6 +93,7 @@ Suggests:
   eegkit,
   R.matlab,
   testthat (>= 3.0.0),
+  withr,
   knitr,
   rmarkdown
 VignetteBuilder: knitr
