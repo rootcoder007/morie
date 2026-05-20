@@ -7,3 +7,4 @@ src/symbols.rds
 /morie.Rcheck/
 /morie_*.tar.gz
 ..Rcheck/
+src/*.gcda
