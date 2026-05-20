@@ -20,10 +20,7 @@ list(estimate, beta, intercept, se, beta_se, lam, n, p, method).
 beta_hat = solve(X'X + lambda\emph{I) \%}\% X'y
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+bayesian_ridge_regression(x = rnorm(50), y = rnorm(50))
 }
 \references{
 Montesinos Lopez Ch 4.

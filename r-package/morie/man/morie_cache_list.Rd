@@ -16,8 +16,5 @@ A data.frame with columns \code{table} and \code{rows}.
 List all tables in the MORIE cache
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_cache_list()
 }

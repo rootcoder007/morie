@@ -27,10 +27,7 @@ n, method.
        \sum_{(i,j) \in N(h)} (Z(s_i) - Z(s_j))^2}
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+vrgm(x = rnorm(50), coords = matrix(runif(100), 50, 2))
 }
 \references{
 Matheron (1962); Schabenberger & Gotway (2005), Ch 3.

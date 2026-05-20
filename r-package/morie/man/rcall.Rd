@@ -24,9 +24,6 @@ per-roll-call marginals, and the Poole-Rosenthal "lopsided"
 4, 5, 6 = nay; 0, 7, 8, 9 = absent) and re-maps automatically.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+rcall(x = rnorm(50))
 }
 \keyword{internal}

@@ -28,10 +28,7 @@
 #' @return Named list with \code{omega, alpha, gamma, beta, loglik,
 #'   conditional_variance, n, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' egarch_model(x = rnorm(50))
 #' @export
 egarch_model <- function(x) {
   r <- as.numeric(x) - mean(as.numeric(x))

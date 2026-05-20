@@ -88,10 +88,7 @@
 #' @return Named list with `banzhaf`, `shapley_shubik`, `quota`,
 #'   `weights`, `method`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' vtpwr(x = rnorm(50))
 #' @export
 vtpwr <- function(x, quota = NULL) {
   w <- as.numeric(x)

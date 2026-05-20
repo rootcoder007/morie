@@ -13,8 +13,5 @@ Data frame describing the implemented module surface.
 List implemented MORIE CPADS modules
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+list_morie_modules()
 }

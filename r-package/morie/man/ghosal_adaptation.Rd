@@ -20,8 +20,5 @@ Named list with estimate, betas, rates, best_beta, n, d, method.
 Adaptive contraction rates over a smoothness grid.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ghosal_adaptation(x = rnorm(50))
 }

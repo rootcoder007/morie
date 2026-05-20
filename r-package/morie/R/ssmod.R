@@ -6,10 +6,7 @@
 #' @return Named list with \code{filtered_state, filtered_state_variance,
 #'   smoothed_state, loglik, Q, R, n, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' state_space_model(x = rnorm(50))
 #' @export
 state_space_model <- function(x) {
   y <- as.numeric(x)

@@ -20,8 +20,5 @@ Fit a constant-mean, switching-variance K-regime Markov-switching
 model by EM (Hamilton filter).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+regime_switching(x = rnorm(50))
 }

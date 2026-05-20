@@ -8,10 +8,7 @@
 #' @param noise Optional noise sd.
 #' @return Named list with estimate, fitted, noise, sigma, inclusion, n, method.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ghosal_wavelet_prior(x = rnorm(50))
 #' @export
 ghosal_wavelet_prior <- function(x, pi = 0.5, sigma = NULL, noise = NULL) {
   x <- as.numeric(x)

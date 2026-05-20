@@ -21,9 +21,6 @@ A_ij = proportion of roll calls on which legislators i, j voted the
 same way (excluding mutually absent items).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+sptag(x = rnorm(50))
 }
 \keyword{internal}

@@ -11,10 +11,7 @@
 #' @param degree Polynomial degree.
 #' @return Named list: estimate, se, feature_names, degree, n, method.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_polynomial_regression(x = rnorm(50), y = rnorm(50))
 #' @export
 morie_polynomial_regression <- function(x, y, degree = 2L) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)

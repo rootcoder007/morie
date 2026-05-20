@@ -37,8 +37,5 @@ Named list with \code{state, state_cov, innovations,
 Defaults to a univariate local-level model when matrices are omitted.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_kalman_filter(x = rnorm(50))
 }

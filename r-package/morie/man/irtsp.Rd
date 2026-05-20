@@ -25,9 +25,6 @@ Joint-MLE alternating updates for Clinton-Jackman-Rivers 2PL.
 Standardises latent x to mean 0, SD 1 every sweep for identification.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+irtsp(x = rnorm(50))
 }
 \keyword{internal}

@@ -27,9 +27,6 @@ KDE with order-4 Wand-Jones (1995, eq 2.8) kernel
 to O(h^4).  Note: K_4 takes negative values so f_hat may be < 0.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+fzhok(x = rnorm(50))
 }
 \keyword{internal}

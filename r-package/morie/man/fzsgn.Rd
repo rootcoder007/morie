@@ -26,9 +26,6 @@ Named list with statistic, z, p_value, theta0, h, n, method.
 z = (S_n - n/2)/sqrt(n/4) ~ N(0,1).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+fzsgn(x = rnorm(50))
 }
 \keyword{internal}

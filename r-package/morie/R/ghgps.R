@@ -10,10 +10,7 @@
 #' @param x_star Optional matrix of prediction points (defaults to x).
 #' @return Named list with estimate, se, mu, sd, length_scale, noise, n, method.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ghosal_gp_squared_exponential(x = rnorm(50), y = rnorm(50))
 #' @export
 ghosal_gp_squared_exponential <- function(x, y, length_scale = NULL,
                                           sigma_f = 1.0, noise = NULL,

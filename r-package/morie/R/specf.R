@@ -8,10 +8,7 @@
 #' @return Named list with \code{frequencies, psd, n_segments, nperseg,
 #'   fs, n, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_spectral_density(x = rnorm(50))
 #' @export
 morie_spectral_density <- function(x, fs = 1, nperseg = NULL) {
   r <- as.numeric(x)

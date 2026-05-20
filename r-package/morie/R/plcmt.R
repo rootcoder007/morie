@@ -8,10 +8,7 @@
 #' @param x,y Numeric vectors.
 #' @return Named list: placements, ranks_y, U_y, E_U, Var_U, m, n.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' rank_placements(x = rnorm(50), y = rnorm(50))
 #' @export
 rank_placements <- function(x, y) {
   x <- as.numeric(x)

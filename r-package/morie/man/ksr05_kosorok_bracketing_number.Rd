@@ -21,10 +21,7 @@ Named list with estimate, n, method.
 "bracketing number for one-sided threshold class"
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ksr05_kosorok_bracketing_number(x = rnorm(50))
 }
 \references{
 Kosorok (2008), Ch 2.

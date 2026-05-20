@@ -22,10 +22,7 @@ sup_t |F_n(t) - F(t)| under a hypothesised CDF F.  By
 Glivenko-Cantelli the statistic -> 0 a.s. when F is correct.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ksr03_kosorok_glivenko_cantelli(x = rnorm(50))
 }
 \references{
 Kosorok (2008), Ch 2.

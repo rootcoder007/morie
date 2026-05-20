@@ -18,8 +18,5 @@ Scores a_i = qnorm(R_i / (N + 1)); statistic = sum over the
 first sample.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+van_der_waerden_test(x = rnorm(50), y = rnorm(50))
 }

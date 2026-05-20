@@ -2,10 +2,7 @@
 #'
 #' @return Named list describing the expected local CPADS contract.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' cpads_contract()
 #' @export
 cpads_contract <- function() {
   list(

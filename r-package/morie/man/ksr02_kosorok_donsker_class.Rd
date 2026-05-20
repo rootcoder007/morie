@@ -20,10 +20,7 @@ Computes J_[](1, F, L_2(P)) = int_0^1 sqrt(log N_brackets(e, F, L_2(P))) de
 for the indicator class F of one-sided thresholds on X (Kosorok Ex 2.5.4), with bracketing number bounded by 2 over epsilon squared.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ksr02_kosorok_donsker_class(x = rnorm(50))
 }
 \references{
 Kosorok (2008), Ch 2 (Theorem 2.5.2).

@@ -27,9 +27,6 @@ studentised kernel quantile.  Skewness of the indicator score
 \deqn{P(T_n \le z) \approx \Phi(z) - (\gamma_1/6)(z^2-1)\phi(z)/\sqrt n.}
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+fzedg(x = rnorm(50))
 }
 \keyword{internal}

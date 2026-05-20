@@ -10,10 +10,7 @@
 #' @return Named list: statistic, p_value, df, n, grand_median, table.
 #' @importFrom stats median chisq.test
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' control_median_test(x = rnorm(50), y = rnorm(50))
 #' @export
 control_median_test <- function(x, y) {
   x <- as.numeric(x)

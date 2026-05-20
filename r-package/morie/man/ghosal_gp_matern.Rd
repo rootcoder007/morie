@@ -36,8 +36,5 @@ Named list with estimate, se, mu, sd, length_scale, nu, noise, n, method.
 GP posterior mean with Matern kernel.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ghosal_gp_matern(x = rnorm(50), y = rnorm(50))
 }

@@ -19,8 +19,5 @@ a_i = qnorm((R_i - 3/8) / (N + 1/4)).  Statistic stat_t = sum of
 scores from the first sample.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+terry_hoeffding_test(x = rnorm(50), y = rnorm(50))
 }

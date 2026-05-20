@@ -9,10 +9,7 @@
 #' @return Named list with estimate, n, method.
 #' @references Kosorok (2008), Ch 2 (Theorem 2.5.2).
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ksr02_kosorok_donsker_class(x = rnorm(50))
 #' @export
 ksr02_kosorok_donsker_class <- function(x) {
   x <- as.numeric(x)

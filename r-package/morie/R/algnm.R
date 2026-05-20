@@ -11,10 +11,7 @@
 #' @return Named list with `estimate`, `per_party` (if 2-D), `n`,
 #'   `method`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' algnm(x = rnorm(50))
 #' @export
 algnm <- function(x, party = NULL) {
   X <- if (is.matrix(x)) x else as.numeric(x)

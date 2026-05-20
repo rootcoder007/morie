@@ -17,8 +17,5 @@ For each Y_j: placement P_j = number of X_i less than Y_j.  Their sum is the
 Mann-Whitney U statistic for Y vs X.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+rank_placements(x = rnorm(50), y = rnorm(50))
 }

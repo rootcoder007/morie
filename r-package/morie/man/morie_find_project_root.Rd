@@ -20,8 +20,5 @@ Sphinx/package-root markers, while still tolerating legacy Quarto-era
 markers in older checkouts.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_find_project_root()
 }

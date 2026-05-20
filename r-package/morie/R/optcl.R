@@ -11,10 +11,7 @@
 #' @return Named list with `cut`, `correct_class`, `polarity`, `pre`,
 #'   `n`, `method`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' optcl(x = rnorm(50))
 #' @export
 optcl <- function(x, votes = NULL) {
   x <- as.numeric(x)

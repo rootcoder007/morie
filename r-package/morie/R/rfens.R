@@ -19,10 +19,7 @@
 #'   n_estimators, task, n, method.
 #' @importFrom stats predict
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' random_forest_ensemble(x = rnorm(50), y = rnorm(50))
 #' @export
 random_forest_ensemble <- function(x, y, n_estimators = 100L,
                                    max_depth = NULL, task = "auto",

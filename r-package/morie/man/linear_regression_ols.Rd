@@ -20,10 +20,7 @@ Wraps \code{stats::lm} and returns coefficients plus classical OLS
 standard errors.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+linear_regression_ols(x = rnorm(50), y = rnorm(50))
 }
 \references{
 Hastie, Tibshirani & Friedman, Elements of Statistical Learning (2009).

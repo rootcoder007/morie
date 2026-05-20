@@ -11,10 +11,7 @@
 #' @return Named list: statistic, p_value, z, n, m, q.
 #' @importFrom stats pnorm
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' percentile_modified_rank(x = rnorm(50), y = rnorm(50))
 #' @export
 percentile_modified_rank <- function(x, y, q = 0.25) {
   x <- as.numeric(x)

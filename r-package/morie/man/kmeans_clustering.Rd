@@ -25,8 +25,5 @@ n_iter, n_clusters, n, method.
 Wraps \code{stats::kmeans} with Hartigan-Wong (the default).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+kmeans_clustering(x = rnorm(50))
 }

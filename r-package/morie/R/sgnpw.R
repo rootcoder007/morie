@@ -13,10 +13,7 @@
 #'   k_lower, k_upper.
 #' @importFrom stats dbinom
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' sign_test_power(x = rnorm(50))
 #' @export
 sign_test_power <- function(x, mu0 = 0, p_alt = 0.7, alpha = 0.05) {
   x <- as.numeric(x)

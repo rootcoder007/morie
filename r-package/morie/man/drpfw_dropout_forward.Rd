@@ -45,10 +45,7 @@ R parity for \code{morie.fn.drpfw.dropout_forward}.
 \deqn{y = x \odot m / (1-p), \quad m \sim \mathrm{Bernoulli}(1-p)}
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+drpfw_dropout_forward(x = rnorm(50))
 }
 \references{
 Srivastava et al. (2014), JMLR 15:1929-1958.

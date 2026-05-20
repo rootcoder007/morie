@@ -25,9 +25,6 @@ Named list: statistic, p_value, h, n, method.
 \eqn{W_n^2 = n \int (\hat F_h(t)-F_0(t))^2 dF_0(t)}.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+fzcvm(x = rnorm(50))
 }
 \keyword{internal}

@@ -44,8 +44,5 @@ Wraps \code{gbm::gbm} when available, otherwise falls back to
 \code{xgboost} as a portable boosted-trees backend.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+gradient_boosting_ensemble(x = rnorm(50), y = rnorm(50))
 }

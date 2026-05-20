@@ -26,9 +26,6 @@ Named list with statistic, z, p_value, theta0, h, n, method.
 z = W_n / sqrt(n(n+1)(2n+1)/6) ~ N(0,1).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+fzwlc(x = rnorm(50))
 }
 \keyword{internal}

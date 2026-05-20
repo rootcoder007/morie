@@ -21,8 +21,5 @@ Named list with \code{frequencies, psd, n_segments, nperseg,
 Welch power spectral density
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_spectral_density(x = rnorm(50))
 }

@@ -27,8 +27,5 @@ split into k folds, for each train-fraction fit on a prefix of the
 training fold and score on the held-out fold.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+learning_curve(x = rnorm(50), y = rnorm(50))
 }

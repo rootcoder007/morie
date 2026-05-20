@@ -11,10 +11,7 @@
 #' @return Named list: statistic, p_value, h, n, method.
 #' @importFrom stats sd pnorm qnorm
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' fzcvm(x = rnorm(50))
 #' @export
 fzcvm <- function(x, cdf = "norm", args = NULL, h = NULL) {
   x <- as.numeric(x)

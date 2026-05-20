@@ -24,9 +24,6 @@ classifies legislators by Mahalanobis-style projection onto the
 between-class direction.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+csphr(x = rnorm(50))
 }
 \keyword{internal}

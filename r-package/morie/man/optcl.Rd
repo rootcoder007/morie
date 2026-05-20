@@ -24,9 +24,6 @@ of a binary vote vector. Reports PRE (proportional reduction in
 error) against the modal-class baseline.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+optcl(x = rnorm(50))
 }
 \keyword{internal}

@@ -24,8 +24,5 @@ Named list: \code{t}, \code{df}, \code{p_value}, \code{ci}.
 One-sample t-test
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_one_sample_t_test(x = rnorm(50))
 }

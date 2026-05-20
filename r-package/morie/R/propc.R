@@ -7,10 +7,7 @@
 #' @return Named list with \code{trend, seasonal, residual, slope,
 #'   intercept, fourier_terms, period, n, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' prophet_components(x = rnorm(50))
 #' @export
 prophet_components <- function(x, period = 12) {
   y <- as.numeric(x)

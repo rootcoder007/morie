@@ -26,9 +26,6 @@ Richardson-style extrapolation cancels the O(h^2) bias of the KDFE:
 \deqn{\hat F_{br}(t) = (c^2 \hat F_h(t) - \hat F_{ch}(t))/(c^2-1).}
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+fzbrd(x = rnorm(50))
 }
 \keyword{internal}

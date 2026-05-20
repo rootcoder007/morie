@@ -52,8 +52,5 @@ back to \code{gbm} (gradient boosting) so users still get a usable
 boosted-trees result; the backend is flagged in the output.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+xgboost_objective(x = rnorm(50), y = rnorm(50))
 }

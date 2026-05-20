@@ -12,10 +12,7 @@
 #' @return Named list: statistic (M^2), p_value, df, n, correlation.
 #' @importFrom stats cor pchisq
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ordered_categories(x = rnorm(50))
 #' @export
 ordered_categories <- function(x, row_scores = NULL, col_scores = NULL) {
   X <- as.matrix(x)

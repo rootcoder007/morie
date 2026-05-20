@@ -18,8 +18,5 @@ Lists or retrieves bundled userguide PDF files. These are the official
 PUMF codebooks and user guides from Health Canada / Statistics Canada.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_userguide()
 }

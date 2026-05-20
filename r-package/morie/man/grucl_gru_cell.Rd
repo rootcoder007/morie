@@ -55,10 +55,7 @@ R parity for \code{morie.fn.grucl.gru_cell}.  Gates stacked as
       h = (1 - z) \odot n + z \odot h_\text{prev}}
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+grucl_gru_cell(x = rnorm(50))
 }
 \references{
 Cho et al. (2014), EMNLP.

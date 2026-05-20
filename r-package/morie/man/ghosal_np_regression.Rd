@@ -25,8 +25,5 @@ log_marginal, length_scale, noise, n, method.
 Wraps \code{ghosal_gp_squared_exponential}.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ghosal_np_regression(x = rnorm(50), y = rnorm(50))
 }

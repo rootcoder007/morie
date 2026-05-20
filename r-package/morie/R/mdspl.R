@@ -11,10 +11,7 @@
 #' @return Named list with `coords`, `eigenvalues`, `stress`, `k`,
 #'   `n`, `method`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' mdspl(x = rnorm(50))
 #' @export
 mdspl <- function(x, k = 2L) {
   X <- if (is.matrix(x)) x else matrix(as.numeric(x), ncol = 1L)

@@ -36,8 +36,5 @@ named list with \code{estimate}, \code{grid}, \code{density}, \code{k_post}, \co
 DP mixture density estimate (Neal 2000 algorithm 3)
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ghosal_dpmixture_density(x = rnorm(50))
 }

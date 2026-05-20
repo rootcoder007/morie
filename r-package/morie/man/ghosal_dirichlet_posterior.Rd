@@ -31,8 +31,5 @@ G0 = N(base_mean, base_sd^2).  Returns the posterior-mean CDF
 evaluated on a grid plus the headline \code{estimate} at \code{mean(x)}.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ghosal_dirichlet_posterior(x = rnorm(50))
 }

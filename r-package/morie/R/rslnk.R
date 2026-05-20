@@ -11,10 +11,7 @@
 #' @return Named list \code{(y, estimate, Fx, method)}.
 #' @references He, Zhang, Ren & Sun (2016), CVPR.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' rslnk_residual_connection(x = rnorm(50))
 #' @export
 rslnk_residual_connection <- function(x, f = NULL) {
   x <- as.array(x)

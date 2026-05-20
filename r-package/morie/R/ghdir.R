@@ -12,10 +12,7 @@
 #' @return named list with `estimate`, `cdf_grid`, `cdf_post`,
 #'   `cdf_var`, `alpha_post`, `n`, `method`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ghosal_dirichlet_posterior(x = rnorm(50))
 #' @export
 ghosal_dirichlet_posterior <- function(x, alpha = 1.0, base_mean = 0,
                                        base_sd = 1, grid = NULL) {

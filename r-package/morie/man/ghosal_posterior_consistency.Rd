@@ -33,8 +33,5 @@ Named list with estimate, ks_mean, ks_se, schwartz_bound, n, eps, method.
 Schwartz posterior-consistency diagnostic (Bayesian bootstrap).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ghosal_posterior_consistency(x = rnorm(50))
 }

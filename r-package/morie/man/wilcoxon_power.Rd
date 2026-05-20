@@ -27,8 +27,5 @@ and reports the rejection rate of two-sided wilcox.test at level
 alpha.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+wilcoxon_power(x = rnorm(50))
 }

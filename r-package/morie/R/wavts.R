@@ -8,10 +8,7 @@
 #' @return Named list with \code{approximation, details, energies, level,
 #'   n, wavelet, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' wavelet_time_series(x = rnorm(50))
 #' @export
 wavelet_time_series <- function(x, wavelet = "haar", level = NULL) {
   y <- as.numeric(x)

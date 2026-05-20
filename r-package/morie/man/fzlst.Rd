@@ -25,9 +25,6 @@ Named list with estimate, se, n, method.
 Default J(u)=1 gives the sample mean.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+fzlst(x = rnorm(50))
 }
 \keyword{internal}

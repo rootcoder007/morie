@@ -38,9 +38,6 @@ Metropolis-within-Gibbs surrogate for Clinton-Jackman-Rivers (2004)
 with N(0,1) prior on x and N(0, 5) priors on (alpha, beta).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+bysid(x = rnorm(50))
 }
 \keyword{internal}

@@ -18,8 +18,5 @@ Named list: \code{rho}, \code{p_value}.
 Spearman rank correlation
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+spearman_rho(x = rnorm(50), y = rnorm(50))
 }

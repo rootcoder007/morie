@@ -24,9 +24,6 @@ Rice_p = |\%yea_p - \%nay_p| over a series of roll calls; with a
 \code{party} indicator, averages per-roll-call Rice over each party.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+algnm(x = rnorm(50))
 }
 \keyword{internal}

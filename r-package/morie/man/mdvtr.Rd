@@ -22,10 +22,7 @@ Black (1948) median-voter theorem: with single-peaked preferences in
 asymptotic SE 1.2533 * s/sqrt(n) for normal-like data.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+mdvtr(x = rnorm(50))
 }
 \references{
 Armstrong et al. (2014), Ch 2.

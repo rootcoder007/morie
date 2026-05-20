@@ -38,10 +38,7 @@ NULL
 #' @return An environment with \code{rnorm}, \code{runif}, \code{sample}
 #'   methods that share the same underlying RNG state.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_sync_rng(seed = 1L)
 #' @export
 morie_sync_rng <- function(seed) {
   stopifnot(

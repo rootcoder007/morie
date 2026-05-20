@@ -22,8 +22,5 @@ Polynomial feature expansion + OLS via \code{stats::poly} +
 with scikit-learn's PolynomialFeatures.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_polynomial_regression(x = rnorm(50), y = rnorm(50))
 }

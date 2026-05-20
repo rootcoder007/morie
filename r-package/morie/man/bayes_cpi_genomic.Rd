@@ -39,10 +39,7 @@ list(estimate, beta, beta_pip, pi, sigma_b2, sigma2, n_iter, n, p, method).
 BayesC-pi spike-and-slab variable selection (short Gibbs)
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+bayes_cpi_genomic(x = rnorm(50), y = rnorm(50))
 }
 \references{
 Habier-Fernando-Kizilkaya-Garrick (2011); Montesinos Lopez Ch 4.

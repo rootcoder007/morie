@@ -23,9 +23,6 @@ Named list with estimate, se, ci_lower, ci_upper, t, h, n, method.
 \eqn{\hat S_h(t)=1-\hat F_h(t)} with asymptotic 95\\% CI.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+fzsrv(x = rnorm(50))
 }
 \keyword{internal}

@@ -18,8 +18,5 @@ Named list: \code{W}, \code{p_value}, \code{is_normal}.
 Shapiro-Wilk normality test
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+shapiro_wilk_test(x = rnorm(50))
 }

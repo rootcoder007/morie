@@ -11,10 +11,7 @@
 #' @return Named list with `n_dims`, `eigenvalues`, `threshold`,
 #'   `scree_gap`, `method`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' dimrd(x = rnorm(50))
 #' @export
 dimrd <- function(x, threshold = 1) {
   M <- if (is.matrix(x)) x else matrix(as.numeric(x), ncol = 1L)

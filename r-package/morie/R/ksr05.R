@@ -9,10 +9,7 @@
 #' @return Named list with estimate, n, method.
 #' @references Kosorok (2008), Ch 2.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ksr05_kosorok_bracketing_number(x = rnorm(50))
 #' @export
 ksr05_kosorok_bracketing_number <- function(x, e = 0.1) {
   x <- as.numeric(x)

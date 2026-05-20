@@ -11,10 +11,7 @@
 #'   explained_variance_ratio, singular_values, scores, n_components,
 #'   n, method.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' pca_dimension_reduction(x = rnorm(50))
 #' @export
 pca_dimension_reduction <- function(x, n_components = NULL, seed = 0L) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)

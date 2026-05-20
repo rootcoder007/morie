@@ -15,10 +15,7 @@
 #'   root_impurity, n_leaves, feature_importances, criterion, n, method.
 #' @importFrom stats predict
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' decision_tree_split(x = rnorm(50), y = rnorm(50))
 #' @export
 decision_tree_split <- function(x, y, criterion = "gini", max_depth = 30L,
                                 seed = 0L) {

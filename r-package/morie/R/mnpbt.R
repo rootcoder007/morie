@@ -12,10 +12,7 @@
 #' @return Named list with `probs`, `max_alt`, `n_obs`, `n_alt`,
 #'   `method`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' mnpbt(x = rnorm(50))
 #' @export
 mnpbt <- function(x, n_draws = 2000L, seed = 0L) {
   U <- if (is.matrix(x)) x else matrix(as.numeric(x), nrow = 1L)

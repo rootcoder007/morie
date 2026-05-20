@@ -9,10 +9,7 @@
 #' @return Named list: statistic (tau), p_value, n, inversions, z.
 #' @importFrom stats cor.test
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' rank_based_test(x = rnorm(50))
 #' @export
 rank_based_test <- function(x) {
   x <- as.numeric(x)

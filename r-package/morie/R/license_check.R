@@ -31,10 +31,7 @@ NULL
 #'
 #' @return Character vector of SPDX identifiers.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_gpl_compatible_licenses()
 #' @export
 morie_gpl_compatible_licenses <- function() {
   c(
@@ -58,10 +55,7 @@ morie_gpl_compatible_licenses <- function() {
 #'   pipeline build manifests, auditd logs, and downstream
 #'   compliance pipelines.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_license_metadata()
 #' @export
 morie_license_metadata <- function() {
   list(

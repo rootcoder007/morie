@@ -24,8 +24,5 @@ Named list with statistic (log BF), p_value, BF10, log_BF10, n, depth, method.
 Polya-tree Bayes factor for H0: F = N(loc, scale^2).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ghosal_np_testing(x = rnorm(50))
 }

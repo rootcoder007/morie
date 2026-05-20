@@ -17,8 +17,5 @@ Named list with \code{omega, alpha, gamma, beta, loglik,
 EGARCH(1,1) asymmetric volatility model
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+egarch_model(x = rnorm(50))
 }

@@ -40,8 +40,5 @@ trunc_err_bound, n, method.
 Truncated stick-breaking representation of DP(alpha, G0).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ghosal_stick_breaking_trunc(x = rnorm(50))
 }

@@ -11,10 +11,7 @@
 #' @return Named list: block_freq, block_prop, expected_prop, m, n,
 #'   cumulative, method.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' two_sample_coverage(x = rnorm(50), y = rnorm(50))
 #' @export
 two_sample_coverage <- function(x, y) {
   x <- as.numeric(x)

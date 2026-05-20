@@ -21,10 +21,7 @@ Named list with estimate, se, n, method.
 theta_tilde = theta_init + (1/n) * sum IF(X_i; theta_init).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ksr15_kosorok_one_step_estimator(x = rnorm(50))
 }
 \references{
 Kosorok (2008), Ch 7.

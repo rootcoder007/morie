@@ -19,10 +19,7 @@ Named list with estimate, n, method.
 VC dimension of the linear half-space classifier in R^d equals d+1.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ksr04_kosorok_vc_dimension(x = rnorm(50))
 }
 \references{
 Kosorok (2008), Ch 2; Vapnik & Chervonenkis (1971).

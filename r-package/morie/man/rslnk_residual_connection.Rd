@@ -24,10 +24,7 @@ R parity for \code{morie.fn.rslnk.residual_connection}.
 \deqn{y = \mathcal{F}(x) + x}
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+rslnk_residual_connection(x = rnorm(50))
 }
 \references{
 He, Zhang, Ren & Sun (2016), CVPR.

@@ -22,10 +22,7 @@ morie_cache_dir <- function() {
 #'
 #' @return File path string.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_builtin_db()
 #' @export
 morie_builtin_db <- function() {
   db <- system.file("extdata", "morie.db", package = "morie")
@@ -125,10 +122,7 @@ morie_cache_load <- function(table_name, db_path = NULL) {
 #' @param db_path Optional override for the database path.
 #' @return A data.frame with columns \code{table} and \code{rows}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_cache_list()
 #' @export
 morie_cache_list <- function(db_path = NULL) {
   con <- morie_db_connect(db_path)
@@ -493,10 +487,7 @@ morie_load_dataset <- function(key, db_path = NULL, refresh = FALSE) {
 #' @return A data.frame with columns: key, name, source, survey, year, type,
 #'   cached (logical), rows (integer or NA).
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_list_datasets()
 #' @export
 morie_list_datasets <- function(db_path = NULL) {
   catalog <- morie_dataset_catalog()
@@ -542,10 +533,7 @@ morie_dataset_info <- function(key) {
 #'   If \code{NULL}, lists all available userguides.
 #' @return File path string, or character vector of filenames.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_userguide()
 #' @export
 morie_userguide <- function(name = NULL) {
   if (is.null(name)) {

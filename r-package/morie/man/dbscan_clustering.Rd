@@ -23,8 +23,5 @@ core_sample_indices, eps, min_samples, n, method.
 Wraps \code{dbscan::dbscan}.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+dbscan_clustering(x = rnorm(50))
 }

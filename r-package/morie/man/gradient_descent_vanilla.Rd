@@ -26,8 +26,5 @@ theta := theta - lr * (2/n) X' (X theta - y), intercept included.
 Validates against \code{stats::lm} reference.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+gradient_descent_vanilla(x = rnorm(50), y = rnorm(50))
 }

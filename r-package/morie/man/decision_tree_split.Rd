@@ -27,8 +27,5 @@ CART tree via \code{rpart::rpart}, returning the root split structure
 and feature importances.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+decision_tree_split(x = rnorm(50), y = rnorm(50))
 }

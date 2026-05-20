@@ -33,8 +33,5 @@ Named list with estimate, p_hat, accuracy, length_scale, n, method.
 Probit-GP classifier (Laplace approximation).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ghosal_np_classification(x = rnorm(50), y = rnorm(50))
 }

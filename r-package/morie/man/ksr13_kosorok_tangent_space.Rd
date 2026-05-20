@@ -20,10 +20,7 @@ Score basis (x - mean(x)) and (x^2 - mean(x^2)); returns rank of
 empirical Gram matrix at tolerance 1e-10.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ksr13_kosorok_tangent_space(x = rnorm(50))
 }
 \references{
 Kosorok (2008), Ch 6.

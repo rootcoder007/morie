@@ -58,10 +58,7 @@ R parity for \code{morie.fn.lstmc.lstm_cell}.  Gates stacked as
       h = o \odot \tanh(c)}
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+lstmc_lstm_cell(x = rnorm(50))
 }
 \references{
 Hochreiter & Schmidhuber (1997), Neural Computation 9(8).

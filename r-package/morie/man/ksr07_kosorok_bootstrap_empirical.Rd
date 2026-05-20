@@ -34,10 +34,7 @@ G_n^\emph{(f) = sqrt(n)(P_n^} - P_n)(f).  Monte-Carlo bootstrap of the
 sample mean; returns mean/SD of G_n^* across B replications.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ksr07_kosorok_bootstrap_empirical(x = rnorm(50))
 }
 \references{
 Kosorok (2008), Ch 10.

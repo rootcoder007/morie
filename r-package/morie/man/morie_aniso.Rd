@@ -29,10 +29,7 @@ vector falls within \code{tol_deg} of the direction and apply Levene's test
 across direction groups.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_aniso(x = rnorm(50), coords = matrix(runif(100), 50, 2))
 }
 \references{
 Goovaerts (1997); Schabenberger & Gotway (2005), Ch 3.

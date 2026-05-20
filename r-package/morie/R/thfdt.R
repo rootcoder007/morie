@@ -11,10 +11,7 @@
 #' @return Named list: statistic, p_value, z, n, m.
 #' @importFrom stats qnorm pnorm
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' terry_hoeffding_test(x = rnorm(50), y = rnorm(50))
 #' @export
 terry_hoeffding_test <- function(x, y) {
   x <- as.numeric(x)

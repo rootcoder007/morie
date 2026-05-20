@@ -21,10 +21,7 @@ Named list with estimate, n, method.
 IF(x, y) = (y - ybar - beta_hat (x - xbar))(x - xbar) / Var(X).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ksr16_kosorok_influence_function(x = rnorm(50), y = rnorm(50))
 }
 \references{
 Kosorok (2008), Ch 7.

@@ -14,10 +14,7 @@
 #' @return Named list with estimate (alpha post mean), alpha_se,
 #'   alpha_draws, K_n, n, method.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ghosal_hierarchical_bayes(x = rnorm(50))
 #' @export
 ghosal_hierarchical_bayes <- function(x, a_prior = 1.0, b_prior = 1.0,
                                       M = 400, seed = 0,

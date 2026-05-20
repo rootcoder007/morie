@@ -13,10 +13,7 @@
 #' @return Named list \code{(y, estimate, x_hat, mu, var, eps, method)}.
 #' @references Ioffe & Szegedy (2015), ICML.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' bnfwd_batch_norm_forward(x = rnorm(50))
 #' @export
 bnfwd_batch_norm_forward <- function(x, gamma = NULL, beta = NULL,
                                      eps = 1e-5) {

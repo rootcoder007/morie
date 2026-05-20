@@ -15,10 +15,7 @@
 #' @return Named list: statistic (power), n, effect_size, alpha, nsim, se.
 #' @importFrom stats wilcox.test rnorm
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' wilcoxon_power(x = rnorm(50))
 #' @export
 wilcoxon_power <- function(x, effect_size = 0.5, alpha = 0.05,
                            nsim = 2000, seed = 0) {

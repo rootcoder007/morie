@@ -23,8 +23,5 @@ Named list with \code{frequencies, morie_coherence, n_segments,
 Magnitude-squared morie_coherence between two time series
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_coherence(x = rnorm(50), y = rnorm(50))
 }

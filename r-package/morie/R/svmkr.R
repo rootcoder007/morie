@@ -15,10 +15,7 @@
 #'   gamma, degree, n, method.
 #' @importFrom stats predict
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' svm_kernel_trick(x = rnorm(50), y = rnorm(50))
 #' @export
 svm_kernel_trick <- function(x, y, kernel = "rbf", C = 1.0,
                              gamma = "scale", degree = 3L, seed = 0L) {

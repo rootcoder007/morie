@@ -42,10 +42,7 @@ list(estimate, beta, beta_se, sigma_j2, sigma2, n_iter, n, p, method).
 Per-marker variance with scaled inverse chi-squared prior.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+bayes_ridge_gibbs(x = rnorm(50), y = rnorm(50))
 }
 \references{
 Meuwissen-Hayes-Goddard (2001) Genetics 157:1819.

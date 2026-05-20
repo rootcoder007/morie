@@ -34,10 +34,7 @@ For \eqn{L = \tfrac{1}{2n}\sum (a - y)^2} with
       \delta = (a - y) \odot \sigma'(z)}
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+bkprp_backpropagation(x = rnorm(50), y = rnorm(50))
 }
 \references{
 Rumelhart, Hinton & Williams (1986); Goodfellow et al. (2016).

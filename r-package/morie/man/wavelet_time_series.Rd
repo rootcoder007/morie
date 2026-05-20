@@ -21,8 +21,5 @@ Named list with \code{approximation, details, energies, level,
 Discrete wavelet decomposition for a time series
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+wavelet_time_series(x = rnorm(50))
 }

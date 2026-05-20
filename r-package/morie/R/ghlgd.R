@@ -21,10 +21,7 @@
 #' @return Named list with estimate, theta, log_lik, grid, log_density, K, n, method.
 #' @importFrom utils head tail
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ghosal_log_density(x = rnorm(50))
 #' @export
 ghosal_log_density <- function(x, K = 5, grid = NULL) {
   x <- as.numeric(x)

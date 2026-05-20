@@ -9,10 +9,7 @@
 #' @return Named list with \code{threshold, phi_lower, phi_upper, p, d,
 #'   regime_sizes, sse, n, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' threshold_autoregression(x = rnorm(50))
 #' @export
 threshold_autoregression <- function(x, p = 1, d = 1, n_grid = 50) {
   y <- as.numeric(x)

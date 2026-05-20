@@ -24,9 +24,6 @@ Kalman + RTS smoother applied to a per-period scalar ideal-point
 series (or a panel of legislators).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+dwnmn(x = rnorm(50))
 }
 \keyword{internal}

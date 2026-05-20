@@ -12,10 +12,7 @@
 #' @return named list with `estimate`, `grid`, `density`, `k_post`, `n`
 #' @importFrom utils head tail
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ghosal_dpmixture_density(x = rnorm(50))
 #' @export
 ghosal_dpmixture_density <- function(x, alpha = 1.0, sigma = NULL,
                                      grid = NULL, n_iter = 120, burn = 40,

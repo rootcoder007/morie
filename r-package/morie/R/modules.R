@@ -2,10 +2,7 @@
 #'
 #' @return Data frame describing the implemented module surface.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' list_morie_modules()
 #' @export
 list_morie_modules <- function() {
   data.frame(

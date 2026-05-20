@@ -19,8 +19,5 @@ Signed ranks R_i^+ = sign(D_i) * rank(|D_i|) used by Wilcoxon
 signed-rank.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+rank_order_statistics(x = rnorm(50))
 }

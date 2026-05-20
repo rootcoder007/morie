@@ -10,10 +10,7 @@
 #' @return Named list with \code{mu, sigma, transition,
 #'   smoothed_probabilities, loglik, n, k_regimes, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' regime_switching(x = rnorm(50))
 #' @export
 regime_switching <- function(x, k_regimes = 2) {
   y <- as.numeric(x)

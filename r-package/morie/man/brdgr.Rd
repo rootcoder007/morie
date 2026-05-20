@@ -23,9 +23,6 @@ Counts legislators appearing in both sessions. With ID vectors:
 returns set intersection. With matrices: rows non-empty in both.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+brdgr(x = rnorm(50))
 }
 \keyword{internal}

@@ -42,10 +42,7 @@
 #' @return Named list: estimate, se, sigma2, tau2, phi, n, method.
 #' @references Patterson & Thompson (1971); Schabenberger & Gotway (2005), Ch 5.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' smixd(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100),      50, 2))
 #' @export
 smixd <- function(x, y, coords) {
   X <- as.matrix(x)

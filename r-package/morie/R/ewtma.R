@@ -7,10 +7,7 @@
 #' @return Named list with \code{conditional_variance, conditional_volatility,
 #'   lambda, n, last_variance, last_volatility, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ewma_volatility(x = rnorm(50))
 #' @export
 ewma_volatility <- function(x, lambda = 0.94) {
   r <- as.numeric(x)

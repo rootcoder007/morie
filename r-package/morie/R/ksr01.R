@@ -12,10 +12,7 @@
 #' @return Named list: estimate, se, n, method.
 #' @references Kosorok (2008), Ch 2.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ksr01_kosorok_empirical_process(x = rnorm(50))
 #' @export
 ksr01_kosorok_empirical_process <- function(x, f = NULL, mu0 = 0) {
   x <- as.numeric(x)

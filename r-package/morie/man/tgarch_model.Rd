@@ -17,8 +17,5 @@ Named list with \code{omega, alpha, gamma, beta, persistence,
 GJR-GARCH(1,1) threshold GARCH
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+tgarch_model(x = rnorm(50))
 }

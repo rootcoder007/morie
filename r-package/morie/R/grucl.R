@@ -20,10 +20,7 @@
 #' @return Named list \code{(h, estimate, z, r, n, method)}.
 #' @references Cho et al. (2014), EMNLP.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' grucl_gru_cell(x = rnorm(50))
 #' @export
 grucl_gru_cell <- function(x, h_prev = NULL, W = NULL, U = NULL, b = NULL,
                            hidden_size = NULL, seed = 0L,

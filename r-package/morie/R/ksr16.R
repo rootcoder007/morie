@@ -9,10 +9,7 @@
 #' @return Named list with estimate, n, method.
 #' @references Kosorok (2008), Ch 7.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ksr16_kosorok_influence_function(x = rnorm(50), y = rnorm(50))
 #' @export
 ksr16_kosorok_influence_function <- function(x, y) {
   x <- as.numeric(x)

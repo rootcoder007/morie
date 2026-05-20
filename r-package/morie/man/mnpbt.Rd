@@ -26,9 +26,6 @@ errors over a deterministic utility matrix; binary case uses the
 closed-form Phi((U1-U0)/sqrt(2)).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+mnpbt(x = rnorm(50))
 }
 \keyword{internal}

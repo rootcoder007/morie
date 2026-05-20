@@ -41,8 +41,5 @@ Wraps \code{randomForest::randomForest}.  Auto-detects task from y
 (factor / integer-like -> classification, otherwise regression).
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+random_forest_ensemble(x = rnorm(50), y = rnorm(50))
 }

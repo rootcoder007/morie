@@ -9,10 +9,7 @@
 #' @return Named list with estimate (rank), n, method.
 #' @references Kosorok (2008), Ch 6.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ksr13_kosorok_tangent_space(x = rnorm(50))
 #' @export
 ksr13_kosorok_tangent_space <- function(x) {
   x <- as.numeric(x)

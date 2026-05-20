@@ -13,10 +13,7 @@
 #'   n, method.
 #' @references Brunsdon, Fotheringham & Charlton (1996).
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' gwreg(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100),      50, 2))
 #' @export
 gwreg <- function(x, y, coords, bandwidth = NULL, kernel = "gaussian") {
   X <- as.matrix(x)

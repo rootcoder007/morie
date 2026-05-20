@@ -11,10 +11,7 @@
 #' @return Named list: estimate, labels, n_clusters, n_noise,
 #'   core_sample_indices, eps, min_samples, n, method.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' dbscan_clustering(x = rnorm(50))
 #' @export
 dbscan_clustering <- function(x, eps = 0.5, min_samples = 5L,
                               metric = "euclidean") {

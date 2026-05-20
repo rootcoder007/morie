@@ -10,10 +10,7 @@
 #' @return Named list with `n_bridges`, `bridge_ids`, `share`, `n1`,
 #'   `n2`, `method`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' brdgr(x = rnorm(50))
 #' @export
 brdgr <- function(x, y = NULL) {
   if (is.null(y)) {

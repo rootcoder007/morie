@@ -13,10 +13,7 @@
 #'   n, method.
 #' @references Cressie & Huang (1999); Schabenberger & Gotway (2005), Ch 8.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' stacv(x = rnorm(50), coords = matrix(runif(100), 50, 2), times = sort(cumsum(rexp(50))))
 #' @export
 stacv <- function(x, coords, times,
                   n_spatial_bins = 6, n_temporal_bins = 6,

@@ -14,10 +14,7 @@
 #'   directions_deg, n, method.
 #' @references Goovaerts (1997); Schabenberger & Gotway (2005), Ch 3.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_aniso(x = rnorm(50), coords = matrix(runif(100), 50, 2))
 #' @export
 morie_aniso <- function(x, coords, n_dirs = 4, tol_deg = 22.5) {
   x <- as.numeric(x)

@@ -8,10 +8,7 @@
 #' @return Named list with estimate, n, method.
 #' @references Kosorok (2008), Ch 2; Vapnik & Chervonenkis (1971).
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ksr04_kosorok_vc_dimension(x = rnorm(50))
 #' @export
 ksr04_kosorok_vc_dimension <- function(x) {
   if (is.null(dim(x))) {

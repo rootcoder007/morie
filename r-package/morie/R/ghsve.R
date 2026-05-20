@@ -6,10 +6,7 @@
 #' @param K Optional integer sieve degree (default round(n^(1/3))).
 #' @return Named list with estimate, log_lik_per_obs, weights, K, n, method.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ghosal_sieve_prior(x = rnorm(50))
 #' @export
 ghosal_sieve_prior <- function(x, K = NULL) {
   x <- as.numeric(x)

@@ -11,10 +11,7 @@
 #' @return Named list with `w`, `c`, `midpoint`, `correct_class`, `n`,
 #'   `p`, `method`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' csphr(x = rnorm(50))
 #' @export
 csphr <- function(x, votes = NULL) {
   X <- if (is.matrix(x)) x else matrix(as.numeric(x), ncol = 1L)

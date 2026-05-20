@@ -20,8 +20,5 @@ on the Python side so the two emit identical streams when given the
 same seed.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_sync_rng(seed = 1L)
 }

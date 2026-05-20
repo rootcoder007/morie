@@ -12,10 +12,7 @@
 #' @return Named list with estimate, F_h, F_ch, se, h, c, t, n, method.
 #' @importFrom stats median pnorm
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' fzbrd(x = rnorm(50))
 #' @export
 fzbrd <- function(x, t = NULL, h = NULL, c = 2) {
   x <- as.numeric(x)

@@ -10,10 +10,7 @@
 #' @return Named list: coverages, cumulative, expected, n,
 #'   sample_min, sample_max, method.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' one_sample_coverage(x = rnorm(50))
 #' @export
 one_sample_coverage <- function(x) {
   x <- as.numeric(x)

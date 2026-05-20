@@ -34,8 +34,5 @@ wald, wald_pvalue, n, B, method.
 BvM diagnostic for the mean functional under a DP prior.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ghosal_bernstein_von_mises(x = rnorm(50))
 }

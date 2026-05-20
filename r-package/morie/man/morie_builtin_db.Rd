@@ -16,8 +16,5 @@ CCS, CSADS, CSUS, HealthInfobase, and CIHI datasets pre-loaded as
 SQLite tables.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_builtin_db()
 }

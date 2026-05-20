@@ -10,10 +10,7 @@
 #' @return Named list with estimate, n, method.
 #' @references Kosorok (2008), Ch 6.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ksr12_kosorok_information_bound(x = rnorm(50), y = rnorm(50))
 #' @export
 ksr12_kosorok_information_bound <- function(x, y) {
   x <- as.numeric(x)

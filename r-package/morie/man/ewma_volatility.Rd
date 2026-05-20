@@ -19,8 +19,5 @@ Named list with \code{conditional_variance, conditional_volatility,
 EWMA volatility (RiskMetrics 1996)
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+ewma_volatility(x = rnorm(50))
 }

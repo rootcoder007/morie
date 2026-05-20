@@ -13,8 +13,5 @@ Named list describing the expected local CPADS contract.
 Return the canonical CPADS local-data contract
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+cpads_contract()
 }

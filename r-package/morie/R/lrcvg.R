@@ -14,10 +14,7 @@
 #' @return Named list: estimate (final val MSE), train_sizes, train_scores,
 #'   val_scores, n, method.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' learning_curve(x = rnorm(50), y = rnorm(50))
 #' @export
 learning_curve <- function(x, y, sizes = NULL, cv = 5L, seed = 0L) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)

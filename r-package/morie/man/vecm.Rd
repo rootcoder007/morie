@@ -21,8 +21,5 @@ Named list with \code{alpha, beta, Gamma, Sigma, loglik, n, k,
 Vector error-correction model (VECM)
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+vecm(Y = matrix(rnorm(100), 50, 2))
 }

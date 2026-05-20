@@ -26,10 +26,7 @@ Y = X beta + delta + eps, delta ~ GP(0, sigma2 R_phi), R_phi exponential.
 Profile-likelihood ML over phi; beta via GLS.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+sglm(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100),      50, 2))
 }
 \references{
 Schabenberger & Gotway (2005), Ch 5.

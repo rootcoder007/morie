@@ -9,10 +9,7 @@
 #' @return Named list: estimate (MSPE, RMSPE, MAE, residuals), n, method.
 #' @references Schabenberger & Gotway (2005), Ch 4.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' spcrs(x = rnorm(50), coords = matrix(runif(100), 50, 2))
 #' @export
 spcrs <- function(x, coords, nugget = 0, sill = 1, range_ = 1) {
   x <- as.numeric(x)

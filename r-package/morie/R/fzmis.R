@@ -12,10 +12,7 @@
 #'   R_fpp, sigma, n, method.
 #' @importFrom stats sd
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' fzmis(x = rnorm(50))
 #' @export
 fzmis <- function(x, h = NULL) {
   x <- as.numeric(x)

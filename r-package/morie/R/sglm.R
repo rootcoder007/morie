@@ -32,10 +32,7 @@
 #' @return Named list: estimate, se, sigma2, phi, tau2, n, method.
 #' @references Schabenberger & Gotway (2005), Ch 5.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' sglm(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100),      50, 2))
 #' @export
 sglm <- function(x, y, coords, family = "gaussian") {
   if (family != "gaussian") {

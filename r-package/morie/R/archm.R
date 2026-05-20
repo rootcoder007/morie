@@ -28,10 +28,7 @@
 #' @return Named list with \code{mu, delta, omega, alpha, loglik,
 #'   conditional_variance, n, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' arch_in_mean(x = rnorm(50))
 #' @export
 arch_in_mean <- function(x) {
   y <- as.numeric(x)

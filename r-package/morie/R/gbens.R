@@ -20,10 +20,7 @@
 #'   n_estimators, learning_rate, max_depth, task, n, method.
 #' @importFrom stats predict
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' gradient_boosting_ensemble(x = rnorm(50), y = rnorm(50))
 #' @export
 gradient_boosting_ensemble <- function(x, y, n_estimators = 100L,
                                        learning_rate = 0.1,

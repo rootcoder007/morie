@@ -23,9 +23,6 @@ Exact enumeration for n <= 10; Monte Carlo for larger games.
 Quota defaults to strict simple majority.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+vtpwr(x = rnorm(50))
 }
 \keyword{internal}

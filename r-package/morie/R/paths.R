@@ -23,10 +23,7 @@ is_absolute_path <- function(path) {
 #' @param max_up Maximum number of parent traversals.
 #' @return Absolute path to the detected project root.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_find_project_root()
 #' @export
 morie_find_project_root <- function(start = getwd(), max_up = 10L) {
   current <- normalizePath(start, winslash = "/", mustWork = FALSE)
@@ -56,10 +53,7 @@ morie_find_project_root <- function(start = getwd(), max_up = 10L) {
 #'   current working directory.
 #' @return Named list of key paths.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_paths()
 #' @export
 morie_paths <- function(project_root = NULL) {
   root <- project_root %||% morie_find_project_root()

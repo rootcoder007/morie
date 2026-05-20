@@ -15,10 +15,7 @@
 #' @return Named list: estimate, bias, variance, se, h, t, n, method.
 #' @importFrom stats median sd quantile dnorm pnorm
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' fzkdf(x = rnorm(50))
 #' @export
 fzkdf <- function(x, t = NULL, h = NULL) {
   x <- as.numeric(x)

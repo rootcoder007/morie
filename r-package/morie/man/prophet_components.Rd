@@ -19,8 +19,5 @@ Named list with \code{trend, seasonal, residual, slope,
 Prophet-style additive decomposition (linear trend + Fourier seasonality)
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+prophet_components(x = rnorm(50))
 }

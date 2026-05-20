@@ -24,10 +24,7 @@
 #'   n, method.
 #' @importFrom stats predict
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' xgboost_objective(x = rnorm(50), y = rnorm(50))
 #' @export
 xgboost_objective <- function(x, y, n_estimators = 100L, learning_rate = 0.1,
                               max_depth = 3L, reg_lambda = 1.0,

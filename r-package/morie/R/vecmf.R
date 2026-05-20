@@ -8,10 +8,7 @@
 #' @return Named list with \code{alpha, beta, Gamma, Sigma, loglik, n, k,
 #'   rank, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' vecm(Y = matrix(rnorm(100), 50, 2))
 #' @export
 vecm <- function(Y, k_ar = 1, coint_rank = 1) {
   Y <- as.matrix(Y)

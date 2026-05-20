@@ -12,10 +12,7 @@
 #'   `marginal_yea`, `marginal_nay`, `pct_yea`, `lopsided_pct`,
 #'   `method`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' rcall(x = rnorm(50))
 #' @export
 rcall <- function(x) {
   V <- if (is.matrix(x)) x else matrix(as.numeric(x), ncol = 1L)

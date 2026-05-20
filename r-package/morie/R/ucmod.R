@@ -8,10 +8,7 @@
 #' @return Named list with \code{trend, seasonal, irregular, loglik, n,
 #'   period, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' unobserved_components(x = rnorm(50))
 #' @export
 unobserved_components <- function(x, period = 12, trend = "local linear") {
   y <- as.numeric(x)

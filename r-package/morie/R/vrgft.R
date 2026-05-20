@@ -35,10 +35,7 @@
 #'   converged, model), n, method.
 #' @references Cressie (1985); Schabenberger & Gotway (2005), Ch 3.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' vrgft(x = rnorm(50), coords = matrix(runif(100), 50, 2))
 #' @export
 vrgft <- function(x, coords, model = "exponential",
                   n_bins = 10, max_dist = NULL) {

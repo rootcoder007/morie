@@ -49,10 +49,7 @@ morie_two_sample_t_test <- function(x1, x2,
 #' @param alternative `"two.sided"`, `"greater"`, or `"less"`.
 #' @return Named list: `t`, `df`, `p_value`, `ci`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_one_sample_t_test(x = rnorm(50))
 #' @export
 morie_one_sample_t_test <- function(x, mu0 = 0,
                               alternative = c("two.sided", "greater", "less")) {
@@ -249,10 +246,7 @@ wilcoxon_signed_rank_test <- function(x1, x2,
 #' @param alpha Significance level for the `is_normal` flag (default 0.05).
 #' @return Named list: `W`, `p_value`, `is_normal`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' shapiro_wilk_test(x = rnorm(50))
 #' @export
 shapiro_wilk_test <- function(x, alpha = 0.05) {
   result <- stats::shapiro.test(x)
@@ -516,10 +510,7 @@ morie_cramers_v <- function(contingency_table) {
 #' @param y Numeric vector.
 #' @return Named list: `rho`, `p_value`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' spearman_rho(x = rnorm(50), y = rnorm(50))
 #' @export
 spearman_rho <- function(x, y) {
   result <- stats::cor.test(x, y, method = "spearman", exact = FALSE)
@@ -532,10 +523,7 @@ spearman_rho <- function(x, y) {
 #' @param y Numeric vector.
 #' @return Named list: `tau`, `p_value`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_kendall_tau(x = rnorm(50), y = rnorm(50))
 #' @export
 morie_kendall_tau <- function(x, y) {
   result <- stats::cor.test(x, y, method = "kendall", exact = FALSE)

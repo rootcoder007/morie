@@ -18,8 +18,5 @@ Named list: \code{tau}, \code{p_value}.
 Kendall's tau-b
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+morie_kendall_tau(x = rnorm(50), y = rnorm(50))
 }

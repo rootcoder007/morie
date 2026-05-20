@@ -37,8 +37,5 @@ gamma, degree, n, method.
 Wraps \code{e1071::svm}.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+svm_kernel_trick(x = rnorm(50), y = rnorm(50))
 }

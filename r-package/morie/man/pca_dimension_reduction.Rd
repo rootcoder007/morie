@@ -22,8 +22,5 @@ n, method.
 Wraps \code{stats::prcomp}.
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+pca_dimension_reduction(x = rnorm(50))
 }

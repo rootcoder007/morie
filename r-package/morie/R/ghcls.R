@@ -10,10 +10,7 @@
 #' @param seed Integer RNG seed (default 0).
 #' @return Named list with estimate, p_hat, accuracy, length_scale, n, method.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' ghosal_np_classification(x = rnorm(50), y = rnorm(50))
 #' @export
 ghosal_np_classification <- function(x, y, length_scale = NULL,
                                      sigma_f = 1.0, n_iter = 300, seed = 0) {

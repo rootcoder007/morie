@@ -14,10 +14,7 @@
 #' @return Named list with \code{state, state_cov, innovations,
 #'   innovation_variance, loglik, n, method}.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' morie_kalman_filter(x = rnorm(50))
 #' @export
 morie_kalman_filter <- function(x, transition = NULL, H = NULL, Q = NULL, R = NULL,
                           x0 = NULL, P0 = NULL) {

@@ -9,10 +9,7 @@
 #' @return Named list: estimate, se, r2, order, n, method.
 #' @references Schabenberger & Gotway (2005), Ch 2.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' sptrn(x = rnorm(50), coords = matrix(runif(100), 50, 2))
 #' @export
 sptrn <- function(x, coords, order = 2) {
   y <- as.numeric(x)

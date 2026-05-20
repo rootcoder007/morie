@@ -9,10 +9,7 @@
 #' @return Named list with `agreement` (n by n), `mean_agreement`,
 #'   `n`, `m`, `method`.
 #' @examples
-#' \dontrun{
-#' # See the package vignettes for usage examples:
-#' #   vignette(package = "morie")
-#' }
+#' sptag(x = rnorm(50))
 #' @export
 sptag <- function(x) {
   M <- if (is.matrix(x)) x else matrix(as.numeric(x), ncol = 1L)
