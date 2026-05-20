@@ -70,6 +70,7 @@ Suggests:
   caret,
   e1071,
   glmnet,
+  elasticnet,
   pROC,
   randomForest,
   rpart,
