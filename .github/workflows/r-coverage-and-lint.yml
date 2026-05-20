@@ -1,0 +1,152 @@
+name: R coverage + lint + goodpractice
+
+# Runs covr (with codecov.io upload), lintr, and goodpractice on every
+# push to main / PR. Complements r-cmd-check.yml — which only runs
+# R CMD check across the OS × R-version matrix. Together they cover
+# the full rOpenSci pkgcheck surface (rcmdcheck + covr + cyclocomp +
+# lintr + goodpractice).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'r-package/morie/**'
+      - '.github/workflows/r-coverage-and-lint.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'r-package/morie/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    name: covr + codecov upload
+
+    env:
+      _R_CHECK_FORCE_SUGGESTS_: false
+      R_KEEP_PKG_SOURCE: yes
+
+    defaults:
+      run:
+        working-directory: r-package/morie
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          working-directory: r-package/morie
+          extra-packages: any::covr any::xml2
+          needs: coverage
+
+      - name: Run covr
+        run: |
+          Rscript -e 'cov <- covr::package_coverage(type = "tests", quiet = TRUE); covr::to_cobertura(cov, filename = "coverage.xml"); cat(sprintf("Coverage: %.2f%%\n", covr::percent_coverage(cov)))'
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: r-package/morie/coverage.xml
+          flags: r-tests
+          fail_ci_if_error: false  # don't block on codecov outages
+        continue-on-error: true
+
+  lint:
+    runs-on: ubuntu-latest
+    name: lintr
+
+    defaults:
+      run:
+        working-directory: r-package/morie
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          working-directory: r-package/morie
+          extra-packages: any::lintr
+
+      - name: Run lintr
+        run: |
+          Rscript -e 'lintr::lint_package()'
+
+  goodpractice:
+    runs-on: ubuntu-latest
+    name: goodpractice (covr + cyclocomp + lintr + rcmdcheck)
+
+    env:
+      _R_CHECK_FORCE_SUGGESTS_: false
+
+    defaults:
+      run:
+        working-directory: r-package/morie
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: r-lib/actions/setup-pandoc@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          working-directory: r-package/morie
+          extra-packages: any::goodpractice any::rcmdcheck any::covr any::cyclocomp any::lintr
+
+      - name: Run goodpractice
+        run: |
+          Rscript -e 'g <- goodpractice::gp("."); print(g)'
+
+  pkgcheck:
+    # rOpenSci's own check — runs pkgstats + covr + goodpractice + rcmdcheck
+    # internally and produces the markdown comment the rOpenSci bot uses.
+    runs-on: ubuntu-latest
+    name: rOpenSci pkgcheck
+
+    defaults:
+      run:
+        working-directory: r-package/morie
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: r-lib/actions/setup-pandoc@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+
+      - name: Install system deps for pkgstats (universal-ctags)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y universal-ctags
+
+      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          working-directory: r-package/morie
+          extra-packages: |
+            any::rcmdcheck
+            any::goodpractice
+            any::cyclocomp
+            ropensci/pkgstats
+            ropensci/pkgcheck
+
+      - name: Run pkgcheck::pkgcheck() + checks_to_markdown()
+        run: |
+          Rscript -e 'cks <- pkgcheck::pkgcheck("."); md <- pkgcheck::checks_to_markdown(cks); writeLines(md, "pkgcheck.md"); cat(md)'
+
+      - name: Upload pkgcheck markdown
+        uses: actions/upload-artifact@v4
+        with:
+          name: pkgcheck-markdown
+          path: r-package/morie/pkgcheck.md
