@@ -24,8 +24,17 @@ Manifest data frame.
 Read outputs manifest from a project
 }
 \examples{
-\dontrun{
-# Reads outputs_manifest.csv from a morie project tree:
-read_outputs_manifest(project_root = ".")
-}
+# Craft a minimal manifest in tempdir and read it back:
+tdir <- tempfile("morie-doc-"); dir.create(tdir)
+man <- file.path(tdir, "outputs_manifest.csv")
+write.csv(
+  data.frame(
+    output = "results.csv",
+    public_path = file.path(tdir, "results.csv"),
+    size_kb = 0.01, modified = format(Sys.Date())
+  ),
+  man, row.names = FALSE
+)
+writeLines("x,y\n1,2", file.path(tdir, "results.csv"))
+read_outputs_manifest(manifest_path = man)
 }

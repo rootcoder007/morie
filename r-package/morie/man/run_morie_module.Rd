@@ -24,8 +24,14 @@ Named list of data-frame outputs.
 Run one implemented MORIE module against CPADS data
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
+\donttest{
+# Dispatch one MORIE module against the canonical CPADS CSV. The CSV
+# ships with a morie project tree, or is fetched via the CKAN endpoint
+# (morie_load_dataset("ocp21")). Wrapped in tryCatch so the example
+# documents usage even when the CSV is not checked out locally.
+tryCatch(
+  run_morie_module("descriptive-statistics"),
+  error = function(e) message(conditionMessage(e))
+)
 }
 }

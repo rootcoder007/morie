@@ -72,7 +72,7 @@ diagnostics:
 
 ```{r diag}
 # Effective sample size after weighting
-ess <- effective_sample_size(1 / df$ps)
+ess <- morie_effective_sample_size(1 / df$ps)
 ess
 
 # Range of weights (extreme means trimming)

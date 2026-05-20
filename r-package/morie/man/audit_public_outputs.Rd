@@ -18,8 +18,13 @@ Data frame containing declared and observed output status.
 Audit declared outputs against files on disk
 }
 \examples{
-\dontrun{
-# Audits declared vs. observed outputs in a morie project tree:
-audit_public_outputs(project_root = ".")
-}
+# Craft a tempdir manifest + output file, then audit:
+tdir <- tempfile("morie-doc-"); dir.create(tdir)
+writeLines("x,y\n1,2", file.path(tdir, "results.csv"))
+man <- data.frame(
+  output = "results.csv",
+  public_path = file.path(tdir, "results.csv"),
+  size_kb = 0.01, modified = format(Sys.Date())
+)
+audit_public_outputs(project_root = tdir, manifest = man)
 }

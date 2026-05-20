@@ -30,8 +30,16 @@ Data frame of step statuses.
 Run multiple workflow steps
 }
 \examples{
-\dontrun{
-# Runs the workflow scripts end to end in a morie project tree:
-morie_run_pipeline(project_root = ".")
-}
+# Build a one-step pipeline in tempdir and dispatch it. The
+# real package's default_workflow_map() points at scripts that
+# live in a morie project tree.
+tdir <- tempfile("morie-doc-"); dir.create(tdir)
+step <- file.path(tdir, "step.R")
+writeLines('cat("hello from pipeline\\\\n")', step)
+morie_run_pipeline(
+  steps = "demo",
+  project_root = tdir,
+  script_map = c(demo = step),
+  verbose = FALSE
+)
 }

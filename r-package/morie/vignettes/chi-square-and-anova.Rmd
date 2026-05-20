@@ -45,7 +45,7 @@ p-value, and the degrees of freedom in a tidy list.
 # Effect size: Cramer's V
 
 ```{r cramers-v}
-v <- cramers_v(tab)
+v <- morie_cramers_v(tab)
 v
 ```
 
@@ -56,7 +56,7 @@ measure that is more interpretable than the raw statistic.
 
 For continuous outcomes across more than two groups, the one-way
 ANOVA pattern in R is `aov(y ~ g, data = ...)`. MORIE exposes
-`omega_squared()` as the less-biased counterpart to eta-squared:
+`morie_omega_squared()` as the less-biased counterpart to eta-squared:
 
 ```{r anova}
 set.seed(2)
@@ -70,7 +70,7 @@ fstat   <- fsum$`F value`[1]
 df_b    <- fsum$Df[1]
 df_w    <- fsum$Df[2]
 
-omega_squared(f_stat = fstat, df_between = df_b, df_within = df_w, n = n)
+morie_omega_squared(f_stat = fstat, df_between = df_b, df_within = df_w, n = n)
 ```
 
 # Doob $\chi^{2}$ family

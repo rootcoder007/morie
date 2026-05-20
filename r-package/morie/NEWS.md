@@ -348,8 +348,8 @@ bump.
   Spearman's ρ), classical statistical tests (one-/two-sample/paired
   t, Wilcoxon, Mann-Whitney, Kruskal-Wallis, Levene, Shapiro-Wilk, χ²,
   Fisher exact), confidence intervals (risk-difference, risk-ratio,
-  odds-ratio, proportion), power and sample-size (`power_t_test`,
-  `power_prop_test`, `sample_size_logistic`), signal-processing primitives
+  odds-ratio, proportion), power and sample-size (`morie_power_t_test`,
+  `morie_power_prop_test`, `sample_size_logistic`), signal-processing primitives
   (Butterworth filters, Higuchi fractal dimension, Hurst exponent),
   dataset profiling, OTIS correctional-data analysis, and the MRM
   (McNamara-Ruhela-Medina) framework.

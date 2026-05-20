@@ -66,7 +66,7 @@ name_map <- default_synthetic_name_map("generic")
 name_map["cannabis_use"] <- "exposure_any"
 name_map["bac"] <- "outcome_continuous"
 
-dat <- generate_synthetic_data(
+dat <- morie_generate_synthetic_data(
   n = 5000,
   seed = 1,
   name_map = name_map

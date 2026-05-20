@@ -104,10 +104,10 @@ The result is one row per group level with `ate`, `se`, and CI.
 
 # Sensitivity analysis: the E-value
 
-```{r evalue, eval = exists("e_value")}
+```{r evalue, eval = exists("morie_e_value")}
 # Suppose the observed risk ratio is 2.0; how large would an
 # unmeasured confounder need to be to explain it away?
-evalue <- e_value(rr = 2.0)
+evalue <- morie_e_value(rr = 2.0)
 evalue
 ```
 

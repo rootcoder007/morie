@@ -22,7 +22,13 @@ regime_switching <- function(x, k_regimes = 2) {
   if (requireNamespace("MSwM", quietly = TRUE)) {
     df <- data.frame(y = y)
     base_fit <- lm(y ~ 1, data = df)
-    msfit <- MSwM::msmFit(base_fit, k = k_regimes, sw = c(TRUE, TRUE))
+    # MSwM defaults parallelization = TRUE, which spawns 8 PSOCK workers and
+    # trips --as-cran's 2-worker cap (R_CHECK_LIMIT_CORES). Disable it: a
+    # 60-point regime-switching EM is far cheaper to run sequentially anyway.
+    msfit <- MSwM::msmFit(
+      base_fit, k = k_regimes, sw = c(TRUE, TRUE),
+      control = list(parallelization = FALSE)
+    )
     return(list(
       mu = as.numeric(msfit@Coef[, 1]),
       sigma = as.numeric(msfit@std),

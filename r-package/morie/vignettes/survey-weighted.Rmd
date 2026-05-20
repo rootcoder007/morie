@@ -39,11 +39,11 @@ df <- data.frame(
 )
 
 # Stratified random sample within region.
-strat <- stratified_sample(df, strata_col = "region", n_per_stratum = 50)
+strat <- morie_stratified_sample(df, strata_col = "region", n_per_stratum = 50)
 
 # Single-stage cluster sample on region (all units in sampled
 # clusters are kept).
-clust <- cluster_sample(df, cluster_col = "region", n_clusters = 2)
+clust <- morie_cluster_sample(df, cluster_col = "region", n_clusters = 2)
 
 dim(strat)
 dim(clust)
@@ -71,11 +71,11 @@ head(design)
 
 ```{r ess-deff}
 # Effective sample size given a weight vector.
-ess <- effective_sample_size(df$weight)
+ess <- morie_effective_sample_size(df$weight)
 ess
 
 # Design effect: how much variance inflates from the weighting.
-deff <- design_effect(df$weight)
+deff <- morie_design_effect(df$weight)
 deff
 ```
 
@@ -88,7 +88,7 @@ and complex-sample variances.
 
 ```{r bootstrap}
 # Bootstrap a weighted statistic --- here, the weighted mean of `age`.
-boot <- bootstrap_sample(
+boot <- morie_bootstrap_sample(
   df,
   statistic   = function(x) stats::weighted.mean(x$age, x$weight),
   n_bootstrap = 100

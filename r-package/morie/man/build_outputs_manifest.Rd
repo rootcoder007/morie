@@ -27,8 +27,9 @@ Manifest data frame.
 Build an outputs manifest from a directory of artifacts
 }
 \examples{
-\dontrun{
-# See the package vignettes for usage examples:
-#   vignette(package = "morie")
-}
+# Scan a tempdir of output files and build a manifest CSV:
+tdir <- tempfile("morie-doc-"); dir.create(tdir)
+writeLines("x,y\n1,2", file.path(tdir, "results.csv"))
+writeLines("# report", file.path(tdir, "report.md"))
+build_outputs_manifest(tdir, file.path(tdir, "outputs_manifest.csv"))
 }
