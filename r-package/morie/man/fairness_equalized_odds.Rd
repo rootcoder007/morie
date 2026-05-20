@@ -36,8 +36,8 @@ rates.
 }
 \examples{
 truth <- c(1, 0, 1, 0, 1, 0, 1, 0)
-pred  <- c(1, 0, 1, 0, 1, 1, 0, 1)
-race  <- c(rep("A", 4), rep("B", 4))
+pred <- c(1, 0, 1, 0, 1, 1, 0, 1)
+race <- c(rep("A", 4), rep("B", 4))
 res <- fairness_equalized_odds(truth, pred, race, privileged = "A")
-res$violation   # TRUE
+res$violation # TRUE
 }

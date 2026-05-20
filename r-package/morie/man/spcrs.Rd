@@ -24,8 +24,8 @@ MSPE = (1/n) sum (Z(s_i) - Z_hat_minus_i(s_i))^2.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

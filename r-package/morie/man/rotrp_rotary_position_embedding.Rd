@@ -26,8 +26,8 @@ Each pair (2i, 2i+1) is rotated by
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

@@ -46,7 +46,9 @@ significance
 \examples{
 if (FALSE) {
   ncr <- read.csv("Neighbourhood_Crime_Rates_Open_Data.csv")
-  res <- mrm_tps_lisa(ncr, count_col = "ASSAULT_2024",
-                      lat_col = "lat", lon_col = "lon")
+  res <- mrm_tps_lisa(ncr,
+    count_col = "ASSAULT_2024",
+    lat_col = "lat", lon_col = "lon"
+  )
 }
 }

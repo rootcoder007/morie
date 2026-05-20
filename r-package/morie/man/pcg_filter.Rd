@@ -27,7 +27,7 @@ anti-aliased high-frequency noise above 400 Hz.
 \donttest{
 if (requireNamespace("signal", quietly = TRUE)) {
   set.seed(1)
-  x <- rnorm(2000)            # 1 second of white-noise PCG-like input
+  x <- rnorm(2000) # 1 second of white-noise PCG-like input
   y <- pcg_filter(x)
   length(y$filtered)
 }

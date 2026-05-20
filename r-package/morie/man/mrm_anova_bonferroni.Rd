@@ -30,6 +30,6 @@ df <- data.frame(
   g = rep(c("A", "B", "C"), each = n)
 )
 res <- mrm_anova_bonferroni(df, response_col = "y", group_col = "g")
-res$alpha_per_pair    # Bonferroni-corrected per-pair alpha
-res$pairs             # per-pair t-tests with adjusted significance flags
+res$alpha_per_pair # Bonferroni-corrected per-pair alpha
+res$pairs # per-pair t-tests with adjusted significance flags
 }

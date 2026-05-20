@@ -3,14 +3,14 @@
 \name{wnom}
 \alias{wnom}
 \alias{wnominate_estimate}
-\alias{wnominate}
+\alias{morie_wnominate}
 \title{W-NOMINATE Gaussian-utility log-likelihood (Armstrong Ch 3)}
 \usage{
 wnom(votes, x, z_yea, z_nay, beta = 15, w = NULL)
 
 wnominate_estimate(votes, x, z_yea, z_nay, beta = 15, w = NULL)
 
-wnominate(votes, x, z_yea, z_nay, beta = 15, w = NULL)
+morie_wnominate(votes, x, z_yea, z_nay, beta = 15, w = NULL)
 }
 \arguments{
 \item{votes}{(n_leg by n_votes) matrix; 1 = yea, 0 = nay, NA = miss.}
@@ -38,8 +38,8 @@ P(yea) = Phi(U_yea - U_nay).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \keyword{internal}

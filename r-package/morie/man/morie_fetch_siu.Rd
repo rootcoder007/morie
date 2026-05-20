@@ -47,9 +47,9 @@ parser themselves, which is fair use of public oversight reports.
 }
 \examples{
 \dontrun{
-  # Network: parses the full Ontario SIU corpus (~10-15 min).
-  csv <- morie_fetch_siu(cache_dir = tempdir())
-  siu <- utils::read.csv(csv)
-  nrow(siu)
+# Network: parses the full Ontario SIU corpus (~10-15 min).
+csv <- morie_fetch_siu(cache_dir = tempdir())
+siu <- utils::read.csv(csv)
+nrow(siu)
 }
 }

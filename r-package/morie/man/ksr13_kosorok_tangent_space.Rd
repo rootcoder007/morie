@@ -21,8 +21,8 @@ empirical Gram matrix at tolerance 1e-10.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

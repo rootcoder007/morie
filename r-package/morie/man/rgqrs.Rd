@@ -25,12 +25,15 @@ of integrated max, 200-ms refractory).
 }
 \examples{
 \donttest{
-  if (requireNamespace("signal", quietly = TRUE)) {
-    fs <- 360; t <- seq(0, 5, length.out = 5 * fs)
-    ecg <- rowSums(sapply(seq(0.5, 4.5, by = 1.0),
-                          function(tk) exp(-((t - tk) * 30)^2)))
-    rgqrs(ecg, fs = fs)$r_peaks
-  }
+if (requireNamespace("signal", quietly = TRUE)) {
+  fs <- 360
+  t <- seq(0, 5, length.out = 5 * fs)
+  ecg <- rowSums(sapply(
+    seq(0.5, 4.5, by = 1.0),
+    function(tk) exp(-((t - tk) * 30)^2)
+  ))
+  rgqrs(ecg, fs = fs)$r_peaks
+}
 }
 }
 \references{

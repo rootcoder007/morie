@@ -19,7 +19,7 @@
 #' #   vignette(package = "morie")
 #' }
 #' @export
-kalman_filter <- function(x, transition = NULL, H = NULL, Q = NULL, R = NULL,
+morie_kalman_filter <- function(x, transition = NULL, H = NULL, Q = NULL, R = NULL,
                           x0 = NULL, P0 = NULL) {
   Y <- as.matrix(x)
   n <- nrow(Y)

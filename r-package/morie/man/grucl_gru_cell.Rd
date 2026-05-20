@@ -56,8 +56,8 @@ R parity for \code{morie.fn.grucl.gru_cell}.  Gates stacked as
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

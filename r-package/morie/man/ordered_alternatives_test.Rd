@@ -24,7 +24,7 @@ Var_J = (N^2 (2N + 3) - sum n_i^2 (2 n_i + 3)) / 72
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

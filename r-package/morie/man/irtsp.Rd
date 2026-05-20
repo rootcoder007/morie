@@ -26,8 +26,8 @@ Standardises latent x to mean 0, SD 1 every sweep for identification.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \keyword{internal}

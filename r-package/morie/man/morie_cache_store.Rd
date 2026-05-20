@@ -21,7 +21,7 @@ Writes (or replaces) a table in the shared SQLite cache.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

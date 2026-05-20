@@ -25,8 +25,8 @@ per-roll-call marginals, and the Poole-Rosenthal "lopsided"
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \keyword{internal}

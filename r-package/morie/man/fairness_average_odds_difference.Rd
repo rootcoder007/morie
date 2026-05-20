@@ -36,9 +36,10 @@ AIF360 and the COMPAS \emph{XAI Stories} audit.
 }
 \examples{
 truth <- c(1, 0, 1, 0, 1, 0, 1, 0)
-pred  <- c(1, 0, 1, 0, 1, 1, 0, 1)
-race  <- c(rep("A", 4), rep("B", 4))
+pred <- c(1, 0, 1, 0, 1, 1, 0, 1)
+race <- c(rep("A", 4), rep("B", 4))
 res <- fairness_average_odds_difference(truth, pred, race,
-                                        privileged = "A")
-res$value   # 0.25
+  privileged = "A"
+)
+res$value # 0.25
 }

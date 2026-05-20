@@ -52,11 +52,12 @@ Supported formats: \code{csv}, \code{tsv}, \code{json}, \code{xml},
 }
 \examples{
 \dontrun{
-  # Auto-detected CSV:
-  df <- morie_fetch("https://example.org/data.csv")
-  # Force JSON parsing and pass an API parameter:
-  js <- morie_fetch("https://api.example.org/records",
-                    format = "json", params = list(limit = 100))
+# Auto-detected CSV:
+df <- morie_fetch("https://example.org/data.csv")
+# Force JSON parsing and pass an API parameter:
+js <- morie_fetch("https://api.example.org/records",
+  format = "json", params = list(limit = 100)
+)
 }
 }
 \seealso{

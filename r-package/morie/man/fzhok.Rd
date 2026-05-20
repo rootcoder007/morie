@@ -28,8 +28,8 @@ to O(h^4).  Note: K_4 takes negative values so f_hat may be < 0.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \keyword{internal}

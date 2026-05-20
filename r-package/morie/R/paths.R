@@ -28,7 +28,7 @@ is_absolute_path <- function(path) {
 #' #   vignette(package = "morie")
 #' }
 #' @export
-find_project_root <- function(start = getwd(), max_up = 10L) {
+morie_find_project_root <- function(start = getwd(), max_up = 10L) {
   current <- normalizePath(start, winslash = "/", mustWork = FALSE)
 
   for (i in seq_len(max_up)) {
@@ -62,7 +62,7 @@ find_project_root <- function(start = getwd(), max_up = 10L) {
 #' }
 #' @export
 morie_paths <- function(project_root = NULL) {
-  root <- project_root %||% find_project_root()
+  root <- project_root %||% morie_find_project_root()
   root <- normalizePath(root, winslash = "/", mustWork = FALSE)
 
   list(

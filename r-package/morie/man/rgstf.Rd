@@ -30,8 +30,10 @@ Sliding-window FFT spectrogram (one-sided, PSD-scaled). Mirrors
 }
 \examples{
 \donttest{
-  t <- seq(0, 10, length.out = 1024); x <- sin(2 * pi * 10 * t)
-  r <- rgstf(x, fs = 100, nperseg = 128); dim(r$Sxx)
+t <- seq(0, 10, length.out = 1024)
+x <- sin(2 * pi * 10 * t)
+r <- rgstf(x, fs = 100, nperseg = 128)
+dim(r$Sxx)
 }
 }
 \references{

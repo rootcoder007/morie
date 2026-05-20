@@ -29,7 +29,8 @@ agree to ~1e-3 for typical EEG/ECG inputs.
 }
 \examples{
 \donttest{
-set.seed(0); fs <- 100
+set.seed(0)
+fs <- 100
 t <- seq(0, 10, length.out = 1000)
 x <- sin(2 * pi * 10 * t)
 r <- rgpsd(x, fs = fs, nperseg = 256)

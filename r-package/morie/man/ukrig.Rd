@@ -48,8 +48,8 @@ Z(s) = mu(s) + delta(s), mu(s) = sum_k beta_k f_k(s).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

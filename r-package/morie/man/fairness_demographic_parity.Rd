@@ -30,5 +30,5 @@ group receives favourable outcomes at the same rate.
 pred <- c(1, 1, 1, 1, 0, 0, 0, 1, 0, 0)
 race <- c(rep("A", 5), rep("B", 5))
 res <- fairness_demographic_parity(pred, race, privileged = "A")
-res$value   # -0.6  (group B rate 0.2 minus group A rate 0.8)
+res$value # -0.6  (group B rate 0.2 minus group A rate 0.8)
 }

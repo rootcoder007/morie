@@ -24,8 +24,8 @@ mu(s) = sum_k beta_k f_k(s); f_k are monomials up to degree \code{order}.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

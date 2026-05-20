@@ -38,9 +38,11 @@ at \code{maxRecordCount} features, typically 1000-2000).
 }
 \examples{
 \dontrun{
-  layer <- paste0("https://services.arcgis.com/ORG/arcgis/rest/",
-                  "services/Assault/FeatureServer/0")
-  df <- morie_fetch_arcgis(layer)
+layer <- paste0(
+  "https://services.arcgis.com/ORG/arcgis/rest/",
+  "services/Assault/FeatureServer/0"
+)
+df <- morie_fetch_arcgis(layer)
 }
 }
 \seealso{

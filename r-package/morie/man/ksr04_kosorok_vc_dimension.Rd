@@ -20,8 +20,8 @@ VC dimension of the linear half-space classifier in R^d equals d+1.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

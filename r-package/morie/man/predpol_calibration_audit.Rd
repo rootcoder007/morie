@@ -31,7 +31,8 @@ res <- predpol_calibration_audit(
   areas = c("d1", "d2", "d3", "d4", "d5", "d6"),
   mean_risk = c(90, 80, 70, 30, 20, 10),
   outcome_rate = c(10, 20, 30, 70, 80, 90),
-  group = c("X", "X", "X", "Y", "Y", "Y"))
-res$group_rank_gap$X   # 3  (group X over-predicted)
-res$spearman           # -1 (perfectly miscalibrated)
+  group = c("X", "X", "X", "Y", "Y", "Y")
+)
+res$group_rank_gap$X # 3  (group X over-predicted)
+res$spearman # -1 (perfectly miscalibrated)
 }

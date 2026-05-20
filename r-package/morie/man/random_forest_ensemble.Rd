@@ -42,7 +42,7 @@ Wraps \code{randomForest::randomForest}.  Auto-detects task from y
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

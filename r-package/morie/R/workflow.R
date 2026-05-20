@@ -105,10 +105,10 @@ run_workflow_step <- function(
 #' @examples
 #' \dontrun{
 #' # Runs the workflow scripts end to end in a morie project tree:
-#' run_pipeline(project_root = ".")
+#' morie_run_pipeline(project_root = ".")
 #' }
 #' @export
-run_pipeline <- function(
+morie_run_pipeline <- function(
   steps = NULL,
   project_root = NULL,
   script_map = default_workflow_map(),

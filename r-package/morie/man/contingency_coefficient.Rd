@@ -10,7 +10,7 @@ contingency_coefficient(x)
 \item{x}{A 2-D contingency table of counts.}
 }
 \value{
-Named list: statistic (C), cramers_v, chi2, p_value, df,
+Named list: statistic (C), morie_cramers_v, chi2, p_value, df,
 max_C, n.
 }
 \description{
@@ -19,7 +19,7 @@ maximum attainable C = sqrt((min(r,c)-1)/min(r,c)).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

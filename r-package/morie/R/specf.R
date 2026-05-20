@@ -13,7 +13,7 @@
 #' #   vignette(package = "morie")
 #' }
 #' @export
-spectral_density <- function(x, fs = 1, nperseg = NULL) {
+morie_spectral_density <- function(x, fs = 1, nperseg = NULL) {
   r <- as.numeric(x)
   n <- length(r)
   if (n < 8) stop("Need >=8 obs.")

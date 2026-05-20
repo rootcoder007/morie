@@ -31,8 +31,8 @@ so \code{D_loss = -V(D)}.  Two generator objectives are supported:
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

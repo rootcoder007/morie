@@ -38,14 +38,14 @@ test_that("regime_switching uses MSwM when it is available", {
 
 # --- perseus.R -------------------------------------------------------------
 
-test_that("build_prompt handles bare, contextual and empty questions", {
-  expect_equal(build_prompt("What is the rate?"), "What is the rate?")
-  p <- build_prompt("Why?", context = "Segregation data 2025")
+test_that("morie_build_prompt handles bare, contextual and empty questions", {
+  expect_equal(morie_build_prompt("What is the rate?"), "What is the rate?")
+  p <- morie_build_prompt("Why?", context = "Segregation data 2025")
   expect_match(p, "Context:")
   expect_match(p, "Question:")
   # blank context collapses to the bare question
-  expect_equal(build_prompt("Q", context = "   "), "Q")
-  expect_error(build_prompt("   "), "non-empty")
+  expect_equal(morie_build_prompt("Q", context = "   "), "Q")
+  expect_error(morie_build_prompt("   "), "non-empty")
 })
 
 test_that("ask_percy returns agent text on a successful Python call", {

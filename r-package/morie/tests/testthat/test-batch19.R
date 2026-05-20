@@ -81,28 +81,28 @@ test_that("simple_random_sample: n exceeding population WOR errors", {
   expect_error(simple_random_sample(data.frame(x = 1:5), 10), "exceeds")
 })
 
-test_that("stratified_sample: equal allocation per stratum", {
+test_that("morie_stratified_sample: equal allocation per stratum", {
   set.seed(1)
   df <- data.frame(g = c(rep("A", 60), rep("B", 40)), x = rnorm(100))
-  out <- stratified_sample(df, "g", n_per_stratum = 10)
+  out <- morie_stratified_sample(df, "g", n_per_stratum = 10)
   expect_s3_class(out, "data.frame")
   expect_equal(nrow(out), 20L)
   expect_true(all(is.finite(out$.weight)))
 })
 
-test_that("stratified_sample: proportional allocation uses total n", {
+test_that("morie_stratified_sample: proportional allocation uses total n", {
   set.seed(1)
   df <- data.frame(g = c(rep("A", 60), rep("B", 40)), x = rnorm(100))
-  out <- stratified_sample(df, "g", n_per_stratum = 20, proportional = TRUE)
+  out <- morie_stratified_sample(df, "g", n_per_stratum = 20, proportional = TRUE)
   expect_s3_class(out, "data.frame")
   expect_true(nrow(out) >= 1L)
   expect_true(all(out$.weight > 0))
 })
 
-test_that("stratified_sample: proportional with vector n_per_stratum errors", {
+test_that("morie_stratified_sample: proportional with vector n_per_stratum errors", {
   df <- data.frame(g = c("A", "A", "B"), x = 1:3)
   expect_error(
-    stratified_sample(df, "g",
+    morie_stratified_sample(df, "g",
       n_per_stratum = c(A = 1, B = 1),
       proportional = TRUE
     ),
@@ -110,43 +110,43 @@ test_that("stratified_sample: proportional with vector n_per_stratum errors", {
   )
 })
 
-test_that("stratified_sample: named vector allocation honoured", {
+test_that("morie_stratified_sample: named vector allocation honoured", {
   set.seed(2)
   df <- data.frame(g = c(rep("A", 30), rep("B", 30)), x = rnorm(60))
-  out <- stratified_sample(df, "g", n_per_stratum = c(A = 5L, B = 8L))
+  out <- morie_stratified_sample(df, "g", n_per_stratum = c(A = 5L, B = 8L))
   expect_equal(nrow(out), 13L)
 })
 
-test_that("cluster_sample: selects whole clusters with cluster weights", {
+test_that("morie_cluster_sample: selects whole clusters with cluster weights", {
   df <- data.frame(cl = rep(1:10, each = 5), x = 1:50)
-  out <- cluster_sample(df, "cl", n_clusters = 4)
+  out <- morie_cluster_sample(df, "cl", n_clusters = 4)
   expect_s3_class(out, "data.frame")
   expect_equal(length(unique(out$cl)), 4L)
   expect_equal(unique(out$.weight), 10 / 4)
 })
 
-test_that("cluster_sample: too many clusters errors", {
+test_that("morie_cluster_sample: too many clusters errors", {
   df <- data.frame(cl = rep(1:3, each = 2), x = 1:6)
-  expect_error(cluster_sample(df, "cl", n_clusters = 5), "exceeds")
+  expect_error(morie_cluster_sample(df, "cl", n_clusters = 5), "exceeds")
 })
 
-test_that("pps_sample: returns n rows with Hansen-Hurwitz weights", {
+test_that("morie_pps_sample: returns n rows with Hansen-Hurwitz weights", {
   df <- data.frame(s = c(1, 2, 3, 4, 5), x = 1:5)
-  out <- pps_sample(df, "s", n = 10)
+  out <- morie_pps_sample(df, "s", n = 10)
   expect_equal(nrow(out), 10L)
   expect_true(all(out$.weight > 0))
   expect_true(all(is.finite(out$.weight)))
 })
 
-test_that("pps_sample: non-positive size errors", {
+test_that("morie_pps_sample: non-positive size errors", {
   df <- data.frame(s = c(1, 0, 2), x = 1:3)
-  expect_error(pps_sample(df, "s", n = 2), "positive")
+  expect_error(morie_pps_sample(df, "s", n = 2), "positive")
 })
 
-test_that("bootstrap_sample: returns estimate, se, CI and distribution", {
+test_that("morie_bootstrap_sample: returns estimate, se, CI and distribution", {
   set.seed(1)
   df <- data.frame(x = rnorm(40))
-  res <- bootstrap_sample(df,
+  res <- morie_bootstrap_sample(df,
     statistic = function(d) mean(d$x),
     n_bootstrap = 50L
   )
@@ -170,22 +170,22 @@ test_that("jackknife_estimate: returns estimate, se and bias", {
   expect_true(is.finite(res$bias))
 })
 
-test_that("effective_sample_size: equal weights give n", {
-  expect_equal(effective_sample_size(rep(1, 20)), 20)
+test_that("morie_effective_sample_size: equal weights give n", {
+  expect_equal(morie_effective_sample_size(rep(1, 20)), 20)
 })
 
-test_that("effective_sample_size: drops NA and non-positive weights", {
-  ess <- effective_sample_size(c(1, 2, NA, -1, 3))
+test_that("morie_effective_sample_size: drops NA and non-positive weights", {
+  ess <- morie_effective_sample_size(c(1, 2, NA, -1, 3))
   expect_true(is.finite(ess))
   expect_true(ess > 0)
 })
 
-test_that("design_effect: equal weights give DEFF of 1", {
-  expect_equal(design_effect(rep(2, 15)), 1)
+test_that("morie_design_effect: equal weights give DEFF of 1", {
+  expect_equal(morie_design_effect(rep(2, 15)), 1)
 })
 
-test_that("design_effect: unequal weights give DEFF >= 1", {
-  expect_true(design_effect(c(1, 1, 5, 10)) >= 1)
+test_that("morie_design_effect: unequal weights give DEFF >= 1", {
+  expect_true(morie_design_effect(c(1, 1, 5, 10)) >= 1)
 })
 
 test_that("compute_design_weights: inverse-probability weights", {
@@ -595,10 +595,10 @@ test_that("spatial_cross_validation alias is identical to spcrs", {
   expect_identical(spatial_cross_validation, spcrs)
 })
 
-test_that("spectral_density: default arguments give Welch PSD", {
+test_that("morie_spectral_density: default arguments give Welch PSD", {
   set.seed(26)
   x <- sin(2 * pi * 0.1 * seq_len(128)) + rnorm(128, sd = 0.3)
-  res <- spectral_density(x)
+  res <- morie_spectral_density(x)
   expect_type(res, "list")
   expect_named(res, c(
     "frequencies", "psd", "n_segments", "nperseg",
@@ -611,17 +611,17 @@ test_that("spectral_density: default arguments give Welch PSD", {
   expect_equal(res$n, 128L)
 })
 
-test_that("spectral_density: custom fs and nperseg honoured", {
+test_that("morie_spectral_density: custom fs and nperseg honoured", {
   set.seed(27)
   x <- rnorm(100)
-  res <- spectral_density(x, fs = 50, nperseg = 20)
+  res <- morie_spectral_density(x, fs = 50, nperseg = 20)
   expect_equal(res$fs, 50)
   expect_equal(res$nperseg, 20L)
   expect_true(max(res$frequencies) <= 25 + 1e-9)
 })
 
-test_that("spectral_density: too-short input errors", {
-  expect_error(spectral_density(1:5), ">=8")
+test_that("morie_spectral_density: too-short input errors", {
+  expect_error(morie_spectral_density(1:5), ">=8")
 })
 
 test_that("sparse_attention: scalar N gives N-by-N mask", {

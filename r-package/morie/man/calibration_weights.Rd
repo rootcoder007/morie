@@ -35,9 +35,14 @@ Adjusts initial design weights so that weighted marginal totals match
 known population totals for each auxiliary variable.
 }
 \examples{
-\dontrun{
-  # Raking a sample to known population margins:
-  calibration_weights(df, aux_vars = c("region", "sex"),
-                      population_totals = totals)
-}
+set.seed(1)
+df <- data.frame(
+  region = sample(c("A", "B"), 100, TRUE),
+  sex = sample(c("M", "F"), 100, TRUE)
+)
+totals <- list(region_A = 60, region_B = 40, sex_M = 55, sex_F = 45)
+calibration_weights(df,
+  aux_vars = c("region", "sex"),
+  population_totals = totals
+)
 }

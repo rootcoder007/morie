@@ -28,7 +28,8 @@ Pincus (1991) approximate entropy.
 Self-matches INCLUDED (Pincus convention) and Chebyshev distance.
 }
 \examples{
-set.seed(0); rgapn(rnorm(100), m = 2)$ApEn
+set.seed(0)
+rgapn(rnorm(100), m = 2)$ApEn
 }
 \references{
 Pincus (1991), PNAS 88:2297.

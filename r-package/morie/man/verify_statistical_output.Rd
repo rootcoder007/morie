@@ -29,7 +29,8 @@ tmp <- tempfile(fileext = ".json")
 if (requireNamespace("jsonlite", quietly = TRUE)) {
   jsonlite::write_json(
     list(ate = 0.5, se = 0.1, ci_lower = 0.3, ci_upper = 0.7, n = 200),
-    tmp, auto_unbox = TRUE
+    tmp,
+    auto_unbox = TRUE
   )
   verify_statistical_output(tmp)
   unlink(tmp)

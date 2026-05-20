@@ -23,7 +23,9 @@ Named list \code{rms}, \code{window}, \code{fs}, \code{mean_rms}.
 \deqn{\mathrm{RMS}[n] = \sqrt{ (1/W) \sum_{k=n-W+1}^{n} x[k]^2 }}
 }
 \examples{
-set.seed(0); r <- rgemg(rnorm(500), window = 32); length(r$rms)
+set.seed(0)
+r <- rgemg(rnorm(500), window = 32)
+length(r$rms)
 }
 \references{
 Rangayyan Ch 8.

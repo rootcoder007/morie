@@ -23,7 +23,7 @@ series. \eqn{H = 0.5} indicates uncorrelated (Brownian) increments;
 \donttest{
 if (requireNamespace("pracma", quietly = TRUE)) {
   set.seed(1)
-  x <- cumsum(rnorm(2048))   # Brownian motion, expected H ~ 0.5
+  x <- cumsum(rnorm(2048)) # Brownian motion, expected H ~ 0.5
   res <- hurst_r(x)
   res$interpretation
 }

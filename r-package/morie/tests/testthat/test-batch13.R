@@ -577,8 +577,8 @@ test_that("mdvtr drops non-finite values", {
   expect_equal(res$n, 3L)
 })
 
-test_that("median_voter alias matches mdvtr", {
-  expect_identical(median_voter, mdvtr)
+test_that("morie_median_voter alias matches mdvtr", {
+  expect_identical(morie_median_voter, mdvtr)
 })
 
 test_that("mhatf_multi_head_attention_full runs a multi-head pass", {

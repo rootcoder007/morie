@@ -109,10 +109,10 @@ test_that("morie_sample bundled-CSV path is structurally valid", {
   }
 })
 
-test_that("prediction_accuracy returns full metric list", {
+test_that("morie_prediction_accuracy returns full metric list", {
   y <- c(1, 2, 3, 4, 5)
   yhat <- c(1.1, 1.9, 3.2, 3.8, 5.1)
-  res <- prediction_accuracy(y, yhat)
+  res <- morie_prediction_accuracy(y, yhat)
   expect_true(is.list(res))
   expect_named(res, c(
     "estimate", "pearson_r", "spearman_rho",
@@ -128,22 +128,22 @@ test_that("prediction_accuracy returns full metric list", {
   expect_equal(res$rmse, sqrt(res$mse))
 })
 
-test_that("prediction_accuracy handles n<2 gracefully", {
-  res <- prediction_accuracy(1, 1)
+test_that("morie_prediction_accuracy handles n<2 gracefully", {
+  res <- morie_prediction_accuracy(1, 1)
   expect_true(is.list(res))
   expect_equal(res$n, 1L)
   expect_true(is.na(res$estimate))
 })
 
-test_that("prediction_accuracy errors on length mismatch", {
+test_that("morie_prediction_accuracy errors on length mismatch", {
   expect_error(
-    prediction_accuracy(c(1, 2, 3), c(1, 2)),
+    morie_prediction_accuracy(c(1, 2, 3), c(1, 2)),
     "same length"
   )
 })
 
-test_that("prediction_accuracy handles constant predictions", {
-  res <- prediction_accuracy(c(1, 2, 3, 4), c(2, 2, 2, 2))
+test_that("morie_prediction_accuracy handles constant predictions", {
+  res <- morie_prediction_accuracy(c(1, 2, 3, 4), c(2, 2, 2, 2))
   expect_true(is.list(res))
   expect_true(is.na(res$pearson_r))
   expect_true(is.na(res$slope))
@@ -229,12 +229,12 @@ test_that("party_alignment is an alias of algnm", {
   expect_identical(party_alignment, algnm)
 })
 
-test_that("aniso runs Levene-style anisotropy detection in 2D", {
+test_that("morie_aniso runs Levene-style anisotropy detection in 2D", {
   set.seed(20)
   n <- 60
   coords <- matrix(runif(n * 2, 0, 10), ncol = 2)
   x <- rnorm(n)
-  res <- aniso(x, coords, n_dirs = 4, tol_deg = 22.5)
+  res <- morie_aniso(x, coords, n_dirs = 4, tol_deg = 22.5)
   expect_true(is.list(res))
   expect_equal(res$n, n)
   expect_match(res$method, "Anisotropy")
@@ -245,23 +245,23 @@ test_that("aniso runs Levene-style anisotropy detection in 2D", {
   }
 })
 
-test_that("aniso treats 1D coords as trivially isotropic", {
+test_that("morie_aniso treats 1D coords as trivially isotropic", {
   set.seed(21)
   n <- 30
   coords <- matrix(runif(n), ncol = 1)
-  res <- aniso(rnorm(n), coords)
+  res <- morie_aniso(rnorm(n), coords)
   expect_equal(res$statistic, 0)
   expect_equal(res$p_value, 1)
   expect_match(res$method, "1D")
 })
 
-test_that("aniso errors when coords rows mismatch length(x)", {
+test_that("morie_aniso errors when coords rows mismatch length(x)", {
   coords <- matrix(runif(20), ncol = 2)
-  expect_error(aniso(rnorm(5), coords), "coords rows")
+  expect_error(morie_aniso(rnorm(5), coords), "coords rows")
 })
 
-test_that("anisotropy_test is an alias of aniso", {
-  expect_identical(anisotropy_test, aniso)
+test_that("anisotropy_test is an alias of morie_aniso", {
+  expect_identical(anisotropy_test, morie_aniso)
 })
 
 test_that("antithetic_variates estimates E[f(U)] with variance reduction", {

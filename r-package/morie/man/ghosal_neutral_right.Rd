@@ -23,7 +23,7 @@ Neutral-to-the-right posterior survival (Doksum 1974).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

@@ -38,8 +38,8 @@ C((h, u)) = (sill - nugget) * exp(-h/range_s) * exp(-|u|/range_t)
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

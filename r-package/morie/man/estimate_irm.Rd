@@ -59,8 +59,8 @@ If any are unavailable, the function raises an informative error.
 \examples{
 \donttest{
 if (requireNamespace("DoubleML", quietly = TRUE) &&
-    requireNamespace("mlr3", quietly = TRUE) &&
-    requireNamespace("mlr3learners", quietly = TRUE)) {
+  requireNamespace("mlr3", quietly = TRUE) &&
+  requireNamespace("mlr3learners", quietly = TRUE)) {
   set.seed(1)
   n <- 200
   X <- matrix(rnorm(n * 5), n, 5)
@@ -68,8 +68,10 @@ if (requireNamespace("DoubleML", quietly = TRUE) &&
   T <- rbinom(n, 1, ps)
   Y <- 0.5 * T + X[, 1] + rnorm(n)
   df <- data.frame(Y = Y, T = T, X)
-  estimate_irm(df, treatment = "T", outcome = "Y",
-               covariates = paste0("X", 1:5))
+  estimate_irm(df,
+    treatment = "T", outcome = "Y",
+    covariates = paste0("X", 1:5)
+  )
 }
 }
 }

@@ -16,7 +16,7 @@
 #' #   vignette(package = "morie")
 #' }
 #' @export
-prediction_accuracy <- function(y_true, y_pred) {
+morie_prediction_accuracy <- function(y_true, y_pred) {
   y_true <- as.numeric(y_true)
   y_pred <- as.numeric(y_pred)
   n <- length(y_true)
@@ -61,4 +61,4 @@ prediction_accuracy <- function(y_true, y_pred) {
 
 # CANONICAL TEST
 # y <- c(1,2,3,4,5); y_hat <- c(1.1,1.9,3.2,3.8,5.1)
-# prediction_accuracy(y, y_hat)$pearson_r
+# morie_prediction_accuracy(y, y_hat)$pearson_r

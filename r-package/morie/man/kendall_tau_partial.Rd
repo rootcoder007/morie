@@ -19,7 +19,7 @@ sqrt((1 - tau_xz^2)(1 - tau_yz^2))
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

@@ -21,7 +21,7 @@ Log-spline density estimator (Stone 1990, Ghosal Ch 8).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

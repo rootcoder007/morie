@@ -31,7 +31,7 @@ Generate a VAR(L) coefficient array as a 3-d list
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

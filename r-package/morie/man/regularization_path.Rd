@@ -33,7 +33,7 @@ the supplied \code{alphas} (lambda grid in glmnet terminology).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

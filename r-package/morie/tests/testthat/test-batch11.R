@@ -113,8 +113,8 @@ test_that("isotn returns NA estimate for too-short input", {
   expect_equal(res$n, 1L)
 })
 
-test_that("isotonic_regression alias is identical to isotn", {
-  expect_identical(morie:::isotonic_regression, morie:::isotn)
+test_that("morie_isotonic_regression alias is identical to isotn", {
+  expect_identical(morie:::morie_isotonic_regression, morie:::isotn)
 })
 
 test_that("jkest computes jackknife bias and variance for the mean", {
@@ -190,10 +190,10 @@ test_that("johansen_cointegration transposes a wide matrix", {
   expect_equal(res$k, 3L)
 })
 
-test_that("kalman_filter runs a default local-level model", {
+test_that("morie_kalman_filter runs a default local-level model", {
   set.seed(41)
   x <- cumsum(rnorm(30))
-  res <- kalman_filter(x)
+  res <- morie_kalman_filter(x)
   expect_type(res, "list")
   expect_named(res, c(
     "state", "state_cov", "innovations",
@@ -206,10 +206,10 @@ test_that("kalman_filter runs a default local-level model", {
   expect_identical(res$method, "Linear Gaussian Kalman filter (base R)")
 })
 
-test_that("kalman_filter accepts explicit system matrices", {
+test_that("morie_kalman_filter accepts explicit system matrices", {
   set.seed(42)
   x <- cumsum(rnorm(25))
-  res <- kalman_filter(x,
+  res <- morie_kalman_filter(x,
     transition = matrix(1), H = matrix(1),
     Q = matrix(0.5), R = matrix(1),
     x0 = 0, P0 = matrix(10)
@@ -218,8 +218,8 @@ test_that("kalman_filter accepts explicit system matrices", {
   expect_equal(nrow(res$innovations), 25L)
 })
 
-test_that("kalman_filter errors with fewer than two observations", {
-  expect_error(kalman_filter(c(1)), ">=2 obs")
+test_that("morie_kalman_filter errors with fewer than two observations", {
+  expect_error(morie_kalman_filter(c(1)), ">=2 obs")
 })
 
 test_that("kmeans_clustering clusters a small numeric matrix", {

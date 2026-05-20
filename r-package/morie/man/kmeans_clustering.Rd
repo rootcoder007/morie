@@ -26,7 +26,7 @@ Wraps \code{stats::kmeans} with Hartigan-Wong (the default).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

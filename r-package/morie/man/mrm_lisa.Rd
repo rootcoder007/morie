@@ -19,8 +19,10 @@ empirical paper Section 7.11.
 \examples{
 if (FALSE) {
   ncr <- read.csv("Neighbourhood_Crime_Rates_Open_Data.csv")
-  mrm_tps_lisa(ncr, count_col = "ASSAULT_2024",
-               lat_col = "lat", lon_col = "lon")
+  mrm_tps_lisa(ncr,
+    count_col = "ASSAULT_2024",
+    lat_col = "lat", lon_col = "lon"
+  )
 }
 }
 \references{

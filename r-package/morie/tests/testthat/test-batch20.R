@@ -474,34 +474,34 @@ test_that("default_synthetic_name_map returns the canonical key set", {
   expect_equal(unname(m_legacy[["id"]]), "seqid")
 })
 
-test_that("generate_synthetic_data builds a reproducible synthetic frame", {
-  d1 <- generate_synthetic_data(n = 150L, seed = 1L)
+test_that("morie_generate_synthetic_data builds a reproducible synthetic frame", {
+  d1 <- morie_generate_synthetic_data(n = 150L, seed = 1L)
   expect_s3_class(d1, "data.frame")
   expect_equal(nrow(d1), 150L)
   expect_true(isTRUE(attr(d1, "synthetic")))
-  d2 <- generate_synthetic_data(n = 150L, seed = 1L)
+  d2 <- morie_generate_synthetic_data(n = 150L, seed = 1L)
   expect_identical(d1, d2)
 })
 
-test_that("generate_synthetic_data respects the legacy naming profile", {
-  d <- generate_synthetic_data(n = 120L, seed = 2L, profile = "morie_legacy")
+test_that("morie_generate_synthetic_data respects the legacy naming profile", {
+  d <- morie_generate_synthetic_data(n = 120L, seed = 2L, profile = "morie_legacy")
   expect_true("seqid" %in% names(d))
   expect_equal(attr(d, "synthetic_profile"), "morie_legacy")
 })
 
-test_that("generate_synthetic_data validates n and special_code_rate", {
-  expect_error(generate_synthetic_data(n = 10L), "integer >= 100")
+test_that("morie_generate_synthetic_data validates n and special_code_rate", {
+  expect_error(morie_generate_synthetic_data(n = 10L), "integer >= 100")
   expect_error(
-    generate_synthetic_data(n = 150L, special_code_rate = 0.5),
+    morie_generate_synthetic_data(n = 150L, special_code_rate = 0.5),
     "0, 0.2"
   )
 })
 
-test_that("generate_synthetic_data accepts a custom name map", {
+test_that("morie_generate_synthetic_data accepts a custom name map", {
   base <- default_synthetic_name_map("generic")
   custom <- base
   custom[["id"]] <- "record_id"
-  d <- generate_synthetic_data(n = 120L, seed = 3L, name_map = custom)
+  d <- morie_generate_synthetic_data(n = 120L, seed = 3L, name_map = custom)
   expect_true("record_id" %in% names(d))
 })
 

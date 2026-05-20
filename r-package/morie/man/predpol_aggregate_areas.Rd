@@ -31,7 +31,8 @@ Aggregate per-record predictive-policing data to one row per area
 \examples{
 agg <- predpol_aggregate_areas(
   area = c("a", "a", "b", "b"), risk = c(10, 20, 30, 40),
-  outcome = c(1, 0, 1, 1))
-agg$mean_risk      # 15 35
-agg$outcome_rate   # 0.5 1.0
+  outcome = c(1, 0, 1, 1)
+)
+agg$mean_risk # 15 35
+agg$outcome_rate # 0.5 1.0
 }

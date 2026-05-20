@@ -36,5 +36,5 @@ Predictive Policing" (arXiv:2603.18987).
 pred <- c(1, 1, 1, 1, 0, 0, 0, 0)
 race <- c(rep("A", 4), rep("B", 4))
 res <- fairness_bias_amplification(pred, race, privileged = "A")
-res$value   # -0.5  (parity gap -1.0 times Gini 0.5)
+res$value # -0.5  (parity gap -1.0 times Gini 0.5)
 }

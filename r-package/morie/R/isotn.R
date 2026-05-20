@@ -49,4 +49,4 @@ isotn <- function(x, y, weights = NULL, increasing = TRUE) {
 #' @rdname isotn
 #' @keywords internal
 #' @export
-isotonic_regression <- isotn
+morie_isotonic_regression <- isotn

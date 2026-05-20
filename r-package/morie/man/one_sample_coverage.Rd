@@ -20,7 +20,7 @@ are i.i.d. Beta(1, n) under H0.  Returns empirical coverages
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

@@ -27,8 +27,8 @@ Richardson-style extrapolation cancels the O(h^2) bias of the KDFE:
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \keyword{internal}

@@ -59,8 +59,8 @@ R parity for \code{morie.fn.lstmc.lstm_cell}.  Gates stacked as
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

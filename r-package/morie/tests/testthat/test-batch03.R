@@ -53,13 +53,13 @@ test_that("contingency_coefficient computes C and Cramer's V", {
   res <- contingency_coefficient(tbl)
   expect_true(is.list(res))
   expect_true(all(c(
-    "statistic", "cramers_v", "chi2", "p_value", "df",
+    "statistic", "morie_cramers_v", "chi2", "p_value", "df",
     "max_C", "n", "method"
   ) %in% names(res)))
   expect_gte(res$statistic, 0)
   expect_lte(res$statistic, 1)
-  expect_gte(res$cramers_v, 0)
-  expect_lte(res$cramers_v, 1)
+  expect_gte(res$morie_cramers_v, 0)
+  expect_lte(res$morie_cramers_v, 1)
   expect_gte(res$chi2, 0)
   expect_gte(res$p_value, 0)
   expect_lte(res$p_value, 1)
@@ -115,39 +115,39 @@ test_that("cntrl_estimator internal helper works directly", {
   expect_equal(res$n, 100L)
 })
 
-test_that("coherence returns frequencies and bounded coherence", {
+test_that("morie_coherence returns frequencies and bounded morie_coherence", {
   set.seed(1)
   n <- 200
   t <- seq_len(n)
   x <- sin(2 * pi * t / 20) + rnorm(n, sd = 0.3)
   y <- sin(2 * pi * t / 20 + 0.5) + rnorm(n, sd = 0.3)
-  res <- coherence(x, y)
+  res <- morie_coherence(x, y)
   expect_true(is.list(res))
   expect_true(all(c(
-    "frequencies", "coherence", "n_segments", "nperseg",
+    "frequencies", "morie_coherence", "n_segments", "nperseg",
     "fs", "n", "method"
   ) %in% names(res)))
   expect_equal(res$n, n)
-  expect_equal(length(res$frequencies), length(res$coherence))
-  expect_true(all(is.finite(res$coherence)))
-  expect_true(all(res$coherence >= 0))
-  expect_true(all(res$coherence <= 1 + 1e-8))
+  expect_equal(length(res$frequencies), length(res$morie_coherence))
+  expect_true(all(is.finite(res$morie_coherence)))
+  expect_true(all(res$morie_coherence >= 0))
+  expect_true(all(res$morie_coherence <= 1 + 1e-8))
   expect_gte(res$n_segments, 1)
 })
 
-test_that("coherence honours nperseg and fs arguments", {
+test_that("morie_coherence honours nperseg and fs arguments", {
   set.seed(2)
   x <- rnorm(120)
   y <- rnorm(120)
-  res <- coherence(x, y, nperseg = 32, fs = 100)
+  res <- morie_coherence(x, y, nperseg = 32, fs = 100)
   expect_equal(res$nperseg, 32L)
   expect_equal(res$fs, 100)
   expect_equal(max(res$frequencies), 50)
 })
 
-test_that("coherence errors on mismatched or short input", {
-  expect_error(coherence(rnorm(50), rnorm(40)), "mismatch")
-  expect_error(coherence(rnorm(5), rnorm(5)), ">=8")
+test_that("morie_coherence errors on mismatched or short input", {
+  expect_error(morie_coherence(rnorm(50), rnorm(40)), "mismatch")
+  expect_error(morie_coherence(rnorm(5), rnorm(5)), ">=8")
 })
 
 test_that("eg_coint returns Engle-Granger structure", {
@@ -274,7 +274,7 @@ test_that("copula_estimation works for the gaussian family", {
   res <- copula_estimation(x, y, family = "gaussian")
   expect_true(is.list(res))
   expect_true(all(c(
-    "estimate", "kendall_tau", "se_tau", "u", "v",
+    "estimate", "morie_kendall_tau", "se_tau", "u", "v",
     "family", "n", "method"
   ) %in% names(res)))
   expect_equal(res$family, "gaussian")

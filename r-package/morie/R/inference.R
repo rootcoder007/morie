@@ -20,11 +20,11 @@ NULL
 #' @param x2 Numeric vector (group 2).
 #' @param equal_var Assume equal variances? Default `FALSE` (Welch test).
 #' @param alternative `"two.sided"`, `"greater"`, or `"less"`.
-#' @return Named list: `t`, `df`, `p_value`, `ci_diff`, `cohens_d`.
+#' @return Named list: `t`, `df`, `p_value`, `ci_diff`, `morie_cohens_d`.
 #' @export
 #' @examples
-#' two_sample_t_test(rnorm(50, 0.5), rnorm(50, 0))
-two_sample_t_test <- function(x1, x2,
+#' morie_two_sample_t_test(rnorm(50, 0.5), rnorm(50, 0))
+morie_two_sample_t_test <- function(x1, x2,
                               equal_var = FALSE,
                               alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
@@ -32,13 +32,13 @@ two_sample_t_test <- function(x1, x2,
     var.equal = equal_var,
     alternative = alternative
   )
-  d <- cohens_d(x1, x2)
+  d <- morie_cohens_d(x1, x2)
   list(
     t = as.numeric(result$statistic),
     df = as.numeric(result$parameter),
     p_value = result$p.value,
     ci_diff = as.numeric(result$conf.int),
-    cohens_d = d
+    morie_cohens_d = d
   )
 }
 
@@ -54,7 +54,7 @@ two_sample_t_test <- function(x1, x2,
 #' #   vignette(package = "morie")
 #' }
 #' @export
-one_sample_t_test <- function(x, mu0 = 0,
+morie_one_sample_t_test <- function(x, mu0 = 0,
                               alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::t.test(x, mu = mu0, alternative = alternative)
@@ -78,7 +78,7 @@ one_sample_t_test <- function(x, mu0 = 0,
 #' #   vignette(package = "morie")
 #' }
 #' @export
-paired_t_test <- function(x1, x2,
+morie_paired_t_test <- function(x1, x2,
                           alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::t.test(x1, x2, paired = TRUE, alternative = alternative)
@@ -95,7 +95,7 @@ paired_t_test <- function(x1, x2,
 #'
 #' @param observed Observed counts (matrix for independence, vector for GOF).
 #' @param expected Expected counts for GOF (optional; uniform if NULL).
-#' @return Named list: `chi_sq`, `df`, `p_value`, `cramers_v`.
+#' @return Named list: `chi_sq`, `df`, `p_value`, `morie_cramers_v`.
 #' @examples
 #' \dontrun{
 #' # See the package vignettes for usage examples:
@@ -105,7 +105,7 @@ paired_t_test <- function(x1, x2,
 chi_square_test <- function(observed, expected = NULL) {
   if (is.matrix(observed) || is.data.frame(observed)) {
     result <- stats::chisq.test(observed)
-    v <- cramers_v(as.matrix(observed))
+    v <- morie_cramers_v(as.matrix(observed))
   } else {
     result <- if (is.null(expected)) {
       stats::chisq.test(observed)
@@ -118,7 +118,7 @@ chi_square_test <- function(observed, expected = NULL) {
     chi_sq = as.numeric(result$statistic),
     df = as.numeric(result$parameter),
     p_value = result$p.value,
-    cramers_v = v
+    morie_cramers_v = v
   )
 }
 
@@ -148,7 +148,7 @@ fisher_exact_test <- function(table_2x2,
 #'
 #' @param ... Numeric vectors, one per group.
 #' @return Named list: `F`, `df_between`, `df_within`, `p_value`,
-#'   `eta_squared`.
+#'   `morie_eta_squared`.
 #' @export
 #' @examples
 #' anova_one_way(rnorm(30, 0), rnorm(30, 0.5), rnorm(30, 1))
@@ -170,7 +170,7 @@ anova_one_way <- function(...) {
     df_between = df_b,
     df_within = df_w,
     p_value = s["grp", "Pr(>F)"],
-    eta_squared = ss_b / ss_t
+    morie_eta_squared = ss_b / ss_t
   )
 }
 
@@ -184,7 +184,7 @@ anova_one_way <- function(...) {
 #' #   vignette(package = "morie")
 #' }
 #' @export
-kruskal_wallis_test <- function(...) {
+morie_kruskal_wallis_test <- function(...) {
   groups <- list(...)
   df_long <- do.call(rbind, lapply(seq_along(groups), function(i) {
     data.frame(y = groups[[i]], grp = factor(i))
@@ -209,7 +209,7 @@ kruskal_wallis_test <- function(...) {
 #' #   vignette(package = "morie")
 #' }
 #' @export
-mann_whitney_test <- function(x1, x2,
+morie_mann_whitney_test <- function(x1, x2,
                               alternative = c("two.sided", "greater", "less")) {
   alternative <- match.arg(alternative)
   result <- stats::wilcox.test(x1, x2,
@@ -273,7 +273,7 @@ shapiro_wilk_test <- function(x, alpha = 0.05) {
 #' #   vignette(package = "morie")
 #' }
 #' @export
-levene_test <- function(...) {
+morie_levene_test <- function(...) {
   groups <- list(...)
   df_long <- do.call(rbind, lapply(seq_along(groups), function(i) {
     data.frame(y = groups[[i]], grp = factor(i))
@@ -427,7 +427,7 @@ risk_difference_ci <- function(table_2x2, alpha = 0.05) {
 #' #   vignette(package = "morie")
 #' }
 #' @export
-cohens_d <- function(x1, x2, pooled = TRUE) {
+morie_cohens_d <- function(x1, x2, pooled = TRUE) {
   m1 <- mean(x1, na.rm = TRUE)
   m2 <- mean(x2, na.rm = TRUE)
   n1 <- sum(!is.na(x1))
@@ -444,7 +444,7 @@ cohens_d <- function(x1, x2, pooled = TRUE) {
 
 #' Hedges' g (bias-corrected Cohen's d)
 #'
-#' @inheritParams cohens_d
+#' @inheritParams morie_cohens_d
 #' @return Numeric Hedges' g.
 #' @examples
 #' \dontrun{
@@ -452,8 +452,8 @@ cohens_d <- function(x1, x2, pooled = TRUE) {
 #' #   vignette(package = "morie")
 #' }
 #' @export
-hedges_g <- function(x1, x2) {
-  d <- cohens_d(x1, x2, pooled = TRUE)
+morie_hedges_g <- function(x1, x2) {
+  d <- morie_cohens_d(x1, x2, pooled = TRUE)
   n1 <- sum(!is.na(x1))
   n2 <- sum(!is.na(x2))
   df <- n1 + n2 - 2
@@ -473,7 +473,7 @@ hedges_g <- function(x1, x2) {
 #' #   vignette(package = "morie")
 #' }
 #' @export
-eta_squared <- function(f_stat, df_between, df_within) {
+morie_eta_squared <- function(f_stat, df_between, df_within) {
   ss_between <- f_stat * df_between
   ss_total <- ss_between + df_within
   ss_between / ss_total
@@ -481,13 +481,13 @@ eta_squared <- function(f_stat, df_between, df_within) {
 
 #' Omega-squared (less biased than eta-squared)
 #'
-#' @inheritParams eta_squared
+#' @inheritParams morie_eta_squared
 #' @param n Total sample size.
 #' @return Numeric omega-squared.
 #' @export
 #' @examples
-#' omega_squared(f_stat = 5.2, df_between = 2, df_within = 87, n = 90)
-omega_squared <- function(f_stat, df_between, df_within, n) {
+#' morie_omega_squared(f_stat = 5.2, df_between = 2, df_within = 87, n = 90)
+morie_omega_squared <- function(f_stat, df_between, df_within, n) {
   (df_between * (f_stat - 1)) / (df_between * (f_stat - 1) + n)
 }
 
@@ -501,7 +501,7 @@ omega_squared <- function(f_stat, df_between, df_within, n) {
 #' #   vignette(package = "morie")
 #' }
 #' @export
-cramers_v <- function(contingency_table) {
+morie_cramers_v <- function(contingency_table) {
   m <- as.matrix(contingency_table)
   result <- stats::chisq.test(m, correct = FALSE)
   chi2 <- as.numeric(result$statistic)
@@ -537,7 +537,7 @@ spearman_rho <- function(x, y) {
 #' #   vignette(package = "morie")
 #' }
 #' @export
-kendall_tau <- function(x, y) {
+morie_kendall_tau <- function(x, y) {
   result <- stats::cor.test(x, y, method = "kendall", exact = FALSE)
   list(tau = as.numeric(result$estimate), p_value = result$p.value)
 }
@@ -578,8 +578,8 @@ point_biserial_r <- function(binary_var, continuous_var) {
 #' @return Result of `stats::power.t.test()`.
 #' @export
 #' @examples
-#' power_t_test(n = NULL, delta = 0.5, power = 0.80)
-power_t_test <- function(n = NULL, delta = NULL, sd = 1,
+#' morie_power_t_test(n = NULL, delta = 0.5, power = 0.80)
+morie_power_t_test <- function(n = NULL, delta = NULL, sd = 1,
                          sig_level = 0.05, power = NULL,
                          alternative = c("two.sided", "one.sided"),
                          type = c("two.sample", "one.sample", "paired")) {
@@ -605,8 +605,8 @@ power_t_test <- function(n = NULL, delta = NULL, sd = 1,
 #' @return Result of `stats::power.prop.test()`.
 #' @export
 #' @examples
-#' power_prop_test(p1 = 0.30, p2 = 0.20, power = 0.80)
-power_prop_test <- function(n = NULL, p1 = NULL, p2 = NULL,
+#' morie_power_prop_test(p1 = 0.30, p2 = 0.20, power = 0.80)
+morie_power_prop_test <- function(n = NULL, p1 = NULL, p2 = NULL,
                             sig_level = 0.05, power = NULL,
                             alternative = c("two.sided", "one.sided")) {
   alternative <- match.arg(alternative)

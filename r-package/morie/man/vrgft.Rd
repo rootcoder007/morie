@@ -36,8 +36,8 @@ Exponential form: \deqn{\gamma(h) = c_0 + c_1(1 - e^{-h/a})}.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

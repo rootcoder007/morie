@@ -47,4 +47,4 @@ quntf <- function(x, taus = NULL) {
 #' @rdname quntf
 #' @keywords internal
 #' @export
-quantile_function <- quntf
+morie_quantile_function <- quntf

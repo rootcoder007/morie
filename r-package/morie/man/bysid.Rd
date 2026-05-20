@@ -39,8 +39,8 @@ with N(0,1) prior on x and N(0, 5) priors on (alpha, beta).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \keyword{internal}

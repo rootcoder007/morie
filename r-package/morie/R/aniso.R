@@ -19,7 +19,7 @@
 #' #   vignette(package = "morie")
 #' }
 #' @export
-aniso <- function(x, coords, n_dirs = 4, tol_deg = 22.5) {
+morie_aniso <- function(x, coords, n_dirs = 4, tol_deg = 22.5) {
   x <- as.numeric(x)
   n <- length(x)
   coords <- if (is.matrix(coords)) {
@@ -75,7 +75,7 @@ aniso <- function(x, coords, n_dirs = 4, tol_deg = 22.5) {
   )
 }
 
-#' @rdname aniso
+#' @rdname morie_aniso
 #' @keywords internal
 #' @export
-anisotropy_test <- aniso
+anisotropy_test <- morie_aniso

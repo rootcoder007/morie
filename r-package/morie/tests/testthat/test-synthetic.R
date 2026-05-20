@@ -1,7 +1,7 @@
 library(morie)
 
 test_that("synthetic generator returns expected generic schema", {
-  dat <- generate_synthetic_data(n = 1000, seed = 123, special_code_rate = 0)
+  dat <- morie_generate_synthetic_data(n = 1000, seed = 123, special_code_rate = 0)
 
   req <- c(
     "id", "weight", "sex", "age_group", "region",
@@ -17,9 +17,9 @@ test_that("synthetic generator returns expected generic schema", {
 })
 
 test_that("synthetic generation is deterministic by seed", {
-  a <- generate_synthetic_data(n = 500, seed = 77, special_code_rate = 0)
-  b <- generate_synthetic_data(n = 500, seed = 77, special_code_rate = 0)
-  c <- generate_synthetic_data(n = 500, seed = 78, special_code_rate = 0)
+  a <- morie_generate_synthetic_data(n = 500, seed = 77, special_code_rate = 0)
+  b <- morie_generate_synthetic_data(n = 500, seed = 77, special_code_rate = 0)
+  c <- morie_generate_synthetic_data(n = 500, seed = 78, special_code_rate = 0)
 
   expect_identical(a, b)
   expect_false(identical(a, c))
@@ -29,7 +29,7 @@ test_that("custom name map works", {
   map <- default_synthetic_name_map("generic")
   map[["cannabis_use"]] <- "exposure_any"
 
-  dat <- generate_synthetic_data(n = 400, seed = 9, special_code_rate = 0, name_map = map)
+  dat <- morie_generate_synthetic_data(n = 400, seed = 9, special_code_rate = 0, name_map = map)
 
   expect_true("exposure_any" %in% names(dat))
   expect_false("cannabis_use" %in% names(dat))

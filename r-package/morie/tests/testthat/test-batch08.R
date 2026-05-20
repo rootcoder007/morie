@@ -460,17 +460,17 @@ test_that("grucl_gru_cell supports deterministic_seed", {
   expect_length(res$h, 4L)
 })
 
-test_that("grid_search_cv runs a regression grid search", {
+test_that("morie_grid_search_cv runs a regression grid search", {
   skip_if_not_installed("caret")
   skip_if_not_installed("elasticnet")
   set.seed(110)
   x <- matrix(rnorm(120), ncol = 3)
   y <- x[, 1] - x[, 2] + rnorm(40, sd = 0.2)
   res <- tryCatch(
-    grid_search_cv(x, y, cv = 3L, task = "regression", seed = 1L),
+    morie_grid_search_cv(x, y, cv = 3L, task = "regression", seed = 1L),
     error = function(e) NULL
   )
-  skip_if(is.null(res), "grid_search_cv regression backend unavailable")
+  skip_if(is.null(res), "morie_grid_search_cv regression backend unavailable")
   expect_true(is.list(res))
   expect_true(all(c(
     "estimate", "best_params", "best_score", "task", "n",
@@ -481,10 +481,10 @@ test_that("grid_search_cv runs a regression grid search", {
   expect_true(is.finite(res$best_score))
 })
 
-test_that("grid_search_cv errors clearly when caret is missing", {
+test_that("morie_grid_search_cv errors clearly when caret is missing", {
   if (!requireNamespace("caret", quietly = TRUE)) {
     expect_error(
-      grid_search_cv(matrix(rnorm(20), ncol = 2), rnorm(10)),
+      morie_grid_search_cv(matrix(rnorm(20), ncol = 2), rnorm(10)),
       "caret"
     )
   } else {

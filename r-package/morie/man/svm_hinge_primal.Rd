@@ -24,7 +24,7 @@ Wraps \code{e1071::svm} with a linear kernel.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

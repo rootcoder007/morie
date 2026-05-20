@@ -9,7 +9,7 @@
 #' #   vignette(package = "morie")
 #' }
 #' @export
-build_prompt <- function(question, context = NULL) {
+morie_build_prompt <- function(question, context = NULL) {
   question <- trimws(as.character(question)[1])
   if (!nzchar(question)) {
     stop("`question` must be non-empty.", call. = FALSE)
@@ -38,7 +38,7 @@ build_prompt <- function(question, context = NULL) {
 #' }
 #' @export
 ask_percy <- function(question, context = NULL, python_bin = Sys.getenv("MORIE_PYTHON_BIN", "python3")) {
-  prompt <- build_prompt(question, context = context)
+  prompt <- morie_build_prompt(question, context = context)
 
   code <- paste(
     "import json, sys",
@@ -67,9 +67,9 @@ ask_percy <- function(question, context = NULL, python_bin = Sys.getenv("MORIE_P
   paste(out, collapse = "\n")
 }
 
-#' @rdname build_prompt
+#' @rdname morie_build_prompt
 #' @keywords internal
-build_assistant_prompt <- build_prompt
+build_assistant_prompt <- morie_build_prompt
 
 #' @rdname ask_percy
 #' @keywords internal

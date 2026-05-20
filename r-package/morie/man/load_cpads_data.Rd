@@ -17,7 +17,7 @@ Load the real CPADS CSV from this repository
 }
 \examples{
 \dontrun{
-  # Reads and canonicalises the CPADS PUMF CSV from a project tree:
-  load_cpads_data()
+# Reads and canonicalises the CPADS PUMF CSV from a project tree:
+load_cpads_data()
 }
 }

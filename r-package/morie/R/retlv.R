@@ -56,4 +56,4 @@ retlv <- function(x, return_period = 100) {
 #' @rdname retlv
 #' @keywords internal
 #' @export
-return_level <- retlv
+morie_return_level <- retlv

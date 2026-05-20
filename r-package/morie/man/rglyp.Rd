@@ -28,7 +28,8 @@ Rosenstein et al. (1993) algorithm via delay embedding and
 nearest-neighbour divergence tracking.
 }
 \examples{
-set.seed(0); rglyp(rnorm(200), m = 3, tau = 1, max_t = 20)$lyapunov
+set.seed(0)
+rglyp(rnorm(200), m = 3, tau = 1, max_t = 20)$lyapunov
 }
 \references{
 Rosenstein et al. (1993), Physica D 65:117.

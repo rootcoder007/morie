@@ -27,8 +27,8 @@ resolves to \code{ocp21}.
 }
 \examples{
 \dontrun{
-  df <- morie_load_dataset("ocp21")                  # CPADS 2021-2022
-  df <- morie_load_dataset("ocp21", refresh = TRUE)  # force re-fetch
+df <- morie_load_dataset("ocp21") # CPADS 2021-2022
+df <- morie_load_dataset("ocp21", refresh = TRUE) # force re-fetch
 }
 }
 \seealso{

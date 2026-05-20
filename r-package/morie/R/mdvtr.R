@@ -23,7 +23,7 @@ mdvtr <- function(x) {
   if (n == 0L) {
     return(list(
       estimate = NA_real_, se = NA_real_, ci_lower = NA_real_,
-      ci_upper = NA_real_, n = 0L, method = "median_voter"
+      ci_upper = NA_real_, n = 0L, method = "morie_median_voter"
     ))
   }
   est <- stats::median(x)
@@ -39,4 +39,4 @@ mdvtr <- function(x) {
 #' @keywords internal
 #' @rdname mdvtr
 #' @export
-median_voter <- mdvtr
+morie_median_voter <- mdvtr

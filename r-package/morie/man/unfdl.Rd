@@ -28,8 +28,8 @@ centred squared-distance matrix, followed by SMACOF-lite refinement.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \keyword{internal}

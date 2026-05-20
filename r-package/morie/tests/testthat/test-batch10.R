@@ -380,35 +380,35 @@ test_that("indicator_kriging errors on dimension mismatch", {
   )
 })
 
-test_that("two_sample_t_test returns tidy fields", {
+test_that("morie_two_sample_t_test returns tidy fields", {
   set.seed(25)
-  r <- two_sample_t_test(rnorm(50, 0.5), rnorm(50, 0))
-  expect_named(r, c("t", "df", "p_value", "ci_diff", "cohens_d"))
+  r <- morie_two_sample_t_test(rnorm(50, 0.5), rnorm(50, 0))
+  expect_named(r, c("t", "df", "p_value", "ci_diff", "morie_cohens_d"))
   expect_true(is.finite(r$t))
   expect_true(r$p_value >= 0 && r$p_value <= 1)
   expect_length(r$ci_diff, 2)
 })
 
-test_that("two_sample_t_test supports equal_var and alternative", {
+test_that("morie_two_sample_t_test supports equal_var and alternative", {
   set.seed(26)
-  r <- two_sample_t_test(rnorm(40, 1), rnorm(40, 0),
+  r <- morie_two_sample_t_test(rnorm(40, 1), rnorm(40, 0),
     equal_var = TRUE, alternative = "greater"
   )
   expect_true(is.finite(r$t))
 })
 
-test_that("one_sample_t_test returns t, df, p, ci", {
+test_that("morie_one_sample_t_test returns t, df, p, ci", {
   set.seed(27)
-  r <- one_sample_t_test(rnorm(40, 0.3), mu0 = 0)
+  r <- morie_one_sample_t_test(rnorm(40, 0.3), mu0 = 0)
   expect_named(r, c("t", "df", "p_value", "ci"))
   expect_length(r$ci, 2)
 })
 
-test_that("paired_t_test returns mean_diff", {
+test_that("morie_paired_t_test returns mean_diff", {
   set.seed(28)
   x1 <- rnorm(30)
   x2 <- x1 + rnorm(30, 0.5)
-  r <- paired_t_test(x1, x2)
+  r <- morie_paired_t_test(x1, x2)
   expect_named(r, c("t", "df", "p_value", "ci_diff", "mean_diff"))
   expect_true(is.finite(r$mean_diff))
 })
@@ -416,13 +416,13 @@ test_that("paired_t_test returns mean_diff", {
 test_that("chi_square_test handles matrix (independence) input", {
   m <- matrix(c(20, 30, 25, 25), nrow = 2)
   r <- chi_square_test(m)
-  expect_named(r, c("chi_sq", "df", "p_value", "cramers_v"))
-  expect_true(is.finite(r$cramers_v))
+  expect_named(r, c("chi_sq", "df", "p_value", "morie_cramers_v"))
+  expect_true(is.finite(r$morie_cramers_v))
 })
 
 test_that("chi_square_test handles vector (GOF) input", {
   r <- suppressWarnings(chi_square_test(c(10, 12, 8, 15)))
-  expect_true(is.na(r$cramers_v))
+  expect_true(is.na(r$morie_cramers_v))
   expect_true(is.finite(r$chi_sq))
 })
 
@@ -433,31 +433,31 @@ test_that("fisher_exact_test returns odds ratio and CI", {
   expect_length(r$ci, 2)
 })
 
-test_that("anova_one_way returns F and eta_squared", {
+test_that("anova_one_way returns F and morie_eta_squared", {
   set.seed(29)
   r <- anova_one_way(rnorm(30, 0), rnorm(30, 0.5), rnorm(30, 1))
   expect_named(r, c(
     "F", "df_between", "df_within", "p_value",
-    "eta_squared"
+    "morie_eta_squared"
   ))
   expect_true(is.finite(r$F))
-  expect_true(r$eta_squared >= 0 && r$eta_squared <= 1)
+  expect_true(r$morie_eta_squared >= 0 && r$morie_eta_squared <= 1)
 })
 
 test_that("anova_one_way errors with fewer than two groups", {
   expect_error(anova_one_way(rnorm(10)), "two groups")
 })
 
-test_that("kruskal_wallis_test returns H statistic", {
+test_that("morie_kruskal_wallis_test returns H statistic", {
   set.seed(30)
-  r <- kruskal_wallis_test(rnorm(20), rnorm(20, 1), rnorm(20, 2))
+  r <- morie_kruskal_wallis_test(rnorm(20), rnorm(20, 1), rnorm(20, 2))
   expect_named(r, c("H", "df", "p_value"))
   expect_true(is.finite(r$H))
 })
 
-test_that("mann_whitney_test returns W and effect size r", {
+test_that("morie_mann_whitney_test returns W and effect size r", {
   set.seed(31)
-  r <- mann_whitney_test(rnorm(30, 0.5), rnorm(30, 0))
+  r <- morie_mann_whitney_test(rnorm(30, 0.5), rnorm(30, 0))
   expect_named(r, c("W", "p_value", "r"))
   expect_true(is.finite(r$r))
 })
@@ -478,9 +478,9 @@ test_that("shapiro_wilk_test returns is_normal flag", {
   expect_type(r$is_normal, "logical")
 })
 
-test_that("levene_test returns F and p_value", {
+test_that("morie_levene_test returns F and p_value", {
   set.seed(34)
-  r <- levene_test(rnorm(30), rnorm(30, sd = 2), rnorm(30, sd = 3))
+  r <- morie_levene_test(rnorm(30), rnorm(30, sd = 2), rnorm(30, sd = 3))
   expect_named(r, c("F", "p_value"))
   expect_true(is.finite(r$F))
 })
@@ -522,43 +522,43 @@ test_that("risk_difference_ci returns rd and ordered CI", {
   expect_true(r$ci_lower <= r$ci_upper)
 })
 
-test_that("cohens_d pooled and unpooled both return finite values", {
+test_that("morie_cohens_d pooled and unpooled both return finite values", {
   set.seed(35)
   x1 <- rnorm(40, 1)
   x2 <- rnorm(40, 0)
-  expect_true(is.finite(cohens_d(x1, x2)))
-  expect_true(is.finite(cohens_d(x1, x2, pooled = FALSE)))
+  expect_true(is.finite(morie_cohens_d(x1, x2)))
+  expect_true(is.finite(morie_cohens_d(x1, x2, pooled = FALSE)))
 })
 
-test_that("hedges_g applies the bias correction", {
+test_that("morie_hedges_g applies the bias correction", {
   set.seed(36)
   x1 <- rnorm(40, 1)
   x2 <- rnorm(40, 0)
-  g <- hedges_g(x1, x2)
-  d <- cohens_d(x1, x2)
+  g <- morie_hedges_g(x1, x2)
+  d <- morie_cohens_d(x1, x2)
   expect_true(is.finite(g))
   expect_true(abs(g) <= abs(d))
 })
 
-test_that("eta_squared and omega_squared return values in range", {
-  e <- eta_squared(5.2, 2, 87)
-  o <- omega_squared(f_stat = 5.2, df_between = 2, df_within = 87, n = 90)
+test_that("morie_eta_squared and morie_omega_squared return values in range", {
+  e <- morie_eta_squared(5.2, 2, 87)
+  o <- morie_omega_squared(f_stat = 5.2, df_between = 2, df_within = 87, n = 90)
   expect_true(e >= 0 && e <= 1)
   expect_true(o >= 0 && o <= 1)
 })
 
-test_that("cramers_v returns a value in [0, 1]", {
+test_that("morie_cramers_v returns a value in [0, 1]", {
   m <- matrix(c(20, 30, 25, 25), nrow = 2)
-  v <- suppressWarnings(cramers_v(m))
+  v <- suppressWarnings(morie_cramers_v(m))
   expect_true(v >= 0 && v <= 1)
 })
 
-test_that("spearman_rho and kendall_tau return correlation + p", {
+test_that("spearman_rho and morie_kendall_tau return correlation + p", {
   set.seed(37)
   x <- rnorm(50)
   y <- x + rnorm(50)
   rs <- suppressWarnings(spearman_rho(x, y))
-  rk <- suppressWarnings(kendall_tau(x, y))
+  rk <- suppressWarnings(morie_kendall_tau(x, y))
   expect_named(rs, c("rho", "p_value"))
   expect_named(rk, c("tau", "p_value"))
   expect_true(is.finite(rs$rho) && is.finite(rk$tau))
@@ -573,14 +573,14 @@ test_that("point_biserial_r returns r and p", {
   expect_true(is.finite(r$r))
 })
 
-test_that("power_t_test solves for the missing parameter", {
-  r <- power_t_test(n = NULL, delta = 0.5, power = 0.80)
+test_that("morie_power_t_test solves for the missing parameter", {
+  r <- morie_power_t_test(n = NULL, delta = 0.5, power = 0.80)
   expect_s3_class(r, "power.htest")
   expect_true(is.finite(r$n) && r$n > 0)
 })
 
-test_that("power_prop_test solves for sample size", {
-  r <- power_prop_test(p1 = 0.30, p2 = 0.20, power = 0.80)
+test_that("morie_power_prop_test solves for sample size", {
+  r <- morie_power_prop_test(p1 = 0.30, p2 = 0.20, power = 0.80)
   expect_s3_class(r, "power.htest")
   expect_true(is.finite(r$n))
 })

@@ -40,8 +40,8 @@ Bayesian LASSO (Park & Casella 2008 short Gibbs)
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

@@ -52,8 +52,8 @@ simple_random_sample <- function(df, n, replace = FALSE, seed = 42L) {
 #' @export
 #' @examples
 #' df <- data.frame(g = c(rep("A", 60), rep("B", 40)), x = rnorm(100))
-#' stratified_sample(df, "g", n_per_stratum = 10)
-stratified_sample <- function(df, strata_col, n_per_stratum,
+#' morie_stratified_sample(df, "g", n_per_stratum = 10)
+morie_stratified_sample <- function(df, strata_col, n_per_stratum,
                               proportional = FALSE, seed = 42L) {
   set.seed(seed)
   strata <- split(seq_len(nrow(df)), df[[strata_col]])
@@ -106,7 +106,7 @@ stratified_sample <- function(df, strata_col, n_per_stratum,
 #' #   vignette(package = "morie")
 #' }
 #' @export
-cluster_sample <- function(df, cluster_col, n_clusters, seed = 42L) {
+morie_cluster_sample <- function(df, cluster_col, n_clusters, seed = 42L) {
   set.seed(seed)
   all_clusters <- unique(df[[cluster_col]])
   N_clusters <- length(all_clusters)
@@ -135,7 +135,7 @@ cluster_sample <- function(df, cluster_col, n_clusters, seed = 42L) {
 #' #   vignette(package = "morie")
 #' }
 #' @export
-pps_sample <- function(df, size_col, n, seed = 42L) {
+morie_pps_sample <- function(df, size_col, n, seed = 42L) {
   set.seed(seed)
   sizes <- as.numeric(df[[size_col]])
   if (any(sizes <= 0, na.rm = TRUE)) stop("size_col must be positive.")
@@ -163,8 +163,8 @@ pps_sample <- function(df, size_col, n, seed = 42L) {
 #' @export
 #' @examples
 #' df <- data.frame(x = rnorm(100))
-#' bootstrap_sample(df, statistic = function(d) mean(d$x))
-bootstrap_sample <- function(df, statistic, n_bootstrap = 1000L, seed = 42L) {
+#' morie_bootstrap_sample(df, statistic = function(d) mean(d$x))
+morie_bootstrap_sample <- function(df, statistic, n_bootstrap = 1000L, seed = 42L) {
   set.seed(seed)
   n <- nrow(df)
   boot_stats <- vapply(seq_len(n_bootstrap), function(i) {
@@ -226,7 +226,7 @@ jackknife_estimate <- function(df, statistic) {
 #' #   vignette(package = "morie")
 #' }
 #' @export
-effective_sample_size <- function(weights) {
+morie_effective_sample_size <- function(weights) {
   w <- as.numeric(weights)
   w <- w[!is.na(w) & w > 0]
   (sum(w)^2) / sum(w^2)
@@ -242,10 +242,10 @@ effective_sample_size <- function(weights) {
 #' #   vignette(package = "morie")
 #' }
 #' @export
-design_effect <- function(weights) {
+morie_design_effect <- function(weights) {
   w <- as.numeric(weights)
   w <- w[!is.na(w) & w > 0]
-  length(w) / effective_sample_size(w)
+  length(w) / morie_effective_sample_size(w)
 }
 
 
@@ -292,13 +292,16 @@ compute_design_weights <- function(df, strata_col, population_sizes) {
 #' @param tol Convergence tolerance.
 #' @return Numeric vector of calibrated weights.
 #' @examples
-#' \dontrun{
-#' # Raking a sample to known population margins:
+#' set.seed(1)
+#' df <- data.frame(
+#'   region = sample(c("A", "B"), 100, TRUE),
+#'   sex = sample(c("M", "F"), 100, TRUE)
+#' )
+#' totals <- list(region_A = 60, region_B = 40, sex_M = 55, sex_F = 45)
 #' calibration_weights(df,
 #'   aux_vars = c("region", "sex"),
 #'   population_totals = totals
 #' )
-#' }
 #' @export
 calibration_weights <- function(df, aux_vars, population_totals,
                                 initial_weights = NULL,

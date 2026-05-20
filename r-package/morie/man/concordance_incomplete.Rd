@@ -20,7 +20,7 @@ Significance via chi-square approximation k(n-1) W ~ chi-square with n-1 df.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

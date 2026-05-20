@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #' Bootstrap confidence interval (percentile, BCa, studentized)
 #'
-#' R parity of \code{morie.fn.btsrp.bootstrap_ci}.  Three methods are
+#' R parity of \code{morie.fn.btsrp.morie_bootstrap_ci}.  Three methods are
 #' supported: percentile, BCa (Efron 1987 JASA), and studentized
 #' (Hall 1988 nested resampling).
 #'
@@ -93,4 +93,4 @@ btsrp <- function(x, statistic = NULL, B = 2000L, alpha = 0.05,
 #' @rdname btsrp
 #' @keywords internal
 #' @export
-bootstrap_ci <- btsrp
+morie_bootstrap_ci <- btsrp

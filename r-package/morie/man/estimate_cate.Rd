@@ -42,7 +42,7 @@ The \strong{S-learner} fits one model with treatment as a feature.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

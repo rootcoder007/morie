@@ -4,7 +4,7 @@ make_fixture_project <- function() {
   root <- file.path(tempdir(), paste0("morie-fixture-", as.integer(stats::runif(1, 1, 1e9))))
   dir.create(root, recursive = TRUE, showWarnings = FALSE)
 
-  # Root markers for find_project_root()
+  # Root markers for morie_find_project_root()
   file.create(file.path(root, "pyproject.toml"))
   dir.create(file.path(root, "libexec", "config"), recursive = TRUE, showWarnings = FALSE)
   dir.create(file.path(root, "data", "manifest", "outputs", "figures"), recursive = TRUE, showWarnings = FALSE)
@@ -50,11 +50,11 @@ test_that("audit captures missing and unexpected outputs", {
   expect_equal(summary$unexpected_files, 1)
 })
 
-test_that("find_project_root discovers parent project", {
+test_that("morie_find_project_root discovers parent project", {
   root <- make_fixture_project()
   nested <- file.path(root, "a", "b", "c")
   dir.create(nested, recursive = TRUE, showWarnings = FALSE)
 
-  found <- find_project_root(start = nested)
+  found <- morie_find_project_root(start = nested)
   expect_equal(normalizePath(found), normalizePath(root))
 })

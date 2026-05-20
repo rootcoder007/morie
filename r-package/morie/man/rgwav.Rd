@@ -39,11 +39,13 @@ signals.
 }
 \examples{
 \donttest{
-  set.seed(0); t <- seq(0, 1, length.out = 256)
-  x <- sin(2 * pi * 3 * t) + 0.3 * rnorm(256)
-  if (requireNamespace("wavelets", quietly = TRUE)) {
-    r <- rgwav(x, level = 3); length(r$signal)
-  }
+set.seed(0)
+t <- seq(0, 1, length.out = 256)
+x <- sin(2 * pi * 3 * t) + 0.3 * rnorm(256)
+if (requireNamespace("wavelets", quietly = TRUE)) {
+  r <- rgwav(x, level = 3)
+  length(r$signal)
+}
 }
 }
 \references{

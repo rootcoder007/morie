@@ -24,9 +24,9 @@ Rules: logical or 2-level factor/character -> \code{"binary"}; ordered factor ->
 with non-negative range -> \code{"ratio"}; otherwise -> \code{"interval"}.
 }
 \examples{
-infer_measurement_level(c(0, 1, 1, 0))               # "binary"
-infer_measurement_level(factor(c("a", "b", "c")))    # "nominal"
+infer_measurement_level(c(0, 1, 1, 0)) # "binary"
+infer_measurement_level(factor(c("a", "b", "c"))) # "nominal"
 infer_measurement_level(ordered(c("low", "med", "high"))) # "ordinal"
-infer_measurement_level(c(1.2, 3.4, 5.6))            # "ratio"
-infer_measurement_level(c(-1.5, 0.0, 2.3))           # "interval"
+infer_measurement_level(c(1.2, 3.4, 5.6)) # "ratio"
+infer_measurement_level(c(-1.5, 0.0, 2.3)) # "interval"
 }

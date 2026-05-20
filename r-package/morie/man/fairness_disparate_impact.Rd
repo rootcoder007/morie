@@ -31,6 +31,6 @@ standard legal indicator of adverse impact.
 pred <- c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0)
 race <- c(rep("A", 5), rep("B", 5))
 res <- fairness_disparate_impact(pred, race, privileged = "A")
-res$value           # 0.6  (group B rate 0.6 / group A rate 1.0)
-res$adverse_impact  # TRUE
+res$value # 0.6  (group B rate 0.6 / group A rate 1.0)
+res$adverse_impact # TRUE
 }

@@ -28,7 +28,8 @@ itself proof of bias; pair this with \code{predpol_calibration_audit()}.
 \examples{
 res <- predpol_score_disparity(
   score = c(9, 10, 11, 19, 20, 21),
-  group = c("A", "A", "A", "B", "B", "B"))
-res$value         # 10  (group means 10 and 20)
-res$significant   # TRUE
+  group = c("A", "A", "A", "B", "B", "B")
+)
+res$value # 10  (group means 10 and 20)
+res$significant # TRUE
 }

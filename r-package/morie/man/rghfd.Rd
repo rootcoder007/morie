@@ -21,7 +21,8 @@ Named list \code{HFD}, \code{log_L}, \code{log_inv_k}, \code{kmax}.
 Higuchi (1988) fractal dimension via curve-length scaling.
 }
 \examples{
-set.seed(0); rghfd(rnorm(500), kmax = 8)$HFD
+set.seed(0)
+rghfd(rnorm(500), kmax = 8)$HFD
 }
 \references{
 Higuchi (1988), Physica D 31:277. Rangayyan Ch 7.

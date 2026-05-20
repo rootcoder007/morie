@@ -40,8 +40,8 @@ CNN genomic predictor (Conv1D + GAP + dense, base R)
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

@@ -28,8 +28,8 @@ R parity for \code{morie.fn.posab.positional_encoding_abs}.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

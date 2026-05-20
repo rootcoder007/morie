@@ -32,8 +32,9 @@ df <- data.frame(
   y = rbinom(200, 1, 0.4),
   x1 = rnorm(200),
   x2 = rnorm(200),
-  w  = runif(200, 0.5, 1.5)
+  w = runif(200, 0.5, 1.5)
 )
 run_weighted_logistic_analysis(df,
-  outcome = "y", predictors = c("x1", "x2"), weights_col = "w")
+  outcome = "y", predictors = c("x1", "x2"), weights_col = "w"
+)
 }

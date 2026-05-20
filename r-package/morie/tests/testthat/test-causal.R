@@ -118,15 +118,15 @@ test_that("estimate_late (Wald) returns LATE near 0.3", {
   expect_gt(result$first_stage_f, 4) # relevant instrument
 })
 
-# ── e_value ───────────────────────────────────────────────────────────────────
+# ── morie_e_value ───────────────────────────────────────────────────────────────────
 
-test_that("e_value matches reference (RR = 3.9 → E ≈ 7.26)", {
-  r <- e_value(3.9)
-  expect_lt(abs(r$e_value - (3.9 + sqrt(3.9 * 2.9))), 0.01)
+test_that("morie_e_value matches reference (RR = 3.9 → E ≈ 7.26)", {
+  r <- morie_e_value(3.9)
+  expect_lt(abs(r$morie_e_value - (3.9 + sqrt(3.9 * 2.9))), 0.01)
 })
 
-test_that("e_value for CI bound is computed when rr_lower provided", {
-  r <- e_value(3.9, rr_lower = 2.4)
+test_that("morie_e_value for CI bound is computed when rr_lower provided", {
+  r <- morie_e_value(3.9, rr_lower = 2.4)
   expect_false(is.na(r$e_value_ci))
 })
 

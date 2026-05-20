@@ -4,19 +4,19 @@
 
 `%||%` <- function(a, b) if (is.null(a) || length(a) == 0) b else a
 
-test_that("build_prompt returns the bare question without context", {
-  out <- build_prompt("What is the U statistic?")
+test_that("morie_build_prompt returns the bare question without context", {
+  out <- morie_build_prompt("What is the U statistic?")
   expect_type(out, "character")
   expect_length(out, 1L)
   expect_identical(out, "What is the U statistic?")
 })
 
-test_that("build_prompt trims whitespace around the question", {
-  expect_identical(build_prompt("  hello world  "), "hello world")
+test_that("morie_build_prompt trims whitespace around the question", {
+  expect_identical(morie_build_prompt("  hello world  "), "hello world")
 })
 
-test_that("build_prompt composes a Context/Question block when context given", {
-  out <- build_prompt("Why?", context = "Because.")
+test_that("morie_build_prompt composes a Context/Question block when context given", {
+  out <- morie_build_prompt("Why?", context = "Because.")
   expect_type(out, "character")
   expect_length(out, 1L)
   expect_true(grepl("Context:", out, fixed = TRUE))
@@ -25,21 +25,21 @@ test_that("build_prompt composes a Context/Question block when context given", {
   expect_true(grepl("Why?", out, fixed = TRUE))
 })
 
-test_that("build_prompt ignores empty / blank context", {
-  expect_identical(build_prompt("Q", context = ""), "Q")
-  expect_identical(build_prompt("Q", context = "   "), "Q")
-  expect_identical(build_prompt("Q", context = NULL), "Q")
+test_that("morie_build_prompt ignores empty / blank context", {
+  expect_identical(morie_build_prompt("Q", context = ""), "Q")
+  expect_identical(morie_build_prompt("Q", context = "   "), "Q")
+  expect_identical(morie_build_prompt("Q", context = NULL), "Q")
 })
 
-test_that("build_prompt errors on an empty question", {
-  expect_error(build_prompt(""), "non-empty")
-  expect_error(build_prompt("   "), "non-empty")
+test_that("morie_build_prompt errors on an empty question", {
+  expect_error(morie_build_prompt(""), "non-empty")
+  expect_error(morie_build_prompt("   "), "non-empty")
 })
 
-test_that("build_assistant_prompt alias mirrors build_prompt", {
+test_that("build_assistant_prompt alias mirrors morie_build_prompt", {
   expect_identical(
     morie:::build_assistant_prompt("Q", context = "C"),
-    build_prompt("Q", context = "C")
+    morie_build_prompt("Q", context = "C")
   )
 })
 
@@ -85,11 +85,11 @@ test_that("rank_placements handles empty input gracefully", {
   expect_identical(r$m, 0L)
 })
 
-test_that("polynomial_regression fits a degree-2 model on a vector", {
+test_that("morie_polynomial_regression fits a degree-2 model on a vector", {
   set.seed(2)
   x <- rnorm(40)
   y <- 1 + 2 * x + 0.5 * x^2 + rnorm(40, sd = 0.1)
-  r <- polynomial_regression(x, y)
+  r <- morie_polynomial_regression(x, y)
   expect_type(r, "list")
   expect_named(r, c("estimate", "se", "feature_names", "degree", "n", "method"))
   expect_identical(r$degree, 2L)
@@ -99,20 +99,20 @@ test_that("polynomial_regression fits a degree-2 model on a vector", {
   expect_identical(r$feature_names[1], "(intercept)")
 })
 
-test_that("polynomial_regression honours a custom degree", {
+test_that("morie_polynomial_regression honours a custom degree", {
   set.seed(3)
   x <- rnorm(30)
   y <- rnorm(30)
-  r <- polynomial_regression(x, y, degree = 3L)
+  r <- morie_polynomial_regression(x, y, degree = 3L)
   expect_identical(r$degree, 3L)
   expect_true(grepl("degree=3", r$method))
 })
 
-test_that("polynomial_regression accepts a multi-column matrix with cross-terms", {
+test_that("morie_polynomial_regression accepts a multi-column matrix with cross-terms", {
   set.seed(4)
   X <- matrix(rnorm(60), ncol = 2)
   y <- X[, 1] + X[, 2] + rnorm(30, sd = 0.1)
-  r <- polynomial_regression(X, y, degree = 2L)
+  r <- morie_polynomial_regression(X, y, degree = 2L)
   expect_true("x0 x1" %in% r$feature_names)
   expect_length(r$estimate, length(r$feature_names))
 })
@@ -296,11 +296,11 @@ test_that("quntf returns NA for n < 2", {
   expect_identical(r$n, 1L)
 })
 
-test_that("quantile_function alias matches quntf", {
+test_that("morie_quantile_function alias matches quntf", {
   set.seed(13)
   x <- rnorm(150)
   expect_equal(
-    quantile_function(x, taus = 0.5)$quantiles,
+    morie_quantile_function(x, taus = 0.5)$quantiles,
     morie:::quntf(x, taus = 0.5)$quantiles
   )
 })
@@ -383,10 +383,10 @@ test_that("retlv accepts a custom return period", {
   if (is.finite(r$estimate %||% NA_real_)) expect_equal(r$return_period, 50)
 })
 
-test_that("return_level alias matches retlv", {
+test_that("morie_return_level alias matches retlv", {
   set.seed(18)
   x <- rnorm(120, mean = 8, sd = 2)
-  a <- return_level(x, return_period = 100)
+  a <- morie_return_level(x, return_period = 100)
   b <- retlv(x, return_period = 100)
   expect_equal(a$estimate, b$estimate)
 })

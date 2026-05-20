@@ -26,9 +26,11 @@ Widrow-Hoff least-mean-squares adaptive filter. Returns the cleaned
 residual \code{signal = x - LMS(reference)} and the noise estimate.
 }
 \examples{
-set.seed(0); n <- rnorm(200)
+set.seed(0)
+n <- rnorm(200)
 x <- sin(2 * pi * seq_len(200) / 20) + n
-r <- rgadp(x, reference = n, mu = 0.01, order = 8); length(r$signal)
+r <- rgadp(x, reference = n, mu = 0.01, order = 8)
+length(r$signal)
 }
 \references{
 Widrow & Stearns (1985); Rangayyan Ch 11.

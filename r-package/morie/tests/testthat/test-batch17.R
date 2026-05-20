@@ -62,7 +62,7 @@ test_that("rangayyan_ar_burg alias is identical to rgarb", {
   expect_identical(rangayyan_ar_burg, rgarb)
 })
 
-test_that("rgcoh returns coherence bounded in [0, 1]", {
+test_that("rgcoh returns morie_coherence bounded in [0, 1]", {
   set.seed(6)
   n <- 512
   tt <- seq(0, 5, length.out = n)
@@ -71,12 +71,12 @@ test_that("rgcoh returns coherence bounded in [0, 1]", {
   r <- rgcoh(a, b, fs = 100)
   expect_type(r, "list")
   expect_named(r, c(
-    "freqs", "coherence", "mean_coherence",
+    "freqs", "morie_coherence", "mean_coherence",
     "peak_freq", "peak_coherence"
   ))
-  ok <- is.finite(r$coherence)
-  expect_true(all(r$coherence[ok] >= -1e-8 & r$coherence[ok] <= 1 + 1e-8))
-  expect_length(r$freqs, length(r$coherence))
+  ok <- is.finite(r$morie_coherence)
+  expect_true(all(r$morie_coherence[ok] >= -1e-8 & r$morie_coherence[ok] <= 1 + 1e-8))
+  expect_length(r$freqs, length(r$morie_coherence))
 })
 
 test_that("rgcoh honours explicit nperseg", {

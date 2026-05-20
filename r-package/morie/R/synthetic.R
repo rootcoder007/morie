@@ -60,7 +60,7 @@ resolve_synthetic_name_map <- function(name_map, profile) {
 #' Default synthetic-data variable name map
 #'
 #' Returns a named character vector mapping canonical variable keys used by
-#' [generate_synthetic_data()] to output column names.
+#' [morie_generate_synthetic_data()] to output column names.
 #'
 #' @param profile Name profile. `"generic"` is recommended for new projects.
 #'   `"morie_legacy"` reproduces previous EML legacy column names.
@@ -127,10 +127,10 @@ default_synthetic_name_map <- function(profile = c("generic", "morie_legacy")) {
 #'   output column names. Use [default_synthetic_name_map()] as a template.
 #' @return A data.frame with synthetic records.
 #' @examples
-#' df <- generate_synthetic_data(n = 200, seed = 1)
+#' df <- morie_generate_synthetic_data(n = 200, seed = 1)
 #' nrow(df)
 #' @export
-generate_synthetic_data <- function(
+morie_generate_synthetic_data <- function(
   n = 5000L,
   seed = 42L,
   special_code_rate = 0.02,
@@ -274,7 +274,7 @@ write_synthetic_data <- function(
     stop("File already exists. Set `overwrite = TRUE` to replace it.", call. = FALSE)
   }
 
-  dat <- generate_synthetic_data(
+  dat <- morie_generate_synthetic_data(
     n = n,
     seed = seed,
     special_code_rate = special_code_rate,

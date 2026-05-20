@@ -26,7 +26,9 @@ variance. Always yields a stable (minimum-phase) all-pole model.
 Sign convention: \eqn{x[n] = -\sum_{k=1}^p a_k x[n-k] + e[n]}.
 }
 \examples{
-set.seed(0); r <- rgarb(rnorm(500), order = 4); length(r$ar_coeffs)
+set.seed(0)
+r <- rgarb(rnorm(500), order = 4)
+length(r$ar_coeffs)
 }
 \references{
 Burg (1975); Marple (1987); Rangayyan Ch 4.

@@ -17,7 +17,7 @@ GPL-2.0-only so the choice rests with downstream consumers.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

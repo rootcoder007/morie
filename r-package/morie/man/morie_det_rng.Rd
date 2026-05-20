@@ -40,6 +40,6 @@ dependencies of \code{morie} ship with at least one of the two.
 \examples{
 \dontrun{
 morie_det_rng("ksr07_bootstrap", 42L)
-rnorm(5)  # reproducible draws keyed by ("ksr07_bootstrap", 42)
+rnorm(5) # reproducible draws keyed by ("ksr07_bootstrap", 42)
 }
 }

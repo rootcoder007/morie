@@ -25,7 +25,8 @@ Named list \code{D2}, \code{log_r}, \code{log_C}, \code{m}, \code{tau}.
 Slope of \eqn{\log C(r)} vs \eqn{\log r} in the middle scaling region.
 }
 \examples{
-set.seed(0); rgcrl(rnorm(200), m = 3, tau = 1, n_r = 15)$D2
+set.seed(0)
+rgcrl(rnorm(200), m = 3, tau = 1, n_r = 15)$D2
 }
 \references{
 Grassberger & Procaccia (1983), Physica D 9:189.

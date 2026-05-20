@@ -25,8 +25,8 @@ Multi-trait GBLUP via vec-stacked mixed-model equations
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

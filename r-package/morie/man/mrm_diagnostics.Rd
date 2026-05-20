@@ -15,10 +15,14 @@ causal effect estimator.  R parity of \code{morie.mrm_diagnostics}.
 \examples{
 set.seed(2026)
 n <- 200L
-df <- data.frame(D = rbinom(n, 1, 0.4),
-                 age = rnorm(n, 50, 10), bmi = rnorm(n, 27, 4))
-mrm_standardised_difference(df, treatment_col = "D",
-                            covariates = c("age", "bmi"))
+df <- data.frame(
+  D = rbinom(n, 1, 0.4),
+  age = rnorm(n, 50, 10), bmi = rnorm(n, 27, 4)
+)
+mrm_standardised_difference(df,
+  treatment_col = "D",
+  covariates = c("age", "bmi")
+)
 }
 \references{
 Imbens, G. W., & Rubin, D. B. (2015). Causal Inference for Statistics,

@@ -26,8 +26,8 @@ transformed system A y = A X beta + eps, A = I - lambda W.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

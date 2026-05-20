@@ -21,7 +21,7 @@ Returns eps_n = n raised to the power of -beta/(2*beta+d).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

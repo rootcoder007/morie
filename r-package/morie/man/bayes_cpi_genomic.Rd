@@ -40,8 +40,8 @@ BayesC-pi spike-and-slab variable selection (short Gibbs)
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

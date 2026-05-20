@@ -25,7 +25,7 @@ Polya-tree Bayes factor for H0: F = N(loc, scale^2).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

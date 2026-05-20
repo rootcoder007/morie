@@ -28,6 +28,8 @@ cat <- morie_dataset_catalog()
 nrow(cat)
 head(cat[, c("key", "name", "source", "year")])
 # Find Ontario carceral datasets:
-cat[grepl("OTIS|Ontario", paste(cat$source, cat$survey)),
-    c("key", "year")]
+cat[
+  grepl("OTIS|Ontario", paste(cat$source, cat$survey)),
+  c("key", "year")
+]
 }

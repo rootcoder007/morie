@@ -337,9 +337,9 @@ test_that("wnom handles NA votes and custom salience weights", {
   expect_true(r$n_total <= n_leg * n_votes)
 })
 
-test_that("wnominate aliases are identical to wnom", {
+test_that("morie_wnominate aliases are identical to wnom", {
   expect_identical(wnominate_estimate, wnom)
-  expect_identical(wnominate, wnom)
+  expect_identical(morie_wnominate, wnom)
 })
 
 test_that("default_workflow_map returns the documented named vector", {
@@ -384,21 +384,21 @@ test_that("run_workflow_step errors when the script file is absent", {
   )
 })
 
-test_that("run_pipeline rejects unknown or empty steps", {
+test_that("morie_run_pipeline rejects unknown or empty steps", {
   expect_error(
-    run_pipeline(steps = c("modules", "ghost")),
+    morie_run_pipeline(steps = c("modules", "ghost")),
     "Unknown steps"
   )
   expect_error(
-    run_pipeline(steps = character(0)),
+    morie_run_pipeline(steps = character(0)),
     "non-empty character"
   )
 })
 
-test_that("run_pipeline returns a data frame of step statuses", {
+test_that("morie_run_pipeline returns a data frame of step statuses", {
   tmp <- tempfile("morie-pipe-")
   dir.create(tmp)
-  df <- run_pipeline(
+  df <- morie_run_pipeline(
     steps = "modules", project_root = tmp,
     stop_on_error = TRUE, verbose = FALSE
   )

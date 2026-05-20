@@ -292,8 +292,8 @@ test_that("btsrp handles degenerate short input", {
   expect_equal(res$n, 1L)
 })
 
-test_that("bootstrap_ci alias is identical", {
-  expect_identical(bootstrap_ci, btsrp)
+test_that("morie_bootstrap_ci alias is identical", {
+  expect_identical(morie_bootstrap_ci, btsrp)
 })
 
 test_that("bysid returns ideal-point estimates from a vote matrix", {
@@ -455,17 +455,17 @@ test_that("estimate_late with covariates runs (ivreg or fallback)", {
   expect_true(is.finite(as.numeric(res$se)))
 })
 
-test_that("e_value computes E-value and CI bound", {
-  res <- e_value(rr = 3.9, rr_lower = 2.4)
-  expect_named(res, c("e_value", "e_value_ci"))
-  expect_true(res$e_value > 1)
+test_that("morie_e_value computes E-value and CI bound", {
+  res <- morie_e_value(rr = 3.9, rr_lower = 2.4)
+  expect_named(res, c("morie_e_value", "e_value_ci"))
+  expect_true(res$morie_e_value > 1)
   expect_true(res$e_value_ci > 1)
-  expect_true(is.finite(res$e_value))
+  expect_true(is.finite(res$morie_e_value))
 })
 
-test_that("e_value without CI bound returns NA for e_value_ci", {
-  res <- e_value(rr = 2.0)
-  expect_true(res$e_value > 1)
+test_that("morie_e_value without CI bound returns NA for e_value_ci", {
+  res <- morie_e_value(rr = 2.0)
+  expect_true(res$morie_e_value > 1)
   expect_true(is.na(res$e_value_ci))
 })
 

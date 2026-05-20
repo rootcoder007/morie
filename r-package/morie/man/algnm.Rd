@@ -25,8 +25,8 @@ Rice_p = |\%yea_p - \%nay_p| over a series of roll calls; with a
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \keyword{internal}

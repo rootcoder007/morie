@@ -35,8 +35,8 @@ For \eqn{L = \tfrac{1}{2n}\sum (a - y)^2} with
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

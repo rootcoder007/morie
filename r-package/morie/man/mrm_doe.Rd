@@ -15,8 +15,10 @@ gap from designexptr.org.
 \examples{
 set.seed(2026)
 n <- 30L
-df <- data.frame(y = c(rnorm(n, 0), rnorm(n, 0.5), rnorm(n, 1)),
-                 g = rep(c("A", "B", "C"), each = n))
+df <- data.frame(
+  y = c(rnorm(n, 0), rnorm(n, 0.5), rnorm(n, 1)),
+  g = rep(c("A", "B", "C"), each = n)
+)
 mrm_anova_bonferroni(df, response_col = "y", group_col = "g")$alpha_per_pair
 }
 \references{

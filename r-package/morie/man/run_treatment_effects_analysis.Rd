@@ -31,5 +31,6 @@ df <- data.frame(
   x1 = rnorm(200), x2 = rnorm(200)
 )
 run_treatment_effects_analysis(df,
-  treatment = "t", outcome = "y", covariates = c("x1", "x2"))
+  treatment = "t", outcome = "y", covariates = c("x1", "x2")
+)
 }

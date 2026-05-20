@@ -18,7 +18,7 @@ Named list with \code{omega, alpha, beta, persistence, loglik,
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

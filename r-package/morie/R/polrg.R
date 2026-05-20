@@ -16,7 +16,7 @@
 #' #   vignette(package = "morie")
 #' }
 #' @export
-polynomial_regression <- function(x, y, degree = 2L) {
+morie_polynomial_regression <- function(x, y, degree = 2L) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)
   y <- as.numeric(y)

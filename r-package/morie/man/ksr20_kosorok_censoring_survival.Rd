@@ -22,8 +22,8 @@ S_C(t) by KM on (t_i, 1 - delta_i).  Greenwood SE.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

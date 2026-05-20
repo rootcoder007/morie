@@ -22,8 +22,8 @@ N(infty) = the count of events (sum of indicator delta_i = 1).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

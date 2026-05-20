@@ -64,4 +64,4 @@ wnominate_estimate <- wnom
 #' @rdname wnom
 #' @keywords internal
 #' @export
-wnominate <- wnom
+morie_wnominate <- wnom

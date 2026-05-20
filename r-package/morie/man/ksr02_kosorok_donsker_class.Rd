@@ -21,8 +21,8 @@ for the indicator class F of one-sided thresholds on X (Kosorok Ex 2.5.4), with 
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

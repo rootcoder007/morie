@@ -29,11 +29,11 @@ test_that("mini_batch_gradient roughly matches OLS", {
   expect_lt(max(abs(r$estimate - r$reference_ols)), 0.05)
 })
 
-test_that("polynomial_regression recovers known polynomial", {
+test_that("morie_polynomial_regression recovers known polynomial", {
   set.seed(0)
   x <- seq(-2, 2, length.out = 200)
   y <- 1 - 0.5 * x + 2 * x^2 + rnorm(200, sd = 0.1)
-  r <- polynomial_regression(x, y, degree = 2L)
+  r <- morie_polynomial_regression(x, y, degree = 2L)
   expect_equal(r$estimate[1:3], c(1.0, -0.5, 2.0), tolerance = 0.1)
 })
 
@@ -155,12 +155,12 @@ test_that("dbscan_clustering separates clusters from noise", {
   expect_gte(r$n_clusters, 2L)
 })
 
-test_that("grid_search_cv finds best params", {
+test_that("morie_grid_search_cv finds best params", {
   skip_if_no_pkg("caret")
   set.seed(0)
   X <- matrix(rnorm(600), 200, 3)
   y <- as.integer(X[, 1] + X[, 2] > 0)
-  r <- grid_search_cv(X, y, cv = 3L)
+  r <- morie_grid_search_cv(X, y, cv = 3L)
   expect_true(!is.null(r$best_params))
 })
 

@@ -25,8 +25,8 @@ R parity for \code{morie.fn.rslnk.residual_connection}.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

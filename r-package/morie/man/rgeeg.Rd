@@ -32,10 +32,12 @@ gamma 30-100 Hz.
 }
 \examples{
 \donttest{
-  set.seed(0); fs <- 256
-  t <- seq(0, 8, length.out = 2048)
-  x <- sin(2 * pi * 10 * t) + 0.3 * rnorm(length(t))
-  r <- rgeeg(x, fs = fs); r$relative[["alpha"]] > r$relative[["gamma"]]
+set.seed(0)
+fs <- 256
+t <- seq(0, 8, length.out = 2048)
+x <- sin(2 * pi * 10 * t) + 0.3 * rnorm(length(t))
+r <- rgeeg(x, fs = fs)
+r$relative[["alpha"]] > r$relative[["gamma"]]
 }
 }
 \references{

@@ -38,6 +38,7 @@ df <- data.frame(
 )
 compare_nested_logistic_models(df,
   outcome = "y",
-  predictors_full    = c("x1", "x2", "x3"),
-  predictors_reduced = c("x1"))
+  predictors_full = c("x1", "x2", "x3"),
+  predictors_reduced = c("x1")
+)
 }

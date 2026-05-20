@@ -470,19 +470,19 @@ estimate_late <- function(data, treatment, outcome, instrument,
 #'
 #' @param rr Risk ratio estimate (> 0). Supply > 1; if < 1, pass its reciprocal.
 #' @param rr_lower Lower bound of the 95% CI (used to compute E-value for CI).
-#' @return Named list: `e_value`, `e_value_ci` (for the CI bound).
+#' @return Named list: `morie_e_value`, `e_value_ci` (for the CI bound).
 #' @export
 #' @references
 #'   VanderWeele TJ, Ding P (2017). Sensitivity analysis in observational
 #'   research: introducing the E-value. *Annals of Internal Medicine*,
 #'   167(4):268-274.
 #' @examples
-#' e_value(rr = 3.9, rr_lower = 2.4)
-e_value <- function(rr, rr_lower = NULL) {
+#' morie_e_value(rr = 3.9, rr_lower = 2.4)
+morie_e_value <- function(rr, rr_lower = NULL) {
   compute_e <- function(r) r + sqrt(r * (r - 1))
   ev <- compute_e(rr)
   ev_ci <- if (!is.null(rr_lower)) compute_e(rr_lower) else NA_real_
-  list(e_value = ev, e_value_ci = ev_ci)
+  list(morie_e_value = ev, e_value_ci = ev_ci)
 }
 
 

@@ -20,10 +20,10 @@
 #' #   vignette(package = "morie")
 #' }
 #' @export
-grid_search_cv <- function(x, y, method = NULL, tune_grid = NULL,
+morie_grid_search_cv <- function(x, y, method = NULL, tune_grid = NULL,
                            cv = 5L, task = "auto", seed = 0L) {
   if (!requireNamespace("caret", quietly = TRUE)) {
-    stop("Function 'grid_search_cv' requires package 'caret'. Install with install.packages('caret').")
+    stop("Function 'morie_grid_search_cv' requires package 'caret'. Install with install.packages('caret').")
   }
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)

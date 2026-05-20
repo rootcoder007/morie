@@ -39,7 +39,7 @@ test_that("statistical callables run end to end on valid data", {
   ok("spatial_glm", spatial_glm(m2, y01, coords))
   ok("spatial_mixed", spatial_mixed_model(m2, v, coords))
   ok("sptau", sptau(v, w))
-  ok("kalman_filter", kalman_filter(m2))
+  ok("morie_kalman_filter", morie_kalman_filter(m2))
   ok("vecm_wide", vecm(matrix(rnorm(40), 2, 20))) # transpose path
   ok("vines_ok", morie:::vines(m2))
   ok("ksr10", ksr10_kosorok_m_estimator(v))
@@ -109,7 +109,7 @@ test_that("ensemble/search callables normalise a vector-valued x", {
   ok("rgztn_vec", regularization_path(xv, yc))
   ok("rndsr_vec", random_search_cv(xv, yb))
   ok("tsnrd_vec", tsne_reduction(xv))
-  ok("gsrch_vec", grid_search_cv(xv, yb))
+  ok("gsrch_vec", morie_grid_search_cv(xv, yb))
   ok("svmkr_vec", svm_kernel_trick(xv, yb))
   expect_true(TRUE)
 })

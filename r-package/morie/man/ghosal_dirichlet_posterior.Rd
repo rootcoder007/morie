@@ -32,7 +32,7 @@ evaluated on a grid plus the headline \code{estimate} at \code{mean(x)}.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

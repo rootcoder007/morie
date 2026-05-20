@@ -2,12 +2,12 @@
 % Please edit documentation in R/mdvtr.R
 \name{mdvtr}
 \alias{mdvtr}
-\alias{median_voter}
+\alias{morie_median_voter}
 \title{Median voter theorem (Armstrong et al. Ch 2)}
 \usage{
 mdvtr(x)
 
-median_voter(x)
+morie_median_voter(x)
 }
 \arguments{
 \item{x}{Numeric vector of voter ideal points.}
@@ -23,8 +23,8 @@ asymptotic SE 1.2533 * s/sqrt(n) for normal-like data.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

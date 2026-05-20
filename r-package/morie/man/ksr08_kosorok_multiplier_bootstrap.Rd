@@ -34,8 +34,8 @@ G_n_xi(f) = n raised to the power of -1/2 times sum_i xi_i (f(X_i) - P_n f), xi 
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

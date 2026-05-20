@@ -30,7 +30,8 @@ where \code{B} is the number of unordered template-vector pairs of length
 \code{m+1} (self-matches excluded).
 }
 \examples{
-set.seed(0); rgsam(rnorm(100), m = 2)$SampEn
+set.seed(0)
+rgsam(rnorm(100), m = 2)$SampEn
 }
 \references{
 Richman & Moorman (2000), AJP Heart 278:H2039.

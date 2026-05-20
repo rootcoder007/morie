@@ -27,10 +27,10 @@ biological or geophysical time series.
 \donttest{
 if (requireNamespace("signal", quietly = TRUE)) {
   set.seed(1)
-  t  <- seq(0, 1, length.out = 500)
-  x  <- sin(2 * pi * 5 * t) + 0.5 * sin(2 * pi * 60 * t)  # 5 Hz + 60 Hz
-  y  <- buttlp(x, fs = 500, cutoff = 20)
-  length(y$filtered)  # 500
+  t <- seq(0, 1, length.out = 500)
+  x <- sin(2 * pi * 5 * t) + 0.5 * sin(2 * pi * 60 * t) # 5 Hz + 60 Hz
+  y <- buttlp(x, fs = 500, cutoff = 20)
+  length(y$filtered) # 500
 }
 }
 }

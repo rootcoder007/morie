@@ -366,13 +366,13 @@ test_that("ordered_alternatives_test works on two groups", {
   expect_true(is.finite(r$E_J))
 })
 
-test_that("find_project_root detects a synthetic project root", {
+test_that("morie_find_project_root detects a synthetic project root", {
   root <- file.path(tempdir(), paste0("morie_root_", as.integer(runif(1, 1, 1e6))))
   dir.create(file.path(root, "docs", "source"), recursive = TRUE)
   file.create(file.path(root, "pyproject.toml"))
   sub <- file.path(root, "a", "b")
   dir.create(sub, recursive = TRUE)
-  detected <- find_project_root(start = sub, max_up = 10L)
+  detected <- morie_find_project_root(start = sub, max_up = 10L)
   expect_true(is.character(detected))
   expect_equal(
     normalizePath(detected, winslash = "/", mustWork = FALSE),
@@ -381,10 +381,10 @@ test_that("find_project_root detects a synthetic project root", {
   unlink(root, recursive = TRUE)
 })
 
-test_that("find_project_root errors when no markers exist", {
+test_that("morie_find_project_root errors when no markers exist", {
   bare <- file.path(tempdir(), paste0("morie_bare_", as.integer(runif(1, 1, 1e6))))
   dir.create(bare, recursive = TRUE)
-  expect_error(find_project_root(start = bare, max_up = 2L))
+  expect_error(morie_find_project_root(start = bare, max_up = 2L))
   unlink(bare, recursive = TRUE)
 })
 

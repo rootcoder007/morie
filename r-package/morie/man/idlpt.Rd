@@ -29,8 +29,8 @@ position is the ideal point (Eq 4.36 in Armstrong et al. 2014).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \keyword{internal}

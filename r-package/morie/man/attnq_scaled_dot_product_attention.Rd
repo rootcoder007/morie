@@ -30,8 +30,8 @@ R parity for \code{morie.fn.attnq.scaled_dot_product_attention}.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

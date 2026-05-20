@@ -18,7 +18,7 @@ correction term \verb{sum t_j^3 - t_j} over tied groups.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

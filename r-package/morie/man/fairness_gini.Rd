@@ -23,6 +23,6 @@ unequally a system concentrates its attention. With \code{group} supplied,
 a per-group Gini is also reported.
 }
 \examples{
-fairness_gini(c(5, 5, 5, 5))$value      # 0
-fairness_gini(c(0, 0, 0, 100))$value    # 0.75
+fairness_gini(c(5, 5, 5, 5))$value # 0
+fairness_gini(c(0, 0, 0, 100))$value # 0.75
 }

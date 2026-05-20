@@ -23,8 +23,8 @@ V = solve(A) \%\emph{\% B \%}\% t(solve(A)).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

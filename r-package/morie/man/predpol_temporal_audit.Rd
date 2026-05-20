@@ -44,5 +44,5 @@ city <- rep("A", 20)
 pred <- rep(c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0), 2)
 grp <- rep(c(rep("X", 5), rep("Y", 5)), 2)
 res <- predpol_temporal_audit(period, city, pred, grp, privileged = "X")
-res$per_city$A$dir_range   # 0 — disparity is stable across periods
+res$per_city$A$dir_range # 0 — disparity is stable across periods
 }

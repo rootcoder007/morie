@@ -31,8 +31,8 @@ update of \eqn{\partial_t T = \alpha \partial_x^2 T} with Dirichlet
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

@@ -42,13 +42,17 @@ D <- rbinom(n, 1, plogis(0.5 * x))
 y <- 0.7 * D + 0.3 * x + rnorm(n, 0, 0.5)
 df <- data.frame(D = D, y = y, age = x)
 # IPW-adjusted ATE
-ipw <- mrm_causal_design(df, treatment_col = "D",
-                         outcome_col = "y",
-                         covariates = "age",
-                         estimator = "ipw")
+ipw <- mrm_causal_design(df,
+  treatment_col = "D",
+  outcome_col = "y",
+  covariates = "age",
+  estimator = "ipw"
+)
 # Naive difference in means for comparison
-raw <- mrm_causal_design(df, treatment_col = "D",
-                         outcome_col = "y",
-                         estimator = "diff_in_means")
+raw <- mrm_causal_design(df,
+  treatment_col = "D",
+  outcome_col = "y",
+  estimator = "diff_in_means"
+)
 c(ipw = ipw$estimate, raw = raw$estimate)
 }

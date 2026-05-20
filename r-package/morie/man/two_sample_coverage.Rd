@@ -22,7 +22,7 @@ ordered X-sample.  Under H0 the expected block proportion is
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

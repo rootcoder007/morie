@@ -40,8 +40,8 @@ Random fixed projections + ridge head on the mean-pooled context vector.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \references{

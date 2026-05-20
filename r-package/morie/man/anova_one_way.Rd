@@ -11,7 +11,7 @@ anova_one_way(...)
 }
 \value{
 Named list: \code{F}, \code{df_between}, \code{df_within}, \code{p_value},
-\code{eta_squared}.
+\code{morie_eta_squared}.
 }
 \description{
 One-way ANOVA

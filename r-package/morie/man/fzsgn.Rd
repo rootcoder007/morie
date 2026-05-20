@@ -27,8 +27,8 @@ z = (S_n - n/2)/sqrt(n/4) ~ N(0,1).
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }
 \keyword{internal}

@@ -38,7 +38,7 @@ Escobar-West augmentation for alpha given K_n with a Gamma(a, b) hyperprior.
 }
 \examples{
 \dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 }

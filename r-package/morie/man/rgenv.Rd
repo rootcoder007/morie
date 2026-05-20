@@ -28,7 +28,8 @@ signal directly from the FFT.
 \examples{
 t <- seq(0, 1, length.out = 200)
 x <- cos(2 * pi * 5 * t) * (1 + 0.3 * cos(2 * pi * 0.5 * t))
-r <- rgenv(x); length(r$envelope)
+r <- rgenv(x)
+length(r$envelope)
 }
 \references{
 Rangayyan Ch 5.

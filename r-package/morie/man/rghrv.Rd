@@ -29,7 +29,9 @@ sequence of consecutive NN (RR) intervals.
 }
 }
 \examples{
-set.seed(0); rgh <- rghrv(800 + rnorm(200, sd = 40)); rgh$heart_rate_bpm
+set.seed(0)
+rgh <- rghrv(800 + rnorm(200, sd = 40))
+rgh$heart_rate_bpm
 }
 \references{
 Task Force (1996), Circulation 93:1043. Rangayyan Ch 6.

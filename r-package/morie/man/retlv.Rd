@@ -2,12 +2,12 @@
 % Please edit documentation in R/retlv.R
 \name{retlv}
 \alias{retlv}
-\alias{return_level}
+\alias{morie_return_level}
 \title{GEV return-level estimation (Coles 2001, Ch. 3)}
 \usage{
 retlv(x, return_period = 100)
 
-return_level(x, return_period = 100)
+morie_return_level(x, return_period = 100)
 }
 \arguments{
 \item{x}{numeric vector of block maxima.}

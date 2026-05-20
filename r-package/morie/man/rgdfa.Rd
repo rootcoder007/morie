@@ -23,7 +23,8 @@ Named list \code{alpha}, \code{scales}, \code{fluct}, \code{log_scales}, \code{l
 DFA-alpha scaling exponent (Peng et al. 1994).
 }
 \examples{
-set.seed(0); rgdfa(rnorm(500))$alpha
+set.seed(0)
+rgdfa(rnorm(500))$alpha
 }
 \references{
 Peng et al. (1994), Phys Rev E 49:1685; Rangayyan Ch 7.

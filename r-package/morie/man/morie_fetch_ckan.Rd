@@ -33,10 +33,10 @@ Fetch data from the CKAN API and cache it
 }
 \examples{
 \dontrun{
-  # Requires network access. Fetches the first 5000 rows of the
-  # Canadian Postsecondary Alcohol and Drug Use Survey from the
-  # Government of Canada CKAN datastore:
-  cpads <- morie_fetch_ckan(dataset_key = "cpads", limit = 5000L)
-  nrow(cpads)
+# Requires network access. Fetches the first 5000 rows of the
+# Canadian Postsecondary Alcohol and Drug Use Survey from the
+# Government of Canada CKAN datastore:
+cpads <- morie_fetch_ckan(dataset_key = "cpads", limit = 5000L)
+nrow(cpads)
 }
 }
