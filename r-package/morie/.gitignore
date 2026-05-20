@@ -8,3 +8,6 @@ src/symbols.rds
 /morie_*.tar.gz
 ..Rcheck/
 src/*.gcda
+
+src/*.gcno
+src/*.gcov
