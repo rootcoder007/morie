@@ -2,12 +2,12 @@
 % Please edit documentation in R/tpspn.R
 \name{tpspn}
 \alias{tpspn}
-\alias{thin_plate_spline}
+\alias{morie_thin_plate_spline}
 \title{Thin-plate spline regression (Duchon 1977)}
 \usage{
 tpspn(x, y, lam = 0)
 
-thin_plate_spline(x, y, lam = 0)
+morie_thin_plate_spline(x, y, lam = 0)
 }
 \arguments{
 \item{x}{numeric vector or matrix of predictors.}

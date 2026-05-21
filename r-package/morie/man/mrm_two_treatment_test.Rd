@@ -24,10 +24,10 @@ range.
 }
 \examples{
 set.seed(2026)
-a <- rnorm(40, mean = 5,  sd = 1.2)
+a <- rnorm(40, mean = 5, sd = 1.2)
 b <- rnorm(40, mean = 5.5, sd = 1.5)
 res <- mrm_two_treatment_test(a, b)
-res$estimate     # mean(a) - mean(b)
-res$p_welch      # canonical p-value
+res$estimate # mean(a) - mean(b)
+res$p_welch # canonical p-value
 res$p_mannwhitney # rank-based sensitivity check
 }

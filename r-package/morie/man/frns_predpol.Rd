@@ -3,6 +3,13 @@
 \name{frns_predpol}
 \alias{frns_predpol}
 \title{Generalised predictive-policing disparity audit}
+\value{
+\code{morie_predpol_aggregate_areas()} returns a per-area
+\code{data.frame}; \code{morie_predpol_calibration_audit()} and
+\code{morie_predpol_score_disparity()} return named \code{list}s of audit
+statistics, per-group breakdowns, and a plain-language
+\code{interpretation}.
+}
 \description{
 R parity for the Python \code{morie.fairness.predpol} module. A
 clean-room, city-agnostic reimplementation of the district-level
@@ -15,14 +22,21 @@ composition.
 \details{
 Functions:
 \itemize{
-\item \code{predpol_aggregate_areas()}: roll per-record data up to one row
+\item \code{morie_predpol_aggregate_areas()}: roll per-record data up to one row
 per area.
-\item \code{predpol_calibration_audit()}: Spearman calibration plus a
+\item \code{morie_predpol_calibration_audit()}: Spearman calibration plus a
 per-group mean rank gap (the over-/under-prediction signal).
-\item \code{predpol_score_disparity()}: descriptive per-group risk-score
+\item \code{morie_predpol_score_disparity()}: descriptive per-group risk-score
 summary with a one-way ANOVA.
 }
 
 Written from the project's published methodology; no code copied
 (that repository carries no licence and is not redistributable).
+}
+\examples{
+agg <- morie_predpol_aggregate_areas(
+  area = c("a", "a", "b", "b"), risk = c(10, 20, 30, 40),
+  outcome = c(1, 0, 1, 1)
+)
+agg$mean_risk
 }

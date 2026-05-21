@@ -26,6 +26,8 @@ and symbols.  Uniform over a subset of Latin squares (not all).
 mrm_random_latin(k = 4, seed = 42L)
 
 # Reproducible across runs with the same seed:
-identical(mrm_random_latin(5, seed = 7),
-          mrm_random_latin(5, seed = 7))
+identical(
+  mrm_random_latin(5, seed = 7),
+  mrm_random_latin(5, seed = 7)
+)
 }

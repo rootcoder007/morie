@@ -2,12 +2,12 @@
 % Please edit documentation in R/rglyp.R
 \name{rglyp}
 \alias{rglyp}
-\alias{rangayyan_lyapunov}
+\alias{morie_rangayyan_lyapunov}
 \title{Largest Lyapunov exponent (Rosenstein) -- Rangayyan Ch 7}
 \usage{
 rglyp(x, m = 3L, tau = 1L, max_t = NULL, theiler = 10L)
 
-rangayyan_lyapunov(x, m = 3L, tau = 1L, max_t = NULL, theiler = 10L)
+morie_rangayyan_lyapunov(x, m = 3L, tau = 1L, max_t = NULL, theiler = 10L)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -28,7 +28,8 @@ Rosenstein et al. (1993) algorithm via delay embedding and
 nearest-neighbour divergence tracking.
 }
 \examples{
-set.seed(0); rglyp(rnorm(200), m = 3, tau = 1, max_t = 20)$lyapunov
+set.seed(0)
+rglyp(rnorm(200), m = 3, tau = 1, max_t = 20)$lyapunov
 }
 \references{
 Rosenstein et al. (1993), Physica D 65:117.

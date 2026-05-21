@@ -4,14 +4,16 @@
 \alias{morie_cache_file}
 \title{Cache local RDS/CSV data into the SQLite database}
 \usage{
-morie_cache_file(path, table_name, db_path = NULL)
+morie_cache_file(path, table_name, db_path = NULL, con = NULL)
 }
 \arguments{
 \item{path}{Path to a CSV or RDS file.}
 
 \item{table_name}{Name for the cached table.}
 
-\item{db_path}{Optional override for the database path.}
+\item{db_path}{Optional path to a SQLite file (default backend).}
+
+\item{con}{Optional pre-opened DBI connection (overrides \code{db_path}).}
 }
 \value{
 Number of rows cached (invisible).
@@ -21,8 +23,9 @@ Reads a local file and writes it to the cache so that CI and Docker
 environments (which may lack the original files) can still run tests.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+tdir <- tempfile("morie-cache-")
+dir.create(tdir)
+f <- file.path(tdir, "demo.csv")
+write.csv(data.frame(x = 1:3, y = 4:6), f, row.names = FALSE)
+morie_cache_file(f, "demo", db_path = file.path(tdir, "cache.db"))
 }

@@ -4,12 +4,10 @@
 #' @param context Optional context string.
 #' @return Character scalar prompt.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-build_prompt <- function(question, context = NULL) {
+morie_build_prompt <- function(question, context = NULL) {
   question <- trimws(as.character(question)[1])
   if (!nzchar(question)) {
     stop("`question` must be non-empty.", call. = FALSE)
@@ -32,18 +30,16 @@ build_prompt <- function(question, context = NULL) {
 #' @param python_bin Python executable to use. Defaults to `MORIE_PYTHON_BIN` or `python3`.
 #' @return Agent text response.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-ask_percy <- function(question, context = NULL, python_bin = Sys.getenv("MORIE_PYTHON_BIN", "python3")) {
-  prompt <- build_prompt(question, context = context)
+morie_ask_percy <- function(question, context = NULL, python_bin = Sys.getenv("MORIE_PYTHON_BIN", "python3")) {
+  prompt <- morie_build_prompt(question, context = context)
 
   code <- paste(
     "import json, sys",
-    "from morie.perseus import ask_percy",
-    "payload = ask_percy(question=sys.argv[1])",
+    "from morie.perseus import morie_ask_percy",
+    "payload = morie_ask_percy(question=sys.argv[1])",
     "print(payload['output_text'])",
     sep = "; "
   )
@@ -67,10 +63,10 @@ ask_percy <- function(question, context = NULL, python_bin = Sys.getenv("MORIE_P
   paste(out, collapse = "\n")
 }
 
-#' @rdname build_prompt
+#' @rdname morie_build_prompt
 #' @keywords internal
-build_assistant_prompt <- build_prompt
+build_assistant_prompt <- morie_build_prompt
 
-#' @rdname ask_percy
+#' @rdname morie_ask_percy
 #' @keywords internal
-morie_assistant_query <- ask_percy
+morie_assistant_query <- morie_ask_percy

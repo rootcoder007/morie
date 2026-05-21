@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzhdc.R
 \name{fzhdc}
 \alias{fzhdc}
-\alias{fauzi_h_decomposition}
+\alias{morie_fauzi_h_decomposition}
 \title{Fauzi: Hoeffding (H-) decomposition of a degree-2 U-statistic (Ch 5)}
 \usage{
 fzhdc(x, kernel = NULL, max_pairs = 2000L, seed = 0L)
 
-fauzi_h_decomposition(x, kernel = NULL, max_pairs = 2000L, seed = 0L)
+morie_fauzi_h_decomposition(x, kernel = NULL, max_pairs = 2000L, seed = 0L)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -28,9 +28,6 @@ For a symmetric kernel g(x1,x2),
 \eqn{\mathrm{Var}(U_n) \approx 4\sigma_1^2/n}.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+fzhdc(x = rnorm(50))
 }
 \keyword{internal}

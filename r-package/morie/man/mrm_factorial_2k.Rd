@@ -31,8 +31,10 @@ set.seed(2026)
 lvl <- c(-1, 1)
 df <- expand.grid(A = lvl, B = lvl, C = lvl)
 df$y <- 10 + 2 * df$A + 1.5 * df$B + 0.5 * df$A * df$B + rnorm(8, 0, 0.2)
-res <- mrm_factorial_2k(df, response_col = "y",
-                        factor_cols = c("A", "B", "C"))
+res <- mrm_factorial_2k(df,
+  response_col = "y",
+  factor_cols = c("A", "B", "C")
+)
 res$main_effects
 res$interaction_effects
 }

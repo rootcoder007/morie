@@ -2,12 +2,12 @@
 % Please edit documentation in R/latnh.R
 \name{latnh}
 \alias{latnh}
-\alias{latin_hypercube}
+\alias{morie_latin_hypercube}
 \title{Latin hypercube sampling (McKay, Beckman & Conover 1979)}
 \usage{
 latnh(N = 100L, d = 1L, f = NULL, seed = 42L)
 
-latin_hypercube(N = 100L, d = 1L, f = NULL, seed = 42L)
+morie_latin_hypercube(N = 100L, d = 1L, f = NULL, seed = 42L)
 }
 \arguments{
 \item{N}{integer; sample size (default 100).}

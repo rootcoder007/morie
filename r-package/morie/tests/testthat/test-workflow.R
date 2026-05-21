@@ -1,6 +1,6 @@
 library(morie)
 
-test_that("run_pipeline supports custom workflow map", {
+test_that("morie_run_pipeline supports custom workflow map", {
   root <- file.path(tempdir(), paste0("morie-workflow-", as.integer(runif(1, 1, 1e8))))
   dir.create(root, recursive = TRUE, showWarnings = FALSE)
   file.create(file.path(root, "pyproject.toml"))
@@ -13,14 +13,14 @@ test_that("run_pipeline supports custom workflow map", {
 
   smap <- c(prepare = "libexec/config/tests/rtests/alpha.R", run = "libexec/config/tests/rtests/beta.R")
 
-  res <- run_pipeline(project_root = root, script_map = smap, verbose = FALSE)
+  res <- morie_run_pipeline(project_root = root, script_map = smap, verbose = FALSE)
 
   expect_equal(as.character(res$step), c("prepare", "run"))
   expect_true(all(res$status == 0))
 })
 
 test_that("default workflow map returns a non-empty named character vector", {
-  smap <- default_workflow_map()
+  smap <- morie_default_workflow_map()
   expect_type(smap, "character")
   expect_true(length(smap) >= 1)
   expect_false(is.null(names(smap)))

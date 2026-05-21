@@ -45,7 +45,8 @@ load_dmt_imaging <- function(subject_id = NULL, root = NULL) {
   if (!root_exists) {
     warnings_vec <- c(
       sprintf("DMT_Imaging root not found at %s; using synthetic fixture.", root),
-      warnings_vec)
+      warnings_vec
+    )
   }
 
   records <- vector("list", length(subs))
@@ -57,7 +58,8 @@ load_dmt_imaging <- function(subject_id = NULL, root = NULL) {
       rec <- .entheo_load_real(sid, root)
       if (is.null(rec)) {
         warnings_vec <- c(warnings_vec, sprintf(
-          "subject %s: .mat files present but unloadable (install R.matlab)", sid))
+          "subject %s: .mat files present but unloadable (install R.matlab)", sid
+        ))
       }
     }
     if (is.null(rec)) {
@@ -68,11 +70,11 @@ load_dmt_imaging <- function(subject_id = NULL, root = NULL) {
   }
 
   list(
-    records   = records,
-    root      = if (root_exists) root else NA_character_,
+    records = records,
+    root = if (root_exists) root else NA_character_,
     synthetic = any_synth,
     subject_ids = subs,
-    warnings  = warnings_vec
+    warnings = warnings_vec
   )
 }
 
@@ -80,7 +82,9 @@ load_dmt_imaging <- function(subject_id = NULL, root = NULL) {
 #' @keywords internal
 .entheo_list_subjects <- function(root) {
   fmri_dir <- file.path(root, "fMRI")
-  if (!dir.exists(fmri_dir)) return(character(0))
+  if (!dir.exists(fmri_dir)) {
+    return(character(0))
+  }
   files <- list.files(fmri_dir, pattern = "^LongS\\d{2}(DMT|PCB)\\.mat$")
   ids <- unique(substr(files, 6L, 7L))
   sort(ids)
@@ -102,12 +106,16 @@ load_dmt_imaging <- function(subject_id = NULL, root = NULL) {
       data_pcb = matrix(stats::rnorm(n_chan * n_tp), n_chan, n_tp)
     ),
     fmri = list(
-      tr        = 2.0,
+      tr = 2.0,
       n_parcels = n_parcels,
-      data_dmt  = matrix(stats::rnorm(n_parcels * (n_tp %/% 4L)),
-                         n_parcels, n_tp %/% 4L),
-      data_pcb  = matrix(stats::rnorm(n_parcels * (n_tp %/% 4L)),
-                         n_parcels, n_tp %/% 4L),
+      data_dmt = matrix(
+        stats::rnorm(n_parcels * (n_tp %/% 4L)),
+        n_parcels, n_tp %/% 4L
+      ),
+      data_pcb = matrix(
+        stats::rnorm(n_parcels * (n_tp %/% 4L)),
+        n_parcels, n_tp %/% 4L
+      ),
       motion_fd_mm = stats::runif(n_tp %/% 4L, 0, 0.6)
     ),
     behavioural = list(
@@ -121,13 +129,19 @@ load_dmt_imaging <- function(subject_id = NULL, root = NULL) {
 
 #' @keywords internal
 .entheo_load_real <- function(subject_id, root) {
-  if (!requireNamespace("R.matlab", quietly = TRUE)) return(NULL)
+  if (!requireNamespace("R.matlab", quietly = TRUE)) {
+    return(NULL)
+  }
   f_dmt <- file.path(root, "fMRI", sprintf("LongS%sDMT.mat", subject_id))
   f_pcb <- file.path(root, "fMRI", sprintf("LongS%sPCB.mat", subject_id))
-  if (!(file.exists(f_dmt) && file.exists(f_pcb))) return(NULL)
+  if (!(file.exists(f_dmt) && file.exists(f_pcb))) {
+    return(NULL)
+  }
   blob_dmt <- tryCatch(R.matlab::readMat(f_dmt), error = function(e) NULL)
   blob_pcb <- tryCatch(R.matlab::readMat(f_pcb), error = function(e) NULL)
-  if (is.null(blob_dmt) || is.null(blob_pcb)) return(NULL)
+  if (is.null(blob_dmt) || is.null(blob_pcb)) {
+    return(NULL)
+  }
 
   .pick_largest <- function(blob) {
     best <- NULL
@@ -144,11 +158,15 @@ load_dmt_imaging <- function(subject_id = NULL, root = NULL) {
   list(
     subject_id = subject_id,
     condition_order = c("DMT", "PCB"),
-    eeg = list(sfreq = NA_real_, channels = character(0),
-               data_dmt = NULL, data_pcb = NULL),
-    fmri = list(tr = 2.0, n_parcels = nrow(arr_dmt),
-                data_dmt = arr_dmt, data_pcb = arr_pcb,
-                motion_fd_mm = NULL),
+    eeg = list(
+      sfreq = NA_real_, channels = character(0),
+      data_dmt = NULL, data_pcb = NULL
+    ),
+    fmri = list(
+      tr = 2.0, n_parcels = nrow(arr_dmt),
+      data_dmt = arr_dmt, data_pcb = arr_pcb,
+      motion_fd_mm = NULL
+    ),
     behavioural = list(),
     .synthetic = FALSE,
     .paths = list(fmri_dmt = f_dmt, fmri_pcb = f_pcb)

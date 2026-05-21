@@ -2,12 +2,12 @@
 % Please edit documentation in R/spblk.R
 \name{spblk}
 \alias{spblk}
-\alias{spatial_block_kriging}
+\alias{morie_spatial_block_kriging}
 \title{Ordinary block kriging.}
 \usage{
 spblk(x, coords, blocks, n_quad = 25, nugget = 0, sill = 1, range_ = 1)
 
-spatial_block_kriging(
+morie_spatial_block_kriging(
   x,
   coords,
   blocks,
@@ -38,10 +38,8 @@ Solve the OK system with point-to-block averaged covariances:
 \deqn{C_{\text{bar}}(s_i, B) = (1/|B|) \int_B C(s_i, u) du.}
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 \references{
 Schabenberger & Gotway (2005), Ch 4.

@@ -12,10 +12,8 @@
 #' @return Named list with `ideal_points`, `n_respondents`, `k`,
 #'   `mean_stim_dist`, `method`.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
 idlpt <- function(X_r, X_s = NULL) {
   Xr <- if (is.matrix(X_r)) X_r else matrix(as.numeric(X_r), ncol = 1L)
@@ -25,22 +23,27 @@ idlpt <- function(X_r, X_s = NULL) {
     Xs <- if (is.matrix(X_s)) X_s else matrix(as.numeric(X_s), ncol = 1L)
     dvec <- numeric(nrow(Xr) * nrow(Xs))
     idx <- 1L
-    for (i in seq_len(nrow(Xr))) for (j in seq_len(nrow(Xs))) {
-      dvec[idx] <- sqrt(sum((Xr[i, ] - Xs[j, ])^2)); idx <- idx + 1L
+    for (i in seq_len(nrow(Xr))) {
+      for (j in seq_len(nrow(Xs))) {
+        dvec[idx] <- sqrt(sum((Xr[i, ] - Xs[j, ])^2))
+        idx <- idx + 1L
+      }
     }
     msd <- mean(dvec)
   }
-  list(ideal_points = out, n_respondents = nrow(Xr),
-       k = ncol(Xr), mean_stim_dist = msd,
-       method = "ideal_point_recovery")
+  list(
+    ideal_points = out, n_respondents = nrow(Xr),
+    k = ncol(Xr), mean_stim_dist = msd,
+    method = "morie_ideal_point_recovery"
+  )
 }
 
 #' @keywords internal
 #' @rdname idlpt
 #' @export
-ideal_point_recovery <- idlpt
+morie_ideal_point_recovery <- idlpt
 
 #' @rdname idlpt
 #' @keywords internal
 #' @export
-ideal_point_model <- idlpt
+morie_ideal_point_model <- idlpt

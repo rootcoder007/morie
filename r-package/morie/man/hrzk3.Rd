@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzk3.R
 \name{hrzk3}
 \alias{hrzk3}
-\alias{horowitz_local_linear}
+\alias{morie_horowitz_local_linear}
 \title{Local-linear regression estimator}
 \usage{
 hrzk3(x, y, bandwidth = NULL, grid = NULL)
 
-horowitz_local_linear(x, y, bandwidth = NULL, grid = NULL)
+morie_horowitz_local_linear(x, y, bandwidth = NULL, grid = NULL)
 }
 \arguments{
 \item{x}{Numeric covariate vector.}

@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgdfa.R
 \name{rgdfa}
 \alias{rgdfa}
-\alias{rangayyan_dfa}
+\alias{morie_rangayyan_dfa}
 \title{Detrended fluctuation analysis -- Rangayyan Ch 7}
 \usage{
 rgdfa(x, scales = NULL, order = 1L)
 
-rangayyan_dfa(x, scales = NULL, order = 1L)
+morie_rangayyan_dfa(x, scales = NULL, order = 1L)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -17,13 +17,14 @@ rangayyan_dfa(x, scales = NULL, order = 1L)
 \item{order}{Detrending polynomial order (default 1 = DFA-1).}
 }
 \value{
-Named list \code{alpha}, \code{scales}, \code{F}, \code{log_scales}, \code{log_F}.
+Named list \code{alpha}, \code{scales}, \code{fluct}, \code{log_scales}, \code{log_F}.
 }
 \description{
 DFA-alpha scaling exponent (Peng et al. 1994).
 }
 \examples{
-set.seed(0); rgdfa(rnorm(500))$alpha
+set.seed(0)
+rgdfa(rnorm(500))$alpha
 }
 \references{
 Peng et al. (1994), Phys Rev E 49:1685; Rangayyan Ch 7.

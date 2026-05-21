@@ -14,51 +14,66 @@
 #' @return Named list: estimate, se, n, method.
 #' @references Schabenberger & Gotway (2005), Ch 4.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' okrig(x = rnorm(50), coords = matrix(runif(100), 50, 2), target = rnorm(50))
 #' @export
 okrig <- function(x, coords, target, model = "exponential",
                   nugget = 0, sill = 1, range_ = 1) {
-  x <- as.numeric(x); n <- length(x)
-  coords <- if (is.matrix(coords)) coords else
+  x <- as.numeric(x)
+  n <- length(x)
+  coords <- if (is.matrix(coords)) {
+    coords
+  } else {
     matrix(as.numeric(unlist(coords)), nrow = n)
-  target <- if (is.matrix(target)) target else
+  }
+  target <- if (is.matrix(target)) {
+    target
+  } else {
     matrix(as.numeric(unlist(target)), ncol = ncol(coords))
+  }
   if (nrow(coords) != n) stop("coords rows must match length(x)")
   if (ncol(target) != ncol(coords)) stop("target dim mismatch")
-  c0 <- nugget; c1 <- sill - nugget; a <- range_
+  c0 <- nugget
+  c1 <- sill - nugget
+  a <- range_
   cov_fn <- function(h) {
     switch(model,
-           exponential = c1 * exp(-h / a) + ifelse(h == 0, c0, 0),
-           gaussian    = c1 * exp(-(h ^ 2) / (a ^ 2)) + ifelse(h == 0, c0, 0),
-           spherical   = ifelse(h <= a,
-                                c1 * (1 - 1.5 * h / a + 0.5 * (h / a) ^ 3),
-                                0) + ifelse(h == 0, c0, 0),
-           stop("unknown model"))
+      exponential = c1 * exp(-h / a) + ifelse(h == 0, c0, 0),
+      gaussian = c1 * exp(-(h^2) / (a^2)) + ifelse(h == 0, c0, 0),
+      spherical = ifelse(h <= a,
+        c1 * (1 - 1.5 * h / a + 0.5 * (h / a)^3),
+        0
+      ) + ifelse(h == 0, c0, 0),
+      stop("unknown model")
+    )
   }
   Dnn <- as.matrix(stats::dist(coords))
   C <- cov_fn(Dnn)
   A <- matrix(0, n + 1, n + 1)
-  A[1:n, 1:n] <- C; A[1:n, n + 1] <- 1; A[n + 1, 1:n] <- 1
+  A[1:n, 1:n] <- C
+  A[1:n, n + 1] <- 1
+  A[n + 1, 1:n] <- 1
   total_var <- c0 + c1
   m <- nrow(target)
-  ests <- numeric(m); ses <- numeric(m)
+  ests <- numeric(m)
+  ses <- numeric(m)
   for (k in seq_len(m)) {
-    d0 <- sqrt(colSums((t(coords) - target[k, ]) ^ 2))
+    d0 <- sqrt(colSums((t(coords) - target[k, ])^2))
     c_vec <- cov_fn(d0)
     rhs <- c(c_vec, 1)
     sol <- tryCatch(solve(A, rhs),
-                    error = function(e) qr.solve(A, rhs))
-    lam <- sol[1:n]; mu <- sol[n + 1]
+      error = function(e) qr.solve(A, rhs)
+    )
+    lam <- sol[1:n]
+    mu <- sol[n + 1]
     ests[k] <- sum(lam * x)
     var_pred <- max(total_var - sum(lam * c_vec) - mu, 0)
     ses[k] <- sqrt(var_pred)
   }
-  list(estimate = if (m == 1) ests[1] else ests,
-       se = if (m == 1) ses[1] else ses,
-       n = n, method = sprintf("Ordinary kriging (%s)", model))
+  list(
+    estimate = if (m == 1) ests[1] else ests,
+    se = if (m == 1) ses[1] else ses,
+    n = n, method = sprintf("Ordinary kriging (%s)", model)
+  )
 }
 
 # CANONICAL TEST
@@ -68,4 +83,4 @@ okrig <- function(x, coords, target, model = "exponential",
 #' @rdname okrig
 #' @keywords internal
 #' @export
-ordinary_kriging <- okrig
+morie_ordinary_kriging <- okrig

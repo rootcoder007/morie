@@ -31,5 +31,6 @@ my_sim <- function(seed) {
 }
 res <- mrm_mc_power(my_sim, n_sims = 500L, alpha = 0.05)
 res$empirical_power
-res$ci95_lower; res$ci95_upper
+res$ci95_lower
+res$ci95_upper
 }

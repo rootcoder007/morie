@@ -2,12 +2,12 @@
 % Please edit documentation in R/mcint.R
 \name{mcint_crude}
 \alias{mcint_crude}
-\alias{monte_carlo_integration}
+\alias{morie_monte_carlo_integration}
 \title{Monte Carlo integration (Rubinstein 1981)}
 \usage{
 mcint_crude(f, a = 0, b = 1, N = 1000L, seed = 42L)
 
-monte_carlo_integration(f, a = 0, b = 1, N = 1000L, seed = 42L)
+morie_monte_carlo_integration(f, a = 0, b = 1, N = 1000L, seed = 42L)
 }
 \arguments{
 \item{f}{function on (a, b).}

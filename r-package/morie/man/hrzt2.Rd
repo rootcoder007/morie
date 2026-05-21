@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzt2.R
 \name{hrzt2}
 \alias{hrzt2}
-\alias{horowitz_local_ate}
+\alias{morie_horowitz_local_ate}
 \title{IV Wald estimator for LATE (Imbens-Angrist)}
 \usage{
 hrzt2(x, y, z, treatment)
 
-horowitz_local_ate(x, y, z, treatment)
+morie_horowitz_local_ate(x, y, z, treatment)
 }
 \arguments{
 \item{x}{Numeric covariates (unused at present; kept for API parity).}

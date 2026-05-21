@@ -21,20 +21,22 @@
 #' @return Named list \code{(h, c, estimate, i, f, g, o, method)}.
 #' @references Hochreiter & Schmidhuber (1997), Neural Computation 9(8).
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_lstmc_lstm_cell(x = rnorm(50))
 #' @export
-lstmc_lstm_cell <- function(x, h_prev = NULL, c_prev = NULL,
+morie_lstmc_lstm_cell <- function(x, h_prev = NULL, c_prev = NULL,
                             W = NULL, U = NULL, b = NULL,
                             hidden_size = NULL, seed = 0L,
                             deterministic_seed = NULL) {
-  x <- as.numeric(x); n_in <- length(x)
+  x <- as.numeric(x)
+  n_in <- length(x)
   if (is.null(hidden_size)) {
-    hidden_size <- if (!is.null(h_prev)) length(h_prev)
-                   else if (!is.null(W)) nrow(as.matrix(W)) %/% 4L
-                   else n_in
+    hidden_size <- if (!is.null(h_prev)) {
+      length(h_prev)
+    } else if (!is.null(W)) {
+      nrow(as.matrix(W)) %/% 4L
+    } else {
+      n_in
+    }
   }
   H <- as.integer(hidden_size)
   if (is.null(h_prev)) h_prev <- rep(0, H)
@@ -55,12 +57,14 @@ lstmc_lstm_cell <- function(x, h_prev = NULL, c_prev = NULL,
   o <- sig(gates[(3 * H + 1L):(4 * H)])
   c_new <- f * c_prev + i * g
   h_new <- o * tanh(c_new)
-  list(h = h_new, c = c_new, estimate = h_new,
-       i = i, f = f, g = g, o = o,
-       method = "LSTM cell forward")
+  list(
+    h = h_new, c = c_new, estimate = h_new,
+    i = i, f = f, g = g, o = o,
+    method = "LSTM cell forward"
+  )
 }
 
-#' @rdname lstmc_lstm_cell
+#' @rdname morie_lstmc_lstm_cell
 #' @keywords internal
 #' @export
-lstm_cell <- lstmc_lstm_cell
+morie_lstm_cell <- morie_lstmc_lstm_cell

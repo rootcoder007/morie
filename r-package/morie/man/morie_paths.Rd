@@ -17,8 +17,7 @@ Named list of key paths.
 Resolve standard project paths
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+tryCatch(morie_paths(),
+  error = function(e) message("not inside a morie project tree")
+)
 }

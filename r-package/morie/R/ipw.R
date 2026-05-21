@@ -2,12 +2,9 @@
 #'
 #' @return Named list describing the expected local CPADS contract.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_cpads_contract()
 #' @export
-cpads_contract <- function() {
+morie_cpads_contract <- function() {
   list(
     source_kind = "local_private_file",
     expected_wrangled_path = "data/cache/cpads_pumf_wrangled.rds",
@@ -34,13 +31,11 @@ cpads_contract <- function() {
 #' @param strict If `TRUE`, stop when required variables are missing.
 #' @return Character vector of missing variable names.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-validate_cpads_data <- function(data, strict = TRUE) {
-  required <- cpads_contract()$required_variables
+morie_validate_cpads_data <- function(data, strict = TRUE) {
+  required <- morie_cpads_contract()$required_variables
   missing <- setdiff(required, names(data))
   if (isTRUE(strict) && length(missing) > 0) {
     stop("CPADS data is missing required variables: ", paste(missing, collapse = ", "), call. = FALSE)
@@ -67,8 +62,27 @@ validate_cpads_data <- function(data, strict = TRUE) {
 #' @param outcome Binary outcome column.
 #' @param covariates Covariate names for the propensity model.
 #' @return Named list of output tables and the analysis data.
+#' @examples
+#' # Run on a synthetic CPADS-shaped frame (the CKAN-fetched PUMF works
+#' # identically -- see morie_load_cpads_data() for the real frame):
+#' set.seed(1)
+#' n <- 200
+#' cpads <- data.frame(
+#'   weight = runif(n, 0.5, 2),
+#'   alcohol_past12m = rbinom(n, 1, 0.8),
+#'   heavy_drinking_30d = rbinom(n, 1, 0.3),
+#'   ebac_tot = abs(rnorm(n, 0.05, 0.03)),
+#'   ebac_legal = rbinom(n, 1, 0.7),
+#'   cannabis_any_use = rbinom(n, 1, 0.3),
+#'   age_group = sample(1:6, n, TRUE),
+#'   gender = sample(1:2, n, TRUE),
+#'   province_region = sample(1:5, n, TRUE),
+#'   mental_health = sample(1:5, n, TRUE),
+#'   physical_health = sample(1:5, n, TRUE)
+#' )
+#' morie_run_propensity_ipw_analysis(cpads)
 #' @export
-run_propensity_ipw_analysis <- function(
+morie_run_propensity_ipw_analysis <- function(
   data,
   output_dir = NULL,
   trim = c(0.01, 0.99),
@@ -76,7 +90,7 @@ run_propensity_ipw_analysis <- function(
   outcome = "heavy_drinking_30d",
   covariates = c("age_group", "gender", "province_region", "mental_health", "physical_health")
 ) {
-  validate_cpads_data(data, strict = TRUE)
+  morie_validate_cpads_data(data, strict = TRUE)
   needed <- unique(c(treatment, outcome, covariates, "weight"))
   frame <- stats::na.omit(data[, needed, drop = FALSE])
 
@@ -141,16 +155,37 @@ run_propensity_ipw_analysis <- function(
 #' @param treatment Treatment column name.
 #' @param covariates Covariate names used in the observation model.
 #' @return Named list of output tables and the observed-domain analysis frame.
+#' @examples
+#' # Run on a synthetic CPADS-shaped frame (the CKAN-fetched PUMF works
+#' # identically -- see morie_load_cpads_data() for the real frame):
+#' if (requireNamespace("survey", quietly = TRUE)) {
+#'   set.seed(1)
+#'   n <- 200
+#'   cpads <- data.frame(
+#'     weight = runif(n, 0.5, 2),
+#'     alcohol_past12m = rbinom(n, 1, 0.8),
+#'     heavy_drinking_30d = rbinom(n, 1, 0.3),
+#'     ebac_tot = abs(rnorm(n, 0.05, 0.03)),
+#'     ebac_legal = rbinom(n, 1, 0.7),
+#'     cannabis_any_use = rbinom(n, 1, 0.3),
+#'     age_group = sample(1:6, n, TRUE),
+#'     gender = sample(1:2, n, TRUE),
+#'     province_region = sample(1:5, n, TRUE),
+#'     mental_health = sample(1:5, n, TRUE),
+#'     physical_health = sample(1:5, n, TRUE)
+#'   )
+#'   morie_run_ebac_selection_ipw_analysis(cpads)
+#' }
 #' @export
-run_ebac_selection_ipw_analysis <- function(
+morie_run_ebac_selection_ipw_analysis <- function(
   data,
   output_dir = NULL,
   treatment = "cannabis_any_use",
   covariates = c("age_group", "gender", "province_region", "mental_health", "physical_health")
 ) {
-  validate_cpads_data(data, strict = TRUE)
+  morie_validate_cpads_data(data, strict = TRUE)
   if (!requireNamespace("survey", quietly = TRUE)) {
-    stop("The `survey` package is required for run_ebac_selection_ipw_analysis().", call. = FALSE)
+    stop("The `survey` package is required for morie_run_ebac_selection_ipw_analysis().", call. = FALSE)
   }
 
   needed <- unique(c(
@@ -176,7 +211,10 @@ run_ebac_selection_ipw_analysis <- function(
   observed$w_combined_trim <- observed$weight * observed$sw_trim
 
   diag_tbl <- data.frame(
-    metric = c("eligible_n", "observed_n", "observed_rate", "sw_min", "sw_q01", "sw_q99", "sw_max", "ess_survey_x_ipw_trim"),
+    metric = c(
+      "eligible_n", "observed_n", "observed_rate",
+      "sw_min", "sw_q01", "sw_q99", "sw_max", "ess_survey_x_ipw_trim"
+    ),
     value = c(
       nrow(target),
       nrow(observed),
@@ -246,7 +284,11 @@ run_ebac_selection_ipw_analysis <- function(
     utils::write.csv(diag_tbl, file.path(output_dir, "ebac_final_ipw_diagnostics.csv"), row.names = FALSE)
     utils::write.csv(ebac_final_ipw_or, file.path(output_dir, "ebac_final_ipw_or.csv"), row.names = FALSE)
     utils::write.csv(ebac_final_ipw_linear, file.path(output_dir, "ebac_final_ipw_linear.csv"), row.names = FALSE)
-    utils::write.csv(ebac_final_ipw_comparison, file.path(output_dir, "ebac_final_ipw_comparison.csv"), row.names = FALSE)
+    utils::write.csv(
+      ebac_final_ipw_comparison,
+      file.path(output_dir, "ebac_final_ipw_comparison.csv"),
+      row.names = FALSE
+    )
   }
 
   list(

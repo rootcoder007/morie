@@ -16,7 +16,9 @@
 #' @references Task Force (1996), Circulation 93:1043. Rangayyan Ch 6.
 #' @export
 #' @examples
-#' set.seed(0); rgh <- rghrv(800 + rnorm(200, sd = 40)); rgh$heart_rate_bpm
+#' set.seed(0)
+#' rgh <- rghrv(800 + rnorm(200, sd = 40))
+#' rgh$heart_rate_bpm
 rghrv <- function(rr_ms) {
   rr <- as.numeric(rr_ms)
   n <- length(rr)
@@ -27,11 +29,13 @@ rghrv <- function(rr_ms) {
   rmssd <- sqrt(mean(d^2))
   pnn50 <- 100 * mean(abs(d) > 50)
   hr <- if (mean_nn > 0) 60000 / mean_nn else NA_real_
-  list(meanNN = mean_nn, SDNN = sdnn, RMSSD = rmssd, pNN50 = pnn50,
-       heart_rate_bpm = hr, n = n)
+  list(
+    meanNN = mean_nn, SDNN = sdnn, RMSSD = rmssd, pNN50 = pnn50,
+    heart_rate_bpm = hr, n = n
+  )
 }
 
 #' @rdname rghrv
 #' @keywords internal
 #' @export
-rangayyan_hrv <- rghrv
+morie_rangayyan_hrv <- rghrv

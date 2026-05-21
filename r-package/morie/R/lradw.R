@@ -11,7 +11,9 @@ lr_warmup <- function(x, lr_target = 1e-3, warmup_steps = 1000L) {
   if (warmup_steps <= 0) stop("warmup_steps must be > 0")
   t <- as.numeric(x)
   lr <- lr_target * pmin(1, t / warmup_steps)
-  list(tensor = lr, value = lr[1L],
-       lr_target = lr_target, warmup_steps = warmup_steps,
-       step = t, method = "linear-warmup")
+  list(
+    tensor = lr, value = lr[1L],
+    lr_target = lr_target, warmup_steps = warmup_steps,
+    step = t, method = "linear-warmup"
+  )
 }

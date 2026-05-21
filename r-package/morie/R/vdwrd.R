@@ -10,28 +10,30 @@
 #' @return Named list: statistic, p_value, z, n, m.
 #' @importFrom stats qnorm pnorm
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_van_der_waerden_test(x = rnorm(50), y = rnorm(50))
 #' @export
-van_der_waerden_test <- function(x, y) {
-  x <- as.numeric(x); y <- as.numeric(y)
-  m <- length(x); n <- length(y); N <- m + n
+morie_van_der_waerden_test <- function(x, y) {
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  m <- length(x)
+  n <- length(y)
+  N <- m + n
   if (m < 2 || n < 2) {
-    return(list(statistic = NA_real_, p_value = NA_real_, z = NA_real_,
-                n = N, m = m,
-                method = "Van der Waerden normal-scores test"))
+    return(list(
+      statistic = NA_real_, p_value = NA_real_, z = NA_real_,
+      n = N, m = m,
+      method = "Van der Waerden normal-scores test"
+    ))
   }
   pooled <- c(x, y)
   ranks <- rank(pooled)
   s <- stats::qnorm(ranks / (N + 1))
-  T <- sum(s[1:m])
+  stat_t <- sum(s[1:m])
   Var_T <- (m * n / (N * (N - 1))) * sum(s^2)
-  z <- T / sqrt(Var_T)
+  z <- stat_t / sqrt(Var_T)
   p <- 2 * (1 - stats::pnorm(abs(z)))
   list(
-    statistic = T,
+    statistic = stat_t,
     p_value = p,
     z = z,
     n = N,

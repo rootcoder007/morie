@@ -12,7 +12,8 @@
 kv_cache_management <- function(K_cache, V_cache, k_new, v_new,
                                 max_len = NULL) {
   if (is.null(K_cache)) {
-    K_new <- as.matrix(k_new); V_new <- as.matrix(v_new)
+    K_new <- as.matrix(k_new)
+    V_new <- as.matrix(v_new)
   } else {
     K_new <- rbind(as.matrix(K_cache), as.matrix(k_new))
     V_new <- rbind(as.matrix(V_cache), as.matrix(v_new))
@@ -21,6 +22,8 @@ kv_cache_management <- function(K_cache, V_cache, k_new, v_new,
     K_new <- K_new[(nrow(K_new) - max_len + 1L):nrow(K_new), , drop = FALSE]
     V_new <- V_new[(nrow(V_new) - max_len + 1L):nrow(V_new), , drop = FALSE]
   }
-  list(K = K_new, V = V_new, T = nrow(K_new), max_len = max_len,
-       method = "kv-cache-append")
+  list(
+    K = K_new, V = V_new, T = nrow(K_new), max_len = max_len,
+    method = "kv-cache-append"
+  )
 }

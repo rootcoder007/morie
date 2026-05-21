@@ -51,7 +51,9 @@ morie_var <- function(x, ddof = 1) {
     morie_var_cpp(as.numeric(x), as.integer(ddof))
   } else {
     n <- length(x)
-    if (n - ddof <= 0) return(NA_real_)
+    if (n - ddof <= 0) {
+      return(NA_real_)
+    }
     sum((x - mean(x))^2) / (n - ddof)
   }
 }
@@ -71,10 +73,13 @@ morie_cor_pearson <- function(x, y) {
 
 # Internal: detect whether the Rcpp .so was successfully built.
 .cpp_available <- function() {
-  tryCatch({
-    exists("morie_normal_pdf_cpp", mode = "function") &&
-      is.function(get("morie_normal_pdf_cpp"))
-  }, error = function(e) FALSE)
+  tryCatch(
+    {
+      exists("morie_normal_pdf_cpp", mode = "function") &&
+        is.function(get("morie_normal_pdf_cpp"))
+    },
+    error = function(e) FALSE
+  )
 }
 
 #' Is the R-side JIT acceleration active?
@@ -83,11 +88,10 @@ morie_cor_pearson <- function(x, y) {
 #' Returns TRUE when the Rcpp .so was built and loaded; FALSE when
 #' falling back to base-R implementations.
 #'
+#' @return A logical scalar: \code{TRUE} when the compiled Rcpp backend was
+#'   built and loaded, \code{FALSE} when falling back to base-R kernels.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_fast_available()
 #' @export
 morie_fast_available <- function() {
   .cpp_available()

@@ -17,23 +17,27 @@
 #' @return list(estimate, y_hat, beta, W1, b1, w2, b2, se, n, method).
 #' @references Montesinos Lopez Ch 12.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_deep_learning_genomic(
+#'   x = rnorm(50), y = rnorm(50),
+#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4)
+#' )
 #' @export
-deep_learning_genomic <- function(x, y, markers, hidden = 16,
-                                   n_epochs = 200, lr = 1e-2,
-                                   l2 = 1e-3, seed = 0,
-                                   deterministic_seed = NULL) {
+morie_deep_learning_genomic <- function(x, y, markers, hidden = 16,
+                                  n_epochs = 200, lr = 1e-2,
+                                  l2 = 1e-3, seed = 0,
+                                  deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
     morie::morie_det_rng("dlgen", deterministic_seed)
   } else {
     set.seed(seed)
   }
-  y <- as.numeric(y); n <- length(y)
-  M <- as.matrix(markers); m <- ncol(M)
-  M_mu <- colMeans(M); M_sd <- apply(M, 2, stats::sd); M_sd[M_sd == 0] <- 1
+  y <- as.numeric(y)
+  n <- length(y)
+  M <- as.matrix(markers)
+  m <- ncol(M)
+  M_mu <- colMeans(M)
+  M_sd <- apply(M, 2, stats::sd)
+  M_sd[M_sd == 0] <- 1
   Ms <- sweep(sweep(M, 2, M_mu), 2, M_sd, "/")
   W1 <- matrix(stats::rnorm(m * hidden, 0, 1 / sqrt(m)), m, hidden)
   b1 <- rep(0, hidden)
@@ -52,19 +56,24 @@ deep_learning_genomic <- function(x, y, markers, hidden = 16,
     dz1 <- dh * (1 - h^2)
     dW1 <- crossprod(Ms, dz1) + l2 * W1
     db1 <- colSums(dz1)
-    W1 <- W1 - lr * dW1; b1 <- b1 - lr * db1
-    w2 <- w2 - lr * dw2; b2 <- b2 - lr * db2
+    W1 <- W1 - lr * dW1
+    b1 <- b1 - lr * db1
+    w2 <- w2 - lr * dw2
+    b2 <- b2 - lr * db2
     losses[ep] <- mean(resid^2)
   }
-  z1 <- sweep(Ms %*% W1, 2, b1, "+"); h <- tanh(z1)
+  z1 <- sweep(Ms %*% W1, 2, b1, "+")
+  h <- tanh(z1)
   y_hat <- as.numeric(h %*% w2) + b2
   resid <- y - y_hat
-  list(estimate = mean(y_hat), y_hat = y_hat, beta = numeric(0),
-       W1 = W1, b1 = b1, w2 = w2, b2 = b2,
-       loss_curve = losses, se = sqrt(mean(resid^2)),
-       n = n, method = "MLP-1H base-R")
+  list(
+    estimate = mean(y_hat), y_hat = y_hat, beta = numeric(0),
+    W1 = W1, b1 = b1, w2 = w2, b2 = b2,
+    loss_curve = losses, se = sqrt(mean(resid^2)),
+    n = n, method = "MLP-1H base-R"
+  )
 }
 
 # CANONICAL TEST
 # set.seed(6); M <- matrix(rnorm(100), 20, 5)
-# y <- M[,1] + 0.3*rnorm(20); deep_learning_genomic(rep(0,20), y, M, seed=6)
+# y <- M[,1] + 0.3*rnorm(20); morie_deep_learning_genomic(rep(0,20), y, M, seed=6)

@@ -29,23 +29,26 @@ rgfir <- function(x, cutoff, order = 51L, fs = 1.0, window = "hamming") {
   if (order < 3L) order <- 3L
   if (order %% 2L == 0L) order <- order + 1L
   nyq <- 0.5 * fs
-  fc  <- min(max(cutoff / nyq, 1e-6), 1 - 1e-6)
+  fc <- min(max(cutoff / nyq, 1e-6), 1 - 1e-6)
   if (requireNamespace("signal", quietly = TRUE)) {
     win_fn <- switch(window,
       hamming     = signal::hamming(order),
       hann        = signal::hanning(order),
       blackman    = signal::blackman(order),
       rectangular = rep(1, order),
-      signal::hamming(order))
+      signal::hamming(order)
+    )
     taps <- signal::fir1(order - 1L, fc, type = "low", window = win_fn)
     padlen <- 3L * order
     if (length(x) > padlen) {
-      y <- as.numeric(signal::filtfilt(taps, 1, x))
+      y <- as.numeric(signal::filtfilt(taps, x))
     } else {
-      y <- as.numeric(signal::filter(taps, 1, x))
+      y <- as.numeric(signal::filter(taps, x))
     }
-    return(list(signal = y, taps = taps, order = order,
-                cutoff = cutoff, fs = fs, window = window))
+    return(list(
+      signal = y, taps = taps, order = order,
+      cutoff = cutoff, fs = fs, window = window
+    ))
   }
   stop("R package 'signal' is required for rgfir().")
 }
@@ -53,4 +56,4 @@ rgfir <- function(x, cutoff, order = 51L, fs = 1.0, window = "hamming") {
 #' @rdname rgfir
 #' @keywords internal
 #' @export
-rangayyan_fir_filter <- rgfir
+morie_rangayyan_fir_filter <- rgfir

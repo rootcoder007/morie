@@ -17,19 +17,109 @@ morie_cor_pearson_cpp <- function(x, y) {
     .Call(`_morie_morie_cor_pearson_cpp`, x, y)
 }
 
-morie_hawkes_ll_exp_const_cpp <- function(t, T, a0, eta, beta) {
-    .Call(`_morie_morie_hawkes_ll_exp_const_cpp`, t, T, a0, eta, beta)
+morie_hawkes_ll_exp_const_cpp <- function(t, T_horizon, a0, eta, beta) {
+    .Call(`_morie_morie_hawkes_ll_exp_const_cpp`, t, T_horizon, a0, eta, beta)
 }
 
-morie_hawkes_ll_weibull_const_cpp <- function(t, T, a0, eta, alpha, lam) {
-    .Call(`_morie_morie_hawkes_ll_weibull_const_cpp`, t, T, a0, eta, alpha, lam)
+morie_hawkes_ll_weibull_const_cpp <- function(t, T_horizon, a0, eta, alpha, lam) {
+    .Call(`_morie_morie_hawkes_ll_weibull_const_cpp`, t, T_horizon, a0, eta, alpha, lam)
 }
 
-morie_hawkes_ll_lomax_const_cpp <- function(t, T, a0, eta, alpha, c) {
-    .Call(`_morie_morie_hawkes_ll_lomax_const_cpp`, t, T, a0, eta, alpha, c)
+morie_hawkes_ll_lomax_const_cpp <- function(t, T_horizon, a0, eta, alpha, c) {
+    .Call(`_morie_morie_hawkes_ll_lomax_const_cpp`, t, T_horizon, a0, eta, alpha, c)
 }
 
-morie_hawkes_ll_gamma_const_cpp <- function(t, T, a0, eta, alpha, beta) {
-    .Call(`_morie_morie_hawkes_ll_gamma_const_cpp`, t, T, a0, eta, alpha, beta)
+morie_hawkes_ll_gamma_const_cpp <- function(t, T_horizon, a0, eta, alpha, beta) {
+    .Call(`_morie_morie_hawkes_ll_gamma_const_cpp`, t, T_horizon, a0, eta, alpha, beta)
+}
+
+#' Fetch a single URL over HTTP(S) via libcurl
+#'
+#' Internal building block of the SIU parser. Returns the response
+#' body, or an empty string on any transport-level failure.
+#'
+#' @param url URL to fetch.
+#' @param timeout_s Request timeout in seconds.
+#' @return The response body as a length-1 character vector.
+#' @keywords internal
+.siu_http_get <- function(url, timeout_s = 60L) {
+    .Call(`_morie_siu_http_get`, url, timeout_s)
+}
+
+#' libcurl version string morie was built against
+#' @return A length-1 character vector.
+#' @keywords internal
+.siu_curl_version <- function() {
+    .Call(`_morie_siu_curl_version`)
+}
+
+#' Fetch many URLs concurrently via libcurl, with rate-limiting + retry
+#'
+#' Drives up to \code{concurrency} simultaneous transfers, but with a
+#' global token-bucket limit of \code{rate_rps} request starts per
+#' second across the whole pool. HTTP 429/502/503/504 and transport
+#' errors are retried up to \code{max_retries} times with exponential
+#' backoff (250ms * 2^attempt). Final failures yield an empty string
+#' at their slot.
+#'
+#' Throttling is the safe default for SIU and similar small-gov
+#' endpoints: hammering them with 16-24 concurrent requests triggers
+#' WAF/Cloudflare-style bot-protection that returns short
+#' interstitial pages, which look like data but aren't.
+#'
+#' @param urls Character vector of URLs.
+#' @param concurrency Maximum simultaneous transfers.
+#' @param timeout_s Per-request timeout in seconds.
+#' @param rate_rps Maximum request starts per second across the pool.
+#'   Default \code{4.0} is a polite scrape rate that stays well under
+#'   any common WAF threshold. Set very large (e.g. \code{1e9}) to
+#'   effectively disable throttling.
+#' @param max_retries Maximum retry attempts per URL on 429/5xx /
+#'   transport failure.
+#' @return A character vector of response bodies, parallel to \code{urls}.
+#' @keywords internal
+.siu_http_get_many <- function(urls, concurrency = 4L, timeout_s = 60L, rate_rps = 4.0, max_retries = 3L) {
+    .Call(`_morie_siu_http_get_many`, urls, concurrency, timeout_s, rate_rps, max_retries)
+}
+
+#' Fetch many URLs and return body + http_code + attempts
+#'
+#' Same throttle/retry behaviour as \code{.siu_http_get_many} but the
+#' return value preserves the HTTP status code and attempt count for
+#' each URL, so callers can distinguish a healthy 200 with a small
+#' body from a 429/503/short interstitial. Used by the DRID manifest
+#' builder (\code{morie_siu_refresh_manifest}).
+#'
+#' @inheritParams siu_http_get_many
+#' @return A list with three parallel slots: \code{body} (character),
+#'   \code{http_code} (integer), \code{attempts} (integer).
+#' @keywords internal
+.siu_http_get_many_with_status <- function(urls, concurrency = 4L, timeout_s = 60L, rate_rps = 4.0, max_retries = 3L) {
+    .Call(`_morie_siu_http_get_many_with_status`, urls, concurrency, timeout_s, rate_rps, max_retries)
+}
+
+#' Parse one SIU director's-report HTML page into the 64-column schema
+#'
+#' @param html The report page HTML.
+#' @param drid The director's-report id.
+#' @param url The source URL of the report page.
+#' @return A named character vector with the 64 SIU dataset columns;
+#'   report-derived fields are populated, news fields left empty.
+#' @keywords internal
+.siu_parse_report <- function(html, drid, url) {
+    .Call(`_morie_siu_parse_report`, html, drid, url)
+}
+
+#' Parse one SIU news-release HTML page
+#'
+#' @param html The news-release page HTML.
+#' @param nrid The news-release id.
+#' @param url The source URL of the news-release page.
+#' @return A named character vector: nrid, source_url_news,
+#'   news_release_title, news_release_date_iso, news_release_date_raw,
+#'   news_release_summary.
+#' @keywords internal
+.siu_parse_news <- function(html, nrid, url) {
+    .Call(`_morie_siu_parse_news`, html, nrid, url)
 }
 

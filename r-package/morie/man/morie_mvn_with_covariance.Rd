@@ -34,8 +34,6 @@ An n x p matrix of samples.
 Draw multivariate normal samples under a structured covariance
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }

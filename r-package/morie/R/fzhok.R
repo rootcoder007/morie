@@ -13,24 +13,28 @@
 #' @return Named list with estimate, h, t, order, mu_r, R_K, n, method.
 #' @importFrom stats median dnorm
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' fzhok(x = rnorm(50))
 #' @export
 fzhok <- function(x, t = NULL, h = NULL, order = 4L) {
-  x <- as.numeric(x); n <- length(x)
-  if (n < 2L) return(list(estimate = NA_real_, n = n,
-                           method = "fzhok - too few obs"))
+  x <- as.numeric(x)
+  n <- length(x)
+  if (n < 2L) {
+    return(list(
+      estimate = NA_real_, n = n,
+      method = "fzhok - too few obs"
+    ))
+  }
   if (order != 4L) stop("only order=4 implemented")
   if (is.null(t)) t <- stats::median(x)
   if (is.null(h)) h <- .morie_silverman_h(x)
   u <- (t - x) / h
   k4 <- 0.5 * (3 - u^2) * stats::dnorm(u)
   f_hat <- mean(k4) / h
-  list(estimate = f_hat, h = h, t = t, order = order,
-       mu_r = -3, R_K = 27 / (32 * sqrt(pi)), n = n,
-       method = "Fauzi higher-order (4) kernel density (Ch 1)")
+  list(
+    estimate = f_hat, h = h, t = t, order = order,
+    mu_r = -3, R_K = 27 / (32 * sqrt(pi)), n = n,
+    method = "Fauzi higher-order (4) kernel density (Ch 1)"
+  )
 }
 
 # CANONICAL TEST
@@ -40,4 +44,4 @@ fzhok <- function(x, t = NULL, h = NULL, order = 4L) {
 #' @rdname fzhok
 #' @keywords internal
 #' @export
-fauzi_higher_order_kernel <- fzhok
+morie_fauzi_higher_order_kernel <- fzhok

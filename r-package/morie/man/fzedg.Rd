@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzedg.R
 \name{fzedg}
 \alias{fzedg}
-\alias{fauzi_edgeworth_quantile}
+\alias{morie_fauzi_edgeworth_quantile}
 \title{Fauzi: Edgeworth expansion for kernel quantile (Ch 3)}
 \usage{
 fzedg(x, z = 1.96, p = 0.5)
 
-fauzi_edgeworth_quantile(x, z = 1.96, p = 0.5)
+morie_fauzi_edgeworth_quantile(x, z = 1.96, p = 0.5)
 }
 \arguments{
 \item{x}{Numeric vector (only n is used; result is asymptotic).}
@@ -27,9 +27,6 @@ studentised kernel quantile.  Skewness of the indicator score
 \deqn{P(T_n \le z) \approx \Phi(z) - (\gamma_1/6)(z^2-1)\phi(z)/\sqrt n.}
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+fzedg(x = rnorm(50))
 }
 \keyword{internal}

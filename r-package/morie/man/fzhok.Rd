@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzhok.R
 \name{fzhok}
 \alias{fzhok}
-\alias{fauzi_higher_order_kernel}
+\alias{morie_fauzi_higher_order_kernel}
 \title{Fauzi: Higher-order (order-4) Gaussian-based kernel (Ch 1)}
 \usage{
 fzhok(x, t = NULL, h = NULL, order = 4L)
 
-fauzi_higher_order_kernel(x, t = NULL, h = NULL, order = 4L)
+morie_fauzi_higher_order_kernel(x, t = NULL, h = NULL, order = 4L)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -27,9 +27,6 @@ KDE with order-4 Wand-Jones (1995, eq 2.8) kernel
 to O(h^4).  Note: K_4 takes negative values so f_hat may be < 0.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+fzhok(x = rnorm(50))
 }
 \keyword{internal}

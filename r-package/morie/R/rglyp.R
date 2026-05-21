@@ -12,7 +12,8 @@
 #' @references Rosenstein et al. (1993), Physica D 65:117.
 #' @export
 #' @examples
-#' set.seed(0); rglyp(rnorm(200), m = 3, tau = 1, max_t = 20)$lyapunov
+#' set.seed(0)
+#' rglyp(rnorm(200), m = 3, tau = 1, max_t = 20)$lyapunov
 rglyp <- function(x, m = 3L, tau = 1L, max_t = NULL, theiler = 10L) {
   N <- length(x)
   M <- N - (m - 1L) * tau
@@ -31,7 +32,7 @@ rglyp <- function(x, m = 3L, tau = 1L, max_t = NULL, theiler = 10L) {
     ok <- (iv + t0 <= M) & (nn + t0 <= M)
     if (!any(ok)) next
     diffs <- sqrt(rowSums((Y[iv[ok] + t0, , drop = FALSE] -
-                            Y[nn[ok] + t0, , drop = FALSE])^2))
+      Y[nn[ok] + t0, , drop = FALSE])^2))
     diffs <- diffs[diffs > 0]
     if (length(diffs)) div[t] <- mean(log(diffs))
   }
@@ -42,11 +43,13 @@ rglyp <- function(x, m = 3L, tau = 1L, max_t = NULL, theiler = 10L) {
     half <- max(3L, length(ts) %/% 2L)
     lam <- stats::coef(stats::lm(div[ts[seq_len(half)]] ~ ts[seq_len(half)]))[2]
   }
-  list(lyapunov = unname(lam), divergence_curve = div,
-       t = seq_len(max_t))
+  list(
+    lyapunov = unname(lam), divergence_curve = div,
+    t = seq_len(max_t)
+  )
 }
 
 #' @rdname rglyp
 #' @keywords internal
 #' @export
-rangayyan_lyapunov <- rglyp
+morie_rangayyan_lyapunov <- rglyp

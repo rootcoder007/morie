@@ -11,6 +11,10 @@
 #' Casella, G. & Berger, R. L. (2002). Statistical Inference. Duxbury.
 #' Lehmann, E. L. & Romano, J. P. (2005). Testing Statistical Hypotheses.
 #'
+#' @return Each callable returns a named \code{list} with the computed
+#'   statistic(s) and a plain-language \code{interpretation}.
+#' @examples
+#' mrm_oneprop_test(x = 58, n = 100, p0 = 0.5)
 #' @name mrm_mathstats
 NULL
 
@@ -74,7 +78,8 @@ mrm_twoprop_test <- function(x1, n1, x2, n2, alpha = 0.05) {
   if (n1 <= 0 || n2 <= 0 || x1 < 0 || x2 < 0) {
     stop("invalid sample sizes / counts")
   }
-  p1 <- x1 / n1; p2 <- x2 / n2
+  p1 <- x1 / n1
+  p2 <- x2 / n2
   tbl <- matrix(c(x1, n1 - x1, x2, n2 - x2), nrow = 2, byrow = TRUE)
   ch <- suppressWarnings(stats::chisq.test(tbl, correct = FALSE))
   fi <- stats::fisher.test(tbl, alternative = "two.sided")
@@ -87,7 +92,7 @@ mrm_twoprop_test <- function(x1, n1, x2, n2, alpha = 0.05) {
     p1 = round(p1, 6), p2 = round(p2, 6),
     diff = round(diff, 6),
     chi2 = round(as.numeric(ch$statistic), 4),
-    df   = as.integer(ch$parameter),
+    df = as.integer(ch$parameter),
     p_value_chi2 = as.numeric(ch$p.value),
     p_value_fisher = as.numeric(fi$p.value),
     z_wald = round(z_w, 4),
@@ -118,7 +123,8 @@ mrm_twoprop_test <- function(x1, n1, x2, n2, alpha = 0.05) {
 #' mrm_var_test(sample = x, sigma0_sq = 1)
 #' @export
 mrm_var_test <- function(sample, sigma0_sq, alpha = 0.05) {
-  x <- as.numeric(sample); x <- x[is.finite(x)]
+  x <- as.numeric(sample)
+  x <- x[is.finite(x)]
   n <- length(x)
   if (n < 2L) stop("need >= 2 observations")
   s_sq <- stats::var(x)
@@ -162,7 +168,8 @@ mrm_var_test <- function(sample, sigma0_sq, alpha = 0.05) {
 #' # plot(qq$theoretical, qq$empirical); abline(0, 1)
 #' @export
 mrm_qq_plot <- function(sample, dist = "norm", ...) {
-  x <- sort(as.numeric(sample)); x <- x[is.finite(x)]
+  x <- sort(as.numeric(sample))
+  x <- x[is.finite(x)]
   n <- length(x)
   if (n < 2L) stop("need >= 2 observations")
   p <- ((seq_len(n)) - 0.375) / (n + 0.25)
@@ -191,22 +198,26 @@ mrm_qq_plot <- function(sample, dist = "norm", ...) {
 #' @examples
 #' # 1000 sample means of size 30 from an exponential(1) base;
 #' # standardised z-scores converge to N(0,1):
-#' res <- mrm_clt_demo(base_distribution = "exp",
-#'                     n_samples = 1000L,
-#'                     sample_size = 30L,
-#'                     seed = 42L, rate = 1)
+#' res <- mrm_clt_demo(
+#'   base_distribution = "exp",
+#'   n_samples = 1000L,
+#'   sample_size = 30L,
+#'   seed = 42L, rate = 1
+#' )
 #' summary(res$z_score)
 #' # mean ~ 0, sd ~ 1
 #' @export
 mrm_clt_demo <- function(base_distribution = "unif",
-                          n_samples = 1000L,
-                          sample_size = 30L,
-                          seed = 42L, ...) {
+                         n_samples = 1000L,
+                         sample_size = 30L,
+                         seed = 42L, ...) {
   set.seed(seed)
   rfun <- get(paste0("r", base_distribution), envir = asNamespace("stats"))
-  means <- vapply(seq_len(n_samples),
-                   function(i) mean(rfun(sample_size, ...)),
-                   numeric(1))
+  means <- vapply(
+    seq_len(n_samples),
+    function(i) mean(rfun(sample_size, ...)),
+    numeric(1)
+  )
   data.frame(
     sample_index = seq_len(n_samples),
     sample_mean = means,
@@ -231,13 +242,14 @@ mrm_clt_demo <- function(base_distribution = "unif",
 #' x <- rnorm(200)
 #' # Under correct distributional assumption, U should be ~Uniform(0,1):
 #' pit <- mrm_pit(x, dist = "norm")
-#' attr(pit, "ks_pvalue")  # large p-value => no evidence against fit
+#' attr(pit, "ks_pvalue") # large p-value => no evidence against fit
 #' # If we deliberately misspecify (claim t_3 fits the normal sample):
 #' pit_wrong <- mrm_pit(x, dist = "t", df = 3)
-#' attr(pit_wrong, "ks_pvalue")  # small p-value => misspecification detected
+#' attr(pit_wrong, "ks_pvalue") # small p-value => misspecification detected
 #' @export
 mrm_pit <- function(sample, dist = "norm", ...) {
-  x <- as.numeric(sample); x <- x[is.finite(x)]
+  x <- as.numeric(sample)
+  x <- x[is.finite(x)]
   pfun <- get(paste0("p", dist), envir = asNamespace("stats"))
   U <- pfun(x, ...)
   ks <- suppressWarnings(stats::ks.test(U, "punif"))

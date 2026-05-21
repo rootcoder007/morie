@@ -2,12 +2,17 @@
 % Please edit documentation in R/fzwlc.R
 \name{fzwlc}
 \alias{fzwlc}
-\alias{fauzi_smoothed_wilcoxon}
+\alias{morie_fauzi_smoothed_wilcoxon}
 \title{Fauzi: Smoothed Wilcoxon signed-rank test (Ch 5)}
 \usage{
 fzwlc(x, theta0 = 0, h = NULL, alternative = "two-sided")
 
-fauzi_smoothed_wilcoxon(x, theta0 = 0, h = NULL, alternative = "two-sided")
+morie_fauzi_smoothed_wilcoxon(
+  x,
+  theta0 = 0,
+  h = NULL,
+  alternative = "two-sided"
+)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -26,9 +31,6 @@ Named list with statistic, z, p_value, theta0, h, n, method.
 z = W_n / sqrt(n(n+1)(2n+1)/6) ~ N(0,1).
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+fzwlc(x = rnorm(50))
 }
 \keyword{internal}

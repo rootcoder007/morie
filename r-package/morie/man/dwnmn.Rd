@@ -2,16 +2,16 @@
 % Please edit documentation in R/dwnmn.R
 \name{dwnmn}
 \alias{dwnmn}
-\alias{dynamic_wnominate}
+\alias{morie_dynamic_wnominate}
 \title{Dynamic ideal points / random-walk smoother (Armstrong Ch 6)}
 \usage{
 dwnmn(x, sigma_w = 0.1)
 
-dynamic_wnominate(x, sigma_w = 0.1)
+morie_dynamic_wnominate(x, sigma_w = 0.1)
 }
 \arguments{
 \item{x}{Numeric vector (per-period ideal points) or matrix
-(n_legislators by T).}
+(n_legislators by n_t).}
 
 \item{sigma_w}{Random-walk innovation SD.}
 }
@@ -24,9 +24,6 @@ Kalman + RTS smoother applied to a per-period scalar ideal-point
 series (or a panel of legislators).
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+dwnmn(x = rnorm(50))
 }
 \keyword{internal}

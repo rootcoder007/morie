@@ -13,12 +13,9 @@
 #' @return Named list \code{(y, estimate, x_hat, mu, var, eps, method)}.
 #' @references Ioffe & Szegedy (2015), ICML.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_bnfwd_batch_norm_forward(x = rnorm(50))
 #' @export
-bnfwd_batch_norm_forward <- function(x, gamma = NULL, beta = NULL,
+morie_bnfwd_batch_norm_forward <- function(x, gamma = NULL, beta = NULL,
                                      eps = 1e-5) {
   x <- as.matrix(x)
   # axis=0 (batch) -> per-feature stats
@@ -30,11 +27,13 @@ bnfwd_batch_norm_forward <- function(x, gamma = NULL, beta = NULL,
   x_hat <- sweep(x_hat, 2L, sqrt(var + eps), "/")
   y <- sweep(x_hat, 2L, gamma, "*")
   y <- sweep(y, 2L, beta, "+")
-  list(y = y, estimate = y, x_hat = x_hat, mu = mu, var = var, eps = eps,
-       method = "Batch normalization forward")
+  list(
+    y = y, estimate = y, x_hat = x_hat, mu = mu, var = var, eps = eps,
+    method = "Batch normalization forward"
+  )
 }
 
-#' @rdname bnfwd_batch_norm_forward
+#' @rdname morie_bnfwd_batch_norm_forward
 #' @keywords internal
 #' @export
-batch_norm_forward <- bnfwd_batch_norm_forward
+morie_batch_norm_forward <- morie_bnfwd_batch_norm_forward

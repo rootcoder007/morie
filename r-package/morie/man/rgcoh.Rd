@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgcoh.R
 \name{rgcoh}
 \alias{rgcoh}
-\alias{rangayyan_coherence}
-\title{Magnitude-squared coherence -- Rangayyan Ch 4}
+\alias{morie_rangayyan_coherence}
+\title{Magnitude-squared morie_coherence -- Rangayyan Ch 4}
 \usage{
 rgcoh(x, y, fs = 1, nperseg = NULL)
 
-rangayyan_coherence(x, y, fs = 1, nperseg = NULL)
+morie_rangayyan_coherence(x, y, fs = 1, nperseg = NULL)
 }
 \arguments{
 \item{x, y}{Numeric vectors of equal length.}
@@ -17,11 +17,11 @@ rangayyan_coherence(x, y, fs = 1, nperseg = NULL)
 \item{nperseg}{Welch segment length (default \code{min(N, 256)}).}
 }
 \value{
-Named list \code{freqs}, \code{coherence}, \code{mean_coherence},
+Named list \code{freqs}, \code{morie_coherence}, \code{mean_coherence},
 \code{peak_freq}, \code{peak_coherence}.
 }
 \description{
-Welch-averaged magnitude-squared coherence::
+Welch-averaged magnitude-squared morie_coherence::
 }
 \details{
 \deqn{C_{xy}(f) = |S_{xy}(f)|^2 / (S_{xx}(f) S_{yy}(f))}
@@ -30,9 +30,12 @@ Bounded in [0, 1].
 }
 \examples{
 \donttest{
-  set.seed(0); fs <- 100; t <- seq(0, 10, length.out = 1024)
-  a <- sin(2 * pi * 10 * t); b <- a + 0.1 * rnorm(length(t))
-  rgcoh(a, b, fs = fs)$peak_coherence > 0.5
+set.seed(0)
+fs <- 100
+t <- seq(0, 10, length.out = 1024)
+a <- sin(2 * pi * 10 * t)
+b <- a + 0.1 * rnorm(length(t))
+rgcoh(a, b, fs = fs)$peak_coherence > 0.5
 }
 }
 \references{

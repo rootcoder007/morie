@@ -1,4 +1,26 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Internal: parametric variogram model value at distance h. Extracted
+# from the vrgft() optimiser closure so the model switch (including the
+# unknown-model stop) is directly unit-testable.
+.vrgft_model <- function(h, c0, c1, a, model) {
+  switch(model,
+    exponential = c0 + c1 * (1 - exp(-h / a)),
+    gaussian = c0 + c1 * (1 - exp(-(h^2) / (a^2))),
+    spherical = ifelse(h <= a,
+      c0 + c1 * (1.5 * h / a - 0.5 * (h / a)^3),
+      c0 + c1
+    ),
+    stop("unknown model")
+  )
+}
+
+# Internal: variogram weighted-least-squares objective.
+.vrgft_obj <- function(p, mids, gammas, weights, model) {
+  pred <- .vrgft_model(mids, p[1], p[2], p[3], model)
+  sum(weights * (gammas - pred)^2)
+}
+
 #' Variogram model fit by weighted least squares.
 #'
 #' Models: exponential, gaussian, spherical.
@@ -13,53 +35,52 @@
 #'   converged, model), n, method.
 #' @references Cressie (1985); Schabenberger & Gotway (2005), Ch 3.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' vrgft(x = rnorm(50), coords = matrix(runif(100), 50, 2))
 #' @export
 vrgft <- function(x, coords, model = "exponential",
                   n_bins = 10, max_dist = NULL) {
   ev <- vrgm(x, coords, n_bins = n_bins, max_dist = max_dist)
-  mids <- ev$estimate$bins; gammas <- ev$estimate$gamma
+  mids <- ev$estimate$bins
+  gammas <- ev$estimate$gamma
   npairs <- ev$estimate$n_pairs
   keep <- !is.na(gammas) & npairs > 0
-  mids <- mids[keep]; gammas <- gammas[keep]; npairs <- npairs[keep]
+  mids <- mids[keep]
+  gammas <- gammas[keep]
+  npairs <- npairs[keep]
   while (length(mids) < 3 && n_bins > 3) {
     n_bins <- n_bins - 1
     ev <- vrgm(x, coords, n_bins = n_bins, max_dist = max_dist)
-    mids <- ev$estimate$bins; gammas <- ev$estimate$gamma
+    mids <- ev$estimate$bins
+    gammas <- ev$estimate$gamma
     npairs <- ev$estimate$n_pairs
     keep <- !is.na(gammas) & npairs > 0
-    mids <- mids[keep]; gammas <- gammas[keep]; npairs <- npairs[keep]
+    mids <- mids[keep]
+    gammas <- gammas[keep]
+    npairs <- npairs[keep]
   }
   if (length(mids) < 3) stop("need at least 3 non-empty bins")
-  g_max <- max(gammas); h_max <- max(mids)
+  g_max <- max(gammas)
+  h_max <- max(mids)
   p0 <- c(0, g_max, max(h_max / 3, 1e-6))
-  model_fn <- function(h, c0, c1, a) {
-    switch(model,
-           exponential = c0 + c1 * (1 - exp(-h / a)),
-           gaussian    = c0 + c1 * (1 - exp(-(h ^ 2) / (a ^ 2))),
-           spherical   = ifelse(h <= a,
-                                c0 + c1 * (1.5 * h / a - 0.5 * (h / a) ^ 3),
-                                c0 + c1),
-           stop("unknown model"))
-  }
-  weights <- pmax(npairs, 1) / pmax(gammas, 1e-12) ^ 2
-  obj <- function(p) {
-    pred <- model_fn(mids, p[1], p[2], p[3])
-    sum(weights * (gammas - pred) ^ 2)
-  }
+  weights <- pmax(npairs, 1) / pmax(gammas, 1e-12)^2
+  obj <- function(p) .vrgft_obj(p, mids, gammas, weights, model)
   res <- tryCatch(
-    stats::optim(p0, obj, method = "L-BFGS-B",
-                 lower = c(0, 1e-12, 1e-12),
-                 upper = c(g_max * 5 + 1e-6, g_max * 10 + 1, h_max * 10)),
-    error = function(e) list(par = p0, convergence = -1))
-  c0 <- res$par[1]; c1 <- res$par[2]; a <- res$par[3]
+    stats::optim(p0, obj,
+      method = "L-BFGS-B",
+      lower = c(0, 1e-12, 1e-12),
+      upper = c(g_max * 5 + 1e-6, g_max * 10 + 1, h_max * 10)
+    ),
+    error = function(e) list(par = p0, convergence = -1)
+  )
+  c0 <- res$par[1]
+  c1 <- res$par[2]
+  a <- res$par[3]
   list(
-    estimate = list(model = model, nugget = c0, sill = c0 + c1, range = a,
-                    params = c(c0, c1, a),
-                    converged = isTRUE(res$convergence == 0)),
+    estimate = list(
+      model = model, nugget = c0, sill = c0 + c1, range = a,
+      params = c(c0, c1, a),
+      converged = isTRUE(res$convergence == 0)
+    ),
     n = length(x), method = sprintf("Variogram model fit (%s, WLS)", model)
   )
 }
@@ -70,4 +91,4 @@ vrgft <- function(x, coords, model = "exponential",
 #' @rdname vrgft
 #' @keywords internal
 #' @export
-variogram_fitting <- vrgft
+morie_variogram_fitting <- vrgft

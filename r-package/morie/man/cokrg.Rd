@@ -2,8 +2,8 @@
 % Please edit documentation in R/cokrg.R
 \name{cokrg}
 \alias{cokrg}
-\alias{cokriging}
-\title{Simple cokriging for co-located bivariate spatial prediction.}
+\alias{morie_cokriging}
+\title{Simple morie_cokriging for co-located bivariate spatial prediction.}
 \usage{
 cokrg(
   x,
@@ -19,7 +19,7 @@ cokrg(
   nugget = 0
 )
 
-cokriging(
+morie_cokriging(
   x,
   y,
   coords,
@@ -58,10 +58,7 @@ Named list: estimate, se, n, method.
 \deqn{[C_{pp} \; C_{ps}; C_{ps}^\top \; C_{ss}] [\lambda; \mu] = [c_{0p}; c_{0s}]}.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+cokrg(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100), 50, 2), target = rnorm(50))
 }
 \references{
 Schabenberger & Gotway (2005), Ch 4.

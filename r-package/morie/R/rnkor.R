@@ -9,19 +9,18 @@
 #' @param mu0 Hypothesised median (default 0).
 #' @return Named list: signed_ranks, abs_ranks, W_plus, W_minus, n_nonzero, n.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_rank_order_statistics(x = rnorm(50))
 #' @export
-rank_order_statistics <- function(x, mu0 = 0) {
+morie_rank_order_statistics <- function(x, mu0 = 0) {
   x <- as.numeric(x)
   n <- length(x)
   if (n < 2) {
-    return(list(signed_ranks = numeric(0), abs_ranks = numeric(0),
-                W_plus = NA_real_, W_minus = NA_real_,
-                n_nonzero = 0L, n = n,
-                method = "Rank-order signed ranks"))
+    return(list(
+      signed_ranks = numeric(0), abs_ranks = numeric(0),
+      W_plus = NA_real_, W_minus = NA_real_,
+      n_nonzero = 0L, n = n,
+      method = "Rank-order signed ranks"
+    ))
   }
   d <- x - mu0
   nz <- d != 0

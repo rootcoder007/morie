@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgemg.R
 \name{rgemg}
 \alias{rgemg}
-\alias{rangayyan_emg_rms}
+\alias{morie_rangayyan_emg_rms}
 \title{EMG sliding-window RMS envelope -- Rangayyan Ch 8}
 \usage{
 rgemg(x, window = 64L, fs = 1)
 
-rangayyan_emg_rms(x, window = 64L, fs = 1)
+morie_rangayyan_emg_rms(x, window = 64L, fs = 1)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -23,7 +23,9 @@ Named list \code{rms}, \code{window}, \code{fs}, \code{mean_rms}.
 \deqn{\mathrm{RMS}[n] = \sqrt{ (1/W) \sum_{k=n-W+1}^{n} x[k]^2 }}
 }
 \examples{
-set.seed(0); r <- rgemg(rnorm(500), window = 32); length(r$rms)
+set.seed(0)
+r <- rgemg(rnorm(500), window = 32)
+length(r$rms)
 }
 \references{
 Rangayyan Ch 8.

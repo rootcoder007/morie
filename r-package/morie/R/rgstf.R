@@ -14,8 +14,10 @@
 #' @export
 #' @examples
 #' \donttest{
-#'   t <- seq(0, 10, length.out = 1024); x <- sin(2 * pi * 10 * t)
-#'   r <- rgstf(x, fs = 100, nperseg = 128); dim(r$Sxx)
+#' t <- seq(0, 10, length.out = 1024)
+#' x <- sin(2 * pi * 10 * t)
+#' r <- rgstf(x, fs = 100, nperseg = 128)
+#' dim(r$Sxx)
 #' }
 rgstf <- function(x, fs = 1.0, nperseg = 256L, noverlap = NULL,
                   window = "hann") {
@@ -25,10 +27,11 @@ rgstf <- function(x, fs = 1.0, nperseg = 256L, noverlap = NULL,
   starts <- seq(1, length(x) - nperseg + 1, by = step)
   if (length(starts) < 1) starts <- 1
   w <- switch(window,
-              hann    = 0.5 - 0.5 * cos(2 * pi * (seq_len(nperseg) - 1) / (nperseg - 1)),
-              hamming = 0.54 - 0.46 * cos(2 * pi * (seq_len(nperseg) - 1) / (nperseg - 1)),
-              boxcar  = rep(1, nperseg),
-              rep(1, nperseg))
+    hann    = 0.5 - 0.5 * cos(2 * pi * (seq_len(nperseg) - 1) / (nperseg - 1)),
+    hamming = 0.54 - 0.46 * cos(2 * pi * (seq_len(nperseg) - 1) / (nperseg - 1)),
+    boxcar  = rep(1, nperseg),
+    rep(1, nperseg)
+  )
   W <- sum(w^2)
   nfreq <- nperseg %/% 2L + 1L
   freqs <- seq(0, fs / 2, length.out = nfreq)
@@ -43,11 +46,13 @@ rgstf <- function(x, fs = 1.0, nperseg = 256L, noverlap = NULL,
     Sxx[, i] <- pxx
     times[i] <- (s + nperseg / 2 - 1) / fs
   }
-  list(freqs = freqs, times = times, Sxx = Sxx,
-       nperseg = nperseg, noverlap = as.integer(noverlap), fs = fs)
+  list(
+    freqs = freqs, times = times, Sxx = Sxx,
+    nperseg = nperseg, noverlap = as.integer(noverlap), fs = fs
+  )
 }
 
 #' @rdname rgstf
 #' @keywords internal
 #' @export
-rangayyan_stft <- rgstf
+morie_rangayyan_stft <- rgstf

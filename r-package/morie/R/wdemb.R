@@ -16,11 +16,15 @@ word_embedding <- function(x, E = NULL, vocab_size = 100L,
     set.seed(seed)
     lim <- sqrt(6 / (vocab_size + d_model))
     E <- matrix(stats::runif(vocab_size * d_model, -lim, lim),
-                nrow = vocab_size, ncol = d_model)
+      nrow = vocab_size, ncol = d_model
+    )
   }
-  if (any(ids < 0L) || any(ids >= nrow(E)))
+  if (any(ids < 0L) || any(ids >= nrow(E))) {
     stop("token id out of range for embedding matrix")
-  e <- E[ids + 1L, , drop = FALSE]   # R is 1-indexed
-  list(tensor = e, E = E, ids = ids, shape = dim(e),
-       method = "embedding-lookup")
+  }
+  e <- E[ids + 1L, , drop = FALSE] # R is 1-indexed
+  list(
+    tensor = e, E = E, ids = ids, shape = dim(e),
+    method = "embedding-lookup"
+  )
 }

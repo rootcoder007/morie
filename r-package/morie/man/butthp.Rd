@@ -28,7 +28,7 @@ signals (EEG, ECG) prior to analysis.
 if (requireNamespace("signal", quietly = TRUE)) {
   set.seed(1)
   t <- seq(0, 1, length.out = 500)
-  x <- 5 * t + sin(2 * pi * 10 * t)   # linear drift + 10 Hz signal
+  x <- 5 * t + sin(2 * pi * 10 * t) # linear drift + 10 Hz signal
   y <- butthp(x, fs = 500, cutoff = 1)
   length(y$filtered)
 }

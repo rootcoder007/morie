@@ -3,6 +3,12 @@
 \name{mrm_tps}
 \alias{mrm_tps}
 \title{MRM-framework analyses on Toronto Police Service (TPS) open data}
+\value{
+Each \code{mrm_tps_*()} callable returns a named \code{list} with
+the computed statistic (Pareto exponent, Moran's I, or survival curve)
+and a plain-language \code{interpretation}; \code{mrm_tps_load_hawkes_refit()}
+returns the parsed Hawkes-refit manifest as a \code{list}.
+}
 \description{
 Four callables for TPS public-release crime-incident CSVs, used in
 the MRM empirical companion paper.
@@ -19,5 +25,11 @@ gap distribution per HOOD_158 neighbourhood.
 \item \code{mrm_tps_load_hawkes_refit()}: convenience loader that pulls the
 precomputed per-category Hawkes (Markovian + Weibull/sin)
 fits from the \code{paper_hawkes_refit.json} manifest if available.
+}
+}
+\examples{
+if (FALSE) {
+  tps <- read.csv("Assault_Open_Data.csv")
+  mrm_tps_levy_scaling(tps)
 }
 }

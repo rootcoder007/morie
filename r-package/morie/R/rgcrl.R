@@ -10,7 +10,8 @@
 #' @references Grassberger & Procaccia (1983), Physica D 9:189.
 #' @export
 #' @examples
-#' set.seed(0); rgcrl(rnorm(200), m = 3, tau = 1, n_r = 15)$D2
+#' set.seed(0)
+#' rgcrl(rnorm(200), m = 3, tau = 1, n_r = 15)$D2
 rgcrl <- function(x, m = 3L, tau = 1L, n_r = 20L) {
   N <- length(x)
   M <- N - (m - 1L) * tau
@@ -25,11 +26,12 @@ rgcrl <- function(x, m = 3L, tau = 1L, n_r = 20L) {
   rs <- 10^seq(log10(rmin), log10(rmax), length.out = n_r)
   C <- vapply(rs, function(r) mean(dist <= r), numeric(1))
   mask <- C > 0 & is.finite(C)
-  log_r <- log(rs[mask]); log_C <- log(C[mask])
+  log_r <- log(rs[mask])
+  log_C <- log(C[mask])
   if (length(log_r) < 3) {
     D2 <- NA_real_
   } else {
-    n  <- length(log_r)
+    n <- length(log_r)
     lo <- max(1L, n %/% 5L)
     hi <- max(lo + 2L, n - n %/% 5L)
     D2 <- unname(stats::coef(stats::lm(log_C[lo:hi] ~ log_r[lo:hi]))[2])
@@ -40,4 +42,4 @@ rgcrl <- function(x, m = 3L, tau = 1L, n_r = 20L) {
 #' @rdname rgcrl
 #' @keywords internal
 #' @export
-rangayyan_correlation_dimension <- rgcrl
+morie_rangayyan_correlation_dimension <- rgcrl

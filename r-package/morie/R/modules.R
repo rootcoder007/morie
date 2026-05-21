@@ -2,12 +2,9 @@
 #'
 #' @return Data frame describing the implemented module surface.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_list_morie_modules()
 #' @export
-list_morie_modules <- function() {
+morie_list_morie_modules <- function() {
   data.frame(
     name = c(
       "data-wrangling",
@@ -65,7 +62,9 @@ list_morie_modules <- function() {
     "data/datasets/oc/CPADS/2021-2022/cpads-2021-2022-pumf2.csv"
   )
   for (p in candidates) {
-    if (file.exists(p)) return(p)
+    if (file.exists(p)) {
+      return(p)
+    }
   }
   # Fallback: first candidate (will be resolved by .resolve_cpads_csv).
   candidates[1L]
@@ -95,19 +94,17 @@ list_morie_modules <- function() {
 #' @param data Raw CPADS data frame.
 #' @return Data frame with canonical MORIE analysis columns.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-canonicalize_cpads_data <- function(data) {
+morie_canonicalize_cpads_data <- function(data) {
   required_raw <- c(
     "wtpumf", "alc05", "alc12_30d_prev_total", "alc12_30d_prev", "can05", "age_groups",
     "dvdemq01", "region", "hwbq01", "hwbq02", "ebac_tot", "ebac_legal"
   )
   missing_raw <- setdiff(required_raw, names(data))
   if (length(missing_raw) > 0) {
-    validate_cpads_data(data, strict = TRUE)
+    morie_validate_cpads_data(data, strict = TRUE)
     return(data)
   }
 
@@ -136,7 +133,7 @@ canonicalize_cpads_data <- function(data) {
   for (nm in names(canonical)) {
     out[[nm]] <- canonical[[nm]]
   }
-  validate_cpads_data(out, strict = TRUE)
+  morie_validate_cpads_data(out, strict = TRUE)
   out
 }
 
@@ -144,10 +141,18 @@ canonicalize_cpads_data <- function(data) {
 #'
 #' @param cpads_csv Path to the CPADS CSV.
 #' @return Canonicalized CPADS data frame.
+#' @examples
+#' \donttest{
+#' # Reads and canonicalises the CPADS PUMF CSV. The default CSV lives in
+#' # a morie project tree; the CKAN-fetched PUMF works identically (see
+#' # morie_load_dataset("ocp21")). The tryCatch guard lets the example
+#' # render cleanly on machines without the CSV checked out locally.
+#' tryCatch(morie_load_cpads_data(), error = function(e) message(conditionMessage(e)))
+#' }
 #' @export
-load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
+morie_load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
   cpads_csv <- .resolve_cpads_csv(cpads_csv)
-  canonicalize_cpads_data(utils::read.csv(cpads_csv, stringsAsFactors = FALSE))
+  morie_canonicalize_cpads_data(utils::read.csv(cpads_csv, stringsAsFactors = FALSE))
 }
 
 .write_module_outputs <- function(outputs, output_dir = NULL) {
@@ -175,16 +180,21 @@ load_cpads_data <- function(cpads_csv = .cpads_default_csv()) {
 #' @param output_dir Optional directory for CSV outputs.
 #' @return Named list of data-frame outputs.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
+#' \donttest{
+#' # Dispatch one MORIE module against the canonical CPADS CSV. The CSV
+#' # ships with a morie project tree, or is fetched via the CKAN endpoint
+#' # (morie_load_dataset("ocp21")). Wrapped in tryCatch so the example
+#' # documents usage even when the CSV is not checked out locally.
+#' tryCatch(
+#'   morie_run_morie_module("descriptive-statistics"),
+#'   error = function(e) message(conditionMessage(e))
+#' )
 #' }
 #' @export
-run_morie_module <- function(module_name, cpads_csv = .cpads_default_csv(), output_dir = NULL) {
-  data <- load_cpads_data(cpads_csv)
+morie_run_morie_module <- function(module_name, cpads_csv = .cpads_default_csv(), output_dir = NULL) {
+  data <- morie_load_cpads_data(cpads_csv)
 
-  outputs <- switch(
-    module_name,
+  outputs <- switch(module_name,
     "data-wrangling" = .run_data_wrangling_module_internal(data, cpads_csv = cpads_csv, output_dir = output_dir),
     "descriptive-statistics" = .run_descriptive_statistics_module_internal(data),
     "distribution-tests" = .run_distribution_tests_module_internal(data),
@@ -220,18 +230,16 @@ run_morie_module <- function(module_name, cpads_csv = .cpads_default_csv(), outp
 #' @param output_dir Optional directory for CSV outputs.
 #' @return Named list of module outputs.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-run_morie_modules <- function(
-  modules = list_morie_modules()$name,
+morie_run_morie_modules <- function(
+  modules = morie_list_morie_modules()$name,
   cpads_csv = .cpads_default_csv(),
   output_dir = NULL
 ) {
   stats::setNames(
-    lapply(modules, function(m) run_morie_module(m, cpads_csv = cpads_csv, output_dir = output_dir)),
+    lapply(modules, function(m) morie_run_morie_module(m, cpads_csv = cpads_csv, output_dir = output_dir)),
     modules
   )
 }

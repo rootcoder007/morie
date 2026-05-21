@@ -8,12 +8,10 @@ escape_regex <- function(x) {
 #' @param strict If `TRUE`, stop on validation failures.
 #' @return `TRUE` when validation passes.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-validate_outputs_manifest <- function(manifest, strict = TRUE) {
+morie_validate_outputs_manifest <- function(manifest, strict = TRUE) {
   required <- c("output", "public_path", "size_kb", "modified")
 
   fail <- function(msg) {
@@ -44,10 +42,29 @@ validate_outputs_manifest <- function(manifest, strict = TRUE) {
 #' @param manifest_path Optional explicit manifest path.
 #' @param validate If `TRUE`, validate schema.
 #' @return Manifest data frame.
+#' @examples
+#' # Craft a minimal manifest in tempdir and read it back:
+#' tdir <- tempfile("morie-doc-")
+#' dir.create(tdir)
+#' man <- file.path(tdir, "outputs_manifest.csv")
+#' write.csv(
+#'   data.frame(
+#'     output = "results.csv",
+#'     public_path = file.path(tdir, "results.csv"),
+#'     size_kb = 0.01, modified = format(Sys.Date())
+#'   ),
+#'   man,
+#'   row.names = FALSE
+#' )
+#' writeLines("x,y\n1,2", file.path(tdir, "results.csv"))
+#' morie_read_outputs_manifest(manifest_path = man)
 #' @export
-read_outputs_manifest <- function(project_root = NULL, manifest_path = NULL, validate = TRUE) {
-  paths <- morie_paths(project_root)
-  path <- manifest_path %||% paths$outputs_manifest
+morie_read_outputs_manifest <- function(project_root = NULL, manifest_path = NULL, validate = TRUE) {
+  # When an explicit manifest_path is supplied, do not require a project
+  # root (morie_find_project_root() fails under R CMD check / covr where the
+  # working directory is a temporary install tree).  `%||%` is lazy, so
+  # morie_paths() is only consulted when manifest_path is NULL.
+  path <- manifest_path %||% morie_paths(project_root)$outputs_manifest
 
   if (!file.exists(path)) {
     stop("Outputs manifest not found: ", path, call. = FALSE)
@@ -55,7 +72,7 @@ read_outputs_manifest <- function(project_root = NULL, manifest_path = NULL, val
 
   manifest <- utils::read.csv(path, stringsAsFactors = FALSE, check.names = FALSE)
   if (isTRUE(validate)) {
-    validate_outputs_manifest(manifest, strict = TRUE)
+    morie_validate_outputs_manifest(manifest, strict = TRUE)
   }
   manifest
 }
@@ -68,12 +85,14 @@ read_outputs_manifest <- function(project_root = NULL, manifest_path = NULL, val
 #' @param extensions File extensions to include (without dots).
 #' @return Manifest data frame.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # Scan a tempdir of output files and build a manifest CSV:
+#' tdir <- tempfile("morie-doc-")
+#' dir.create(tdir)
+#' writeLines("x,y\n1,2", file.path(tdir, "results.csv"))
+#' writeLines("# report", file.path(tdir, "report.md"))
+#' morie_build_outputs_manifest(tdir, file.path(tdir, "outputs_manifest.csv"))
 #' @export
-build_outputs_manifest <- function(
+morie_build_outputs_manifest <- function(
   output_dir,
   manifest_path,
   public_prefix = "data/manifest/outputs",
@@ -123,11 +142,22 @@ build_outputs_manifest <- function(
 #' @param project_root Project root directory.
 #' @param manifest Manifest data frame. If `NULL`, loaded from disk.
 #' @return Data frame containing declared and observed output status.
+#' @examples
+#' # Craft a tempdir manifest + output file, then audit:
+#' tdir <- tempfile("morie-doc-")
+#' dir.create(tdir)
+#' writeLines("x,y\n1,2", file.path(tdir, "results.csv"))
+#' man <- data.frame(
+#'   output = "results.csv",
+#'   public_path = file.path(tdir, "results.csv"),
+#'   size_kb = 0.01, modified = format(Sys.Date())
+#' )
+#' morie_audit_public_outputs(project_root = tdir, manifest = man)
 #' @export
-audit_public_outputs <- function(project_root = NULL, manifest = NULL) {
+morie_audit_public_outputs <- function(project_root = NULL, manifest = NULL) {
   paths <- morie_paths(project_root)
-  manifest <- manifest %||% read_outputs_manifest(paths$project_root)
-  validate_outputs_manifest(manifest, strict = TRUE)
+  manifest <- manifest %||% morie_read_outputs_manifest(paths$project_root)
+  morie_validate_outputs_manifest(manifest, strict = TRUE)
 
   to_abs <- function(p) {
     ifelse(is_absolute_path(p), p, file.path(paths$project_root, p))
@@ -199,15 +229,13 @@ audit_public_outputs <- function(project_root = NULL, manifest = NULL) {
 
 #' Summarize an output audit
 #'
-#' @param audit_tbl Result from [audit_public_outputs()].
+#' @param audit_tbl Result from [morie_audit_public_outputs()].
 #' @return Named list with high-level diagnostics.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-summarize_output_audit <- function(audit_tbl) {
+morie_summarize_output_audit <- function(audit_tbl) {
   if (!is.data.frame(audit_tbl)) {
     stop("`audit_tbl` must be a data.frame.", call. = FALSE)
   }

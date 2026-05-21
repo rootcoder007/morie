@@ -2,12 +2,12 @@
 % Please edit documentation in R/isotn.R
 \name{isotn}
 \alias{isotn}
-\alias{isotonic_regression}
+\alias{morie_isotonic_regression}
 \title{Isotonic regression via PAVA (Barlow et al. 1972)}
 \usage{
 isotn(x, y, weights = NULL, increasing = TRUE)
 
-isotonic_regression(x, y, weights = NULL, increasing = TRUE)
+morie_isotonic_regression(x, y, weights = NULL, increasing = TRUE)
 }
 \arguments{
 \item{x}{numeric predictor.}

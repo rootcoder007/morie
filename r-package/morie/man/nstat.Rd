@@ -2,12 +2,12 @@
 % Please edit documentation in R/nstat.R
 \name{nstat}
 \alias{nstat}
-\alias{nonstationary_covariance}
+\alias{morie_nonstationary_covariance}
 \title{Non-stationary covariance estimation (moving-window kernel).}
 \usage{
 nstat(x, coords, bandwidth = NULL)
 
-nonstationary_covariance(x, coords, bandwidth = NULL)
+morie_nonstationary_covariance(x, coords, bandwidth = NULL)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -25,10 +25,7 @@ C(s_i, s_j) = sigma(s_i) sigma(s_j) rho(s_i, s_j) with kernel-weighted
 local moments and standardised residual correlations.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+nstat(x = rnorm(50), coords = matrix(runif(100), 50, 2))
 }
 \references{
 Sampson & Guttorp (1992); Schabenberger & Gotway (2005), Ch 8.

@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgqrs.R
 \name{rgqrs}
 \alias{rgqrs}
-\alias{rangayyan_qrs_detect}
+\alias{morie_rangayyan_qrs_detect}
 \title{Pan-Tompkins QRS detector -- Rangayyan Ch 6}
 \usage{
 rgqrs(x, fs = 360)
 
-rangayyan_qrs_detect(x, fs = 360)
+morie_rangayyan_qrs_detect(x, fs = 360)
 }
 \arguments{
 \item{x}{Numeric ECG vector.}
@@ -25,12 +25,15 @@ of integrated max, 200-ms refractory).
 }
 \examples{
 \donttest{
-  if (requireNamespace("signal", quietly = TRUE)) {
-    fs <- 360; t <- seq(0, 5, length.out = 5 * fs)
-    ecg <- rowSums(sapply(seq(0.5, 4.5, by = 1.0),
-                          function(tk) exp(-((t - tk) * 30)^2)))
-    rgqrs(ecg, fs = fs)$r_peaks
-  }
+if (requireNamespace("signal", quietly = TRUE)) {
+  fs <- 360
+  t <- seq(0, 5, length.out = 5 * fs)
+  ecg <- rowSums(sapply(
+    seq(0.5, 4.5, by = 1.0),
+    function(tk) exp(-((t - tk) * 30)^2)
+  ))
+  rgqrs(ecg, fs = fs)$r_peaks
+}
 }
 }
 \references{

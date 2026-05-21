@@ -19,8 +19,10 @@ latnh <- function(N = 100L, d = 1L, f = NULL, seed = 42L) {
     u_j <- cut + stats::runif(N, 0, 1 / N)
     sample[, j] <- sample(u_j)
   }
-  out <- list(sample = sample, N = as.integer(N), d = as.integer(d),
-              method = "Latin hypercube (McKay et al. 1979)")
+  out <- list(
+    sample = sample, N = as.integer(N), d = as.integer(d),
+    method = "Latin hypercube (McKay et al. 1979)"
+  )
   if (!is.null(f)) {
     fv <- apply(sample, 1, f)
     out$estimate <- mean(fv)
@@ -36,4 +38,4 @@ latnh <- function(N = 100L, d = 1L, f = NULL, seed = 42L) {
 #' @rdname latnh
 #' @keywords internal
 #' @export
-latin_hypercube <- latnh
+morie_latin_hypercube <- latnh

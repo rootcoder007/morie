@@ -3,6 +3,11 @@
 \name{frns_temporal}
 \alias{frns_temporal}
 \title{Multi-city temporal disparity audit}
+\value{
+The module's audit callable returns a named \code{list} with the
+worst per-city Disparate Impact Ratio range, per-city and per-cell
+breakdowns, and a plain-language \code{interpretation}.
+}
 \description{
 R parity for the Python \code{morie.fairness.temporal} module. The four
 disparity metrics — Disparate Impact Ratio, Demographic Parity Gap,
@@ -15,4 +20,11 @@ Reimplements the longitudinal, multi-city audit of Barman & Barman,
 arXiv:2603.18987. Its central lesson: bias metrics are not stable
 from one deployment cycle to the next and must be recomputed per
 period and per city.
+}
+\examples{
+period <- c(rep("p1", 10), rep("p2", 10))
+city <- rep("A", 20)
+pred <- rep(c(1, 1, 1, 1, 1, 1, 1, 1, 0, 0), 2)
+grp <- rep(c(rep("X", 5), rep("Y", 5)), 2)
+morie_predpol_temporal_audit(period, city, pred, grp, privileged = "X")
 }

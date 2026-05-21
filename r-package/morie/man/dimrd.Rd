@@ -2,12 +2,12 @@
 % Please edit documentation in R/dimrd.R
 \name{dimrd}
 \alias{dimrd}
-\alias{dimensionality_test}
+\alias{morie_dimensionality_test}
 \title{Dimensionality test via Kaiser scree (Armstrong Ch 7)}
 \usage{
 dimrd(x, threshold = 1)
 
-dimensionality_test(x, threshold = 1)
+morie_dimensionality_test(x, threshold = 1)
 }
 \arguments{
 \item{x}{Numeric matrix (n by m).}
@@ -24,9 +24,6 @@ formed from x (input matrix is used directly if symmetric; else
 uses the column correlation matrix).
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+dimrd(x = rnorm(50))
 }
 \keyword{internal}

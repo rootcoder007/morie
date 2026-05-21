@@ -13,10 +13,19 @@
 #' * TPS: Toronto Police Open Data ArcGIS REST. Use
 #'   `morie_fetch_tps(category = "Assault")`.
 #' * SIU: Ontario SIU Director's Reports site. Use
-#'   `morie_fetch_siu()` which scrapes the public reports site on
-#'   demand (per-user, since redistribution of the scraped corpus is
+#'   `morie_fetch_siu()` which parses the public reports site on
+#'   demand (per-user, since redistribution of the parsed corpus is
 #'   not clearly licensed).
 #'
+#' @return The on-demand fetchers (\code{morie_fetch_tps()},
+#'   \code{morie_fetch_siu()}) return the file path to the downloaded or
+#'   cached CSV; \code{morie_load_dataset()} returns the loaded
+#'   \code{data.frame}.
+#' @examples
+#' if (FALSE) {
+#'   b01 <- morie_load_dataset("otisb01")
+#'   head(b01)
+#' }
 #' @name mrm_samples
 NULL
 
@@ -60,8 +69,8 @@ morie_sample <- function(name = c("otis_b01", "otis_b09", "otis_c11", "tps_assau
 #'   FeatureServer layer roots.
 #' @examples
 #' urls <- morie_tps_layer_urls()
-#' names(urls)          # categories: Assault, AutoTheft, Homicide, ...
-#' length(urls)         # number of layers
+#' names(urls) # categories: Assault, AutoTheft, Homicide, ...
+#' length(urls) # number of layers
 #' @export
 morie_tps_layer_urls <- function() {
   c(
@@ -74,13 +83,16 @@ morie_tps_layer_urls <- function() {
     BreakAndEnter =
       "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Break_and_Enter_Open_Data/FeatureServer/0",
     Homicides =
-      "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Homicides_Open_Data_ASR_RC_TBL_002/FeatureServer/0",
+      paste0("https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/",
+        "rest/services/Homicides_Open_Data_ASR_RC_TBL_002/FeatureServer/0"),
     Robbery =
       "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Robbery_Open_Data/FeatureServer/0",
     ShootingAndFirearmDiscarges =
-      "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Shooting_and_Firearm_Discharges_Open_Data/FeatureServer/0",
+      paste0("https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/",
+        "rest/services/Shooting_and_Firearm_Discharges_Open_Data/FeatureServer/0"),
     TheftFromMV =
-      "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Theft_From_Motor_Vehicle_Open_Data/FeatureServer/0",
+      paste0("https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/",
+        "rest/services/Theft_From_Motor_Vehicle_Open_Data/FeatureServer/0"),
     TheftOver =
       "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Theft_Over_Open_Data/FeatureServer/0"
   )
@@ -94,8 +106,11 @@ morie_tps_layer_urls <- function() {
 #' calls unless `overwrite = TRUE`.
 #'
 #' @param category One of `names(morie_tps_layer_urls())`.
-#' @param cache_dir Directory for the CSV
-#'   (default `"~/.cache/morie/tps"`).
+#' @param cache_dir Directory for the CSV. Defaults to a
+#'   session-scoped subdirectory of `tempdir()` that R cleans up
+#'   automatically. For persistent caching pass
+#'   `cache_dir = morie_cache_dir("tps")`; see
+#'   [morie_cache_dir] and [morie_cache_clear].
 #' @param where ArcGIS SQL where clause (default `"1=1"`).
 #' @param overwrite Logical; if `FALSE` and the CSV exists, return its
 #'   path without re-downloading.
@@ -103,26 +118,30 @@ morie_tps_layer_urls <- function() {
 #' @return Path to the CSV.
 #' @examples
 #' \dontrun{
-#'   # Network: fetches major-crime indicators from the Toronto Police
-#'   # ArcGIS open-data layer.
-#'   csv <- morie_fetch_tps(category = "Assault",
-#'                          cache_dir = tempdir(),
-#'                          where = "OCC_YEAR = 2024")
-#'   tps <- utils::read.csv(csv)
-#'   nrow(tps)
+#' # Network: fetches major-crime indicators from the Toronto Police
+#' # ArcGIS open-data layer.
+#' csv <- morie_fetch_tps(
+#'   category = "Assault",
+#'   cache_dir = tempdir(),
+#'   where = "OCC_YEAR = 2024"
+#' )
+#' tps <- utils::read.csv(csv)
+#' nrow(tps)
 #' }
 #' @export
 morie_fetch_tps <- function(
   category,
-  cache_dir = "~/.cache/morie/tps",
+  cache_dir = file.path(tempdir(), "morie", "tps"),
   where = "1=1",
   overwrite = FALSE,
   max_per_page = 2000L
 ) {
   urls <- morie_tps_layer_urls()
   if (!category %in% names(urls)) {
-    stop("Unknown TPS category. Known: ",
-         paste(names(urls), collapse = ", "))
+    stop(
+      "Unknown TPS category. Known: ",
+      paste(names(urls), collapse = ", ")
+    )
   }
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop("jsonlite required for morie_fetch_tps().")
@@ -130,31 +149,46 @@ morie_fetch_tps <- function(
   cache_dir <- path.expand(cache_dir)
   dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
   out <- file.path(cache_dir, paste0("tps_", category, ".csv"))
-  if (file.exists(out) && !overwrite) return(out)
+  if (file.exists(out) && !overwrite) {
+    return(out)
+  }
 
   base <- urls[[category]]
   offset <- 0L
   rows <- list()
-  while (TRUE) {
+  repeat {
     url <- sprintf(
       "%s/query?where=%s&outFields=*&returnGeometry=true&f=geojson&resultRecordCount=%d&resultOffset=%d",
       base, utils::URLencode(where, reserved = TRUE), max_per_page, offset
     )
     page <- tryCatch(jsonlite::fromJSON(url, simplifyVector = FALSE),
-                     error = function(e) NULL)
-    if (is.null(page)) break
+      error = function(e) NULL
+    )
+    if (is.null(page)) {
+      # Abort loudly rather than silently caching a partial download:
+      # a transient failure mid-paging must not be written to disk and
+      # then returned as if it were the complete layer.
+      stop(
+        "morie_fetch_tps(): TPS ArcGIS request failed at offset ",
+        offset, " for category '", category, "'."
+      )
+    }
     feats <- page$features
     if (length(feats) == 0L) break
     for (f in feats) {
       r <- f$properties
       if (!is.null(f$geometry) && identical(f$geometry$type, "Point")) {
         r$LONG_WGS84 <- f$geometry$coordinates[[1]]
-        r$LAT_WGS84  <- f$geometry$coordinates[[2]]
+        r$LAT_WGS84 <- f$geometry$coordinates[[2]]
       }
       rows[[length(rows) + 1L]] <- r
     }
-    if (length(feats) < max_per_page) break
     offset <- offset + length(feats)
+    # Page on the server's exceededTransferLimit flag, NOT on a short
+    # page: a layer whose server-side maxRecordCount is below
+    # max_per_page returns short pages on every call, so breaking on a
+    # short page would silently truncate the download to page one.
+    if (!isTRUE(page$exceededTransferLimit)) break
   }
   if (length(rows) == 0L) stop("No features returned for ", category)
   df <- do.call(rbind, lapply(rows, function(r) as.data.frame(r, stringsAsFactors = FALSE)))
@@ -163,49 +197,5 @@ morie_fetch_tps <- function(
 }
 
 
-# ---------------------------------------------------------------------------
-# SIU on-demand scraper (placeholder wrapper around the Python implementation)
-# ---------------------------------------------------------------------------
-
-#' Fetch Ontario SIU Director's Reports into a local CSV
-#'
-#' R wrapper around the Python `morie.siu_fetch.fetch_siu_cases()`
-#' on-demand scraper. The R version delegates via `reticulate` so the
-#' regex / HTML parsing lives in a single canonical location.
-#'
-#' The scraped corpus is NOT shipped with the package; each user runs
-#' the scraper themselves, which is unambiguously fair use of public
-#' oversight reports.
-#'
-#' @param years Optional integer vector of years to scrape. `NULL`
-#'   (default) scrapes the full unfiltered index.
-#' @param cache_dir Output directory (default `"~/.cache/morie/siu"`).
-#' @param overwrite Logical; if `FALSE` and `SIU.csv` exists, returns
-#'   its path without rescraping.
-#' @return Path to the populated SIU.csv.
-#' @examples
-#' \dontrun{
-#'   # Network: scrapes the Ontario SIU Director's Reports site.
-#'   csv <- morie_fetch_siu(years = 2023:2024,
-#'                          cache_dir = tempdir())
-#'   siu <- utils::read.csv(csv)
-#'   table(siu$year)
-#' }
-#' @export
-morie_fetch_siu <- function(
-  years = NULL,
-  cache_dir = "~/.cache/morie/siu",
-  overwrite = FALSE
-) {
-  if (!requireNamespace("reticulate", quietly = TRUE)) {
-    stop("reticulate required for morie_fetch_siu().")
-  }
-  py <- reticulate::import("morie.siu_fetch", convert = FALSE)
-  out <- py$fetch_siu_cases(
-    years = if (is.null(years)) NULL else as.integer(years),
-    cache_dir = path.expand(cache_dir),
-    overwrite = overwrite,
-    progress = TRUE
-  )
-  as.character(out)
-}
+# morie_fetch_siu() now lives in R/siu.R -- it drives the all-C/C++
+# SIU parser (src/siu_parser.cpp) instead of the Python module.

@@ -7,17 +7,16 @@
 #' @param d Integer dimension (default 1).
 #' @return Named list with estimate, betas, rates, best_beta, n, d, method.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_ghosal_adaptation(x = rnorm(50))
 #' @export
-ghosal_adaptation <- function(x, betas = NULL, d = 1) {
+morie_ghosal_adaptation <- function(x, betas = NULL, d = 1) {
   n <- length(x)
   if (is.null(betas)) betas <- seq(0.5, 3.0, length.out = 11)
-  rates <- n^(-betas / (2*betas + d))
+  rates <- n^(-betas / (2 * betas + d))
   best <- which.min(rates)
-  list(estimate = rates[best], betas = betas, rates = rates,
-       best_beta = betas[best], n = n, d = d,
-       method = "Adaptive posterior contraction over Holder grid")
+  list(
+    estimate = rates[best], betas = betas, rates = rates,
+    best_beta = betas[best], n = n, d = d,
+    method = "Adaptive posterior contraction over Holder grid"
+  )
 }

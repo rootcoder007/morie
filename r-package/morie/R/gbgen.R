@@ -14,25 +14,38 @@
 #' @return list(estimate, y_hat, train_loss, se, n, method).
 #' @references Friedman (2001); Montesinos Lopez Ch 9.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_gradient_boosting_genomic(
+#'   x = rnorm(50), y = rnorm(50),
+#'   markers = matrix(sample(0:2, 200, TRUE), 50, 4)
+#' )
 #' @export
-gradient_boosting_genomic <- function(x, y, markers, n_estimators = 100,
-                                       learning_rate = 0.1, max_depth = 3,
-                                       seed = 0) {
+morie_gradient_boosting_genomic <- function(x, y, markers, n_estimators = 100,
+                                      learning_rate = 0.1, max_depth = 3,
+                                      seed = 0) {
   set.seed(seed)
-  y <- as.numeric(y); n <- length(y)
+  y <- as.numeric(y)
+  n <- length(y)
   M <- as.matrix(markers)
-  feats <- if (is.null(x) || (is.numeric(x) && length(x) == 0)) M
-           else cbind(as.matrix(x), M)
+  feats <- if (is.null(x) || (is.numeric(x) && length(x) == 0)) {
+    M
+  } else {
+    cbind(as.matrix(x), M)
+  }
+  # A zero-variance predictor carries no signal and makes gbm warn
+  # ("variable has no variation"); drop any constant columns first.
+  if (ncol(feats) > 1L) {
+    keep <- apply(feats, 2L, function(col) stats::var(col) > 0)
+    if (any(keep) && !all(keep)) feats <- feats[, keep, drop = FALSE]
+  }
   if (requireNamespace("gbm", quietly = TRUE)) {
-    df <- data.frame(y = y, feats); colnames(df)[-1] <- paste0("V", seq_len(ncol(feats)))
-    gb <- gbm::gbm(y ~ ., data = df, distribution = "gaussian",
-                    n.trees = n_estimators, shrinkage = learning_rate,
-                    interaction.depth = max_depth, n.minobsinnode = 2,
-                    bag.fraction = 1, verbose = FALSE)
+    df <- data.frame(y = y, feats)
+    colnames(df)[-1] <- paste0("V", seq_len(ncol(feats)))
+    gb <- gbm::gbm(y ~ .,
+      data = df, distribution = "gaussian",
+      n.trees = n_estimators, shrinkage = learning_rate,
+      interaction.depth = max_depth, n.minobsinnode = 2,
+      bag.fraction = 1, verbose = FALSE
+    )
     y_hat <- as.numeric(stats::predict(gb, df, n.trees = n_estimators))
     train_loss <- as.numeric(gb$train.error)
     method_used <- "gbm::gbm"
@@ -52,18 +65,23 @@ gradient_boosting_genomic <- function(x, y, markers, n_estimators = 100,
         for (thr in mids) {
           lf <- feats[, f] <= thr
           if (sum(lf) < 1 || sum(!lf) < 1) next
-          lv <- mean(r[lf]); rv <- mean(r[!lf])
+          lv <- mean(r[lf])
+          rv <- mean(r[!lf])
           sse <- sum((r[lf] - lv)^2) + sum((r[!lf] - rv)^2)
           gain <- sum(r^2) - sse
-          if (is.null(best) || gain > best$gain)
-            best <- list(gain = gain, feature = f, threshold = thr,
-                          left_val = lv, right_val = rv)
+          if (is.null(best) || gain > best$gain) {
+            best <- list(
+              gain = gain, feature = f, threshold = thr,
+              left_val = lv, right_val = rv
+            )
+          }
         }
       }
       stumps[[b_]] <- best
       if (!is.null(best)) {
         pred <- ifelse(feats[, best$feature] <= best$threshold,
-                        best$left_val, best$right_val)
+          best$left_val, best$right_val
+        )
         F_pred <- F_pred + learning_rate * pred
       }
       train_loss[b_] <- mean((y - F_pred)^2)
@@ -71,10 +89,12 @@ gradient_boosting_genomic <- function(x, y, markers, n_estimators = 100,
     y_hat <- F_pred
   }
   resid <- y - y_hat
-  list(estimate = mean(y_hat), y_hat = y_hat, train_loss = train_loss,
-       se = sqrt(mean(resid^2)), n = n, method = method_used)
+  list(
+    estimate = mean(y_hat), y_hat = y_hat, train_loss = train_loss,
+    se = sqrt(mean(resid^2)), n = n, method = method_used
+  )
 }
 
 # CANONICAL TEST
 # set.seed(14); M <- matrix(rnorm(160), 40, 4); y <- sign(M[,1])+0.3*rnorm(40)
-# gradient_boosting_genomic(rep(0,40), y, M, n_estimators=20, seed=14)
+# morie_gradient_boosting_genomic(rep(0,40), y, M, n_estimators=20, seed=14)

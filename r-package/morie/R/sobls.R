@@ -16,14 +16,21 @@ sobls <- function(N = 128L, d = 1L, f = NULL, scramble = TRUE, seed = 42L) {
   sample <- NULL
   if (requireNamespace("randtoolbox", quietly = TRUE)) {
     sobol_fn <- getFromNamespace("sobol", "randtoolbox")
-    sample <- sobol_fn(n = as.integer(N), dim = as.integer(d),
-                       scrambling = if (scramble) 1L else 0L, seed = seed)
+    # randtoolbox's Owen scrambling is disabled upstream in current
+    # releases; requesting it (scrambling = 1) only emits a spurious
+    # "scrambling is currently disabled" warning while returning the
+    # unscrambled sequence anyway, so request 0 unconditionally.
+    sample <- sobol_fn(
+      n = as.integer(N), dim = as.integer(d),
+      scrambling = 0L, seed = seed
+    )
     if (!is.matrix(sample)) sample <- matrix(sample, ncol = d)
   } else {
     # Halton sequence fallback (pure R)
     primes <- c(2, 3, 5, 7, 11, 13, 17, 19, 23, 29)[seq_len(d)]
     halton <- function(i, b) {
-      f <- 1; r <- 0
+      f <- 1
+      r <- 0
       while (i > 0) {
         f <- f / b
         r <- r + f * (i %% b)
@@ -32,11 +39,14 @@ sobls <- function(N = 128L, d = 1L, f = NULL, scramble = TRUE, seed = 42L) {
       r
     }
     sample <- matrix(0, N, d)
-    for (j in seq_len(d))
+    for (j in seq_len(d)) {
       sample[, j] <- vapply(seq_len(N), halton, numeric(1), b = primes[j])
+    }
   }
-  out <- list(sample = sample, N = as.integer(N), d = as.integer(d),
-              method = "Sobol QMC (Sobol 1967)")
+  out <- list(
+    sample = sample, N = as.integer(N), d = as.integer(d),
+    method = "Sobol QMC (Sobol 1967)"
+  )
   if (!is.null(f)) {
     fv <- apply(sample, 1, f)
     out$estimate <- mean(fv)
@@ -52,4 +62,4 @@ sobls <- function(N = 128L, d = 1L, f = NULL, scramble = TRUE, seed = 42L) {
 #' @rdname sobls
 #' @keywords internal
 #' @export
-sobol_sequence <- sobls
+morie_sobol_sequence <- sobls

@@ -3,6 +3,11 @@
 \name{mrm_otis}
 \alias{mrm_otis}
 \title{MRM-framework analyses on Ontario OTIS data}
+\value{
+Each \code{mrm_otis_*()} callable returns a named \code{list} with
+the computed statistics (concentration indices, survival curves, or
+association measures) and a plain-language \code{interpretation}.
+}
 \description{
 Five callables for the OTIS (Offender Tracking Information System)
 public-release datasets, used in the MRM (Multilevel Reconciliation
@@ -30,4 +35,10 @@ contingency table, with the diagonal/off-diagonal share.
 The OTIS \code{UniqueIndividual_ID} column has format \code{YYYY-XXXXX-SG} and
 is randomly reassigned every fiscal year. Cross-year tracking is
 therefore invalid; all analyses below operate within fiscal year.
+}
+\examples{
+if (FALSE) {
+  b09 <- read.csv("b09_individuals_in_segregation.csv")
+  mrm_otis_placement_concentration(b09)
+}
 }

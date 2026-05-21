@@ -10,15 +10,17 @@
 #' @return list(estimate, beta, intercept, se, beta_se, lam, n, p, method).
 #' @references Montesinos Lopez Ch 4.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_bayesian_ridge_regression(x = rnorm(50), y = rnorm(50))
 #' @export
-bayesian_ridge_regression <- function(x, y, lam = NULL) {
-  X <- as.matrix(x); y <- as.numeric(y); n <- nrow(X); p <- ncol(X)
-  ym <- mean(y); yc <- y - ym
-  xm <- colMeans(X); Xc <- sweep(X, 2, xm)
+morie_bayesian_ridge_regression <- function(x, y, lam = NULL) {
+  X <- as.matrix(x)
+  y <- as.numeric(y)
+  n <- nrow(X)
+  p <- ncol(X)
+  ym <- mean(y)
+  yc <- y - ym
+  xm <- colMeans(X)
+  Xc <- sweep(X, 2, xm)
   if (is.null(lam)) {
     var_y <- if (n > 1) stats::var(yc) else 1
     h2 <- 0.5
@@ -34,11 +36,13 @@ bayesian_ridge_regression <- function(x, y, lam = NULL) {
   sigma2 <- sum(resid^2) / max(n - 1, 1)
   cov_beta <- sigma2 * solve(A)
   beta_se <- sqrt(pmax(diag(cov_beta), 0))
-  list(estimate = mean(abs(beta)), beta = beta, intercept = ym,
-       se = mean(beta_se), beta_se = beta_se, lam = lam,
-       n = n, p = p, method = "Bayesian ridge (closed-form posterior mode)")
+  list(
+    estimate = mean(abs(beta)), beta = beta, intercept = ym,
+    se = mean(beta_se), beta_se = beta_se, lam = lam,
+    n = n, p = p, method = "Bayesian ridge (closed-form posterior mode)"
+  )
 }
 
 # CANONICAL TEST
 # set.seed(2); X <- matrix(rnorm(100), 20, 5); b <- c(1,-1,0.5,0,0)
-# y <- X %*% b + 0.1*rnorm(20); bayesian_ridge_regression(X, y)$beta
+# y <- X %*% b + 0.1*rnorm(20); morie_bayesian_ridge_regression(X, y)$beta

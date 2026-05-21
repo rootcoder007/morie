@@ -16,7 +16,7 @@
 
 %% --- math macros ---
 \providecommand{\Rset}{\mathbb{R}}
-\renewcommand{\E}{\mathbb{E}}
+\providecommand{\E}{\mathbb{E}}
 \newcommand{\indep}{\perp\!\!\!\perp}
 \newcommand{\OTIS}{\textsf{OTIS}}
 \newcommand{\SIU}{\textsf{SIU}}
@@ -55,9 +55,9 @@ fractal dimension), spatial statistics, statistical physics of
 crime (Hawkes processes, reaction--diffusion), psychometric
 classical-test-theory and item-response-theory estimators, and a
 suite of MRM modules for ingestion of Canadian open carceral data.
-The package is released on the Comprehensive R Archive Network
-(CRAN) and via r-universe at
-\href{https://hadesllm.r-universe.dev/morie}{hadesllm.r-universe.dev/morie}.
+The package is distributed via r-universe at
+\href{https://hadesllm.r-universe.dev/morie}{hadesllm.r-universe.dev/morie}
+and from source on GitHub; it is not on CRAN.
 This paper describes the architecture of the \proglang{R}
 implementation, the wrapper API around \pkg{DoubleML}, and three
 reproducible examples drawn from the open Ontario, federal, and
@@ -70,10 +70,10 @@ psychometrics, \proglang{R}}
 double machine learning, sociolegal statistics, Hawkes process,
 psychometrics, R}
 % --- morie version stamp -----------------------------------------------------
-% This paper documents \pkg{morie} v0.6.1 (released 2026-05-13).  Specific
+% This paper documents \pkg{morie} v0.9.5 (released 2026-05-18).  Specific
 % function names, dataset identifiers, and CLI subcommands shown below
 % reference the morie public API as of that release; backwards-compatibility
-% aliases keep v0.x code references resolving across the v0.4.x series.
+% aliases keep v0.x code references resolving across the v0.x series.
 % -----------------------------------------------------------------------------
 
 
@@ -144,7 +144,7 @@ return type.  Section~\ref{sec:wrapper} documents the wrapper architecture
 around \pkg{DoubleML}. Section~\ref{sec:examples} works three
 reproducible examples on the Ontario, federal, and TPS data.
 Section~\ref{sec:mrm-empirical-callables} catalogues the
-twelve empirical-workflow callables added in v0.1.15.
+thirteen empirical-workflow callables added in v0.1.15.
 Section~\ref{sec:textbook-callables} catalogues the 275
 textbook-derived callables that ship in \code{morie.fn} across
 fourteen suites in v0.2.1 and v0.3.0.
@@ -156,14 +156,9 @@ Section~\ref{sec:conclusion} concludes.
 
 \subsection{Installation}
 
-The released \pkg{morie} package is available on CRAN:
-
-\begin{Code}
-R> install.packages("morie")
-\end{Code}
-
-\noindent Nightly Linux, macOS, and Windows binaries are built by
-r-universe \citep{Ooms2021runiverse} from the GitHub source tree
+The released \pkg{morie} package is not on CRAN; it is distributed
+via r-universe. Nightly Linux, macOS, and Windows binaries are built
+by r-universe \citep{Ooms2021runiverse} from the GitHub source tree
 and can be installed from the project's r-universe page:
 
 \begin{Code}
@@ -434,7 +429,7 @@ R> result <- estimate_irm(
 
 \noindent The wrapper performs three additional services beyond
 the \pkg{DoubleML} class call. First, it harmonises the result
-object to a \code{RichResult} that prints a multi-section
+object to a \code{morie\_result} that prints a multi-section
 interpretation with verbose interpretation under a uniform format.
 Second, it audits learner-result quality through cross-validation
 $R^{2}$ and Brier-score diagnostics. Third, it surfaces both the
@@ -499,7 +494,7 @@ The three estimators agree to within $\pm 0.015$.
 \subsection{Example 2: replication of the Sprott--Doob chi-squared record}
 
 The second example replicates the published $\chi^{2}$ statistics
-from \citet{SprottDoob2023} on the federal $\SIU$ aggregate
+from \citet{SprottDoob2021} on the federal $\SIU$ aggregate
 record. \pkg{morie} does not yet ship a dedicated
 \code{mrm\_chi2\_doob()} wrapper; base \proglang{R}'s
 \code{chisq.test()} reproduces every published statistic to
@@ -542,7 +537,7 @@ reuse of a single fit:
 
 \begin{Code}
 R> refit <- mrm_tps_load_hawkes_refit(
-+    system.file("extdata", "tps_hawkes_refit_v0.6.1.json",
++    system.file("extdata", "tps_hawkes_refit.json",
 +                 package = "morie"))
 R> subset(refit$summary,
 +         crime == "Assault" & year == 2019)
@@ -589,14 +584,14 @@ for $n = 500$.
 
 \section[Empirical workflow callables]{Empirical workflow callables}\label{sec:mrm-empirical-callables}
 
-The current release ships twelve new exported callables that compose
+The current release ships thirteen new exported callables that compose
 into the empirical workflow used by the companion empirical paper
 \citep{Ruhela2026MorieEmpirical}.  They are documented here for
 completeness; every function has full \proglang{R} + \proglang{Python}
 parity (the \proglang{Python} side is described in the morie
 \proglang{Python} paper, this volume).
 
-\paragraph{OTIS suite.}  Five callables operate on the Ontario
+\paragraph{OTIS suite.}  Five callables operate on the Offender
 Tracking Information System public release.  \code{mrm_classify_mandela()}
 (introduced in v0.1.14) classifies placements under the United Nations
 Mandela Rules with three denominator conventions (row,

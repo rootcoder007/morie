@@ -9,12 +9,9 @@
 #' @return Named list with estimate, se, n, method.
 #' @references Kosorok (2008), Ch 7.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_ksr15_kosorok_one_step_estimator(x = rnorm(50))
 #' @export
-ksr15_kosorok_one_step_estimator <- function(x, y = NULL) {
+morie_ksr15_kosorok_one_step_estimator <- function(x, y = NULL) {
   x <- as.numeric(x)
   n <- length(x)
   theta_init <- stats::median(x)
@@ -23,14 +20,14 @@ ksr15_kosorok_one_step_estimator <- function(x, y = NULL) {
   se <- stats::sd(x) / sqrt(n)
   list(
     estimate = theta_tilde, se = se, n = n,
-    method   = "One-step from median: theta + mean(x-theta)"
+    method = "One-step from median: theta + mean(x-theta)"
   )
 }
 
 # CANONICAL TEST
-# set.seed(0); ksr15_kosorok_one_step_estimator(rnorm(200))
+# set.seed(0); morie_ksr15_kosorok_one_step_estimator(rnorm(200))
 
-#' @rdname ksr15_kosorok_one_step_estimator
+#' @rdname morie_ksr15_kosorok_one_step_estimator
 #' @keywords internal
 #' @export
-kosorok_one_step_estimator <- ksr15_kosorok_one_step_estimator
+morie_kosorok_one_step_estimator <- morie_ksr15_kosorok_one_step_estimator

@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzw1.R
 \name{hrzw1}
 \alias{hrzw1}
-\alias{horowitz_wild_bootstrap}
+\alias{morie_horowitz_wild_bootstrap}
 \title{Rademacher wild bootstrap for OLS coefficients}
 \usage{
 hrzw1(x, y, residuals = NULL, B = 500, seed = 0)
 
-horowitz_wild_bootstrap(x, y, residuals = NULL, B = 500, seed = 0)
+morie_horowitz_wild_bootstrap(x, y, residuals = NULL, B = 500, seed = 0)
 }
 \arguments{
 \item{x}{Numeric covariate vector or design matrix.}

@@ -2,12 +2,12 @@
 % Please edit documentation in R/sptrn.R
 \name{sptrn}
 \alias{sptrn}
-\alias{spatial_trend_surface}
+\alias{morie_spatial_trend_surface}
 \title{Polynomial trend surface analysis (OLS).}
 \usage{
 sptrn(x, coords, order = 2)
 
-spatial_trend_surface(x, coords, order = 2)
+morie_spatial_trend_surface(x, coords, order = 2)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -23,10 +23,7 @@ Named list: estimate, se, r2, order, n, method.
 mu(s) = sum_k beta_k f_k(s); f_k are monomials up to degree \code{order}.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+sptrn(x = rnorm(50), coords = matrix(runif(100), 50, 2))
 }
 \references{
 Schabenberger & Gotway (2005), Ch 2.

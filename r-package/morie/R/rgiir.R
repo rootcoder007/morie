@@ -29,14 +29,16 @@ rgiir <- function(x, cutoff, order = 4L, fs = 1.0, btype = c("low", "high", "pas
     stop("R package 'signal' is required for rgiir().")
   }
   nyq <- 0.5 * fs
-  wn  <- cutoff / nyq
+  wn <- cutoff / nyq
   bf <- signal::butter(as.integer(order), wn, type = btype)
-  y  <- as.numeric(signal::filtfilt(bf, x))
-  list(signal = y, order = as.integer(order), cutoff = cutoff,
-       fs = fs, btype = btype)
+  y <- as.numeric(signal::filtfilt(bf, x))
+  list(
+    signal = y, order = as.integer(order), cutoff = cutoff,
+    fs = fs, btype = btype
+  )
 }
 
 #' @rdname rgiir
 #' @keywords internal
 #' @export
-rangayyan_iir_filter <- rgiir
+morie_rangayyan_iir_filter <- rgiir

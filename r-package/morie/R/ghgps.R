@@ -10,16 +10,14 @@
 #' @param x_star Optional matrix of prediction points (defaults to x).
 #' @return Named list with estimate, se, mu, sd, length_scale, noise, n, method.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_ghosal_gp_squared_exponential(x = rnorm(50), y = rnorm(50))
 #' @export
-ghosal_gp_squared_exponential <- function(x, y, length_scale = NULL,
-                                            sigma_f = 1.0, noise = NULL,
-                                            x_star = NULL) {
+morie_ghosal_gp_squared_exponential <- function(x, y, length_scale = NULL,
+                                          sigma_f = 1.0, noise = NULL,
+                                          x_star = NULL) {
   if (is.vector(x)) x <- matrix(as.numeric(x), ncol = 1L) else x <- as.matrix(x)
-  y <- as.numeric(y); n <- nrow(x)
+  y <- as.numeric(y)
+  n <- nrow(x)
   if (is.null(x_star)) {
     x_star <- x
   } else if (is.vector(x_star)) {
@@ -46,7 +44,9 @@ ghosal_gp_squared_exponential <- function(x, y, length_scale = NULL,
   v <- forwardsolve(t(L), t(K_s))
   var <- K_ss_diag - colSums(v^2)
   sd_ <- sqrt(pmax(var, 0))
-  list(estimate = mean(mu), se = mean(sd_), mu = mu, sd = sd_,
-       length_scale = length_scale, noise = noise, n = n,
-       method = "GP regression (squared-exponential kernel)")
+  list(
+    estimate = mean(mu), se = mean(sd_), mu = mu, sd = sd_,
+    length_scale = length_scale, noise = noise, n = n,
+    method = "GP regression (squared-exponential kernel)"
+  )
 }

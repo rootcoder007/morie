@@ -23,7 +23,10 @@ Check whether a downstream package's SPDX is GPL-compatible
 \examples{
 morie_check_plugin_license("MIT")
 \dontrun{
-  morie_check_plugin_license("LicenseRef-Proprietary",
-                             raise_on_incompatible = TRUE)
+# The next call demonstrates the error path; runs only on
+# explicit example() with run.dontrun = TRUE.
+morie_check_plugin_license("LicenseRef-Proprietary",
+  raise_on_incompatible = TRUE
+)
 }
 }

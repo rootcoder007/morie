@@ -4,10 +4,12 @@
 \alias{morie_list_datasets}
 \title{List all datasets with cache status}
 \usage{
-morie_list_datasets(db_path = NULL)
+morie_list_datasets(db_path = NULL, con = NULL)
 }
 \arguments{
-\item{db_path}{Optional override for the database path.}
+\item{db_path}{Optional path to a SQLite/DuckDB file (default backend).}
+
+\item{con}{Optional pre-opened DBI connection (overrides \code{db_path}).}
 }
 \value{
 A data.frame with columns: key, name, source, survey, year, type,
@@ -17,8 +19,5 @@ cached (logical), rows (integer or NA).
 List all datasets with cache status
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+morie_list_datasets()
 }

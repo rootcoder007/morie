@@ -2,12 +2,12 @@
 % Please edit documentation in R/antth.R
 \name{antth}
 \alias{antth}
-\alias{antithetic_variates}
+\alias{morie_antithetic_variates}
 \title{Antithetic variates (Hammersley & Morton 1956)}
 \usage{
 antth(x = NULL, f = NULL, N = 1000L, seed = 42L)
 
-antithetic_variates(x = NULL, f = NULL, N = 1000L, seed = 42L)
+morie_antithetic_variates(x = NULL, f = NULL, N = 1000L, seed = 42L)
 }
 \arguments{
 \item{x}{optional U(0,1) sample; if NULL, draw N points.}

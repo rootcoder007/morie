@@ -9,17 +9,17 @@
 #' @return Named list with estimate, se, n, method.
 #' @references Kosorok (2008), Ch 8.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_ksr18_kosorok_nelson_aalen(t = seq(0, 1, length.out = 50), event = rbinom(50, 1, 0.8))
 #' @export
-ksr18_kosorok_nelson_aalen <- function(t, event) {
-  t <- as.numeric(t); event <- as.integer(event)
+morie_ksr18_kosorok_nelson_aalen <- function(t, event) {
+  t <- as.numeric(t)
+  event <- as.integer(event)
   n <- length(t)
   ord <- order(t)
-  t <- t[ord]; event <- event[ord]
-  cum_h <- 0; cum_v <- 0
+  t <- t[ord]
+  event <- event[ord]
+  cum_h <- 0
+  cum_v <- 0
   i <- 1L
   while (i <= n) {
     j <- i
@@ -41,9 +41,9 @@ ksr18_kosorok_nelson_aalen <- function(t, event) {
 }
 
 # CANONICAL TEST
-# ksr18_kosorok_nelson_aalen(1:10, c(1,1,0,1,1,0,1,1,1,0))
+# morie_ksr18_kosorok_nelson_aalen(1:10, c(1,1,0,1,1,0,1,1,1,0))
 
-#' @rdname ksr18_kosorok_nelson_aalen
+#' @rdname morie_ksr18_kosorok_nelson_aalen
 #' @keywords internal
 #' @export
-kosorok_nelson_aalen <- ksr18_kosorok_nelson_aalen
+morie_kosorok_nelson_aalen <- morie_ksr18_kosorok_nelson_aalen

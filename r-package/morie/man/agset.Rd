@@ -2,12 +2,12 @@
 % Please edit documentation in R/agset.R
 \name{agset}
 \alias{agset}
-\alias{agenda_setter_power}
+\alias{morie_agenda_setter_power}
 \title{Romer-Rosenthal agenda-setter outcome and power (Armstrong Ch 10)}
 \usage{
 agset(options, setter_ideal, reversion)
 
-agenda_setter_power(options, setter_ideal, reversion)
+morie_agenda_setter_power(options, setter_ideal, reversion)
 }
 \arguments{
 \item{options}{Discrete set of feasible policy proposals.}
@@ -26,9 +26,7 @@ legislature accepts iff the proposal beats the reversion at the
 median voter. Power = distance moved from the status quo.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 \keyword{internal}

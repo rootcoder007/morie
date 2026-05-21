@@ -22,8 +22,8 @@ NULL
 #' @export
 #' @examples
 #' df <- data.frame(x = 1:100)
-#' srs_sample <- simple_random_sample(df, 20)
-simple_random_sample <- function(df, n, replace = FALSE, seed = 42L) {
+#' srs_sample <- morie_simple_random_sample(df, 20)
+morie_simple_random_sample <- function(df, n, replace = FALSE, seed = 42L) {
   set.seed(seed)
   N <- nrow(df)
   if (n > N && !replace) stop("n exceeds population size for SRS WOR.")
@@ -52,9 +52,9 @@ simple_random_sample <- function(df, n, replace = FALSE, seed = 42L) {
 #' @export
 #' @examples
 #' df <- data.frame(g = c(rep("A", 60), rep("B", 40)), x = rnorm(100))
-#' stratified_sample(df, "g", n_per_stratum = 10)
-stratified_sample <- function(df, strata_col, n_per_stratum,
-                               proportional = FALSE, seed = 42L) {
+#' morie_stratified_sample(df, "g", n_per_stratum = 10)
+morie_stratified_sample <- function(df, strata_col, n_per_stratum,
+                                    proportional = FALSE, seed = 42L) {
   set.seed(seed)
   strata <- split(seq_len(nrow(df)), df[[strata_col]])
   strata_sizes <- lengths(strata)
@@ -62,7 +62,9 @@ stratified_sample <- function(df, strata_col, n_per_stratum,
   if (proportional) {
     total_n <- if (is.numeric(n_per_stratum) && length(n_per_stratum) == 1L) {
       n_per_stratum
-    } else stop("For proportional = TRUE, supply a single integer for n_per_stratum.")
+    } else {
+      stop("For proportional = TRUE, supply a single integer for n_per_stratum.")
+    }
     alloc <- round(strata_sizes / sum(strata_sizes) * total_n)
     alloc <- pmax(alloc, 1L)
   } else {
@@ -99,12 +101,10 @@ stratified_sample <- function(df, strata_col, n_per_stratum,
 #' @param seed Random seed.
 #' @return Data frame of selected units with `.weight` column.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-cluster_sample <- function(df, cluster_col, n_clusters, seed = 42L) {
+morie_cluster_sample <- function(df, cluster_col, n_clusters, seed = 42L) {
   set.seed(seed)
   all_clusters <- unique(df[[cluster_col]])
   N_clusters <- length(all_clusters)
@@ -128,12 +128,10 @@ cluster_sample <- function(df, cluster_col, n_clusters, seed = 42L) {
 #' @param seed Random seed.
 #' @return Data frame of selected units with `.weight` (Hansen-Hurwitz weights).
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-pps_sample <- function(df, size_col, n, seed = 42L) {
+morie_pps_sample <- function(df, size_col, n, seed = 42L) {
   set.seed(seed)
   sizes <- as.numeric(df[[size_col]])
   if (any(sizes <= 0, na.rm = TRUE)) stop("size_col must be positive.")
@@ -161,22 +159,22 @@ pps_sample <- function(df, size_col, n, seed = 42L) {
 #' @export
 #' @examples
 #' df <- data.frame(x = rnorm(100))
-#' bootstrap_sample(df, statistic = function(d) mean(d$x))
-bootstrap_sample <- function(df, statistic, n_bootstrap = 1000L, seed = 42L) {
+#' morie_bootstrap_sample(df, statistic = function(d) mean(d$x))
+morie_bootstrap_sample <- function(df, statistic, n_bootstrap = 1000L, seed = 42L) {
   set.seed(seed)
   n <- nrow(df)
   boot_stats <- vapply(seq_len(n_bootstrap), function(i) {
     idx <- sample.int(n, n, replace = TRUE)
     statistic(df[idx, , drop = FALSE])
   }, numeric(1))
-  est  <- mean(boot_stats)
-  se   <- stats::sd(boot_stats)
-  ci   <- stats::quantile(boot_stats, c(0.025, 0.975))
+  est <- mean(boot_stats)
+  se <- stats::sd(boot_stats)
+  ci <- stats::quantile(boot_stats, c(0.025, 0.975))
   list(
-    estimate    = est,
-    se          = se,
-    ci_lower    = ci[1],
-    ci_upper    = ci[2],
+    estimate = est,
+    se = se,
+    ci_lower = ci[1],
+    ci_upper = ci[2],
     distribution = boot_stats
   )
 }
@@ -192,19 +190,17 @@ bootstrap_sample <- function(df, statistic, n_bootstrap = 1000L, seed = 42L) {
 #' @param statistic A function taking a data frame and returning a scalar.
 #' @return Named list: `estimate`, `se`, `bias`.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-jackknife_estimate <- function(df, statistic) {
+morie_jackknife_estimate <- function(df, statistic) {
   n <- nrow(df)
   theta_full <- statistic(df)
   theta_minus_i <- vapply(seq_len(n), function(i) {
     statistic(df[-i, , drop = FALSE])
   }, numeric(1))
   theta_bar <- mean(theta_minus_i)
-  se   <- sqrt((n - 1) / n * sum((theta_minus_i - theta_bar)^2))
+  se <- sqrt((n - 1) / n * sum((theta_minus_i - theta_bar)^2))
   bias <- (n - 1) * (theta_bar - theta_full)
   list(estimate = theta_full, se = se, bias = bias)
 }
@@ -219,12 +215,10 @@ jackknife_estimate <- function(df, statistic) {
 #' @param weights Numeric vector of sampling weights.
 #' @return Numeric ESS.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-effective_sample_size <- function(weights) {
+morie_effective_sample_size <- function(weights) {
   w <- as.numeric(weights)
   w <- w[!is.na(w) & w > 0]
   (sum(w)^2) / sum(w^2)
@@ -235,15 +229,13 @@ effective_sample_size <- function(weights) {
 #' @param weights Numeric vector of sampling weights.
 #' @return Numeric design effect (= n / ESS).
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-design_effect <- function(weights) {
+morie_design_effect <- function(weights) {
   w <- as.numeric(weights)
   w <- w[!is.na(w) & w > 0]
-  length(w) / effective_sample_size(w)
+  length(w) / morie_effective_sample_size(w)
 }
 
 
@@ -258,12 +250,10 @@ design_effect <- function(weights) {
 #' @param population_sizes Named integer vector: stratum level -> population size.
 #' @return Numeric vector of design weights (same length as `nrow(df)`).
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-compute_design_weights <- function(df, strata_col, population_sizes) {
+morie_compute_design_weights <- function(df, strata_col, population_sizes) {
   strata <- df[[strata_col]]
   sample_sizes <- table(strata)
   pop_sizes <- population_sizes[names(sample_sizes)]
@@ -289,10 +279,21 @@ compute_design_weights <- function(df, strata_col, population_sizes) {
 #' @param max_iter Maximum IPF iterations.
 #' @param tol Convergence tolerance.
 #' @return Numeric vector of calibrated weights.
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(
+#'   region = sample(c("A", "B"), 100, TRUE),
+#'   sex = sample(c("M", "F"), 100, TRUE)
+#' )
+#' totals <- list(region_A = 60, region_B = 40, sex_M = 55, sex_F = 45)
+#' morie_calibration_weights(df,
+#'   aux_vars = c("region", "sex"),
+#'   population_totals = totals
+#' )
 #' @export
-calibration_weights <- function(df, aux_vars, population_totals,
-                                 initial_weights = NULL,
-                                 max_iter = 50L, tol = 1e-6) {
+morie_calibration_weights <- function(df, aux_vars, population_totals,
+                                initial_weights = NULL,
+                                max_iter = 50L, tol = 1e-6) {
   n <- nrow(df)
   w <- if (!is.null(initial_weights)) initial_weights else rep(1, n)
 
@@ -304,7 +305,7 @@ calibration_weights <- function(df, aux_vars, population_totals,
         key <- paste0(v, "_", lv)
         if (!key %in% names(population_totals)) next
         pop_tot <- population_totals[[key]]
-        mask    <- df[[v]] == lv
+        mask <- df[[v]] == lv
         sample_tot <- sum(w[mask])
         if (sample_tot > 0) w[mask] <- w[mask] * pop_tot / sample_tot
       }

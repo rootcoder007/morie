@@ -64,31 +64,31 @@ double morie_cor_pearson_cpp(NumericVector x, NumericVector y) {
 // returns 1e12 for an infeasible parameter vector.
 
 // [[Rcpp::export]]
-double morie_hawkes_ll_exp_const_cpp(NumericVector t, double T, double a0,
+double morie_hawkes_ll_exp_const_cpp(NumericVector t, double T_horizon, double a0,
                                      double eta, double beta) {
-    return morie::core::hawkes_ll_exp_const(t.begin(), len(t), T, a0, eta,
+    return morie::core::hawkes_ll_exp_const(t.begin(), len(t), T_horizon, a0, eta,
                                             beta);
 }
 
 // [[Rcpp::export]]
-double morie_hawkes_ll_weibull_const_cpp(NumericVector t, double T, double a0,
+double morie_hawkes_ll_weibull_const_cpp(NumericVector t, double T_horizon, double a0,
                                          double eta, double alpha,
                                          double lam) {
-    return morie::core::hawkes_ll_weibull_const_trunc(t.begin(), len(t), T,
+    return morie::core::hawkes_ll_weibull_const_trunc(t.begin(), len(t), T_horizon,
                                                       a0, eta, alpha, lam);
 }
 
 // [[Rcpp::export]]
-double morie_hawkes_ll_lomax_const_cpp(NumericVector t, double T, double a0,
+double morie_hawkes_ll_lomax_const_cpp(NumericVector t, double T_horizon, double a0,
                                        double eta, double alpha, double c) {
-    return morie::core::hawkes_ll_lomax_const(t.begin(), len(t), T, a0, eta,
+    return morie::core::hawkes_ll_lomax_const(t.begin(), len(t), T_horizon, a0, eta,
                                               alpha, c);
 }
 
 // [[Rcpp::export]]
-double morie_hawkes_ll_gamma_const_cpp(NumericVector t, double T, double a0,
+double morie_hawkes_ll_gamma_const_cpp(NumericVector t, double T_horizon, double a0,
                                        double eta, double alpha,
                                        double beta) {
-    return morie::core::hawkes_ll_gamma_const_trunc(t.begin(), len(t), T, a0,
+    return morie::core::hawkes_ll_gamma_const_trunc(t.begin(), len(t), T_horizon, a0,
                                                     eta, alpha, beta);
 }

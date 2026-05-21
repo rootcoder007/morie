@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzs1.R
 \name{hrzs1}
 \alias{hrzs1}
-\alias{horowitz_sample_selection}
+\alias{morie_horowitz_sample_selection}
 \title{Heckman-Powell-Newey-Vella semiparametric sample-selection}
 \usage{
 hrzs1(x, y, z, d)
 
-horowitz_sample_selection(x, y, z, d)
+morie_horowitz_sample_selection(x, y, z, d)
 }
 \arguments{
 \item{x}{Numeric outcome covariates.}

@@ -2,12 +2,18 @@
 % Please edit documentation in R/rgstf.R
 \name{rgstf}
 \alias{rgstf}
-\alias{rangayyan_stft}
+\alias{morie_rangayyan_stft}
 \title{Short-time Fourier transform -- Rangayyan Ch 4}
 \usage{
 rgstf(x, fs = 1, nperseg = 256L, noverlap = NULL, window = "hann")
 
-rangayyan_stft(x, fs = 1, nperseg = 256L, noverlap = NULL, window = "hann")
+morie_rangayyan_stft(
+  x,
+  fs = 1,
+  nperseg = 256L,
+  noverlap = NULL,
+  window = "hann"
+)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -30,8 +36,10 @@ Sliding-window FFT spectrogram (one-sided, PSD-scaled). Mirrors
 }
 \examples{
 \donttest{
-  t <- seq(0, 10, length.out = 1024); x <- sin(2 * pi * 10 * t)
-  r <- rgstf(x, fs = 100, nperseg = 128); dim(r$Sxx)
+t <- seq(0, 10, length.out = 1024)
+x <- sin(2 * pi * 10 * t)
+r <- rgstf(x, fs = 100, nperseg = 128)
+dim(r$Sxx)
 }
 }
 \references{

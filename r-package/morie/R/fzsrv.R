@@ -10,26 +10,30 @@
 #' @return Named list with estimate, se, ci_lower, ci_upper, t, h, n, method.
 #' @importFrom stats median pnorm
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' fzsrv(x = rnorm(50))
 #' @export
 fzsrv <- function(x, t = NULL, h = NULL) {
-  x <- as.numeric(x); n <- length(x)
-  if (n < 2L) return(list(estimate = NA_real_, n = n,
-                           method = "fzsrv - too few obs"))
+  x <- as.numeric(x)
+  n <- length(x)
+  if (n < 2L) {
+    return(list(
+      estimate = NA_real_, n = n,
+      method = "fzsrv - too few obs"
+    ))
+  }
   if (is.null(t)) t <- stats::median(x)
   if (is.null(h)) h <- .morie_silverman_h(x)
   F_hat <- mean(stats::pnorm((t - x) / h))
   S_hat <- 1 - F_hat
   se <- sqrt(S_hat * (1 - S_hat) / n)
   z <- 1.959963984540054
-  list(estimate = S_hat, se = se,
-       ci_lower = max(0, S_hat - z * se),
-       ci_upper = min(1, S_hat + z * se),
-       t = t, h = h, n = n,
-       method = "Fauzi kernel survival S_hat(t)=1-F_hat_h(t) (Ch 4)")
+  list(
+    estimate = S_hat, se = se,
+    ci_lower = max(0, S_hat - z * se),
+    ci_upper = min(1, S_hat + z * se),
+    t = t, h = h, n = n,
+    method = "Fauzi kernel survival S_hat(t)=1-F_hat_h(t) (Ch 4)"
+  )
 }
 
 # CANONICAL TEST
@@ -39,4 +43,4 @@ fzsrv <- function(x, t = NULL, h = NULL) {
 #' @rdname fzsrv
 #' @keywords internal
 #' @export
-fauzi_survival_kernel <- fzsrv
+morie_fauzi_survival_kernel <- fzsrv

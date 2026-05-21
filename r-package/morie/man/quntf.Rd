@@ -2,12 +2,12 @@
 % Please edit documentation in R/quntf.R
 \name{quntf}
 \alias{quntf}
-\alias{quantile_function}
+\alias{morie_quantile_function}
 \title{Nonparametric quantile function with asymptotic SEs (Parzen 1979)}
 \usage{
 quntf(x, taus = NULL)
 
-quantile_function(x, taus = NULL)
+morie_quantile_function(x, taus = NULL)
 }
 \arguments{
 \item{x}{numeric vector.}

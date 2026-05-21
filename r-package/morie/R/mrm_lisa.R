@@ -13,12 +13,24 @@
 #' Anselin, L. (1995). Local indicators of spatial association --
 #' LISA. \emph{Geographical Analysis}, 27(2), 93--115.
 #'
+#' @return The LISA callables return named \code{list}s with per-polygon
+#'   local Moran's I, permutation p-values, cluster classifications, and
+#'   (for the per-year wrapper) the time series of global Moran's I.
+#' @examples
+#' if (FALSE) {
+#'   ncr <- read.csv("Neighbourhood_Crime_Rates_Open_Data.csv")
+#'   mrm_tps_lisa(ncr,
+#'     count_col = "ASSAULT_2024",
+#'     lat_col = "lat", lon_col = "lon"
+#'   )
+#' }
 #' @name mrm_lisa
 NULL
 
 
 .haversine_km_lisa <- function(lat1, lon1, lat2, lon2) {
-  R <- 6371; rad <- pi / 180
+  R <- 6371
+  rad <- pi / 180
   dlat <- (lat2 - lat1) * rad
   dlon <- (lon2 - lon1) * rad
   a <- sin(dlat / 2)^2 + cos(lat1 * rad) * cos(lat2 * rad) * sin(dlon / 2)^2
@@ -30,7 +42,7 @@ NULL
   n <- length(lat)
   W <- matrix(0, n, n)
   for (i in seq_len(n)) {
-    d  <- .haversine_km_lisa(lat[i], lon[i], lat, lon)
+    d <- .haversine_km_lisa(lat[i], lon[i], lat, lon)
     nn <- order(d)[2:(k + 1L)]
     W[i, nn] <- 1.0 / k
   }
@@ -58,14 +70,16 @@ NULL
 #' @examples
 #' if (FALSE) {
 #'   ncr <- read.csv("Neighbourhood_Crime_Rates_Open_Data.csv")
-#'   res <- mrm_tps_lisa(ncr, count_col = "ASSAULT_2024",
-#'                       lat_col = "lat", lon_col = "lon")
+#'   res <- mrm_tps_lisa(ncr,
+#'     count_col = "ASSAULT_2024",
+#'     lat_col = "lat", lon_col = "lon"
+#'   )
 #' }
 mrm_tps_lisa <- function(
   data,
   count_col,
   lat_col = "lat", lon_col = "lon",
-  id_col  = NULL,
+  id_col = NULL,
   k = 6L, n_permutations = 999L, seed = 42L
 ) {
   stopifnot(is.data.frame(data), count_col %in% names(data))
@@ -73,22 +87,23 @@ mrm_tps_lisa <- function(
   set.seed(as.integer(seed))
 
   keep <- stats::complete.cases(data[, c(count_col, lat_col, lon_col)])
-  d  <- data[keep, , drop = FALSE]
-  n  <- nrow(d)
+  d <- data[keep, , drop = FALSE]
+  n <- nrow(d)
   if (n < 5L) stop("need >= 5 polygons")
 
-  lat <- d[[lat_col]]; lon <- d[[lon_col]]
-  x   <- as.numeric(d[[count_col]])
-  W   <- .knn_weights_lisa(lat, lon, k)
-  z   <- (x - mean(x)) / stats::sd(x)
+  lat <- d[[lat_col]]
+  lon <- d[[lon_col]]
+  x <- as.numeric(d[[count_col]])
+  W <- .knn_weights_lisa(lat, lon, k)
+  z <- (x - mean(x)) / stats::sd(x)
   lag <- as.vector(W %*% z)
-  I_local  <- z * lag
+  I_local <- z * lag
   I_global <- sum(I_local) / sum(z^2)
 
   quad <- character(n)
-  quad[(z >  0) & (lag >  0)] <- "HH"
-  quad[(z >  0) & (lag <= 0)] <- "HL"
-  quad[(z <= 0) & (lag >  0)] <- "LH"
+  quad[(z > 0) & (lag > 0)] <- "HH"
+  quad[(z > 0) & (lag <= 0)] <- "HL"
+  quad[(z <= 0) & (lag > 0)] <- "LH"
   quad[(z <= 0) & (lag <= 0)] <- "LL"
 
   p_local <- numeric(n)
@@ -111,20 +126,24 @@ mrm_tps_lisa <- function(
     stringsAsFactors = FALSE
   )
 
-  qa <- c(HH = sum(quad == "HH"), HL = sum(quad == "HL"),
-          LH = sum(quad == "LH"), LL = sum(quad == "LL"))
-  qs <- c(HH = sum((quad == "HH") & (p_local <= 0.05)),
-          HL = sum((quad == "HL") & (p_local <= 0.05)),
-          LH = sum((quad == "LH") & (p_local <= 0.05)),
-          LL = sum((quad == "LL") & (p_local <= 0.05)))
+  qa <- c(
+    HH = sum(quad == "HH"), HL = sum(quad == "HL"),
+    LH = sum(quad == "LH"), LL = sum(quad == "LL")
+  )
+  qs <- c(
+    HH = sum((quad == "HH") & (p_local <= 0.05)),
+    HL = sum((quad == "HL") & (p_local <= 0.05)),
+    LH = sum((quad == "LH") & (p_local <= 0.05)),
+    LL = sum((quad == "LL") & (p_local <= 0.05))
+  )
 
   list(
-    n_polygons       = n,
-    global_moran_I   = round(I_global, 4),
-    permutations     = as.integer(n_permutations),
-    knn_k            = as.integer(k),
-    table            = tbl,
-    quadrants_all    = as.list(qa),
+    n_polygons = n,
+    global_moran_I = round(I_global, 4),
+    permutations = as.integer(n_permutations),
+    knn_k = as.integer(k),
+    table = tbl,
+    quadrants_all = as.list(qa),
     quadrants_significant_p05 = as.list(qs),
     n_significant_p05 = sum(qs)
   )
@@ -146,8 +165,10 @@ mrm_tps_lisa <- function(
 #' @examples
 #' # 4 x 4 polygon grid with two yearly count columns.
 #' set.seed(2026)
-#' grid <- expand.grid(lat = 43.6 + (0:3) * 0.02,
-#'                     lon = -79.4 + (0:3) * 0.02)
+#' grid <- expand.grid(
+#'   lat = 43.6 + (0:3) * 0.02,
+#'   lon = -79.4 + (0:3) * 0.02
+#' )
 #' grid$ASSAULT_2023 <- rpois(nrow(grid), lambda = grid$lat * 10)
 #' grid$ASSAULT_2024 <- rpois(nrow(grid), lambda = grid$lat * 12)
 #' res <- mrm_tps_polygon_moran_per_year(
@@ -168,9 +189,11 @@ mrm_tps_polygon_moran_per_year <- function(
     yr <- regmatches(c, regexpr("\\d{4}", c))
     yr <- if (length(yr) > 0) as.integer(yr) else c
     res <- tryCatch(
-      mrm_tps_lisa(data, count_col = c, lat_col = lat_col,
-                   lon_col = lon_col, k = k,
-                   n_permutations = n_permutations, seed = seed),
+      mrm_tps_lisa(data,
+        count_col = c, lat_col = lat_col,
+        lon_col = lon_col, k = k,
+        n_permutations = n_permutations, seed = seed
+      ),
       error = function(e) NULL
     )
     if (is.null(res)) next

@@ -10,13 +10,20 @@
 #' @return Named list with estimate (h_star), h_silverman, mise_curve, h_grid, n, B, method.
 #' @keywords internal
 hrzw2 <- function(x, y, B = 50, n_h = 15, seed = 0) {
-  x <- as.numeric(x); y <- as.numeric(y); n <- length(x)
-  if (n < 30 || length(y) != n)
-    return(list(estimate = NA_real_, n = n,
-                method = "bw-bootstrap (insufficient data)"))
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  n <- length(x)
+  if (n < 30 || length(y) != n) {
+    return(list(
+      estimate = NA_real_, n = n,
+      method = "bw-bootstrap (insufficient data)"
+    ))
+  }
   nw_fit <- function(x_train, y_train, x_eval, h) {
     u <- outer(x_eval, x_train, `-`) / h
-    w <- exp(-0.5 * u^2); s <- rowSums(w); safe <- ifelse(s > 0, s, 1)
+    w <- exp(-0.5 * u^2)
+    s <- rowSums(w)
+    safe <- ifelse(s > 0, s, 1)
     as.numeric((w %*% y_train) / safe)
   }
   h_sil <- .hrz_silverman(x)
@@ -36,13 +43,15 @@ hrzw2 <- function(x, y, B = 50, n_h = 15, seed = 0) {
     mise[j] <- ise / B
   }
   j_star <- which.min(mise)
-  list(estimate = as.numeric(h_grid[j_star]), h_silverman = as.numeric(h_sil),
-       mise_curve = mise, h_grid = h_grid, n = n, B = B,
-       method = "Wild-bootstrap MISE bandwidth selection (Faraway-Jhun)")
+  list(
+    estimate = as.numeric(h_grid[j_star]), h_silverman = as.numeric(h_sil),
+    mise_curve = mise, h_grid = h_grid, n = n, B = B,
+    method = "Wild-bootstrap MISE bandwidth selection (Faraway-Jhun)"
+  )
 }
 
 # canonical full-name alias (Py<->R API parity)
 #' @rdname hrzw2
 #' @keywords internal
 #' @export
-horowitz_bandwidth_bootstrap <- hrzw2
+morie_horowitz_bandwidth_bootstrap <- hrzw2

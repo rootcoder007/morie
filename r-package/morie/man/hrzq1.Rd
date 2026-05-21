@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzq1.R
 \name{hrzq1}
 \alias{hrzq1}
-\alias{horowitz_quantile_regression}
+\alias{morie_horowitz_quantile_regression}
 \title{Koenker-Bassett linear quantile regression}
 \usage{
 hrzq1(x, y, tau = 0.5)
 
-horowitz_quantile_regression(x, y, tau = 0.5)
+morie_horowitz_quantile_regression(x, y, tau = 0.5)
 }
 \arguments{
 \item{x}{Numeric covariate vector or design matrix.}

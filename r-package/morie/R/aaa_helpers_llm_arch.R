@@ -8,15 +8,18 @@ NULL
 
 .softmax_last <- function(x) {
   # softmax along the last axis of an array
-  d <- dim(x); nd <- length(d)
+  d <- dim(x)
+  nd <- length(d)
   if (is.null(d) || nd == 1L) {
     x <- x - max(x)
     e <- exp(x)
     return(e / sum(e))
   }
-  apply(x, seq_len(nd - 1L), function(v) {
-    v <- v - max(v); e <- exp(v); e / sum(e)
-  }) -> out
+  out <- apply(x, seq_len(nd - 1L), function(v) {
+    v <- v - max(v)
+    e <- exp(v)
+    e / sum(e)
+  })
   # apply collapses last axis to first; transpose back
   aperm(out, c(seq.int(2L, nd), 1L))
 }

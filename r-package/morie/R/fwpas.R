@@ -15,12 +15,9 @@
 #'   (= \code{a}), \code{activation}, \code{method}.
 #' @references Goodfellow, Bengio & Courville (2016), Deep Learning, Ch 6.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_fwpas_forward_pass_dense(x = rnorm(50), w = rnorm(3), b = rnorm(3))
 #' @export
-fwpas_forward_pass_dense <- function(x, w, b, activation = "sigmoid") {
+morie_fwpas_forward_pass_dense <- function(x, w, b, activation = "sigmoid") {
   x <- as.matrix(x)
   w <- as.matrix(w)
   b <- as.numeric(b)
@@ -35,22 +32,24 @@ fwpas_forward_pass_dense <- function(x, w, b, activation = "sigmoid") {
   z <- sweep(z, 2L, b, "+")
   a <- switch(activation,
     "identity" = z,
-    "linear"   = z,
-    "none"     = z,
-    "sigmoid"  = 1 / (1 + exp(-z)),
-    "tanh"     = tanh(z),
-    "relu"     = pmax(0, z),
-    "softmax"  = {
+    "linear" = z,
+    "none" = z,
+    "sigmoid" = 1 / (1 + exp(-z)),
+    "tanh" = tanh(z),
+    "relu" = pmax(z, 0),
+    "softmax" = {
       ez <- exp(z - apply(z, 1L, max))
       sweep(ez, 1L, rowSums(ez), "/")
     },
     stop(sprintf("Unknown activation: %s", activation))
   )
-  list(z = z, a = a, estimate = a, activation = activation,
-       method = "Dense layer forward pass")
+  list(
+    z = z, a = a, estimate = a, activation = activation,
+    method = "Dense layer forward pass"
+  )
 }
 
-#' @rdname fwpas_forward_pass_dense
+#' @rdname morie_fwpas_forward_pass_dense
 #' @keywords internal
 #' @export
-forward_pass_dense <- fwpas_forward_pass_dense
+morie_forward_pass_dense <- morie_fwpas_forward_pass_dense

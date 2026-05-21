@@ -10,15 +10,14 @@
 #' @return Named list with estimate, n, method.
 #' @references Kosorok (2008), Ch 6.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_ksr12_kosorok_information_bound(x = rnorm(50), y = rnorm(50))
 #' @export
-ksr12_kosorok_information_bound <- function(x, y) {
-  x <- as.numeric(x); y <- as.numeric(y)
+morie_ksr12_kosorok_information_bound <- function(x, y) {
+  x <- as.numeric(x)
+  y <- as.numeric(y)
   n <- length(x)
-  xc <- x - mean(x); yc <- y - mean(y)
+  xc <- x - mean(x)
+  yc <- y - mean(y)
   beta <- sum(xc * yc) / sum(xc^2)
   resid <- yc - beta * xc
   sigma2 <- sum(resid^2) / (n - 2)
@@ -32,9 +31,9 @@ ksr12_kosorok_information_bound <- function(x, y) {
 
 # CANONICAL TEST
 # set.seed(0); xs <- rnorm(200); ys <- 1.5*xs + rnorm(200)
-# ksr12_kosorok_information_bound(xs, ys)
+# morie_ksr12_kosorok_information_bound(xs, ys)
 
-#' @rdname ksr12_kosorok_information_bound
+#' @rdname morie_ksr12_kosorok_information_bound
 #' @keywords internal
 #' @export
-kosorok_information_bound <- ksr12_kosorok_information_bound
+morie_kosorok_information_bound <- morie_ksr12_kosorok_information_bound

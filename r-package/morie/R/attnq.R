@@ -14,12 +14,9 @@
 #' @return Named list \code{(output, estimate, attn, logits, d_k, method)}.
 #' @references Vaswani et al. (2017), NeurIPS.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_attnq_scaled_dot_product_attention(Q = matrix(rnorm(150), 50, 3))
 #' @export
-attnq_scaled_dot_product_attention <- function(Q, K = NULL, V = NULL,
+morie_attnq_scaled_dot_product_attention <- function(Q, K = NULL, V = NULL,
                                                mask = NULL) {
   Q <- as.matrix(Q)
   if (is.null(K)) K <- Q else K <- as.matrix(K)
@@ -32,12 +29,14 @@ attnq_scaled_dot_product_attention <- function(Q, K = NULL, V = NULL,
   e <- exp(sweep(logits, 1L, m, "-"))
   attn <- sweep(e, 1L, rowSums(e), "/")
   out <- attn %*% V
-  list(output = out, estimate = out, attn = attn, logits = logits,
-       d_k = as.integer(d_k),
-       method = "Scaled dot-product attention")
+  list(
+    output = out, estimate = out, attn = attn, logits = logits,
+    d_k = as.integer(d_k),
+    method = "Scaled dot-product attention"
+  )
 }
 
-#' @rdname attnq_scaled_dot_product_attention
+#' @rdname morie_attnq_scaled_dot_product_attention
 #' @keywords internal
 #' @export
-scaled_dot_product_attention <- attnq_scaled_dot_product_attention
+morie_scaled_dot_product_attention <- morie_attnq_scaled_dot_product_attention

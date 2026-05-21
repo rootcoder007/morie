@@ -2,12 +2,12 @@
 % Please edit documentation in R/smixd.R
 \name{smixd}
 \alias{smixd}
-\alias{spatial_mixed_model}
+\alias{morie_spatial_mixed_model}
 \title{Spatial linear mixed model via REML.}
 \usage{
 smixd(x, y, coords)
 
-spatial_mixed_model(x, y, coords)
+morie_spatial_mixed_model(x, y, coords)
 }
 \arguments{
 \item{x}{Numeric design matrix (n by p).}
@@ -25,10 +25,7 @@ delta ~ N(0, sigma2 R_phi),  R_phi exponential,
 eps ~ N(0, tau2 I).
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+smixd(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100), 50, 2))
 }
 \references{
 Patterson & Thompson (1971); Schabenberger & Gotway (2005), Ch 5.

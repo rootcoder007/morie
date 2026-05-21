@@ -34,8 +34,10 @@ of per-year count columns.
 \examples{
 # 4 x 4 polygon grid with two yearly count columns.
 set.seed(2026)
-grid <- expand.grid(lat = 43.6 + (0:3) * 0.02,
-                    lon = -79.4 + (0:3) * 0.02)
+grid <- expand.grid(
+  lat = 43.6 + (0:3) * 0.02,
+  lon = -79.4 + (0:3) * 0.02
+)
 grid$ASSAULT_2023 <- rpois(nrow(grid), lambda = grid$lat * 10)
 grid$ASSAULT_2024 <- rpois(nrow(grid), lambda = grid$lat * 12)
 res <- mrm_tps_polygon_moran_per_year(

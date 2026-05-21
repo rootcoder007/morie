@@ -13,22 +13,23 @@
 #' @return list(estimate, y_hat, W_h, W_x, b_h, w_o, b_o, se, n, method).
 #' @references Montesinos Lopez Ch 14.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_rnn_genomic(x = rnorm(50), y = rnorm(50), markers = matrix(sample(0:2, 200, TRUE), 50, 4))
 #' @export
-rnn_genomic <- function(x, y, markers, hidden = 8, n_epochs = 150,
-                         lr = 1e-2, l2 = 1e-3, seed = 0,
-                         deterministic_seed = NULL) {
+morie_rnn_genomic <- function(x, y, markers, hidden = 8, n_epochs = 150,
+                        lr = 1e-2, l2 = 1e-3, seed = 0,
+                        deterministic_seed = NULL) {
   if (!is.null(deterministic_seed)) {
     morie::morie_det_rng("rnnge", deterministic_seed)
   } else {
     set.seed(seed)
   }
-  y <- as.numeric(y); n <- length(y)
-  M <- as.matrix(markers); L <- ncol(M)
-  M_mu <- colMeans(M); M_sd <- apply(M, 2, stats::sd); M_sd[M_sd == 0] <- 1
+  y <- as.numeric(y)
+  n <- length(y)
+  M <- as.matrix(markers)
+  L <- ncol(M)
+  M_mu <- colMeans(M)
+  M_sd <- apply(M, 2, stats::sd)
+  M_sd[M_sd == 0] <- 1
   Ms <- sweep(sweep(M, 2, M_mu), 2, M_sd, "/")
   H <- hidden
   Wh <- matrix(stats::rnorm(H * H, 0, 1 / sqrt(H)), H, H)
@@ -48,11 +49,15 @@ rnn_genomic <- function(x, y, markers, hidden = 8, n_epochs = 150,
     y_hat <- as.numeric(h_state %*% wo) + bo
     resid <- y_hat - y
     dy <- resid / n
-    dwo <- as.numeric(crossprod(h_state, dy)) + l2 * wo; dbo <- sum(dy)
+    dwo <- as.numeric(crossprod(h_state, dy)) + l2 * wo
+    dbo <- sum(dy)
     dh <- outer(dy, wo)
-    dWh <- matrix(0, H, H); dWx <- 0; dbh <- rep(0, H)
+    dWh <- matrix(0, H, H)
+    dWx <- 0
+    dbh <- rep(0, H)
     for (t in rev(seq_len(L))) {
-      h_t <- hs[[t + 1]]; h_prev <- hs[[t]]
+      h_t <- hs[[t + 1]]
+      h_prev <- hs[[t]]
       dh_raw <- dh * (1 - h_t^2)
       dWh <- dWh + crossprod(h_prev, dh_raw)
       dWx <- dWx + sum(Ms[, t] * dh_raw)
@@ -63,7 +68,8 @@ rnn_genomic <- function(x, y, markers, hidden = 8, n_epochs = 150,
     Wh <- Wh - lr * dWh
     Wx <- Wx - lr * (dWx + l2 * Wx)
     bh <- bh - lr * dbh
-    wo <- wo - lr * dwo; bo <- bo - lr * dbo
+    wo <- wo - lr * dwo
+    bo <- bo - lr * dbo
     losses[ep] <- mean(resid^2)
   }
   h_state <- matrix(0, n, H)
@@ -73,12 +79,14 @@ rnn_genomic <- function(x, y, markers, hidden = 8, n_epochs = 150,
   }
   y_hat <- as.numeric(h_state %*% wo) + bo
   resid <- y - y_hat
-  list(estimate = mean(y_hat), y_hat = y_hat,
-       W_h = Wh, W_x = Wx, b_h = bh, w_o = wo, b_o = bo,
-       loss_curve = losses, se = sqrt(mean(resid^2)),
-       n = n, method = "Vanilla RNN BPTT (base R)")
+  list(
+    estimate = mean(y_hat), y_hat = y_hat,
+    W_h = Wh, W_x = Wx, b_h = bh, w_o = wo, b_o = bo,
+    loss_curve = losses, se = sqrt(mean(resid^2)),
+    n = n, method = "Vanilla RNN BPTT (base R)"
+  )
 }
 
 # CANONICAL TEST
 # set.seed(8); M <- matrix(rnorm(90), 15, 6); y <- rowSums(M)+0.2*rnorm(15)
-# rnn_genomic(rep(0,15), y, M, n_epochs=20, seed=8)
+# morie_rnn_genomic(rep(0,15), y, M, n_epochs=20, seed=8)

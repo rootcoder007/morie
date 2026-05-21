@@ -2,12 +2,12 @@
 % Please edit documentation in R/gpfit.R
 \name{gpfit}
 \alias{gpfit}
-\alias{generalized_pareto}
+\alias{morie_generalized_pareto}
 \title{Generalised Pareto fit (POT) by ML (Pickands 1975)}
 \usage{
 gpfit(x, threshold = NULL)
 
-generalized_pareto(x, threshold = NULL)
+morie_generalized_pareto(x, threshold = NULL)
 }
 \arguments{
 \item{x}{numeric vector of raw observations.}

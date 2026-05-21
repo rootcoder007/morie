@@ -10,26 +10,26 @@
 #' @param base_sd Numeric base-measure sd (default 1).
 #' @return Named list with estimate, se, prior_mean, prior_var, n_A, n, alpha, method.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_ghosal_moment_matching(x = rnorm(50))
 #' @export
-ghosal_moment_matching <- function(x, alpha = 1.0, A_lower = NULL,
-                                     A_upper = NULL, base_mean = 0,
-                                     base_sd = 1) {
-  x <- as.numeric(x); n <- length(x)
+morie_ghosal_moment_matching <- function(x, alpha = 1.0, A_lower = NULL,
+                                   A_upper = NULL, base_mean = 0,
+                                   base_sd = 1) {
+  x <- as.numeric(x)
+  n <- length(x)
   if (is.null(A_lower)) A_lower <- -Inf
   if (is.null(A_upper)) A_upper <- if (n) mean(x) else 0
   G0_A <- max(0, min(1, stats::pnorm(A_upper, base_mean, base_sd)
-                         - stats::pnorm(A_lower, base_mean, base_sd)))
+  - stats::pnorm(A_lower, base_mean, base_sd)))
   prior_mean <- G0_A
   prior_var <- G0_A * (1 - G0_A) / (alpha + 1)
   n_A <- if (n) sum(x > A_lower & x <= A_upper) else 0L
   post_mean <- (alpha * G0_A + n_A) / (alpha + n)
-  post_var  <- post_mean * (1 - post_mean) / (alpha + n + 1)
-  list(estimate = post_mean, se = sqrt(max(post_var, 0)),
-       prior_mean = prior_mean, prior_var = prior_var,
-       n_A = as.integer(n_A), n = n, alpha = alpha,
-       method = "DP moment-matching (Ferguson 1973)")
+  post_var <- post_mean * (1 - post_mean) / (alpha + n + 1)
+  list(
+    estimate = post_mean, se = sqrt(max(post_var, 0)),
+    prior_mean = prior_mean, prior_var = prior_var,
+    n_A = as.integer(n_A), n = n, alpha = alpha,
+    method = "DP moment-matching (Ferguson 1973)"
+  )
 }

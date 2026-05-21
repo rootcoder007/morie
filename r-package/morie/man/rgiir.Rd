@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgiir.R
 \name{rgiir}
 \alias{rgiir}
-\alias{rangayyan_iir_filter}
+\alias{morie_rangayyan_iir_filter}
 \title{Butterworth IIR filter -- Rangayyan Ch 3}
 \usage{
 rgiir(x, cutoff, order = 4L, fs = 1, btype = c("low", "high", "pass", "stop"))
 
-rangayyan_iir_filter(
+morie_rangayyan_iir_filter(
   x,
   cutoff,
   order = 4L,

@@ -2,12 +2,12 @@
 % Please edit documentation in R/copul.R
 \name{copul}
 \alias{copul}
-\alias{copula_estimation}
+\alias{morie_copula_estimation}
 \title{Copula parameter estimation (Gaussian/Clayton/Gumbel; Nelsen 2006)}
 \usage{
 copul(x, y, family = c("gaussian", "clayton", "gumbel"))
 
-copula_estimation(x, y, family = c("gaussian", "clayton", "gumbel"))
+morie_copula_estimation(x, y, family = c("gaussian", "clayton", "gumbel"))
 }
 \arguments{
 \item{x, y}{numeric marginal samples.}
@@ -15,7 +15,7 @@ copula_estimation(x, y, family = c("gaussian", "clayton", "gumbel"))
 \item{family}{"gaussian", "clayton", or "gumbel".}
 }
 \value{
-list: estimate, kendall_tau, se_tau, u, v, family, n, method.
+list: estimate, morie_kendall_tau, se_tau, u, v, family, n, method.
 }
 \description{
 Kendall's tau inversion:

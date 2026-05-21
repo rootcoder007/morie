@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzkdf.R
 \name{fzkdf}
 \alias{fzkdf}
-\alias{fauzi_kdfe_properties}
+\alias{morie_fauzi_kdfe_properties}
 \title{Fauzi: KDFE bias and variance properties (Ch 2)}
 \usage{
 fzkdf(x, t = NULL, h = NULL)
 
-fauzi_kdfe_properties(x, t = NULL, h = NULL)
+morie_fauzi_kdfe_properties(x, t = NULL, h = NULL)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -28,9 +28,6 @@ bias and variance:
 For the Gaussian kernel \eqn{\mu_2=1, r(K)=1/(2\sqrt\pi)}.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+fzkdf(x = rnorm(50))
 }
 \keyword{internal}
