@@ -1,4 +1,31 @@
-# morie 0.9.5.3 - 2026-05-21
+# morie 0.9.5.4 - 2026-05-21
+
+Doob → MRM chi-square rename. Patch release with deprecation aliases;
+no breaking changes for existing user code.
+
+**Naming**:
+
+* The internal name 'Doob chi-square family' is renamed 'MRM
+  chi-square family' across all morie code, Sphinx docs
+  (architecture, mrm_modules, siuiap), and the rootcoder007
+  profile README. The Sprott-Doob-Iftene author-pair citation
+  in `papers/` is preserved; the `src/morie/sprott_doob.py` and
+  `src/morie/doob_trends.py` author-named modules are also
+  preserved.
+
+**Python API (with deprecation aliases)**:
+
+* `morie.otis_all_analyze.analyze_c_doob_chi2()` -> `analyze_c_chi2()`
+* `morie.otis_all_analyze.analyze_d_doob_chi2()` -> `analyze_d_chi2()`
+
+  Old names still work but emit `DeprecationWarning`. They will
+  be removed in a future release; update callers at your
+  convenience.
+
+**R side**: no R API changes; the R chi-square family was already
+renamed in v0.9.5 (vignette `chi-square-and-anova.Rmd`).
+
+# morie 0.9.5.4 - 2026-05-21
 
 Patch release over 0.9.5.2.
 
@@ -12,7 +39,7 @@ Patch release over 0.9.5.2.
 * 0.9.5.2 has been yanked from PyPI as a consequence of the above
   WARNING and to keep the public release record clean.
 
-# morie 0.9.5.3 - 2026-05-21
+# morie 0.9.5.4 - 2026-05-21
 
 * **HTML validation fix.** `morie_siu_sanity_check`'s description
   used `date_*_iso` and `number_of_*` as inline text, which
