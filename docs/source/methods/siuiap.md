@@ -23,9 +23,9 @@ body — its outputs are qualitative reports.
   Toronto Metropolitan University.
 
 Prof. Doob's membership is the proximate reason why morie analyses
-of OTIS aggregate data are framed under the **Doob chi-square** name
-— see `morie.otis_all_analyze.analyze_c_doob_chi2` and
-`analyze_d_doob_chi2`.
+of OTIS aggregate data are framed under the **MRM chi-square** name
+— see `morie.otis_all_analyze.analyze_c_chi2` and
+`analyze_d_chi2`.
 
 ## Two distinct panels
 

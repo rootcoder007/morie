@@ -7,7 +7,7 @@ Application Record Vol. 3 of 5, pp. 778-795).
 
 Doob's national-aggregate analyses (Figures 1-4 + Tables 1-3) sit
 ALONGSIDE the per-row MRM modules on OTIS provincial data and
-the Doob chi-square family on aggregate contingency tables. Where
+the MRM chi-square family on aggregate contingency tables. Where
 the MRM modules test causal contrasts at the individual level
 on Ontario provincial data, Doob's affidavit work tests *decoupling*
 of imprisonment rates from crime rates at the Canadian and US
@@ -438,7 +438,7 @@ def analyze_doob_full_affidavit() -> RichResult:
                 "use decoupling_test(crime, imp) once series available"),
             ("Companion analyses in morie",
                 "MRM modules on OTIS provincial data; "
-                "Doob chi² on c/d-series; SIU IAP federal context"),
+                "MRM chi² on c/d-series; SIU IAP federal context"),
         ],
         tables=sections,
         interpretation=(

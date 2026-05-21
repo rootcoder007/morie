@@ -25,9 +25,9 @@ Plus the Ruhela-formulation (RF) high-level entry points:
     analyze_b02_ruhela_formulations(df=None)   -- gender -> seg days on b02
         -- alias: analyze_b02_dlrm
     analyze_a01_with_csi_context()             -- a01 causal + Toronto CSI
-    analyze_c_doob_chi2()                      -- χ² + Cramer's V on c-series
+    analyze_c_chi2()                      -- χ² + Cramer's V on c-series
         -- homage to Doob's chi-square tradition
-    analyze_d_doob_chi2()                      -- d-series + Alert χ²
+    analyze_d_chi2()                      -- d-series + Alert χ²
 
 Naming abbreviations:
     RF  -- Ruhela formulation
@@ -3167,8 +3167,8 @@ def analyze_ruhela_grid() -> RichResult:
             ("Aggregate datasets covered", len(aggregates_to_run)),
             ("Per-row datasets covered (a01, b01, b02; alt-T on a01)",
                 "see analyze_a01/b01/b02_ruhela_formulations + alt-T variants"),
-            ("Doob chi² datasets (c, d)",
-                "see analyze_c_doob_chi2 / analyze_d_doob_chi2"),
+            ("MRM chi² datasets (c, d)",
+                "see analyze_c_chi2 / analyze_d_chi2"),
             ("Primary estimator priority",
                 "GEE-NB > GEE-Poisson > NB GLM > Poisson GLM"),
         ],
@@ -3200,7 +3200,7 @@ def analyze_ruhela_master(*, include_per_row: bool = False) -> RichResult:
       1. Aggregate Ruhela formulations (24 datasets) -- IRR comparison
       2. Per-row Ruhela formulations on a01/b01/b02 -- primary IRM-DML ATE
          (only when ``include_per_row=True``; ~5-7 min runtime)
-      3. Doob chi-square family on c-series + d-series
+      3. MRM chi-square family on c-series + d-series
 
     For thesis / paper writing.
 
@@ -3265,10 +3265,10 @@ def analyze_ruhela_master(*, include_per_row: bool = False) -> RichResult:
             "rows": per_row_rows,
         })
 
-    # === Section 3: Doob chi-square (always, fast) ===
+    # === Section 3: MRM chi-square (always, fast) ===
     try:
-        c_doob = analyze_c_doob_chi2()
-        d_doob = analyze_d_doob_chi2()
+        c_chi = analyze_c_chi2()
+        d_chi = analyze_d_chi2()
         doob_rows: list = []
         for label, r in [("c-series", c_doob), ("d-series", d_doob)]:
             if r.tables and r.tables[0].get("rows"):
@@ -3277,7 +3277,7 @@ def analyze_ruhela_master(*, include_per_row: bool = False) -> RichResult:
                     doob_rows.append([label, *row[:5]])
         if doob_rows:
             sections.append({
-                "title": ("§3 Doob chi-square family -- Pearson χ² + "
+                "title": ("§3 MRM chi-square family -- Pearson χ² + "
                            "Cramer's V on aggregate contingency tables:"),
                 "headers": ["Series", "Slice/measure", "χ²", "dof",
                              "p", "Cramer's V"],
@@ -3455,7 +3455,7 @@ def analyze_ruhela_master(*, include_per_row: bool = False) -> RichResult:
             ("Sections", len(sections)),
             ("Aggregate RFs", "24 (b03-b09 + c01-c12 + d02-d05 + region-cluster variants)"),
             ("Per-row RFs included", include_per_row),
-            ("Doob chi-square", "c-series + d-series families"),
+            ("MRM chi-square", "c-series + d-series families"),
             ("Methodology attribution", "DLRM (Doob-Levinsky-Ruhela-Medina)"),
             ("Acknowledgements (separate)", "Jauregui, A. Laniyonu"),
             ("Federal RF extensions",
@@ -3826,7 +3826,7 @@ def analyze_otis_mandela_provincial_vs_federal() -> RichResult:
     )
 
 
-# ── Doob chi-square aggregate analyzers ────────────────────────────
+# ── MRM chi-square aggregate analyzers ────────────────────────────
 #
 # Prof. Anthony N. Doob (U. of Toronto, member of the federal SIU IAP
 # alongside Howard Sapers and Jane Sprott) has a long career applying
@@ -3841,16 +3841,16 @@ def analyze_otis_mandela_provincial_vs_federal() -> RichResult:
 # (see ``morie.siuiap`` for citations).
 
 
-def analyze_c_doob_chi2(*,
+def analyze_c_chi2(*,
                           contingency_value: str = "NumberIndividuals_RestrictiveConfinement",
                           ) -> RichResult:
-    """Doob chi-square family on c-series demographic contingency tables.
+    """MRM chi-square family on c-series demographic contingency tables.
 
     Honour to Prof. Doob's chi-square tradition in Canadian corrections.
     Runs Pearson χ² + Cramer's V on every meaningful 2-way slice of the
     c-series datasets, using the chosen primary count column.
 
-    Sibling: ``analyze_d_doob_chi2`` (death counts).
+    Sibling: ``analyze_d_chi2`` (death counts).
     Federal counterpart context: ``morie.siuiap`` documents the
     Structured Intervention Unit Implementation Advisory Panel
     (Doob, Sprott, Sapers et al.).
@@ -3858,8 +3858,8 @@ def analyze_c_doob_chi2(*,
     return analyze_c_aggregate(contingency_value=contingency_value)
 
 
-def analyze_d_doob_chi2() -> RichResult:
-    """Doob chi-square on d-series death data + yearly trend.
+def analyze_d_chi2() -> RichResult:
+    """MRM chi-square on d-series death data + yearly trend.
 
     Honour to Prof. Doob's chi-square tradition; same payload as
     ``analyze_d_aggregate`` (yearly Poisson 95% CI + Alert × MedicalCause
@@ -4367,3 +4367,33 @@ analyze_d02_mrm_aggregate = analyze_d02_ruhela_aggregate
 analyze_d03_mrm_aggregate = analyze_d03_ruhela_aggregate
 analyze_d04_mrm_aggregate = analyze_d04_ruhela_aggregate
 analyze_d05_mrm_aggregate = analyze_d05_ruhela_aggregate
+
+
+# ── Deprecation aliases: pre-0.9.5.4 names (Doob → MRM chi-square rename) ──
+import warnings as _warnings
+
+
+def analyze_c_doob_chi2(*args, **kwargs):
+    """Deprecated alias of :func:`analyze_c_chi2`.
+
+    The 'Doob' qualifier was removed from chi-square family naming in
+    morie 0.9.5.4 because the underlying chi-square family is not
+    canonically authored by Doob alone; the previous name had been an
+    ambiguous shorthand. Use :func:`analyze_c_chi2` instead.
+    """
+    _warnings.warn(
+        "analyze_c_doob_chi2 is deprecated; use analyze_c_chi2.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return analyze_c_chi2(*args, **kwargs)
+
+
+def analyze_d_doob_chi2(*args, **kwargs):
+    """Deprecated alias of :func:`analyze_d_chi2`. See above."""
+    _warnings.warn(
+        "analyze_d_doob_chi2 is deprecated; use analyze_d_chi2.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return analyze_d_chi2(*args, **kwargs)

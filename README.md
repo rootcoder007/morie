@@ -99,7 +99,7 @@ pip install morie
 docker run --rm ghcr.io/hadesllm/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/hadesllm/morie:0.9.5.3 morie --help
+docker run --rm ghcr.io/hadesllm/morie:0.9.5.4 morie --help
 ```
 
 Multi-arch image published on every release with both versioned and `:latest` tags. Requires only Docker — no Python, no pip.
@@ -239,12 +239,12 @@ and the **empirical applications paper**.
 ```
 # Software paper — R (also the R package source on Zenodo)
 Ruhela, V. S. (2026). morie: Multi-domain Open Research and Inferential
-Estimation in R (v0.9.5.3). Zenodo.
+Estimation in R (v0.9.5.4). Zenodo.
 https://doi.org/10.5281/zenodo.20111233
 
 # Software paper — Python (also the Python package source on Zenodo)
 Ruhela, V. S. (2026). morie: Multi-domain Open Research and Inferential
-Estimation in Python (v0.9.5.3). Zenodo.
+Estimation in Python (v0.9.5.4). Zenodo.
 https://doi.org/10.5281/zenodo.20096350
 
 # MRM framework paper (theoretical foundations)

@@ -137,7 +137,7 @@ classDiagram
     +str family
     +run() RichResult
   }
-  class DoobChiSquare {
+  class MRMChiSquare {
     +ndarray table
     +run() RichResult
   }
@@ -148,7 +148,7 @@ classDiagram
 
   MRMModule <|-- PerRowMRM
   MRMModule <|-- AggregateMRM
-  MRMModule <|-- DoobChiSquare
+  MRMModule <|-- MRMChiSquare
   MRMModule <|-- MandelaClassifier
 
   PerRowMRM o-- IPWEstimator

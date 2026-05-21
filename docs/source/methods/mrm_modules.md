@@ -86,10 +86,10 @@ from morie.otis_all_analyze import (
 # Original `*_ruhela_aggregate` names remain as aliases.
 ```
 
-## Doob chi-square companion
+## MRM chi-square companion
 
 ```python
-from morie.otis_all_analyze import analyze_c_doob_chi2, analyze_d_doob_chi2
+from morie.otis_all_analyze import analyze_c_chi2, analyze_d_chi2
 ```
 
 ## Constraints
