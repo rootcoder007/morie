@@ -7,6 +7,7 @@
 #' @param c Silverman multiplier (default 1.06).
 #' @return Named list with estimate (h), n, sigma, c, method.
 #' @keywords internal
+#' @export
 hrzp2 <- function(x, y, c = 1.06) {
   x <- as.numeric(x)
   n <- length(x)

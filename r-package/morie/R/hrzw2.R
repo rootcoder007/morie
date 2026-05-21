@@ -9,6 +9,7 @@
 #' @param seed Integer RNG seed (default 0).
 #' @return Named list with estimate (h_star), h_silverman, mise_curve, h_grid, n, B, method.
 #' @keywords internal
+#' @export
 hrzw2 <- function(x, y, B = 50, n_h = 15, seed = 0) {
   x <- as.numeric(x)
   y <- as.numeric(y)

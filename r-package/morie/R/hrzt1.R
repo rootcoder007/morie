@@ -9,6 +9,7 @@
 #' @param .bootstrap Logical; bootstrap SEs (default TRUE).
 #' @return Named list with estimate, se, att, atu, bandwidth, n, method.
 #' @keywords internal
+#' @export
 hrzt1 <- function(x, y, treatment, bandwidth = NULL, .bootstrap = TRUE) {
   y <- as.numeric(y)
   D <- as.numeric(treatment)

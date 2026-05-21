@@ -10,6 +10,7 @@
 #' @param lam ridge penalty (default 1e-3).
 #' @return list: alpha, fitted, residuals, sigma, lambda, sse, r2, n, method.
 #' @keywords internal
+#' @export
 rkhsc <- function(x, y, sigma = NULL, lam = 1e-3) {
   if (!is.matrix(x)) x <- matrix(x, ncol = 1)
   y <- as.numeric(y)

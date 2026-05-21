@@ -7,6 +7,7 @@
 #' @param event Integer/logical vector (1 = event, 0 = censored).
 #' @return Named list with estimate, se, n, n_events, method.
 #' @keywords internal
+#' @export
 hrzd1 <- function(t, x, event) {
   t <- as.numeric(t)
   event <- as.numeric(event)

@@ -9,6 +9,7 @@
 #' @param taus probability levels in (0, 1).  Default c(0.1, 0.25, 0.5, 0.75, 0.9).
 #' @return list: taus, quantiles, se, bandwidth, n, method.
 #' @keywords internal
+#' @export
 quntf <- function(x, taus = NULL) {
   x <- as.numeric(x)
   n <- length(x)

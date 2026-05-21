@@ -9,6 +9,7 @@
 #' @return list: partial_corr, R, loglik, estimate (mean abs off-diag of
 #'   partial_corr), n, d, method.
 #' @keywords internal
+#' @export
 vines <- function(x) {
   x <- as.matrix(x)
   if (nrow(x) < 3L || ncol(x) < 2L) {

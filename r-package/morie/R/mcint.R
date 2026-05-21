@@ -12,6 +12,7 @@
 #' @param seed integer.
 #' @return Named list: estimate, se, N, method.
 #' @keywords internal
+#' @export
 mcint_crude <- function(f, a = 0, b = 1, N = 1000L, seed = 42L) {
   set.seed(seed)
   u <- stats::runif(N, a, b)

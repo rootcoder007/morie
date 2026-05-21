@@ -10,6 +10,7 @@
 #' @param return_period numeric T (default 100).
 #' @return list: z, se, return_period, mu, sigma, xi, n, method.
 #' @keywords internal
+#' @export
 retlv <- function(x, return_period = 100) {
   fit <- extvm(x)
   if (!is.finite(fit$mu %||% NA_real_)) {

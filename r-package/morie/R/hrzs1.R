@@ -8,6 +8,7 @@
 #' @param d Integer/logical selection indicator (1 = selected).
 #' @return Named list with estimate, se, selection_correction, n, n_selected, method.
 #' @keywords internal
+#' @export
 hrzs1 <- function(x, y, z, d) {
   y <- as.numeric(y)
   d <- as.numeric(d)

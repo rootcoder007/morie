@@ -14,6 +14,7 @@
 #' @return list: estimate, se, ci_lower, ci_upper, weights, strata_means,
 #'   n_strata, method.
 #' @keywords internal
+#' @export
 strat <- function(data, y = "y", strata = "stratum", pop_sizes = NULL) {
   yv <- as.numeric(data[[y]])
   sv <- data[[strata]]

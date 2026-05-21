@@ -27,6 +27,7 @@
 #' @return list: scale (sigma), shape (xi), threshold, n_exceedances,
 #'   se_sigma, se_xi, loglik, method.
 #' @keywords internal
+#' @export
 gpfit <- function(x, threshold = NULL) {
   x <- as.numeric(x)
   if (length(x) < 5L) {

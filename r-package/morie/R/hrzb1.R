@@ -13,6 +13,7 @@
 #' @param y Numeric binary response (0/1).
 #' @return Named list with estimate, se, score, n, method.
 #' @keywords internal
+#' @export
 hrzb1 <- function(x, y) {
   y <- as.numeric(y)
   X <- if (is.null(dim(x))) matrix(x, ncol = 1) else as.matrix(x)

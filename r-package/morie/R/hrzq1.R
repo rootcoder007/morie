@@ -7,6 +7,7 @@
 #' @param tau Numeric quantile in (0, 1) (default 0.5).
 #' @return Named list with estimate, se, intercept, tau, n, method.
 #' @keywords internal
+#' @export
 hrzq1 <- function(x, y, tau = 0.5) {
   y <- as.numeric(y)
   X <- if (is.null(dim(x))) matrix(x, ncol = 1) else as.matrix(x)

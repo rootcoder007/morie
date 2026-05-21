@@ -148,6 +148,17 @@ test_that("morie_wavelet_time_series base-R Haar DWT fallback executes", {
 })
 
 test_that("signal filters take the fallback branch", {
+  # local_mocked_bindings() requires the morie package to be dev-loaded
+  # via pkgload (devtools::load_all). Under `library(morie); test_dir(...)` 
+  # against the INSTALLED package (the GitHub Actions Linux CI path),
+  # pkgload does not have morie registered and local_mocked_bindings
+  # errors. Skip cleanly in that case.
+  testthat::skip_if_not_installed("pkgload")
+  testthat::skip_if_not(
+    isTRUE(tryCatch("morie" %in% pkgload::dev_packages(),
+                    error = function(e) FALSE)),
+    "needs morie dev-loaded for local_mocked_bindings"
+  )
   .mock_fail("signal")
   # The signal-package fallback dispatches into .morie_py_call(), which
   # shells out to python3. Mock that internal so the dispatch branch is

@@ -8,6 +8,7 @@
 #' @param treatment Integer/logical treatment indicator.
 #' @return Named list with estimate, se, first_stage, reduced_form, n, method.
 #' @keywords internal
+#' @export
 hrzt2 <- function(x, y, z, treatment) {
   y <- as.numeric(y)
   z <- as.numeric(z)
