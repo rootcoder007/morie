@@ -10,6 +10,7 @@
 #' @return Named list: estimate (T_jack), theta_hat, bias, var, se, n, method.
 #' @references Efron & Tibshirani (1993), Ch. 11.
 #' @keywords internal
+#' @export
 jkest <- function(x, statistic = NULL) {
   x <- as.numeric(x)
   n <- length(x)

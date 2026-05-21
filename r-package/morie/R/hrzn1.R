@@ -11,6 +11,7 @@
 #' @param .bootstrap Logical; whether to bootstrap SEs (default TRUE).
 #' @return Named list with estimate, se, grid, J, alpha, n, method.
 #' @keywords internal
+#' @export
 hrzn1 <- function(x, y, z, J = 5, alpha = 1e-3, grid = NULL,
                   .bootstrap = TRUE) {
   x <- as.numeric(x)

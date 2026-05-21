@@ -12,6 +12,7 @@
 #' @return list: sample, estimate (if f given), se, N, d, method.
 #' @importFrom utils getFromNamespace
 #' @keywords internal
+#' @export
 sobls <- function(N = 128L, d = 1L, f = NULL, scramble = TRUE, seed = 42L) {
   sample <- NULL
   if (requireNamespace("randtoolbox", quietly = TRUE)) {

@@ -19,6 +19,7 @@
 #' @param bandwidth Optional kernel bandwidth (Silverman default).
 #' @return Named list with estimate, se, bandwidth, n, method.
 #' @keywords internal
+#' @export
 hrzb2 <- function(x, y, bandwidth = NULL) {
   y <- as.numeric(y)
   X <- if (is.null(dim(x))) matrix(x, ncol = 1) else as.matrix(x)

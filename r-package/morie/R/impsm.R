@@ -8,6 +8,7 @@
 #' @param h,p,q functions; default h(x)=x, p=q=dnorm (sanity-check identity).
 #' @return list: estimate, estimate_sn, se, ess, n, method.
 #' @keywords internal
+#' @export
 impsm <- function(x, h = NULL, p = NULL, q = NULL) {
   x <- as.numeric(x)
   n <- length(x)

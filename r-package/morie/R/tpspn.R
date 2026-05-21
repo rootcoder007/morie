@@ -10,6 +10,7 @@
 #' @param lam smoothing penalty; 0 = interpolation.
 #' @return list: a, beta, fitted, residuals, sse, r2, lambda, n, d, method.
 #' @keywords internal
+#' @export
 tpspn <- function(x, y, lam = 0) {
   if (!is.matrix(x)) x <- matrix(x, ncol = 1)
   y <- as.numeric(y)

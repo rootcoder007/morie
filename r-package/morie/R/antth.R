@@ -11,6 +11,7 @@
 #' @return list: estimate, estimate_crude, se, var_ratio_av_over_crude,
 #'   n_pairs, method.
 #' @keywords internal
+#' @export
 antth <- function(x = NULL, f = NULL, N = 1000L, seed = 42L) {
   if (is.null(f)) f <- function(u) u
   set.seed(seed)

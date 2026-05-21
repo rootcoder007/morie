@@ -11,6 +11,7 @@
 #' @return list: estimate, morie_kendall_tau, se_tau, u, v, family, n, method.
 #' @importFrom stats cor.test
 #' @keywords internal
+#' @export
 copul <- function(x, y, family = c("gaussian", "clayton", "gumbel")) {
   family <- match.arg(family)
   x <- as.numeric(x)

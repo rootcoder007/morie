@@ -9,6 +9,7 @@
 #' @param noise Character; noise distribution ("laplace" or "normal").
 #' @return Named list with estimate, grid, bandwidth, sigma_u, noise, n, method.
 #' @keywords internal
+#' @export
 hrzn2 <- function(y, sigma_u = 0.5, bandwidth = NULL, grid = NULL,
                   noise = "laplace") {
   y <- as.numeric(y)

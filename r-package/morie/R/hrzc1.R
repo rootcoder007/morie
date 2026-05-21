@@ -7,6 +7,7 @@
 #' @param censor Censoring threshold (default 0).
 #' @return Named list with estimate, se, n, n_uncensored, censor, method.
 #' @keywords internal
+#' @export
 hrzc1 <- function(x, y, censor = 0.0) {
   y <- as.numeric(y)
   X <- if (is.null(dim(x))) matrix(x, ncol = 1) else as.matrix(x)

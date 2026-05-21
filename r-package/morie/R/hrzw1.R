@@ -9,6 +9,7 @@
 #' @param seed Integer RNG seed (default 0).
 #' @return Named list with estimate, se, ci_lower, ci_upper, boot_mean, B, n, method.
 #' @keywords internal
+#' @export
 hrzw1 <- function(x, y, residuals = NULL, B = 500, seed = 0) {
   y <- as.numeric(y)
   X <- if (is.null(dim(x))) matrix(x, ncol = 1) else as.matrix(x)

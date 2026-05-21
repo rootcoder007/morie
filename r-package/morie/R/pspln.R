@@ -12,6 +12,7 @@
 #' @return list: coef, fitted, residuals, sse, r2, edf, lambda, n, method.
 #' @importFrom splines bs
 #' @keywords internal
+#' @export
 pspln <- function(x, y, n_knots = 20L, degree = 3L, lam = 1) {
   x <- as.numeric(x)
   y <- as.numeric(y)

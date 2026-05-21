@@ -13,6 +13,7 @@
 #' @param mu_c numeric; known mean of the control variate.
 #' @return list: estimate, se, c_coef, var_ratio_cv_over_crude, n, method.
 #' @keywords internal
+#' @export
 cntrl_estimator <- function(y, c_var, mu_c) {
   y <- as.numeric(y)
   cc <- as.numeric(c_var)

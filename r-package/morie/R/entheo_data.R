@@ -24,6 +24,7 @@
 #' Timmermann, C. et al. (2023). Neural correlates of the DMT
 #'   experience assessed with multivariate EEG. Scientific Reports.
 #' @keywords internal
+#' @export
 load_dmt_imaging <- function(subject_id = NULL, root = NULL) {
   default_root <- Sys.getenv("MORIE_DMT_IMAGING_ROOT", "")
   if (!nzchar(default_root)) {
