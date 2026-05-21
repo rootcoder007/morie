@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzc1.R
 \name{hrzc1}
 \alias{hrzc1}
-\alias{horowitz_censored_regression}
+\alias{morie_horowitz_censored_regression}
 \title{Powell (1984) censored LAD (CLAD)}
 \usage{
 hrzc1(x, y, censor = 0)
 
-horowitz_censored_regression(x, y, censor = 0)
+morie_horowitz_censored_regression(x, y, censor = 0)
 }
 \arguments{
 \item{x}{Numeric covariate vector or design matrix.}

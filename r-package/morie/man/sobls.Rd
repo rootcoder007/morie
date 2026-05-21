@@ -2,12 +2,12 @@
 % Please edit documentation in R/sobls.R
 \name{sobls}
 \alias{sobls}
-\alias{sobol_sequence}
+\alias{morie_sobol_sequence}
 \title{Sobol quasi-random sequence (Sobol 1967)}
 \usage{
 sobls(N = 128L, d = 1L, f = NULL, scramble = TRUE, seed = 42L)
 
-sobol_sequence(N = 128L, d = 1L, f = NULL, scramble = TRUE, seed = 42L)
+morie_sobol_sequence(N = 128L, d = 1L, f = NULL, scramble = TRUE, seed = 42L)
 }
 \arguments{
 \item{N}{integer; default 128.}

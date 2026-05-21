@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgwav.R
 \name{rgwav}
 \alias{rgwav}
-\alias{rangayyan_wavelet_denoise}
+\alias{morie_rangayyan_wavelet_denoise}
 \title{Wavelet denoising (universal threshold) -- Rangayyan Ch 10}
 \usage{
 rgwav(x, wavelet = "d8", level = NULL, mode = c("soft", "hard"))
 
-rangayyan_wavelet_denoise(
+morie_rangayyan_wavelet_denoise(
   x,
   wavelet = "d8",
   level = NULL,
@@ -30,7 +30,7 @@ Named list \code{signal}, \code{threshold}, \code{sigma}, \code{wavelet},
 \description{
 Donoho-Johnstone soft/hard thresholding via the \code{wavelets} package
 (Daubechies DWT). Noise scale estimated from the finest-scale detail
-as sigma = MAD / 0.6745; universal threshold T = sigma sqrt(2 ln N).
+as sigma = MAD / 0.6745; universal threshold thr = sigma sqrt(2 ln N).
 }
 \details{
 Falls back to a 5-tap moving-average smoother (with a warning) if
@@ -39,11 +39,13 @@ signals.
 }
 \examples{
 \donttest{
-  set.seed(0); t <- seq(0, 1, length.out = 256)
-  x <- sin(2 * pi * 3 * t) + 0.3 * rnorm(256)
-  if (requireNamespace("wavelets", quietly = TRUE)) {
-    r <- rgwav(x, level = 3); length(r$signal)
-  }
+set.seed(0)
+t <- seq(0, 1, length.out = 256)
+x <- sin(2 * pi * 3 * t) + 0.3 * rnorm(256)
+if (requireNamespace("wavelets", quietly = TRUE)) {
+  r <- rgwav(x, level = 3)
+  length(r$signal)
+}
 }
 }
 \references{

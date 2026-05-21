@@ -30,7 +30,9 @@ df <- data.frame(
   age = rnorm(n, 50, 10),
   bmi = rnorm(n, 27, 4)
 )
-df$age[df$D == 1] <- df$age[df$D == 1] + 3   # deliberate imbalance
-mrm_standardised_difference(df, treatment_col = "D",
-                            covariates = c("age", "bmi"))
+df$age[df$D == 1] <- df$age[df$D == 1] + 3 # deliberate imbalance
+mrm_standardised_difference(df,
+  treatment_col = "D",
+  covariates = c("age", "bmi")
+)
 }

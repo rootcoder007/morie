@@ -2,12 +2,12 @@
 % Please edit documentation in R/bysid.R
 \name{bysid}
 \alias{bysid}
-\alias{bayesian_ideal_points}
+\alias{morie_bayesian_ideal_points}
 \title{Bayesian ideal-point estimation (Armstrong Ch 5)}
 \usage{
 bysid(x, n_iter = 400L, burn = 100L, seed = 0L, deterministic_seed = NULL)
 
-bayesian_ideal_points(
+morie_bayesian_ideal_points(
   x,
   n_iter = 400L,
   burn = 100L,
@@ -38,9 +38,6 @@ Metropolis-within-Gibbs surrogate for Clinton-Jackman-Rivers (2004)
 with N(0,1) prior on x and N(0, 5) priors on (alpha, beta).
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+bysid(x = rnorm(50))
 }
 \keyword{internal}

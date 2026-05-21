@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzb1.R
 \name{hrzb1}
 \alias{hrzb1}
-\alias{horowitz_binary_response}
+\alias{morie_horowitz_binary_response}
 \title{Manski (1975) maximum-score estimator}
 \usage{
 hrzb1(x, y)
 
-horowitz_binary_response(x, y)
+morie_horowitz_binary_response(x, y)
 }
 \arguments{
 \item{x}{Numeric covariate vector or design matrix.}

@@ -31,7 +31,7 @@ if (requireNamespace("signal", quietly = TRUE)) {
   t <- seq(0, 1, length.out = 1000)
   # 2 Hz drift + 10 Hz band of interest + 60 Hz noise
   x <- sin(2 * pi * 2 * t) + sin(2 * pi * 10 * t) +
-       0.3 * sin(2 * pi * 60 * t)
+    0.3 * sin(2 * pi * 60 * t)
   y <- buttbp(x, fs = 1000, low = 5, high = 20)
   length(y$filtered)
 }

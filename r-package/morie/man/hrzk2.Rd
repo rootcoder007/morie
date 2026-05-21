@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzk2.R
 \name{hrzk2}
 \alias{hrzk2}
-\alias{horowitz_kernel_regression}
+\alias{morie_horowitz_kernel_regression}
 \title{Nadaraya-Watson kernel regression}
 \usage{
 hrzk2(x, y, bandwidth = NULL, grid = NULL)
 
-horowitz_kernel_regression(x, y, bandwidth = NULL, grid = NULL)
+morie_horowitz_kernel_regression(x, y, bandwidth = NULL, grid = NULL)
 }
 \arguments{
 \item{x}{Numeric covariate vector.}

@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzi2.R
 \name{hrzi2}
 \alias{hrzi2}
-\alias{horowitz_average_derivative}
+\alias{morie_horowitz_average_derivative}
 \title{Density-weighted average derivative}
 \usage{
 hrzi2(x, y, bandwidth = NULL)
 
-horowitz_average_derivative(x, y, bandwidth = NULL)
+morie_horowitz_average_derivative(x, y, bandwidth = NULL)
 }
 \arguments{
 \item{x}{Numeric covariate vector or design matrix.}

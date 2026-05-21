@@ -12,19 +12,18 @@
 #' @references
 #' Hastie, Tibshirani & Friedman, Elements of Statistical Learning (2009).
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_linear_regression_ols(x = rnorm(50), y = rnorm(50))
 #' @export
-linear_regression_ols <- function(x, y) {
+morie_linear_regression_ols <- function(x, y) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
-  x <- as.matrix(x); y <- as.numeric(y)
-  df <- as.data.frame(x); df$.y <- y
+  x <- as.matrix(x)
+  y <- as.numeric(y)
+  df <- as.data.frame(x)
+  df$.y <- y
   fit <- stats::lm(.y ~ ., data = df)
   s <- summary(fit)
   est <- unname(stats::coef(fit))
-  se  <- unname(s$coefficients[, "Std. Error"])
+  se <- unname(s$coefficients[, "Std. Error"])
   list(
     estimate = est,
     se       = se,

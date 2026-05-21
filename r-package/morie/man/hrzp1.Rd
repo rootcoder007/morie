@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzp1.R
 \name{hrzp1}
 \alias{hrzp1}
-\alias{horowitz_plr_estimator}
+\alias{morie_horowitz_plr_estimator}
 \title{Robinson partially-linear regression}
 \usage{
 hrzp1(x, y, z, bandwidth = NULL)
 
-horowitz_plr_estimator(x, y, z, bandwidth = NULL)
+morie_horowitz_plr_estimator(x, y, z, bandwidth = NULL)
 }
 \arguments{
 \item{x}{Numeric parametric covariate vector or matrix.}

@@ -6,14 +6,15 @@
 \usage{
 morie_fast_available()
 }
+\value{
+A logical scalar: \code{TRUE} when the compiled Rcpp backend was
+built and loaded, \code{FALSE} when falling back to base-R kernels.
+}
 \description{
 Mirrors \code{morie.fast.is_jit_available()} on the Python side.
 Returns TRUE when the Rcpp .so was built and loaded; FALSE when
 falling back to base-R implementations.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+morie_fast_available()
 }

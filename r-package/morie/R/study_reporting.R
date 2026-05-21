@@ -135,7 +135,9 @@
     endpoint_df <- endpoint_df[stats::complete.cases(endpoint_df), , drop = FALSE]
     gsum <- do.call(rbind, lapply(levels(endpoint_df$gender_label), function(lvl) {
       sub <- endpoint_df[endpoint_df$gender_label == lvl, , drop = FALSE]
-      if (nrow(sub) == 0L) return(NULL)
+      if (nrow(sub) == 0L) {
+        return(NULL)
+      }
       est <- .weighted_binary_estimate(sub[[endpoint_name]], sub$weight)
       data.frame(gender = lvl, p = est$p, n = est$n, stringsAsFactors = FALSE)
     }))
@@ -210,7 +212,7 @@
         stringsAsFactors = FALSE
       )
     }
-    target_required <- max(sapply(pair_rows, function(x) if (is.data.frame(x)) x$n_eq[1] else NA_real_), na.rm = TRUE)
+    target_required <- max(vapply(pair_rows, function(x) if (is.data.frame(x)) x$n_eq[1] else NA_real_, numeric(1)), na.rm = TRUE)
     if (!is.finite(target_required)) target_required <- NA_real_
     target_rows[[length(target_rows) + 1L]] <- data.frame(
       endpoint = endpoint_name,
@@ -399,7 +401,14 @@
 }
 
 .legacy_reference_root <- function() {
-  file.path(find_project_root(), "migration_files", "one")
+  # The legacy migration tree exists only in a source checkout; an
+  # installed package has no project root. Degrade to NA so callers
+  # (.copy_legacy_artifacts) simply copy nothing rather than erroring.
+  root <- tryCatch(morie_find_project_root(), error = function(e) NA_character_)
+  if (is.na(root)) {
+    return(NA_character_)
+  }
+  file.path(root, "migration_files", "one")
 }
 
 .copy_legacy_artifacts <- function(relative_paths, output_dir, root = file.path(.legacy_reference_root(), "six", "outputs")) {
@@ -464,7 +473,7 @@
     stringsAsFactors = FALSE
   )
   var_map <- data.frame(
-    variable_name = cpads_contract()$required_variables,
+    variable_name = morie_cpads_contract()$required_variables,
     user_guide_description = c(
       "Survey weight",
       "Alcohol use in the past 12 months",
@@ -478,7 +487,7 @@
       "Mental health",
       "Physical health"
     ),
-    exists_in_wrangled_data = cpads_contract()$required_variables %in% names(data),
+    exists_in_wrangled_data = morie_cpads_contract()$required_variables %in% names(data),
     coding_note = "See CPADS user guide PDF for official item wording and coding.",
     stringsAsFactors = FALSE
   )
@@ -510,7 +519,7 @@
       stringsAsFactors = FALSE
     ),
     ebac_final_user_guide_variable_map = var_map,
-    ebac_final_variable_audit = data.frame(item = names(data), value = ifelse(names(data) %in% cpads_contract()$required_variables, "canonical", "auxiliary"), stringsAsFactors = FALSE)
+    ebac_final_variable_audit = data.frame(item = names(data), value = ifelse(names(data) %in% morie_cpads_contract()$required_variables, "canonical", "auxiliary"), stringsAsFactors = FALSE)
   )
 }
 
@@ -576,10 +585,18 @@
     "Exposure: cannabis_any_use.",
     "See docs/source/modules/20212022-cpads-pumf-user-guide.pdf for source coding notes."
   )
+  # The user-guide PDF lives in a source checkout only; tolerate its
+  # absence (and a missing project root) when run from an installed
+  # package rather than letting the whole report module error out.
+  proj_root <- tryCatch(morie_find_project_root(), error = function(e) NA_character_)
+  user_guide_present <- !is.na(proj_root) && file.exists(file.path(
+    proj_root, "docs", "source", "modules",
+    "20212022-cpads-pumf-user-guide.pdf"
+  ))
   audit_tbl <- data.frame(
     check_name = c("outputs_present", "user_guide_reference_present", "cpads_required_variables_present"),
-    value = c(length(output_files), file.exists(file.path(find_project_root(), "docs", "source", "modules", "20212022-cpads-pumf-user-guide.pdf")), all(cpads_contract()$required_variables %in% names(data))),
-    pass = c(length(output_files) > 0, file.exists(file.path(find_project_root(), "docs", "source", "modules", "20212022-cpads-pumf-user-guide.pdf")), all(cpads_contract()$required_variables %in% names(data))),
+    value = c(length(output_files), user_guide_present, all(morie_cpads_contract()$required_variables %in% names(data))),
+    pass = c(length(output_files) > 0, user_guide_present, all(morie_cpads_contract()$required_variables %in% names(data))),
     stringsAsFactors = FALSE
   )
   list(

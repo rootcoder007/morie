@@ -14,20 +14,24 @@
 #' @return list: estimate, se, c_coef, var_ratio_cv_over_crude, n, method.
 #' @keywords internal
 cntrl_estimator <- function(y, c_var, mu_c) {
-  y <- as.numeric(y); cc <- as.numeric(c_var)
+  y <- as.numeric(y)
+  cc <- as.numeric(c_var)
   n <- length(y)
-  if (n < 2L || length(cc) != n)
+  if (n < 2L || length(cc) != n) {
     return(list(estimate = NA_real_, n = n, method = "control-variates (bad input)"))
+  }
   c_coef <- stats::cov(y, cc) / stats::var(cc)
   theta_cv <- mean(y) - c_coef * (mean(cc) - mu_c)
   se_cv <- sqrt(stats::var(y - c_coef * (cc - mu_c)) / n)
   rho <- stats::cor(y, cc)
-  list(estimate = as.numeric(theta_cv),
-       se = as.numeric(se_cv),
-       c_coef = as.numeric(c_coef),
-       var_ratio_cv_over_crude = as.numeric(1 - rho^2),
-       n = as.integer(n),
-       method = "Control variates (Nelson 1990)")
+  list(
+    estimate = as.numeric(theta_cv),
+    se = as.numeric(se_cv),
+    c_coef = as.numeric(c_coef),
+    var_ratio_cv_over_crude = as.numeric(1 - rho^2),
+    n = as.integer(n),
+    method = "Control variates (Nelson 1990)"
+  )
 }
 
 # CANONICAL TEST
@@ -39,4 +43,4 @@ cntrl_estimator <- function(y, c_var, mu_c) {
 #' @rdname cntrl_estimator
 #' @keywords internal
 #' @export
-control_variates <- cntrl_estimator
+morie_control_variates <- cntrl_estimator

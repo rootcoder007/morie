@@ -1,7 +1,11 @@
 # Internal infix helper for defaults.
 `%||%` <- function(x, y) {
-  if (is.null(x) || length(x) == 0) return(y)
-  if (length(x) == 1 && (is.na(x) || identical(x, ""))) return(y)
+  if (is.null(x) || length(x) == 0) {
+    return(y)
+  }
+  if (length(x) == 1 && (is.na(x) || identical(x, ""))) {
+    return(y)
+  }
   x
 }
 
@@ -19,12 +23,11 @@ is_absolute_path <- function(path) {
 #' @param max_up Maximum number of parent traversals.
 #' @return Absolute path to the detected project root.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' tryCatch(morie_find_project_root(),
+#'   error = function(e) message("not inside a morie project tree")
+#' )
 #' @export
-find_project_root <- function(start = getwd(), max_up = 10L) {
+morie_find_project_root <- function(start = getwd(), max_up = 10L) {
   current <- normalizePath(start, winslash = "/", mustWork = FALSE)
 
   for (i in seq_len(max_up)) {
@@ -52,13 +55,12 @@ find_project_root <- function(start = getwd(), max_up = 10L) {
 #'   current working directory.
 #' @return Named list of key paths.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' tryCatch(morie_paths(),
+#'   error = function(e) message("not inside a morie project tree")
+#' )
 #' @export
 morie_paths <- function(project_root = NULL) {
-  root <- project_root %||% find_project_root()
+  root <- project_root %||% morie_find_project_root()
   root <- normalizePath(root, winslash = "/", mustWork = FALSE)
 
   list(

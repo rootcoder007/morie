@@ -2,12 +2,12 @@
 % Please edit documentation in R/sglm.R
 \name{sglm}
 \alias{sglm}
-\alias{spatial_glm}
+\alias{morie_spatial_glm}
 \title{Spatial GLM (Gaussian-identity case via profile ML).}
 \usage{
 sglm(x, y, coords, family = "gaussian")
 
-spatial_glm(x, y, coords, family = "gaussian")
+morie_spatial_glm(x, y, coords, family = "gaussian")
 }
 \arguments{
 \item{x}{Numeric design matrix (n by p).}
@@ -26,10 +26,7 @@ Y = X beta + delta + eps, delta ~ GP(0, sigma2 R_phi), R_phi exponential.
 Profile-likelihood ML over phi; beta via GLS.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+sglm(x = rnorm(50), y = rnorm(50), coords = matrix(runif(100), 50, 2))
 }
 \references{
 Schabenberger & Gotway (2005), Ch 5.

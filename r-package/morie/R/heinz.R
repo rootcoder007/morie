@@ -18,12 +18,10 @@
 #' @return Named list \code{(W, estimate, mean, std, shape, method)}.
 #' @references He, Zhang, Ren & Sun (2015), ICCV.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-heinz_he_initialization <- function(fan_in, fan_out = NULL, seed = 42L,
+morie_heinz_he_initialization <- function(fan_in, fan_out = NULL, seed = 42L,
                                     mode = "normal",
                                     deterministic_seed = NULL) {
   fan_in <- as.integer(fan_in)
@@ -50,12 +48,14 @@ heinz_he_initialization <- function(fan_in, fan_out = NULL, seed = 42L,
     stop(sprintf("mode must be 'normal' or 'uniform', got %s", mode))
   }
   if (!is.null(fan_out)) W <- matrix(W, nrow = fan_out, ncol = fan_in)
-  list(W = W, estimate = W, mean = mean(W), std = stats::sd(W),
-       shape = shape,
-       method = sprintf("He initialization (%s)", mode))
+  list(
+    W = W, estimate = W, mean = mean(W), std = stats::sd(W),
+    shape = shape,
+    method = sprintf("He initialization (%s)", mode)
+  )
 }
 
-#' @rdname heinz_he_initialization
+#' @rdname morie_heinz_he_initialization
 #' @keywords internal
 #' @export
-he_initialization <- heinz_he_initialization
+morie_he_initialization <- morie_heinz_he_initialization

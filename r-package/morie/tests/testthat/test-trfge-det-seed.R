@@ -2,7 +2,7 @@
 
 skip_if_no_hash <- function() {
   ok <- requireNamespace("digest", quietly = TRUE) ||
-        requireNamespace("openssl", quietly = TRUE)
+    requireNamespace("openssl", quietly = TRUE)
   testthat::skip_if_not(ok, "neither 'digest' nor 'openssl' available")
 }
 
@@ -16,8 +16,8 @@ trfge_fixture <- function() {
 test_that("trfge deterministic_seed is reproducible", {
   skip_if_no_hash()
   fx <- trfge_fixture()
-  r1 <- transformer_genomic(fx$x, fx$y, fx$M, deterministic_seed = 42L)
-  r2 <- transformer_genomic(fx$x, fx$y, fx$M, deterministic_seed = 42L)
+  r1 <- morie_transformer_genomic(fx$x, fx$y, fx$M, deterministic_seed = 42L)
+  r2 <- morie_transformer_genomic(fx$x, fx$y, fx$M, deterministic_seed = 42L)
   # Reproducibility -- same seed must produce bit-identical output.
   expect_equal(r1$estimate, r2$estimate)
   expect_equal(r1$beta, r2$beta)
@@ -29,8 +29,8 @@ test_that("trfge deterministic_seed is reproducible", {
 
 test_that("trfge default (deterministic_seed = NULL) path is unchanged", {
   fx <- trfge_fixture()
-  r1 <- transformer_genomic(fx$x, fx$y, fx$M, seed = 42)
-  r2 <- transformer_genomic(fx$x, fx$y, fx$M, seed = 42)
+  r1 <- morie_transformer_genomic(fx$x, fx$y, fx$M, seed = 42)
+  r2 <- morie_transformer_genomic(fx$x, fx$y, fx$M, seed = 42)
   expect_equal(r1$estimate, r2$estimate)
   expect_equal(r1$beta, r2$beta)
 })

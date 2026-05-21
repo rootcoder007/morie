@@ -30,8 +30,10 @@ x <- rnorm(n)
 D <- rbinom(n, 1, plogis(0.5 * x))
 y <- 0.7 * D + 0.3 * x + rnorm(n)
 df <- data.frame(D = D, y = y, age = x)
-chk <- mrm_assumptions_check(df, treatment_col = "D",
-                             outcome_col = "y",
-                             covariates = "age")
+chk <- mrm_assumptions_check(df,
+  treatment_col = "D",
+  outcome_col = "y",
+  covariates = "age"
+)
 chk$overall_verdict
 }

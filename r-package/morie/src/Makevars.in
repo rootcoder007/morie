@@ -1,0 +1,7 @@
+# The shared numeric core (morie_core.h) uses C++17 features.
+CXX_STD = CXX17
+# The SIU parser (siu_parser.cpp) links libcurl; the flags below are
+# filled in by ./configure (via curl-config) at install time, so the
+# committed Makefile carries no non-portable shell-call extension.
+PKG_CPPFLAGS = @cflags@
+PKG_LIBS = @libs@

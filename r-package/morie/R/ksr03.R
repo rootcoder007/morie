@@ -10,12 +10,9 @@
 #' @return Named list with statistic, p_value, n, method.
 #' @references Kosorok (2008), Ch 2.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_ksr03_kosorok_glivenko_cantelli(x = rnorm(50))
 #' @export
-ksr03_kosorok_glivenko_cantelli <- function(x, cdf = "pnorm") {
+morie_ksr03_kosorok_glivenko_cantelli <- function(x, cdf = "pnorm") {
   x <- as.numeric(x)
   n <- length(x)
   res <- suppressWarnings(stats::ks.test(x, cdf))
@@ -28,9 +25,9 @@ ksr03_kosorok_glivenko_cantelli <- function(x, cdf = "pnorm") {
 }
 
 # CANONICAL TEST
-# set.seed(0); ksr03_kosorok_glivenko_cantelli(rnorm(200))
+# set.seed(0); morie_ksr03_kosorok_glivenko_cantelli(rnorm(200))
 
-#' @rdname ksr03_kosorok_glivenko_cantelli
+#' @rdname morie_ksr03_kosorok_glivenko_cantelli
 #' @keywords internal
 #' @export
-kosorok_glivenko_cantelli <- ksr03_kosorok_glivenko_cantelli
+morie_kosorok_glivenko_cantelli <- morie_ksr03_kosorok_glivenko_cantelli

@@ -1,3 +1,0 @@
-# The shared numeric core (morie_core.h) uses C++17 features
-# (inline variables, nested namespaces).
-CXX_STD = CXX17

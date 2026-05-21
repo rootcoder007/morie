@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzbrd.R
 \name{fzbrd}
 \alias{fzbrd}
-\alias{fauzi_bias_reduced_kdfe}
+\alias{morie_fauzi_bias_reduced_kdfe}
 \title{Fauzi: Bias-reduced KDFE via geometric extrapolation (Ch 2)}
 \usage{
 fzbrd(x, t = NULL, h = NULL, c = 2)
 
-fauzi_bias_reduced_kdfe(x, t = NULL, h = NULL, c = 2)
+morie_fauzi_bias_reduced_kdfe(x, t = NULL, h = NULL, c = 2)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -26,9 +26,6 @@ Richardson-style extrapolation cancels the O(h^2) bias of the KDFE:
 \deqn{\hat F_{br}(t) = (c^2 \hat F_h(t) - \hat F_{ch}(t))/(c^2-1).}
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+fzbrd(x = rnorm(50))
 }
 \keyword{internal}

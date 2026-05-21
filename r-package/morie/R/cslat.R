@@ -7,9 +7,13 @@
 #' @return Named list with tensor, n, method.
 #' @keywords internal
 causal_attention_mask <- function(x) {
-  n <- if (length(x) == 1L && is.numeric(x)) as.integer(x)
-       else if (!is.null(dim(x))) dim(x)[length(dim(x)) - 1L]
-       else length(x)
+  n <- if (length(x) == 1L && is.numeric(x)) {
+    as.integer(x)
+  } else if (!is.null(dim(x))) {
+    dim(x)[length(dim(x)) - 1L]
+  } else {
+    length(x)
+  }
   M <- matrix(0, n, n)
   M[upper.tri(M)] <- -Inf
   list(tensor = M, n = n, method = "causal-mask")

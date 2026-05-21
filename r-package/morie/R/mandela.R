@@ -62,7 +62,8 @@
 #' Sprott, J. B., & Doob, A. N. (2021). Solitary Confinement, Torture,
 #' and Canada's Structured Intervention Units. Centre for Criminology
 #' and Sociolegal Studies, University of Toronto.
-#' \url{https://www.crimsl.utoronto.ca/sites/www.crimsl.utoronto.ca/files/TortureSolitarySIUsSprottDoob23Feb2021_0.pdf}
+#' Available at the Centre for Criminology and Sociolegal Studies
+#' web site: crimsl.utoronto.ca (file TortureSolitarySIUsSprottDoob23Feb2021_0.pdf).
 #'
 #' Iftene, A., & Doob, A. N. (2024). Do Independent External Decision
 #' Makers Ensure that "An Inmate's Confinement in a Structured
@@ -105,10 +106,10 @@ mrm_classify_mandela <- function(
   if (broader_rc) {
     stopifnot(all(alert_cols %in% names(data)))
     alerts_count <- rowSums(
-      sapply(alert_cols, function(c) as.integer(data[[c]] > 0))
+      vapply(alert_cols, function(c) as.integer(data[[c]] > 0), integer(nrow(data)))
     )
     broader_row <- strict_row | (alerts_count >= 2L & !is.na(dur) &
-                                  dur > threshold_days)
+      dur > threshold_days)
   } else {
     broader_row <- strict_row
   }
@@ -145,7 +146,7 @@ mrm_classify_mandela <- function(
       denom <- length(ids)
       n_m <- length(ids_m)
       n_b <- length(ids_b)
-    } else {  # individual_cumulative
+    } else { # individual_cumulative
       ids <- unique(sub[[id_col]])
       cum_dur <- tapply(dur[mask], sub[[id_col]], sum, na.rm = TRUE)
       denom <- length(ids)

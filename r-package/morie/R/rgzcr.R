@@ -14,17 +14,22 @@
 rgzcr <- function(x, fs = 1.0) {
   n <- length(x)
   if (n < 2) {
-    return(list(zcr = NA_real_, zcr_per_second = NA_real_,
-                crossings = 0L, n = n))
+    return(list(
+      zcr = NA_real_, zcr_per_second = NA_real_,
+      crossings = 0L, n = n
+    ))
   }
-  s <- sign(x); s[s == 0] <- 1
+  s <- sign(x)
+  s[s == 0] <- 1
   crossings <- sum(abs(diff(s)) > 0)
   zcr <- crossings / (n - 1)
-  list(zcr = zcr, zcr_per_second = zcr * fs,
-       crossings = as.integer(crossings), n = n)
+  list(
+    zcr = zcr, zcr_per_second = zcr * fs,
+    crossings = as.integer(crossings), n = n
+  )
 }
 
 #' @rdname rgzcr
 #' @keywords internal
 #' @export
-rangayyan_zero_crossing <- rgzcr
+morie_rangayyan_zero_crossing <- rgzcr

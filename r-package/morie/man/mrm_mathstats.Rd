@@ -3,10 +3,17 @@
 \name{mrm_mathstats}
 \alias{mrm_mathstats}
 \title{Mathematical-statistics / simulation / computation toolkit (R parity)}
+\value{
+Each callable returns a named \code{list} with the computed
+statistic(s) and a plain-language \code{interpretation}.
+}
 \description{
 R parity of \code{morie.mrm_mathstats}.  Closes the Chapter-2
 coverage gap from designexptr.org/mathematical-statistics-
 simulation-and-computation.html.
+}
+\examples{
+mrm_oneprop_test(x = 58, n = 100, p0 = 0.5)
 }
 \references{
 Wilks, S. S. (1962). Mathematical Statistics. Wiley.

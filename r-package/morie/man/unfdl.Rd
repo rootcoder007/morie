@@ -2,12 +2,12 @@
 % Please edit documentation in R/unfdl.R
 \name{unfdl}
 \alias{unfdl}
-\alias{unfolding_analysis}
+\alias{morie_unfolding_analysis}
 \title{Metric unfolding for preference data (Schoenemann; Armstrong Ch 7)}
 \usage{
 unfdl(x, k = 2L, n_iter = 100L, tol = 1e-06)
 
-unfolding_analysis(x, k = 2L, n_iter = 100L, tol = 1e-06)
+morie_unfolding_analysis(x, k = 2L, n_iter = 100L, tol = 1e-06)
 }
 \arguments{
 \item{x}{Preference dissimilarity matrix Delta (n_resp by n_stim).}
@@ -27,9 +27,7 @@ Closed-form Schoenemann (1970) unfolding via SVD of the doubly
 centred squared-distance matrix, followed by SMACOF-lite refinement.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 \keyword{internal}

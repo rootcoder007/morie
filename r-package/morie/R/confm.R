@@ -12,26 +12,25 @@
 #'   labels, precision, recall, f1, macro_precision, macro_recall,
 #'   macro_f1, weighted_f1, n, method.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_confusion_matrix_metrics(y_true = rbinom(50, 1, 0.5), y_pred = rbinom(50, 1, 0.5))
 #' @export
-confusion_matrix_metrics <- function(y_true, y_pred, labels = NULL) {
-  yt <- as.character(y_true); yp <- as.character(y_pred)
+morie_confusion_matrix_metrics <- function(y_true, y_pred, labels = NULL) {
+  yt <- as.character(y_true)
+  yp <- as.character(y_pred)
   if (is.null(labels)) labels <- sort(unique(c(yt, yp)))
   labels <- as.character(labels)
   K <- length(labels)
   cm <- matrix(0L, nrow = K, ncol = K, dimnames = list(labels, labels))
   for (i in seq_along(yt)) {
-    a <- match(yt[i], labels); b <- match(yp[i], labels)
+    a <- match(yt[i], labels)
+    b <- match(yp[i], labels)
     cm[a, b] <- cm[a, b] + 1L
   }
   diag_ <- diag(cm)
   col_sums <- colSums(cm)
   row_sums <- rowSums(cm)
   precision <- ifelse(col_sums > 0, diag_ / col_sums, 0)
-  recall    <- ifelse(row_sums > 0, diag_ / row_sums, 0)
+  recall <- ifelse(row_sums > 0, diag_ / row_sums, 0)
   f1 <- ifelse(precision + recall > 0, 2 * precision * recall / (precision + recall), 0)
   acc <- sum(diag_) / sum(cm)
   support <- row_sums

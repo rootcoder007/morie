@@ -9,13 +9,11 @@
 #' @return Named list with estimate (total events), n, method.
 #' @references Kosorok (2008), Ch 8.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_ksr17_kosorok_counting_process(t = seq(0, 1, length.out = 50), event = rbinom(50, 1, 0.8))
 #' @export
-ksr17_kosorok_counting_process <- function(t, event) {
-  t <- as.numeric(t); event <- as.integer(event)
+morie_ksr17_kosorok_counting_process <- function(t, event) {
+  t <- as.numeric(t)
+  event <- as.integer(event)
   list(
     estimate = as.integer(sum(event)),
     n        = length(t),
@@ -24,9 +22,9 @@ ksr17_kosorok_counting_process <- function(t, event) {
 }
 
 # CANONICAL TEST
-# ksr17_kosorok_counting_process(1:10, c(1,1,0,1,1,0,1,1,1,0))
+# morie_ksr17_kosorok_counting_process(1:10, c(1,1,0,1,1,0,1,1,1,0))
 
-#' @rdname ksr17_kosorok_counting_process
+#' @rdname morie_ksr17_kosorok_counting_process
 #' @keywords internal
 #' @export
-kosorok_counting_process <- ksr17_kosorok_counting_process
+morie_kosorok_counting_process <- morie_ksr17_kosorok_counting_process

@@ -49,8 +49,8 @@
 #' @references
 #' United Nations General Assembly (2015). United Nations Standard
 #' Minimum Rules for the Treatment of Prisoners (the Nelson Mandela
-#' Rules). A/RES/70/175. Rule 43 = prolonged (>15 days). Rule 44 =
-#' >=22 hours/day, no meaningful human contact.
+#' Rules). A/RES/70/175. Rule 43 = prolonged (more than 15 days).
+#' Rule 44 = at least 22 hours/day, no meaningful human contact.
 #'
 #' @export
 #' @examples
@@ -62,13 +62,13 @@
 mrm_otis_mandela_spectrum <- function(
   data,
   duration_col = "NumberConsecutiveDays_Segregation",
-  year_col     = "EndFiscalYear",
-  id_col       = "UniqueIndividual_ID",
+  year_col = "EndFiscalYear",
+  id_col = "UniqueIndividual_ID",
   threshold_days = 15L,
-  alert_cols   = c("MentalHealth_Alert", "SuicideRisk_Alert", "SuicideWatch_Alert"),
+  alert_cols = c("MentalHealth_Alert", "SuicideRisk_Alert", "SuicideWatch_Alert"),
   contact_proxies = c("none", "any_alert", "no_alert"),
-  denominators    = c("row", "individual_any", "individual_cumulative"),
-  c11_data     = NULL
+  denominators = c("row", "individual_any", "individual_cumulative"),
+  c11_data = NULL
 ) {
   stopifnot(is.data.frame(data))
   stopifnot(all(c(duration_col, year_col, id_col) %in% names(data)))
@@ -81,11 +81,11 @@ mrm_otis_mandela_spectrum <- function(
     if (!c %in% names(d)) next
     yes <- tolower(trimws(as.character(d[[c]]))) == "yes"
     d[["_any_alert"]] <- d[["_any_alert"]] | yes
-    d[["_no_alert"]]  <- d[["_no_alert"]]  & !yes
+    d[["_no_alert"]] <- d[["_no_alert"]] & !yes
   }
 
   years <- sort(unique(d[[year_col]]))
-  rows  <- list()
+  rows <- list()
 
   for (y in c(as.list(years), list("pooled"))) {
     if (identical(y, "pooled")) {
@@ -108,7 +108,7 @@ mrm_otis_mandela_spectrum <- function(
           n_d <- sum(ymask)
           n_m <- sum(elig)
         } else if (denom == "individual_any") {
-          ids   <- unique(stats::na.omit(d[[id_col]][ymask]))
+          ids <- unique(stats::na.omit(d[[id_col]][ymask]))
           ids_m <- unique(stats::na.omit(d[[id_col]][elig]))
           n_d <- length(ids)
           n_m <- length(ids_m)
@@ -133,7 +133,9 @@ mrm_otis_mandela_spectrum <- function(
             grepl("Greater than", b) | any(as.integer(regmatches(b, gregexpr("[0-9]+", b))[[1]]) > threshold_days)
           }, logical(1))
           n_m <- sum(sub[["NumberIndividuals_Segregation"]][ab])
-        } else stop(sprintf("unknown denominator %s", denom))
+        } else {
+          stop(sprintf("unknown denominator %s", denom))
+        }
 
         rate <- if (n_d > 0) n_m / n_d else NA_real_
         rows[[length(rows) + 1L]] <- data.frame(

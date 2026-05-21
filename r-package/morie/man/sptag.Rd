@@ -2,12 +2,12 @@
 % Please edit documentation in R/sptag.R
 \name{sptag}
 \alias{sptag}
-\alias{spatial_agreement}
+\alias{morie_spatial_agreement}
 \title{Pairwise vote-agreement matrix (Armstrong Ch 8)}
 \usage{
 sptag(x)
 
-spatial_agreement(x)
+morie_spatial_agreement(x)
 }
 \arguments{
 \item{x}{Vote matrix (n by m); NA = absent.}
@@ -21,9 +21,6 @@ A_ij = proportion of roll calls on which legislators i, j voted the
 same way (excluding mutually absent items).
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+sptag(x = rnorm(50))
 }
 \keyword{internal}

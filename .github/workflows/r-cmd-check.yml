@@ -2,6 +2,10 @@ name: R CMD check
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  # Parallel compile for source-installed dependencies (notably duckdb,
+  # which has ~50 MB of C++ source and otherwise takes 20-25 min single-
+  # threaded). GitHub-hosted runners are 4-vCPU / 16 GB RAM so -j4 fits.
+  MAKEFLAGS: "-j4"
 
 
 # Run R CMD check across the supported OS x R-version matrix. Required
@@ -13,6 +17,11 @@ env:
 
 on:
   push:
+    branches: [main]
+    paths:
+      - 'r-package/morie/**'
+      - '.github/workflows/r-cmd-check.yml'
+  pull_request:
     branches: [main]
     paths:
       - 'r-package/morie/**'
@@ -33,7 +42,9 @@ jobs:
       matrix:
         config:
           - { os: macos-latest,   r: 'release' }
-          - { os: windows-latest, r: 'release' }
+          # Pin Windows runner explicitly (windows-latest auto-redirects to
+          # windows-2025-vs2026 by 2026-06-15; pre-pin removes ambiguity).
+          - { os: windows-2025,   r: 'release' }
           - { os: ubuntu-latest,  r: 'release' }
           - { os: ubuntu-latest,  r: 'devel'   }
           - { os: ubuntu-latest,  r: 'oldrel-1' }
@@ -70,5 +81,67 @@ jobs:
           # Drop --as-cran (too strict pre-CRAN; we'll re-enable for the
           # CRAN-submission PR). Keep --no-manual since we don't ship
           # vignettes/PDFs in CI.
+          args: 'c("--no-manual")'
+          error-on: '"error"'
+
+  # Separate Linux-only job that spins up a live PostgreSQL service and
+  # exercises the PG branch of the DBI cache layer. The PG testthat
+  # block in tests/testthat/test-db-backends.R is gated on
+  # MORIE_PG_TEST=true; this job sets that env var so the tests run.
+  # The default R-CMD-check matrix above does NOT set MORIE_PG_TEST,
+  # so the PG block correctly skips there.
+  R-CMD-check-postgres:
+    runs-on: ubuntu-latest
+    name: ubuntu-latest (release) + postgres-15
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      _R_CHECK_FORCE_SUGGESTS_: false
+      R_KEEP_PKG_SOURCE: yes
+      MORIE_PG_TEST: "true"
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: password
+      PGDATABASE: testdb
+
+    defaults:
+      run:
+        working-directory: r-package/morie
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - uses: r-lib/actions/setup-pandoc@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+
+      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          working-directory: r-package/morie
+          extra-packages: any::rcmdcheck any::RPostgres any::duckdb any::withr
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+        with:
+          working-directory: r-package/morie
+          upload-snapshots: true
           args: 'c("--no-manual")'
           error-on: '"error"'

@@ -2,12 +2,12 @@
 % Please edit documentation in R/sarre.R
 \name{sarre}
 \alias{sarre}
-\alias{spatial_ar_error}
+\alias{morie_spatial_ar_error}
 \title{Spatial autoregressive error model (SAR error, ML).}
 \usage{
 sarre(x, y, w)
 
-spatial_ar_error(x, y, w)
+morie_spatial_ar_error(x, y, w)
 }
 \arguments{
 \item{x}{Design matrix (n by p, intercept explicit).}
@@ -25,10 +25,8 @@ Concentrated log-likelihood in lambda; beta via GLS on the
 transformed system A y = A X beta + eps, A = I - lambda W.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 \references{
 Anselin (1988); Schabenberger & Gotway (2005), Ch 7.

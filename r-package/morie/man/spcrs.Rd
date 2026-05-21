@@ -2,12 +2,12 @@
 % Please edit documentation in R/spcrs.R
 \name{spcrs}
 \alias{spcrs}
-\alias{spatial_cross_validation}
+\alias{morie_spatial_cross_validation}
 \title{Leave-one-out cross-validation for ordinary kriging.}
 \usage{
 spcrs(x, coords, nugget = 0, sill = 1, range_ = 1)
 
-spatial_cross_validation(x, coords, nugget = 0, sill = 1, range_ = 1)
+morie_spatial_cross_validation(x, coords, nugget = 0, sill = 1, range_ = 1)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -23,10 +23,7 @@ Named list: estimate (MSPE, RMSPE, MAE, residuals), n, method.
 MSPE = (1/n) sum (Z(s_i) - Z_hat_minus_i(s_i))^2.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+spcrs(x = rnorm(50), coords = matrix(runif(100), 50, 2))
 }
 \references{
 Schabenberger & Gotway (2005), Ch 4.

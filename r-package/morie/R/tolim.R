@@ -17,15 +17,17 @@
 #' @references Wilks (1941); Gibbons & Chakraborti (6e) Ch 2.11.
 #' @export
 #' @examples
-#' tolerance_limits(1:100, coverage = 0.90, confidence = 0.95)
-tolerance_limits <- function(x, coverage = 0.90, confidence = 0.95) {
+#' morie_tolerance_limits(1:100, coverage = 0.90, confidence = 0.95)
+morie_tolerance_limits <- function(x, coverage = 0.90, confidence = 0.95) {
   x <- as.numeric(x)
   n <- length(x)
   if (n < 2) {
-    return(list(lower = NA_real_, upper = NA_real_,
-                coverage_requested = coverage,
-                confidence_achieved = NA_real_, n = n,
-                method = "Distribution-free tolerance limits (Wilks)"))
+    return(list(
+      lower = NA_real_, upper = NA_real_,
+      coverage_requested = coverage,
+      confidence_achieved = NA_real_, n = n,
+      method = "Distribution-free tolerance limits (Wilks)"
+    ))
   }
   beta <- coverage
   conf_ach <- 1 - n * beta^(n - 1) + (n - 1) * beta^n

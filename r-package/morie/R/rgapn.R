@@ -13,7 +13,8 @@
 #' @references Pincus (1991), PNAS 88:2297.
 #' @export
 #' @examples
-#' set.seed(0); rgapn(rnorm(100), m = 2)$ApEn
+#' set.seed(0)
+#' rgapn(rnorm(100), m = 2)$ApEn
 rgapn <- function(x, m = 2L, r = NULL) {
   N <- length(x)
   if (is.null(r)) r <- 0.2 * stats::sd(x)
@@ -31,11 +32,12 @@ rgapn <- function(x, m = 2L, r = NULL) {
     C <- pmax(C, 1e-30)
     mean(log(C))
   }
-  pm <- phi(m); pm1 <- phi(m + 1L)
+  pm <- phi(m)
+  pm1 <- phi(m + 1L)
   list(ApEn = pm - pm1, phi_m = pm, phi_m1 = pm1, m = m, r = r, n = N)
 }
 
 #' @rdname rgapn
 #' @keywords internal
 #' @export
-rangayyan_approximate_entropy <- rgapn
+morie_rangayyan_approximate_entropy <- rgapn

@@ -2,12 +2,12 @@
 % Please edit documentation in R/rkhsc.R
 \name{rkhsc}
 \alias{rkhsc}
-\alias{rkhs_kernel_regression}
+\alias{morie_rkhs_kernel_regression}
 \title{RKHS kernel ridge regression (Wahba 1990)}
 \usage{
 rkhsc(x, y, sigma = NULL, lam = 0.001)
 
-rkhs_kernel_regression(x, y, sigma = NULL, lam = 0.001)
+morie_rkhs_kernel_regression(x, y, sigma = NULL, lam = 0.001)
 }
 \arguments{
 \item{x}{numeric vector or matrix of predictors.}

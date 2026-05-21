@@ -61,7 +61,7 @@ distribution. This paper describes the \proglang{Python}
 implementation, the wrapper API around \pkg{DoubleML}, the
 \pkg{RichResult} return-type design, and three reproducible
 examples on the open Ontario, federal, and Toronto Police Service
-records that the MRM framework integrates.  Version~0.9.4 ships
+records that the MRM framework integrates.  Version~0.9.5 ships
 275 textbook-derived callables in \code{morie.fn} across
 fourteen suites with full \proglang{R} parity, and adopts a
 licensing model under which the \proglang{Python} and
@@ -74,10 +74,10 @@ psychometrics, \proglang{Python}}
 double machine learning, sociolegal statistics, Hawkes process,
 psychometrics, Python}
 % --- morie version stamp -----------------------------------------------------
-% This paper documents \pkg{morie} v0.9.4 (released 2026-05-18).  Specific
+% This paper documents \pkg{morie} v0.9.5 (released 2026-05-18).  Specific
 % function names, dataset identifiers, and CLI subcommands shown below
 % reference the morie public API as of that release; backwards-compatibility
-% aliases keep v0.x code references resolving across the v0.4.x series.
+% aliases keep v0.x code references resolving across the v0.x series.
 % -----------------------------------------------------------------------------
 
 
@@ -95,8 +95,8 @@ implementation is released under \code{AGPL-3.0-or-later}, a
 strong copyleft licence under which any modified version that is
 distributed, or offered to users over a network, must publish its
 source.  The R companion
-package \citep{Ruhela2026MorieR} is released under
-GPL-2.0-only to match the R-ecosystem and CRAN convention.  The
+package \citep{Ruhela2026MorieR} is likewise released under
+\code{AGPL-3.0-or-later}, matching the Python package.  The
 package supports a
 unified estimator interface for the average treatment effect
 (ATE), the average treatment effect on the treated (ATT), the
@@ -272,7 +272,7 @@ standard error, and confidence interval.
 \label{sec:taxonomy}
 
 The \pkg{morie} \proglang{Python} interface organises
-functionality into eight thematic submodules.
+functionality into eight thematic groups.
 
 \subsection{morie.causal}
 
@@ -497,7 +497,7 @@ estimand under the identifying assumptions.
 \subsection{Example 2: replication of the Sprott--Doob chi-squared record}
 
 The second example replicates the published $\chi^{2}$ statistics
-from \citet{SprottDoob2023} on the federal $\SIU$ aggregate
+from \citet{SprottDoob2021} on the federal $\SIU$ aggregate
 record.  \pkg{morie} does not ship a dedicated
 \code{mrm\_chi2\_doob} wrapper at present; the standard
 \code{scipy.stats.chi2\_contingency} routine reproduces every
@@ -506,7 +506,7 @@ published statistic to within $0.01$:
 \begin{Code}
 >>> import numpy as np
 >>> from scipy.stats import chi2_contingency
->>> # Sprott-Doob 2023 Table 3: Indigenous status x SIU placement
+>>> # Sprott-Doob 2021 Table 3: Indigenous status x SIU placement
 >>> table3 = np.array([[196,  87],
 ...                    [1432, 754]])
 >>> chi2, pval, dof, _ = chi2_contingency(table3, correction=False)
@@ -531,8 +531,9 @@ shared C++ numeric core (\code{libmorie}, bound with nanobind):
 $O(n)$ recursion for the exponential kernel, and sub-quadratic
 truncated and sum-of-exponentials paths for the non-Markovian
 kernels, with a Numba-JIT path retained as a fallback. The
-\code{compare\_hawkes\_kernels} routine fits all 8 (kernel $\times$
-baseline) combinations and ranks by AIC:
+\code{compare\_hawkes\_kernels} routine fits every requested
+(kernel $\times$ baseline) combination --- here the four
+combinations of two kernels and two baselines --- and ranks by AIC:
 
 \begin{Code}
 >>> import pandas as pd
@@ -736,7 +737,7 @@ The \proglang{Python} package \pkg{morie} provides a curated
 multi-domain toolkit for observational inference, with explicit
 support for the MRM framework as a sociolegal application target.
 The wrapper architecture around \pkg{DoubleML} offers a thin
-function-style API; the eight thematic submodules provide a
+function-style API; the eight thematic groups provide a
 unified namespace for the broader observational-inference,
 signal-processing, spatial, statistical-physics, and psychometric
 routines that complement the causal core. The MRM modules

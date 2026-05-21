@@ -3,7 +3,9 @@
 }
 
 .safe_divide <- function(num, den) {
-  if (is.na(den) || den == 0) return(NA_real_)
+  if (is.na(den) || den == 0) {
+    return(NA_real_)
+  }
   as.numeric(num) / as.numeric(den)
 }
 
@@ -128,7 +130,7 @@
     stringsAsFactors = FALSE
   )
   wrangling_log <- data.frame(
-    step = c("load_csv", "canonicalize_cpads_data", "validate_cpads_data"),
+    step = c("load_csv", "morie_canonicalize_cpads_data", "morie_validate_cpads_data"),
     description = c(
       "Read the bundled CPADS CSV from disk.",
       "Map raw CPADS fields to the MORIE canonical analysis contract.",
@@ -136,11 +138,11 @@
     ),
     rows_before = c(nrow(raw), nrow(raw), nrow(data)),
     rows_after = c(nrow(raw), nrow(data), nrow(data)),
-    cols_affected = c("all", paste(names(data), collapse = ","), paste(cpads_contract()$required_variables, collapse = ",")),
+    cols_affected = c("all", paste(names(data), collapse = ","), paste(morie_cpads_contract()$required_variables, collapse = ",")),
     stringsAsFactors = FALSE
   )
   if (!is.null(output_dir)) {
-    project_root <- tryCatch(find_project_root(dirname(output_dir)), error = function(e) NULL)
+    project_root <- tryCatch(morie_find_project_root(dirname(output_dir)), error = function(e) NULL)
     if (!is.null(project_root)) {
       wrangled_dir <- file.path(project_root, "data", "private", "outputs", "wrangled")
       dir.create(wrangled_dir, recursive = TRUE, showWarnings = FALSE)
@@ -591,7 +593,7 @@
 }
 
 .run_propensity_scores_module_internal <- function(data) {
-  out <- run_propensity_ipw_analysis(data)
+  out <- morie_run_propensity_ipw_analysis(data)
   frame <- out$analysis_frame
   treated <- frame[frame$cannabis_any_use == 1, , drop = FALSE]
   control <- frame[frame$cannabis_any_use == 0, , drop = FALSE]
@@ -618,7 +620,7 @@
   ate_ipw <- prop_out$ipw_results$estimate[1]
   se_ipw <- prop_out$ipw_results$se[1]
 
-    out_model <- stats::glm(
+  out_model <- stats::glm(
     heavy_drinking_30d ~ cannabis_any_use + age_group_label + gender_label + province_region_label + mental_health_label + physical_health_label,
     data = frame,
     family = stats::quasibinomial(),
@@ -706,17 +708,21 @@
   }
   list(
     treatment_effects_summary = summary_tbl,
-    cate_subgroup_estimates = if (length(cate_rows) > 0L) do.call(rbind, cate_rows) else data.frame(
-      subgroup_var = character(),
-      subgroup_level = character(),
-      n_treated = integer(),
-      n_control = integer(),
-      cate = numeric(),
-      se = numeric(),
-      ci_lower = numeric(),
-      ci_upper = numeric(),
-      stringsAsFactors = FALSE
-    )
+    cate_subgroup_estimates = if (length(cate_rows) > 0L) {
+      do.call(rbind, cate_rows)
+    } else {
+      data.frame(
+        subgroup_var = character(),
+        subgroup_level = character(),
+        n_treated = integer(),
+        n_control = integer(),
+        cate = numeric(),
+        se = numeric(),
+        ci_lower = numeric(),
+        ci_upper = numeric(),
+        stringsAsFactors = FALSE
+      )
+    }
   )
 }
 
@@ -944,7 +950,7 @@
 
 .run_ebac_selection_adjustment_ipw_module_internal <- function(data) {
   data <- .cpads_labeled_data(data)
-  out <- run_ebac_selection_ipw_analysis(data)
+  out <- morie_run_ebac_selection_ipw_analysis(data)
   eligible <- data[data$alcohol_past12m == 1, , drop = FALSE]
   eligible <- eligible[stats::complete.cases(eligible[, c("weight", "cannabis_any_use", "age_group_label", "gender_label", "province_region_label", "mental_health_label", "physical_health_label"), drop = FALSE]), , drop = FALSE]
   eligible$R <- as.integer(!is.na(eligible$ebac_tot))

@@ -18,7 +18,8 @@ Get metadata for a single dataset
 \examples{
 # Use a real catalog key (run `morie_dataset_catalog()$key` to list them):
 info <- morie_dataset_info("ocp21")
-info$source; info$year
+info$source
+info$year
 # Fuzzy match works for partial / forgiving keys:
 morie_dataset_info("cpads")$key
 }

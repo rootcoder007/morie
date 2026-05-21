@@ -15,28 +15,32 @@
 #' @return Named list: estimate, bias, variance, se, h, t, n, method.
 #' @importFrom stats median sd quantile dnorm pnorm
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' fzkdf(x = rnorm(50))
 #' @export
 fzkdf <- function(x, t = NULL, h = NULL) {
-  x <- as.numeric(x); n <- length(x)
-  if (n < 2L) return(list(estimate = NA_real_, n = n,
-                           method = "fzkdf - too few obs"))
+  x <- as.numeric(x)
+  n <- length(x)
+  if (n < 2L) {
+    return(list(
+      estimate = NA_real_, n = n,
+      method = "fzkdf - too few obs"
+    ))
+  }
   if (is.null(t)) t <- stats::median(x)
   if (is.null(h)) h <- .morie_silverman_h(x)
   mu2 <- 1.0
-  rK  <- 1 / (2 * sqrt(pi))
+  rK <- 1 / (2 * sqrt(pi))
   z <- (t - x) / h
   F_hat <- mean(stats::pnorm(z))
   f_hat <- mean(stats::dnorm(z) / h)
   fp_hat <- mean(-z * stats::dnorm(z) / (h * h))
   bias <- (h^2 / 2) * mu2 * fp_hat
   var <- max(F_hat * (1 - F_hat) / n - 2 * h * rK * f_hat / n, 0)
-  list(estimate = F_hat, bias = bias, variance = var,
-       se = sqrt(var), h = h, t = t, n = n,
-       method = "Fauzi KDFE bias-variance (Ch 2)")
+  list(
+    estimate = F_hat, bias = bias, variance = var,
+    se = sqrt(var), h = h, t = t, n = n,
+    method = "Fauzi KDFE bias-variance (Ch 2)"
+  )
 }
 
 # `.morie_silverman_h` moved to R/_helpers_fauzi.R so every fz*.R caller can
@@ -49,4 +53,4 @@ fzkdf <- function(x, t = NULL, h = NULL) {
 #' @rdname fzkdf
 #' @keywords internal
 #' @export
-fauzi_kdfe_properties <- fzkdf
+morie_fauzi_kdfe_properties <- fzkdf

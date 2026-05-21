@@ -10,25 +10,32 @@
 #' @return Named list with \code{mu, sigma, transition,
 #'   smoothed_probabilities, loglik, n, k_regimes, method}.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_regime_switching(x = rnorm(50))
 #' @export
-regime_switching <- function(x, k_regimes = 2) {
-  y <- as.numeric(x); n <- length(y)
+morie_regime_switching <- function(x, k_regimes = 2) {
+  y <- as.numeric(x)
+  n <- length(y)
   if (n < 4 * k_regimes) stop("Series too short for K regimes.")
   if (requireNamespace("MSwM", quietly = TRUE)) {
     df <- data.frame(y = y)
     base_fit <- lm(y ~ 1, data = df)
-    msfit <- MSwM::msmFit(base_fit, k = k_regimes, sw = c(TRUE, TRUE))
-    return(list(mu = as.numeric(msfit@Coef[, 1]),
-                sigma = as.numeric(msfit@std),
-                transition = msfit@transMat,
-                smoothed_probabilities = msfit@Fit@smoProb,
-                loglik = msfit@Fit@logLikel,
-                n = n, k_regimes = k_regimes,
-                method = sprintf("MSwM (K=%d)", k_regimes)))
+    # MSwM defaults parallelization = TRUE, which spawns 8 PSOCK workers and
+    # trips --as-cran's 2-worker cap (R_CHECK_LIMIT_CORES). Disable it: a
+    # 60-point regime-switching EM is far cheaper to run sequentially anyway.
+    msfit <- MSwM::msmFit(
+      base_fit,
+      k = k_regimes, sw = c(TRUE, TRUE),
+      control = list(parallelization = FALSE)
+    )
+    return(list(
+      mu = as.numeric(msfit@Coef[, 1]),
+      sigma = as.numeric(msfit@std),
+      transition = msfit@transMat,
+      smoothed_probabilities = msfit@Fit@smoProb,
+      loglik = msfit@Fit@logLikel,
+      n = n, k_regimes = k_regimes,
+      method = sprintf("MSwM (K=%d)", k_regimes)
+    ))
   }
   mu <- seq(min(y), max(y), length.out = k_regimes)
   sig <- rep(max(sd(y), 1e-6), k_regimes)
@@ -36,17 +43,23 @@ regime_switching <- function(x, k_regimes = 2) {
   pi <- rep(1 / k_regimes, k_regimes)
   ll_prev <- -Inf
   for (it in seq_len(200)) {
-    emit <- t(sapply(y,
-      function(yt) dnorm(yt, mean = mu, sd = sig)))
+    emit <- t(vapply(
+      y,
+      function(yt) dnorm(yt, mean = mu, sd = sig), numeric(length(mu))
+    ))
     emit <- pmax(emit, 1e-300)
-    alpha <- matrix(0, n, k_regimes); cv <- numeric(n)
-    alpha[1, ] <- pi * emit[1, ]; cv[1] <- sum(alpha[1, ])
+    alpha <- matrix(0, n, k_regimes)
+    cv <- numeric(n)
+    alpha[1, ] <- pi * emit[1, ]
+    cv[1] <- sum(alpha[1, ])
     alpha[1, ] <- alpha[1, ] / cv[1]
     for (t in 2:n) {
       alpha[t, ] <- (alpha[t - 1, ] %*% P) * emit[t, ]
-      cv[t] <- sum(alpha[t, ]); alpha[t, ] <- alpha[t, ] / max(cv[t], 1e-300)
+      cv[t] <- sum(alpha[t, ])
+      alpha[t, ] <- alpha[t, ] / max(cv[t], 1e-300)
     }
-    beta <- matrix(0, n, k_regimes); beta[n, ] <- 1
+    beta <- matrix(0, n, k_regimes)
+    beta[n, ] <- 1
     for (t in (n - 1):1) {
       beta[t, ] <- P %*% (emit[t + 1, ] * beta[t + 1, ])
       beta[t, ] <- beta[t, ] / max(sum(beta[t, ]), 1e-300)
@@ -70,9 +83,13 @@ regime_switching <- function(x, k_regimes = 2) {
     if (abs(ll - ll_prev) < 1e-6) break
     ll_prev <- ll
   }
-  list(mu = mu, sigma = sig, transition = P,
-       smoothed_probabilities = gamma,
-       loglik = ll_prev, n = n, k_regimes = k_regimes,
-       method = sprintf("Markov switching via EM/Hamilton filter (K=%d, base R)",
-                        k_regimes))
+  list(
+    mu = mu, sigma = sig, transition = P,
+    smoothed_probabilities = gamma,
+    loglik = ll_prev, n = n, k_regimes = k_regimes,
+    method = sprintf(
+      "Markov switching via EM/Hamilton filter (K=%d, base R)",
+      k_regimes
+    )
+  )
 }

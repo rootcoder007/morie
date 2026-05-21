@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgadp.R
 \name{rgadp}
 \alias{rgadp}
-\alias{rangayyan_adaptive_filter}
+\alias{morie_rangayyan_adaptive_filter}
 \title{LMS adaptive noise canceller -- Rangayyan Ch 11}
 \usage{
 rgadp(x, reference, mu = 0.01, order = 16L)
 
-rangayyan_adaptive_filter(x, reference, mu = 0.01, order = 16L)
+morie_rangayyan_adaptive_filter(x, reference, mu = 0.01, order = 16L)
 }
 \arguments{
 \item{x}{Numeric vector (target + correlated noise).}
@@ -26,9 +26,11 @@ Widrow-Hoff least-mean-squares adaptive filter. Returns the cleaned
 residual \code{signal = x - LMS(reference)} and the noise estimate.
 }
 \examples{
-set.seed(0); n <- rnorm(200)
+set.seed(0)
+n <- rnorm(200)
 x <- sin(2 * pi * seq_len(200) / 20) + n
-r <- rgadp(x, reference = n, mu = 0.01, order = 8); length(r$signal)
+r <- rgadp(x, reference = n, mu = 0.01, order = 8)
+length(r$signal)
 }
 \references{
 Widrow & Stearns (1985); Rangayyan Ch 11.

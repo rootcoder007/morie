@@ -3,6 +3,12 @@
 \name{mrm_samples}
 \alias{mrm_samples}
 \title{Bundled reference data samples and dataset fetchers}
+\value{
+The on-demand fetchers (\code{morie_fetch_tps()},
+\code{morie_fetch_siu()}) return the file path to the downloaded or
+cached CSV; \code{morie_load_dataset()} returns the loaded
+\code{data.frame}.
+}
 \description{
 MORIE ships a small set of reference CSVs in \verb{inst/extdata/} so that
 the \verb{mrm_otis_*()} and \verb{mrm_tps_*()} callables can be exercised
@@ -18,8 +24,14 @@ CKAN fetcher.
 \item TPS: Toronto Police Open Data ArcGIS REST. Use
 \code{morie_fetch_tps(category = "Assault")}.
 \item SIU: Ontario SIU Director's Reports site. Use
-\code{morie_fetch_siu()} which scrapes the public reports site on
-demand (per-user, since redistribution of the scraped corpus is
+\code{morie_fetch_siu()} which parses the public reports site on
+demand (per-user, since redistribution of the parsed corpus is
 not clearly licensed).
+}
+}
+\examples{
+if (FALSE) {
+  b01 <- morie_load_dataset("otisb01")
+  head(b01)
 }
 }

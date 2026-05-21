@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzmrl.R
 \name{fzmrl}
 \alias{fzmrl}
-\alias{fauzi_mrl_asymptotic}
+\alias{morie_fauzi_mrl_asymptotic}
 \title{Fauzi: Kernel mean residual life asymptotics (Ch 4)}
 \usage{
 fzmrl(x, t = NULL, h = NULL)
 
-fauzi_mrl_asymptotic(x, t = NULL, h = NULL)
+morie_fauzi_mrl_asymptotic(x, t = NULL, h = NULL)
 }
 \arguments{
 \item{x}{Numeric vector (lifetimes).}
@@ -24,9 +24,6 @@ Kernel-smoothed MRL \eqn{m(t)=E[X-t|X>t]} with Yang (1978)
 asymptotic SE.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+fzmrl(x = rnorm(50))
 }
 \keyword{internal}

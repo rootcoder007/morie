@@ -2,12 +2,12 @@
 % Please edit documentation in R/vrgft.R
 \name{vrgft}
 \alias{vrgft}
-\alias{variogram_fitting}
+\alias{morie_variogram_fitting}
 \title{Variogram model fit by weighted least squares.}
 \usage{
 vrgft(x, coords, model = "exponential", n_bins = 10, max_dist = NULL)
 
-variogram_fitting(
+morie_variogram_fitting(
   x,
   coords,
   model = "exponential",
@@ -35,10 +35,7 @@ Models: exponential, gaussian, spherical.
 Exponential form: \deqn{\gamma(h) = c_0 + c_1(1 - e^{-h/a})}.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+vrgft(x = rnorm(50), coords = matrix(runif(100), 50, 2))
 }
 \references{
 Cressie (1985); Schabenberger & Gotway (2005), Ch 3.

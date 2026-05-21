@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzm1.R
 \name{hrzm1}
 \alias{hrzm1}
-\alias{horowitz_mixture_model}
+\alias{morie_horowitz_mixture_model}
 \title{k-component Gaussian mixture EM}
 \usage{
 hrzm1(y, k = 2, maxit = 200, tol = 1e-06, seed = 0)
 
-horowitz_mixture_model(y, k = 2, maxit = 200, tol = 1e-06, seed = 0)
+morie_horowitz_mixture_model(y, k = 2, maxit = 200, tol = 1e-06, seed = 0)
 }
 \arguments{
 \item{y}{Numeric vector of observations.}

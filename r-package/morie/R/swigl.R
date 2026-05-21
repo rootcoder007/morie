@@ -12,7 +12,8 @@
 swiglu_activation <- function(x, W = NULL, V = NULL, b = NULL, c = NULL) {
   if (is.null(W) && is.null(V)) {
     d_out <- ncol(as.matrix(x))
-    W <- diag(d_out); V <- diag(d_out)
+    W <- diag(d_out)
+    V <- diag(d_out)
   } else if (xor(is.null(W), is.null(V))) {
     stop("Provide both W and V or neither")
   }

@@ -17,11 +17,19 @@
 #'   categories (`charges_laid`, `no_charges`, etc.) by service and
 #'   by year, reporting both raw counts and shares.
 #'
+#' @return Each \code{mrm_siu_*()} callable returns a named \code{list} with
+#'   the survival, per-service rate, or outcome-classification result and a
+#'   plain-language \code{interpretation}.
+#' @examples
+#' if (FALSE) {
+#'   siu <- read.csv("SIU.csv")
+#'   mrm_siu_case_to_decision_km(siu)
+#' }
 #' @name mrm_siu
 NULL
 
 
-.parse_iso <- function(x) suppressWarnings(as.Date(x))
+.parse_iso <- function(x) suppressWarnings(as.Date(x, format = "%Y-%m-%d"))
 
 
 # ---------------------------------------------------------------------------
@@ -92,14 +100,18 @@ mrm_siu_case_to_decision_km <- function(
   observed <- keep_inc & (!is.na(dec) | censor_open_cases)
 
   ok <- observed & is.finite(gap) & gap >= 0
-  gap <- gap[ok]; svc <- svc[ok]; censored <- censored[ok]
+  gap <- gap[ok]
+  svc <- svc[ok]
+  censored <- censored[ok]
 
   summarise <- function(gap_v, cens_v, label) {
     if (length(gap_v) == 0L) {
-      return(data.frame(stratum = label, n = 0L, n_censored = 0L,
-                        median_days = NA_real_, mean_days = NA_real_,
-                        p25_days = NA_real_, p75_days = NA_real_,
-                        max_days = NA_real_))
+      return(data.frame(
+        stratum = label, n = 0L, n_censored = 0L,
+        median_days = NA_real_, mean_days = NA_real_,
+        p25_days = NA_real_, p75_days = NA_real_,
+        max_days = NA_real_
+      ))
     }
     data.frame(
       stratum = label,
@@ -116,10 +128,12 @@ mrm_siu_case_to_decision_km <- function(
   pooled <- summarise(gap, censored, "pooled")
 
   by_svc <- by(seq_along(gap), svc, function(idx) {
-    if (length(idx) < min_n) return(NULL)
+    if (length(idx) < min_n) {
+      return(NULL)
+    }
     summarise(gap[idx], censored[idx], unique(svc[idx]))
   }, simplify = FALSE)
-  by_svc <- do.call(rbind, by_svc[!sapply(by_svc, is.null)])
+  by_svc <- do.call(rbind, by_svc[!vapply(by_svc, is.null, logical(1))])
   if (!is.null(by_svc)) rownames(by_svc) <- NULL
 
   list(pooled = pooled, by_service = by_svc)
@@ -210,9 +224,14 @@ mrm_siu_outcome_classifier <- function(
 ) {
   stopifnot(is.data.frame(data))
   if (!outcome_col %in% names(data)) {
-    for (alt in c("director_decision", "outcome", "decision",
-                  "director_decision_outcome", "director_decision_text")) {
-      if (alt %in% names(data)) { outcome_col <- alt; break }
+    for (alt in c(
+      "director_decision", "outcome", "decision",
+      "director_decision_outcome", "director_decision_text"
+    )) {
+      if (alt %in% names(data)) {
+        outcome_col <- alt
+        break
+      }
     }
   }
   stopifnot(outcome_col %in% names(data))
@@ -220,7 +239,8 @@ mrm_siu_outcome_classifier <- function(
   out <- as.character(data[[outcome_col]])
   svc <- as.character(data[[service_col]])
   ok <- !is.na(out) & nchar(out) > 0 & !is.na(svc) & nchar(svc) > 0
-  out <- out[ok]; svc <- svc[ok]
+  out <- out[ok]
+  svc <- svc[ok]
   tab <- table(svc, out)
   totals <- rowSums(tab)
   df <- as.data.frame.table(tab, responseName = "n_cases")

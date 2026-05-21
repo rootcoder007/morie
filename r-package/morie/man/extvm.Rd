@@ -2,12 +2,12 @@
 % Please edit documentation in R/extvm.R
 \name{extvm}
 \alias{extvm}
-\alias{extreme_value_gev}
+\alias{morie_extreme_value_gev}
 \title{Generalised Extreme Value fit by ML (Coles 2001)}
 \usage{
 extvm(x)
 
-extreme_value_gev(x)
+morie_extreme_value_gev(x)
 }
 \arguments{
 \item{x}{numeric vector of block maxima.}

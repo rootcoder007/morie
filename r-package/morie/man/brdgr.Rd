@@ -2,12 +2,12 @@
 % Please edit documentation in R/brdgr.R
 \name{brdgr}
 \alias{brdgr}
-\alias{bridge_observations}
+\alias{morie_bridge_observations}
 \title{Bridge observations across sessions / chambers (Armstrong Ch 6)}
 \usage{
 brdgr(x, y = NULL)
 
-bridge_observations(x, y = NULL)
+morie_bridge_observations(x, y = NULL)
 }
 \arguments{
 \item{x}{Vector of session-1 IDs or session-1 vote matrix.}
@@ -23,9 +23,6 @@ Counts legislators appearing in both sessions. With ID vectors:
 returns set intersection. With matrices: rows non-empty in both.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+brdgr(x = rnorm(50))
 }
 \keyword{internal}

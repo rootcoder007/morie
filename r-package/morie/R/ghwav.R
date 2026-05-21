@@ -8,16 +8,20 @@
 #' @param noise Optional noise sd.
 #' @return Named list with estimate, fitted, noise, sigma, inclusion, n, method.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_ghosal_wavelet_prior(x = rnorm(50))
 #' @export
-ghosal_wavelet_prior <- function(x, pi = 0.5, sigma = NULL, noise = NULL) {
-  x <- as.numeric(x); n <- length(x)
-  if (n < 4) return(list(estimate = if (n) mean(x) else NA_real_,
-                          fitted = x, n = n, method = "Wavelet prior (n<4)"))
-  dw <- .gh_haar_dwt(x); coeffs <- dw$coeffs; L <- dw$L
+morie_ghosal_wavelet_prior <- function(x, pi = 0.5, sigma = NULL, noise = NULL) {
+  x <- as.numeric(x)
+  n <- length(x)
+  if (n < 4) {
+    return(list(
+      estimate = if (n) mean(x) else NA_real_,
+      fitted = x, n = n, method = "Wavelet prior (n<4)"
+    ))
+  }
+  dw <- .gh_haar_dwt(x)
+  coeffs <- dw$coeffs
+  L <- dw$L
   finest <- coeffs[[1]]
   if (is.null(noise)) noise <- max(stats::mad(finest) / 0.6745, 1e-6)
   if (is.null(sigma)) {
@@ -25,13 +29,15 @@ ghosal_wavelet_prior <- function(x, pi = 0.5, sigma = NULL, noise = NULL) {
     sigma <- sqrt(max(var(all_d) - noise^2, 1e-6))
   }
   sigma <- max(sigma, 1e-6)
-  incl <- c(); new_coeffs <- list()
+  incl <- c()
+  new_coeffs <- list()
   for (i in seq_along(coeffs[-length(coeffs)])) {
     d <- coeffs[[i]]
     var_slab <- sigma^2 + noise^2
-    log_slab  <- stats::dnorm(d, 0, sqrt(var_slab), log = TRUE)
+    log_slab <- stats::dnorm(d, 0, sqrt(var_slab), log = TRUE)
     log_spike <- stats::dnorm(d, 0, noise, log = TRUE)
-    a <- log(pi) + log_slab; b <- log(1 - pi) + log_spike
+    a <- log(pi) + log_slab
+    b <- log(1 - pi) + log_spike
     mm <- pmax(a, b)
     w <- exp(a - mm) / (exp(a - mm) + exp(b - mm))
     shrink <- sigma^2 / var_slab
@@ -49,7 +55,9 @@ ghosal_wavelet_prior <- function(x, pi = 0.5, sigma = NULL, noise = NULL) {
     cur <- out
   }
   fitted <- cur[seq_len(n)]
-  list(estimate = mean(fitted), fitted = fitted, noise = noise,
-       sigma = sigma, inclusion = mean(incl), n = n,
-       method = "Haar-wavelet spike-and-slab BayesThresh")
+  list(
+    estimate = mean(fitted), fitted = fitted, noise = noise,
+    sigma = sigma, inclusion = mean(incl), n = n,
+    method = "Haar-wavelet spike-and-slab BayesThresh"
+  )
 }

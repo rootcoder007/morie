@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgenv.R
 \name{rgenv}
 \alias{rgenv}
-\alias{rangayyan_envelope}
+\alias{morie_rangayyan_envelope}
 \title{Hilbert envelope -- Rangayyan Ch 5}
 \usage{
 rgenv(x)
 
-rangayyan_envelope(x)
+morie_rangayyan_envelope(x)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -28,7 +28,8 @@ signal directly from the FFT.
 \examples{
 t <- seq(0, 1, length.out = 200)
 x <- cos(2 * pi * 5 * t) * (1 + 0.3 * cos(2 * pi * 0.5 * t))
-r <- rgenv(x); length(r$envelope)
+r <- rgenv(x)
+length(r$envelope)
 }
 \references{
 Rangayyan Ch 5.

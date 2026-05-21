@@ -1,0 +1,6 @@
+# The shared numeric core (morie_core.h) uses C++17 features.
+CXX_STD = CXX17
+# The SIU parser (siu_parser.cpp) links libcurl; the flags below are
+# filled in by ./configure.win (via pkg-config) at install time.
+PKG_CPPFLAGS = @cflags@
+PKG_LIBS = @libs@

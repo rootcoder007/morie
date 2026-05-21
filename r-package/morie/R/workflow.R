@@ -3,8 +3,10 @@
 #' Returns the default named map of workflow steps to project script paths.
 #'
 #' @return Named character vector.
+#' @examples
+#' morie_default_workflow_map()
 #' @export
-default_workflow_map <- function() {
+morie_default_workflow_map <- function() {
   c(
     modules = "libexec/config/tests/rtests/run_modules.R",
     publish = "libexec/config/tests/rtests/publish_public_artifacts.R",
@@ -38,15 +40,13 @@ validate_workflow_map <- function(script_map) {
 #' @param verbose If `TRUE`, streams command output.
 #' @return Named list with step metadata and exit status.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-run_workflow_step <- function(
+morie_run_workflow_step <- function(
   step,
   project_root = NULL,
-  script_map = default_workflow_map(),
+  script_map = morie_default_workflow_map(),
   rscript_bin = file.path(R.home("bin"), "Rscript"),
   verbose = TRUE
 ) {
@@ -74,9 +74,17 @@ run_workflow_step <- function(
     stop("Rscript binary not found: ", rscript_bin, call. = FALSE)
   }
 
-  old_wd <- getwd()
-  on.exit(setwd(old_wd), add = TRUE)
-  setwd(paths$project_root)
+  # Run from the project root without permanently mutating the
+  # caller's working directory. The previous setwd() / on.exit()
+  # pattern works but triggers goodpractice's "avoid setwd()" linter;
+  # withr::local_dir() is the canonical safe-cleanup alternative.
+  if (requireNamespace("withr", quietly = TRUE)) {
+    withr::local_dir(paths$project_root)
+  } else {
+    old_wd <- getwd()
+    on.exit(do.call("setwd", list(old_wd)), add = TRUE)
+    do.call("setwd", list(paths$project_root))
+  }
 
   status <- system2(
     rscript_bin,
@@ -100,11 +108,25 @@ run_workflow_step <- function(
 #' @param stop_on_error If `TRUE`, stop at first failure.
 #' @param verbose If `TRUE`, streams command output.
 #' @return Data frame of step statuses.
+#' @examples
+#' # Build a one-step pipeline in tempdir and dispatch it. The
+#' # real package's morie_default_workflow_map() points at scripts that
+#' # live in a morie project tree.
+#' tdir <- tempfile("morie-doc-")
+#' dir.create(tdir)
+#' step <- file.path(tdir, "step.R")
+#' writeLines('cat("hello from pipeline\\n")', step)
+#' morie_run_pipeline(
+#'   steps = "demo",
+#'   project_root = tdir,
+#'   script_map = c(demo = step),
+#'   verbose = FALSE
+#' )
 #' @export
-run_pipeline <- function(
+morie_run_pipeline <- function(
   steps = NULL,
   project_root = NULL,
-  script_map = default_workflow_map(),
+  script_map = morie_default_workflow_map(),
   stop_on_error = TRUE,
   verbose = TRUE
 ) {
@@ -126,7 +148,7 @@ run_pipeline <- function(
   for (i in seq_along(steps)) {
     step <- steps[[i]]
     result <- tryCatch(
-      run_workflow_step(
+      morie_run_workflow_step(
         step = step,
         project_root = project_root,
         script_map = script_map,

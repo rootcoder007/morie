@@ -8,13 +8,21 @@
 #' @keywords internal
 gradient_clipping <- function(x, max_norm = 1) {
   is_list <- is.list(x)
-  cat_vec <- if (is_list) unlist(lapply(x, as.numeric))
-             else as.numeric(x)
+  cat_vec <- if (is_list) {
+    unlist(lapply(x, as.numeric))
+  } else {
+    as.numeric(x)
+  }
   total <- sqrt(sum(cat_vec * cat_vec))
   coef <- min(1, max_norm / (total + 1e-12))
-  clipped <- if (is_list) lapply(x, function(g) as.numeric(g) * coef)
-             else as.numeric(x) * coef
-  list(tensor = clipped, clip_coef = coef,
-       total_norm = total, max_norm = max_norm,
-       method = "global-norm-clip")
+  clipped <- if (is_list) {
+    lapply(x, function(g) as.numeric(g) * coef)
+  } else {
+    as.numeric(x) * coef
+  }
+  list(
+    tensor = clipped, clip_coef = coef,
+    total_norm = total, max_norm = max_norm,
+    method = "global-norm-clip"
+  )
 }

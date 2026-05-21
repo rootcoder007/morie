@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgpsd.R
 \name{rgpsd}
 \alias{rgpsd}
-\alias{rangayyan_psd}
+\alias{morie_rangayyan_psd}
 \title{Welch power spectral density -- Rangayyan Ch 4}
 \usage{
 rgpsd(x, fs = 1, nperseg = NULL, window = "hann")
 
-rangayyan_psd(x, fs = 1, nperseg = NULL, window = "hann")
+morie_rangayyan_psd(x, fs = 1, nperseg = NULL, window = "hann")
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -29,7 +29,8 @@ agree to ~1e-3 for typical EEG/ECG inputs.
 }
 \examples{
 \donttest{
-set.seed(0); fs <- 100
+set.seed(0)
+fs <- 100
 t <- seq(0, 10, length.out = 1000)
 x <- sin(2 * pi * 10 * t)
 r <- rgpsd(x, fs = fs, nperseg = 256)

@@ -2,12 +2,12 @@
 % Please edit documentation in R/jkest.R
 \name{jkest}
 \alias{jkest}
-\alias{jackknife_estimator}
+\alias{morie_jackknife_estimator}
 \title{Jackknife bias and variance (Quenouille 1956, Tukey 1958)}
 \usage{
 jkest(x, statistic = NULL)
 
-jackknife_estimator(x, statistic = NULL)
+morie_jackknife_estimator(x, statistic = NULL)
 }
 \arguments{
 \item{x}{numeric vector.}

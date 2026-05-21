@@ -14,26 +14,31 @@
 #'   cornish_fisher_correction, skew, p1z, z, p, n, method.
 #' @importFrom stats dnorm pnorm
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' fzedg(x = rnorm(50))
 #' @export
 fzedg <- function(x, z = 1.96, p = 0.5) {
-  x <- as.numeric(x); n <- length(x)
-  if (n < 5L) return(list(estimate = NA_real_, n = n,
-                           method = "fzedg - too few obs"))
+  x <- as.numeric(x)
+  n <- length(x)
+  if (n < 5L) {
+    return(list(
+      estimate = NA_real_, n = n,
+      method = "fzedg - too few obs"
+    ))
+  }
   skew <- (1 - 2 * p) / sqrt(p * (1 - p))
   p1z <- -(skew / 6) * (z^2 - 1)
-  phi_z <- stats::dnorm(z); Phi_z <- stats::pnorm(z)
+  phi_z <- stats::dnorm(z)
+  Phi_z <- stats::pnorm(z)
   correction <- p1z * phi_z / sqrt(n)
   cf_correction <- (skew / 6) * (z^2 - 1) / sqrt(n)
-  list(estimate = Phi_z + correction,
-       normal_approx = Phi_z,
-       edgeworth_correction = correction,
-       cornish_fisher_correction = cf_correction,
-       skew = skew, p1z = p1z, z = z, p = p, n = n,
-       method = "Fauzi Edgeworth expansion for kernel quantile (Ch 3)")
+  list(
+    estimate = Phi_z + correction,
+    normal_approx = Phi_z,
+    edgeworth_correction = correction,
+    cornish_fisher_correction = cf_correction,
+    skew = skew, p1z = p1z, z = z, p = p, n = n,
+    method = "Fauzi Edgeworth expansion for kernel quantile (Ch 3)"
+  )
 }
 
 # CANONICAL TEST
@@ -42,4 +47,4 @@ fzedg <- function(x, z = 1.96, p = 0.5) {
 #' @rdname fzedg
 #' @keywords internal
 #' @export
-fauzi_edgeworth_quantile <- fzedg
+morie_fauzi_edgeworth_quantile <- fzedg

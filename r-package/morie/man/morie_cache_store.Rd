@@ -4,14 +4,18 @@
 \alias{morie_cache_store}
 \title{Store a data frame in the MORIE cache}
 \usage{
-morie_cache_store(data, table_name, db_path = NULL)
+morie_cache_store(data, table_name, db_path = NULL, con = NULL)
 }
 \arguments{
 \item{data}{A data.frame to cache.}
 
-\item{table_name}{Name of the SQLite table.}
+\item{table_name}{Name of the destination table.}
 
-\item{db_path}{Optional override for the database path.}
+\item{db_path}{Optional path to a SQLite file (default backend).}
+
+\item{con}{Optional pre-opened DBI connection. When supplied, the
+table is written through \code{con} and \code{db_path} is ignored. Use this
+for non-SQLite backends (PostgreSQL, DuckDB, MariaDB).}
 }
 \value{
 Number of rows written (invisible).
@@ -20,8 +24,13 @@ Number of rows written (invisible).
 Writes (or replaces) a table in the shared SQLite cache.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+\donttest{
+db <- tempfile(fileext = ".db")
+morie_cache_store(
+  data = data.frame(x = rnorm(50), y = rnorm(50)),
+  table_name = "demo",
+  db_path = db
+)
+file.remove(db)
 }
 }

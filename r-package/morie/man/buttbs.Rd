@@ -30,7 +30,7 @@ if (requireNamespace("signal", quietly = TRUE)) {
   set.seed(1)
   t <- seq(0, 1, length.out = 1000)
   x <- sin(2 * pi * 10 * t) + sin(2 * pi * 60 * t)
-  y <- buttbs(x, fs = 1000)  # remove 60 Hz mains
+  y <- buttbs(x, fs = 1000) # remove 60 Hz mains
   length(y$filtered)
 }
 }

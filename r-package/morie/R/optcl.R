@@ -11,39 +11,52 @@
 #' @return Named list with `cut`, `correct_class`, `polarity`, `pre`,
 #'   `n`, `method`.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' optcl(x = rnorm(50))
 #' @export
 optcl <- function(x, votes = NULL) {
-  x <- as.numeric(x); n <- length(x)
+  x <- as.numeric(x)
+  n <- length(x)
   if (n == 0L) {
-    return(list(cut = NA_real_, correct_class = 0L, polarity = 1L,
-                pre = NA_real_, n = 0L, method = "optimal_classification"))
+    return(list(
+      cut = NA_real_, correct_class = 0L, polarity = 1L,
+      pre = NA_real_, n = 0L, method = "morie_optimal_classification"
+    ))
   }
   if (is.null(votes)) {
-    return(list(cut = stats::median(x),
-                correct_class = as.integer(n %/% 2L + n %% 2L),
-                polarity = 1L, pre = NA_real_, n = n,
-                method = "optimal_classification"))
+    return(list(
+      cut = stats::median(x),
+      correct_class = as.integer(n %/% 2L + n %% 2L),
+      polarity = 1L, pre = NA_real_, n = n,
+      method = "morie_optimal_classification"
+    ))
   }
   y <- as.integer(votes)
   xs <- sort(x)
   cand <- c(xs[1] - 1, (xs[-length(xs)] + xs[-1]) / 2, xs[length(xs)] + 1)
-  best_cc <- -1L; best_cut <- stats::median(x); best_pol <- 1L
-  for (c in cand) for (pol in c(1L, -1L)) {
-    pred <- if (pol == 1L) as.integer(x > c) else as.integer(x <= c)
-    cc   <- sum(pred == y)
-    if (cc > best_cc) { best_cc <- cc; best_cut <- c; best_pol <- pol }
+  best_cc <- -1L
+  best_cut <- stats::median(x)
+  best_pol <- 1L
+  for (c in cand) {
+    for (pol in c(1L, -1L)) {
+      pred <- if (pol == 1L) as.integer(x > c) else as.integer(x <= c)
+      cc <- sum(pred == y)
+      if (cc > best_cc) {
+        best_cc <- cc
+        best_cut <- c
+        best_pol <- pol
+      }
+    }
   }
-  p <- mean(y); base_correct <- max(p, 1 - p) * n
+  p <- mean(y)
+  base_correct <- max(p, 1 - p) * n
   pre <- if (n > base_correct) (best_cc - base_correct) / (n - base_correct) else 0
-  list(cut = best_cut, correct_class = best_cc, polarity = best_pol,
-       pre = pre, n = n, method = "optimal_classification")
+  list(
+    cut = best_cut, correct_class = best_cc, polarity = best_pol,
+    pre = pre, n = n, method = "morie_optimal_classification"
+  )
 }
 
 #' @keywords internal
 #' @rdname optcl
 #' @export
-optimal_classification <- optcl
+morie_optimal_classification <- optcl

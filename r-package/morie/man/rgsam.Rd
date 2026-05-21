@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgsam.R
 \name{rgsam}
 \alias{rgsam}
-\alias{rangayyan_sample_entropy}
+\alias{morie_rangayyan_sample_entropy}
 \title{Sample entropy -- Rangayyan Ch 7}
 \usage{
 rgsam(x, m = 2L, r = NULL)
 
-rangayyan_sample_entropy(x, m = 2L, r = NULL)
+morie_rangayyan_sample_entropy(x, m = 2L, r = NULL)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -30,7 +30,8 @@ where \code{B} is the number of unordered template-vector pairs of length
 \code{m+1} (self-matches excluded).
 }
 \examples{
-set.seed(0); rgsam(rnorm(100), m = 2)$SampEn
+set.seed(0)
+rgsam(rnorm(100), m = 2)$SampEn
 }
 \references{
 Richman & Moorman (2000), AJP Heart 278:H2039.

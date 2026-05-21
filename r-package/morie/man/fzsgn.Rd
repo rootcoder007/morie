@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzsgn.R
 \name{fzsgn}
 \alias{fzsgn}
-\alias{fauzi_smoothed_sign}
+\alias{morie_fauzi_smoothed_sign}
 \title{Fauzi: Smoothed sign test (Ch 5)}
 \usage{
 fzsgn(x, theta0 = 0, h = NULL, alternative = "two-sided")
 
-fauzi_smoothed_sign(x, theta0 = 0, h = NULL, alternative = "two-sided")
+morie_fauzi_smoothed_sign(x, theta0 = 0, h = NULL, alternative = "two-sided")
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -26,9 +26,6 @@ Named list with statistic, z, p_value, theta0, h, n, method.
 z = (S_n - n/2)/sqrt(n/4) ~ N(0,1).
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+fzsgn(x = rnorm(50))
 }
 \keyword{internal}

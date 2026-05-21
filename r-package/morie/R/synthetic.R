@@ -3,7 +3,9 @@ inv_logit <- function(x) {
 }
 
 inject_special_codes <- function(x, rate = 0.02, codes = c(97L, 98L, 99L, 997L, 998L, 999L)) {
-  if (rate <= 0) return(x)
+  if (rate <= 0) {
+    return(x)
+  }
   n <- length(x)
   idx <- stats::runif(n) < rate
   if (any(idx)) {
@@ -25,7 +27,7 @@ resolve_synthetic_name_map <- function(name_map, profile) {
   required <- synthetic_required_keys()
 
   if (is.null(name_map)) {
-    return(default_synthetic_name_map(profile = profile))
+    return(morie_default_synthetic_name_map(profile = profile))
   }
 
   if (is.list(name_map)) {
@@ -58,13 +60,15 @@ resolve_synthetic_name_map <- function(name_map, profile) {
 #' Default synthetic-data variable name map
 #'
 #' Returns a named character vector mapping canonical variable keys used by
-#' [generate_synthetic_data()] to output column names.
+#' [morie_generate_synthetic_data()] to output column names.
 #'
 #' @param profile Name profile. `"generic"` is recommended for new projects.
 #'   `"morie_legacy"` reproduces previous EML legacy column names.
 #' @return Named character vector.
+#' @examples
+#' morie_default_synthetic_name_map("generic")
 #' @export
-default_synthetic_name_map <- function(profile = c("generic", "morie_legacy")) {
+morie_default_synthetic_name_map <- function(profile = c("generic", "morie_legacy")) {
   profile <- match.arg(profile)
 
   if (identical(profile, "generic")) {
@@ -120,10 +124,13 @@ default_synthetic_name_map <- function(profile = c("generic", "morie_legacy")) {
 #' @param profile Convenience profile for output naming; ignored when
 #'   `name_map` is supplied.
 #' @param name_map Optional named character vector mapping canonical keys to
-#'   output column names. Use [default_synthetic_name_map()] as a template.
+#'   output column names. Use [morie_default_synthetic_name_map()] as a template.
 #' @return A data.frame with synthetic records.
+#' @examples
+#' df <- morie_generate_synthetic_data(n = 200, seed = 1)
+#' nrow(df)
 #' @export
-generate_synthetic_data <- function(
+morie_generate_synthetic_data <- function(
   n = 5000L,
   seed = 42L,
   special_code_rate = 0.02,
@@ -135,7 +142,7 @@ generate_synthetic_data <- function(
     stop("`n` must be an integer >= 100.", call. = FALSE)
   }
   if (!is.numeric(special_code_rate) || length(special_code_rate) != 1 ||
-      is.na(special_code_rate) || special_code_rate < 0 || special_code_rate > 0.2) {
+    is.na(special_code_rate) || special_code_rate < 0 || special_code_rate > 0.2) {
     stop("`special_code_rate` must be in [0, 0.2].", call. = FALSE)
   }
 
@@ -247,8 +254,11 @@ generate_synthetic_data <- function(
 #' @param name_map Optional custom variable name map.
 #' @param overwrite If `TRUE`, overwrite existing file.
 #' @return Normalized output path.
+#' @examples
+#' out <- morie_write_synthetic_data(tempfile(fileext = ".csv"), n = 200, seed = 1)
+#' file.exists(out)
 #' @export
-write_synthetic_data <- function(
+morie_write_synthetic_data <- function(
   path,
   n = 5000L,
   seed = 42L,
@@ -264,7 +274,7 @@ write_synthetic_data <- function(
     stop("File already exists. Set `overwrite = TRUE` to replace it.", call. = FALSE)
   }
 
-  dat <- generate_synthetic_data(
+  dat <- morie_generate_synthetic_data(
     n = n,
     seed = seed,
     special_code_rate = special_code_rate,

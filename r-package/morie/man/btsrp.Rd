@@ -2,7 +2,7 @@
 % Please edit documentation in R/btsrp.R
 \name{btsrp}
 \alias{btsrp}
-\alias{bootstrap_ci}
+\alias{morie_bootstrap_ci}
 \title{Bootstrap confidence interval (percentile, BCa, studentized)}
 \usage{
 btsrp(
@@ -14,7 +14,7 @@ btsrp(
   seed = 42L
 )
 
-bootstrap_ci(
+morie_bootstrap_ci(
   x,
   statistic = NULL,
   B = 2000L,
@@ -40,7 +40,7 @@ bootstrap_ci(
 Named list with estimate, se, ci_lower, ci_upper, alpha, B, n, method.
 }
 \description{
-R parity of \code{morie.fn.btsrp.bootstrap_ci}.  Three methods are
+R parity of \code{morie.fn.btsrp.morie_bootstrap_ci}.  Three methods are
 supported: percentile, BCa (Efron 1987 JASA), and studentized
 (Hall 1988 nested resampling).
 }

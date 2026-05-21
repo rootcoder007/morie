@@ -18,7 +18,8 @@
     weibull     = c("a0", "eta", "alpha", "lambda"),
     lomax       = c("a0", "eta", "alpha", "c"),
     gamma       = c("a0", "eta", "alpha", "beta"),
-    stop("unknown kernel: ", kernel))
+    stop("unknown kernel: ", kernel)
+  )
 }
 
 # Optimisation runs in an unconstrained space phi to avoid the hard
@@ -41,13 +42,18 @@
 .hawkes_nll_cpp <- function(theta, times, end_time, kernel) {
   switch(kernel,
     exponential = morie_hawkes_ll_exp_const_cpp(
-      times, end_time, theta[1], theta[2], theta[3]),
+      times, end_time, theta[1], theta[2], theta[3]
+    ),
     weibull = morie_hawkes_ll_weibull_const_cpp(
-      times, end_time, theta[1], theta[2], theta[3], theta[4]),
+      times, end_time, theta[1], theta[2], theta[3], theta[4]
+    ),
     lomax = morie_hawkes_ll_lomax_const_cpp(
-      times, end_time, theta[1], theta[2], theta[3], theta[4]),
+      times, end_time, theta[1], theta[2], theta[3], theta[4]
+    ),
     gamma = morie_hawkes_ll_gamma_const_cpp(
-      times, end_time, theta[1], theta[2], theta[3], theta[4]))
+      times, end_time, theta[1], theta[2], theta[3], theta[4]
+    )
+  )
 }
 
 # Triggering kernel g(u) and its integral G(u) = integral_0^u g, for the
@@ -55,35 +61,59 @@
 .hawkes_kernel_funs <- function(kernel, theta) {
   if (kernel == "exponential") {
     beta <- theta[3]
-    if (beta <= 1e-6) return(NULL)
-    list(g = function(u) beta * exp(-beta * u),
-         G = function(u) 1 - exp(-beta * u))
+    if (beta <= 1e-6) {
+      return(NULL)
+    }
+    list(
+      g = function(u) beta * exp(-beta * u),
+      G = function(u) 1 - exp(-beta * u)
+    )
   } else if (kernel == "weibull") {
-    alpha <- theta[3]; lam <- theta[4]
-    if (alpha <= 1e-6 || lam <= 1e-6) return(NULL)
-    list(g = function(u) (alpha / lam) * (u / lam)^(alpha - 1) *
-           exp(-(u / lam)^alpha),
-         G = function(u) 1 - exp(-(u / lam)^alpha))
+    alpha <- theta[3]
+    lam <- theta[4]
+    if (alpha <= 1e-6 || lam <= 1e-6) {
+      return(NULL)
+    }
+    list(
+      g = function(u) {
+        (alpha / lam) * (u / lam)^(alpha - 1) *
+          exp(-(u / lam)^alpha)
+      },
+      G = function(u) 1 - exp(-(u / lam)^alpha)
+    )
   } else if (kernel == "lomax") {
-    alpha <- theta[3]; cc <- theta[4]
-    if (alpha <= 1.001 || cc <= 1e-6) return(NULL)
-    list(g = function(u) ((alpha - 1) / cc) * (1 + u / cc)^(-alpha),
-         G = function(u) 1 - (1 + u / cc)^(-(alpha - 1)))
+    alpha <- theta[3]
+    cc <- theta[4]
+    if (alpha <= 1.001 || cc <= 1e-6) {
+      return(NULL)
+    }
+    list(
+      g = function(u) ((alpha - 1) / cc) * (1 + u / cc)^(-alpha),
+      G = function(u) 1 - (1 + u / cc)^(-(alpha - 1))
+    )
   } else {
-    alpha <- theta[3]; beta <- theta[4]
-    if (alpha <= 1e-6 || beta <= 1e-6) return(NULL)
-    list(g = function(u) stats::dgamma(u, shape = alpha, rate = beta),
-         G = function(u) stats::pgamma(u, shape = alpha, rate = beta))
+    alpha <- theta[3]
+    beta <- theta[4]
+    if (alpha <= 1e-6 || beta <= 1e-6) {
+      return(NULL)
+    }
+    list(
+      g = function(u) stats::dgamma(u, shape = alpha, rate = beta),
+      G = function(u) stats::pgamma(u, shape = alpha, rate = beta)
+    )
   }
 }
 
 .hawkes_nll_pureR <- function(theta, times, end_time, kernel) {
-  nu <- exp(theta[1]); eta <- theta[2]
+  nu <- exp(theta[1])
+  eta <- theta[2]
   if (!is.finite(nu) || nu <= 0 || eta <= 1e-6 || eta >= 0.999) {
     return(1e12)
   }
   funs <- .hawkes_kernel_funs(kernel, theta)
-  if (is.null(funs)) return(1e12)
+  if (is.null(funs)) {
+    return(1e12)
+  }
   n <- length(times)
   log_sum <- 0.0
   for (i in seq_len(n)) {
@@ -91,24 +121,29 @@
     if (i > 1L) {
       lam <- nu + eta * sum(funs$g(times[i] - times[seq_len(i - 1L)]))
     }
-    if (!is.finite(lam) || lam <= 0) return(1e12)
+    if (!is.finite(lam) || lam <= 0) {
+      return(1e12)
+    }
     log_sum <- log_sum + log(lam)
   }
   integral <- nu * end_time + eta * sum(funs$G(end_time - times))
-  if (!is.finite(log_sum) || !is.finite(integral)) return(1e12)
+  if (!is.finite(log_sum) || !is.finite(integral)) {
+    return(1e12)
+  }
   -(log_sum - integral)
 }
 
 .hawkes_start <- function(kernel, times, end_time) {
   n <- length(times)
-  dt_bar <- end_time / n                       # mean inter-arrival
+  dt_bar <- end_time / n # mean inter-arrival
   a0 <- log(max(0.5 * n / end_time, 1e-3))
   eta <- 0.3
   switch(kernel,
     exponential = c(a0, eta, 1 / dt_bar),
     weibull     = c(a0, eta, 1.2, dt_bar),
     lomax       = c(a0, eta, 2.0, dt_bar),
-    gamma       = c(a0, eta, 1.5, 1 / dt_bar))
+    gamma       = c(a0, eta, 1.5, 1 / dt_bar)
+  )
 }
 
 # Closed-form log-likelihood of the homogeneous Poisson submodel
@@ -130,7 +165,8 @@
     c(0, 2.0, 0, 0),
     c(0, -2.5, 0, 0),
     c(0.7, 0, 0.7, 0),
-    c(-0.7, 1.0, -0.7, 0.5))
+    c(-0.7, 1.0, -0.7, 0.5)
+  )
   lapply(offsets, function(o) phi0 + o[seq_along(phi0)])
 }
 
@@ -155,16 +191,16 @@
 #'   \code{branching_ratio}, \code{baseline_rate}, \code{n_events},
 #'   \code{converged} and the \code{backend} used.
 #' @examples
-#' \dontrun{
-#'   set.seed(1)
-#'   ev <- cumsum(rexp(200, rate = 2))
-#'   fit <- morie_hawkes_fit(ev, kernel = "exponential")
-#'   print(fit)
-#' }
+#' set.seed(1)
+#' ev <- cumsum(rexp(200, rate = 2))
+#' fit <- morie_hawkes_fit(ev, kernel = "exponential")
+#' print(fit)
 #' @export
 morie_hawkes_fit <- function(times, end_time = NULL,
-                             kernel = c("exponential", "weibull",
-                                        "lomax", "gamma")) {
+                             kernel = c(
+                               "exponential", "weibull",
+                               "lomax", "gamma"
+                             )) {
   kernel <- match.arg(kernel)
   times <- as.numeric(times)
   if (anyNA(times) || any(diff(times) < 0)) {
@@ -195,9 +231,12 @@ morie_hawkes_fit <- function(times, end_time = NULL,
   best <- NULL
   for (phi_s in .hawkes_restarts(phi0)) {
     run <- tryCatch(
-      stats::optim(phi_s, obj, method = "Nelder-Mead",
-                   control = list(maxit = 2000, reltol = 1e-10)),
-      error = function(e) NULL)
+      stats::optim(phi_s, obj,
+        method = "Nelder-Mead",
+        control = list(maxit = 2000, reltol = 1e-10)
+      ),
+      error = function(e) NULL
+    )
     if (is.null(run) || !is.finite(run$value)) next
     if (is.null(best) || run$value < best$value) best <- run
   }
@@ -218,43 +257,63 @@ morie_hawkes_fit <- function(times, end_time = NULL,
   # a flat ridge in the unidentified directions.
   degenerate <- eta < 1e-3
   structure(
-    list(kernel = kernel, baseline = "constant",
-         estimate = est,
-         branching_ratio = eta,
-         baseline_rate = exp(unname(est[["a0"]])),
-         loglik = loglik, aic = 2 * k - 2 * loglik,
-         loglik_poisson = loglik_pois,
-         loglik_gain = loglik - loglik_pois,
-         self_excitation_detected = !degenerate,
-         n_events = n, end_time = end_time,
-         converged = best$convergence == 0L || degenerate,
-         note = if (degenerate)
-           paste("eta collapsed to ~0: data consistent with a",
-                 "homogeneous Poisson process; kernel-shape",
-                 "parameters are NOT identified")
-         else NULL,
-         backend = if (use_cpp) "cpp" else "pure-R"),
-    class = "morie_hawkes_fit")
+    list(
+      kernel = kernel, baseline = "constant",
+      estimate = est,
+      branching_ratio = eta,
+      baseline_rate = exp(unname(est[["a0"]])),
+      loglik = loglik, aic = 2 * k - 2 * loglik,
+      loglik_poisson = loglik_pois,
+      loglik_gain = loglik - loglik_pois,
+      self_excitation_detected = !degenerate,
+      n_events = n, end_time = end_time,
+      converged = best$convergence == 0L || degenerate,
+      note = if (degenerate) {
+        paste(
+          "eta collapsed to ~0: data consistent with a",
+          "homogeneous Poisson process; kernel-shape",
+          "parameters are NOT identified"
+        )
+      } else {
+        NULL
+      },
+      backend = if (use_cpp) "cpp" else "pure-R"
+    ),
+    class = "morie_hawkes_fit"
+  )
 }
 
 #' @export
 print.morie_hawkes_fit <- function(x, ...) {
-  cat(sprintf("morie Hawkes fit  --  %s kernel, %s baseline\n",
-              x$kernel, x$baseline))
-  cat(sprintf("  events: %d   horizon: %.4g   backend: %s\n",
-              x$n_events, x$end_time, x$backend))
+  cat(sprintf(
+    "morie Hawkes fit  --  %s kernel, %s baseline\n",
+    x$kernel, x$baseline
+  ))
+  cat(sprintf(
+    "  events: %d   horizon: %.4g   backend: %s\n",
+    x$n_events, x$end_time, x$backend
+  ))
   cat("  estimate:\n")
   for (nm in names(x$estimate)) {
     cat(sprintf("    %-8s % .6g\n", nm, x$estimate[[nm]]))
   }
   cat(sprintf("  baseline rate nu : %.6g\n", x$baseline_rate))
-  cat(sprintf("  branching ratio  : %.6g%s\n", x$branching_ratio,
-              if (x$branching_ratio >= 1) "  (NOT stationary: eta >= 1)"
-              else ""))
-  cat(sprintf("  logLik: %.6g   AIC: %.6g   converged: %s\n",
-              x$loglik, x$aic, x$converged))
-  cat(sprintf("  vs Poisson: logLik %.6g  (gain %+.4g)\n",
-              x$loglik_poisson, x$loglik_gain))
+  cat(sprintf(
+    "  branching ratio  : %.6g%s\n", x$branching_ratio,
+    if (x$branching_ratio >= 1) {
+      "  (NOT stationary: eta >= 1)"
+    } else {
+      ""
+    }
+  ))
+  cat(sprintf(
+    "  logLik: %.6g   AIC: %.6g   converged: %s\n",
+    x$loglik, x$aic, x$converged
+  ))
+  cat(sprintf(
+    "  vs Poisson: logLik %.6g  (gain %+.4g)\n",
+    x$loglik_poisson, x$loglik_gain
+  ))
   if (!isTRUE(x$self_excitation_detected)) {
     cat("  NOTE: ", x$note, "\n", sep = "")
   }

@@ -22,26 +22,32 @@ beautiful_loop_metric <- function(eeg, fmri = NULL) {
   pair <- .entheo_extract_pair(eeg, fmri)
   warnings_vec <- character(0)
   if (is.null(pair$e_dmt) || is.null(pair$f_dmt)) {
-    return(list(score = NA_real_,
-                score_dmt = NA_real_, score_pcb = NA_real_,
-                contrast = NA_real_,
-                per_frame_dmt = NULL, per_frame_pcb = NULL,
-                warnings = "EEG or fMRI missing for primary condition"))
+    return(list(
+      score = NA_real_,
+      score_dmt = NA_real_, score_pcb = NA_real_,
+      contrast = NA_real_,
+      per_frame_dmt = NULL, per_frame_pcb = NULL,
+      warnings = "EEG or fMRI missing for primary condition"
+    ))
   }
   pf_dmt <- .entheo_binding_per_frame(pair$e_dmt, pair$f_dmt)
   score_dmt <- mean(abs(pf_dmt))
-  pf_pcb <- NULL; score_pcb <- NA_real_; contrast <- NA_real_
+  pf_pcb <- NULL
+  score_pcb <- NA_real_
+  contrast <- NA_real_
   if (!is.null(pair$e_pcb) && !is.null(pair$f_pcb)) {
     pf_pcb <- .entheo_binding_per_frame(pair$e_pcb, pair$f_pcb)
     score_pcb <- mean(abs(pf_pcb))
     contrast <- score_dmt - score_pcb
   }
-  list(score = score_dmt,
-       score_dmt = score_dmt, score_pcb = score_pcb,
-       contrast = contrast,
-       per_frame_dmt = pf_dmt, per_frame_pcb = pf_pcb,
-       method = "Bayne-Laukkonen Beautiful Loop (v0.4.0-alpha toy)",
-       warnings = warnings_vec)
+  list(
+    score = score_dmt,
+    score_dmt = score_dmt, score_pcb = score_pcb,
+    contrast = contrast,
+    per_frame_dmt = pf_dmt, per_frame_pcb = pf_pcb,
+    method = "Bayne-Laukkonen Beautiful Loop (v0.4.0-alpha toy)",
+    warnings = warnings_vec
+  )
 }
 
 
@@ -57,26 +63,32 @@ beautiful_loop_metric <- function(eeg, fmri = NULL) {
 san_score <- function(eeg, fmri = NULL) {
   pair <- .entheo_extract_pair(eeg, fmri)
   if (is.null(pair$e_dmt) || is.null(pair$f_dmt)) {
-    return(list(score = NA_real_,
-                score_dmt = NA_real_, score_pcb = NA_real_,
-                contrast = NA_real_,
-                per_frame_dmt = NULL, per_frame_pcb = NULL,
-                warnings = "EEG or fMRI missing for primary condition"))
+    return(list(
+      score = NA_real_,
+      score_dmt = NA_real_, score_pcb = NA_real_,
+      contrast = NA_real_,
+      per_frame_dmt = NULL, per_frame_pcb = NULL,
+      warnings = "EEG or fMRI missing for primary condition"
+    ))
   }
   pf_dmt <- .entheo_san_per_frame(pair$e_dmt, pair$f_dmt)
   score_dmt <- mean(pf_dmt)
-  pf_pcb <- NULL; score_pcb <- NA_real_; contrast <- NA_real_
+  pf_pcb <- NULL
+  score_pcb <- NA_real_
+  contrast <- NA_real_
   if (!is.null(pair$e_pcb) && !is.null(pair$f_pcb)) {
     pf_pcb <- .entheo_san_per_frame(pair$e_pcb, pair$f_pcb)
     score_pcb <- mean(pf_pcb)
     contrast <- score_dmt - score_pcb
   }
-  list(score = score_dmt,
-       score_dmt = score_dmt, score_pcb = score_pcb,
-       contrast = contrast,
-       per_frame_dmt = pf_dmt, per_frame_pcb = pf_pcb,
-       method = "Pirez Self-Aware Networks (v0.4.0-alpha toy)",
-       warnings = character(0))
+  list(
+    score = score_dmt,
+    score_dmt = score_dmt, score_pcb = score_pcb,
+    contrast = contrast,
+    per_frame_dmt = pf_dmt, per_frame_pcb = pf_pcb,
+    method = "Pirez Self-Aware Networks (v0.4.0-alpha toy)",
+    warnings = character(0)
+  )
 }
 
 
@@ -87,8 +99,10 @@ san_score <- function(eeg, fmri = NULL) {
 .entheo_extract_pair <- function(record_or_eeg, fmri) {
   if (is.list(record_or_eeg) && !is.null(record_or_eeg$fmri)) {
     rec <- record_or_eeg
-    return(list(e_dmt = rec$eeg$data_dmt, f_dmt = rec$fmri$data_dmt,
-                e_pcb = rec$eeg$data_pcb, f_pcb = rec$fmri$data_pcb))
+    return(list(
+      e_dmt = rec$eeg$data_dmt, f_dmt = rec$fmri$data_dmt,
+      e_pcb = rec$eeg$data_pcb, f_pcb = rec$fmri$data_pcb
+    ))
   }
   list(e_dmt = record_or_eeg, f_dmt = fmri, e_pcb = NULL, f_pcb = NULL)
 }
@@ -107,11 +121,17 @@ san_score <- function(eeg, fmri = NULL) {
   e_tc <- if (is.matrix(e)) colMeans(e) else e
   f_tc <- if (is.matrix(f)) colMeans(f) else f
   n <- min(length(e_tc), length(f_tc))
-  if (n == 0) return(list(e = e_tc, f = f_tc))
+  if (n == 0) {
+    return(list(e = e_tc, f = f_tc))
+  }
   .bin <- function(x) {
-    if (length(x) == n) return(x)
+    if (length(x) == n) {
+      return(x)
+    }
     step <- length(x) %/% n
-    if (step <= 1L) return(x[seq_len(n)])
+    if (step <= 1L) {
+      return(x[seq_len(n)])
+    }
     trimmed <- x[seq_len(step * n)]
     colMeans(matrix(trimmed, nrow = step))
   }
@@ -121,9 +141,12 @@ san_score <- function(eeg, fmri = NULL) {
 .entheo_binding_per_frame <- function(eeg, fmri) {
   env <- .entheo_envelope(eeg)
   al <- .entheo_align(env, fmri)
-  e_tc <- al$e; f_tc <- al$f
+  e_tc <- al$e
+  f_tc <- al$f
   n <- min(length(e_tc), length(f_tc))
-  if (n < 4) return(rep(0, n))
+  if (n < 4) {
+    return(rep(0, n))
+  }
   # Replace NA introduced by stats::filter padding with 0.
   e_tc[is.na(e_tc)] <- 0
   f_grad <- c(diff(f_tc), 0)
@@ -145,9 +168,12 @@ san_score <- function(eeg, fmri = NULL) {
 
 .entheo_san_per_frame <- function(eeg, fmri) {
   al <- .entheo_align(eeg, fmri)
-  e_tc <- al$e; f_tc <- al$f
+  e_tc <- al$e
+  f_tc <- al$f
   n <- min(length(e_tc), length(f_tc))
-  if (n < 4) return(rep(0, n))
+  if (n < 4) {
+    return(rep(0, n))
+  }
   joint <- rbind(e_tc[seq_len(n)], f_tc[seq_len(n)])
   joint <- (joint - rowMeans(joint)) /
     (apply(joint, 1, stats::sd) + 1e-9)

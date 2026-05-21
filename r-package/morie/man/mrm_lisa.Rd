@@ -4,12 +4,26 @@
 \alias{mrm_lisa}
 \title{LISA (Local Indicators of Spatial Association) on polygon-level
 crime data + per-year polygon Moran's I time series}
+\value{
+The LISA callables return named \code{list}s with per-polygon
+local Moran's I, permutation p-values, cluster classifications, and
+(for the per-year wrapper) the time series of global Moran's I.
+}
 \description{
 R parity of \code{morie.mrm_tps_lisa()} and
 \code{morie.mrm_tps_polygon_moran_per_year()}.  Local Moran's I per
 polygon centroid with 999-permutation MC significance, plus a
 convenience wrapper for the per-year time series used by the morie
 empirical paper Section 7.11.
+}
+\examples{
+if (FALSE) {
+  ncr <- read.csv("Neighbourhood_Crime_Rates_Open_Data.csv")
+  mrm_tps_lisa(ncr,
+    count_col = "ASSAULT_2024",
+    lat_col = "lat", lon_col = "lon"
+  )
+}
 }
 \references{
 Anselin, L. (1995). Local indicators of spatial association --

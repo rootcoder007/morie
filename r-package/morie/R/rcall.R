@@ -12,10 +12,7 @@
 #'   `marginal_yea`, `marginal_nay`, `pct_yea`, `lopsided_pct`,
 #'   `method`.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' rcall(x = rnorm(50))
 #' @export
 rcall <- function(x) {
   V <- if (is.matrix(x)) x else matrix(as.numeric(x), ncol = 1L)
@@ -26,7 +23,8 @@ rcall <- function(x) {
     Vp[V %in% c(4, 5, 6)] <- 0
     V <- Vp
   }
-  n <- nrow(V); m <- ncol(V)
+  n <- nrow(V)
+  m <- ncol(V)
   n_yea <- sum(V == 1, na.rm = TRUE)
   n_nay <- sum(V == 0, na.rm = TRUE)
   n_abs <- sum(is.na(V))
@@ -35,14 +33,16 @@ rcall <- function(x) {
   denom <- marg_yea + marg_nay
   pct_yea <- ifelse(denom > 0, marg_yea / pmax(denom, 1L), NA_real_)
   lopsided <- mean((pct_yea >= 0.975) | (pct_yea <= 0.025), na.rm = TRUE)
-  list(n = n, m = m, n_yea = as.integer(n_yea),
-       n_nay = as.integer(n_nay), n_abs = as.integer(n_abs),
-       marginal_yea = marg_yea, marginal_nay = marg_nay,
-       pct_yea = pct_yea, lopsided_pct = as.numeric(lopsided),
-       method = "roll_call_analysis")
+  list(
+    n = n, m = m, n_yea = as.integer(n_yea),
+    n_nay = as.integer(n_nay), n_abs = as.integer(n_abs),
+    marginal_yea = marg_yea, marginal_nay = marg_nay,
+    pct_yea = pct_yea, lopsided_pct = as.numeric(lopsided),
+    method = "morie_roll_call_analysis"
+  )
 }
 
 #' @keywords internal
 #' @rdname rcall
 #' @export
-roll_call_analysis <- rcall
+morie_roll_call_analysis <- rcall

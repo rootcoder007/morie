@@ -2,12 +2,12 @@
 % Please edit documentation in R/impsm.R
 \name{impsm}
 \alias{impsm}
-\alias{importance_sampling}
+\alias{morie_importance_sampling}
 \title{Importance sampling (Geweke 1989)}
 \usage{
 impsm(x, h = NULL, p = NULL, q = NULL)
 
-importance_sampling(x, h = NULL, p = NULL, q = NULL)
+morie_importance_sampling(x, h = NULL, p = NULL, q = NULL)
 }
 \arguments{
 \item{x}{numeric draws from q.}

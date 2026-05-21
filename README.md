@@ -6,6 +6,9 @@
 
 A multi-domain scientific computing toolkit (Python and R) for observational inference, with sociolegal, signal-processing, cryptographic, spatial-statistics, statistical-physics, and psychometrics modules. Hosts the MRM framework as a primary application for Canadian carceral, police, and oversight data analysis.
 
+[![R CMD check](https://github.com/hadesllm/morie/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/hadesllm/morie/actions/workflows/r-cmd-check.yml)
+[![CI](https://github.com/hadesllm/morie/actions/workflows/ci.yml/badge.svg)](https://github.com/hadesllm/morie/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/hadesllm/morie/actions/workflows/codeql.yml/badge.svg)](https://github.com/hadesllm/morie/actions/workflows/codeql.yml)
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg)](https://github.com/hadesllm/morie/blob/main/LICENSE)
 [![PyPI version](https://img.shields.io/pypi/v/morie.svg)](https://pypi.org/project/morie/)
 [![r-universe](https://img.shields.io/badge/r--universe-hadesllm-276DC3)](https://hadesllm.r-universe.dev/morie)
@@ -96,7 +99,7 @@ pip install morie
 docker run --rm ghcr.io/hadesllm/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/hadesllm/morie:0.9.4 morie --help
+docker run --rm ghcr.io/hadesllm/morie:0.9.5.2 morie --help
 ```
 
 Multi-arch image published on every release with both versioned and `:latest` tags. Requires only Docker — no Python, no pip.
@@ -130,6 +133,19 @@ from morie.otis_all_analyze import analyze_a01_mrm
 result = analyze_a01_mrm(df)
 print(result)
 ```
+
+## What's new in v0.9.5
+
+- **SIU subsystem — first-class.** A full pipeline for the Ontario Special Investigations Unit director's-report corpus (English + French, 2005-present): `morie_fetch_siu()` with a polite token-bucket fetcher (4 req/s default, exponential backoff on 429/5xx, optional on-disk page cache), a hand-rolled C++ parser (`src/siu_parser.cpp`) that handles both 2015-2019 and 2020+ template families plus 2014 *Overview* and 2005 *Director's report* variants, 38 police-service acronyms (English + French) mapped to canonical English names, compound officer count handling, and a linear `html_to_text` state machine replacing the segfault-prone `std::regex_replace`.
+- **Language-aware DRID manifest.** `inst/extdata/siu_drid_manifest.csv.gz` ships with 4,743 probed drids (en=2,531, fr=2,212, unknown=0) and a `canonical_drid` column for English-preferred dedupe. `morie_fetch_siu(lang = "en")` skips French drids — half the network round-trips. `morie_siu_index()` exposes the manifest.
+- **Canonical override system — the parser learns.** `inst/extdata/siu_canonical_overrides.csv.gz` ships with 47 hand-verified corrections; `morie_siu_record_correction(case_number, field, value)` lets users add their own. Overrides are applied automatically at the end of every fetch.
+- **Audit + AI tooling.** `morie_siu_audit_case()`, `morie_siu_compare()`, `morie_siu_sanity_check()`, `morie_siu_anomaly_check()`, `morie_siu_audit_columns()`, `morie_siu_translate()`, and `morie_siu_llm_extract()` with four providers — `ollama` (default, local, free), `gemini`, `claude`, `vertex` — and a `c("ollama", "gemini")` failover chain so paid APIs only fire when the local model fails. Defaults: `OLLAMA_HOST=http://localhost:11434`, `OLLAMA_MODEL=gemma3:4b`, `OLLAMA_KEEP_ALIVE=30m`. French → English translation via `translategemma:latest`.
+- **559 exported `morie_*` R functions — every public callable now prefixed.** Cleared rOpenSci `pkgcheck`'s duplicated-function-names finding by renaming 352 unprefixed exports to `morie_*` across `R/`, `tests/`, `vignettes/`, `inst/`, and `data-raw/`. No aliases — the unprefixed names are gone from `NAMESPACE`.
+- **TPS open-data ingestion fixes** (carried over from the original v0.9.5 plan). Corrected the Homicides and Shootings date ranges in the dataset catalog (`2004-present`, not `2014`); rewrote `morie_fetch_tps()` ArcGIS paging to follow the server's `exceededTransferLimit` flag so large layers are no longer silently truncated to the first page; daily-resolution Hawkes fits now build the occurrence date from the local-time `OCC_YEAR`/`OCC_MONTH`/`OCC_DAY` fields rather than the UTC-converted `OCC_DATE`.
+- **`T_horizon` rename in the Hawkes C++ likelihood.** The time-horizon parameter was bare `T` in the auto-generated `R/RcppExports.R`, which `lintr` flags as a potential `TRUE` shadow. The C++ signature is now `T_horizon`; the math convention is preserved in C++ docstrings only.
+- **rOpenSci 770 blockers cleared.** `.github/CONTRIBUTING.md` shipped, 16 `@return` docs added, 15 `@examples` added, full roxygen2 conversion (RoxygenNote 7.3.3), coverage validated ≥75% under `covr::package_coverage`, `\dontrun{}` count 72 → 0, `setwd()` replaced with `withr::local_dir()` in `R/workflow.R`.
+- **Five-cell R CMD check matrix all green** on `release/v0.9.5-audit`: macOS-latest release, Windows-2025 release, Ubuntu-latest release, Ubuntu-latest release + postgres-15, Ubuntu-latest oldrel-1, Ubuntu-latest devel. Plus `pkgcheck`, `covr` + Codecov upload, `lintr`, `goodpractice`, and CodeQL.
+- **Final SIU corpus stats**: 2,218 unique cases × 64 columns, 100.000% format-clean per `morie_siu_sanity_check()`.
 
 ## What's new in v0.9.4
 
@@ -223,12 +239,12 @@ and the **empirical applications paper**.
 ```
 # Software paper — R (also the R package source on Zenodo)
 Ruhela, V. S. (2026). morie: Multi-domain Open Research and Inferential
-Estimation in R (v0.9.4). Zenodo.
+Estimation in R (v0.9.5.2). Zenodo.
 https://doi.org/10.5281/zenodo.20111233
 
 # Software paper — Python (also the Python package source on Zenodo)
 Ruhela, V. S. (2026). morie: Multi-domain Open Research and Inferential
-Estimation in Python (v0.9.4). Zenodo.
+Estimation in Python (v0.9.5.2). Zenodo.
 https://doi.org/10.5281/zenodo.20096350
 
 # MRM framework paper (theoretical foundations)

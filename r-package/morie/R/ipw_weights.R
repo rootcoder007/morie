@@ -26,13 +26,13 @@
 #'   t = rbinom(100, 1, 0.4),
 #'   ps = pmin(pmax(runif(100, 0.05, 0.95), 0.05), 0.95)
 #' )
-#' w <- calculate_ipw_weights(df, treatment = "t", ps_col = "ps")
+#' w <- morie_calculate_ipw_weights(df, treatment = "t", ps_col = "ps")
 #' summary(w)
-calculate_ipw_weights <- function(data, treatment, ps_col,
+morie_calculate_ipw_weights <- function(data, treatment, ps_col,
                                   stabilized = FALSE,
                                   trim_quantiles = NULL) {
   ps <- pmin(pmax(data[[ps_col]], 0.01), 0.99)
-  t  <- data[[treatment]]
+  t <- data[[treatment]]
   if (stabilized) {
     p_treated <- mean(t)
     weights <- ifelse(t == 1, p_treated / ps, (1 - p_treated) / (1 - ps))
@@ -40,8 +40,9 @@ calculate_ipw_weights <- function(data, treatment, ps_col,
     weights <- (t / ps) + ((1 - t) / (1 - ps))
   }
   if (!is.null(trim_quantiles)) {
-    if (length(trim_quantiles) != 2L)
+    if (length(trim_quantiles) != 2L) {
       stop("trim_quantiles must be length 2 (lower, upper).")
+    }
     qs <- stats::quantile(weights, probs = trim_quantiles, na.rm = TRUE)
     weights <- pmin(pmax(weights, qs[[1L]]), qs[[2L]])
   }

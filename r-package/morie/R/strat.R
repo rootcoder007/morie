@@ -25,8 +25,10 @@ strat <- function(data, y = "y", strata = "stratum", pop_sizes = NULL) {
     W_h <- n_h / sum(n_h)
   } else {
     N <- sum(pop_sizes)
-    W_h <- vapply(strata_names, function(s) pop_sizes[[as.character(s)]] / N,
-                  numeric(1))
+    W_h <- vapply(
+      strata_names, function(s) pop_sizes[[as.character(s)]] / N,
+      numeric(1)
+    )
   }
   est <- sum(W_h * yb_h)
   var_st <- sum(W_h^2 * s2_h / n_h)
@@ -34,11 +36,13 @@ strat <- function(data, y = "y", strata = "stratum", pop_sizes = NULL) {
   z <- stats::qnorm(0.975)
   names(W_h) <- as.character(strata_names)
   names(yb_h) <- as.character(strata_names)
-  list(estimate = as.numeric(est), se = as.numeric(se),
-       ci_lower = est - z * se, ci_upper = est + z * se,
-       weights = as.list(W_h), strata_means = as.list(yb_h),
-       n_strata = length(strata_names),
-       method = "Stratified mean (Cochran 1977)")
+  list(
+    estimate = as.numeric(est), se = as.numeric(se),
+    ci_lower = est - z * se, ci_upper = est + z * se,
+    weights = as.list(W_h), strata_means = as.list(yb_h),
+    n_strata = length(strata_names),
+    method = "Stratified mean (Cochran 1977)"
+  )
 }
 
 # CANONICAL TEST
@@ -50,4 +54,4 @@ strat <- function(data, y = "y", strata = "stratum", pop_sizes = NULL) {
 #' @rdname strat
 #' @keywords internal
 #' @export
-stratified_sampling <- strat
+morie_stratified_sampling <- strat

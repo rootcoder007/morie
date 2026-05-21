@@ -2,12 +2,18 @@
 % Please edit documentation in R/hrzt1.R
 \name{hrzt1}
 \alias{hrzt1}
-\alias{horowitz_treatment_effect}
+\alias{morie_horowitz_treatment_effect}
 \title{Heckman-Ichimura-Todd kernel-matching ATE}
 \usage{
 hrzt1(x, y, treatment, bandwidth = NULL, .bootstrap = TRUE)
 
-horowitz_treatment_effect(x, y, treatment, bandwidth = NULL, .bootstrap = TRUE)
+morie_horowitz_treatment_effect(
+  x,
+  y,
+  treatment,
+  bandwidth = NULL,
+  .bootstrap = TRUE
+)
 }
 \arguments{
 \item{x}{Numeric covariate vector or matrix.}

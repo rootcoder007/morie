@@ -16,20 +16,25 @@
 #' @export
 #' @examples
 #' \donttest{
-#'   set.seed(0); fs <- 256
-#'   t <- seq(0, 8, length.out = 2048)
-#'   x <- sin(2 * pi * 10 * t) + 0.3 * rnorm(length(t))
-#'   r <- rgeeg(x, fs = fs); r$relative[["alpha"]] > r$relative[["gamma"]]
+#' set.seed(0)
+#' fs <- 256
+#' t <- seq(0, 8, length.out = 2048)
+#' x <- sin(2 * pi * 10 * t) + 0.3 * rnorm(length(t))
+#' r <- rgeeg(x, fs = fs)
+#' r$relative[["alpha"]] > r$relative[["gamma"]]
 #' }
 rgeeg <- function(x, fs, bands = NULL, nperseg = NULL) {
   if (is.null(bands)) {
-    bands <- list(delta = c(0.5, 4), theta = c(4, 8),
-                  alpha = c(8, 13), beta = c(13, 30),
-                  gamma = c(30, 100))
+    bands <- list(
+      delta = c(0.5, 4), theta = c(4, 8),
+      alpha = c(8, 13), beta = c(13, 30),
+      gamma = c(30, 100)
+    )
   }
   if (is.null(nperseg)) nperseg <- max(16, min(length(x), as.integer(4 * fs)))
   ps <- rgpsd(x, fs = fs, nperseg = nperseg)
-  freqs <- ps$freqs; psd <- ps$psd
+  freqs <- ps$freqs
+  psd <- ps$psd
   df <- diff(freqs[1:2])
   total <- sum(psd) * df
   absolute <- vapply(names(bands), function(nm) {
@@ -39,11 +44,13 @@ rgeeg <- function(x, fs, bands = NULL, nperseg = NULL) {
   }, numeric(1))
   names(absolute) <- names(bands)
   relative <- if (total > 0) absolute / total else absolute * 0
-  list(absolute = absolute, relative = relative,
-       total_power = total, freqs = freqs, psd = psd)
+  list(
+    absolute = absolute, relative = relative,
+    total_power = total, freqs = freqs, psd = psd
+  )
 }
 
 #' @rdname rgeeg
 #' @keywords internal
 #' @export
-rangayyan_eeg_bands <- rgeeg
+morie_rangayyan_eeg_bands <- rgeeg

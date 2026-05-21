@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgfir.R
 \name{rgfir}
 \alias{rgfir}
-\alias{rangayyan_fir_filter}
+\alias{morie_rangayyan_fir_filter}
 \title{FIR lowpass filter (windowed sinc) -- Rangayyan Ch 3}
 \usage{
 rgfir(x, cutoff, order = 51L, fs = 1, window = "hamming")
 
-rangayyan_fir_filter(x, cutoff, order = 51L, fs = 1, window = "hamming")
+morie_rangayyan_fir_filter(x, cutoff, order = 51L, fs = 1, window = "hamming")
 }
 \arguments{
 \item{x}{Numeric vector. Input signal.}

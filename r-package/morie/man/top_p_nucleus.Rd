@@ -4,14 +4,14 @@
 \alias{top_p_nucleus}
 \title{Top-p nucleus sampling (Holtzman 2020)}
 \usage{
-top_p_nucleus(x, p = 0.9, T = 1)
+top_p_nucleus(x, p = 0.9, temperature = 1)
 }
 \arguments{
 \item{x}{Numeric vector of logits.}
 
 \item{p}{Numeric nucleus mass cutoff in (0, 1] (default 0.9).}
 
-\item{T}{Numeric softmax temperature (default 1).}
+\item{temperature}{Numeric softmax temperature (default 1).}
 }
 \value{
 Named list with tensor, keep_mask, n_kept, p, method.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/stacv.R
 \name{stacv}
 \alias{stacv}
-\alias{spatiotemporal_autocovariance}
+\alias{morie_spatiotemporal_autocovariance}
 \title{Empirical spatiotemporal autocovariance.}
 \usage{
 stacv(
@@ -15,7 +15,7 @@ stacv(
   max_temporal = NULL
 )
 
-spatiotemporal_autocovariance(
+morie_spatiotemporal_autocovariance(
   x,
   coords,
   times,
@@ -45,10 +45,7 @@ n, method.
       \sum_{(i,j) \in N(h,u)} (Z_i - \bar Z)(Z_j - \bar Z)}.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+stacv(x = rnorm(50), coords = matrix(runif(100), 50, 2), times = sort(cumsum(rexp(50))))
 }
 \references{
 Cressie & Huang (1999); Schabenberger & Gotway (2005), Ch 8.

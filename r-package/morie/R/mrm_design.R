@@ -13,6 +13,13 @@
 #' Box, G. E. P., Hunter, J. S., & Hunter, W. G. (2005).
 #'   Statistics for Experimenters. Wiley.
 #'
+#' @return Each design callable returns a named \code{list} of estimates,
+#'   test statistics, p-values, and a plain-language \code{interpretation}.
+#' @examples
+#' set.seed(2026)
+#' a <- rnorm(40, mean = 5, sd = 1.2)
+#' b <- rnorm(40, mean = 5.5, sd = 1.5)
+#' mrm_two_treatment_test(a, b)$p_welch
 #' @name mrm_design
 NULL
 
@@ -31,37 +38,41 @@ NULL
 #'   n_a, n_b, interpretation.
 #' @examples
 #' set.seed(2026)
-#' a <- rnorm(40, mean = 5,  sd = 1.2)
+#' a <- rnorm(40, mean = 5, sd = 1.2)
 #' b <- rnorm(40, mean = 5.5, sd = 1.5)
 #' res <- mrm_two_treatment_test(a, b)
-#' res$estimate     # mean(a) - mean(b)
-#' res$p_welch      # canonical p-value
+#' res$estimate # mean(a) - mean(b)
+#' res$p_welch # canonical p-value
 #' res$p_mannwhitney # rank-based sensitivity check
 #' @export
 mrm_two_treatment_test <- function(a, b, alpha = 0.05) {
-  a <- as.numeric(a); b <- as.numeric(b)
-  a <- a[is.finite(a)]; b <- b[is.finite(b)]
+  a <- as.numeric(a)
+  b <- as.numeric(b)
+  a <- a[is.finite(a)]
+  b <- b[is.finite(b)]
   welch <- stats::t.test(a, b, var.equal = FALSE)
-  stud  <- stats::t.test(a, b, var.equal = TRUE)
-  mw    <- suppressWarnings(stats::wilcox.test(a, b, alternative = "two.sided"))
-  diff  <- mean(a) - mean(b)
-  se    <- sqrt(stats::var(a) / length(a) + stats::var(b) / length(b))
-  df_   <- welch$parameter
-  z     <- stats::qt(1 - alpha / 2, df_)
+  stud <- stats::t.test(a, b, var.equal = TRUE)
+  mw <- suppressWarnings(stats::wilcox.test(a, b, alternative = "two.sided"))
+  diff <- mean(a) - mean(b)
+  se <- sqrt(stats::var(a) / length(a) + stats::var(b) / length(b))
+  df_ <- welch$parameter
+  z <- stats::qt(1 - alpha / 2, df_)
   list(
-    estimate     = round(diff, 6),
-    se           = round(se, 6),
-    t_statistic  = round(as.numeric(welch$statistic), 4),
-    df           = round(as.numeric(df_), 2),
-    p_welch      = welch$p.value,
-    p_student    = stud$p.value,
-    p_mannwhitney= mw$p.value,
-    ci_lower     = round(diff - z * se, 6),
-    ci_upper     = round(diff + z * se, 6),
-    n_a          = length(a), n_b = length(b),
-    interpretation = sprintf("Welch t: Delta=%.3f, p=%.3g; %s",
-                             diff, welch$p.value,
-                             if (welch$p.value < alpha) "reject H0" else "fail to reject")
+    estimate = round(diff, 6),
+    se = round(se, 6),
+    t_statistic = round(as.numeric(welch$statistic), 4),
+    df = round(as.numeric(df_), 2),
+    p_welch = welch$p.value,
+    p_student = stud$p.value,
+    p_mannwhitney = mw$p.value,
+    ci_lower = round(diff - z * se, 6),
+    ci_upper = round(diff + z * se, 6),
+    n_a = length(a), n_b = length(b),
+    interpretation = sprintf(
+      "Welch t: Delta=%.3f, p=%.3g; %s",
+      diff, welch$p.value,
+      if (welch$p.value < alpha) "reject H0" else "fail to reject"
+    )
   )
 }
 
@@ -92,23 +103,27 @@ mrm_anova_oneway <- function(data, response_col, group_col, alpha = 0.05) {
   d[[group_col]] <- factor(d[[group_col]])
   fit <- stats::aov(as.formula(paste(response_col, "~", group_col)), data = d)
   summ <- summary(fit)[[1]]
-  f <- summ[["F value"]][1]; p <- summ[["Pr(>F)"]][1]
+  f <- summ[["F value"]][1]
+  p <- summ[["Pr(>F)"]][1]
   tk <- stats::TukeyHSD(fit, conf.level = 1 - alpha)
   tk_df <- as.data.frame(tk[[group_col]])
-  tk_df$pair <- rownames(tk_df); rownames(tk_df) <- NULL
+  tk_df$pair <- rownames(tk_df)
+  rownames(tk_df) <- NULL
   means <- tapply(d[[response_col]], d[[group_col]], mean)
-  ns    <- tapply(d[[response_col]], d[[group_col]], length)
+  ns <- tapply(d[[response_col]], d[[group_col]], length)
   list(
     f_statistic = round(as.numeric(f), 4),
-    p_value     = as.numeric(p),
-    df_between  = summ[["Df"]][1],
-    df_within   = summ[["Df"]][2],
-    means       = as.list(round(means, 4)),
+    p_value = as.numeric(p),
+    df_between = summ[["Df"]][1],
+    df_within = summ[["Df"]][2],
+    means = as.list(round(means, 4)),
     n_per_group = as.list(ns),
-    tukey_hsd   = tk_df,
-    interpretation = sprintf("F(%d,%d) = %.3f, p = %.3g%s",
-                             summ[["Df"]][1], summ[["Df"]][2], f, p,
-                             if (p < alpha) "; reject H0 of equal means" else "")
+    tukey_hsd = tk_df,
+    interpretation = sprintf(
+      "F(%d,%d) = %.3f, p = %.3g%s",
+      summ[["Df"]][1], summ[["Df"]][2], f, p,
+      if (p < alpha) "; reject H0 of equal means" else ""
+    )
   )
 }
 
@@ -133,8 +148,10 @@ mrm_anova_oneway <- function(data, response_col, group_col, alpha = 0.05) {
 #' lvl <- c(-1, 1)
 #' df <- expand.grid(A = lvl, B = lvl, C = lvl)
 #' df$y <- 10 + 2 * df$A + 1.5 * df$B + 0.5 * df$A * df$B + rnorm(8, 0, 0.2)
-#' res <- mrm_factorial_2k(df, response_col = "y",
-#'                         factor_cols = c("A", "B", "C"))
+#' res <- mrm_factorial_2k(df,
+#'   response_col = "y",
+#'   factor_cols = c("A", "B", "C")
+#' )
 #' res$main_effects
 #' res$interaction_effects
 #' @export
@@ -184,10 +201,12 @@ mrm_factorial_2k <- function(data, response_col, factor_cols) {
     interaction_effects = lapply(inter, function(x) round(x, 6)),
     half_normal_coords = half_n,
     n = length(y), k = k,
-    interpretation = sprintf("2^%d factorial on n=%d. Largest main effect: %s = %.3f",
-                             k, length(y),
-                             names(main)[which.max(abs(main))],
-                             main[which.max(abs(main))])
+    interpretation = sprintf(
+      "2^%d factorial on n=%d. Largest main effect: %s = %.3f",
+      k, length(y),
+      names(main)[which.max(abs(main))],
+      main[which.max(abs(main))]
+    )
   )
 }
 
@@ -212,14 +231,18 @@ mrm_factorial_2k <- function(data, response_col, factor_cols) {
 #' y <- 0.7 * D + 0.3 * x + rnorm(n, 0, 0.5)
 #' df <- data.frame(D = D, y = y, age = x)
 #' # IPW-adjusted ATE
-#' ipw <- mrm_causal_design(df, treatment_col = "D",
-#'                          outcome_col = "y",
-#'                          covariates = "age",
-#'                          estimator = "ipw")
+#' ipw <- mrm_causal_design(df,
+#'   treatment_col = "D",
+#'   outcome_col = "y",
+#'   covariates = "age",
+#'   estimator = "ipw"
+#' )
 #' # Naive difference in means for comparison
-#' raw <- mrm_causal_design(df, treatment_col = "D",
-#'                          outcome_col = "y",
-#'                          estimator = "diff_in_means")
+#' raw <- mrm_causal_design(df,
+#'   treatment_col = "D",
+#'   outcome_col = "y",
+#'   estimator = "diff_in_means"
+#' )
 #' c(ipw = ipw$estimate, raw = raw$estimate)
 #' @importFrom stats as.formula
 #' @export
@@ -234,35 +257,44 @@ mrm_causal_design <- function(
   d <- d[stats::complete.cases(d), , drop = FALSE]
   D <- as.integer(d[[treatment_col]])
   Y <- as.numeric(d[[outcome_col]])
-  n <- nrow(d); n_t <- sum(D)
+  n <- nrow(d)
+  n_t <- sum(D)
 
   if (estimator == "ipw" && length(covariates) > 0L) {
     fml <- as.formula(paste(treatment_col, "~", paste(covariates, collapse = "+")))
     fit <- stats::glm(fml, data = d, family = stats::binomial())
-    e   <- stats::predict(fit, type = "response")
-    e   <- pmax(pmin(e, 1 - 1e-6), 1e-6)
-    w1  <- D / e; w0 <- (1 - D) / (1 - e)
+    e <- stats::predict(fit, type = "response")
+    e <- pmax(pmin(e, 1 - 1e-6), 1e-6)
+    w1 <- D / e
+    w0 <- (1 - D) / (1 - e)
     tau <- sum(w1 * Y) / sum(w1) - sum(w0 * Y) / sum(w0)
     # bootstrap SE
     set.seed(42)
     boots <- replicate(199, {
       idx <- sample.int(n, replace = TRUE)
       sub <- d[idx, , drop = FALSE]
-      e_b <- tryCatch({
-        fit_b <- stats::glm(fml, data = sub, family = stats::binomial())
-        pmax(pmin(stats::predict(fit_b, type = "response"), 1 - 1e-6), 1e-6)
-      }, error = function(e) NA_real_)
-      if (all(is.na(e_b))) NA_real_ else {
-        Db <- as.integer(sub[[treatment_col]]); Yb <- as.numeric(sub[[outcome_col]])
-        w1b <- Db / e_b; w0b <- (1 - Db) / (1 - e_b)
+      e_b <- tryCatch(
+        {
+          fit_b <- stats::glm(fml, data = sub, family = stats::binomial())
+          pmax(pmin(stats::predict(fit_b, type = "response"), 1 - 1e-6), 1e-6)
+        },
+        error = function(e) NA_real_
+      )
+      if (all(is.na(e_b))) {
+        NA_real_
+      } else {
+        Db <- as.integer(sub[[treatment_col]])
+        Yb <- as.numeric(sub[[outcome_col]])
+        w1b <- Db / e_b
+        w0b <- (1 - Db) / (1 - e_b)
         sum(w1b * Yb) / sum(w1b) - sum(w0b * Yb) / sum(w0b)
       }
     })
     se <- stats::sd(boots, na.rm = TRUE)
   } else {
     tau <- mean(Y[D == 1]) - mean(Y[D == 0])
-    se  <- sqrt(stats::var(Y[D == 1]) / sum(D == 1) +
-                stats::var(Y[D == 0]) / sum(D == 0))
+    se <- sqrt(stats::var(Y[D == 1]) / sum(D == 1) +
+      stats::var(Y[D == 0]) / sum(D == 0))
   }
 
   z <- 1.96
@@ -271,10 +303,12 @@ mrm_causal_design <- function(
     estimate = round(tau, 6), se = round(se, 6),
     ci_lower = round(tau - z * se, 6),
     ci_upper = round(tau + z * se, 6),
-    p_value  = 2 * (1 - stats::pnorm(abs(tau / se))),
+    p_value = 2 * (1 - stats::pnorm(abs(tau / se))),
     n = n, n_treated = as.integer(n_t),
-    interpretation = sprintf("%s ATE = %.4f (SE %.4f); 95%% CI [%.4f, %.4f]",
-                             toupper(estimator), tau, se,
-                             tau - z * se, tau + z * se)
+    interpretation = sprintf(
+      "%s ATE = %.4f (SE %.4f); 95%% CI [%.4f, %.4f]",
+      toupper(estimator), tau, se,
+      tau - z * se, tau + z * se
+    )
   )
 }

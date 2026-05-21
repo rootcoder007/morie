@@ -13,15 +13,14 @@
 #' @return Named list with \code{estimate}, \code{reference_ols},
 #'   \code{n_iter}, \code{loss}, \code{n}, \code{method}.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_gradient_descent_vanilla(x = rnorm(50), y = rnorm(50))
 #' @export
-gradient_descent_vanilla <- function(x, y, lr = 0.01, n_iter = 1000, tol = 1e-8) {
+morie_gradient_descent_vanilla <- function(x, y, lr = 0.01, n_iter = 1000, tol = 1e-8) {
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
-  x <- as.matrix(x); y <- as.numeric(y)
-  n <- nrow(x); p <- ncol(x)
+  x <- as.matrix(x)
+  y <- as.numeric(y)
+  n <- nrow(x)
+  p <- ncol(x)
   X1 <- cbind(1, x)
   theta <- rep(0.0, p + 1)
   it <- 0L

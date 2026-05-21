@@ -2,12 +2,12 @@
 % Please edit documentation in R/rgeeg.R
 \name{rgeeg}
 \alias{rgeeg}
-\alias{rangayyan_eeg_bands}
+\alias{morie_rangayyan_eeg_bands}
 \title{EEG band power (delta theta alpha beta gamma) via Welch -- Rangayyan Ch 9}
 \usage{
 rgeeg(x, fs, bands = NULL, nperseg = NULL)
 
-rangayyan_eeg_bands(x, fs, bands = NULL, nperseg = NULL)
+morie_rangayyan_eeg_bands(x, fs, bands = NULL, nperseg = NULL)
 }
 \arguments{
 \item{x}{Numeric EEG vector.}
@@ -32,10 +32,12 @@ gamma 30-100 Hz.
 }
 \examples{
 \donttest{
-  set.seed(0); fs <- 256
-  t <- seq(0, 8, length.out = 2048)
-  x <- sin(2 * pi * 10 * t) + 0.3 * rnorm(length(t))
-  r <- rgeeg(x, fs = fs); r$relative[["alpha"]] > r$relative[["gamma"]]
+set.seed(0)
+fs <- 256
+t <- seq(0, 8, length.out = 2048)
+x <- sin(2 * pi * 10 * t) + 0.3 * rnorm(length(t))
+r <- rgeeg(x, fs = fs)
+r$relative[["alpha"]] > r$relative[["gamma"]]
 }
 }
 \references{

@@ -1,5 +1,17 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# Internal: smoothed maximum-score loss. Extracted from the hrzb2()
+# optimiser closure so the zero-norm guard is directly unit-testable.
+.hrzb2_loss <- function(b, X, ys, h) {
+  nb <- sqrt(sum(b^2))
+  if (nb < 1e-12) {
+    return(1e12)
+  }
+  bn <- b / nb
+  z <- (X %*% bn) / h
+  -mean(ys * stats::pnorm(z))
+}
+
 #' Horowitz (1992) smoothed maximum-score estimator
 #'
 #' @param x Numeric covariate vector or design matrix.
@@ -10,23 +22,29 @@
 hrzb2 <- function(x, y, bandwidth = NULL) {
   y <- as.numeric(y)
   X <- if (is.null(dim(x))) matrix(x, ncol = 1) else as.matrix(x)
-  n <- nrow(X); p <- ncol(X)
-  if (n < max(10, 2 * p))
-    return(list(estimate = rep(NA_real_, p), se = rep(NA_real_, p),
-                n = n, method = "smoothed-max-score (insufficient data)"))
-  ys <- 2 * y - 1
-  h <- if (is.null(bandwidth)) max(.hrz_silverman(X %*% rep(1 / sqrt(p), p)), 1e-3)
-       else as.numeric(bandwidth)
-  loss <- function(b) {
-    nb <- sqrt(sum(b^2)); if (nb < 1e-12) return(1e12)
-    bn <- b / nb; z <- (X %*% bn) / h
-    -mean(ys * stats::pnorm(z))
+  n <- nrow(X)
+  p <- ncol(X)
+  if (n < max(10, 2 * p)) {
+    return(list(
+      estimate = rep(NA_real_, p), se = rep(NA_real_, p),
+      n = n, method = "smoothed-max-score (insufficient data)"
+    ))
   }
+  ys <- 2 * y - 1
+  h <- if (is.null(bandwidth)) {
+    max(.hrz_silverman(X %*% rep(1 / sqrt(p), p)), 1e-3)
+  } else {
+    as.numeric(bandwidth)
+  }
+  loss <- function(b) .hrzb2_loss(b, X, ys, h)
   beta0 <- as.numeric(stats::coef(stats::lm.fit(X, ys)))
-  nrm <- sqrt(sum(beta0^2)); if (nrm > 1e-12) beta0 <- beta0 / nrm
+  nrm <- sqrt(sum(beta0^2))
+  if (nrm > 1e-12) beta0 <- beta0 / nrm
   if (beta0[1] < 0) beta0 <- -beta0
-  res <- stats::optim(beta0, loss, method = "BFGS",
-                       control = list(maxit = 200))
+  res <- stats::optim(beta0, loss,
+    method = "BFGS",
+    control = list(maxit = 200)
+  )
   bh <- res$par / max(sqrt(sum(res$par^2)), 1e-12)
   if (bh[1] < 0) bh <- -bh
   z <- (X %*% bh) / h
@@ -34,14 +52,17 @@ hrzb2 <- function(x, y, bandwidth = NULL) {
   score_i <- -as.numeric(ys * phi) * X / h
   info <- t(score_i) %*% score_i / n
   cov_m <- tryCatch(MASS::ginv(info) / n,
-                    error = function(e) matrix(NA, p, p))
+    error = function(e) matrix(NA, p, p)
+  )
   se <- sqrt(pmax(diag(cov_m), 0))
-  list(estimate = bh, se = se, bandwidth = h, n = n,
-       method = "Horowitz (1992) smoothed maximum-score")
+  list(
+    estimate = bh, se = se, bandwidth = h, n = n,
+    method = "Horowitz (1992) smoothed maximum-score"
+  )
 }
 
 # canonical full-name alias (Py<->R API parity)
 #' @rdname hrzb2
 #' @keywords internal
 #' @export
-horowitz_smoothed_maximum_score <- hrzb2
+morie_horowitz_smoothed_maximum_score <- hrzb2

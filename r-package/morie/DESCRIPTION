@@ -1,7 +1,7 @@
 Package: morie
 Type: Package
 Title: Multi-Domain Open Research and Inferential Estimation
-Version: 0.9.4
+Version: 0.9.5.2
 Authors@R: c(
   person(
     given = "Vansh Singh",
@@ -43,6 +43,7 @@ Imports:
   utils,
   Rcpp
 LinkingTo: Rcpp
+SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
 Suggests:
   digest,
   openssl,
@@ -51,7 +52,12 @@ Suggests:
   MatchIt,
   DBI,
   RSQLite,
+  duckdb,
+  RPostgres,
   jsonlite,
+  httr2,
+  xml2,
+  rvest,
   data.table,
   readxl,
   pracma,
@@ -65,6 +71,7 @@ Suggests:
   caret,
   e1071,
   glmnet,
+  elasticnet,
   pROC,
   randomForest,
   rpart,
@@ -88,6 +95,7 @@ Suggests:
   eegkit,
   R.matlab,
   testthat (>= 3.0.0),
+  withr,
   knitr,
   rmarkdown
 VignetteBuilder: knitr
@@ -103,7 +111,6 @@ Collate:
   'aaa_helpers_horowitz.R'
   'aaa_helpers_llm_arch.R'
   'aaa_helpers_montesinos.R'
-  'aaa_helpers_samples.R'
   'aaa_helpers_time_series_advanced.R'
   'accgp.R'
   'agset.R'
@@ -143,6 +150,7 @@ Collate:
   'ctmed.R'
   'ctrlc.R'
   'data.R'
+  'data_access.R'
   'database.R'
   'dataset_catalog.R'
   'dataset_profile.R'
@@ -314,7 +322,6 @@ Collate:
   'okrig.R'
   'optcl.R'
   'ordct.R'
-  'ordlt.R'
   'ordlt_jonckheere.R'
   'paths.R'
   'pcadm.R'
@@ -374,6 +381,7 @@ Collate:
   'sglm.R'
   'sgnpw.R'
   'signal.R'
+  'siu.R'
   'smixd.R'
   'sobls.R'
   'spblk.R'
@@ -425,3 +433,4 @@ Collate:
   'wsrpw.R'
   'xavir.R'
   'xgbst.R'
+  'zzz_x_helpers.R'

@@ -12,19 +12,18 @@
 #'   classes, n, method.
 #' @importFrom stats predict
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' # See the package vignettes for usage examples:
+#' #   vignette(package = "morie")
 #' @export
-svm_hinge_primal <- function(x, y, C = 1.0, seed = 0L) {
+morie_svm_hinge_primal <- function(x, y, C = 1.0, seed = 0L) {
   if (!requireNamespace("e1071", quietly = TRUE)) {
-    stop("Function 'svm_hinge_primal' requires package 'e1071'. Install with install.packages('e1071').")
+    stop("Function 'morie_svm_hinge_primal' requires package 'e1071'. Install with install.packages('e1071').")
   }
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
-  x <- as.matrix(x); y <- as.factor(y)
+  x <- as.matrix(x)
+  y <- as.factor(y)
   classes <- levels(y)
-  if (length(classes) != 2) stop("svm_hinge_primal requires binary y")
+  if (length(classes) != 2) stop("morie_svm_hinge_primal requires binary y")
   set.seed(seed)
   fit <- e1071::svm(x = x, y = y, kernel = "linear", cost = C, scale = FALSE)
   # Reconstruct w = sum_i alpha_i y_i x_i (libsvm sign convention: coefs are alpha_i*y_i)

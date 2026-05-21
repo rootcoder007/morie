@@ -10,16 +10,27 @@
 #' composition.
 #'
 #' Functions:
-#' * `predpol_aggregate_areas()`: roll per-record data up to one row
+#' * `morie_predpol_aggregate_areas()`: roll per-record data up to one row
 #'   per area.
-#' * `predpol_calibration_audit()`: Spearman calibration plus a
+#' * `morie_predpol_calibration_audit()`: Spearman calibration plus a
 #'   per-group mean rank gap (the over-/under-prediction signal).
-#' * `predpol_score_disparity()`: descriptive per-group risk-score
+#' * `morie_predpol_score_disparity()`: descriptive per-group risk-score
 #'   summary with a one-way ANOVA.
 #'
 #' Written from the project's published methodology; no code copied
 #' (that repository carries no licence and is not redistributable).
 #'
+#' @return \code{morie_predpol_aggregate_areas()} returns a per-area
+#'   \code{data.frame}; \code{morie_predpol_calibration_audit()} and
+#'   \code{morie_predpol_score_disparity()} return named \code{list}s of audit
+#'   statistics, per-group breakdowns, and a plain-language
+#'   \code{interpretation}.
+#' @examples
+#' agg <- morie_predpol_aggregate_areas(
+#'   area = c("a", "a", "b", "b"), risk = c(10, 20, 30, 40),
+#'   outcome = c(1, 0, 1, 1)
+#' )
+#' agg$mean_risk
 #' @name frns_predpol
 NULL
 
@@ -27,7 +38,9 @@ NULL
 .frns_worst_abs_named <- function(x) {
   # name of the element with the largest absolute value.
   x <- x[is.finite(x)]
-  if (length(x) == 0L) return(NA_character_)
+  if (length(x) == 0L) {
+    return(NA_character_)
+  }
   names(x)[which.max(abs(x))]
 }
 
@@ -47,12 +60,13 @@ NULL
 #'   `n_records`.
 #' @export
 #' @examples
-#' agg <- predpol_aggregate_areas(
+#' agg <- morie_predpol_aggregate_areas(
 #'   area = c("a", "a", "b", "b"), risk = c(10, 20, 30, 40),
-#'   outcome = c(1, 0, 1, 1))
-#' agg$mean_risk      # 15 35
-#' agg$outcome_rate   # 0.5 1.0
-predpol_aggregate_areas <- function(area, risk, outcome, group = NULL,
+#'   outcome = c(1, 0, 1, 1)
+#' )
+#' agg$mean_risk # 15 35
+#' agg$outcome_rate # 0.5 1.0
+morie_predpol_aggregate_areas <- function(area, risk, outcome, group = NULL,
                                     population = NULL) {
   if (length(area) != length(risk) || length(area) != length(outcome)) {
     stop("area, risk and outcome must be the same length", call. = FALSE)
@@ -67,15 +81,18 @@ predpol_aggregate_areas <- function(area, risk, outcome, group = NULL,
   n_records <- vapply(areas, function(a) sum(area == a), integer(1))
 
   if (is.null(population)) {
-    outcome_rate <- vapply(areas, function(a) mean(outcome[area == a]),
-                           numeric(1))
+    outcome_rate <- vapply(
+      areas, function(a) mean(outcome[area == a]),
+      numeric(1)
+    )
   } else {
     if (!is.null(names(population))) {
       pops <- as.numeric(population[areas])
     } else {
       if (length(population) != length(area)) {
         stop("population vector must be the same length as area",
-             call. = FALSE)
+          call. = FALSE
+        )
       }
       population <- as.numeric(population)
       pops <- vapply(areas, function(a) population[area == a][1], numeric(1))
@@ -95,10 +112,12 @@ predpol_aggregate_areas <- function(area, risk, outcome, group = NULL,
     }, character(1))
   }
 
-  list(areas = areas, mean_risk = unname(mean_risk),
-       outcome_rate = unname(outcome_rate),
-       group = if (is.null(maj)) NULL else unname(maj),
-       n_records = unname(n_records))
+  list(
+    areas = areas, mean_risk = unname(mean_risk),
+    outcome_rate = unname(outcome_rate),
+    group = if (is.null(maj)) NULL else unname(maj),
+    n_records = unname(n_records)
+  )
 }
 
 
@@ -118,20 +137,22 @@ predpol_aggregate_areas <- function(area, risk, outcome, group = NULL,
 #'   `warnings`, `interpretation`.
 #' @export
 #' @examples
-#' res <- predpol_calibration_audit(
+#' res <- morie_predpol_calibration_audit(
 #'   areas = c("d1", "d2", "d3", "d4", "d5", "d6"),
 #'   mean_risk = c(90, 80, 70, 30, 20, 10),
 #'   outcome_rate = c(10, 20, 30, 70, 80, 90),
-#'   group = c("X", "X", "X", "Y", "Y", "Y"))
-#' res$group_rank_gap$X   # 3  (group X over-predicted)
-#' res$spearman           # -1 (perfectly miscalibrated)
-predpol_calibration_audit <- function(areas, mean_risk, outcome_rate,
+#'   group = c("X", "X", "X", "Y", "Y", "Y")
+#' )
+#' res$group_rank_gap$X # 3  (group X over-predicted)
+#' res$spearman # -1 (perfectly miscalibrated)
+morie_predpol_calibration_audit <- function(areas, mean_risk, outcome_rate,
                                       group) {
   n <- length(areas)
   if (!(n == length(mean_risk) && n == length(outcome_rate) &&
-        n == length(group))) {
+    n == length(group))) {
     stop("areas, mean_risk, outcome_rate and group must all align",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (n < 2L) {
     stop("need at least two areas to compare rankings", call. = FALSE)
@@ -146,13 +167,17 @@ predpol_calibration_audit <- function(areas, mean_risk, outcome_rate,
   if (!all(finite)) {
     warnings <- c(warnings, sprintf(
       "%d area(s) had a non-finite risk or outcome value and were dropped.",
-      sum(!finite)))
-    areas <- areas[finite]; mean_risk <- mean_risk[finite]
-    outcome_rate <- outcome_rate[finite]; group <- group[finite]
+      sum(!finite)
+    ))
+    areas <- areas[finite]
+    mean_risk <- mean_risk[finite]
+    outcome_rate <- outcome_rate[finite]
+    group <- group[finite]
     n <- length(areas)
     if (n < 2L) {
       stop("fewer than two areas remain after dropping non-finite rows",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   }
 
@@ -162,11 +187,13 @@ predpol_calibration_audit <- function(areas, mean_risk, outcome_rate,
   rank_gap <- outcome_rank - risk_rank
 
   ct <- suppressWarnings(
-    stats::cor.test(mean_risk, outcome_rate, method = "spearman"))
+    stats::cor.test(mean_risk, outcome_rate, method = "spearman")
+  )
   rho <- unname(ct$estimate)
   pval <- ct$p.value
 
-  per_group <- list(); group_n <- list()
+  per_group <- list()
+  group_n <- list()
   for (gv in unique(group)) {
     m <- group == gv
     per_group[[gv]] <- mean(rank_gap[m])
@@ -177,24 +204,32 @@ predpol_calibration_audit <- function(areas, mean_risk, outcome_rate,
   worst <- pg[[worst_group]]
 
   cal <- if (rho >= 0.7) {
-    sprintf(paste0("Overall the ranking is well calibrated (Spearman ",
-                   "rho = %.2f)."), rho)
+    sprintf(paste0(
+      "Overall the ranking is well calibrated (Spearman ",
+      "rho = %.2f)."
+    ), rho)
   } else if (rho >= 0.3) {
     sprintf("Overall calibration is weak (Spearman rho = %.2f).", rho)
   } else {
-    sprintf("Overall the ranking is miscalibrated (Spearman rho = %.2f).",
-            rho)
+    sprintf(
+      "Overall the ranking is miscalibrated (Spearman rho = %.2f).",
+      rho
+    )
   }
   disp <- if (abs(worst) <= 0.5) {
     "No group's areas are systematically mis-ranked."
   } else if (worst > 0) {
-    sprintf(paste0("Group '%s' is over-predicted: its areas are ranked, ",
-                   "on average, %.1f rank positions more dangerous than ",
-                   "their realised outcomes warrant."), worst_group, worst)
+    sprintf(paste0(
+      "Group '%s' is over-predicted: its areas are ranked, ",
+      "on average, %.1f rank positions more dangerous than ",
+      "their realised outcomes warrant."
+    ), worst_group, worst)
   } else {
-    sprintf(paste0("Group '%s' is under-predicted: its areas are ranked, ",
-                   "on average, %.1f rank positions less dangerous than ",
-                   "their realised outcomes."), worst_group, abs(worst))
+    sprintf(paste0(
+      "Group '%s' is under-predicted: its areas are ranked, ",
+      "on average, %.1f rank positions less dangerous than ",
+      "their realised outcomes."
+    ), worst_group, abs(worst))
   }
 
   list(
@@ -215,7 +250,7 @@ predpol_calibration_audit <- function(areas, mean_risk, outcome_rate,
 #' Reports per-group n / mean / median / sd, a one-way ANOVA for
 #' whether group membership relates to the score, and each group's
 #' mean-score gap from a reference group. A significant gap is not
-#' itself proof of bias; pair this with `predpol_calibration_audit()`.
+#' itself proof of bias; pair this with `morie_predpol_calibration_audit()`.
 #'
 #' @param score Continuous risk score, one per individual.
 #' @param group Protected attribute, one per individual.
@@ -226,12 +261,13 @@ predpol_calibration_audit <- function(areas, mean_risk, outcome_rate,
 #'   `reference`, `warnings`, `interpretation`.
 #' @export
 #' @examples
-#' res <- predpol_score_disparity(
+#' res <- morie_predpol_score_disparity(
 #'   score = c(9, 10, 11, 19, 20, 21),
-#'   group = c("A", "A", "A", "B", "B", "B"))
-#' res$value         # 10  (group means 10 and 20)
-#' res$significant   # TRUE
-predpol_score_disparity <- function(score, group, reference = NULL) {
+#'   group = c("A", "A", "A", "B", "B", "B")
+#' )
+#' res$value # 10  (group means 10 and 20)
+#' res$significant # TRUE
+morie_predpol_score_disparity <- function(score, group, reference = NULL) {
   if (length(score) != length(group)) {
     stop("score and group must be the same length", call. = FALSE)
   }
@@ -244,8 +280,10 @@ predpol_score_disparity <- function(score, group, reference = NULL) {
   finite <- is.finite(score)
   if (!all(finite)) {
     warnings <- c(warnings, sprintf(
-      "%d non-finite score value(s) dropped.", sum(!finite)))
-    score <- score[finite]; group <- group[finite]
+      "%d non-finite score value(s) dropped.", sum(!finite)
+    ))
+    score <- score[finite]
+    group <- group[finite]
   }
   groups <- unique(group)
   if (length(groups) < 2L) {
@@ -256,23 +294,31 @@ predpol_score_disparity <- function(score, group, reference = NULL) {
   names(means) <- groups
   per_group <- lapply(groups, function(g) {
     gv <- score[group == g]
-    list(n = length(gv), mean = mean(gv), median = stats::median(gv),
-         sd = if (length(gv) > 1L) stats::sd(gv) else NA_real_)
+    list(
+      n = length(gv), mean = mean(gv), median = stats::median(gv),
+      sd = if (length(gv) > 1L) stats::sd(gv) else NA_real_
+    )
   })
   names(per_group) <- groups
 
   ow <- tryCatch(
     stats::oneway.test(score ~ factor(group), var.equal = TRUE),
-    error = function(e) NULL)
+    error = function(e) NULL
+  )
   if (is.null(ow)) {
-    fstat <- NA_real_; pval <- NA_real_
+    fstat <- NA_real_
+    pval <- NA_real_
     warnings <- c(warnings, "ANOVA could not be computed.")
   } else {
-    fstat <- unname(ow$statistic); pval <- ow$p.value
+    fstat <- unname(ow$statistic)
+    pval <- ow$p.value
   }
 
-  ref <- if (is.null(reference)) names(means)[which.min(means)]
-         else as.character(reference)
+  ref <- if (is.null(reference)) {
+    names(means)[which.min(means)]
+  } else {
+    as.character(reference)
+  }
   if (!ref %in% names(means)) {
     stop(sprintf("reference group '%s' not found", ref), call. = FALSE)
   }
@@ -281,19 +327,31 @@ predpol_score_disparity <- function(score, group, reference = NULL) {
   significant <- isTRUE(is.finite(pval) && pval < 0.05)
 
   anova_line <- if (is.finite(pval)) {
-    sprintf(paste0("A one-way ANOVA finds the between-group difference %s ",
-                   "(F = %.2f, p = %.4f). "),
-            if (significant) "statistically significant"
-            else "not significant", fstat, pval)
-  } else ""
+    sprintf(
+      paste0(
+        "A one-way ANOVA finds the between-group difference %s ",
+        "(F = %.2f, p = %.4f). "
+      ),
+      if (significant) {
+        "statistically significant"
+      } else {
+        "not significant"
+      }, fstat, pval
+    )
+  } else {
+    ""
+  }
 
   interp <- paste0(
-    sprintf("Group mean risk scores span %.2f points (reference '%s'). ",
-            spread, ref),
+    sprintf(
+      "Group mean risk scores span %.2f points (reference '%s'). ",
+      spread, ref
+    ),
     anova_line,
     "Note: a score gap is not itself evidence of bias; pair this with ",
-    "predpol_calibration_audit(), which compares the score against ",
-    "realised outcomes.")
+    "morie_predpol_calibration_audit(), which compares the score against ",
+    "realised outcomes."
+  )
 
   list(
     value = spread,

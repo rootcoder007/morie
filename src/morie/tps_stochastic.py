@@ -62,7 +62,18 @@ def _try_savefig(name: str, fig) -> str | None:
 
 def _date_series(df: pd.DataFrame,
                   *, min_year: int = 2014) -> pd.Series:
-    """Return cleaned OCC_DATE/REPORT_DATE timestamps.
+    """Return cleaned occurrence timestamps in Toronto local time.
+
+    TPS open data carries the occurrence date both as ``OCC_DATE`` and
+    as the integer triple ``OCC_YEAR`` / ``OCC_MONTH`` / ``OCC_DAY``.
+    When the data is pulled through the ArcGIS Online Feature Service,
+    the ArcGIS platform silently converts ``OCC_DATE`` to UTC -- so an
+    event just before local midnight lands on the *next* calendar day
+    (Toronto is UTC-4/-5).  The integer ``OCC_*`` fields are the
+    local-time decomposition and are unaffected by that conversion, so
+    we build the date from them when present and only fall back to
+    parsing ``OCC_DATE`` / ``REPORT_DATE`` when the integer fields are
+    absent.
 
     `min_year=2014` drops pre-2014 retro-records -- TPS started its
     public-safety open-data programme in 2014 and earlier rows are
@@ -70,13 +81,23 @@ def _date_series(df: pd.DataFrame,
     monthly count and force μ -> 0 in any Hawkes fit. Override
     ``min_year=None`` to include the long historical tail deliberately.
     """
-    for c in ("OCC_DATE", "REPORT_DATE"):
-        if c in df.columns:
-            ts = pd.to_datetime(df[c], errors="coerce").dropna()
-            if min_year is not None:
-                ts = ts[ts.dt.year >= min_year]
-            return ts
-    return pd.Series(dtype="datetime64[ns]")
+    ts: pd.Series | None = None
+    if {"OCC_YEAR", "OCC_MONTH", "OCC_DAY"}.issubset(df.columns):
+        ts = pd.to_datetime(
+            df[["OCC_YEAR", "OCC_MONTH", "OCC_DAY"]].rename(
+                columns={"OCC_YEAR": "year", "OCC_MONTH": "month",
+                         "OCC_DAY": "day"}),
+            errors="coerce").dropna()
+    if ts is None:
+        for c in ("OCC_DATE", "REPORT_DATE"):
+            if c in df.columns:
+                ts = pd.to_datetime(df[c], errors="coerce").dropna()
+                break
+    if ts is None:
+        return pd.Series(dtype="datetime64[ns]")
+    if min_year is not None:
+        ts = ts[ts.dt.year >= min_year]
+    return ts
 
 
 # ── Hawkes self-exciting fit (temporal-only Mohler style) ───────────

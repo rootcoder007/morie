@@ -2,33 +2,48 @@
 % Please edit documentation in R/database.R
 \name{morie_db_connect}
 \alias{morie_db_connect}
-\title{Connect to the MORIE SQLite cache database}
+\title{Connect to the MORIE cache database}
 \usage{
 morie_db_connect(db_path = NULL)
 }
 \arguments{
-\item{db_path}{Path to the SQLite file. Defaults to the
-\code{MORIE_CACHE_DB} env var, else \code{morie.db} in the
-per-user cache directory.}
+\item{db_path}{Optional path to a DuckDB (\code{*.duckdb}) or SQLite
+(\code{*.db}) file. Defaults to the \code{MORIE_CACHE_DB} env var,
+else \code{morie.duckdb} / \code{morie.db} in the per-user cache
+directory.}
 }
 \value{
 A DBI connection object.
 }
 \description{
-Opens (or creates) the shared cache at \code{morie.db} in the
-per-user cache directory (\code{~/.cache/morie} or
-\code{XDG_CACHE_HOME}). Both R (DBI/RSQLite) and Python (sqlite3)
-read/write this same file.
+Opens (or creates) the per-user cache database. The default backend
+is \strong{DuckDB} — zero-config like SQLite, but vectorised + columnar,
+so it handles the multi-GB-scale open-data PUMFs (TPS, CPADS bulk)
+that morie ingests without breaking down on analytical queries. For
+back-compat, an existing SQLite cache at \code{morie.db} is reused; if
+duckdb is unavailable, falls back to SQLite.
+}
+\details{
+For non-default backends (PostgreSQL, MariaDB, MS SQL Server, ...),
+construct your own DBI connection and pass it as \code{con} to the
+\verb{morie_cache_*} and \code{morie_load_dataset} functions:
+
+\preformatted{
+con <- DBI::dbConnect(RPostgres::Postgres(),
+  host = "...", dbname = "morie", user = "...", password = "...")
+morie_load_dataset("ocp21", con = con)
+}
 }
 \examples{
 \donttest{
-  if (requireNamespace("DBI", quietly = TRUE) &&
-      requireNamespace("RSQLite", quietly = TRUE)) {
-    tmp <- tempfile(fileext = ".db")
-    con <- morie_db_connect(db_path = tmp)
-    DBI::dbListTables(con)
-    DBI::dbDisconnect(con)
-    file.remove(tmp)
-  }
+# DuckDB (default when 'duckdb' is installed); pass a '.db' path for SQLite.
+if (requireNamespace("duckdb", quietly = TRUE) &&
+  requireNamespace("DBI", quietly = TRUE)) {
+  tmp <- tempfile(fileext = ".duckdb")
+  con <- morie_db_connect(db_path = tmp)
+  DBI::dbListTables(con)
+  DBI::dbDisconnect(con)
+  file.remove(tmp)
+}
 }
 }

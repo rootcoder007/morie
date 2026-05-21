@@ -2,12 +2,12 @@
 % Please edit documentation in R/cndrc.R
 \name{cndrc}
 \alias{cndrc}
-\alias{condorcet_winner}
+\alias{morie_condorcet_winner}
 \title{Condorcet winner detection (Armstrong Ch 2)}
 \usage{
 cndrc(preference_matrix)
 
-condorcet_winner(preference_matrix)
+morie_condorcet_winner(preference_matrix)
 }
 \arguments{
 \item{preference_matrix}{n by n matrix where entry (i, j) = number of
@@ -23,9 +23,6 @@ majority voting. Returns the index of the Condorcet winner, or -1
 if none exists.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+cndrc(preference_matrix = matrix(rnorm(25), 5, 5))
 }
 \keyword{internal}

@@ -2,12 +2,12 @@
 % Please edit documentation in R/rghrv.R
 \name{rghrv}
 \alias{rghrv}
-\alias{rangayyan_hrv}
+\alias{morie_rangayyan_hrv}
 \title{Heart rate variability (time-domain) -- Rangayyan Ch 6}
 \usage{
 rghrv(rr_ms)
 
-rangayyan_hrv(rr_ms)
+morie_rangayyan_hrv(rr_ms)
 }
 \arguments{
 \item{rr_ms}{Numeric vector of NN intervals in milliseconds.}
@@ -29,7 +29,9 @@ sequence of consecutive NN (RR) intervals.
 }
 }
 \examples{
-set.seed(0); rgh <- rghrv(800 + rnorm(200, sd = 40)); rgh$heart_rate_bpm
+set.seed(0)
+rgh <- rghrv(800 + rnorm(200, sd = 40))
+rgh$heart_rate_bpm
 }
 \references{
 Task Force (1996), Circulation 93:1043. Rangayyan Ch 6.

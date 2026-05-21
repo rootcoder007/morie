@@ -62,8 +62,10 @@ Rules classifier applied to the official Ontario c11 aggregate
 recovers a duration-only Torture$^{\ast}$ proxy rising from
 $12.5\%$ in 2023 to $20.6\%$ in 2025 (provincial segregation)
 and from $31.5\%$ to $40.9\%$ under broader restrictive
-confinement, exceeding the federal $9.9\%$ \citep{SprottDoob2023}
-by $+10.7$ percentage points at peak.  Statistical-physics
+confinement. The 2025 provincial segregation rate exceeds the
+federal $9.9\%$ \citep{SprottDoob2021} by $+10.7$ percentage
+points, and the 2025 restrictive-confinement rate exceeds it by
+$+31.0$ percentage points.  Statistical-physics
 diagnostics on the Toronto Police Service crime corpus support a
 non-Markovian (Weibull/sinusoidal) Hawkes preference over the
 classical Markovian specification, and Goffmanian institutional
@@ -81,10 +83,10 @@ inference, Ontario restrictive confinement, Toronto Police Service,
 Hawkes process, MRM framework, sociolegal statistics,
 R, Python}
 % --- morie version stamp -----------------------------------------------------
-% This paper documents \pkg{morie} v0.6.1 (released 2026-05-13).  Specific
+% This paper documents \pkg{morie} v0.9.5 (released 2026-05-18).  Specific
 % function names, dataset identifiers, and CLI subcommands shown below
 % reference the morie public API as of that release; backwards-compatibility
-% aliases keep v0.x code references resolving across the v0.4.x series.
+% aliases keep v0.x code references resolving across the v0.x series.
 % -----------------------------------------------------------------------------
 
 
@@ -428,7 +430,7 @@ in Section~\ref{sec:reproducibility}.
 
 \begin{table}[h]
 \centering
-\caption{Sample structure of \OTIS{} b01 over fiscal 2023--2025
+\caption{Sample structure of \OTIS{} a01 over fiscal 2023--2025
 (verified ground-truth counts from the published OTIS-RC analysis;
 reproducible from \code{morie::mrm\_otis\_load()}).}
 \label{tab:otis-counts}
@@ -485,10 +487,12 @@ ATTE & $0.1557$ & $0.00606$ & $25.69$ & $[0.1438, 0.1676]$ \\
 Both estimands are statistically distinguishable from zero at every
 conventional level; the t-statistics correspond to $p < 10^{-143}$
 for the ATE and $p < 10^{-145}$ for the ATTE. The point estimates
-correspond to a $16$ percentage-point increase in the probability
-that the most recent placement is in a different region than the
-segregation-event placement, conditional on the alert-complexity
-indicator switching from low to high.
+correspond to an increase of approximately $0.16$ regional
+transitions per person-year in the expected count $\vm$,
+conditional on the alert-complexity indicator switching from low to
+high.  Because $\vm$ is a non-negative transition count, not a
+binary indicator, this is a difference in expected counts and not a
+change in a probability.
 
 \subsection{Per-year DML estimates: rising trend}
 \label{sec:dml-per-year}
@@ -551,7 +555,13 @@ $p$-value (min) & $< 10^{-24}$ \\
 \end{table}
 
 The point estimate is concentrated in a narrow band, and the
-inference is robust to the choice of clustering scheme. The min and
+inference is robust to the choice of clustering scheme. Each cell
+of the grid is a separate region-contrast-specific estimate
+re-estimated under one clustering scheme; the clustering scheme
+alters only the standard errors, while the point-estimate spread
+across the band reflects genuine heterogeneity across the regional
+contrasts rather than the pooled ATE of $0.1605$
+(Table~\ref{tab:res-pool}) re-clustered. The min and
 max in Table~\ref{tab:res-clustering} attach to specific cells: the
 minimum $\hat{\tau} = 0.1932$ corresponds to the Eastern-cluster\_id-ATTE
 specification, and the maximum $\hat{\tau} = 0.2013$ corresponds to
@@ -598,7 +608,7 @@ treatment.
 \subsection{Federal operationalisation}
 \label{sec:mandela-federal}
 
-\citet{SprottDoob2023} jointly operationalise Rules 43 and 44 on
+\citet{SprottDoob2021} jointly operationalise Rules 43 and 44 on
 federal Structured Intervention Unit person-stays:
 \begin{equation}
 \label{eq:federal-mandela}
@@ -613,7 +623,7 @@ day, and $m \in [0, 100]$ is the percentage of days on which the
 inmate did not receive the legally-required four hours out-of-cell.
 Across $N = 1{,}960$ federal SIU person-stays (November 2019 to
 September 2020), the classifier yields $28.4\%$ Solitary, $9.9\%$
-Torture, and $61.7\%$ All other \citep{SprottDoob2023}.
+Torture, and $61.7\%$ All other \citep{SprottDoob2021}.
 
 \subsection{Provincial operationalisation}
 \label{sec:mandela-provincial}
@@ -644,13 +654,14 @@ The provincial classifier is exposed in morie as
 \label{sec:mandela-cross-jurisdiction}
 
 Table~\ref{tab:res-mandela} reports the Mandela classification for the
-federal Structured Intervention Unit regime \citep{SprottDoob2023}
+federal Structured Intervention Unit regime \citep{SprottDoob2021}
 alongside the provincial \OTIS{} Segregation and broader Restrictive
 Confinement views, by fiscal year. The provincial Segregation
 proportion classified as Torture$^{\ast}$ rises from $12.5\%$ in
-fiscal 2023 to $20.6\%$ in fiscal 2025, a peak gap of $+10.7$
-percentage points relative to the federal $9.9\%$ that
-\citet{SprottDoob2023} report. Under the broader
+fiscal 2023 to $20.6\%$ in fiscal 2025; the 2025 segregation rate
+exceeds the federal $9.9\%$ that \citet{SprottDoob2021} report by
+$+10.7$ percentage points (and the broader restrictive-confinement
+rate exceeds it by $+31.0$ points). Under the broader
 restrictive-confinement view (\OTIS{} c11
 \texttt{NumberIndividuals\_RestrictiveConfinement} column), the
 provincial Torture$^{\ast}$ rate reaches $40.9\%$ in fiscal 2025.
@@ -660,7 +671,7 @@ provincial Torture$^{\ast}$ rate reaches $40.9\%$ in fiscal 2025.
 \caption{Cross-jurisdiction Mandela classification. Federal:
 person-stays, full operationalisation~\eqref{eq:federal-mandela}.
 Provincial: individuals, duration-only proxy~\eqref{eq:provincial-mandela}.
-Source: \citealt{SprottDoob2023} (federal) and the official Ontario
+Source: \citealt{SprottDoob2021} (federal) and the official Ontario
 \OTIS{} c11 aggregate (provincial). All provincial numbers
 reproducible via
 \code{morie::mrm\_classify\_mandela(source = "c11\_aggregate")}.}
@@ -732,7 +743,7 @@ scope a re-fit would have to cover, not as final claims.
 
 
 \paragraph*{Verification status.}
-carried from prior analyses; MA-thesis values pending re-fit against the maintained TPS Assault CSV.\footnote{\texttt{moirais-dev/dev/sphinx/project/data/datasets/TPS/Assault/CSV/Assault\_Open\_Data\_*.csv}}
+carried from prior analyses; MA-thesis values pending re-fit against the maintained TPS Assault open-data series.\footnote{Toronto Police Service Assault Open Data, published on the TPS Public Safety Data Portal (ArcGIS open-data layer). The \texttt{morie} package retrieves it reproducibly via \texttt{morie\_fetch\_tps("Assault")}, so no local path is required.}
 
 Table~\ref{tab:hawkes-markovian} reports the Markovian (M1) Hawkes
 maximum-likelihood fits per TPS category, refitted with U(0,1)-day
@@ -1160,7 +1171,7 @@ severity confound that haunts raw incident counts: a city where
 homicides drop but minor thefts rise will see falling CSI even if
 absolute crime counts are flat.
 
-Table~\ref{tab:csi-toronto} reports MORIE-computed Toronto CSI
+Table~\ref{tab:csi-toronto} reports \pkg{morie}-computed Toronto CSI
 for 2014--2025 from the
 \texttt{morie.tps\_csi} module, rebased to 2014 = 100.  Both
 the Total and Violent variants are shown.  Source weights:
@@ -1169,7 +1180,7 @@ StatsCan 17-10-0009-01.
 
 \begin{table}[h]
 \centering\footnotesize
-\caption{Toronto Crime Severity Index, FY2014-2025, MORIE-computed
+\caption{Toronto Crime Severity Index, FY2014-2025, morie-computed
 (\texttt{morie.tps\_csi.csi\_per\_year} on the 9 TPS open-data
 feeds, rebased so 2014 = 100).  Total CSI weights all nine TPS
 categories; Violent CSI zeros out non-violent (B\&E, Auto Theft,
@@ -1206,7 +1217,7 @@ and property categories --- not a compositional shift.
 \paragraph{Cross-check against StatsCan published values.}
 StatsCan's published Toronto CSI for 2023 is approximately $60.4$
 (Total) and $71.8$ (Violent) on its national 2006-baseline scale.
-The MORIE module reports values at a different scale (raw
+The \pkg{morie} module reports values at a different scale (raw
 weighted sum per 100k) because it does not have access to the
 2006 national-baseline normalisation factor; rebasing locally to
 2014 = 100 (as in Table~\ref{tab:csi-toronto}) gives a clean
@@ -1224,11 +1235,15 @@ written to the manifest\footnote{\texttt{data/manifest/outputs/otis\_full/.../a0
 and gives a pooled $\hat\tau_{\text{ATE}} = 0.213$ (cluster-robust
 SE $0.012$, $n=14{,}520$, $95\%$ CI $[0.189,\,0.236]$) with
 $\hat\tau_{\text{ATTE}}=0.213$ and $\hat\tau_{\text{ATC}}=0.212$.
-The ATE is stable to within $\le 0.002$ of the CSI-blind estimate,
-so the severity of the surrounding crime environment is not a
-substantial confounder of the alert-complexity~$\to$~placement-volatility
-relationship --- the DML ensemble already absorbs it through the
-demographic, regional and seasonal controls.
+Within this CSI-augmented re-fit the ATE, ATTE and ATC agree to
+within $\le 0.002$ of one another ($0.213/0.213/0.212$).  A direct
+comparison to the CSI-blind §\ref{sec:dml} estimate is deferred:
+that pipeline is run on a different sample, so the two are not
+estimand-identical, and these overlay numbers themselves carry the
+not-yet-re-run status of this subsection.  We therefore read the
+overlay as indicative that conditioning on environmental severity
+does not overturn the positive alert-complexity effect, pending a
+matched re-fit.
 
 \subsection{Extended spatial diagnostics}\label{phys-spatial-extended}
 
@@ -1464,7 +1479,7 @@ R> summary(glmm_fit)
 R> # Hawkes fits are produced offline; the maintained per-category
 R> # parameter manifest ships with the package
 R> refit_path <- system.file("extdata",
-+    "tps_hawkes_refit_v0.6.1.json", package = "morie")
++    "tps_hawkes_refit.json", package = "morie")
 R> refit <- mrm_tps_load_hawkes_refit(refit_path)
 R> # Selection table: AIC ranking, KS p-values per kernel/baseline
 R> subset(refit$summary, crime == "Assault")

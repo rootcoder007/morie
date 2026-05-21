@@ -2,12 +2,12 @@
 % Please edit documentation in R/sptau.R
 \name{sptau}
 \alias{sptau}
-\alias{spatial_autocorrelation}
+\alias{morie_spatial_autocorrelation}
 \title{Moran's I spatial autocorrelation (Schabenberger Ch 1).}
 \usage{
 sptau(x, w)
 
-spatial_autocorrelation(x, w)
+morie_spatial_autocorrelation(x, w)
 }
 \arguments{
 \item{x}{Numeric vector of length n (observed values).}
@@ -28,10 +28,8 @@ Formula:
           / \sum_i (x_i - \bar x)^2}
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+# See the package vignettes for usage examples:
+#   vignette(package = "morie")
 }
 \references{
 Cliff & Ord (1981). Schabenberger & Gotway (2005), Ch 1.

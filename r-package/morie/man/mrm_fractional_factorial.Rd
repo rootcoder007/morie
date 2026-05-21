@@ -32,7 +32,9 @@ df <- data.frame(
   C = c(1, -1, -1, 1)
 )
 df$y <- 5 + 2 * df$A + 1.5 * df$B + rnorm(4, 0, 0.3)
-res <- mrm_fractional_factorial(df, response_col = "y",
-                                factor_cols = c("A", "B", "C"))
+res <- mrm_fractional_factorial(df,
+  response_col = "y",
+  factor_cols = c("A", "B", "C")
+)
 res$main_effects
 }

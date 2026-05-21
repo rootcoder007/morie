@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzw2.R
 \name{hrzw2}
 \alias{hrzw2}
-\alias{horowitz_bandwidth_bootstrap}
+\alias{morie_horowitz_bandwidth_bootstrap}
 \title{Wild-bootstrap MISE bandwidth selection for NW regression}
 \usage{
 hrzw2(x, y, B = 50, n_h = 15, seed = 0)
 
-horowitz_bandwidth_bootstrap(x, y, B = 50, n_h = 15, seed = 0)
+morie_horowitz_bandwidth_bootstrap(x, y, B = 50, n_h = 15, seed = 0)
 }
 \arguments{
 \item{x}{Numeric covariate vector.}

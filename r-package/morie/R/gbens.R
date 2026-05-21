@@ -20,21 +20,22 @@
 #'   n_estimators, learning_rate, max_depth, task, n, method.
 #' @importFrom stats predict
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_gradient_boosting_ensemble(x = rnorm(50), y = rnorm(50))
 #' @export
-gradient_boosting_ensemble <- function(x, y, n_estimators = 100L,
-                                        learning_rate = 0.1,
-                                        max_depth = 3L,
-                                        task = "auto", seed = 0L,
-                                        deterministic_seed = NULL) {
+morie_gradient_boosting_ensemble <- function(x, y, n_estimators = 100L,
+                                       learning_rate = 0.1,
+                                       max_depth = 3L,
+                                       task = "auto", seed = 0L,
+                                       deterministic_seed = NULL) {
+  x <- .morie_ensure_design_matrix(x)
   if (is.null(dim(x))) x <- matrix(x, ncol = 1)
   x <- as.matrix(x)
   if (identical(task, "auto")) {
-    task <- if (is.factor(y) || all(y %in% c(0L, 1L)) || is.integer(y))
-              "classification" else "regression"
+    task <- if (is.factor(y) || all(y %in% c(0L, 1L)) || is.integer(y)) {
+      "classification"
+    } else {
+      "regression"
+    }
   }
   n <- nrow(x)
   if (!is.null(deterministic_seed)) {
@@ -43,12 +44,15 @@ gradient_boosting_ensemble <- function(x, y, n_estimators = 100L,
     set.seed(seed)
   }
   if (requireNamespace("gbm", quietly = TRUE)) {
-    df <- as.data.frame(x); df$.y <- if (task == "classification") as.numeric(as.factor(y)) - 1 else as.numeric(y)
+    df <- as.data.frame(x)
+    df$.y <- if (task == "classification") as.numeric(as.factor(y)) - 1 else as.numeric(y)
     distribution <- if (task == "classification") "bernoulli" else "gaussian"
-    fit <- gbm::gbm(.y ~ ., data = df, distribution = distribution,
-                    n.trees = n_estimators, interaction.depth = max_depth,
-                    shrinkage = learning_rate, bag.fraction = 1.0,
-                    verbose = FALSE)
+    fit <- gbm::gbm(.y ~ .,
+      data = df, distribution = distribution,
+      n.trees = n_estimators, interaction.depth = max_depth,
+      shrinkage = learning_rate, bag.fraction = 1.0,
+      verbose = FALSE
+    )
     p <- gbm::predict.gbm(fit, df, n.trees = n_estimators, type = "response")
     if (task == "classification") {
       preds <- as.integer(p > 0.5)
@@ -57,19 +61,22 @@ gradient_boosting_ensemble <- function(x, y, n_estimators = 100L,
       train_score <- 1 - sum((p - df$.y)^2) / sum((df$.y - mean(df$.y))^2)
     }
     rel <- summary(fit, n.trees = n_estimators, plotit = FALSE)
-    fi <- rep(0, ncol(x)); names(fi) <- colnames(df)[seq_len(ncol(x))]
+    fi <- rep(0, ncol(x))
+    names(fi) <- colnames(df)[seq_len(ncol(x))]
     fi[as.character(rel$var)] <- rel$rel.inf / 100
     backend <- "gbm"
   } else {
     # xgboost fallback
     if (!requireNamespace("xgboost", quietly = TRUE)) {
-      stop("install either 'gbm' or 'xgboost' for gradient_boosting_ensemble")
+      stop("install either 'gbm' or 'xgboost' for morie_gradient_boosting_ensemble")
     }
     yv <- if (task == "classification") as.numeric(as.factor(y)) - 1 else as.numeric(y)
     obj <- if (task == "classification") "binary:logistic" else "reg:squarederror"
-    fit <- xgboost::xgboost(data = x, label = yv, nrounds = n_estimators,
-                             eta = learning_rate, max_depth = max_depth,
-                             objective = obj, verbose = 0L)
+    fit <- xgboost::xgboost(
+      data = x, label = yv, nrounds = n_estimators,
+      eta = learning_rate, max_depth = max_depth,
+      objective = obj, verbose = 0L
+    )
     p <- predict(fit, x)
     if (task == "classification") {
       preds <- as.integer(p > 0.5)
@@ -78,7 +85,8 @@ gradient_boosting_ensemble <- function(x, y, n_estimators = 100L,
       train_score <- 1 - sum((p - yv)^2) / sum((yv - mean(yv))^2)
     }
     imp <- xgboost::xgb.importance(model = fit)
-    fi <- rep(0, ncol(x)); names(fi) <- colnames(x) %||% paste0("V", seq_len(ncol(x)))
+    fi <- rep(0, ncol(x))
+    names(fi) <- colnames(x) %||% paste0("V", seq_len(ncol(x)))
     if (nrow(imp) > 0) fi[imp$Feature] <- imp$Gain
     backend <- "xgboost"
   }

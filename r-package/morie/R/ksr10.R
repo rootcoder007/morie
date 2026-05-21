@@ -12,13 +12,10 @@
 #' @return Named list with estimate, se, n, method.
 #' @references Kosorok (2008), Ch 5; Huber (1981).
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_ksr10_kosorok_m_estimator(x = rnorm(50))
 #' @export
-ksr10_kosorok_m_estimator <- function(x, y = NULL, k = 1.345,
-                                       max_iter = 100, tol = 1e-10) {
+morie_ksr10_kosorok_m_estimator <- function(x, y = NULL, k = 1.345,
+                                      max_iter = 100, tol = 1e-10) {
   x <- as.numeric(x)
   n <- length(x)
   eta <- stats::mad(x, constant = 1) / 0.6745
@@ -26,29 +23,32 @@ ksr10_kosorok_m_estimator <- function(x, y = NULL, k = 1.345,
   if (eta == 0) eta <- 1
   theta <- stats::median(x)
   for (it in seq_len(max_iter)) {
-    u   <- (x - theta) / eta
+    u <- (x - theta) / eta
     psi <- pmin(pmax(u, -k), k)
     denom <- mean(abs(u) <= k)
     if (denom == 0) break
     step <- eta * mean(psi) / denom
-    if (abs(step) < tol) { theta <- theta + step; break }
+    if (abs(step) < tol) {
+      theta <- theta + step
+      break
+    }
     theta <- theta + step
   }
-  u   <- (x - theta) / eta
+  u <- (x - theta) / eta
   psi <- pmin(pmax(u, -k), k)
   A <- mean(abs(u) <= k) / eta
   B <- mean(psi^2)
   se <- sqrt(B / (A^2) / n)
   list(
     estimate = theta, se = se, n = n,
-    method   = sprintf("Huber-M location (k=%.3f) with profiled MAD/0.6745 scale", k)
+    method = sprintf("Huber-M location (k=%.3f) with profiled MAD/0.6745 scale", k)
   )
 }
 
 # CANONICAL TEST
-# set.seed(0); ksr10_kosorok_m_estimator(rnorm(200))
+# set.seed(0); morie_ksr10_kosorok_m_estimator(rnorm(200))
 
-#' @rdname ksr10_kosorok_m_estimator
+#' @rdname morie_ksr10_kosorok_m_estimator
 #' @keywords internal
 #' @export
-kosorok_m_estimator <- ksr10_kosorok_m_estimator
+morie_kosorok_m_estimator <- morie_ksr10_kosorok_m_estimator

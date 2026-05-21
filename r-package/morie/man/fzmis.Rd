@@ -2,12 +2,12 @@
 % Please edit documentation in R/fzmis.R
 \name{fzmis}
 \alias{fzmis}
-\alias{fauzi_mise_computation}
+\alias{morie_fauzi_mise_computation}
 \title{Fauzi: MISE decomposition for Gaussian KDE (Ch 1)}
 \usage{
 fzmis(x, h = NULL)
 
-fauzi_mise_computation(x, h = NULL)
+morie_fauzi_mise_computation(x, h = NULL)
 }
 \arguments{
 \item{x}{Numeric vector.}
@@ -24,9 +24,6 @@ With normal-reference plug-in \eqn{R(f'')=3/(8\sqrt\pi \sigma^5)}.
 Returns h_opt minimising MISE.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+fzmis(x = rnorm(50))
 }
 \keyword{internal}

@@ -14,6 +14,20 @@
 #' Cole, S. R., & Hernan, M. A. (2008). Constructing inverse probability
 #'   weights for marginal structural models. AJE, 168(6), 656-664.
 #'
+#' @return Each diagnostic callable returns a named \code{list} of balance
+#'   and overlap statistics (or the estimated effect) together with a
+#'   plain-language \code{interpretation}.
+#' @examples
+#' set.seed(2026)
+#' n <- 200L
+#' df <- data.frame(
+#'   D = rbinom(n, 1, 0.4),
+#'   age = rnorm(n, 50, 10), bmi = rnorm(n, 27, 4)
+#' )
+#' mrm_standardised_difference(df,
+#'   treatment_col = "D",
+#'   covariates = c("age", "bmi")
+#' )
 #' @name mrm_diagnostics
 NULL
 
@@ -45,26 +59,31 @@ NULL
 #'   age = rnorm(n, 50, 10),
 #'   bmi = rnorm(n, 27, 4)
 #' )
-#' df$age[df$D == 1] <- df$age[df$D == 1] + 3   # deliberate imbalance
-#' mrm_standardised_difference(df, treatment_col = "D",
-#'                             covariates = c("age", "bmi"))
+#' df$age[df$D == 1] <- df$age[df$D == 1] + 3 # deliberate imbalance
+#' mrm_standardised_difference(df,
+#'   treatment_col = "D",
+#'   covariates = c("age", "bmi")
+#' )
 #' @export
 mrm_standardised_difference <- function(data, treatment_col, covariates) {
   D <- as.integer(data[[treatment_col]])
   out <- lapply(covariates, function(c) {
-    x   <- as.numeric(data[[c]])
-    x_t <- x[D == 1]; x_c <- x[D == 0]
-    m_t <- mean(x_t); m_c <- mean(x_c)
-    s_t <- stats::var(x_t); s_c <- stats::var(x_c)
+    x <- as.numeric(data[[c]])
+    x_t <- x[D == 1]
+    x_c <- x[D == 0]
+    m_t <- mean(x_t)
+    m_c <- mean(x_c)
+    s_t <- stats::var(x_t)
+    s_c <- stats::var(x_c)
     pooled_sd <- sqrt((s_t + s_c) / 2)
     smd_pct <- if (pooled_sd > 0) 100 * (m_t - m_c) / pooled_sd else NA_real_
     data.frame(
-      covariate    = c,
+      covariate = c,
       mean_treated = round(m_t, 4),
       mean_control = round(m_c, 4),
-      pooled_sd    = round(pooled_sd, 4),
-      smd_pct      = round(smd_pct, 2),
-      imbalanced   = if (is.na(smd_pct)) NA else abs(smd_pct) > 10,
+      pooled_sd = round(pooled_sd, 4),
+      smd_pct = round(smd_pct, 2),
+      imbalanced = if (is.na(smd_pct)) NA else abs(smd_pct) > 10,
       stringsAsFactors = FALSE
     )
   })
@@ -90,14 +109,16 @@ mrm_standardised_difference <- function(data, treatment_col, covariates) {
 #'   age = rnorm(n, 50, 10),
 #'   bmi = rnorm(n, 27, 4)
 #' )
-#' df$age[df$D == 1] <- df$age[df$D == 1] + 3   # imbalance on age
-#' bal <- mrm_check_balancing(df, treatment_col = "D",
-#'                            covariates = c("age", "bmi"))
+#' df$age[df$D == 1] <- df$age[df$D == 1] + 3 # imbalance on age
+#' bal <- mrm_check_balancing(df,
+#'   treatment_col = "D",
+#'   covariates = c("age", "bmi")
+#' )
 #' bal$overall_balanced
 #' bal$interpretation
 #' @export
 mrm_check_balancing <- function(data, treatment_col, covariates,
-                                 threshold_pct = 10) {
+                                threshold_pct = 10) {
   tbl <- mrm_standardised_difference(data, treatment_col, covariates)
   n_imb <- sum(tbl$imbalanced, na.rm = TRUE)
   overall <- n_imb == 0L
@@ -129,8 +150,10 @@ mrm_check_balancing <- function(data, treatment_col, covariates,
 #' x <- rnorm(n)
 #' D <- rbinom(n, 1, plogis(0.5 * x))
 #' df <- data.frame(D = D, age = x)
-#' ovl <- mrm_check_overlap(df, treatment_col = "D",
-#'                          covariates = "age")
+#' ovl <- mrm_check_overlap(df,
+#'   treatment_col = "D",
+#'   covariates = "age"
+#' )
 #' ovl$positivity_violations
 #' ovl$interpretation
 #' @export
@@ -138,18 +161,23 @@ mrm_check_overlap <- function(data, treatment_col, covariates) {
   D <- as.integer(data[[treatment_col]])
   X <- as.data.frame(data[, covariates, drop = FALSE])
   e <- .morie_logistic_propensity(D, X)
-  e_t <- e[D == 1]; e_c <- e[D == 0]
-  qs  <- c(0.025, 0.25, 0.5, 0.75, 0.975)
+  e_t <- e[D == 1]
+  e_c <- e[D == 0]
+  qs <- c(0.025, 0.25, 0.5, 0.75, 0.975)
   cs_lo <- max(min(e_t), min(e_c))
   cs_hi <- min(max(e_t), max(e_c))
   n_outside <- sum(e < cs_lo | e > cs_hi)
   pviol <- sum(e < 0.01 | e > 0.99)
   name_q <- function(q) paste0("q", q * 100)
   list(
-    e_treated_quantiles = setNames(as.list(round(stats::quantile(e_t, qs), 4)),
-                                    name_q(qs)),
-    e_control_quantiles = setNames(as.list(round(stats::quantile(e_c, qs), 4)),
-                                    name_q(qs)),
+    e_treated_quantiles = setNames(
+      as.list(round(stats::quantile(e_t, qs), 4)),
+      name_q(qs)
+    ),
+    e_control_quantiles = setNames(
+      as.list(round(stats::quantile(e_c, qs), 4)),
+      name_q(qs)
+    ),
     common_support_lower = round(cs_lo, 4),
     common_support_upper = round(cs_hi, 4),
     n_outside_support = as.integer(n_outside),
@@ -177,14 +205,16 @@ mrm_check_overlap <- function(data, treatment_col, covariates) {
 #' D <- rbinom(n, 1, plogis(0.5 * x))
 #' y <- 0.7 * D + 0.3 * x + rnorm(n, 0, 0.5)
 #' df <- data.frame(D = D, y = y, age = x)
-#' res <- mrm_median_causal_effect(df, treatment_col = "D",
-#'                                 outcome_col = "y",
-#'                                 covariates = "age")
+#' res <- mrm_median_causal_effect(df,
+#'   treatment_col = "D",
+#'   outcome_col = "y",
+#'   covariates = "age"
+#' )
 #' res$median_treatment_effect
 #' res$n_matched
 #' @export
 mrm_median_causal_effect <- function(data, treatment_col, outcome_col,
-                                      covariates) {
+                                     covariates) {
   D <- as.integer(data[[treatment_col]])
   Y <- as.numeric(data[[outcome_col]])
   X <- as.data.frame(data[, covariates, drop = FALSE])
@@ -200,14 +230,16 @@ mrm_median_causal_effect <- function(data, treatment_col, outcome_col,
     if (!length(avail)) break
     dists <- abs(logit[avail] - logit[i])
     j <- avail[which.min(dists)]
-    used <- c(used, j); k <- k + 1L
+    used <- c(used, j)
+    k <- k + 1L
     pairs[[k]] <- c(i, j)
   }
   pairs <- pairs[seq_len(k)]
   if (!length(pairs)) stop("no valid matches")
   Y1 <- vapply(pairs, function(p) Y[p[1]], numeric(1))
   Y0 <- vapply(pairs, function(p) Y[p[2]], numeric(1))
-  m1 <- stats::median(Y1); m0 <- stats::median(Y0)
+  m1 <- stats::median(Y1)
+  m0 <- stats::median(Y0)
   list(
     median_y1 = round(m1, 4),
     median_y0 = round(m0, 4),
@@ -239,13 +271,15 @@ mrm_median_causal_effect <- function(data, treatment_col, outcome_col,
 #' D <- rbinom(n, 1, plogis(0.5 * x))
 #' y <- 0.7 * D + 0.3 * x + rnorm(n)
 #' df <- data.frame(D = D, y = y, age = x)
-#' chk <- mrm_assumptions_check(df, treatment_col = "D",
-#'                              outcome_col = "y",
-#'                              covariates = "age")
+#' chk <- mrm_assumptions_check(df,
+#'   treatment_col = "D",
+#'   outcome_col = "y",
+#'   covariates = "age"
+#' )
 #' chk$overall_verdict
 #' @export
 mrm_assumptions_check <- function(data, treatment_col, outcome_col,
-                                   covariates) {
+                                  covariates) {
   overlap <- mrm_check_overlap(data, treatment_col, covariates)
   balance <- mrm_check_balancing(data, treatment_col, covariates)
   sutva <- list(
@@ -273,7 +307,7 @@ mrm_assumptions_check <- function(data, treatment_col, outcome_col,
     )
   )
   overall <- if (balance$overall_balanced &&
-                  overlap$positivity_violations == 0L) {
+    overlap$positivity_violations == 0L) {
     "all three assumptions ok modulo SUTVA design-context"
   } else {
     "one or more diagnostic flags; see fields"

@@ -14,7 +14,8 @@
 #' @export
 #' @examples
 #' \donttest{
-#' set.seed(0); fs <- 100
+#' set.seed(0)
+#' fs <- 100
 #' t <- seq(0, 10, length.out = 1000)
 #' x <- sin(2 * pi * 10 * t)
 #' r <- rgpsd(x, fs = fs, nperseg = 256)
@@ -30,17 +31,18 @@ rgpsd <- function(x, fs = 1.0, nperseg = NULL, window = "hann") {
   starts <- seq(1, N - nperseg + 1, by = step)
   if (length(starts) < 1) starts <- 1
   w <- switch(window,
-              hann     = 0.5 - 0.5 * cos(2 * pi * (seq_len(nperseg) - 1) / (nperseg - 1)),
-              hamming  = 0.54 - 0.46 * cos(2 * pi * (seq_len(nperseg) - 1) / (nperseg - 1)),
-              boxcar   = rep(1, nperseg),
-              rep(1, nperseg))
+    hann     = 0.5 - 0.5 * cos(2 * pi * (seq_len(nperseg) - 1) / (nperseg - 1)),
+    hamming  = 0.54 - 0.46 * cos(2 * pi * (seq_len(nperseg) - 1) / (nperseg - 1)),
+    boxcar   = rep(1, nperseg),
+    rep(1, nperseg)
+  )
   W <- sum(w^2)
   freqs <- seq(0, fs / 2, length.out = nperseg %/% 2L + 1L)
   psd_acc <- numeric(length(freqs))
   for (s in starts) {
     seg <- x[s:(s + nperseg - 1)] - mean(x[s:(s + nperseg - 1)])
     seg <- seg * w
-    X <- stats::fft(seg)[1:length(freqs)]
+    X <- stats::fft(seg)[seq_along(freqs)]
     pxx <- (Mod(X)^2) / (fs * W)
     # one-sided scaling: double interior bins
     if (length(pxx) > 2) pxx[2:(length(pxx) - 1)] <- 2 * pxx[2:(length(pxx) - 1)]
@@ -49,11 +51,13 @@ rgpsd <- function(x, fs = 1.0, nperseg = NULL, window = "hann") {
   psd <- psd_acc / length(starts)
   peak <- which.max(psd)
   total <- sum(psd) * (freqs[2] - freqs[1])
-  list(freqs = freqs, psd = psd, fs = fs, nperseg = nperseg,
-       peak_freq = freqs[peak], total_power = total)
+  list(
+    freqs = freqs, psd = psd, fs = fs, nperseg = nperseg,
+    peak_freq = freqs[peak], total_power = total
+  )
 }
 
 #' @rdname rgpsd
 #' @keywords internal
 #' @export
-rangayyan_psd <- rgpsd
+morie_rangayyan_psd <- rgpsd

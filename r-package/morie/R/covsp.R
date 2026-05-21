@@ -10,18 +10,17 @@
 #' @return Named list: coverages, cumulative, expected, n,
 #'   sample_min, sample_max, method.
 #' @examples
-#' \dontrun{
-#'   # See the package vignettes for usage examples:
-#'   #   vignette(package = "morie")
-#' }
+#' morie_one_sample_coverage(x = rnorm(50))
 #' @export
-one_sample_coverage <- function(x) {
+morie_one_sample_coverage <- function(x) {
   x <- as.numeric(x)
   n <- length(x)
   if (n < 2) {
-    return(list(coverages = numeric(0), cumulative = NA_real_,
-                expected = NA_real_, n = n,
-                method = "One-sample coverage probability"))
+    return(list(
+      coverages = numeric(0), cumulative = NA_real_,
+      expected = NA_real_, n = n,
+      method = "One-sample coverage probability"
+    ))
   }
   xs <- sort(x)
   ranks <- seq_len(n) / (n + 1)

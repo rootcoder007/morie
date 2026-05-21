@@ -16,8 +16,5 @@ is GPL-3 compatible but not GPL-2 compatible; morie is
 GPL-2.0-only so the choice rests with downstream consumers.
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
-}
+morie_gpl_compatible_licenses()
 }

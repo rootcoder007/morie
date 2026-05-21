@@ -3,6 +3,12 @@
 \name{license_check}
 \alias{license_check}
 \title{Runtime license-compatibility guard for morie}
+\value{
+\code{morie_gpl_compatible_licenses()} returns a character vector
+of GPL-compatible SPDX identifiers; \code{check_plugin_license()} returns
+a logical (invisibly), signalling a warning or error when the supplied
+licence is not GPL-compatible.
+}
 \description{
 R parity of \code{morie._license_check}.  Exposes the
 FSF GPL-compatible licence list and a
@@ -13,4 +19,7 @@ raises but does not enforce at the R-namespace level.  For
 stronger guarantees see the companion userspace LSM-style daemon
 (\code{daemon/morie_lsm.py}) and the kernel companion module
 (\code{kernel-module/morie.c}).
+}
+\examples{
+morie_gpl_compatible_licenses()
 }

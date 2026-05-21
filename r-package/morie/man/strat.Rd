@@ -2,12 +2,12 @@
 % Please edit documentation in R/strat.R
 \name{strat}
 \alias{strat}
-\alias{stratified_sampling}
+\alias{morie_stratified_sampling}
 \title{Stratified mean estimator (Cochran 1977, Sampling Techniques, Ch. 5)}
 \usage{
 strat(data, y = "y", strata = "stratum", pop_sizes = NULL)
 
-stratified_sampling(data, y = "y", strata = "stratum", pop_sizes = NULL)
+morie_stratified_sampling(data, y = "y", strata = "stratum", pop_sizes = NULL)
 }
 \arguments{
 \item{data}{data.frame containing outcome and stratum columns.}

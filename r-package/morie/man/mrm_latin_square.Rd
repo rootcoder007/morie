@@ -26,8 +26,10 @@ df <- expand.grid(row = paste0("R", 1:4), col = paste0("C", 1:4))
 df$treatment <- LETTERS[as.integer(as.vector(sq)) + 1L]
 set.seed(2026)
 df$y <- match(df$treatment, LETTERS) * 1.5 + rnorm(16, 0, 0.4)
-res <- mrm_latin_square(df, response_col = "y",
-                        row_col = "row", col_col = "col",
-                        treatment_col = "treatment")
+res <- mrm_latin_square(df,
+  response_col = "y",
+  row_col = "row", col_col = "col",
+  treatment_col = "treatment"
+)
 res$anova
 }

@@ -2,12 +2,12 @@
 % Please edit documentation in R/hrzb2.R
 \name{hrzb2}
 \alias{hrzb2}
-\alias{horowitz_smoothed_maximum_score}
+\alias{morie_horowitz_smoothed_maximum_score}
 \title{Horowitz (1992) smoothed maximum-score estimator}
 \usage{
 hrzb2(x, y, bandwidth = NULL)
 
-horowitz_smoothed_maximum_score(x, y, bandwidth = NULL)
+morie_horowitz_smoothed_maximum_score(x, y, bandwidth = NULL)
 }
 \arguments{
 \item{x}{Numeric covariate vector or design matrix.}

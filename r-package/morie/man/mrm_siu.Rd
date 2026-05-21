@@ -3,6 +3,11 @@
 \name{mrm_siu}
 \alias{mrm_siu}
 \title{MRM-framework analyses on Ontario SIU (Special Investigations Unit) data}
+\value{
+Each \code{mrm_siu_*()} callable returns a named \code{list} with
+the survival, per-service rate, or outcome-classification result and a
+plain-language \code{interpretation}.
+}
 \description{
 Three callables for SIU case-level CSVs. Unlike OTIS (no placement
 dates) and TPS (no per-person ID), SIU exposes per-case dates with a
@@ -21,5 +26,11 @@ year and stratum, useful for cross-jurisdiction comparisons.
 \item \code{mrm_siu_outcome_classifier()}: Tabulates the Director's-decision
 categories (\code{charges_laid}, \code{no_charges}, etc.) by service and
 by year, reporting both raw counts and shares.
+}
+}
+\examples{
+if (FALSE) {
+  siu <- read.csv("SIU.csv")
+  mrm_siu_case_to_decision_km(siu)
 }
 }

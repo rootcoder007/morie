@@ -4,12 +4,14 @@
 \alias{morie_cache_load}
 \title{Load a table from the MORIE cache}
 \usage{
-morie_cache_load(table_name, db_path = NULL)
+morie_cache_load(table_name, db_path = NULL, con = NULL)
 }
 \arguments{
-\item{table_name}{Name of the SQLite table.}
+\item{table_name}{Name of the table.}
 
-\item{db_path}{Optional override for the database path.}
+\item{db_path}{Optional path to a SQLite file (default backend).}
+
+\item{con}{Optional pre-opened DBI connection (overrides \code{db_path}).}
 }
 \value{
 A data.frame, or \code{NULL} if the table does not exist.
@@ -18,8 +20,14 @@ A data.frame, or \code{NULL} if the table does not exist.
 Load a table from the MORIE cache
 }
 \examples{
-\dontrun{
-  # See the package vignettes for usage examples:
-  #   vignette(package = "morie")
+\donttest{
+db <- tempfile(fileext = ".db")
+morie_cache_store(
+  data = data.frame(x = 1:5),
+  table_name = "demo",
+  db_path = db
+)
+morie_cache_load(table_name = "demo", db_path = db)
+file.remove(db)
 }
 }
