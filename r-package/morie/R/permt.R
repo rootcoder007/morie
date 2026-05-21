@@ -12,6 +12,7 @@
 #' @param seed integer.
 #' @return Named list: statistic, p_value, n_x, n_y, B, alternative, method.
 #' @keywords internal
+#' @export
 permt <- function(x, y, statistic = NULL, B = 5000L,
                   alternative = c("two-sided", "less", "greater"),
                   seed = 42L) {

@@ -11,6 +11,7 @@
 #' @param seed integer.
 #' @return list: sample (N x d matrix), estimate (if f given), se, N, d, method.
 #' @keywords internal
+#' @export
 latnh <- function(N = 100L, d = 1L, f = NULL, seed = 42L) {
   set.seed(seed)
   cut <- (seq_len(N) - 1) / N
