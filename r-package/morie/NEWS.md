@@ -1,4 +1,18 @@
-# morie 0.9.5.2 - 2026-05-21
+# morie 0.9.5.3 - 2026-05-21
+
+Patch release over 0.9.5.2.
+
+* Declare `pkgload` in `Suggests:`. The `pkgload` skip-guard added
+  in 0.9.5.2's `test-cov-fallbacks.R` used `pkgload::dev_packages()`
+  without declaring the package in DESCRIPTION's `Suggests:`,
+  producing a `'::' or ':::' import not declared from: 'pkgload'`
+  WARNING under `R CMD check`. No user-visible functional change;
+  the warning is informational, but it should not have shipped in
+  0.9.5.2.
+* 0.9.5.2 has been yanked from PyPI as a consequence of the above
+  WARNING and to keep the public release record clean.
+
+# morie 0.9.5.3 - 2026-05-21
 
 * **HTML validation fix.** `morie_siu_sanity_check`'s description
   used `date_*_iso` and `number_of_*` as inline text, which
