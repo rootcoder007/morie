@@ -96,9 +96,13 @@ test_that("morie_wavelet_time_series caps level at max_lv", {
 })
 
 # ==== database.R ====
-test_that("morie_cache_dir respects XDG_CACHE_HOME", {
-  withr::local_envvar(c(XDG_CACHE_HOME = "/tmp/xdgtest"))
-  expect_equal(morie:::morie_cache_dir(), "/tmp/xdgtest/morie")
+test_that("morie_cache_dir respects MORIE_CACHE_DIR", {
+  # v0.9.5 CRAN Policy fix: cache override env var is MORIE_CACHE_DIR.
+  withr::local_envvar(c(MORIE_CACHE_DIR = file.path(tempdir(), "morie-low-E")))
+  expect_equal(
+    morie:::morie_cache_dir(),
+    file.path(tempdir(), "morie-low-E")
+  )
 })
 
 test_that("morie_db_connect opens a SQLite handle on .db extension", {

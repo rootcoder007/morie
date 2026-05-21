@@ -6,7 +6,7 @@
 \usage{
 morie_siu_audit_case(
   case_number,
-  cache_dir = "~/.cache/morie/siu",
+  cache_dir = file.path(tempdir(), "morie", "siu"),
   fetch_if_missing = TRUE
 )
 }
@@ -42,10 +42,10 @@ by \code{morie_fetch_siu(cache_html = TRUE)}) when available, and
 falls back to a polite live fetch when the cache is missing.
 }
 \examples{
-\donttest{
+\dontrun{
 a <- morie_siu_audit_case(
   "17-OVI-201",
-  cache_dir = "~/.cache/morie/siu"
+  cache_dir = file.path(tempdir(), "morie", "siu")
 )
 cat(substr(a$report_text, 1, 1000), "\n")
 }

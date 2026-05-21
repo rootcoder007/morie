@@ -7,7 +7,7 @@
 morie_siu_audit_columns(
   case_numbers,
   model = c("ollama", "gemini"),
-  cache_dir = "~/.cache/morie/siu",
+  cache_dir = file.path(tempdir(), "morie", "siu"),
   max_html_chars = 80000L,
   max_examples_per_field = 5L,
   progress = TRUE
@@ -70,15 +70,12 @@ uses paid Gemini first and silently falls back to the local
 model on quota / network errors.
 }
 \examples{
-\donttest{
+\dontrun{
 Sys.setenv(
   OLLAMA_HOST = "http://localhost:11434",
   OLLAMA_MODEL = "gemma3:4b"
 )
-csv <- morie_fetch_siu(
-  cache_dir = "~/.cache/morie/siu",
-  cache_html = TRUE
-)
+csv <- morie_fetch_siu(cache_html = TRUE)
 df <- utils::read.csv(csv, colClasses = "character")
 sample <- sample(df$case_number[nzchar(df$case_number)], 50L)
 audit <- morie_siu_audit_columns(sample, model = "ollama")

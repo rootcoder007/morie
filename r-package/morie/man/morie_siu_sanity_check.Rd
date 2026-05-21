@@ -19,10 +19,10 @@ string of \code{field:reason} pairs). Ordered descending by
 }
 \description{
 For every row in a parser-emitted SIU table, flag cells that
-don't match the expected format for their column -- case_number
-that doesn't look like an SIU case id, date_\emph{\emph{iso that isn't a
-valid ISO 8601 date, number_of}} that isn't a positive integer,
-charges_recommended that isn't "Yes" / "No", etc. Returns a
+don't match the expected format for their column -- \code{case_number}
+that doesn't look like an SIU case id, \verb{date_*_iso} that isn't a
+valid ISO 8601 date, \verb{number_of_*} that isn't a positive integer,
+\code{charges_recommended} that isn't "Yes" / "No", etc. Returns a
 data frame ranked by issue count so the most-broken rows surface
 at the top for manual inspection against the cached HTML.
 }
@@ -35,7 +35,7 @@ value MATCHES THE EXPECTED FORMAT for its field. A clean sanity
 check is necessary but not sufficient for correctness.
 }
 \examples{
-\donttest{
+\dontrun{
 csv <- morie_fetch_siu(cache_dir = tempdir(), cache_html = TRUE)
 sanity <- morie_siu_sanity_check(csv)
 head(sanity, 10) # worst 10 rows -- inspect against HTML

@@ -51,10 +51,10 @@ Supported formats: \code{csv}, \code{tsv}, \code{json}, \code{xml},
 \code{arcgis} (delegates to \code{\link{morie_fetch_arcgis}}).
 }
 \examples{
-\donttest{
-# Auto-detected CSV:
+\dontrun{
+# Examples use placeholder URLs (example.org). Replace with a
+# real CSV / JSON endpoint when running.
 df <- morie_fetch("https://example.org/data.csv")
-# Force JSON parsing and pass an API parameter:
 js <- morie_fetch("https://api.example.org/records",
   format = "json", params = list(limit = 100)
 )

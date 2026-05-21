@@ -6,7 +6,7 @@
 \usage{
 morie_fetch_tps(
   category,
-  cache_dir = "~/.cache/morie/tps",
+  cache_dir = file.path(tempdir(), "morie", "tps"),
   where = "1=1",
   overwrite = FALSE,
   max_per_page = 2000L
@@ -15,8 +15,11 @@ morie_fetch_tps(
 \arguments{
 \item{category}{One of \code{names(morie_tps_layer_urls())}.}
 
-\item{cache_dir}{Directory for the CSV
-(default \code{"~/.cache/morie/tps"}).}
+\item{cache_dir}{Directory for the CSV. Defaults to a
+session-scoped subdirectory of \code{tempdir()} that R cleans up
+automatically. For persistent caching pass
+\code{cache_dir = morie_cache_dir("tps")}; see
+\link{morie_cache_dir} and \link{morie_cache_clear}.}
 
 \item{where}{ArcGIS SQL where clause (default \code{"1=1"}).}
 
@@ -34,7 +37,7 @@ the morie cache directory. Calls back to a cached file on subsequent
 calls unless \code{overwrite = TRUE}.
 }
 \examples{
-\donttest{
+\dontrun{
 # Network: fetches major-crime indicators from the Toronto Police
 # ArcGIS open-data layer.
 csv <- morie_fetch_tps(

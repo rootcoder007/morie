@@ -39,13 +39,103 @@
   list(con = morie_db_connect(db_path), close = TRUE)
 }
 
-# Per-user cache directory -- portable, always user-writable, and the
-# same location the Python package uses, so the SQLite cache is shared.
-# Honours XDG_CACHE_HOME; otherwise ~/.cache/morie.
-morie_cache_dir <- function() {
-  base <- Sys.getenv("XDG_CACHE_HOME", "")
-  if (!nzchar(base)) base <- file.path(path.expand("~"), ".cache")
-  file.path(base, "morie")
+#' morie cache contract
+#'
+#' morie functions that persist artifacts to disk (e.g.
+#' \code{morie_fetch_siu(cache_html = TRUE)}) default to a
+#' \emph{session-scoped} subdirectory of \code{\link[base]{tempdir}()},
+#' which R automatically removes when the session ends. This is the
+#' most conservative CRAN-Policy-compliant default: nothing morie
+#' writes ever survives the R session unless the user explicitly
+#' opts in.
+#'
+#' Users who want \emph{persistent} caching across sessions opt in by
+#' passing the result of \code{morie_cache_dir(subdir)} as the
+#' \code{cache_dir} argument, e.g.:
+#'
+#' \preformatted{
+#'   morie_fetch_siu(
+#'     cache_dir = morie_cache_dir("siu"),
+#'     cache_html = TRUE
+#'   )
+#' }
+#'
+#' The persistent location is \code{tools::R_user_dir("morie", "cache")}
+#' (R \eqn{\ge} 4.0), which on Linux defaults to
+#' \code{~/.cache/R/morie/}, on macOS to
+#' \code{~/Library/Caches/org.R-project.R/R/morie/}, and on Windows to
+#' \code{\%LOCALAPPDATA\%/R/cache/R/morie/}. Users can override this
+#' location by setting the \code{MORIE_CACHE_DIR} environment variable
+#' before calling \code{morie_cache_dir()}.
+#'
+#' \strong{Active management.} CRAN Policy requires persistent caches
+#' to be actively managed. Use \code{\link{morie_cache_clear}()} to
+#' empty the persistent cache (or a subdirectory of it). Cached SIU
+#' HTML is ~80-100 MB at full sweep, so clearing it occasionally is
+#' usually unnecessary, but it is supported.
+#'
+#' @param subdir Optional subdirectory under the morie cache root
+#'   (e.g. \code{"siu"}, \code{"tps"}). If \code{NULL}, the cache
+#'   root itself is returned.
+#' @return A file path string. The directory is \emph{not} created;
+#'   callers create it lazily only when they actually persist to disk.
+#' @examples
+#' # Persistent cache root (does not write anything to disk):
+#' morie_cache_dir()
+#' # Per-subsystem persistent path:
+#' morie_cache_dir("siu")
+#' @seealso \code{\link{morie_cache_clear}}
+#' @export
+morie_cache_dir <- function(subdir = NULL) {
+  override <- Sys.getenv("MORIE_CACHE_DIR", "")
+  base <- if (nzchar(override)) {
+    path.expand(override)
+  } else {
+    tools::R_user_dir("morie", which = "cache")
+  }
+  if (is.null(subdir)) base else file.path(base, subdir)
+}
+
+#' Clear morie's persistent cache directory
+#'
+#' Removes files cached by morie under
+#' \code{tools::R_user_dir("morie", "cache")} (or
+#' \code{MORIE_CACHE_DIR} if set). morie's default behaviour writes
+#' caches to a session-scoped \code{\link[base]{tempdir}()}
+#' subdirectory, so this function only matters if you have explicitly
+#' opted in to persistent caching by passing
+#' \code{cache_dir = morie_cache_dir(...)} to any of the morie
+#' fetchers.
+#'
+#' @param subdir Optional subdirectory under the morie cache root to
+#'   target (e.g. \code{"siu"}, \code{"tps"}). If \code{NULL}, removes
+#'   the entire morie persistent-cache root.
+#' @param confirm If \code{TRUE} (default in interactive sessions),
+#'   prompts the user before deleting. Set \code{FALSE} in scripts /
+#'   batch use to skip the prompt.
+#' @return Invisibly, the number of files removed.
+#' @examples
+#' \donttest{
+#' # Non-interactive: skip the confirmation prompt.
+#' morie_cache_clear("siu", confirm = FALSE)
+#' }
+#' @seealso \code{\link{morie_cache_dir}}
+#' @export
+morie_cache_clear <- function(subdir = NULL, confirm = interactive()) {
+  path <- morie_cache_dir(subdir)
+  if (!dir.exists(path)) {
+    return(invisible(0L))
+  }
+  if (isTRUE(confirm)) {
+    ans <- readline(sprintf("Delete %s ? [y/N] ", path))
+    if (!tolower(trimws(ans)) %in% c("y", "yes")) {
+      message("Aborted.")
+      return(invisible(0L))
+    }
+  }
+  n_files <- length(list.files(path, recursive = TRUE, full.names = TRUE))
+  unlink(path, recursive = TRUE, force = TRUE)
+  invisible(n_files)
 }
 
 #' Get path to the built-in MORIE datasets database
@@ -111,7 +201,13 @@ morie_db_connect <- function(db_path = NULL) {
       call. = FALSE
     )
   }
-  cache_dir <- morie_cache_dir()
+  # CRAN Policy: by default never write under user HOME. When the
+  # caller doesn't supply a path and the MORIE_CACHE_DB env var is
+  # unset, default to a session-scoped subdirectory of tempdir(). R
+  # cleans this up when the session ends. Users opt in to persistent
+  # caching by passing `db_path = morie_cache_dir("morie.duckdb")`
+  # explicitly (or by setting the MORIE_CACHE_DB env var).
+  cache_dir <- file.path(tempdir(), "morie")
   duckdb_default <- file.path(cache_dir, "morie.duckdb")
   sqlite_default <- file.path(cache_dir, "morie.db")
 
@@ -171,10 +267,15 @@ morie_db_connect <- function(db_path = NULL) {
 #'   for non-SQLite backends (PostgreSQL, DuckDB, MariaDB).
 #' @return Number of rows written (invisible).
 #' @examples
+#' \donttest{
+#' db <- tempfile(fileext = ".db")
 #' morie_cache_store(
 #'   data = data.frame(x = rnorm(50), y = rnorm(50)),
-#'   table_name = "demo"
+#'   table_name = "demo",
+#'   db_path = db
 #' )
+#' file.remove(db)
+#' }
 #' @export
 morie_cache_store <- function(data, table_name, db_path = NULL, con = NULL) {
   h <- .morie_db_handle(con, db_path)
@@ -190,7 +291,16 @@ morie_cache_store <- function(data, table_name, db_path = NULL, con = NULL) {
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return A data.frame, or \code{NULL} if the table does not exist.
 #' @examples
-#' morie_cache_load(table_name = "demo")
+#' \donttest{
+#' db <- tempfile(fileext = ".db")
+#' morie_cache_store(
+#'   data = data.frame(x = 1:5),
+#'   table_name = "demo",
+#'   db_path = db
+#' )
+#' morie_cache_load(table_name = "demo", db_path = db)
+#' file.remove(db)
+#' }
 #' @export
 morie_cache_load <- function(table_name, db_path = NULL, con = NULL) {
   h <- .morie_db_handle(con, db_path)
@@ -207,7 +317,12 @@ morie_cache_load <- function(table_name, db_path = NULL, con = NULL) {
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return A data.frame with columns \code{table} and \code{rows}.
 #' @examples
-#' morie_cache_list()
+#' \donttest{
+#' db <- tempfile(fileext = ".db")
+#' morie_cache_store(data.frame(x = 1:3), "demo", db_path = db)
+#' morie_cache_list(db_path = db)
+#' file.remove(db)
+#' }
 #' @export
 morie_cache_list <- function(db_path = NULL, con = NULL) {
   h <- .morie_db_handle(con, db_path)
@@ -271,9 +386,8 @@ morie_cache_file <- function(path, table_name, db_path = NULL, con = NULL) {
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return A data.frame with canonical CPADS columns.
 #' @examples
-#' \donttest{
-#' # Needs the CPADS PUMF (local file, cache, or a live CKAN fetch),
-#' # so it cannot run inside an offline R CMD check.
+#' \dontrun{
+#' # Needs the CPADS PUMF (local file, cache, or a live CKAN fetch).
 #' cpads <- morie_load_cpads(use_ckan = TRUE)
 #' if (!is.null(cpads)) head(cpads)
 #' }
@@ -328,7 +442,7 @@ morie_load_cpads <- function(db_path = NULL, use_ckan = TRUE, con = NULL) {
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return A data.frame.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Requires network access. Fetches the first 5000 rows of the
 #' # Canadian Postsecondary Alcohol and Drug Use Survey from the
 #' # Government of Canada CKAN datastore:
@@ -480,7 +594,7 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
 #'   and is unaffected by `con`.
 #' @return A data.frame.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' df <- morie_load_dataset("ocp21") # CPADS 2021-2022 (default DuckDB cache)
 #' df <- morie_load_dataset("ocp21", refresh = TRUE) # force re-fetch
 #'

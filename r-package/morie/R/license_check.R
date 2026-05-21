@@ -79,7 +79,9 @@ morie_license_metadata <- function() {
 #' @export
 #' @examples
 #' morie_check_plugin_license("MIT")
-#' \donttest{
+#' \dontrun{
+#' # The next call demonstrates the error path; runs only on
+#' # explicit example() with run.dontrun = TRUE.
 #' morie_check_plugin_license("LicenseRef-Proprietary",
 #'   raise_on_incompatible = TRUE
 #' )

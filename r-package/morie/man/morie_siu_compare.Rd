@@ -9,7 +9,7 @@ morie_siu_compare(
   external,
   field_map = NULL,
   external_case_col = "Q1",
-  cache_dir = "~/.cache/morie/siu"
+  cache_dir = file.path(tempdir(), "morie", "siu")
 )
 }
 \arguments{
@@ -60,7 +60,7 @@ layout (\code{Q1 = case_number}, \code{Q3 = police_service},
 \code{field_map} for any other external schema.
 }
 \examples{
-\donttest{
+\dontrun{
 # Caller supplies their own external table; nothing about the
 # mapping or the file format is canonical to morie.
 external <- data.frame(case_id = "17-OVI-201", officers = 1L)

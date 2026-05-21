@@ -12,7 +12,7 @@ morie_siu_translate(
   model = "ollama",
   fields = c("narrative_summary", "news_release_summary", "news_release_title",
     "relevant_legislation"),
-  cache_dir = "~/.cache/morie/siu",
+  cache_dir = file.path(tempdir(), "morie", "siu"),
   progress = TRUE
 )
 
@@ -21,7 +21,7 @@ morie_siu_translate_fr_to_en(
   model = "ollama",
   fields = c("narrative_summary", "news_release_summary", "news_release_title",
     "relevant_legislation"),
-  cache_dir = "~/.cache/morie/siu",
+  cache_dir = file.path(tempdir(), "morie", "siu"),
   progress = TRUE
 )
 }
@@ -95,7 +95,7 @@ fine-tuned for translation. Falls back to whatever model
 \code{OLLAMA_MODEL} points at.
 }
 \examples{
-\donttest{
+\dontrun{
 Sys.setenv(
   OLLAMA_HOST = "http://localhost:11434",
   OLLAMA_MODEL = "translategemma:latest"

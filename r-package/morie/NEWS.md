@@ -1,3 +1,48 @@
+# morie 0.9.5.2 - 2026-05-21
+
+* **HTML validation fix.** `morie_siu_sanity_check`'s description
+  used `date_*_iso` and `number_of_*` as inline text, which
+  roxygen2's markdown mode rendered as nested `\emph{\emph{...}}`
+  in the generated Rd and as nested `<em>` in the HTML manual.
+  win-builder flagged this as an HTML validation NOTE. Wrapping
+  the identifiers in backticks (now rendered as `\verb{...}`)
+  resolves it.
+* All other fixes are inherited from 0.9.5.1: see entry below.
+
+# morie 0.9.5.1 - 2026-05-21
+
+CRAN Policy: full cache-leak fix (supersedes 0.9.5 which was
+uploaded to win-builder with incomplete cache-isolation).
+
+* `morie_db_connect()` default cache-dir flipped from
+  `tools::R_user_dir("morie", "cache")` to a session-scoped
+  `tempdir()` subdirectory; matches the convention already set
+  for `morie_fetch_siu()` and `morie_fetch_tps()` in 0.9.5. Now
+  no morie function writes outside `tempdir()` unless the user
+  explicitly opts in by passing `db_path = morie_cache_dir(...)`
+  or `cache_dir = morie_cache_dir(...)`.
+* New `morie_cache_clear(subdir, confirm)` user-facing function
+  for actively-managing the persistent cache (CRAN Policy
+  requirement for `R_user_dir` caches).
+* `morie_cache_dir(subdir)` is now exported with a `subdir`
+  argument so users can compose per-subsystem persistent paths.
+* 3 `morie_cache_*` examples (`store`, `load`, `list`) now use
+  explicit `db_path = tempfile()` so `R CMD check` never writes
+  outside `tempdir()`.
+* `morie_check_plugin_license` error-path example moved from
+  `\donttest{}` to `\dontrun{}` (intentionally errors when
+  passed an incompatible SPDX).
+* `morie_fetch` placeholder-URL example moved from
+  `\donttest{}` to `\dontrun{}` (example.org doesn't host CSV;
+  the URL is a documentation placeholder).
+* Two `crimsl.utoronto.ca` references in `R/mandela.R` and
+  `R/morie-package.R` rewritten as plain-text references; the
+  U of T web server returns 403 to win-builder's IP even though
+  the URLs are publicly reachable from browsers.
+* New `inst/WORDLIST` listing real technical terms (AIPW, ATC,
+  ATT, CATE, Hawkes, MRM, etc.) so the win-builder
+  spell-checker no longer flags them.
+
 # morie 0.9.5 — 2026-05-21
 
 Documentation + CI hardening (added 2026-05-21 to the v0.9.5

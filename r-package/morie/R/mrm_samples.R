@@ -106,15 +106,18 @@ morie_tps_layer_urls <- function() {
 #' calls unless `overwrite = TRUE`.
 #'
 #' @param category One of `names(morie_tps_layer_urls())`.
-#' @param cache_dir Directory for the CSV
-#'   (default `"~/.cache/morie/tps"`).
+#' @param cache_dir Directory for the CSV. Defaults to a
+#'   session-scoped subdirectory of `tempdir()` that R cleans up
+#'   automatically. For persistent caching pass
+#'   `cache_dir = morie_cache_dir("tps")`; see
+#'   [morie_cache_dir] and [morie_cache_clear].
 #' @param where ArcGIS SQL where clause (default `"1=1"`).
 #' @param overwrite Logical; if `FALSE` and the CSV exists, return its
 #'   path without re-downloading.
 #' @param max_per_page ArcGIS page size (default `2000`; server caps).
 #' @return Path to the CSV.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Network: fetches major-crime indicators from the Toronto Police
 #' # ArcGIS open-data layer.
 #' csv <- morie_fetch_tps(
@@ -128,7 +131,7 @@ morie_tps_layer_urls <- function() {
 #' @export
 morie_fetch_tps <- function(
   category,
-  cache_dir = "~/.cache/morie/tps",
+  cache_dir = file.path(tempdir(), "morie", "tps"),
   where = "1=1",
   overwrite = FALSE,
   max_per_page = 2000L

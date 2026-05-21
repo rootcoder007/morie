@@ -24,8 +24,13 @@ Number of rows written (invisible).
 Writes (or replaces) a table in the shared SQLite cache.
 }
 \examples{
+\donttest{
+db <- tempfile(fileext = ".db")
 morie_cache_store(
   data = data.frame(x = rnorm(50), y = rnorm(50)),
-  table_name = "demo"
+  table_name = "demo",
+  db_path = db
 )
+file.remove(db)
+}
 }

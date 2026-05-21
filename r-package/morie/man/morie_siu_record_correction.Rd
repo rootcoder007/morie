@@ -9,7 +9,7 @@ morie_siu_record_correction(
   field,
   verified_value,
   note = "",
-  cache_dir = "~/.cache/morie/siu"
+  cache_dir = file.path(tempdir(), "morie", "siu")
 )
 }
 \arguments{
@@ -45,11 +45,16 @@ corrections upstream by sharing the resulting CSV file.
 }
 \examples{
 \donttest{
+# Writes the correction to a temp cache so the example never
+# touches the per-user cache directory.
+tmp <- tempfile("morie_siu_"); dir.create(tmp, recursive = TRUE)
 morie_siu_record_correction(
   case_number = "17-OVI-201",
   field = "location_of_call",
   verified_value = "Clair Road East, City of Guelph",
-  note = "HTML excerpt: 'on Clair Road East in the City of Guelph'"
+  note = "HTML excerpt: 'on Clair Road East in the City of Guelph'",
+  cache_dir = tmp
 )
+unlink(tmp, recursive = TRUE)
 }
 }

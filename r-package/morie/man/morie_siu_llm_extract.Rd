@@ -7,7 +7,7 @@
 morie_siu_llm_extract(
   case_number,
   model = c("ollama", "gemini"),
-  cache_dir = "~/.cache/morie/siu",
+  cache_dir = file.path(tempdir(), "morie", "siu"),
   max_html_chars = 80000L,
   mock_response_text = NULL
 )
@@ -65,7 +65,7 @@ optionally \code{OLLAMA_MODEL} (default \code{"llama3.2:3b"}) for
 Ollama-compatible open-weight endpoints.
 }
 \examples{
-\donttest{
+\dontrun{
 Sys.setenv(GOOGLE_API_KEY = "your-gemini-key")
 r <- morie_siu_llm_extract("17-OVI-201", model = "gemini")
 # Diff parser vs LLM against the HTML:

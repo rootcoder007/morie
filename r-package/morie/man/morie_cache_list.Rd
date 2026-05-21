@@ -18,5 +18,10 @@ A data.frame with columns \code{table} and \code{rows}.
 List all tables in the MORIE cache
 }
 \examples{
-morie_cache_list()
+\donttest{
+db <- tempfile(fileext = ".db")
+morie_cache_store(data.frame(x = 1:3), "demo", db_path = db)
+morie_cache_list(db_path = db)
+file.remove(db)
+}
 }

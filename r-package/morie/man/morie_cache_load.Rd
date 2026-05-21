@@ -20,5 +20,14 @@ A data.frame, or \code{NULL} if the table does not exist.
 Load a table from the MORIE cache
 }
 \examples{
-morie_cache_load(table_name = "demo")
+\donttest{
+db <- tempfile(fileext = ".db")
+morie_cache_store(
+  data = data.frame(x = 1:5),
+  table_name = "demo",
+  db_path = db
+)
+morie_cache_load(table_name = "demo", db_path = db)
+file.remove(db)
+}
 }

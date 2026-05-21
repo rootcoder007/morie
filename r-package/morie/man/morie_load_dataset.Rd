@@ -30,7 +30,7 @@ error. Supports fuzzy matching: \code{morie_load_dataset("cpads_2021")}
 resolves to \code{ocp21}.
 }
 \examples{
-\donttest{
+\dontrun{
 df <- morie_load_dataset("ocp21") # CPADS 2021-2022 (default DuckDB cache)
 df <- morie_load_dataset("ocp21", refresh = TRUE) # force re-fetch
 

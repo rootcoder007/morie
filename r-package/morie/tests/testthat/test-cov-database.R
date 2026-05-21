@@ -9,20 +9,26 @@
   testthat::skip_if_not_installed("RSQLite")
 }
 
-test_that("morie_cache_dir honours XDG_CACHE_HOME then falls back to ~", {
-  old <- Sys.getenv("XDG_CACHE_HOME", unset = NA)
+test_that("morie_cache_dir honours MORIE_CACHE_DIR then R_user_dir", {
+  # CRAN Policy compliance (v0.9.5): override via MORIE_CACHE_DIR,
+  # default via tools::R_user_dir() (NOT ~/.cache/morie).
+  old <- Sys.getenv("MORIE_CACHE_DIR", unset = NA)
   on.exit(if (is.na(old)) {
-    Sys.unsetenv("XDG_CACHE_HOME")
+    Sys.unsetenv("MORIE_CACHE_DIR")
   } else {
-    Sys.setenv(XDG_CACHE_HOME = old)
+    Sys.setenv(MORIE_CACHE_DIR = old)
   }, add = TRUE)
-  Sys.setenv(XDG_CACHE_HOME = file.path(tempdir(), "xdg"))
+  Sys.setenv(MORIE_CACHE_DIR = file.path(tempdir(), "morie-override"))
   expect_equal(
     morie:::morie_cache_dir(),
-    file.path(tempdir(), "xdg", "morie")
+    file.path(tempdir(), "morie-override")
   )
-  Sys.unsetenv("XDG_CACHE_HOME")
-  expect_match(morie:::morie_cache_dir(), "morie$")
+  Sys.unsetenv("MORIE_CACHE_DIR")
+  # Default falls back to tools::R_user_dir("morie", which = "cache").
+  expect_equal(
+    morie:::morie_cache_dir(),
+    tools::R_user_dir("morie", which = "cache")
+  )
 })
 
 test_that("morie_builtin_db returns a morie.db path", {

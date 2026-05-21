@@ -5,7 +5,7 @@
 \title{Fetch the Ontario SIU corpus into a 64-column SIU.csv}
 \usage{
 morie_fetch_siu(
-  cache_dir = "~/.cache/morie/siu",
+  cache_dir = file.path(tempdir(), "morie", "siu"),
   overwrite = FALSE,
   max_drid = NULL,
   concurrency = 4L,
@@ -17,7 +17,11 @@ morie_fetch_siu(
 )
 }
 \arguments{
-\item{cache_dir}{Output directory (default \code{"~/.cache/morie/siu"}).}
+\item{cache_dir}{Output directory. Defaults to a session-scoped
+subdirectory of \code{\link[base]{tempdir}()} that R cleans up
+automatically. For persistent cross-session caching pass
+\code{cache_dir = morie_cache_dir("siu")} instead; see
+\code{\link{morie_cache_dir}} and \code{\link{morie_cache_clear}}.}
 
 \item{overwrite}{Logical; if \code{FALSE} and \code{SIU.csv} already
 exists in \code{cache_dir}, its path is returned without reparsing.}
@@ -84,7 +88,7 @@ parsed corpus is not shipped with the package; each user runs the
 parser themselves, which is fair use of public oversight reports.
 }
 \examples{
-\donttest{
+\dontrun{
 # Network: parses the full Ontario SIU corpus (~15-25 min at the
 # default polite rate of 4 RPS).
 csv <- morie_fetch_siu(cache_dir = tempdir())

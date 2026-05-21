@@ -31,7 +31,7 @@ datasets that are not in the built-in MORIE catalog and fetch them
 through \code{\link{morie_fetch_ckan}} or \code{\link{morie_fetch}}.
 }
 \examples{
-\donttest{
+\dontrun{
 hits <- morie_ckan_search("cannabis survey", portal = "open.canada.ca")
 head(hits[, c("dataset_title", "resource_id", "format")])
 }
