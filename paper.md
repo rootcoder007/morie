@@ -218,12 +218,7 @@ published number from the transcribed cell counts.
 
 # Acknowledgements
 
-The author thanks Prof. Beatrice Jauregui (University of
-Toronto) for the network of mentorship that made this line of
-work possible, and Prof. Ayobami Laniyonu (University of
-Toronto) for valuable lessons over the broader period of this
-work that informed the author's thinking on policing and
-corrections research. The MRM methodology lineage acknowledges
+The MRM methodology lineage acknowledges
 the federal context provided by Anthony N. Doob's affidavit
 [@doob2020affidavit] and the four Sprott–Doob–Iftene
 independent academic reports [@sprottdoob2020operation;
