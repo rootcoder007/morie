@@ -35,7 +35,7 @@ inference and intervention analysis across a wide range of
 scientific-experimentation contexts, with sociolegal data
 analysis (carceral, police, and oversight) as its named
 flagship domain. The package is
-home to the MRM (McNamara-Ruhela-Medina) framework, a
+home to the MRM (Multilevel Reconciliation Methodology) framework, a
 multi-source mathematical foundation that integrates five distinct
 Canadian carceral, police, and oversight data streams under one
 set of estimators [@ruhela2026dlrm]: provincial Ontario
