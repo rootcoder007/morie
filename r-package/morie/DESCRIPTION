@@ -428,6 +428,7 @@ Collate:
   'ukrig.R'
   'unfdl.R'
   'vaenc.R'
+  'variable_taxonomy.R'
   'vdwrd.R'
   'vecmf.R'
   'vines.R'
