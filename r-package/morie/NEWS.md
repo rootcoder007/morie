@@ -1,3 +1,50 @@
+# morie 0.9.5.5 - 2026-05-22
+
+R-side `describe()` parity closure. Patch release that closes one
+of the two parity gaps named in v0.9.5.4: the pedagogical
+narratives that the Python sibling exposes via `morie.describe()`
+are now available on the R side via `morie_describe()` and the
+string-only variant `morie_describe_by_name()`.
+
+**R API additions**:
+
+* `morie_describe(callable)` — takes a function object OR a
+  character scalar (with or without the `morie_` prefix). Prints
+  the pedagogical narrative for the named callable.
+* `morie_describe_by_name(name)` — string-only variant.
+
+**Bundled data**:
+
+* `inst/extdata/describe_corpus.Rds` — a single xz-compressed Rds
+  (~1.6 MB on disk) containing 36,433 named character entries.
+  Names are the callable mnemonics (the 4-7 character forms);
+  values are the markdown narrative bodies sourced from
+  `src/morie/fn/describe_<name>.md`. The Rds is loaded once per
+  session and cached in a package-private environment.
+
+**Build tooling**:
+
+* `tools/bundle-describe-files.R` — re-runs the Python-to-R sync
+  when `src/morie/fn/describe_*.md` changes. Run from the repo
+  root with `Rscript tools/bundle-describe-files.R`.
+
+**Tests**:
+
+* `tests/testthat/test-describe.R` — 17 tests covering lookup,
+  prefix stripping, `.md` extension stripping, unknown-name
+  diagnostics, type-rejection, function-object capture via
+  `substitute()`, and cache identity across calls. All pass on
+  the development build.
+
+**Remaining parity gap**:
+
+* `morie.crypto` educational primitives ship on the Python side
+  only; a native R + Rcpp port (ML-KEM, Dilithium, NTRU,
+  McEliece, ECC, hybrid PQC) is planned for v1.0.0. Calling into
+  the Python side via `reticulate` is not added in v0.9.5.5; the
+  scope was set at the native-R port path, which is a larger
+  arc and the natural place for a v1.0.0 milestone.
+
 # morie 0.9.5.4 - 2026-05-21
 
 Doob → MRM chi-square rename. Patch release with deprecation aliases;

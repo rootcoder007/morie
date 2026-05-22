@@ -1,7 +1,7 @@
 Package: morie
 Type: Package
 Title: Multi-Domain Open Research and Inferential Estimation
-Version: 0.9.5.4
+Version: 0.9.5.5
 Authors@R: c(
   person(
     given = "Vansh Singh",
@@ -160,6 +160,7 @@ Collate:
   'dataset_profile.R'
   'dbscl.R'
   'dccmd.R'
+  'describe.R'
   'diffu.R'
   'dimrd.R'
   'dlgen.R'
