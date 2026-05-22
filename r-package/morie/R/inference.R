@@ -365,22 +365,41 @@ morie_risk_ratio_ci <- function(table_2x2, alpha = 0.05) {
 #' #   vignette(package = "morie")
 #' @export
 morie_risk_difference_ci <- function(table_2x2, alpha = 0.05) {
+  # Newcombe (1998) hybrid score CI:
+  # 1. Wilson score CI for each proportion separately: (l_i, u_i)
+  # 2. RD CI = (rd - delta_lo, rd + delta_hi) where
+  #    delta_lo = sqrt((p1 - l1)^2 + (u2 - p2)^2)
+  #    delta_hi = sqrt((u1 - p1)^2 + (p2 - l2)^2)
+  # The simple Wald form (rd +- z*sqrt(p1q1/n1 + p2q2/n2)) does not
+  # have the correct coverage near 0/1; was the pre-2026-05-22 form.
   m <- as.matrix(table_2x2)
-  a <- m[1, 1]
-  b <- m[1, 2]
-  c <- m[2, 1]
-  d <- m[2, 2]
+  a <- m[1, 1]; b <- m[1, 2]
+  cc <- m[2, 1]; d <- m[2, 2]  # 'c' shadows base c()
   n1 <- a + b
-  n2 <- c + d
+  n2 <- cc + d
   p1 <- a / n1
-  p2 <- c / n2
+  p2 <- cc / n2
   rd <- p1 - p2
   z <- stats::qnorm(1 - alpha / 2)
-  se <- sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2)
+  wilson <- function(x, n, z) {
+    if (n == 0) return(c(0, 1))
+    p <- x / n
+    denom <- 1 + z^2 / n
+    centre <- (p + z^2 / (2 * n)) / denom
+    half <- z * sqrt(p * (1 - p) / n + z^2 / (4 * n^2)) / denom
+    c(max(0, centre - half), min(1, centre + half))
+  }
+  ci1 <- wilson(a,  n1, z)
+  ci2 <- wilson(cc, n2, z)
+  l1 <- ci1[1]; u1 <- ci1[2]
+  l2 <- ci2[1]; u2 <- ci2[2]
+  delta_lo <- sqrt((p1 - l1)^2 + (u2 - p2)^2)
+  delta_hi <- sqrt((u1 - p1)^2 + (p2 - l2)^2)
   list(
-    rd = rd,
-    ci_lower = rd - z * se,
-    ci_upper = rd + z * se
+    rd       = rd,
+    ci_lower = rd - delta_lo,
+    ci_upper = rd + delta_hi,
+    method   = "Newcombe (1998) hybrid score"
   )
 }
 
@@ -426,9 +445,14 @@ morie_hedges_g <- function(x1, x2) {
   d <- morie_cohens_d(x1, x2, pooled = TRUE)
   n1 <- sum(!is.na(x1))
   n2 <- sum(!is.na(x2))
-  df <- n1 + n2 - 2
-  correction <- 1 - 3 / (4 * df - 1)
-  d * correction
+  m <- n1 + n2 - 2  # degrees of freedom
+  if (m <= 0) return(d)
+  # Exact gamma-based small-sample correction (Hedges 1981):
+  # J(m) = Gamma(m/2) / (sqrt(m/2) * Gamma((m-1)/2))
+  # Matches Python inference.py:hedges_g; the older 1 - 3/(4m-1)
+  # approximation diverged from this at small m.
+  log_J <- lgamma(m / 2) - 0.5 * log(m / 2) - lgamma((m - 1) / 2)
+  d * exp(log_J)
 }
 
 #' Eta-squared from F-statistic

@@ -65,8 +65,11 @@ morie_stratified_sample <- function(df, strata_col, n_per_stratum,
     } else {
       stop("For proportional = TRUE, supply a single integer for n_per_stratum.")
     }
-    alloc <- round(strata_sizes / sum(strata_sizes) * total_n)
-    alloc <- pmax(alloc, 1L)
+    # Python sampling.py: stratified_sample does NOT floor at 1 — a
+    # tiny stratum under proportional allocation can legitimately get
+    # zero. Match that contract (allows zero-stratum allocs).
+    alloc <- as.integer(round(strata_sizes / sum(strata_sizes) * total_n))
+    alloc <- pmax(alloc, 0L)
   } else {
     if (length(n_per_stratum) == 1L) {
       alloc <- setNames(rep(n_per_stratum, length(strata)), names(strata))
@@ -131,14 +134,22 @@ morie_cluster_sample <- function(df, cluster_col, n_clusters, seed = 42L) {
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
 #' @export
-morie_pps_sample <- function(df, size_col, n, seed = 42L) {
+morie_pps_sample <- function(df, size_col, n, seed = 42L,
+                              replace = FALSE) {
+  # Python sampling.py:pps_sample uses replace=False (PPS-WoR via
+  # Madow systematic-like). Default switched to FALSE 2026-05-22 to
+  # match. Pass replace=TRUE for legacy Hansen-Hurwitz with-replacement.
   set.seed(seed)
   sizes <- as.numeric(df[[size_col]])
   if (any(sizes <= 0, na.rm = TRUE)) stop("size_col must be positive.")
   probs <- sizes / sum(sizes, na.rm = TRUE)
-  idx <- sample.int(nrow(df), size = n, replace = TRUE, prob = probs)
+  if (!replace && n > nrow(df)) {
+    stop("PPS without replacement requires n <= nrow(df).", call. = FALSE)
+  }
+  idx <- sample.int(nrow(df), size = n, replace = replace, prob = probs)
   out <- df[idx, , drop = FALSE]
-  # Hansen-Hurwitz weight: 1 / (n * pi_i)
+  # Design weight: 1 / (n * pi_i). Under HH-WR this is unbiased; under
+  # WoR it is approximate but commonly used.
   out$.weight <- 1 / (n * probs[idx])
   out
 }

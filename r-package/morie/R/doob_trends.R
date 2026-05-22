@@ -319,8 +319,14 @@ pettitt_changepoint <- function(series) {
   }
   U <- numeric(n)
   # Mann-Whitney U-like statistic accumulated up to each split-point.
+  # At t=n-1, the b slice is arr[(n+1):n] which is reversed/oob in R
+  # (Python's slice arr[t+1:] returns empty). Guard against this.
   for (t in seq_len(n - 1)) {
     a <- arr[seq_len(t + 1)]
+    if (t + 2 > n) {
+      U[t + 1] <- 0
+      next
+    }
     b <- arr[(t + 2):n]
     U[t + 1] <- sum(sign(outer(a, b, "-")))
   }

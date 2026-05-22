@@ -99,7 +99,11 @@ morie_estimate_ate <- function(data, treatment, outcome, covariates,
 
   w <- t / ps + (1 - t) / (1 - ps)
   ate <- .hajek_diff(y[t == 1], w[t == 1], y[t == 0], w[t == 0])
-  se <- stats::sd(w * (t - ps) * y) / sqrt(length(y))
+  # Standard IPW influence-function SE (Hernan-Robins, "What If" Ch 12.6):
+  # psi_i = t*y/ps - (1-t)*y/(1-ps) - ATE. The previous form
+  # sd(w*(t-ps)*y) was non-standard and biased.
+  if_vec <- t * y / ps - (1 - t) * y / (1 - ps) - ate
+  se <- stats::sd(if_vec) / sqrt(length(y))
   ci <- .wald_ci(ate, se)
   ess <- (sum(w)^2) / sum(w^2)
 
@@ -143,9 +147,14 @@ morie_estimate_att <- function(data, treatment, outcome, covariates,
   att <- mean_t - mean_c
 
   n1 <- sum(t == 1)
-  # Delta-method SE approximation
-  se <- sqrt(stats::var(y[t == 1]) / n1 +
-    stats::var(w_ctrl[t == 0] * y[t == 0]) / sum(t == 0))
+  n <- length(y)
+  # Influence-function SE for IPW-ATT (Imbens & Wooldridge 2009 §5.5):
+  # psi_i = [t_i * Y_i - (1-t_i) * Y_i * ps_i/(1-ps_i)] / E[t] - t_i * ATT / E[t]
+  # The earlier var(w_ctrl*y[t==0]) form ignored the Hajek normalization
+  # and the t==1 contribution.
+  p_t <- mean(t)
+  if_vec <- (t * y - (1 - t) * y * w_ctrl) / p_t - t * att / p_t
+  se <- stats::sd(if_vec) / sqrt(n)
   ci <- .wald_ci(att, se)
 
   list(att = att, se = se, ci_lower = ci[1], ci_upper = ci[2], n_treated = n1)
@@ -184,8 +193,13 @@ morie_estimate_atc <- function(data, treatment, outcome, covariates,
   atc <- mean_treated_reweighted - mean_c
 
   n0 <- sum(t == 0)
-  se <- sqrt(stats::var(y[t == 0]) / n0 +
-    stats::var(w_trt[t == 1] * y[t == 1]) / sum(t == 1))
+  n <- length(y)
+  # Influence-function SE for IPW-ATC (mirror of ATT, swapping roles):
+  # psi_i = [t_i * Y_i * (1-ps_i)/ps_i - (1-t_i) * Y_i] / E[1-t] -
+  #         (1-t_i) * ATC / E[1-t]
+  p_c <- mean(1 - t)
+  if_vec <- (t * y * w_trt - (1 - t) * y) / p_c - (1 - t) * atc / p_c
+  se <- stats::sd(if_vec) / sqrt(n)
   ci <- .wald_ci(atc, se)
 
   list(atc = atc, se = se, ci_lower = ci[1], ci_upper = ci[2], n_control = n0)
