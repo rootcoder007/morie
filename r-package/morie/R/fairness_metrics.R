@@ -315,7 +315,9 @@ morie_fairness_demographic_parity <- function(y_pred, group,
   }
 
   non_ref <- gaps[names(gaps) != priv]
-  worst <- if (length(non_ref) > 0L) non_ref[which.max(abs(non_ref))] else 0.0
+  finite_nr <- non_ref[is.finite(non_ref)]
+  worst <- if (length(finite_nr) > 0L) finite_nr[which.max(abs(finite_nr))]
+           else if (length(non_ref) > 0L) NA_real_ else 0.0
   worst_val <- as.numeric(worst)
 
   interp <- paste0(

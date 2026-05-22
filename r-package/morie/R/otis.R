@@ -218,17 +218,17 @@ morie_otis_astcmb <- function(df,
   }
   a <- .otis_binarise(df[[alert_cols[1]]])
   b <- .otis_binarise(df[[alert_cols[2]]])
-  c <- .otis_binarise(df[[alert_cols[3]]])
+  cc <- .otis_binarise(df[[alert_cols[3]]])  # not 'c' — shadows base c()
   flags <- data.frame(
     id = df[[id_col]], yr = df[[year_col]],
-    a1 = as.integer(a == 1 & b == 0 & c == 0),
-    a2 = as.integer(a == 0 & b == 1 & c == 0),
-    a3 = as.integer(a == 0 & b == 0 & c == 1),
-    a4 = as.integer(a == 1 & b == 1 & c == 0),
-    a5 = as.integer(a == 0 & b == 1 & c == 1),
-    a6 = as.integer(a == 1 & b == 0 & c == 1),
-    a7 = as.integer(a == 1 & b == 1 & c == 1),
-    a8 = as.integer(a == 0 & b == 0 & c == 0),
+    a1 = as.integer(a == 1 & b == 0 & cc == 0),
+    a2 = as.integer(a == 0 & b == 1 & cc == 0),
+    a3 = as.integer(a == 0 & b == 0 & cc == 1),
+    a4 = as.integer(a == 1 & b == 1 & cc == 0),
+    a5 = as.integer(a == 0 & b == 1 & cc == 1),
+    a6 = as.integer(a == 1 & b == 0 & cc == 1),
+    a7 = as.integer(a == 1 & b == 1 & cc == 1),
+    a8 = as.integer(a == 0 & b == 0 & cc == 0),
     stringsAsFactors = FALSE
   )
   acols <- paste0("a", 1:8)
@@ -237,6 +237,7 @@ morie_otis_astcmb <- function(df,
   # ac = number of distinct combinations observed in this person-year
   agg$ac <- rowSums(agg[, acols] > 0)
   summary_tbl <- as.data.frame(table(ac = agg$ac), stringsAsFactors = FALSE)
+  summary_tbl$ac <- as.integer(as.character(summary_tbl$ac))  # not factor levels
   names(summary_tbl) <- c("ac", "n_persons")
   summary_tbl <- summary_tbl[order(as.integer(summary_tbl$ac),
                                     decreasing = TRUE), , drop = FALSE]

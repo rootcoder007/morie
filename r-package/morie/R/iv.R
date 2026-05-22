@@ -90,7 +90,7 @@ NULL
   resid <- as.numeric(y - X %*% beta)
   n <- length(y); k <- length(beta)
   if (robust) {
-    meat <- crossprod(X, diag(resid^2) %*% X)
+    meat <- crossprod(X, resid^2 * X)
     bread <- solve(XtPzX)
     vcov_ <- bread %*% meat %*% bread
   } else {
@@ -503,13 +503,17 @@ morie_iv_jive <- function(data, outcome, endogenous, instruments,
   Z <- cbind(`(Intercept)` = 1, as.matrix(df[, c(instruments, exogenous),
                                             drop = FALSE]))
   H <- Z %*% solve(crossprod(Z), t(Z))   # hat matrix
-  Xhat <- (H %*% X - diag(diag(H)) %*% X) / (1 - diag(H))
+  hd <- diag(H)
+  if (any(abs(1 - hd) < 1e-10))
+    stop("JIVE: leverage of 1 detected (perfect fit); cannot leave-one-out.",
+         call. = FALSE)
+  Xhat <- (H %*% X - hd * X) / (1 - hd)  # vector-recycle, not n*n diag
   beta <- as.numeric(solve(crossprod(Xhat, X), crossprod(Xhat, y)))
   names(beta) <- colnames(X)
   resid <- as.numeric(y - X %*% beta)
   n <- length(y); k <- length(beta)
   bread <- solve(crossprod(Xhat, X))
-  meat  <- crossprod(Xhat, diag(resid^2) %*% Xhat)
+  meat  <- crossprod(Xhat, resid^2 * Xhat)
   vcov_ <- bread %*% meat %*% t(bread)
   se    <- sqrt(pmax(diag(vcov_), 0))
   .morie_iv_result(beta, se, n, method = "JIVE", alpha = alpha,
