@@ -445,8 +445,11 @@ omitted_variable_bias <- function(estimate, se, dof, r2_yd_x,
 #' @param outcome        Outcome variable name.
 #' @param treatment      Treatment variable name.
 #' @param covariate_sets List of character vectors (one per spec).
-#' @param sample_filters Optional list of `list(name, fn)`; `fn` takes
-#'   the data.frame and returns a subset. Default: full sample only.
+#' @param sample_filters Optional. Accepted shapes (for Python↔R parity):
+#'   (a) `list(list(name = "...", fn = function(df) ...), ...)` (R native),
+#'   (b) `list(c("name", fn), ...)` or `list(list("name", fn), ...)` (Python
+#'       `list[tuple[str, callable]]` shape — positional pair). Default: full
+#'       sample only.
 #' @param model_types    Character vector of model families:
 #'   `"ols"`, `"logistic"`, `"robust"`. Default `c("ols")`.
 #' @param alpha          Significance level. Default 0.05.
@@ -460,6 +463,17 @@ specification_curve <- function(data, outcome, treatment,
   if (is.null(sample_filters))
     sample_filters <- list(list(name = "full_sample",
                                   fn   = function(df) df))
+  # Normalise Python-style positional pairs `list("name", fn)` or
+  # `c("name", fn)` into the canonical list(name=, fn=) shape so both
+  # ports accept either signature (parity fix 2026-05-22).
+  sample_filters <- lapply(sample_filters, function(f) {
+    if (is.list(f) && !is.null(f$name) && !is.null(f$fn)) return(f)
+    if (length(f) >= 2L && is.function(f[[2L]])) {
+      return(list(name = as.character(f[[1L]]), fn = f[[2L]]))
+    }
+    stop("sample_filters entry must be list(name=, fn=) or (name, fn) pair.",
+         call. = FALSE)
+  })
 
   estimates <- numeric(0); ses <- numeric(0); p_values <- numeric(0)
   specifications <- list()

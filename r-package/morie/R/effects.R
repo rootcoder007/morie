@@ -445,19 +445,13 @@ e_value <- function(ate, se, null = 0) {
   if (se <= 0) stop("se must be > 0, got ", se)
   z <- abs(ate - null) / se
   if (z == 0) return(1)
-  if (requireNamespace("EValue", quietly = TRUE)) {
-    # EValue::evalues.OLS uses the standardised OLS formula directly.
-    sd_y <- 1
-    out <- try(EValue::evalues.OLS(est = ate - null, se = se,
-                                      sd = sd_y, true = 0),
-                silent = TRUE)
-    if (!inherits(out, "try-error")) {
-      # First row is point estimate, "E-value" column.
-      ev <- as.numeric(out["E-values", "point"])
-      if (is.finite(ev) && ev >= 1) return(ev)
-    }
-  }
-  # Continuous-scale RR proxy = exp(z); then VanderWeele-Ding E-value.
+  # Pre-2026-05-22, this also tried EValue::evalues.OLS with a hardcoded
+  # sd_y=1 (assumed standardised outcome). That diverged from Python's
+  # exp(z) proxy: same input, three different paths (R-with-EValue ≠
+  # R-without ≠ Python). Removed; both ports now use the closed-form
+  # VanderWeele-Ding E-value for the continuous-scale RR proxy.
+  # Users who want the EValue OLS path with a real sd_y should call
+  # EValue::evalues.OLS directly.
   rr <- exp(z)
   if (rr <= 1) return(1)
   rr + sqrt(rr * (rr - 1))
