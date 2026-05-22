@@ -203,9 +203,10 @@ morie_survival_coxsnell <- function(cox_result) {
   .req_survival()
   if (is.null(cox_result$.coxph))
     stop("cox_result must come from morie_survival_cox().", call. = FALSE)
-  # CS residual = - log S(t)
-  as.numeric(cox_result$.coxph$nevent - stats::residuals(cox_result$.coxph,
-                                                         type = "martingale"))
+  # CS residual = delta_i - M_i (per-row event indicator minus martingale)
+  status <- cox_result$.coxph$y[, "status"]
+  as.numeric(status - stats::residuals(cox_result$.coxph,
+                                       type = "martingale"))
 }
 
 #' Martingale residuals.

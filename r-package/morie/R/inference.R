@@ -203,8 +203,9 @@ morie_mann_whitney_test <- function(x1, x2,
     alternative = alternative,
     exact = FALSE
   )
-  n <- length(x1) * length(x2)
-  r_effect <- abs(stats::qnorm(result$p.value / 2)) / sqrt(n)
+  # Total sample size N = n1 + n2 (Rosenthal-style r = Z / sqrt(N))
+  n_total <- length(x1) + length(x2)
+  r_effect <- abs(stats::qnorm(result$p.value / 2)) / sqrt(n_total)
   list(W = as.numeric(result$statistic), p_value = result$p.value, r = r_effect)
 }
 

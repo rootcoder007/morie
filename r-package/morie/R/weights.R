@@ -379,13 +379,23 @@ morie_weights_jackknife <- function(weights, strata = NULL,
   if (is.null(strata))
     stop("JKn requires `strata`.", call. = FALSE)
   s <- as.character(strata)
-  us <- unique(s); R <- length(us)
-  rep <- matrix(w, nrow = n, ncol = R)
-  for (r in seq_along(us)) {
-    mask <- s == us[r]
-    if (sum(mask) <= 1) next
-    rep[mask, r] <- 0
+  us <- unique(s)
+  # Wolter (2007) JKn: one replicate PER PSU. Drop PSU i, scale the
+  # remaining (n_h - 1) PSUs in stratum h by n_h / (n_h - 1); all PSUs
+  # in other strata keep their full weight.
+  rep <- matrix(w, nrow = n, ncol = n)
+  rep_strata <- character(n)
+  for (i in seq_len(n)) {
+    h <- s[i]
+    mask_h <- s == h
+    n_h <- sum(mask_h)
+    rep_strata[i] <- h
+    if (n_h <= 1L) next
+    rep[i, i] <- 0
+    rep[mask_h & seq_len(n) != i, i] <-
+      w[mask_h & seq_len(n) != i] * (n_h / (n_h - 1L))
   }
+  attr(rep, "morie_jkn_strata") <- rep_strata
   rep
 }
 
@@ -512,16 +522,38 @@ morie_weights_sdr <- function(weights, n_replicates = 100, seed = 42) {
 morie_weights_replicate_variance <- function(full_estimate, replicate_estimates,
                                              method = c("JK1", "JKn", "BRR",
                                                          "Fay", "bootstrap", "SDR"),
-                                             fay_coefficient = 0) {
+                                             fay_coefficient = 0,
+                                             strata = NULL) {
   method <- match.arg(method)
   reps <- as.numeric(replicate_estimates); R <- length(reps)
   if (R == 0)
     return(list(variance = 0, se = 0,
                 ci_lower = full_estimate, ci_upper = full_estimate))
   diffs_sq <- (reps - full_estimate)^2
+  # JKn needs per-replicate stratum to apply the Wolter (2007)
+  # ((n_h - 1) / n_h) per-stratum scaling. Read it from the replicate
+  # matrix attribute if `strata` isn't supplied explicitly.
+  if (method == "JKn" && is.null(strata))
+    strata <- attr(replicate_estimates, "morie_jkn_strata")
   var_v <- switch(method,
     JK1 = (R - 1) / R * sum(diffs_sq),
-    JKn = sum(diffs_sq),
+    JKn = {
+      if (is.null(strata) || length(strata) != R) {
+        # Best-effort fallback: treat all replicates as one stratum.
+        ((R - 1) / R) * sum(diffs_sq)
+      } else {
+        s_chr <- as.character(strata)
+        us <- unique(s_chr)
+        total <- 0
+        for (h in us) {
+          mh <- s_chr == h
+          n_h <- sum(mh)
+          if (n_h <= 1L) next
+          total <- total + ((n_h - 1L) / n_h) * sum(diffs_sq[mh])
+        }
+        total
+      }
+    },
     BRR = sum(diffs_sq) / R,
     Fay = {
       if (fay_coefficient >= 1) stop("fay_coefficient must be < 1.", call. = FALSE)

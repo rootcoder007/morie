@@ -660,7 +660,9 @@ n_effective_tests <- function(correlation_matrix,
   if (method == "galwey") {
     m_eff <- (sum(sqrt(evs))) ^ 2 / sum(evs)
   } else if (method == "li_ji") {
-    m_eff <- sum(evs >= 1) + sum(evs[evs < 1] - floor(evs[evs < 1]))
+    # Li & Ji (2005): f(x) = I(x>=1) + (x - floor(x)); summed over all
+    # eigenvalues, INCLUDING the fractional part of evs >= 1.
+    m_eff <- sum(evs >= 1) + sum(evs - floor(evs))
   } else {
     var_e <- stats::var(evs)
     m_eff <- 1 + (m - 1) * (1 - var_e / m)

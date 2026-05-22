@@ -8,7 +8,7 @@
 # greedy longest-match BPE with UTF-8 byte fallback identical to the
 # Python implementation.
 
-`%||%` <- function(a, b) if (is.null(a) || identical(a, "")) b else a
+`%||%` <- function(a, b) if (is.null(a)) b else a
 
 #' Construct a MORIE tokenizer
 #'

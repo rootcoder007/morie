@@ -1703,7 +1703,16 @@ morie_matching_abadie_imbens_se <- function(data, outcome, treatment,
       sigma2[cp] <- diff2
     }
   }
-  V <- sum((1 + K)^2 * sigma2) / n^2
+  # Abadie-Imbens (2006) eq 14 for ATT:
+  #   V_ATT = (1/N_t^2) * [ sum_{i: D=1} sigma^2(X_i, 1)
+  #                       + sum_{j: D=0} K_j^2 * sigma^2(X_j, 0) ]
+  # Split by treatment status; previous form `sum((1+K)^2*sigma2)/n^2`
+  # used (1+K)^2 for both arms and divided by total n^2 — wrong scale.
+  t_vec <- as.integer(df[[treatment]])
+  is_t <- t_vec == 1L
+  n_treated <- max(sum(is_t), 1L)
+  V <- (sum(sigma2[is_t]) + sum((K[!is_t]^2) * sigma2[!is_t])) /
+    n_treated^2
   sqrt(max(V, 0))
 }
 

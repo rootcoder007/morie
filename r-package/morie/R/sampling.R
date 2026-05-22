@@ -70,6 +70,9 @@ morie_stratified_sample <- function(df, strata_col, n_per_stratum,
     # zero. Match that contract (allows zero-stratum allocs).
     alloc <- as.integer(round(strata_sizes / sum(strata_sizes) * total_n))
     alloc <- pmax(alloc, 0L)
+    # Preserve stratum-name index so the per-row lookup below resolves
+    # by character key, not by position. Without this, weights become NA.
+    alloc <- stats::setNames(alloc, names(strata_sizes))
   } else {
     if (length(n_per_stratum) == 1L) {
       alloc <- setNames(rep(n_per_stratum, length(strata)), names(strata))
