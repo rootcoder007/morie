@@ -42,7 +42,7 @@ get_arg <- function(flag, default) {
   i <- which(args == flag)
   if (length(i) == 1L && i < length(args)) args[i + 1L] else default
 }
-ref_dir   <- get_arg("--ref-dir", "/home/perseus/morie-work/refs")
+ref_dir   <- get_arg("--ref-dir", "./refs")
 sample_n  <- as.integer(get_arg("--sample", 100L))
 out_path  <- get_arg("--out", "validate-out.json")
 seed      <- as.integer(get_arg("--seed", 20260520L))
