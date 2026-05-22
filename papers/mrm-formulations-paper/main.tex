@@ -45,17 +45,17 @@ ORCID: \orcidlink{0009-0004-1750-3592}
 }
 
 \Abstract{
-MRM (Multilevel Reconciliation Methodology) is a unified
-statistical framework for Canadian carceral, police, and
-oversight data.  Canadian criminal-justice data is fragmented
-across five public producers with incompatible schemas, leaving
-most analyses either single-source and coverage-limited or
-multi-source and under-using available estimators.  MRM
-addresses this gap by coupling a ten-estimator per-individual
-causal ensemble (IPW, AIPW, IRM-DML, PSM, PLR, and
-PLR-SuperLearner variants) with a $\chi^{2}$ family for
+Canadian carceral, police, and oversight data live in five
+separate public records, each with its own schema, unit of
+observation, and access path. An analysis that uses one record
+inherits its blind spots; an analysis that uses several must
+first reconcile them. MRM --- the Multilevel Reconciliation
+Methodology --- is the unified statistical framework I propose
+for that reconciliation. It couples a ten-estimator
+per-individual causal ensemble (IPW, AIPW, IRM-DML, PSM, PLR,
+and PLR-SuperLearner variants) with a $\chi^{2}$ family for
 aggregate contingency tables, a Mandela Rules classifier
-operating at both federal and provincial level, and a Hawkes
+operating at both federal and provincial levels, and a Hawkes
 self-exciting process for spatio-temporal modelling.
 Implementation lives in the open-source \pkg{morie} toolkit
 \citep{Ruhela2026MorieR, Ruhela2026MoriePy}.  Empirical
@@ -221,11 +221,10 @@ independence is $\hat{E}_{aj}$.
 
 Causal estimands are defined under the standard potential-outcomes
 framework: $Y_{it}(d)$ denotes the outcome the unit would have
-realised had its treatment been set to $d \in \{0,1\}$. The
-identifying assumptions of conditional exchangeability
-$\{Y(0), Y(1)\} \indep D \mid X$, positivity $0 < \Pr(D=1 \mid X) <
-1$, and the stable-unit-treatment-value assumption are maintained
-throughout unless explicitly weakened.
+realised had its treatment been set to $d \in \{0,1\}$. Throughout this paper I assume conditional exchangeability
+$\{Y(0), Y(1)\} \indep D \mid X$, positivity $0 < \Pr(D=1 \mid
+X) < 1$, and the stable-unit-treatment-value assumption, and I
+flag any section that weakens one of them.
 
 \subsection{The five sources}
 
@@ -297,19 +296,17 @@ the \code{align\_fiscal()} routine.
 \section{The MRM estimator ensemble}
 \label{sec:per-individual}
 
-The estimator ensemble specifies ten estimators of the average
-treatment effect (ATE) and the average treatment effect on the
-treated (ATT) under the identifying assumptions stated in
-Section~\ref{sec:notation}.  Eight of the ten (the IPW, AIPW,
-IRM-DML, PSM, and clustering variants) are per-individual --- they
-admit a unit-level estimand $\hat{\tau}_i$ which can be averaged
-to recover the ATE or restricted to $\{i: D_i=1\}$ to recover the
-ATT.  The remaining two (PLR and PLR-SuperLearner) target the
-scalar marginal effect $\theta_0$ directly through orthogonal
-score equations.  We retain both in the ensemble because the
-scalar PLR estimate provides a useful sanity check against the
-ATE recovered from the per-individual family.  The estimators
-are grouped into five families.
+Ten estimators sit in the ensemble. Eight of them --- the IPW,
+AIPW, IRM-DML, PSM, and clustering variants --- assign a
+unit-level estimand $\hat{\tau}_i$ to every individual;
+averaging recovers the ATE, restricting to the treated recovers
+the ATT. The remaining two --- PLR and PLR-SuperLearner ---
+target the scalar marginal effect $\theta_0$ directly through
+orthogonal score equations. I keep both kinds because the
+scalar PLR estimate is the cleanest sanity check I know against
+the ATE recovered from the per-individual family: if they
+disagree, the identification is wrong somewhere and I want to
+know which. The ten estimators fall into five families.
 
 \subsection{Inverse-probability-weighting estimators}
 \label{sec:ipw}
@@ -536,18 +533,20 @@ in the framework's test suite.
 \label{sec:mandela}
 
 The United Nations Standard Minimum Rules for the Treatment of
-Prisoners (the Mandela Rules) define solitary confinement under
-two coupled conditions \citep{MandelaRules2015}: \textbf{Rule 43}
-names a placement \emph{prolonged} when a single continuous
-placement exceeds fifteen days; \textbf{Rule 44} names a
-placement \emph{solitary} when the individual is held twenty-two
-or more hours per day without meaningful human contact.  Both
-conditions must hold for a placement to be Mandela-torture under
-UN A/RES/70/175.  The MRM Mandela Rules classifier
-operationalises both conditions where the data supports them,
-and defaults to a duration-only proxy with explicit caveats
-where the meaningful-contact field is unavailable (see
-Section~\ref{sec:mandela-comparison}).
+Prisoners --- the Mandela Rules --- set two conditions for
+solitary confinement to count as torture \citep{MandelaRules2015}.
+\textbf{Rule 43} calls a placement \emph{prolonged} when one
+continuous placement exceeds fifteen days. \textbf{Rule 44}
+calls a placement \emph{solitary} when the individual is held
+twenty-two or more hours each day without meaningful human
+contact. Under UN A/RES/70/175, a placement is torture only
+when both conditions hold. The MRM classifier operationalises
+both conditions wherever the data supports them. Where the
+meaningful-contact field is absent --- as it is in the public
+Ontario release --- the classifier falls back to a duration-only
+proxy and says so plainly, with the spectrum of estimates in
+Section~\ref{sec:mandela-comparison} bounding what the missing
+field could have done.
 
 \subsection{Federal operationalisation}
 
@@ -1196,19 +1195,19 @@ source code is incorporated.
 \section{Conclusion}
 \label{sec:conclusion}
 
-The MRM framework brings five Canadian carceral, police, and
-oversight data streams together under a coordinated set of
-estimators and identification primitives. The ten-estimator
+MRM brings five Canadian carceral, police, and oversight records
+under one notation and one estimator family. The ten-estimator
 per-individual ensemble, the aggregate $\chi^{2}$ family, the
 Mandela Rules classifier, the mechanism categorisation, and the
-Hawkes self-exciting specification collectively provide the
-statistical foundation under which empirical analyses of these
-sources may proceed with a single notation and a single estimator
-family. The framework's empirical reach is demonstrated by the
-replication of every published Sprott--Doob--Iftene $\chi^{2}$ to
-within $0.01$ and by the headline finding that the provincial
-Ontario Mandela rate now exceeds the federal benchmark by $10.7$
-percentage points at peak.
+Hawkes self-exciting specification each carry a portion of the
+load; together they are the statistical foundation I will rest
+the empirical companion paper on. The reach is concrete. I
+have replicated every published Sprott--Doob--Iftene $\chi^{2}$
+statistic to within $0.01$. And the provincial Ontario Mandela
+rate, on the duration-only proxy, now sits $10.7$ percentage
+points above the federal benchmark at peak --- a finding the
+framework was built to make legible, and one that the open
+record now supports.
 
 The framework's open-source realisation makes every estimator
 and every Mandela classification reproducible on the open
