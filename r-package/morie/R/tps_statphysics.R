@@ -175,12 +175,8 @@ NULL
 #' Short-D'Orsogna-Brantingham 2008 hot-spot PDE
 #'
 #' Solves the coupled reaction-diffusion system
-#' \deqn{\partial_t A = \eta \
-abla^2 A - \omega A + \theta \rho,}
-#' \deqn{\partial_t \rho = \
-abla \cdot (D \
-abla \rho - 2 \rho \
-abla
+#' \deqn{\partial_t A = \eta \abla^2 A - \omega A + \theta \rho,}
+#' \deqn{\partial_t \rho = \abla \cdot (D \abla \rho - 2 \rho \abla
 #'   \log A) - \rho A + \gamma,}
 #' on a cosine-corrected Toronto grid seeded by the observed incident
 #' histogram. Localised attractiveness spikes emerge whenever
