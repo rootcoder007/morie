@@ -58,7 +58,7 @@ records. This paper is a tour of the \proglang{Python}
 implementation: the wrapper around \pkg{DoubleML}, the
 \code{RichResult} return type, and three worked examples on
 open Ontario, federal, and Toronto Police Service data.
-Version~0.9.5.4 is released on the Python Package Index (PyPI)
+Version~0.9.5.5 is released on the Python Package Index (PyPI)
 at
 \href{https://pypi.org/project/morie/}{pypi.org/project/morie}
 with PEP~740 sigstore attestations on every distribution,
@@ -72,7 +72,7 @@ psychometrics, \proglang{Python}}
 double machine learning, sociolegal statistics, Hawkes process,
 psychometrics, Python}
 % --- morie version stamp -----------------------------------------------------
-% This paper documents \pkg{morie} v0.9.5.4 (released 2026-05-22).  Specific
+% This paper documents \pkg{morie} v0.9.5.5 (released 2026-05-22).  Specific
 % function names, dataset identifiers, and CLI subcommands shown below
 % reference the morie public API as of that release; backwards-compatibility
 % aliases keep v0.x code references resolving across the v0.x series.
@@ -644,7 +644,7 @@ library would introduce more weight than logic, the suite uses
 \code{numpy} primitives (or base \proglang{R} matrix
 primitives on the sibling side) directly.  All 275 callables
 were verified for \proglang{Python} + \proglang{R} parity at the
-v0.9.5.4 release (see the package \code{NEWS} file); the
+v0.9.5.5 release (see the package \code{NEWS} file); the
 catalogue has since grown well past the v0.3.0 snapshot of 275
 callables, with the lazy-loader registry tracking the current
 entry list.
@@ -683,7 +683,7 @@ Counts reflect the v0.3.0 snapshot (275 callables across the
 fourteen suites); the lazy-loader registry has since added
 entries which are documented in the package \code{NEWS}.  All
 shipped callables carry \proglang{Python}+\proglang{R} parity
-verified at v0.9.5.4.  The \code{missing\_stats} label is a
+verified at v0.9.5.5.  The \code{missing\_stats} label is a
 historical artefact: the spec covers resampling,
 quasi-Monte-Carlo, copula, and extreme-value-theory material,
 not missing-data methods proper; a true missing-data spec is on
@@ -768,12 +768,14 @@ textbook is often the shortest path to a method that hasn't yet
 landed in a maintained package. The AGPL is here because the
 work this code supports must remain part of the public record.
 
-The honest limits, as of v0.9.5.4: the \code{morie.crypto}
+The honest limits, as of v0.9.5.5: the \code{morie.crypto}
 educational primitives ship on the \proglang{Python} side and
-are planned as a native \proglang{R} + Rcpp port for v1.0.0;
-the \code{morie.describe()} pedagogical narratives ship on the
-\proglang{Python} side and an \proglang{R} equivalent is
-planned for v0.9.5.5.
+are planned as a native \proglang{R} + Rcpp port for v1.0.0.
+The \code{morie.describe()} pedagogical narratives now ship on
+both sides: \code{morie\_describe()} on the \proglang{R} side
+reads the bundled \code{describe\_corpus.Rds} (36{,}433
+entries) so the cross-language parity for pedagogical
+narratives is closed.
 
 The package is released on PyPI with PEP~740 sigstore
 attestations on every wheel and source distribution. The source

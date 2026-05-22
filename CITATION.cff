@@ -8,8 +8,8 @@ authors:
     name-particle: "Singh"
     # morie pronunciation: /ˈmɔɪraɪ ˈmoɾi/ -- "MOY-rye MOH-ree". Compound name: the Greek Moirai (Μοῖραι, the three Fates) paired with the Japanese 森 (mori, "forest" — three trees stacked into one ideogram).
     # IPA: /ʋənʃ sɪŋ ɾʊˈɦeːlɑː/
-version: "0.9.5.4"
-date-released: "2026-05-18"
+version: "0.9.5.5"
+date-released: "2026-05-22"
 url: "https://github.com/hadesllm/morie"
 repository-code: "https://github.com/hadesllm/morie"
 license: "AGPL-3.0-or-later"
@@ -37,7 +37,7 @@ preferred-citation:
       given-names: "Vansh Singh"
       orcid: "https://orcid.org/0009-0004-1750-3592"
   year: "2026"
-  version: "0.9.5.4"
+  version: "0.9.5.5"
   doi: "10.5281/zenodo.20111233"
   url: "https://doi.org/10.5281/zenodo.20111233"
 references:
@@ -48,7 +48,7 @@ references:
         given-names: "Vansh Singh"
         orcid: "https://orcid.org/0009-0004-1750-3592"
     year: "2026"
-    version: "0.9.5.4"
+    version: "0.9.5.5"
     doi: "10.5281/zenodo.20096350"
     url: "https://doi.org/10.5281/zenodo.20096350"
     notes: "Python companion software paper (same toolkit, Python implementation)."

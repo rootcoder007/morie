@@ -70,7 +70,7 @@ psychometrics, \proglang{R}}
 double machine learning, sociolegal statistics, Hawkes process,
 psychometrics, R}
 % --- morie version stamp -----------------------------------------------------
-% This paper documents \pkg{morie} v0.9.5.4 (released 2026-05-22).  Specific
+% This paper documents \pkg{morie} v0.9.5.5 (released 2026-05-22).  Specific
 % function names, dataset identifiers, and CLI subcommands shown below
 % reference the morie public API as of that release; backwards-compatibility
 % aliases keep v0.x code references resolving across the v0.x series.
@@ -736,7 +736,7 @@ Suite & $n$ & Reference & Representative wrapper \\
 \end{tabular}
 \caption{The fourteen textbook-derived suites in \code{morie.fn}.
 Total: 275 callables, all with \proglang{R}+\proglang{Python}
-parity verified at v0.9.5.4.  The \code{missing\_stats} label
+parity verified at v0.9.5.5.  The \code{missing\_stats} label
 is a historical artefact: the spec covers resampling,
 quasi-Monte-Carlo, copula, and extreme-value-theory material,
 not missing-data methods proper; a true missing-data spec is
@@ -823,13 +823,16 @@ data into a single estimator namespace and a single result
 idiom. The \pkg{DoubleML} wrappers are thin on purpose ---
 most of the value is in the MRM modules and the schema
 reconciliation that lets them work together. The honest
-limits, as of v0.9.5.4: there is no \code{R6} class layer (an
+limits, as of v0.9.5.5: there is no \code{R6} class layer (an
 earlier sketch was removed as needless complexity); there is
-no CRAN binary (deliberate, pending a v1.0 freeze); the
-cryptography subset is on a future-release roadmap; and the
-\code{describe()} pedagogical narratives ship on the
-\proglang{Python} side ahead of the \proglang{R} side, a
-parity gap I will close.
+no CRAN binary (deliberate, pending a v1.0 freeze); and the
+cryptography subset ships on the \proglang{Python} side, with
+a native \proglang{R} + Rcpp port planned for v1.0.0. The
+\code{describe()} pedagogical narratives now ship on both
+sides: \code{morie\_describe()} (and the string-only variant
+\code{morie\_describe\_by\_name()}) read the bundled
+\code{describe\_corpus.Rds} (36{,}433 entries) and render the
+narrative for any morie callable.
 
 The \proglang{R} and \proglang{Python} packages are both released
 under \code{AGPL-3.0-or-later}, a strong copyleft licence: any
