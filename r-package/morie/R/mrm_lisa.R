@@ -197,10 +197,35 @@ mrm_tps_polygon_moran_per_year <- function(
       error = function(e) NULL
     )
     if (is.null(res)) next
+    # Global p-value via permutation of the z-surface (mirrors
+    # mrm_lisa.py:204-219 — was missing in the R port; added 2026-05-22).
+    set.seed(seed)
+    x <- as.numeric(data[[c]])
+    x <- x[!is.na(x)]
+    zsd <- stats::sd(x)
+    if (length(x) < 2L || !is.finite(zsd) || zsd == 0) {
+      p_global <- NA_real_
+    } else {
+      z <- (x - mean(x)) / zsd
+      lat <- as.numeric(data[[lat_col]])
+      lon <- as.numeric(data[[lon_col]])
+      keep <- !is.na(lat) & !is.na(lon)
+      lat <- lat[keep]; lon <- lon[keep]
+      W <- .knn_weights_lisa(lat, lon, k)
+      I_obs <- res$global_moran_I
+      gt <- 0L
+      for (b in seq_len(n_permutations)) {
+        zp <- sample(z)
+        I_perm <- sum(zp * (W %*% zp)) / sum(zp * zp)
+        if (abs(I_perm) >= abs(I_obs)) gt <- gt + 1L
+      }
+      p_global <- round((gt + 1L) / (n_permutations + 1L), 4)
+    }
     rows[[length(rows) + 1L]] <- data.frame(
       year = yr,
       n_events = as.integer(sum(data[[c]], na.rm = TRUE)),
       moran_I = res$global_moran_I,
+      global_p_value = p_global,
       stringsAsFactors = FALSE
     )
   }

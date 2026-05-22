@@ -81,8 +81,17 @@ mrm_tps_kulldorff_scan <- function(
   window_years = 4,
   n_centers = 60L,
   n_permutations = 199L,
+  n_top_clusters = 1L,
   seed = 42L
 ) {
+  # n_top_clusters accepted for Python signature parity.  Python's
+  # mrm_kulldorff.py:188-198 currently `break`s out of the secondary-
+  # cluster loop, so both ports return a single primary cluster as of
+  # 2026-05-22.  Promoting this to TRUE multi-cluster requires masking
+  # out events in the primary cluster and rescanning — a separate task.
+  if (!is.numeric(n_top_clusters) || n_top_clusters < 1L) {
+    stop("n_top_clusters must be a positive integer.", call. = FALSE)
+  }
   stopifnot(is.data.frame(data))
   stopifnot(all(c(date_col, lat_col, lon_col) %in% names(data)))
   set.seed(as.integer(seed))
