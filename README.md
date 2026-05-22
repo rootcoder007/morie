@@ -1,8 +1,8 @@
-# MORIE 森
+# MORIE 森 — The Fates' Forest
 
 **Multi-domain Open Research and Inferential Estimation**
 
-<sub>*Pronounced /ˈmɔɪraɪ/ — "MOY-rye", like the Greek Moirai (the Fates).*</sub>
+<sub>*Pronounced /ˈmɔɪraɪ ˈmoɾi/ — "MOY-rye MOH-ree". A compound name: **Moirai** (Μοῖραι), the three Greek Fates, paired with **森** (mori), Japanese for "forest" — three trees (木) stacked into one ideogram. A forest of methods named after the Fates.*</sub>
 
 A multi-domain scientific computing toolkit (Python and R) for observational inference, with sociolegal, signal-processing, cryptographic, spatial-statistics, statistical-physics, and psychometrics modules. Hosts the MRM framework as a primary application for Canadian carceral, police, and oversight data analysis.
 

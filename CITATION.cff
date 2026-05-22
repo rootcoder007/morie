@@ -1,12 +1,12 @@
 cff-version: 1.2.0
 message: "If you use morie in your research, please cite the language-specific software paper (R: DOI 10.5281/zenodo.20111233; Python: DOI 10.5281/zenodo.20096350). Where applicable to your work, also cite the MRM framework paper (DOI 10.5281/zenodo.20096075), the Hawkes-process methodology paper (DOI 10.5281/zenodo.20102198), and the empirical applications paper (DOI 10.5281/zenodo.20175689)."
-title: "morie: Multi-domain Open Research and Inferential Estimation"
+title: "morie 森 (the Fates' Forest): Multi-domain Open Research and Inferential Estimation"
 authors:
   - family-names: "Ruhela"
     given-names: "Vansh Singh"
     orcid: "https://orcid.org/0009-0004-1750-3592"
     name-particle: "Singh"
-    # morie pronunciation: /ˈmɔɪraɪ/ -- "MOY-rye", like the Greek Moirai (the Fates)
+    # morie pronunciation: /ˈmɔɪraɪ ˈmoɾi/ -- "MOY-rye MOH-ree". Compound name: the Greek Moirai (Μοῖραι, the three Fates) paired with the Japanese 森 (mori, "forest" — three trees stacked into one ideogram).
     # IPA: /ʋənʃ sɪŋ ɾʊˈɦeːlɑː/
 version: "0.9.5.4"
 date-released: "2026-05-18"
@@ -31,7 +31,7 @@ identifiers:
     description: "Empirical applications paper (Solitary Confinement, Self-Excitation, and Institutional Churn)."
 preferred-citation:
   type: software
-  title: "morie: Multi-domain Open Research and Inferential Estimation"
+  title: "morie 森 (the Fates' Forest): Multi-domain Open Research and Inferential Estimation"
   authors:
     - family-names: "Ruhela"
       given-names: "Vansh Singh"
