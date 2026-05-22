@@ -128,11 +128,11 @@ NULL
   h <- gsub("(?is)<style\\b[^>]*>.*?</style>",   " ", h, perl = TRUE)
   h <- gsub("<[^>]+>", " ", h, perl = TRUE)
   ents <- c(
-    "&" = "&", "<" = "<", ">" = ">", """ = "\"",
-    "'" = "'", "'" = "'", " " = " ",
-    "’" = "'", "‘" = "'", "“" = "\"",
-    "”" = "\"", "–" = "-", "—" = "-",
-    "…" = "..."
+    "&amp;"   = "&",  "&lt;"    = "<",  "&gt;"    = ">",
+    "&quot;"  = "\"", "&apos;"  = "'",  "&#39;"   = "'",
+    "&nbsp;"  = " ",  "&rsquo;" = "'",  "&lsquo;" = "'",
+    "&ldquo;" = "\"", "&rdquo;" = "\"", "&ndash;" = "-",
+    "&mdash;" = "-",  "&hellip;" = "..."
   )
   for (k in names(ents)) h <- gsub(k, ents[[k]], h, fixed = TRUE)
   h <- gsub("\\s+", " ", h, perl = TRUE)
