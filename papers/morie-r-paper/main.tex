@@ -83,51 +83,59 @@ psychometrics, R}
 \section{Introduction}
 \label{sec:intro}
 
-The \proglang{R} package \pkg{morie}\footnote{\textit{morie} is
-pronounced ``MOY-rye'', like the Greek \textit{Moirai},
-the Fates.} provides a curated
-multi-domain toolkit for observational inference. The
-\proglang{R} package and the companion \proglang{Python} package
+When I started analysing Ontario's restrictive-confinement
+records I had three problems, not one: the data came from five
+different agencies with five different schemas, the methods I
+needed lived in five different \proglang{R} packages, and the
+result-printing conventions disagreed between them.
+\pkg{morie}\footnote{\textit{morie} is pronounced ``MOY-rye'',
+like the Greek \textit{Moirai}, the Fates.} is the
+\proglang{R} package I built to make those problems disappear
+from the analyst's notebook. It exposes a unified estimator
+interface --- the average treatment effect (ATE), the average
+treatment effect on the treated (ATT), the conditional and
+group average treatment effects (CATE, GATE), the local
+average treatment effect (LATE), and the augmented
+inverse-probability-weighting (AIPW) estimator --- and threads
+double machine learning through wrappers around the
+\pkg{DoubleML} classes \citep{Bach2024DoubleML}, which
+themselves rely on \pkg{mlr3} \citep{Lang2019mlr3} for the
+nuisance-function learners. Outside causal inference,
+\pkg{morie} ships signal-processing, cryptographic,
+spatial-statistics, statistical-physics-of-crime, and
+psychometric estimators that complement the causal-inference
+core. \pkg{morie} and its \proglang{Python} companion
 \citep{Ruhela2026MoriePy} are both released under
-\code{AGPL-3.0-or-later}, a strong copyleft licence under which any
-modified version that is distributed, or offered to users over a
-network, must publish its source.  The package supports a
-unified estimator interface for the average treatment effect
-(ATE), the average treatment effect on the treated (ATT), the
-conditional and group average treatment effects (CATE, GATE), the
-local average treatment effect (LATE), and the augmented
-inverse-probability-weighting (AIPW) estimator. Double machine
-learning is exposed through wrappers around the \pkg{DoubleML}
-classes \citep{Bach2024DoubleML}, which in turn rely on the
-\pkg{mlr3} ecosystem \citep{Lang2019mlr3} for the nuisance-function
-learners. Outside causal inference, the package provides signal
-processing primitives, cryptographic primitives, spatial statistics,
-statistical-physics models of crime, and psychometric estimators
-that complement the causal-inference core.
+\code{AGPL-3.0-or-later}, a strong copyleft licence under which
+any modified version that is distributed, or offered to users
+over a network, must publish its source --- a deliberate
+choice to keep carceral- and oversight-evidence methodology in
+the public record.
 
-\pkg{morie} is positioned alongside the established \proglang{R}
-ecosystem of causal-inference packages: \pkg{DoubleML} itself
-\citep{Bach2024DoubleML} for the canonical double-machine-learning
-estimators, \pkg{MatchIt} for matching, \pkg{survey} for
-design-based estimation, \pkg{hdm} for high-dimensional
-post-selection inference \citep{ChernozhukovHansenSpindler2016hdm},
-\pkg{grf} for forest-based heterogeneous treatment effects, and
-\pkg{AIPW} for augmented inverse-probability weighting. The
-package does not duplicate these established estimators where they
-already exist in the canonical \proglang{R} stack; instead, it
-wraps them under a single function-naming convention and pairs
-them with the MRM modules that target Canadian open carceral and
-police-oversight data.
+\pkg{morie} builds upon a robust ecosystem of foundational
+packages: \pkg{DoubleML} \citep{Bach2024DoubleML} for canonical
+double-machine-learning estimators, \pkg{MatchIt} for matching,
+\pkg{survey} for design-based standard errors, \pkg{hdm}
+\citep{ChernozhukovHansenSpindler2016hdm} for high-dimensional
+post-selection inference, \pkg{grf} for forest-based
+heterogeneous treatment effects, and \pkg{AIPW} for augmented
+inverse-probability weighting. Rather than reimplementing
+these established methods, \pkg{morie} unifies them under a
+single interface and pairs them with MRM modules tailored for
+Canadian open carceral and police-oversight data.
 
-The MRM modules implement the unified framework of
-\citet{Ruhela2026MRM} for analysis across five Canadian sources:
-the Offender Tracking Information System (\OTIS, A01-RCDD), the
+Canada's carceral, police, and oversight data are scattered
+across five agencies that do not coordinate: Ontario's
+Offender Tracking Information System (\OTIS, A01-RCDD), the
 federal Structured Intervention Unit Implementation Advisory
-Panel, the Ontario Special Investigations Unit (\SIU), the Toronto
-Police Service (\TPS) open data, and the federal Corrections and
-Conditional Release Statistical Overview. The framework's
-theoretical foundations are presented in \citet{Ruhela2026MRM};
-this paper concerns its \proglang{R} software realisation.
+Panel, the Ontario Special Investigations Unit (\SIU), the
+Toronto Police Service (\TPS) open data, and the federal
+Corrections and Conditional Release Statistical Overview. The
+MRM framework \citep{Ruhela2026MRM} is the bridge --- a
+fiscal-quarter index and a set of canonical schemas that lets
+a single analysis traverse all five. The MRM modules in
+\pkg{morie} carry that bridge in code; this paper is about how
+the \proglang{R} realisation makes the traversal cheap.
 
 The companion paper \citep{Ruhela2026MoriePy} describes the
 \proglang{Python} implementation, which is functionally parallel
@@ -779,11 +787,12 @@ ecosystems' optimiser defaults differ.
 \section{Disparity auditing}
 \label{sec:fairness}
 
-Release~0.8.0 adds \pkg{morie}'s fairness and disparity-audit surface:
-a family of callables for \emph{auditing} risk-assessment and
-predictive-policing systems for group disparity --- the package
-measures whether such a system encodes disparate treatment; it does
-not build one.  Six group-fairness metrics are exposed:
+\pkg{morie} measures bias in risk-assessment and
+predictive-policing systems; it does not build them. The
+disparity-audit surface (added in v0.8.0) exists because those
+systems are already in use, and the question worth asking now
+is whether the systems already in use produce disparate
+outcomes. Six group-fairness metrics carry that question:
 \code{morie\_fairness\_disparate\_impact} (the EEOC four-fifths
 rule), \code{morie\_fairness\_demographic\_parity},
 \code{morie\_fairness\_equalized\_odds},
@@ -809,16 +818,18 @@ descriptions; no third-party source code is incorporated.
 \section{Conclusion}
 \label{sec:conclusion}
 
-The \proglang{R} package \pkg{morie} provides a curated
-multi-domain toolkit for observational inference, with explicit
-support for the MRM framework as a sociolegal application target.
-The wrapper architecture around \pkg{DoubleML} offers a thin
-function-style API; the eight thematic groups provide a unified
-namespace for the broader observational-inference, signal-processing,
-spatial, statistical-physics, and psychometric routines that
-complement the causal core. The MRM modules implement the
-framework of \citet{Ruhela2026MRM} on the five Canadian sources
-through a common ingestion pipeline.
+\pkg{morie} pulls Canada's carceral, police, and oversight
+data into a single estimator namespace and a single result
+idiom. The \pkg{DoubleML} wrappers are thin on purpose ---
+most of the value is in the MRM modules and the schema
+reconciliation that lets them work together. The honest
+limits, as of v0.9.5.4: there is no \code{R6} class layer (an
+earlier sketch was removed as needless complexity); there is
+no CRAN binary (deliberate, pending a v1.0 freeze); the
+cryptography subset is on a future-release roadmap; and the
+\code{describe()} pedagogical narratives ship on the
+\proglang{Python} side ahead of the \proglang{R} side, a
+parity gap I will close.
 
 The \proglang{R} and \proglang{Python} packages are both released
 under \code{AGPL-3.0-or-later}, a strong copyleft licence: any
