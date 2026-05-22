@@ -106,11 +106,13 @@ maximum likelihood estimation, time-rescaling theorem, R, Python}
 A Hawkes process \citep{Hawkes1971} is a counting process
 $\{N_t\}_{t \ge 0}$ whose conditional intensity exhibits
 self-excitation: the occurrence of an event at $s < t$ raises
-$\lambda(t)$ above its baseline.  For street-level crime, this
-self-excitation is the canonical mechanism of \emph{near-repeat
-victimisation} --- a burglary on a block raises the rate of further
-burglaries in the same block over the following days
-\citep{Mohler2011,short2010pde}.  We follow the spatial-physics-of
+$\lambda(t)$ above its baseline. In other words, it is a
+counting process whose own events drive its rate up. After a
+burglary on a city block, the rate of further burglaries on
+the same block stays elevated for days before relaxing back to
+baseline \citep{Mohler2011,short2010pde}; the same near-repeat
+pattern is what makes the Hawkes model the canonical
+mathematical home of \emph{near-repeat victimisation}.  We follow the spatial-physics-of
 crime literature in writing
 \begin{equation}\label{eq:complete-intensity}
   \lambda_t \;=\; \nu \;+\; \int_{-\infty}^{t-}\! g(t-s)\,\rmd N_s,
@@ -126,23 +128,27 @@ $(N_t,\lambda_t)$ is Markov \citep{oakes1975markovian}, which is the
 key technical reason the classical likelihood inference is well
 understood.
 
-The classical assumptions are convenient but restrictive.  Trading
-intensity in financial markets is higher near the open and close
-\citep{engle1998autoregressive,kwan2023asymptotic}; epidemic
-incidence has a latent period that the exponential kernel cannot
-represent \citep{lauer2020incubation,escobar2020hawkes}; limit-order
-books exhibit power-law decay rather than exponential
-\citep{bacry2015hawkes,gould2013limit}.  In urban crime data we
-likewise expect (i) a time-varying baseline that follows seasonality
-and trend, and (ii) a kernel whose mode is shifted away from $t=0$.
-The Kwan-Chen-Dunsmuir framework, built on \citep{kwan2024ergodic}
-and infill asymptotics, makes likelihood inference for this general
-model rigorous.  The contribution is to (a) re-derive the relevant
-finite-sample quantities cleanly, (b) implement them in
+The classical assumptions are convenient, and they break
+wherever the data have memory or rhythm. Markets trade harder
+near the open and the close
+\citep{engle1998autoregressive,kwan2023asymptotic}; an epidemic
+has a latent period before its first secondary case, which the
+exponential kernel cannot represent
+\citep{lauer2020incubation,escobar2020hawkes}; limit-order
+arrivals decay as a power law, not an exponential
+\citep{bacry2015hawkes,gould2013limit}. Toronto assaults have
+both pathologies: a weekly and annual baseline rhythm, and a
+kernel whose mode is shifted away from $t=0$ because the second
+incident rarely lands the same hour as the first. The
+Kwan, Chen, and Dunsmuir infill-asymptotic argument
+\citep{kwan2024ergodic,kwan2025nonstationary} is what makes
+likelihood inference for the more honest model rigorous. My
+contribution is small and concrete: re-derive the finite-sample
+likelihood, score, and information cleanly; implement them in
 \texttt{morie.tps\_hawkes\_advanced}\footnote{\textit{morie} is
 pronounced ``MOY-rye'', like the Greek \textit{Moirai},
-the Fates.}, and (c) apply the full
-machinery to Toronto Police Service open data.
+the Fates.}; and take them to Toronto Police Service open data
+and see what they say.
 
 \section{Setup and notation}\label{sec:setup}
 
@@ -204,11 +210,19 @@ The integrated intensity factors as
   \;=\; \int_0^T \nu(s;\alpha)\,\rmd s
   \;+\; \eta \sum_{i=1}^{n} \tilde F(T - t_i;\psi),
 \end{equation}
-which is what makes the likelihood tractable in spite of the
-non-Markovian intensity: the cluster-weight contribution to
-$\int\!\lambda$ collapses to a one-dimensional sum over events.
-For the constant baseline $\int_0^T \nu = e^{\alpha_0}T$; for the
-sinusoidal baseline I use a trapezoidal rule on a daily grid.
+This decomposition is the load-bearing observation of the
+section. Dropping Markovianity could have made the likelihood
+intractable; it does not, and the reason is worth stating
+plainly: the integrated intensity splits into a baseline
+integral plus a one-dimensional sum over events, where each
+past event contributes the kernel's CDF evaluated at its age.
+The cost of leaving the Markovian world is one closed-form CDF
+call per event, and nothing more. For the constant baseline,
+$\int_0^T \nu = e^{\alpha_0}T$. For the sinusoidal baseline I
+use a trapezoidal rule on a daily grid --- crude, but
+trapezoidal error on a smooth sinusoid is $O(h^2)$, which at
+$h=1\text{ day}$ over $T=365$ is well below the bias of the
+MLE itself.
 
 The score is
 \begin{equation}\label{eq:score}
@@ -235,19 +249,28 @@ Hessian.
 
 \section{Asymptotic theory}\label{sec:asymptotics}
 
-Following \citep{kwan2024ergodic,kwan2025nonstationary} we adopt an
-\emph{infill} asymptotic regime: a sequence $\tilde N^n$ of Hawkes
-processes on $[0,1]$ with intensities
+The hard part of dropping Markovianity is the asymptotics:
+there is no longer a finite-state Markov chain to invoke an
+ergodic theorem on, so the standard consistency-and-asymptotic-normality
+proof has to be rebuilt. The Kwan, Chen, and Dunsmuir solution
+is an \emph{infill} regime
+\citep{kwan2024ergodic,kwan2025nonstationary}: study a sequence
+$\tilde N^n$ of Hawkes processes on the fixed interval $[0,1]$
+whose intensities are rescaled by $n$,
 \begin{equation}\label{eq:infill}
   \tilde\lambda^n_t \;=\; n\,\nu(t)
   \;+\; \int_{0}^{t-}\! n\,g\!\left(n(t-s)\right)\rmd \tilde N^n_s,
   \qquad t\in[0,1],
 \end{equation}
 where the parameters of $\nu$ and $g$ live in a compact set
-$\Theta \subset \Rset^d$.  After the time change $N^n_t \defeq \tilde
-N^n_{t/n}$ the process lives on $[0,n]$ with stationary-looking
-intensity $\lambda^n_t = \nu(t/n) + \int_0^{t-} g(t-s) \rmd N^n_s$
-\citep[\S2]{kwan2025nonstationary}.
+$\Theta \subset \Rset^d$. After the time change
+$N^n_t \defeq \tilde N^n_{t/n}$ the process lives on $[0,n]$
+with stationary-looking intensity $\lambda^n_t = \nu(t/n) +
+\int_0^{t-} g(t-s) \rmd N^n_s$
+\citep[\S2]{kwan2025nonstationary}. The rescaled process
+behaves like a stationary one in the limit even though the
+original is not stationary, and that is enough to recover the
+usual large-sample machinery.
 
 \begin{definition}[$C$-ergodicity, after Clinet \& Yoshida 2017 \citep{clinet2017statistical}]
 A process $X$ is $C$-ergodic for a family $C$ of test functions if
@@ -423,7 +446,7 @@ lomax          & constant   & 4 & $5\,495.2$ & $0.981$ & $0.860$\\
 \end{table}
 
 \paragraph{Near-criticality bias.}
-The fitted $\hat\eta$ for the Assault series sits at $0.97$--$0.98$, pressed against the stationarity boundary.  The Filimonov--Sornette 2015 \citep{filimonov2015apparent} small-sample near-criticality bias is a real concern at these values; the time-rescaling residual diagnostics of §\ref{sec:gof} are the more reliable indicator of model adequacy than the point estimate of $\hat\eta$ alone.
+Note the fitted $\hat\eta$ in Table~\ref{tab:tps-fit} sits at $0.97$--$0.98$, right against the stationarity wall at $\eta=1$.  Filimonov and Sornette \citep{filimonov2015apparent} showed that finite samples near criticality bias $\hat\eta$ upward, so the point estimate alone is not trustworthy here.  The time-rescaling residual diagnostics of §\ref{sec:gof} are the more honest test of model adequacy.
 
 \subsection{2019 contiguous-year re-fit (full-sample, compiled core)}\label{sec:application-2019}
 
@@ -636,14 +659,15 @@ applying coordinate-wise.
 
 \section{Conclusion}\label{sec:conclusion}
 
-We have given a self-contained derivation of the likelihood, score,
-and information for a non-stationary, non-Markovian Hawkes process,
-summarised the asymptotic guarantees of Kwan-Chen-Dunsmuir, and
-implemented the full machinery in \pkg{morie}.  Markovian and
-non-Markovian fits are now comparable on the same footing, both
-on synthetic stress-tests and on Toronto Police Service incident
-feeds.  The classical Mohler model is no longer the only Hawkes
-model in the toolbox.
+I derived the likelihood, score, and information for a
+non-stationary, non-Markovian Hawkes process from first
+principles, leaned on the Kwan-Chen-Dunsmuir asymptotic
+argument for the inferential guarantees, and built the full
+machinery into \pkg{morie}.  Markovian and non-Markovian fits
+are now directly comparable, on synthetic stress-tests and on
+Toronto Police Service feeds alike.  The classical Mohler
+model is no longer the only Hawkes model in the toolbox ---
+and on Toronto assault data, it is not the best one.
 
 \section*{Acknowledgements}
 The Toronto Police Service open-data programme
