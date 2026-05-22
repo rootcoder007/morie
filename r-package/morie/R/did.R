@@ -577,9 +577,16 @@ morie_did_group_time_att <- function(data, outcome, unit, time, treatment_time,
     xformla <- if (length(covariates))
       stats::as.formula(paste("~", paste(covariates, collapse = " + ")))
     else stats::as.formula("~ 1")
+    # Translate Python's "never_treated"/"not_yet_treated" -> did's
+    # "nevertreated"/"notyettreated" (no underscores). Without this,
+    # did::att_gt errors and the CRAN-delegated path is dead.
+    cg_did <- switch(control_group,
+                     never_treated = "nevertreated",
+                     not_yet_treated = "notyettreated",
+                     control_group)
     fit <- did::att_gt(yname = outcome, tname = time, idname = unit,
                        gname = "_gname", xformla = xformla, data = df,
-                       control_group = control_group,
+                       control_group = cg_did,
                        est_method = est_method,
                        bstrap = TRUE, biters = n_bootstrap,
                        alp = alpha, panel = TRUE, allow_unbalanced_panel = TRUE)
@@ -1123,10 +1130,14 @@ morie_did_synthetic <- function(data, outcome, unit, time, treatment_time,
       unit = 1, time = 2, outcome = 3, treatment = 4
     )
   }
-  est <- synthdid::synthdid_estimate(setup$Y, setup$N0, setup$T0)
+  est <- synthdid::synthdid_estimate(setup$Y, setup$N0, setup$T0,
+                                      zeta = zeta)
   tau <- as.numeric(est)
-  se_est <- tryCatch(sqrt(synthdid::vcov.synthdid_estimate(
-                            est, method = "placebo")), error = function(e) NA_real_)
+  # Use S3-dispatched stats::vcov(); synthdid::vcov.synthdid_estimate
+  # is unexported in CRAN builds and direct namespace access fails.
+  # (audit a2a39fe4)
+  se_est <- tryCatch(sqrt(stats::vcov(est, method = "placebo")),
+                     error = function(e) NA_real_)
   ci <- if (is.finite(se_est)) .morie_did_make_ci(tau, se_est, alpha)
         else c(NA_real_, NA_real_)
   list(
@@ -1170,24 +1181,27 @@ morie_did_wild_cluster_bootstrap <- function(data, outcome, treatment, post,
                                              weight_type = "rademacher",
                                              seed = 42L, alpha = 0.05) {
   df <- .morie_did_drop_na(data, c(outcome, treatment, post, cluster))
-  df[["_interaction"]] <- as.numeric(df[[treatment]]) * as.numeric(df[[post]])
+  # Renamed underscore-prefixed column to `dp_interact` — R formula
+  # parsing rejects bare `_interaction` without backticks, killing the
+  # CRAN-delegated fwildclusterboot path. (audit a2a39fe4)
+  df[["dp_interact"]] <- as.numeric(df[[treatment]]) * as.numeric(df[[post]])
   if (.morie_did_have_fwildboot()) {
     rhs <- if (length(covariates))
-      paste(c(treatment, post, "_interaction", covariates), collapse = " + ")
-    else paste(c(treatment, post, "_interaction"), collapse = " + ")
+      paste(c(treatment, post, "dp_interact", covariates), collapse = " + ")
+    else paste(c(treatment, post, "dp_interact"), collapse = " + ")
     f <- stats::as.formula(paste(outcome, "~", rhs))
     fit <- stats::lm(f, data = df)
     wt <- if (identical(weight_type, "webb")) "webb" else "rademacher"
     bt <- tryCatch(
-      fwildclusterboot::boottest(fit, param = "_interaction",
+      fwildclusterboot::boottest(fit, param = "dp_interact",
                                  clustid = cluster, B = n_bootstrap,
                                  type = wt, sign_level = alpha,
                                  seed = seed),
       error = function(e) NULL
     )
     if (!is.null(bt)) {
-      est    <- stats::coef(fit)[["_interaction"]]
-      se_est <- sqrt(stats::vcov(fit)["_interaction", "_interaction"])
+      est    <- stats::coef(fit)[["dp_interact"]]
+      se_est <- sqrt(stats::vcov(fit)["dp_interact", "dp_interact"])
       ci <- if (!is.null(bt$conf_int)) as.numeric(bt$conf_int)
             else .morie_did_make_ci(est, se_est, alpha)
       return(list(
@@ -1661,7 +1675,7 @@ morie_did_diagnostics <- function(data, outcome, treatment, post,
       treatment = g[[treatment]][1],
       post      = g[[post]][1],
       mean   = mean(y),
-      sd     = stats::sd(y),
+      std    = stats::sd(y),   # py-parity name (was 'sd' pre-2026-05-22)
       median = stats::median(y),
       min    = min(y),
       max    = max(y),
