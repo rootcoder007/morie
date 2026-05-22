@@ -724,6 +724,19 @@ mrm_uof_demographic_disparity <- function(df, demo_col, outcome_col,
   }
   sub$._outcome <- y_int
 
+  # If outcome coercion dropped every row, bail out cleanly rather
+  # than letting aggregate() error on an empty group.
+  if (nrow(sub) == 0L) {
+    return(.uof_result(
+      "MRM-UOF Demographic Disparity",
+      sprintf("mrm_uof_demographic_disparity(df, %s, %s)", demo_col, outcome_col),
+      warnings = c(warnings,
+                    "No interpretable outcome values found after coercion."),
+      interpretation = "No analysis: no rows survived outcome coercion (none of the outcome values matched yes/no/0/1/true/false).",
+      n = 0L
+    ))
+  }
+
   agg <- aggregate(._outcome ~ ., data = sub[, c(demo_col, "._outcome")],
                     FUN = function(v) c(n = length(v), k = sum(v)))
   per <- data.frame(
@@ -886,14 +899,25 @@ mrm_uof_data_quality_audit <- function(df, sidecar = NULL, expected_schema = NUL
   }
 
   expected_cols <- NULL
-  if (!is.null(sidecar) && is.list(sidecar) && !is.null(sidecar$fields)) {
-    expected_cols <- lapply(sidecar$fields, function(f) {
-      list(name = as.character(f$id), dtype = if (is.null(f$type)) NA_character_ else as.character(f$type))
-    })
-  } else if (!is.null(expected_schema) && is.list(expected_schema) && !is.null(expected_schema$columns)) {
-    expected_cols <- lapply(expected_schema$columns, function(c) {
-      list(name = as.character(c$name), dtype = if (is.null(c$dtype)) NA_character_ else as.character(c$dtype))
-    })
+  if (!is.null(sidecar)) {
+    if (is.list(sidecar) && !is.null(sidecar$fields)) {
+      expected_cols <- lapply(sidecar$fields, function(f) {
+        list(name = as.character(f$id), dtype = if (is.null(f$type)) NA_character_ else as.character(f$type))
+      })
+    } else {
+      warnings <- c(warnings,
+        "Sidecar provided but does not duck-type as CKAN ({fields, records}); ignored for schema comparison.")
+    }
+  }
+  if (is.null(expected_cols) && !is.null(expected_schema)) {
+    if (is.list(expected_schema) && !is.null(expected_schema$columns)) {
+      expected_cols <- lapply(expected_schema$columns, function(c) {
+        list(name = as.character(c$name), dtype = if (is.null(c$dtype)) NA_character_ else as.character(c$dtype))
+      })
+    } else {
+      warnings <- c(warnings,
+        "expected_schema did not duck-type (needs $columns of objects with $name); ignored.")
+    }
   }
 
   missing_columns <- character(0)
