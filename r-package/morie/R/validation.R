@@ -370,24 +370,160 @@ cross_validate <- function(fit_fn, predict_fn, X, y,
               ci_upper = mean(scores) + z * se,
               fold_details = list())
 }
-
-#' Nested cross-validation
+#' Nested cross-validation with inner-loop grid search
 #'
-#' API stub: hyperparameter search is delegated to the caller via a
-#' \code{tune_fn} of signature \code{(X, y) -> fitted_model}.  See
-#' \code{?cross_validate} for the surrounding contract.
+#' Performs nested K-fold CV: the outer loop estimates generalisation
+#' performance while an inner CV grid search picks the best hyperparameter
+#' configuration on each outer training fold. Two calling conventions are
+#' supported for backward compatibility:
 #'
-#' @inheritParams cross_validate
-#' @param tune_fn Inner-loop tuner. See description.
+#' \\itemize{
+#'   \\item \\strong{Legacy stub form:} \\code{nested_cross_validate(tune_fn,
+#'         predict_fn, X, y, outer_folds, scoring, random_state)} where
+#'         \\code{tune_fn(X, y)} returns a fitted model (no grid argument).
+#'         In this mode no inner search is run.
+#'   \\item \\strong{Full form:} pass \\code{fit_fn}, \\code{predict_fn},
+#'         \\code{score_fn}, and \\code{hyperparam_grid} (a named list of
+#'         candidate vectors). The function enumerates the Cartesian
+#'         product, runs inner K-fold CV on each outer training fold,
+#'         picks the best configuration, refits on the full outer-train
+#'         fold, and scores on the held-out outer fold.
+#' }
+#'
+#' @param fit_fn Function with signature \\code{(X, y, hyperparams) -> model}
+#'   accepting a single hyperparameter list (full form only).
+#' @param predict_fn Function with signature \\code{(model, X) -> y_pred}.
+#' @param score_fn Optional custom scoring function
+#'   \\code{(y_true, y_pred) -> numeric(1)}. Higher is better. If \\code{NULL},
+#'   the named scoring rule via \\code{scoring} is used.
+#' @param X Numeric predictor matrix (or coercible).
+#' @param y Response vector.
+#' @param hyperparam_grid Named list of candidate vectors (one per
+#'   hyperparameter). The Cartesian product defines the search grid.
+#' @param outer_k Number of outer folds (default 5).
+#' @param inner_k Number of inner folds (default 3).
+#' @param scoring Named scoring rule passed to the internal scorer
+#'   (\\code{"roc_auc"}, \\code{"accuracy"}, \\code{"brier"}). Used only if
+#'   \\code{score_fn} is \\code{NULL}.
+#' @param random_state Integer seed for fold construction (default 42).
+#' @param tune_fn Deprecated legacy positional argument; see Description.
+#' @param outer_folds Deprecated alias for \\code{outer_k} (legacy stub form).
+#' @return Named list with \\code{outer_scores} (numeric vector, length
+#'   \\code{outer_k}), \\code{best_hyperparams_per_fold} (list of named lists),
+#'   \\code{mean_score}, \\code{se_score}, and \\code{n_configs}.
+#' @examples
+#' set.seed(1)
+#' n <- 120
+#' X <- matrix(rnorm(n * 3), n, 3)
+#' y <- as.integer(plogis(X[, 1]) > runif(n))
+#' fit_fn <- function(X, y, hp) {
+#'   df <- data.frame(y = y, X)
+#'   suppressWarnings(stats::glm(y ~ ., data = df, family = stats::binomial()))
+#' }
+#' predict_fn <- function(model, X) {
+#'   stats::predict(model, newdata = data.frame(X), type = "response")
+#' }
+#' nested_cross_validate(fit_fn = fit_fn, predict_fn = predict_fn,
+#'                       X = X, y = y,
+#'                       hyperparam_grid = list(dummy = c(1)),
+#'                       outer_k = 3L, inner_k = 2L)
 #' @export
-nested_cross_validate <- function(tune_fn, predict_fn, X, y,
-                                   outer_folds = 5L,
-                                   scoring = "roc_auc",
-                                   random_state = 42L) {
-  # TODO: full port in batch follow-up — inner-loop CV currently delegated
-  cross_validate(tune_fn, predict_fn, X, y,
-                 method = "stratified_kfold", n_folds = outer_folds,
-                 scoring = scoring, random_state = random_state)
+nested_cross_validate <- function(fit_fn = NULL, predict_fn = NULL,
+                                  X = NULL, y = NULL,
+                                  score_fn = NULL,
+                                  hyperparam_grid = NULL,
+                                  outer_k = 5L, inner_k = 3L,
+                                  scoring = "roc_auc",
+                                  random_state = 42L,
+                                  tune_fn = NULL,
+                                  outer_folds = NULL) {
+  # ---- Legacy stub form: (tune_fn, predict_fn, X, y, outer_folds, ...) ----
+  if (!is.null(tune_fn) && is.null(hyperparam_grid)) {
+    if (is.null(outer_folds)) outer_folds <- outer_k
+    return(cross_validate(tune_fn, predict_fn, X, y,
+                          method = "stratified_kfold",
+                          n_folds = outer_folds,
+                          scoring = scoring,
+                          random_state = random_state))
+  }
+
+  if (is.null(fit_fn) || is.null(predict_fn) ||
+      is.null(X) || is.null(y) || is.null(hyperparam_grid)) {
+    stop("nested_cross_validate: fit_fn, predict_fn, X, y, ",
+         "and hyperparam_grid are all required in the full form.")
+  }
+
+  X <- as.matrix(X); y <- as.vector(y)
+  n <- length(y)
+  if (n < outer_k || outer_k < 2L) {
+    stop("nested_cross_validate: outer_k must be >= 2 and <= n.")
+  }
+
+  scorer <- if (!is.null(score_fn)) score_fn
+            else function(yt, yp) .val_score(scoring, yt, yp)
+
+  # Expand grid: a list of named-list configurations
+  grid_df <- do.call(expand.grid, c(hyperparam_grid,
+                                    list(stringsAsFactors = FALSE,
+                                         KEEP.OUT.ATTRS = FALSE)))
+  configs <- lapply(seq_len(nrow(grid_df)),
+                    function(i) as.list(grid_df[i, , drop = FALSE]))
+  n_configs <- length(configs)
+
+  # Fold assignment (outer)
+  set.seed(random_state)
+  outer_folds_vec <- sample(rep(seq_len(outer_k), length.out = n))
+
+  outer_scores <- numeric(outer_k)
+  best_per_fold <- vector("list", outer_k)
+
+  for (k in seq_len(outer_k)) {
+    test_idx <- which(outer_folds_vec == k)
+    train_idx <- setdiff(seq_len(n), test_idx)
+    n_tr <- length(train_idx)
+    if (n_tr < inner_k || inner_k < 2L) {
+      stop("nested_cross_validate: inner_k must be >= 2 and ",
+           "<= outer-fold training size.")
+    }
+
+    # Inner folds
+    set.seed(random_state + k)
+    inner_folds_vec <- sample(rep(seq_len(inner_k), length.out = n_tr))
+
+    inner_scores <- numeric(n_configs)
+    for (c_idx in seq_len(n_configs)) {
+      hp <- configs[[c_idx]]
+      fold_scores <- numeric(inner_k)
+      for (j in seq_len(inner_k)) {
+        inner_test_rel <- which(inner_folds_vec == j)
+        inner_test <- train_idx[inner_test_rel]
+        inner_train <- train_idx[-inner_test_rel]
+        mdl <- fit_fn(X[inner_train, , drop = FALSE], y[inner_train], hp)
+        yp <- predict_fn(mdl, X[inner_test, , drop = FALSE])
+        fold_scores[j] <- scorer(y[inner_test], yp)
+      }
+      inner_scores[c_idx] <- mean(fold_scores, na.rm = TRUE)
+    }
+    best_idx <- which.max(inner_scores)
+    best_hp <- configs[[best_idx]]
+    best_per_fold[[k]] <- best_hp
+
+    # Refit on full outer-train, score on outer-test
+    mdl <- fit_fn(X[train_idx, , drop = FALSE], y[train_idx], best_hp)
+    yp <- predict_fn(mdl, X[test_idx, , drop = FALSE])
+    outer_scores[k] <- scorer(y[test_idx], yp)
+  }
+
+  mean_score <- mean(outer_scores, na.rm = TRUE)
+  se_score <- stats::sd(outer_scores, na.rm = TRUE) / sqrt(outer_k)
+
+  list(
+    outer_scores = outer_scores,
+    best_hyperparams_per_fold = best_per_fold,
+    mean_score = mean_score,
+    se_score = se_score,
+    n_configs = n_configs
+  )
 }
 
 #' Bootstrap .632 / .632+ validation

@@ -709,3 +709,206 @@ print.morie_multiple_testing_result <- function(x, ...) {
   }
   invisible(x)
 }
+
+
+
+# ---------------------------------------------------------------------------
+# Local FDR and permutation-based FWER/FDR
+# ---------------------------------------------------------------------------
+
+#' Local false discovery rate via empirical-Bayes two-component mixture
+#'
+#' Estimates the local FDR for each test as
+#' \\eqn{lfdr_i = \\pi_0 \\, f_0(z_i) / f(z_i)}, where
+#' \\eqn{z_i = \\Phi^{-1}(1 - p_i/2)} are two-sided z-scores, \\eqn{f_0} is the
+#' standard-normal null density, \\eqn{f} is a kernel density estimate of the
+#' observed z-scores, and \\eqn{\\pi_0} is the proportion of null hypotheses
+#' estimated by the Storey-style cutoff at \\eqn{p > 0.5}.
+#'
+#' @param p_values Numeric vector of raw p-values in \\eqn{[0, 1]}.
+#' @param pi0_method Pi-zero estimator. Accepted: \\code{"bootstrap"}
+#'   (alias for the Storey-style cutoff at 0.5; retained for API parity
+#'   with the Python sibling).
+#' @param labels Optional character vector of test labels.
+#' @return A data frame with columns \\code{p_value}, \\code{z_score},
+#'   \\code{local_fdr}, and (if supplied) \\code{label}. The data frame
+#'   additionally carries class \\code{morie_rich_result}.
+#' @examples
+#' set.seed(1)
+#' p <- c(stats::runif(80), stats::pnorm(-abs(stats::rnorm(20, mean = 3))) * 2)
+#' lfdr <- local_fdr(p)
+#' head(lfdr)
+#' @export
+local_fdr <- function(p_values, pi0_method = "bootstrap", labels = NULL) {
+  p <- .mt_check_p(p_values)
+  m <- length(p)
+  # Two-sided z-scores
+  z <- stats::qnorm(1 - p / 2)
+
+  # Pi0 estimate (Storey-style cutoff at 0.5; the pi0_method argument is
+  # currently a passthrough for cross-language API parity).
+  pi0_hat <- min(sum(p > 0.5) / (m * 0.5), 1.0)
+
+  # KDE for observed z; degrade gracefully if all z are identical.
+  f_z <- if (length(unique(z)) > 1L) {
+    suppressWarnings(stats::density(z, from = min(z), to = max(z),
+                                    n = max(512L, m)))
+  } else {
+    NULL
+  }
+  if (is.null(f_z)) {
+    f_z_at <- rep(stats::dnorm(0), m)
+  } else {
+    f_z_at <- stats::approx(f_z$x, f_z$y, xout = z, rule = 2)$y
+  }
+  f0_z <- stats::dnorm(z)
+
+  lfdr <- pi0_hat * f0_z / pmax(f_z_at, 1e-10)
+  lfdr <- pmin(lfdr, 1.0)
+
+  out <- data.frame(p_value = p, z_score = z, local_fdr = lfdr,
+                    stringsAsFactors = FALSE)
+  if (!is.null(labels)) {
+    out$label <- labels
+  }
+  attr(out, "pi0_hat") <- pi0_hat
+  attr(out, "pi0_method") <- pi0_method
+  class(out) <- c("morie_local_fdr_result", "morie_rich_result",
+                  class(out))
+  out
+}
+
+#' Permutation-based FWER control via step-down max-T (Westfall--Young)
+#'
+#' Given observed test statistics and a matrix of test statistics under the
+#' permutation null, computes step-down max-T adjusted p-values that
+#' strongly control the family-wise error rate without requiring
+#' independence across tests.
+#'
+#' @param test_stats Numeric vector of length \\eqn{m} of observed test
+#'   statistics.
+#' @param null_stats Numeric matrix with \\eqn{n_{perm}} rows and \\eqn{m}
+#'   columns containing test statistics computed on permuted data.
+#' @param alternative One of \\code{"two_sided"} (default), \\code{"greater"},
+#'   or \\code{"less"}.
+#' @param alpha Significance level for rejection (default 0.05).
+#' @param labels Optional character vector of test labels.
+#' @return A \\code{morie_rich_result} list with \\code{original},
+#'   \\code{adjusted}, \\code{rejected}, \\code{method}, \\code{alpha},
+#'   \\code{n_rejected}, \\code{n_tests}.
+#' @examples
+#' set.seed(1)
+#' m <- 10; nperm <- 200
+#' obs <- c(rnorm(m - 2), 4.0, 3.5)
+#' null <- matrix(rnorm(nperm * m), nperm, m)
+#' permutation_fwer(obs, null)
+#' @export
+permutation_fwer <- function(test_stats, null_stats,
+                             alternative = c("two_sided", "greater", "less"),
+                             alpha = 0.05, labels = NULL) {
+  alternative <- match.arg(alternative)
+  t_obs <- as.numeric(test_stats)
+  t_null <- as.matrix(null_stats)
+  m <- length(t_obs)
+  if (ncol(t_null) != m) {
+    stop("permutation_fwer: ncol(null_stats) must equal length(test_stats).")
+  }
+
+  if (alternative == "two_sided") {
+    t_obs_a <- abs(t_obs)
+    t_null_a <- abs(t_null)
+  } else if (alternative == "greater") {
+    t_obs_a <- t_obs
+    t_null_a <- t_null
+  } else {
+    t_obs_a <- -t_obs
+    t_null_a <- -t_null
+  }
+
+  ord <- order(-t_obs_a)   # descending
+  t_sorted <- t_obs_a[ord]
+  adjusted_sorted <- numeric(m)
+  for (i in seq_len(m)) {
+    remaining <- ord[i:m]
+    if (length(remaining) == 1L) {
+      max_null <- t_null_a[, remaining]
+    } else {
+      max_null <- apply(t_null_a[, remaining, drop = FALSE], 1, max)
+    }
+    adjusted_sorted[i] <- mean(max_null >= t_sorted[i])
+  }
+  # Enforce monotonicity along the sorted order
+  if (m > 1L) {
+    for (i in 2:m) {
+      adjusted_sorted[i] <- max(adjusted_sorted[i], adjusted_sorted[i - 1])
+    }
+  }
+  adjusted <- numeric(m)
+  adjusted[ord] <- adjusted_sorted
+
+  .mt_adjusted("permutation_maxT", t_obs_a, alpha, adjusted, labels,
+               note = sprintf("Step-down max-T over %d permutations.",
+                              nrow(t_null)))
+}
+
+#' Permutation-based FDR control via empirical null p-value distribution
+#'
+#' Estimates the false discovery rate at each candidate threshold using a
+#' matrix of p-values computed under the permutation null, and selects the
+#' largest threshold whose estimated FDR is at most \\code{alpha}. Q-values
+#' are assigned as the minimum estimated FDR across thresholds at least as
+#' large as each observed p-value.
+#'
+#' @param test_stats Numeric vector of observed p-values (named after the
+#'   Python sibling argument to keep cross-language parity).
+#' @param null_stats Numeric matrix of permutation-null p-values with
+#'   \\eqn{n_{perm}} rows and \\eqn{m} columns.
+#' @param alpha Target FDR level (default 0.05).
+#' @param labels Optional character vector of test labels.
+#' @return A \\code{morie_rich_result} list with \\code{original} (raw
+#'   p-values), \\code{adjusted} (q-values), \\code{rejected},
+#'   \\code{method}, \\code{alpha}, \\code{n_rejected}, \\code{n_tests}.
+#' @examples
+#' set.seed(1)
+#' m <- 20; nperm <- 200
+#' p_obs <- c(stats::runif(m - 4), c(1e-4, 1e-3, 1e-3, 5e-3))
+#' p_null <- matrix(stats::runif(nperm * m), nperm, m)
+#' permutation_fdr(p_obs, p_null)
+#' @export
+permutation_fdr <- function(test_stats, null_stats,
+                            alpha = 0.05, labels = NULL) {
+  p <- .mt_check_p(test_stats)
+  p_null <- as.matrix(null_stats)
+  m <- length(p)
+  if (ncol(p_null) != m) {
+    stop("permutation_fdr: ncol(null_stats) must equal length(test_stats).")
+  }
+
+  thresholds <- sort(p)
+  fdr_at_t <- numeric(length(thresholds))
+  for (i in seq_along(thresholds)) {
+    t <- thresholds[i]
+    n_rej <- sum(p <= t)
+    if (n_rej == 0L) {
+      fdr_at_t[i] <- 0
+    } else {
+      expected_false <- mean(rowSums(p_null <= t))
+      fdr_at_t[i] <- expected_false / n_rej
+    }
+  }
+
+  valid <- fdr_at_t <= alpha
+  t_star <- if (any(valid)) thresholds[max(which(valid))] else 0
+  rejected <- p <= t_star
+
+  q_values <- rep(1, m)
+  for (i in seq_len(m)) {
+    cand <- fdr_at_t[thresholds >= p[i]]
+    if (length(cand) > 0L) q_values[i] <- min(cand)
+  }
+  q_values <- pmin(pmax(q_values, 0), 1)
+
+  .mt_adjusted("permutation_fdr", p, alpha, q_values, labels,
+               note = sprintf("Permutation-null FDR with %d permutations.",
+                              nrow(p_null)))
+}

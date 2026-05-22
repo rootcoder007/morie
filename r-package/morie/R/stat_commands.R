@@ -390,3 +390,106 @@ print.morie_stat_command <- function(x, ...) {
   }
   invisible(x)
 }
+
+
+# --- APPENDED 2026-05-22 -----------------------------------------------------
+# Auto-registration: walk the package namespace and register every exported
+# function matching ^morie_ as a stat_command, inferring a category from the
+# filename prefix (e.g. R/morie_did_*.R -> "DiD").  Fires once on .onLoad().
+# ----------------------------------------------------------------------------
+
+# Map a filename prefix to a human-readable category.  Extend as new
+# module families land in the package.
+.MORIE_CATEGORY_PREFIX_MAP <- list(
+  morie_did       = "DiD",
+  morie_tps       = "TPS Spatial",
+  morie_llm       = "LLM",
+  morie_run       = "Pipelines",
+  morie_compare   = "Inference",
+  morie_estimate  = "Inference",
+  morie_bootstrap = "Bootstrap",
+  morie_audit     = "Audit",
+  morie_otis      = "OTIS",
+  morie_hajek     = "Causal",
+  morie_iv        = "Causal",
+  morie_dml       = "Causal",
+  morie_doob      = "Time Series",
+  morie_describe  = "Documentation"
+)
+
+# Infer a category for a function `fn_name` by searching the installed
+# R/ directory for files whose names begin with a known prefix.  Falls
+# back to scanning the function's source attributes when available.
+.morie_infer_category <- function(fn_name) {
+  # Cheap path: prefix match against the static map.
+  for (px in names(.MORIE_CATEGORY_PREFIX_MAP)) {
+    if (startsWith(fn_name, paste0(px, "_")) ||
+        identical(fn_name, px)) {
+      return(.MORIE_CATEGORY_PREFIX_MAP[[px]])
+    }
+  }
+  # Try matching against installed R/ filenames.
+  r_dir <- system.file("R", package = "morie")
+  if (nzchar(r_dir) && dir.exists(r_dir)) {
+    files <- list.files(r_dir, pattern = "\\\\.R$", full.names = FALSE)
+    for (f in files) {
+      stub <- tools::file_path_sans_ext(f)
+      if (startsWith(fn_name, paste0(stub, "_")) ||
+          identical(fn_name, stub)) {
+        # Capitalise first letter for a readable category label.
+        return(paste0(toupper(substr(stub, 1, 1)),
+                      substring(stub, 2)))
+      }
+    }
+  }
+  "Misc"
+}
+
+#' Auto-register every exported ``morie_*`` function as a stat_command
+#'
+#' Walks ``getNamespaceExports("morie")``, filters to the ``^morie_`` family,
+#' and registers each as a \\code{morie_stat_command} unless one already
+#' exists under that name.  The category is inferred from the function's
+#' source filename prefix via \\code{.MORIE_CATEGORY_PREFIX_MAP}.  Safe to
+#' call repeatedly -- existing registrations are left untouched.
+#'
+#' @return Integer count of newly registered commands, invisibly.
+#' @keywords internal
+#' @export
+.morie_auto_register_stat_commands <- function() {
+  exports <- tryCatch(getNamespaceExports("morie"),
+                      error = function(e) character(0))
+  if (length(exports) == 0L) return(invisible(0L))
+  candidates <- grep("^morie_", exports, value = TRUE)
+  n_added <- 0L
+  for (nm in candidates) {
+    if (!is.null(resolve_stat_command(nm))) next
+    fn <- tryCatch(getExportedValue("morie", nm), error = function(e) NULL)
+    if (!is.function(fn)) next
+    cat <- .morie_infer_category(nm)
+    desc <- sprintf("Auto-registered from package namespace (%s).", nm)
+    usage <- paste0(nm, "(...)")
+    cmd <- tryCatch(
+      stat_command(name = nm, category = cat, usage = usage,
+                   description = desc, handler_repl = fn,
+                   aliases = character(0), module = nm,
+                   is_compound = FALSE, is_r_bridge = FALSE),
+      error = function(e) NULL)
+    if (is.null(cmd)) next
+    tryCatch({
+      register_stat_command(cmd)
+      n_added <- n_added + 1L
+    }, error = function(e) NULL)
+  }
+  invisible(n_added)
+}
+
+
+# --- Package-load hook -------------------------------------------------------
+# Fires once when the package namespace is loaded.  Wrapped in try() so a
+# downstream failure (e.g. missing optional dep used by a handler) never
+# aborts the load.
+.onLoad <- function(libname, pkgname) {
+  try(.morie_auto_register_stat_commands(), silent = TRUE)
+  invisible(NULL)
+}

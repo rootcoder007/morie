@@ -601,3 +601,270 @@ morie_estimate_g_computation <- function(data, treatment, outcome, covariates,
   ci <- .wald_ci(ate, se)
   list(ate = ate, se = se, ci_lower = ci[1], ci_upper = ci[2])
 }
+
+
+
+# ---------------------------------------------------------------------------
+# Double Machine Learning -- PLR + IRM
+# ---------------------------------------------------------------------------
+
+# Internal: hand-rolled cross-fit ridge fallback when DoubleML R package is
+# unavailable. Implements a partially linear regression (PLR) cross-fit on
+# residualised outcome and treatment using ridge regression with a fixed
+# lambda (lightweight; not for high-precision inference).
+.dml_xfit_ridge <- function(X, y, n_folds = 5L, lambda = 1.0,
+                            random_state = 42L) {
+  n <- nrow(X)
+  p <- ncol(X)
+  set.seed(random_state)
+  folds <- sample(rep(seq_len(n_folds), length.out = n))
+  pred <- numeric(n)
+  Xs <- scale(X)
+  center <- attr(Xs, "scaled:center"); scl <- attr(Xs, "scaled:scale")
+  scl[scl == 0] <- 1
+  Xs[, ] <- sweep(sweep(X, 2, center, "-"), 2, scl, "/")
+  for (k in seq_len(n_folds)) {
+    te <- which(folds == k)
+    tr <- setdiff(seq_len(n), te)
+    Xt <- Xs[tr, , drop = FALSE]
+    yt <- y[tr]
+    yc <- mean(yt)
+    A <- crossprod(Xt) + lambda * diag(p)
+    b <- crossprod(Xt, yt - yc)
+    beta <- tryCatch(solve(A, b), error = function(e) MASS::ginv(A) %*% b)
+    pred[te] <- as.numeric(Xs[te, , drop = FALSE] %*% beta) + yc
+  }
+  pred
+}
+
+.dml_prepare_xy <- function(data, treatment, outcome, covariates) {
+  frame <- data[, c(treatment, outcome, covariates), drop = FALSE]
+  frame <- frame[stats::complete.cases(frame), , drop = FALSE]
+  # encode non-numeric covariates as integer codes
+  for (cn in covariates) {
+    if (!is.numeric(frame[[cn]])) {
+      frame[[cn]] <- as.integer(as.factor(frame[[cn]]))
+    }
+  }
+  list(
+    frame = frame,
+    X = as.matrix(frame[, covariates, drop = FALSE]),
+    y = as.numeric(frame[[outcome]]),
+    d = as.numeric(frame[[treatment]])
+  )
+}
+
+#' Estimate ATE via Double Machine Learning (Partially Linear Regression)
+#'
+#' Implements Chernozhukov et al. (2018) double/debiased machine learning
+#' for the partially linear regression model. When the
+#' \\pkg{DoubleML} R package is installed, delegates to
+#' \\code{DoubleML::DoubleMLPLR} with random-forest nuisance learners.
+#' Otherwise falls back to a hand-rolled cross-fit ridge implementation:
+#' residualise \\eqn{Y} and \\eqn{D} on \\eqn{X} via K-fold ridge, then
+#' regress the outcome residual on the treatment residual.
+#'
+#' @param data A data frame with treatment, outcome, and covariate columns.
+#' @param outcome Name of the continuous outcome column.
+#' @param treatment Name of the (binary) treatment column.
+#' @param covariates Character vector of covariate column names.
+#' @param n_folds Number of cross-fitting folds (default 5).
+#' @param n_rep Number of repeated cross-fitting repetitions (DoubleML only;
+#'   ignored by the ridge fallback). Default 1.
+#' @param random_state Integer seed for cross-fit folds and learners (default 42).
+#' @return Named list with elements \\code{ate}, \\code{se}, \\code{ci_lower},
+#'   \\code{ci_upper}, \\code{n}, \\code{method}.
+#' @examples
+#' set.seed(1)
+#' n <- 200
+#' X <- matrix(rnorm(n * 3), n, 3)
+#' d <- rbinom(n, 1, plogis(X[, 1]))
+#' y <- 0.5 * d + X[, 1] + rnorm(n)
+#' df <- data.frame(y = y, d = d, x1 = X[, 1], x2 = X[, 2], x3 = X[, 3])
+#' morie_estimate_double_ml(df, "y", "d", c("x1", "x2", "x3"))
+#' @references
+#' Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C.,
+#' Newey, W., & Robins, J. (2018). Double/debiased machine learning for
+#' treatment and structural parameters. \\emph{The Econometrics Journal},
+#' 21(1), C1--C68.
+#' @export
+morie_estimate_double_ml <- function(data, outcome, treatment, covariates,
+                                     n_folds = 5L, n_rep = 1L,
+                                     random_state = 42L) {
+  prep <- .dml_prepare_xy(data, treatment, outcome, covariates)
+  n <- nrow(prep$frame)
+  z <- 1.959964
+
+  if (requireNamespace("DoubleML", quietly = TRUE) &&
+      requireNamespace("mlr3", quietly = TRUE) &&
+      requireNamespace("mlr3learners", quietly = TRUE)) {
+    set.seed(random_state)
+    dml_data <- DoubleML::double_ml_data_from_data_frame(
+      df = prep$frame,
+      y_col = outcome,
+      d_cols = treatment,
+      x_cols = covariates
+    )
+    ml_l <- mlr3::lrn("regr.ranger", num.trees = 100L, max.depth = 5L)
+    ml_m <- mlr3::lrn("regr.ranger", num.trees = 100L, max.depth = 5L)
+    plr <- DoubleML::DoubleMLPLR$new(dml_data, ml_l = ml_l, ml_m = ml_m,
+                                     n_folds = n_folds, n_rep = n_rep)
+    plr$fit()
+    ate <- as.numeric(plr$coef[1])
+    se <- as.numeric(plr$se[1])
+    return(list(
+      ate = ate, se = se,
+      ci_lower = ate - z * se, ci_upper = ate + z * se,
+      n = n, method = "PLR (DoubleML)"
+    ))
+  }
+
+  # Hand-rolled cross-fit ridge fallback.
+  ml_y <- .dml_xfit_ridge(prep$X, prep$y, n_folds = n_folds,
+                          random_state = random_state)
+  ml_d <- .dml_xfit_ridge(prep$X, prep$d, n_folds = n_folds,
+                          random_state = random_state + 1L)
+  u <- prep$y - ml_y
+  v <- prep$d - ml_d
+  denom <- sum(v * v)
+  if (denom <= 0) {
+    stop("morie_estimate_double_ml: treatment residual variance is zero")
+  }
+  ate <- sum(v * u) / denom
+  # Neyman-orthogonal score variance estimator
+  psi <- v * (u - ate * v)
+  se <- sqrt(mean(psi^2) / denom^2 * n) / sqrt(n)
+  se <- sqrt(sum(psi^2)) / denom
+  list(
+    ate = ate, se = se,
+    ci_lower = ate - z * se, ci_upper = ate + z * se,
+    n = n, method = "PLR (cross-fit ridge fallback)"
+  )
+}
+
+#' Estimate ATE via the Interactive Regression Model (IRM)
+#'
+#' Implements the IRM variant of Chernozhukov et al. (2018) double machine
+#' learning, which allows treatment-effect heterogeneity by fitting separate
+#' outcome regressions for \\eqn{T=0} and \\eqn{T=1} alongside a propensity
+#' model. Uses \\code{DoubleML::DoubleMLIRM} when available; otherwise falls
+#' back to a hand-rolled cross-fit estimator using logistic regression for
+#' the propensity score and ridge regression for the conditional outcome
+#' regressions.
+#'
+#' @param data A data frame containing treatment, outcome, and covariates.
+#' @param treatment Binary treatment column name.
+#' @param outcome Outcome column name.
+#' @param covariates Character vector of covariate column names.
+#' @param n_folds Number of cross-fitting folds (default 5).
+#' @param random_state Integer seed (default 42).
+#' @return Named list with \\code{ate}, \\code{se}, \\code{ci_lower},
+#'   \\code{ci_upper}, \\code{n}, \\code{method}.
+#' @examples
+#' set.seed(1)
+#' n <- 200
+#' X <- matrix(rnorm(n * 3), n, 3)
+#' d <- rbinom(n, 1, plogis(X[, 1]))
+#' y <- 0.5 * d + X[, 1] + rnorm(n)
+#' df <- data.frame(y = y, d = d, x1 = X[, 1], x2 = X[, 2], x3 = X[, 3])
+#' morie_estimate_irm(df, treatment = "d", outcome = "y",
+#'                    covariates = c("x1", "x2", "x3"))
+#' @references
+#' Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C.,
+#' Newey, W., & Robins, J. (2018). Double/debiased machine learning for
+#' treatment and structural parameters. \\emph{The Econometrics Journal},
+#' 21(1), C1--C68.
+#' @export
+morie_estimate_irm <- function(data, treatment, outcome, covariates,
+                               n_folds = 5L, random_state = 42L) {
+  prep <- .dml_prepare_xy(data, treatment, outcome, covariates)
+  n <- nrow(prep$frame)
+  z <- 1.959964
+
+  if (requireNamespace("DoubleML", quietly = TRUE) &&
+      requireNamespace("mlr3", quietly = TRUE) &&
+      requireNamespace("mlr3learners", quietly = TRUE)) {
+    set.seed(random_state)
+    irm_frame <- prep$frame
+    irm_frame[[treatment]] <- as.integer(irm_frame[[treatment]])
+    dml_data <- DoubleML::double_ml_data_from_data_frame(
+      df = irm_frame,
+      y_col = outcome,
+      d_cols = treatment,
+      x_cols = covariates
+    )
+    ml_g <- mlr3::lrn("regr.ranger", num.trees = 100L, max.depth = 5L)
+    ml_m <- mlr3::lrn("classif.ranger", num.trees = 100L, max.depth = 5L,
+                      predict_type = "prob")
+    irm <- DoubleML::DoubleMLIRM$new(dml_data, ml_g = ml_g, ml_m = ml_m,
+                                     n_folds = n_folds)
+    irm$fit()
+    ate <- as.numeric(irm$coef[1])
+    se <- as.numeric(irm$se[1])
+    return(list(
+      ate = ate, se = se,
+      ci_lower = ate - z * se, ci_upper = ate + z * se,
+      n = n, method = "IRM (DoubleML)"
+    ))
+  }
+
+  # Hand-rolled cross-fit IRM fallback.
+  d <- prep$d
+  y <- prep$y
+  X <- prep$X
+  set.seed(random_state)
+  folds <- sample(rep(seq_len(n_folds), length.out = n))
+  mu1 <- numeric(n); mu0 <- numeric(n); ps <- numeric(n)
+  for (k in seq_len(n_folds)) {
+    te <- which(folds == k)
+    tr <- setdiff(seq_len(n), te)
+    # propensity via logistic regression on training fold
+    dat_tr <- data.frame(d = d[tr], X[tr, , drop = FALSE])
+    dat_te <- data.frame(X[te, , drop = FALSE])
+    glm_fit <- suppressWarnings(stats::glm(d ~ ., data = dat_tr,
+                                           family = stats::binomial()))
+    ps[te] <- .clip_ps(stats::predict(glm_fit, newdata = dat_te,
+                                      type = "response"))
+    # outcome regressions on T=1 and T=0 subsamples of the training fold
+    tr1 <- tr[d[tr] == 1]
+    tr0 <- tr[d[tr] == 0]
+    if (length(tr1) >= ncol(X) + 1L) {
+      mu1[te] <- .dml_xfit_ridge_predict(X[tr1, , drop = FALSE], y[tr1],
+                                         X[te, , drop = FALSE])
+    } else {
+      mu1[te] <- mean(y[tr1])
+    }
+    if (length(tr0) >= ncol(X) + 1L) {
+      mu0[te] <- .dml_xfit_ridge_predict(X[tr0, , drop = FALSE], y[tr0],
+                                         X[te, , drop = FALSE])
+    } else {
+      mu0[te] <- mean(y[tr0])
+    }
+  }
+  # Neyman-orthogonal IRM score
+  psi <- (mu1 - mu0) +
+    d * (y - mu1) / ps -
+    (1 - d) * (y - mu0) / (1 - ps)
+  ate <- mean(psi)
+  se <- stats::sd(psi) / sqrt(n)
+  list(
+    ate = ate, se = se,
+    ci_lower = ate - z * se, ci_upper = ate + z * se,
+    n = n, method = "IRM (cross-fit ridge fallback)"
+  )
+}
+
+# Helper: closed-form ridge fit on (X_tr, y_tr) and predict at X_te.
+.dml_xfit_ridge_predict <- function(X_tr, y_tr, X_te, lambda = 1.0) {
+  p <- ncol(X_tr)
+  ctr <- colMeans(X_tr)
+  scl <- apply(X_tr, 2, stats::sd); scl[scl == 0 | !is.finite(scl)] <- 1
+  Xs_tr <- sweep(sweep(X_tr, 2, ctr, "-"), 2, scl, "/")
+  Xs_te <- sweep(sweep(X_te, 2, ctr, "-"), 2, scl, "/")
+  yc <- mean(y_tr)
+  A <- crossprod(Xs_tr) + lambda * diag(p)
+  b <- crossprod(Xs_tr, y_tr - yc)
+  beta <- tryCatch(solve(A, b),
+                   error = function(e) MASS::ginv(A) %*% b)
+  as.numeric(Xs_te %*% beta) + yc
+}

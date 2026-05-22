@@ -163,3 +163,179 @@ morie_run_treatment_effects_analysis <- function(data, treatment, outcome,
     method   = "Hajek IPW ATE (Wald CI)"
   )
 }
+
+
+# --- APPENDED 2026-05-22 -----------------------------------------------------
+# Treatment-effects upgrades.  Replaces the previous
+# morie_run_treatment_effects_analysis() so that it returns ATT, ATC, and
+# CATE subgroup breakdowns in addition to ATE+SE+CI -- mirroring the Python
+# investigation.run_treatment_effects_analysis() outputs.  Also exposes
+# .morie_hajek_ate as a package-internal helper.
+# ----------------------------------------------------------------------------
+
+#' Hajek (normalised Horvitz-Thompson) ATE estimator
+#'
+#' Internal helper, mirrors Python ``investigation._hajek_ate``.  Operates
+#' on raw vectors: clipped propensity scores ``ps``, binary treatment ``t``,
+#' outcome ``y``.  Returns a list with ``ate`` / ``y1`` / ``y0``.
+#'
+#' @param ps Numeric vector of propensity scores in (0, 1).
+#' @param t Numeric vector of 0/1 treatment indicators.
+#' @param y Numeric vector of outcomes.
+#' @return list(ate, y1, y0).
+#' @keywords internal
+#' @export
+.morie_hajek_ate <- function(ps, t, y) {
+  treated <- t == 1
+  control <- t == 0
+  sum_ty <- sum(y[treated] / ps[treated])
+  sum_t  <- sum(1 / ps[treated])
+  y1 <- if (sum_t > 0) sum_ty / sum_t else NA_real_
+  sum_cy <- sum(y[control] / (1 - ps[control]))
+  sum_c  <- sum(1 / (1 - ps[control]))
+  y0 <- if (sum_c > 0) sum_cy / sum_c else NA_real_
+  list(ate = y1 - y0, y1 = y1, y0 = y0)
+}
+
+# Internal: fit a logistic propensity model and clip to [0.01, 0.99].
+.morie_fit_propensity <- function(data, treatment, covariates) {
+  fml <- stats::as.formula(paste(treatment, "~",
+                                  paste(covariates, collapse = " + ")))
+  fit <- stats::glm(fml, data = data, family = stats::binomial())
+  ps <- stats::predict(fit, type = "response")
+  pmin(pmax(ps, 0.01), 0.99)
+}
+
+#' Run an extended treatment-effects analysis (ATE / ATT / ATC + CATE)
+#'
+#' R port of ``investigation.run_treatment_effects_analysis``.  Returns a
+#' list with:
+#' \\itemize{
+#'   \\item ``treatment_effects_summary`` -- data.frame of ATE / ATT / ATC
+#'     point estimates (SE / CI columns present but NA, matching Python).
+#'   \\item ``cate_subgroup_estimates`` -- data.frame of within-subgroup
+#'     Hajek IPW CATEs with sandwich-style SEs and Wald 95\\% CIs.
+#'   \\item ``analysis_frame`` -- the trimmed data.frame with attached
+#'     propensity score and IPW weight columns (``ps``, ``w_ate``, ``w_att``,
+#'     ``w_atc``).
+#'   \\item Convenience scalars ``ate`` / ``att`` / ``atc`` / ``se`` /
+#'     ``ci_lower`` / ``ci_upper`` / ``n`` / ``method`` preserved from the
+#'     previous R surface for backward compatibility.
+#' }
+#'
+#' @param data data.frame containing treatment, outcome, and covariates.
+#' @param treatment Treatment column name.
+#' @param outcome Outcome column name.
+#' @param covariates Character vector of covariate column names.
+#' @return Named list as described above.
+#' @export
+morie_run_treatment_effects_analysis <- function(data, treatment, outcome,
+                                                  covariates) {
+  required <- unique(c(treatment, outcome, covariates))
+  if (!all(required %in% names(data))) {
+    stop("data is missing required columns: ",
+         paste(setdiff(required, names(data)), collapse = ", "))
+  }
+  frame <- data[stats::complete.cases(data[, required, drop = FALSE]), ,
+                drop = FALSE]
+  frame$ps <- .morie_fit_propensity(frame, treatment, covariates)
+  t <- as.numeric(frame[[treatment]])
+  y <- as.numeric(frame[[outcome]])
+  ps <- frame$ps
+
+  frame$w_ate <- ifelse(t == 1, 1 / ps, 1 / (1 - ps))
+  frame$w_att <- ifelse(t == 1, 1, ps / (1 - ps))
+  frame$w_atc <- ifelse(t == 1, (1 - ps) / ps, 1)
+
+  ate_h <- .morie_hajek_ate(ps, t, y)
+  ate   <- ate_h$ate
+
+  treated <- t == 1
+  control <- t == 0
+  y1_mean <- if (any(treated)) mean(y[treated]) else NA_real_
+  y0_mean <- if (any(control)) mean(y[control]) else NA_real_
+
+  ps_c <- ps[control]; y_c <- y[control]
+  att_w <- ps_c / (1 - ps_c)
+  y0_att <- if (sum(att_w) > 0) sum(y_c * att_w) / sum(att_w) else NA_real_
+  att <- y1_mean - y0_att
+
+  ps_t <- ps[treated]; y_t <- y[treated]
+  atc_w <- (1 - ps_t) / ps_t
+  y1_atc <- if (sum(atc_w) > 0) sum(y_t * atc_w) / sum(atc_w) else NA_real_
+  atc <- y1_atc - y0_mean
+
+  summary_df <- data.frame(
+    estimand = c("ATE", "ATT", "ATC"),
+    method   = "IPW-Hajek",
+    estimate = c(ate, att, atc),
+    se       = NA_real_,
+    ci_lower = NA_real_,
+    ci_upper = NA_real_,
+    stringsAsFactors = FALSE
+  )
+
+  # --- CATE subgroup estimates (Hajek IPW within each subgroup level) ----
+  cate_rows <- list()
+  for (sv in covariates) {
+    levels_sv <- unique(frame[[sv]])
+    for (lv in levels_sv) {
+      sub <- frame[frame[[sv]] == lv, , drop = FALSE]
+      st <- as.numeric(sub[[treatment]])
+      sy <- as.numeric(sub[[outcome]])
+      sps <- sub$ps
+      n_t <- sum(st == 1); n_c <- sum(st == 0)
+      if (n_t < 2 || n_c < 2) next
+      h <- .morie_hajek_ate(sps, st, sy)
+      ps_tt <- sps[st == 1]; ps_cc <- sps[st == 0]
+      y_tt  <- sy[st == 1];  y_cc  <- sy[st == 0]
+      w_t <- 1 / ps_tt;       w_c <- 1 / (1 - ps_cc)
+      r_t <- y_tt - h$y1;     r_c <- y_cc - h$y0
+      var_y1 <- if (sum(w_t) > 0) sum(w_t^2 * r_t^2) / (sum(w_t)^2) else 0
+      var_y0 <- if (sum(w_c) > 0) sum(w_c^2 * r_c^2) / (sum(w_c)^2) else 0
+      se <- sqrt(var_y1 + var_y0)
+      cate_rows[[length(cate_rows) + 1L]] <- data.frame(
+        subgroup_var   = sv,
+        subgroup_level = as.character(lv),
+        n_treated      = n_t,
+        n_control      = n_c,
+        cate           = h$ate,
+        se             = se,
+        ci_lower       = h$ate - 1.96 * se,
+        ci_upper       = h$ate + 1.96 * se,
+        stringsAsFactors = FALSE
+      )
+    }
+  }
+  cate_df <- if (length(cate_rows) > 0L) do.call(rbind, cate_rows) else
+    data.frame(subgroup_var = character(0), subgroup_level = character(0),
+               n_treated = integer(0), n_control = integer(0),
+               cate = numeric(0), se = numeric(0),
+               ci_lower = numeric(0), ci_upper = numeric(0),
+               stringsAsFactors = FALSE)
+
+  # Backward-compatible Wald CI on ATE via the existing morie_estimate_ate()
+  # helper (sandwich SE).  Wrapped in try() so a missing dependency doesn't
+  # abort the richer result.
+  wald <- tryCatch(
+    morie_estimate_ate(data, treatment = treatment, outcome = outcome,
+                       covariates = covariates),
+    error = function(e) list(se = NA_real_, ci_lower = NA_real_,
+                             ci_upper = NA_real_, n = nrow(frame)))
+
+  list(
+    # New rich outputs (mirrors Python)
+    treatment_effects_summary = summary_df,
+    cate_subgroup_estimates   = cate_df,
+    analysis_frame            = frame,
+    # Back-compat scalars
+    ate      = ate,
+    att      = att,
+    atc      = atc,
+    se       = wald$se,
+    ci_lower = wald$ci_lower,
+    ci_upper = wald$ci_upper,
+    n        = nrow(frame),
+    method   = "IPW-Hajek (ATE/ATT/ATC + CATE)"
+  )
+}

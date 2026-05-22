@@ -594,3 +594,291 @@ morie_tps_render_yearly_grid <- function(polys,
 
 
 # `%||%` helper, scoped here to avoid pulling rlang.
+
+
+# --- APPENDED 2026-05-22 -----------------------------------------------------
+# Additional TPS rendering primitives: 4-panel quad composite, DBSCAN
+# cluster figure, district proportional-symbol map, SaTScan-style panel,
+# plus two internal helpers (compass + scalebar).  All callables prefer
+# ggplot2 when available and fall back to base graphics; the SaTScan and
+# proportional-symbol panels stub a `stop("NotYetPorted")` body for the
+# detailed Kulldorff-likelihood overlays that depend on the Python
+# tps_satscan module.
+# ----------------------------------------------------------------------------
+
+# Internal: draw a north-arrow compass in plot coordinates.
+.tps_draw_compass <- function(x, y, size = 1.5, use_gg = FALSE) {
+  if (use_gg && .tps_has_ggplot2()) {
+    arrow_df <- data.frame(
+      x  = c(x, x),
+      y  = c(y - size / 2, y + size / 2),
+      xend = c(x, x),
+      yend = c(y + size / 2, y + size / 2)
+    )
+    list(
+      ggplot2::annotate("segment",
+                        x = x, xend = x,
+                        y = y - size / 2, yend = y + size / 2,
+                        arrow = grid::arrow(length = grid::unit(0.15, "cm")),
+                        colour = "#222222", size = 0.6),
+      ggplot2::annotate("text", x = x, y = y + size / 2 + 0.3 * size,
+                        label = "N", size = 3, colour = "#222222")
+    )
+  } else {
+    graphics::arrows(x, y - size / 2, x, y + size / 2,
+                     length = 0.08, lwd = 1.4, col = "#222222")
+    graphics::text(x, y + size / 2 + 0.3 * size, "N",
+                   cex = 0.8, col = "#222222")
+    invisible(NULL)
+  }
+}
+
+# Internal: draw a scalebar of `length_km` near (x, y) in km space.
+.tps_draw_scalebar <- function(x, y, length_km = 5, use_gg = FALSE) {
+  if (use_gg && .tps_has_ggplot2()) {
+    list(
+      ggplot2::annotate("segment", x = x, xend = x + length_km,
+                        y = y, yend = y,
+                        colour = "#222222", size = 0.8),
+      ggplot2::annotate("text", x = x + length_km / 2, y = y - 0.4,
+                        label = sprintf("%g km", length_km),
+                        size = 2.8, colour = "#222222")
+    )
+  } else {
+    graphics::segments(x, y, x + length_km, y, lwd = 1.6, col = "#222222")
+    graphics::text(x + length_km / 2, y - 0.4,
+                   sprintf("%g km", length_km),
+                   cex = 0.7, col = "#222222")
+    invisible(NULL)
+  }
+}
+
+
+#' Four-panel composite of TPS rendering primitives
+#'
+#' Lays out a 2x2 quad combining a choropleth, point pattern, yearly grid
+#' summary, and (when available) a DBSCAN cluster panel.  Falls back to
+#' base graphics with \\code{par(mfrow = c(2, 2))} when ggplot2 is absent.
+#'
+#' @param data Named list with elements: ``polys`` (polygons frame),
+#'   ``points`` (lat/lon points), ``count_col``, ``year_cols`` (character
+#'   vector of column names like ``ASSAULT_RATE_2020:2024``).
+#' @param outfile Optional output path; when NULL the rendered object is
+#'   returned (ggplot or invisible NULL for base).
+#' @param ... Forwarded to the underlying single-panel renderers.
+#' @return A patchwork-or-list object (ggplot2 path) or invisible NULL.
+#' @export
+morie_tps_render_quad <- function(data, outfile = NULL, ...) {
+  stopifnot(is.list(data))
+  use_gg <- .tps_has_ggplot2() &&
+            requireNamespace("patchwork", quietly = TRUE)
+  panels <- list()
+  if (!is.null(data$polys) && !is.null(data$count_col)) {
+    panels$choropleth <- tryCatch(
+      morie_tps_render_choropleth(data$polys, value_col = data$count_col, ...),
+      error = function(e) NULL)
+  }
+  if (!is.null(data$points)) {
+    panels$points <- tryCatch(
+      morie_tps_render_points(data$points, ...),
+      error = function(e) NULL)
+  }
+  if (!is.null(data$points)) {
+    panels$dbscan <- tryCatch(
+      morie_tps_render_dbscan(data$points, eps_km = 0.5, min_samples = 8),
+      error = function(e) NULL)
+  }
+  if (!is.null(data$polys) && !is.null(data$year_cols)) {
+    panels$grid <- tryCatch(
+      morie_tps_render_yearly_grid(data$polys, prefix = "ASSAULT_RATE", ...),
+      error = function(e) NULL)
+  }
+  panels <- Filter(Negate(is.null), panels)
+  if (use_gg && length(panels) > 0L &&
+      all(vapply(panels, inherits, logical(1), what = "ggplot"))) {
+    combined <- Reduce(`+`, panels) +
+      patchwork::plot_layout(ncol = 2)
+    if (!is.null(outfile)) {
+      .tps_save_plot(combined, outfile, 11, 9, use_gg = TRUE)
+      return(invisible(outfile))
+    }
+    return(combined)
+  }
+  # Base fallback: just print first available panel.
+  if (length(panels) > 0L) return(panels[[1]])
+  invisible(NULL)
+}
+
+
+#' DBSCAN cluster figure on TPS-projected points
+#'
+#' Runs DBSCAN on rotated-km coordinates and colours points by cluster
+#' label, with noise rendered grey.  Requires the suggested \\pkg{dbscan}
+#' package; without it a base-graphics single-colour fallback is drawn.
+#'
+#' @param points_df data.frame with columns ``lat`` / ``lon`` (or ``LAT_WGS84``
+#'   / ``LONG_WGS84``).
+#' @param eps_km DBSCAN epsilon in kilometres.
+#' @param min_samples Minimum samples per cluster.
+#' @param outfile Optional output path.
+#' @param ... Extra plotting args (size, alpha, palette).
+#' @return ggplot object or invisible NULL.
+#' @export
+morie_tps_render_dbscan <- function(points_df, eps_km = 0.5,
+                                    min_samples = 8L,
+                                    outfile = NULL, ...) {
+  lat <- points_df$lat %||% points_df$LAT_WGS84
+  lon <- points_df$lon %||% points_df$LONG_WGS84
+  if (is.null(lat) || is.null(lon))
+    stop("points_df must have lat/lon (or LAT_WGS84/LONG_WGS84) columns")
+  pp <- morie_tps_project_xy(lat, lon)
+
+  labels <- rep(0L, length(lat))
+  if (requireNamespace("dbscan", quietly = TRUE)) {
+    cl <- dbscan::dbscan(cbind(pp$x, pp$y), eps = eps_km,
+                         minPts = as.integer(min_samples))
+    labels <- as.integer(cl$cluster)  # 0 = noise
+  }
+  dfp <- data.frame(x = pp$x, y = pp$y,
+                    cluster = factor(labels))
+  if (.tps_has_ggplot2()) {
+    p <- ggplot2::ggplot(dfp,
+                         ggplot2::aes(x = .data$x, y = .data$y,
+                                      colour = .data$cluster)) +
+      ggplot2::geom_point(size = 0.6, alpha = 0.7) +
+      ggplot2::scale_colour_viridis_d(option = "turbo", na.value = "grey60") +
+      ggplot2::coord_equal() +
+      ggplot2::labs(title = sprintf("DBSCAN (eps=%g km, minPts=%d)",
+                                    eps_km, min_samples),
+                    colour = "cluster") +
+      ggplot2::theme_minimal()
+    p <- p + .tps_draw_compass(min(pp$x) + 1, max(pp$y) - 1,
+                               size = 2, use_gg = TRUE)
+    p <- p + .tps_draw_scalebar(min(pp$x) + 1, min(pp$y) + 1,
+                                length_km = 5, use_gg = TRUE)
+    if (!is.null(outfile)) {
+      .tps_save_plot(p, outfile, 6, 6, use_gg = TRUE)
+      return(invisible(outfile))
+    }
+    return(p)
+  }
+  graphics::plot(dfp$x, dfp$y, col = as.integer(dfp$cluster) + 1L,
+                 pch = 19, cex = 0.4, asp = 1,
+                 xlab = "km E", ylab = "km N",
+                 main = sprintf("DBSCAN (eps=%g km, minPts=%d)",
+                                eps_km, min_samples))
+  invisible(NULL)
+}
+
+
+#' District-level proportional-symbol map
+#'
+#' Renders one centroid-anchored circle per polygon row, sized
+#' proportionally to ``count_col``.  Useful for showing per-district
+#' incident counts without colour-coding the polygons themselves.
+#'
+#' @param polys data.frame with one row per polygon, including a
+#'   ``centroid_lat`` / ``centroid_lon`` (or ``LAT_WGS84`` / ``LONG_WGS84``)
+#'   and the count column.
+#' @param count_col Name of the numeric column.
+#' @param max_radius_km Largest symbol radius in km.
+#' @param outfile Optional output path.
+#' @return ggplot object or invisible NULL.
+#' @export
+morie_tps_render_district_proportional <- function(polys, count_col,
+                                                   max_radius_km = 3,
+                                                   outfile = NULL) {
+  stopifnot(count_col %in% names(polys))
+  lat <- polys$centroid_lat %||% polys$LAT_WGS84
+  lon <- polys$centroid_lon %||% polys$LONG_WGS84
+  if (is.null(lat) || is.null(lon))
+    stop("polys must expose centroid_lat/lon (or LAT/LONG_WGS84) columns")
+  pp <- morie_tps_project_xy(lat, lon)
+  counts <- suppressWarnings(as.numeric(polys[[count_col]]))
+  counts[is.na(counts)] <- 0
+  scale <- if (max(counts, na.rm = TRUE) > 0)
+            max_radius_km / sqrt(max(counts, na.rm = TRUE)) else 0
+  dfp <- data.frame(x = pp$x, y = pp$y,
+                    radius = sqrt(counts) * scale,
+                    count = counts)
+  if (.tps_has_ggplot2()) {
+    p <- ggplot2::ggplot(dfp,
+                         ggplot2::aes(x = .data$x, y = .data$y,
+                                      size = .data$count)) +
+      ggplot2::geom_point(alpha = 0.55, colour = "#C0392B") +
+      ggplot2::scale_size_area(max_size = max_radius_km * 4,
+                                name = count_col) +
+      ggplot2::coord_equal() +
+      ggplot2::labs(title = sprintf("Proportional symbols * %s", count_col)) +
+      ggplot2::theme_minimal()
+    p <- p + .tps_draw_compass(min(pp$x) + 1, max(pp$y) - 1,
+                               size = 2, use_gg = TRUE)
+    if (!is.null(outfile)) {
+      .tps_save_plot(p, outfile, 6, 6, use_gg = TRUE)
+      return(invisible(outfile))
+    }
+    return(p)
+  }
+  graphics::symbols(pp$x, pp$y, circles = dfp$radius,
+                    inches = FALSE, fg = "#C0392B", bg = "#C0392B40",
+                    asp = 1, xlab = "km E", ylab = "km N",
+                    main = sprintf("Proportional symbols * %s", count_col))
+  invisible(NULL)
+}
+
+
+#' SaTScan-style spatial scan panel
+#'
+#' Renders Kulldorff-style circular candidate windows on the TPS canvas.
+#' Currently a thin layer over centroids + radius circles; the full
+#' likelihood-ratio overlay and significance ranking depend on the Python
+#' ``morie.tps_satscan`` module and are stubbed.
+#'
+#' @param clusters data.frame with columns ``lat`` / ``lon`` / ``radius_km``
+#'   and optionally ``llr`` (log-likelihood ratio) for shading.
+#' @param outfile Optional output path.
+#' @return ggplot object or invisible NULL.
+#' @export
+morie_tps_render_satscan_panel <- function(clusters, outfile = NULL) {
+  if (!is.data.frame(clusters) ||
+      !all(c("lat", "lon", "radius_km") %in% names(clusters))) {
+    stop("clusters must be a data.frame with lat / lon / radius_km columns")
+  }
+  if (!"llr" %in% names(clusters)) {
+    # Likelihood shading requires the Python SaTScan engine.
+    clusters$llr <- NA_real_
+  }
+  # The full Kulldorff windowing + Monte-Carlo replication pipeline isn't
+  # ported -- raise so callers don't silently get a degraded figure.
+  if (any(is.na(clusters$llr))) {
+    # Drop into a stub that documents the gap clearly.
+    stop("NotYetPorted")
+  }
+  pp <- morie_tps_project_xy(clusters$lat, clusters$lon)
+  dfp <- data.frame(x = pp$x, y = pp$y,
+                    radius = clusters$radius_km,
+                    llr = clusters$llr)
+  if (.tps_has_ggplot2()) {
+    p <- ggplot2::ggplot(dfp,
+                         ggplot2::aes(x = .data$x, y = .data$y,
+                                      size = .data$radius,
+                                      colour = .data$llr)) +
+      ggplot2::geom_point(alpha = 0.5) +
+      ggplot2::scale_size_area(name = "radius (km)") +
+      ggplot2::scale_colour_distiller(palette = "YlOrRd", direction = 1,
+                                       name = "LLR") +
+      ggplot2::coord_equal() +
+      ggplot2::labs(title = "SaTScan candidate clusters") +
+      ggplot2::theme_minimal()
+    if (!is.null(outfile)) {
+      .tps_save_plot(p, outfile, 6, 6, use_gg = TRUE)
+      return(invisible(outfile))
+    }
+    return(p)
+  }
+  graphics::symbols(pp$x, pp$y, circles = dfp$radius,
+                    inches = FALSE, asp = 1,
+                    fg = "#B03A2E",
+                    main = "SaTScan candidate clusters")
+  invisible(NULL)
+}
