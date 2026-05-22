@@ -298,20 +298,41 @@ morie_iv_first_stage_diagnostics <- function(data, endogenous, instruments,
 }
 
 #' Cragg-Donald weak-instrument F statistic
+#'
+#' Computes the Cragg-Donald (1993) weak-instrument statistic. The
+#' statistic is a function of the first-stage regression and is
+#' independent of the outcome variable; \code{outcome} only needs to
+#' name a numeric column in \code{data} so \pkg{ivreg} can compile
+#' a formula. When \code{outcome = NULL} (default), the first
+#' endogenous regressor is reused as the outcome — works because
+#' \pkg{ivreg}'s weak-IV diagnostic comes from the first stage
+#' regardless of \code{y}.
+#'
+#' @param data Data frame.
+#' @param endogenous Character vector of endogenous regressor names.
+#' @param instruments Character vector of excluded-instrument names.
+#' @param exogenous Optional exogenous covariates.
+#' @param outcome Optional outcome column name. Default \code{NULL}
+#'   reuses \code{endogenous[1]}; the resulting F-statistic is
+#'   unaffected because Cragg-Donald only reads the first stage.
+#' @return Named list with \code{statistic}, \code{p_value},
+#'   \code{name}, \code{details}.
 #' @export
 morie_iv_cragg_donald <- function(data, endogenous, instruments,
-                                  exogenous = NULL) {
-  # TODO: native minimum-eigenvalue computation per Cragg & Donald (1993).
-  # In the meantime delegate to ivreg's diagnostic table.
+                                  exogenous = NULL, outcome = NULL) {
+  # TODO: native minimum-eigenvalue Cragg-Donald per CD93. For now
+  # delegate to ivreg's weak-instrument diagnostic, which reports
+  # the same statistic.
+  if (is.null(outcome)) outcome <- endogenous[1]
   if (.morie_iv_have_ivreg()) {
-    f   <- .morie_iv_build_formula(endogenous[1], endogenous, instruments,
+    f   <- .morie_iv_build_formula(outcome, endogenous, instruments,
                                    exogenous)
     fit <- ivreg::ivreg(f, data = data)
     diag_tbl <- summary(fit, diagnostics = TRUE)$diagnostics
     list(statistic = unname(diag_tbl["Weak instruments", "statistic"]),
          p_value   = unname(diag_tbl["Weak instruments", "p-value"]),
          name      = "Cragg-Donald / weak instruments",
-         details   = list(fit = fit))
+         details   = list(fit = fit, outcome_used = outcome))
   } else {
     list(statistic = NA_real_, p_value = NA_real_,
          name = "Cragg-Donald (requires ivreg)", details = list())
@@ -616,6 +637,10 @@ morie_iv_panel <- function(data, outcome, endogenous, instruments, unit,
   if (requireNamespace("plm", quietly = TRUE)) {
     f <- .morie_iv_build_formula(outcome, endogenous, instruments, exogenous)
     idx <- if (!is.null(time_fe)) c(unit, time_fe) else unit
+    # inst.method = "baltagi" is the Baltagi (1981) instrument
+    # construction; plm accepts it for within-IV models with an IV
+    # formula (it is NOT a pgmm-only argument despite the surface
+    # similarity to plm::pgmm). See ?plm::plm.
     fit <- plm::plm(f, data = data, index = idx, model = "within",
                     effect = if (is.null(time_fe)) "individual" else "twoways",
                     inst.method = "baltagi")
