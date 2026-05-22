@@ -152,8 +152,6 @@ morie_otis_rplace <- function(df, year,
     }
   }
   row_sums <- rowSums(M)
-  P <- M
-  P[] <- 0
   P <- M / pmax(row_sums, 1L)
   P[row_sums == 0, ] <- 0
 
@@ -567,14 +565,15 @@ morie_otis_otdml <- function(df,
   meat <- mean((d_res^2) * (resid^2))
   se <- sqrt(meat / (bread^2 * n))
   z <- if (se > 0) ate / se else 0
-  pval <- 2 * (1 - stats::pnorm(abs(z)))
+  # Use lower.tail=FALSE to avoid 1-pnorm underflow for large |z|
+  pval <- 2 * stats::pnorm(-abs(z))
 
   p_treat <- mean(d)
   if (p_treat > 0) {
     att <- ate / p_treat
     att_se <- se / p_treat
     att_z <- att / att_se
-    att_p <- 2 * (1 - stats::pnorm(abs(att_z)))
+    att_p <- 2 * stats::pnorm(-abs(att_z))
   } else {
     att <- ate; att_se <- se; att_p <- 1
   }

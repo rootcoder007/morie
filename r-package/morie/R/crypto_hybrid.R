@@ -33,10 +33,11 @@
   }
 }
 
-.morie_hkdf_sha256 <- function(ikm, length = 32L, salt = NULL,
+.morie_hkdf_sha256 <- function(ikm, len = 32L, salt = NULL,
                                info = raw(0)) {
+  # 'len' not 'length' — base length() must not be shadowed
   .morie_require_openssl()
-  if (length < 1L || length > 255L * 32L) {
+  if (len < 1L || len > 255L * 32L) {
     stop("HKDF output length must be in 1..255*32", call. = FALSE)
   }
   if (is.null(salt)) salt <- as.raw(rep(0L, 32L))
@@ -44,7 +45,7 @@
   if (is.character(info)) info <- charToRaw(info)
   if (is.character(salt)) salt <- charToRaw(salt)
   prk <- as.raw(openssl::sha256(ikm, key = salt))
-  n <- ceiling(length / 32L)
+  n <- ceiling(len / 32L)
   t_prev <- raw(0)
   okm <- raw(0)
   for (i in seq_len(n)) {
@@ -52,7 +53,7 @@
     t_prev <- as.raw(openssl::sha256(msg, key = prk))
     okm <- c(okm, t_prev)
   }
-  okm[seq_len(length)]
+  okm[seq_len(len)]
 }
 
 .morie_wrapping_key <- function(kem_ct, pk) {
@@ -60,7 +61,7 @@
   salt <- as.raw(openssl::sha256(charToRaw("morie-hybrid-wrap-v1")))
   .morie_hkdf_sha256(
     ikm    = c(kem_ct, pk),
-    length = 32L,
+    len    = 32L,
     salt   = salt,
     info   = charToRaw("key-wrap")
   )
@@ -119,7 +120,7 @@ morie_crypto_hybrid_decrypt <- function(ciphertext, recipient_sk) {
 #' @param info   Raw vector or character (context info).
 #' @return Raw vector of `length` bytes.
 #' @export
-morie_crypto_hkdf_sha256 <- function(ikm, length = 32L, salt = NULL,
+morie_crypto_hkdf_sha256 <- function(ikm, len = 32L, salt = NULL,
                                      info = raw(0)) {
-  .morie_hkdf_sha256(ikm = ikm, length = length, salt = salt, info = info)
+  .morie_hkdf_sha256(ikm = ikm, len = len, salt = salt, info = info)
 }

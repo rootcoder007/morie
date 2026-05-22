@@ -307,9 +307,9 @@ morie_iv_cragg_donald <- function(data, endogenous, instruments,
     f   <- .morie_iv_build_formula(endogenous[1], endogenous, instruments,
                                    exogenous)
     fit <- ivreg::ivreg(f, data = data)
-    diag <- summary(fit, diagnostics = TRUE)$diagnostics
-    list(statistic = unname(diag["Weak instruments", "statistic"]),
-         p_value   = unname(diag["Weak instruments", "p-value"]),
+    diag_tbl <- summary(fit, diagnostics = TRUE)$diagnostics
+    list(statistic = unname(diag_tbl["Weak instruments", "statistic"]),
+         p_value   = unname(diag_tbl["Weak instruments", "p-value"]),
          name      = "Cragg-Donald / weak instruments",
          details   = list(fit = fit))
   } else {
@@ -350,20 +350,32 @@ morie_iv_kleibergen_paap <- function(data, endogenous, instruments,
 morie_iv_anderson_rubin <- function(data, outcome, endogenous, instruments,
                                     exogenous = NULL, beta0 = NULL,
                                     alpha = 0.05) {
-  # Project y - X*beta0 on instruments, F-test joint significance.
+  # AR test: regress residual y - X*beta0 on [exog, instruments]; the
+  # excluded-instrument F-stat is the AR statistic. Under H0:beta=beta0,
+  # AR ~ F(k_ins, n - k_exog - k_ins); AR * k_ins ~ chi-square(k_ins).
   if (is.null(beta0)) beta0 <- rep(0, length(endogenous))
   y <- as.numeric(data[[outcome]])
   X_end <- as.matrix(data[, endogenous, drop = FALSE])
-  resid <- y - X_end %*% beta0
-  rhs   <- paste(c(instruments, exogenous), collapse = " + ")
-  f     <- stats::as.formula(paste("resid ~", rhs))
-  df_   <- cbind(data, resid = as.numeric(resid))
-  f_full <- stats::lm(f, data = df_)
-  k_ins  <- length(instruments)
-  stat   <- summary(f_full)$fstatistic[1] * k_ins
-  pval   <- stats::pchisq(stat, df = k_ins, lower.tail = FALSE)
-  list(statistic = stat, p_value = pval,
-       name = "Anderson-Rubin", df = k_ins, beta0 = beta0)
+  e <- as.numeric(y - X_end %*% beta0)
+  df_ <- cbind(data, .ar_resid = e)
+  rhs_full <- paste(c(exogenous, instruments), collapse = " + ")
+  rhs_red  <- if (length(exogenous)) paste(exogenous, collapse = " + ") else "1"
+  f_full <- stats::lm(stats::as.formula(paste(".ar_resid ~", rhs_full)),
+                       data = df_)
+  f_red  <- stats::lm(stats::as.formula(paste(".ar_resid ~", rhs_red)),
+                       data = df_)
+  ssr_full <- sum(stats::residuals(f_full)^2)
+  ssr_red  <- sum(stats::residuals(f_red)^2)
+  k_ins <- length(instruments)
+  df_resid <- stats::df.residual(f_full)
+  F_stat <- ((ssr_red - ssr_full) / k_ins) / (ssr_full / df_resid)
+  chi2_stat <- k_ins * F_stat   # asymptotic chi-square form
+  pval <- stats::pchisq(chi2_stat, df = k_ins, lower.tail = FALSE)
+  list(statistic = unname(chi2_stat),
+       F_statistic = unname(F_stat),
+       p_value = unname(pval),
+       name = "Anderson-Rubin", df = k_ins,
+       df_resid = df_resid, beta0 = beta0)
 }
 
 #' Grid-based Anderson-Rubin confidence interval for a single endogenous
@@ -402,10 +414,10 @@ morie_iv_sargan <- function(data, outcome, endogenous, instruments,
   if (.morie_iv_have_ivreg()) {
     f   <- .morie_iv_build_formula(outcome, endogenous, instruments, exogenous)
     fit <- ivreg::ivreg(f, data = data)
-    diag <- summary(fit, diagnostics = TRUE)$diagnostics
+    diag_tbl <- summary(fit, diagnostics = TRUE)$diagnostics
     if ("Sargan" %in% rownames(diag))
-      return(list(statistic = diag["Sargan", "statistic"],
-                  p_value   = diag["Sargan", "p-value"],
+      return(list(statistic = diag_tbl["Sargan", "statistic"],
+                  p_value   = diag_tbl["Sargan", "p-value"],
                   name = "Sargan"))
   }
   # base-R: n*R^2 of residual regression on instruments
@@ -451,10 +463,10 @@ morie_iv_hausman <- function(data, outcome, endogenous, instruments,
   if (.morie_iv_have_ivreg()) {
     f   <- .morie_iv_build_formula(outcome, endogenous, instruments, exogenous)
     fit <- ivreg::ivreg(f, data = data)
-    diag <- summary(fit, diagnostics = TRUE)$diagnostics
+    diag_tbl <- summary(fit, diagnostics = TRUE)$diagnostics
     if ("Wu-Hausman" %in% rownames(diag))
-      return(list(statistic = diag["Wu-Hausman", "statistic"],
-                  p_value   = diag["Wu-Hausman", "p-value"],
+      return(list(statistic = diag_tbl["Wu-Hausman", "statistic"],
+                  p_value   = diag_tbl["Wu-Hausman", "p-value"],
                   name = "Wu-Hausman / Hausman"))
   }
   rhs_full <- paste(c(endogenous, exogenous), collapse = " + ")

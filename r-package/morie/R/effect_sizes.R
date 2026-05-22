@@ -64,7 +64,6 @@ effect_size_result <- function(measure, estimate,
 
 .bootstrap_ci <- function(func, args, n_boot = 2000L,
                             confidence = 0.95, seed = 42L) {
-  rng <- set.seed(seed)
   set.seed(seed)
   boot_vals <- rep(NA_real_, n_boot)
   for (b in seq_len(n_boot)) {
@@ -100,6 +99,10 @@ effect_size_result <- function(measure, estimate,
 cohens_d <- function(x, y, confidence = 0.95) {
   x <- .arr(x); y <- .arr(y)
   nx <- length(x); ny <- length(y)
+  if (nx < 2L || ny < 2L) {
+    stop("cohens_d: need at least 2 finite observations per group; ",
+         "got nx=", nx, ", ny=", ny, call. = FALSE)
+  }
   sp <- sqrt(((nx - 1) * var(x) + (ny - 1) * var(y)) / (nx + ny - 2))
   d  <- if (sp > 0) (mean(x) - mean(y)) / sp else 0
   se <- sqrt((nx + ny) / (nx * ny) + d^2 / (2 * (nx + ny - 2)))
