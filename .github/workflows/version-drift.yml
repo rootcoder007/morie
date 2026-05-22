@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# version-drift.yml — CI gate that enforces the DRY version contract.
+#
+# Workflow:
+#   1. Re-run scripts/version-inventory.sh from a fresh checkout.
+#   2. Compare the regenerated VERSION_INVENTORY.csv against the
+#      committed copy.
+#   3. Fail the job if they differ.
+#
+# This guarantees that the committed CSV is always a faithful snapshot
+# of the repo's version mentions. If a contributor bumps a version stamp
+# without re-running the inventory script (or updates VERSION but forgets
+# to regenerate), CI catches it.
+#
+# Companion scripts:
+#   - scripts/version-inventory.sh  (regen CSV)
+#   - scripts/version-bump.sh       (propagate VERSION + regen CSV)
+
+name: version-drift
+
+on:
+  pull_request:
+    paths:
+      - "VERSION"
+      - "VERSION_INVENTORY.csv"
+      - "scripts/version-inventory.sh"
+      - "scripts/version-bump.sh"
+      - "Dockerfile"
+      - "pyproject.toml"
+      - "CITATION.cff"
+      - "r-package/morie/DESCRIPTION"
+      - "r-package/morie/NEWS.md"
+      - "papers/**/*.tex"
+      - "papers/**/*.bib"
+  push:
+    branches:
+      - main
+      - "release/**"
+  workflow_dispatch:
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install ripgrep
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
+
+      - name: Regenerate inventory
+        run: |
+          cp VERSION_INVENTORY.csv VERSION_INVENTORY.csv.committed
+          ./scripts/version-inventory.sh
+
+      - name: Compare against committed copy
+        run: |
+          if ! diff -u VERSION_INVENTORY.csv.committed VERSION_INVENTORY.csv; then
+            echo ""
+            echo "::error::VERSION_INVENTORY.csv is out of date."
+            echo "Run scripts/version-inventory.sh locally and commit the result."
+            exit 1
+          fi
+          echo "Inventory matches committed snapshot."
