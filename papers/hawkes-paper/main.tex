@@ -76,8 +76,12 @@ exposed as MRM modules within the MRM framework
 are fit to the TPS Assault incident series and ranked by AIC and
 time-rescaling goodness-of-fit. For Toronto Assault data, the
 non-Markovian Weibull-kernel $\times$ sinusoidal-baseline model is
-preferred over the Markovian classical Hawkes by $\Delta\mathrm{AIC} > 0$
-and a higher Kolmogorov--Smirnov $p$-value on the residual uniforms.
+preferred over the Markovian classical Hawkes by a decisive AIC
+margin ($\Delta\mathrm{AIC}=141.1$ on the sub-sampled fit;
+Table~\ref{tab:tps-fit}). The Markovian fit is itself not rejected
+by the time-rescaling test on these data --- both models pass at
+the $0.05$ level --- so the case against the classical model rests
+on AIC, not on a KS rejection.
 }
 \Keywords{Hawkes process, self-exciting point process,
 non-Markovian kernel, criminology, Toronto Police Service,
@@ -87,7 +91,7 @@ maximum likelihood estimation, time-rescaling theorem, \proglang{R},
 non-Markovian kernel, criminology, Toronto Police Service,
 maximum likelihood estimation, time-rescaling theorem, R, Python}
 % --- morie version stamp -----------------------------------------------------
-% This paper documents \pkg{morie} v0.9.5 (released 2026-05-18).  Specific
+% This paper documents \pkg{morie} v0.9.5.4 (released 2026-05-22).  Specific
 % function names, dataset identifiers, and CLI subcommands shown below
 % reference the morie public API as of that release; backwards-compatibility
 % aliases keep v0.x code references resolving across the v0.x series.
@@ -419,7 +423,7 @@ lomax          & constant   & 4 & $5\,495.2$ & $0.981$ & $0.860$\\
 \end{table}
 
 \paragraph{Near-criticality bias.}
-The fitted $\hat\eta$ for property crime sits at $0.97$--$0.98$, pressed against the stationarity boundary.  The Filimonov--Sornette 2015 \citep{filimonov2015apparent} small-sample near-criticality bias is a real concern at these values; the time-rescaling residual diagnostics of §\ref{sec:gof} are the more reliable indicator of model adequacy than the point estimate of $\hat\eta$ alone.
+The fitted $\hat\eta$ for the Assault series sits at $0.97$--$0.98$, pressed against the stationarity boundary.  The Filimonov--Sornette 2015 \citep{filimonov2015apparent} small-sample near-criticality bias is a real concern at these values; the time-rescaling residual diagnostics of §\ref{sec:gof} are the more reliable indicator of model adequacy than the point estimate of $\hat\eta$ alone.
 
 \subsection{2019 contiguous-year re-fit (full-sample, compiled core)}\label{sec:application-2019}
 
@@ -445,8 +449,8 @@ classical exponential kernel, constant baseline.  Lomax/sin =
 fat-tailed power-law kernel, sinusoidal baseline.  AIC and
 Kolmogorov--Smirnov $p$-value on the time-rescaling residuals.
 Estimates from \texttt{morie.tps\_hawkes\_advanced.fit\_hawkes\_general}
-(compiled-core likelihood path; full source at
-\code{data/manifest/outputs/paper\_hawkes\_assault\_2019\_contiguous.json}).}
+(compiled-core likelihood path; full source in the cached fit
+manifest).}
 \label{tab:tps-fit-2019}
 \begin{tabular}{llrrrrr}
 \toprule
@@ -531,7 +535,6 @@ all eight (kernel, baseline) combinations and ranks by AIC:
 
 \begin{CodeChunk}
 \begin{CodeInput}
->>> from morie import morie_fetch_tps  # (R-side wrapper; Python uses raw CSV)
 >>> import pandas as pd
 >>> from morie.tps_hawkes_advanced import compare_hawkes_kernels
 >>> tps = pd.read_csv("Assault_Open_Data.csv",
