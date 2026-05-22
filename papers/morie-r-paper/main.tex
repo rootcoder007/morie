@@ -70,7 +70,7 @@ psychometrics, \proglang{R}}
 double machine learning, sociolegal statistics, Hawkes process,
 psychometrics, R}
 % --- morie version stamp -----------------------------------------------------
-% This paper documents \pkg{morie} v0.9.5 (released 2026-05-18).  Specific
+% This paper documents \pkg{morie} v0.9.5.4 (released 2026-05-22).  Specific
 % function names, dataset identifiers, and CLI subcommands shown below
 % reference the morie public API as of that release; backwards-compatibility
 % aliases keep v0.x code references resolving across the v0.x series.
@@ -220,7 +220,7 @@ is a count of placement transitions within the fiscal year.
 
 \begin{Code}
 R> data$D <- as.integer(data$alert_count >= median(data$alert_count))
-R> result <- estimate_irm(
+R> result <- morie_estimate_irm(
 +   data       = data,
 +   treatment  = "D",
 +   outcome    = "placement_transitions",
@@ -245,15 +245,15 @@ Interpretation:
   see DoubleML::DoubleMLIRM at result$doubleml for diagnostics.
 \end{Code}
 
-\noindent The \code{estimate\_irm()} wrapper composes an
+\noindent The \code{morie\_estimate\_irm()} wrapper composes an
 \code{mlr3} regression learner (\code{lrn("regr.lm")}) and a
 classification learner (\code{lrn("classif.log\_reg")}) and passes
 them to \code{DoubleML::DoubleMLIRM}. The returned object is a
-\code{morie\_result} S3 object (described in detail in
-Section~\ref{sec:richresult}; for the motivating example here, it acts
-as both a list and a multi-section pretty-print) that prints a
-multi-section interpretation alongside the point estimate, standard
-error, and confidence interval.
+plain \proglang{R} list with the canonical fields \code{ate},
+\code{se}, \code{ci\_lower}, \code{ci\_upper}, \code{n}, and
+\code{method}; the full \pkg{DoubleML} object is preserved under
+\code{result\$doubleml} for users who want the sample splits,
+psi-score arrays, or bootstrap distribution.
 
 \section{Module taxonomy}
 \label{sec:taxonomy}
@@ -264,19 +264,19 @@ into eight thematic groups.
 \subsection{Causal inference}
 
 The causal-inference group provides the average-treatment-effect
-estimator family: \code{estimate\_att()}, \code{estimate\_atc()},
-\code{estimate\_aipw()}, \code{estimate\_cate()},
-\code{estimate\_gate()}, \code{estimate\_late()},
-\code{estimate\_irm()}, and \code{estimate\_plr()}. The first four
-are independently implemented in pure \proglang{R} using the
-identifying assumptions described in \citet{Ruhela2026MRM}; the
-latter four wrap \pkg{DoubleML} as detailed in
-Section~\ref{sec:wrapper}.
+estimator family: \code{morie\_estimate\_att()},
+\code{morie\_estimate\_atc()}, \code{morie\_estimate\_aipw()},
+\code{morie\_estimate\_cate()}, \code{morie\_estimate\_gate()},
+\code{morie\_estimate\_late()}, and \code{morie\_estimate\_irm()}.
+The first four are independently implemented in pure \proglang{R}
+using the identifying assumptions described in
+\citet{Ruhela2026MRM}; the latter three wrap \pkg{DoubleML} as
+detailed in Section~\ref{sec:wrapper}.
 
 \subsection{Survey sampling and weights}
 
-The survey group provides \code{calculate\_ipw\_weights()},
-\code{calculate\_ebac()} (the Widmark blood-alcohol-content
+The survey group provides \code{morie\_calculate\_ipw\_weights()},
+\code{morie\_calculate\_ebac()} (the Widmark blood-alcohol-content
 estimator used by Health Canada survey instruments), and wrappers
 for \pkg{survey} that expose design-based standard errors under
 stratified and cluster sampling.
@@ -285,10 +285,11 @@ stratified and cluster sampling.
 
 The signal-processing group provides \code{buttlp()},
 \code{butthp()}, \code{buttbp()}, \code{buttbs()} (Butterworth
-filters); \code{sgolay\_smooth()} (Savitzky--Golay smoothing);
-\code{hurst\_r()} (Hurst exponent by R/S analysis);
-\code{hfd()} (Higuchi fractal dimension); and \code{pcg\_filter()}
-(phonocardiogram band-pass).
+filters; retained as short legacy aliases);
+\code{morie\_sgolay\_smooth()} (Savitzky--Golay smoothing);
+\code{morie\_hurst\_r()} (Hurst exponent by R/S analysis);
+\code{hfd()} (Higuchi fractal dimension; legacy alias); and
+\code{morie\_pcg\_filter()} (phonocardiogram band-pass).
 
 \subsection{Spatial statistics}
 
@@ -311,28 +312,30 @@ estimator \citep{Mohler2011, Ruhela2026Hawkes}.
 \subsection{Psychometrics}
 
 Psychometric classical-test-theory and item-response-theory
-estimators are on the v0.7 roadmap and are not yet exported in the
-current release; \code{omega\_squared()} (effect-size measure) is the
-only exported psychometric helper at present.
+estimators are planned for a future release; effect-size measures
+ship in the current release as \code{morie\_omega\_squared()},
+\code{morie\_cohens\_d()}, \code{morie\_hedges\_g()}, and
+\code{morie\_eta\_squared()}, together with the spatial IRT
+estimator \code{morie\_irt\_spatial()}.
 
 \subsection{Cryptography}
 
-A cryptography subset covering ML-KEM, ML-DSA, NTRU, and hybrid
-post-quantum primitives is on the v0.7 roadmap; the intent is
-educational reference implementations only, not production-audited
-primitives. Current development status is documented in
-\texttt{ROADMAP.md}.
+A cryptography subset covering ML-KEM, ML-DSA, NTRU, McEliece,
+elliptic-curve and hybrid post-quantum primitives is planned for
+a future release; the intent is educational reference
+implementations only, not production-audited primitives.
 
 \subsection{Investigation utilities}
 
 The investigation-utility group provides
-\code{compare\_nested\_logistic\_models()} (likelihood-ratio test
-across nested specifications),
-\code{run\_treatment\_effects\_analysis()} (end-to-end
+\code{morie\_compare\_nested\_logistic\_models()} (likelihood-ratio
+test across nested specifications),
+\code{morie\_run\_treatment\_effects\_analysis()} (end-to-end
 ATE/ATT/CATE/GATE estimation pipeline),
-\code{run\_weighted\_logistic\_analysis()} (survey-aware logistic
-regression via \pkg{survey}), and \code{inspect\_output()}
-(audit-trail inspection of result objects).
+\code{morie\_run\_weighted\_logistic\_analysis()} (survey-aware
+logistic regression via \pkg{survey}), and
+\code{morie\_inspect\_output()} (audit-trail inspection of result
+objects).
 
 \section{The MRM modules}
 \label{sec:mrm}
@@ -344,8 +347,9 @@ prefixed function: \code{morie\_load\_dataset()} (OTIS catalog
 entries), \code{morie\_fetch\_siu()} (SIU scraper),
 \code{morie\_fetch\_tps()} (TPS event loader),
 \code{mrm\_classify\_mandela()} (Mandela Rules classifier),
-base \proglang{R}'s \code{chisq.test()} (aggregate $\chi^2$;
-a thin MRM convenience wrapper is on the v0.7 roadmap), and
+\code{morie\_chi\_square\_test()} for the MRM $\chi^2$ family
+(renamed in v0.9.5.4 from the earlier ``Doob $\chi^2$ family''),
+\code{mrm\_anova\_oneway()} for one-way ANOVA, and
 \code{mrm\_tps\_load\_hawkes\_refit()} (Hawkes parameter manifest). The functions handle source-specific
 schema reconciliation through the canonical fiscal-quarter index
 of \citet{Ruhela2026MRM} and emit data objects that the
@@ -355,43 +359,37 @@ directly.
 \section{Functional and object-oriented APIs}
 \label{sec:api}
 
-\pkg{morie} exposes both a functional API (the
-\code{morie::estimate\_*} family of free functions) and an
-object-oriented API (an \code{R6} \code{MorieFit} class that
-internally orchestrates estimator selection, nuisance estimation,
-and result reporting). The functional API is the canonical entry
-point for one-shot analyses; the object-oriented API is provided
-for composable pipelines that benefit from inspection of
-intermediate state.
+\pkg{morie}'s public API is functional: each
+\code{morie\_estimate\_*} call takes a data frame and column-name
+arguments and returns a plain \proglang{R} list. The
+class machinery sits on the \pkg{DoubleML} side and is reachable
+through the \code{result\$doubleml} handle for users who want
+sample-split objects, psi-score arrays, or bootstrap
+distributions.
 
-\subsection[The morie result return type]{The \code{morie\_result} return type}\label{sec:richresult}
+\subsection[Return-type conventions]{Return-type conventions}\label{sec:richresult}
 
-Every estimator in \pkg{morie} returns a \code{morie\_result} S3
-object, an R list with class attribute \code{"morie\_result"} that
-populates itself with the canonical result fields
-(\code{estimate}, \code{se}, \code{ci\_lower}, \code{ci\_upper},
-\code{p\_value}, \code{n}, \code{n\_treated},
-\code{interpretation}).  The S3 dispatch pattern provides two
-simultaneous use modes: a returned \code{morie\_result} satisfies
-\code{is.list(result)} (so results can be passed to any
-list-consuming downstream code), and \code{result\$estimate}
-returns the typed point estimate (so users index by name when
-appropriate).  The multi-section pretty-printer
-\code{print.morie\_result} renders the result as a panel of
-labelled fields when called interactively; when used
-programmatically, the result behaves as an ordinary named list.
-This mirrors exactly the \code{RichResult} dataclass in the
-\proglang{Python} sibling \citep{Ruhela2026MoriePy}, so a
-researcher who learns one side of the package has acquired the
-other side's idiom for free.
+Every estimator in \pkg{morie} returns a plain \proglang{R}
+named list. The canonical fields are estimator-specific --- for
+example, \code{morie\_estimate\_irm()} returns \code{ate},
+\code{se}, \code{ci\_lower}, \code{ci\_upper}, \code{n}, and
+\code{method}. The only S3 print method currently shipped is
+\code{print.morie\_hawkes\_fit} for Hawkes fits; other estimators
+print via the default named-list dispatch. The cross-language
+story is parity of field names and unit conventions, not parity of
+a class hierarchy: the \proglang{Python} sibling's
+\code{RichResult} dataclass \citep{Ruhela2026MoriePy} carries the
+same canonical fields under the same names. A multi-section S3
+print method that mirrors the \proglang{Python} side's narrative
+output is planned for a future release.
 
 \subsection[describe()]{\code{describe()}}\label{sec:describe}
 
 Every callable in \pkg{morie} that returns a \code{morie\_result}
 has a paired \code{describe\_<callable>.md} pedagogical narrative
 shipped in \code{inst/extdata/describe/}.  On the Python side \code{morie.describe()} loads and prints the
-relevant narrative; the R equivalent is currently planned for v0.7
-and not yet exported. Future usage will follow this pattern:
+relevant narrative; the R equivalent is not yet exported. Future
+usage will follow this pattern:
 
 \begin{Code}
 R> morie_describe(morie::estimate_irm)
@@ -466,16 +464,16 @@ R> df  <- morie_load_dataset("OTIS_A01_RCDD")
 R> df  <- subset(df, EndFiscalYear %in% 2023:2025)
 R> df$D <- as.integer(df$alert_count >= median(df$alert_count))
 R> covs <- c("age_band", "gender", "regional_cluster")
-R> res_ipw  <- estimate_ate (df, treatment="D",
-+                              outcome="placement_transitions",
-+                              covariates=covs)
-R> res_aipw <- estimate_aipw(df, treatment="D",
-+                              outcome="placement_transitions",
-+                              covariates=covs,
-+                              outcome_model="logistic")
-R> res_irm  <- estimate_irm (df, treatment="D",
-+                              outcome="placement_transitions",
-+                              covariates=covs, n_folds = 5L)
+R> res_ipw  <- morie_estimate_ate (df, treatment="D",
++                                     outcome="placement_transitions",
++                                     covariates=covs)
+R> res_aipw <- morie_estimate_aipw(df, treatment="D",
++                                     outcome="placement_transitions",
++                                     covariates=covs,
++                                     outcome_model="logistic")
+R> res_irm  <- morie_estimate_irm (df, treatment="D",
++                                     outcome="placement_transitions",
++                                     covariates=covs, n_folds = 5L)
 R> data.frame(
 +    estimator = c("IPW", "AIPW", "IRM-DML"),
 +    estimate  = c(res_ipw$estimate, res_aipw$estimate, res_irm$estimate),
@@ -491,14 +489,16 @@ R> data.frame(
 
 The three estimators agree to within $\pm 0.015$.
 
-\subsection{Example 2: replication of the Sprott--Doob chi-squared record}
+\subsection{Example 2: replication of the MRM chi-square record from Sprott--Doob}
 
 The second example replicates the published $\chi^{2}$ statistics
 from \citet{SprottDoob2021} on the federal $\SIU$ aggregate
-record. \pkg{morie} does not yet ship a dedicated
-\code{mrm\_chi2\_doob()} wrapper; base \proglang{R}'s
-\code{chisq.test()} reproduces every published statistic to
-within $0.01$:
+record. The family was renamed from ``Doob chi-square'' to
+``MRM chi-square'' in v0.9.5.4; the Sprott--Doob author citation
+that introduced these federal records is preserved. \pkg{morie}
+exposes the family as \code{morie\_chi\_square\_test()}, and base
+\proglang{R}'s \code{chisq.test()} reproduces every published
+statistic to within $0.01$:
 
 \begin{Code}
 R> table3 <- matrix(c(196, 87, 1432, 754),
@@ -669,7 +669,7 @@ suite run offline.
 
 \paragraph{Animated demo.}  A user can confirm the package is actually doing work, in the
 same way DoubleML's console output does, by installing the R sibling and calling
-\code{run\_treatment\_effects\_analysis()} with \code{verbose = TRUE}.
+\code{morie\_run\_treatment\_effects\_analysis()} with \code{verbose = TRUE}.
 Per-step progress prints to the console via the \pkg{cli} package; the Python sibling provides an
 equivalent animated demo via \code{python -m morie.demo}.
 
@@ -710,49 +710,49 @@ canonical reference textbook, and one representative
 \toprule
 Suite & $n$ & Reference & Representative wrapper \\
 \midrule
-\code{schabenberger} & 20 & \citet{SchabenbergerGotway2005} & \code{spatial\_autocorrelation()} \\
-\code{kosorok} & 20 & \citet{Kosorok2008} & \code{kosorok\_empirical\_process()} \\
-\code{ml\_foundations} & 20 & \citet{MohriRostamizadehTalwalkar2018,HastieTibshiraniFriedman2009} & \code{linear\_regression\_ols()} \\
-\code{ghosal} & 20 & \citet{GhosalVanDerVaart2017} & \code{ghosal\_dirichlet\_posterior()} \\
-\code{horowitz} & 20 & \citet{Horowitz2009} & \code{horowitz\_kernel\_regression()} \\
-\code{montesinos} & 20 & \citet{MontesinosLopez2022} & \code{gblup\_full()} \\
-\code{armstrong} & 20 & \citet{Armstrong2014SpatialVoting} & \code{ideal\_point\_recovery()} \\
-\code{deep\_learning} & 20 & \citet{GoodfellowBengioCourville2016} & \code{forward\_pass\_dense()} \\
-\code{missing\_stats} & 20 & QMC / copulas / EVT & \code{bootstrap\_ci()} \\
-\code{llm\_arch} & 20 & \citet{Vaswani2017Attention,Dao2022FlashAttention,Su2021RoPE,ZhangSennrich2019RMSNorm} & \code{bpe\_tokenizer()} \\
-\code{fauzi} & 15 & \citet{Fauzi2018Kernel} & \code{fauzi\_kdfe\_properties()} \\
-\code{gibbons\_chakraborti} & 20 & \citet{GibbonsChakraborti2014} & \code{tolerance\_limits()} \\
-\code{rangayyan} & 20 & \citet{Rangayyan2015} & \code{rangayyan\_fir\_filter()} \\
-\code{time\_series\_advanced} & 20 & \citet{HyndmanAthanasopoulos2018,Tsay2010FinancialTimeSeries} & \code{garch\_fit()} \\
+\code{schabenberger} & 20 & \citet{SchabenbergerGotway2005} & \code{sptau()} / \code{morie\_spatial\_autocorrelation()} \\
+\code{kosorok} & 20 & \citet{Kosorok2008} & \code{morie\_kosorok\_empirical\_process()} \\
+\code{ml\_foundations} & 20 & \citet{MohriRostamizadehTalwalkar2018,HastieTibshiraniFriedman2009} & \code{morie\_linear\_regression\_ols()} \\
+\code{ghosal} & 20 & \citet{GhosalVanDerVaart2017} & \code{morie\_ghosal\_dirichlet\_posterior()} \\
+\code{horowitz} & 20 & \citet{Horowitz2009} & \code{morie\_horowitz\_kernel\_regression()} \\
+\code{montesinos} & 20 & \citet{MontesinosLopez2022} & \code{morie\_gblup\_full()} \\
+\code{armstrong} & 20 & \citet{Armstrong2014SpatialVoting} & \code{morie\_ideal\_point\_recovery()} \\
+\code{deep\_learning} & 20 & \citet{GoodfellowBengioCourville2016} & \code{morie\_forward\_pass\_dense()} \\
+\code{missing\_stats} & 20 & QMC / copulas / EVT & \code{morie\_bootstrap\_ci()} \\
+\code{llm\_arch} & 20 & \citet{Vaswani2017Attention,Dao2022FlashAttention,Su2021RoPE,ZhangSennrich2019RMSNorm} & \code{morie\_bpe\_tokenizer()} \\
+\code{fauzi} & 15 & \citet{Fauzi2018Kernel} & \code{morie\_fauzi\_kdfe\_properties()} \\
+\code{gibbons\_chakraborti} & 20 & \citet{GibbonsChakraborti2014} & \code{morie\_tolerance\_limits()} \\
+\code{rangayyan} & 20 & \citet{Rangayyan2015} & \code{morie\_rangayyan\_fir\_filter()} \\
+\code{time\_series\_advanced} & 20 & \citet{HyndmanAthanasopoulos2018,Tsay2010FinancialTimeSeries} & \code{morie\_garch\_fit()} \\
 \bottomrule
 \end{tabular}
 \caption{The fourteen textbook-derived suites in \code{morie.fn}.
 Total: 275 callables, all with \proglang{R}+\proglang{Python}
-parity verified at v0.3.0.  The \code{missing\_stats} label
+parity verified at v0.9.5.4.  The \code{missing\_stats} label
 is a historical artefact: the spec covers resampling,
 quasi-Monte-Carlo, copula, and extreme-value-theory material,
 not missing-data methods proper; a true missing-data spec is
-deferred to v0.3.x.}
+on the open tracker.}
 \label{tab:textbook-suites}
 \end{table}
 
 \subsection{Naming convention}\label{sec:textbook-naming}
 
 Each suite occupies a four-to-seven-character mnemonic
-namespace.  On the \proglang{R} side every callable is exported
-under \emph{both} its compact mnemonic and its full descriptive
-name: in the \code{schabenberger} suite, for instance, both
-\code{sptau()} and \code{spatial\_autocorrelation()} resolve to
-the same function, because the full-name binding is created by
-\code{spatial\_autocorrelation <- sptau}.  The mnemonic matches
-the spec \code{name} field of the originating formula-index JSON
-and the descriptive binding matches the \code{full\_name} field,
-so a user can locate the originating specification and the
-cross-language sibling without guessing.  The \proglang{Python} sibling uses the longer form
+namespace. On the \proglang{R} side every callable is exported
+under \emph{both} its compact mnemonic and its \code{morie\_*}-
+prefixed long form: in the \code{schabenberger} suite, for
+instance, both \code{sptau()} and
+\code{morie\_spatial\_autocorrelation()} resolve to the same
+function. The mnemonic matches the spec \code{name} field of the
+originating formula-index JSON and the prefixed long form matches
+the \code{full\_name} field (with a \code{morie\_} prefix added
+by the v0.9.5 mass-rename), so a user can locate the originating
+specification and the cross-language sibling without guessing.  The \proglang{Python} sibling uses the longer form
 \code{morie.fn.<short>.<full\_name>(\ldots)} as documented in
 \citet{Ruhela2026MoriePy}.
 
-\subsection{Caveats and v0.3.x deferrals}\label{sec:textbook-caveats}
+\subsection{Caveats and open deferrals}\label{sec:textbook-caveats}
 
 Numerical agreement between the \proglang{R} and \proglang{Python}
 sides is bit-identical for deterministic callables: the
@@ -764,12 +764,12 @@ and gradient-boosting ensembles, MCMC posteriors in
 \code{ghosal}, the Bayesian-inference paths in
 \code{time\_series\_advanced}), agreement is within Monte-Carlo
 tolerance under matched random-number seeds.  The
-\proglang{R} smoke suite confirms that all 319 \proglang{R}
+\proglang{R} smoke suite confirms that all 331 \proglang{R}
 files in the source tree source cleanly under base \proglang{R}
 with only the declared \code{Suggests:} optional packages
 installed; the \proglang{Python} smoke runs the \code{\_\_main\_\_}
 canonical-test block in every shipped module.  Three honest
-deferrals carry over from the v0.3.x tracker: an opt-in
+deferrals carry over in the open tracker: an opt-in
 deterministic mode for the stochastic callables, a true
 missing-data suite to replace the misnamed \code{missing\_stats}
 spec, and a tighter cross-language MLE-tolerance pin for the
@@ -784,16 +784,19 @@ a family of callables for \emph{auditing} risk-assessment and
 predictive-policing systems for group disparity --- the package
 measures whether such a system encodes disparate treatment; it does
 not build one.  Six group-fairness metrics are exposed:
-\code{fairness\_disparate\_impact} (the EEOC four-fifths rule),
-\code{fairness\_demographic\_parity}, \code{fairness\_equalized\_odds},
-\code{fairness\_average\_odds\_difference}, \code{fairness\_gini}, and
-the composite \code{fairness\_bias\_amplification} after
+\code{morie\_fairness\_disparate\_impact} (the EEOC four-fifths
+rule), \code{morie\_fairness\_demographic\_parity},
+\code{morie\_fairness\_equalized\_odds},
+\code{morie\_fairness\_average\_odds\_difference},
+\code{morie\_fairness\_gini}, and the composite
+\code{morie\_fairness\_bias\_amplification} after
 \citet{Barman2026PredictivePolicingBias}.  The
-\code{predpol\_calibration\_audit} callable generalises the Strategic
-Subjects List district analysis of \citet{Lacherade2021PredPolChicago}:
-it ranks areas by predicted risk against their realised outcome rate
-and tests whether the rank disagreement tracks demographic
-composition, while \code{predpol\_temporal\_audit} extends the audit
+\code{morie\_predpol\_calibration\_audit} callable generalises
+the Strategic Subjects List district analysis of
+\citet{Lacherade2021PredPolChicago}: it ranks areas by predicted
+risk against their realised outcome rate and tests whether the
+rank disagreement tracks demographic composition, while
+\code{morie\_predpol\_temporal\_audit} extends the audit
 across time and cities.  Each callable returns the same structured
 result object as the rest of the package, and all carry runnable
 examples.  A model-agnostic explainability layer --- permutation
