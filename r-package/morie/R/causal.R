@@ -100,8 +100,12 @@ morie_estimate_ate <- function(data, treatment, outcome, covariates,
   w <- t / ps + (1 - t) / (1 - ps)
   ate <- .hajek_diff(y[t == 1], w[t == 1], y[t == 0], w[t == 0])
   # Standard IPW influence-function SE (Hernan-Robins, "What If" Ch 12.6):
-  # psi_i = t*y/ps - (1-t)*y/(1-ps) - ATE. The previous form
-  # sd(w*(t-ps)*y) was non-standard and biased.
+  # psi_i = t*y/ps - (1-t)*y/(1-ps) - ATE. Divides by sqrt(total n).
+  # NB: This is the "known propensity score" form. When ps is estimated
+  # (the default path via morie_estimate_propensity_scores), this SE is
+  # conservative — it ignores the PS-estimation step and slightly
+  # over-estimates variance. Standard for IPW packages; bootstrap or
+  # `WeightIt`/`survey` for the efficient sandwich correction.
   if_vec <- t * y / ps - (1 - t) * y / (1 - ps) - ate
   se <- stats::sd(if_vec) / sqrt(length(y))
   ci <- .wald_ci(ate, se)
@@ -148,10 +152,11 @@ morie_estimate_att <- function(data, treatment, outcome, covariates,
 
   n1 <- sum(t == 1)
   n <- length(y)
-  # Influence-function SE for IPW-ATT (Imbens & Wooldridge 2009 §5.5):
-  # psi_i = [t_i * Y_i - (1-t_i) * Y_i * ps_i/(1-ps_i)] / E[t] - t_i * ATT / E[t]
-  # The earlier var(w_ctrl*y[t==0]) form ignored the Hajek normalization
-  # and the t==1 contribution.
+  # Influence-function SE for IPW-ATT (Imbens & Wooldridge 2009 §5.5).
+  # psi_i = [t*Y - (1-t)*Y*ps/(1-ps)] / E[t] - t*ATT / E[t].
+  # Divides by sqrt(total n), not sqrt(n_treated).
+  # NB: "known propensity score" form; conservative when ps is estimated
+  # (slightly over-estimates variance). See morie_estimate_ate notes.
   p_t <- mean(t)
   if_vec <- (t * y - (1 - t) * y * w_ctrl) / p_t - t * att / p_t
   se <- stats::sd(if_vec) / sqrt(n)
@@ -194,9 +199,10 @@ morie_estimate_atc <- function(data, treatment, outcome, covariates,
 
   n0 <- sum(t == 0)
   n <- length(y)
-  # Influence-function SE for IPW-ATC (mirror of ATT, swapping roles):
-  # psi_i = [t_i * Y_i * (1-ps_i)/ps_i - (1-t_i) * Y_i] / E[1-t] -
-  #         (1-t_i) * ATC / E[1-t]
+  # Influence-function SE for IPW-ATC (mirror of ATT, swapping roles).
+  # psi_i = [t*Y*(1-ps)/ps - (1-t)*Y] / E[1-t] - (1-t)*ATC / E[1-t].
+  # Divides by sqrt(total n), not sqrt(n_control).
+  # NB: "known propensity score" form; conservative when ps is estimated.
   p_c <- mean(1 - t)
   if_vec <- (t * y * w_trt - (1 - t) * y) / p_c - (1 - t) * atc / p_c
   se <- stats::sd(if_vec) / sqrt(n)
