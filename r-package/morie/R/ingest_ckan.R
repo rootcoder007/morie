@@ -27,15 +27,10 @@
 .MORIE_CKAN_DEFAULT_UA <- "morie/r (+https://hadesllm.com)"
 .MORIE_CKAN_DEFAULT_TIMEOUT <- 30
 
-# Internal: normalise a portal base URL by stripping any trailing "/".
-.morie_ckan_portal <- function(portal) {
-  if (!is.character(portal) || length(portal) != 1L || !nzchar(portal)) {
-    stop("`portal` must be a single non-empty CKAN base URL.",
-      call. = FALSE
-    )
-  }
-  sub("/+$", "", portal)
-}
+# NOTE: canonical .morie_ckan_portal lives in data_access.R; that one
+# resolves short names ("open.canada.ca" -> "https://open.canada.ca/data/en")
+# and errors on unknown short names. Don't redefine it here — the
+# alphabetical load order would clobber the resolver and tests would fail.
 
 # Internal: build an authenticated httr2 request for one Action verb.
 .morie_ckan_build_req <- function(portal,

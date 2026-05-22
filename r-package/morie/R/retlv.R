@@ -46,7 +46,7 @@ retlv <- function(x, return_period = 100) {
 }
 
 # small null-coalesce helper local to this file
-`%||%` <- function(a, b) if (is.null(a) || length(a) == 0) b else a
+`%||%` <- function(a, b) if (is.null(a)) b else a
 
 # CANONICAL TEST
 # set.seed(0); x <- evd::rgumbel(500, loc = 10, scale = 2)

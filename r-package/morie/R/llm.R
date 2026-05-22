@@ -21,7 +21,7 @@ DEFAULT_OPENAI_MODEL    <- "gpt-4o-mini"
 OPENAI_BASE_URL <- "https://api.openai.com"
 GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 
-`%||%` <- function(a, b) if (is.null(a) || identical(a, "")) b else a
+`%||%` <- function(a, b) if (is.null(a)) b else a
 
 .morie_llm_env <- function(name, default = "") {
   v <- trimws(Sys.getenv(name, unset = ""))

@@ -14,7 +14,7 @@
 #   - VERTEX_MODEL    (optional) -- default gemini-2.5-flash
 
 if (!exists("%||%", mode = "function")) {
-  `%||%` <- function(a, b) if (is.null(a) || identical(a, "")) b else a
+  `%||%` <- function(a, b) if (is.null(a)) b else a
 }
 
 #' Resolve Vertex AI configuration from environment variables

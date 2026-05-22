@@ -81,7 +81,7 @@ NULL
   out
 }
 
-`%||%` <- function(a, b) if (is.null(a) || length(a) == 0L) b else a
+`%||%` <- function(a, b) if (is.null(a)) b else a
 
 
 .lan_gp_placeholder_W <- function(crime_arr, k = 4L) {

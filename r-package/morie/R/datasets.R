@@ -559,7 +559,7 @@ morie_datasets_ckan_package <- function(portal, package_id) {
 # Null-coalescing helper (avoids dep on rlang).
 #' @keywords internal
 #' @noRd
-`%||%` <- function(a, b) if (is.null(a) || (length(a) == 1L && is.na(a))) b else a
+`%||%` <- function(a, b) if (is.null(a)) b else a
 
 # ---------------------------------------------------------------------------
 # US forensics endpoints -- NIBRS, NamUs, NIST RDS
