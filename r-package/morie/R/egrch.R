@@ -17,9 +17,21 @@
   for (t in 2:n) {
     z <- r[t - 1] / sqrt(exp(log_s2[t - 1]) + 1e-12)
     log_s2[t] <- omega + beta * log_s2[t - 1] + alpha * (abs(z) - EZ) + gamma * z
+    # Bound log-variance so exp(log_s2) cannot overflow during nlminb's
+    # gradient probing. Without this, the optimiser occasionally lands in
+    # regions where s2 = Inf / 0 and the loglik becomes NA/NaN, producing
+    # noisy "NA/NaN function evaluation" warnings (correct result, harmless
+    # warning). Bounds chosen so exp(log_s2) stays in [1e-30, 1e30] — far
+    # wider than any realistic variance.
+    if (!is.finite(log_s2[t])) log_s2[t] <- log_s2[t - 1]
+    log_s2[t] <- max(-70, min(70, log_s2[t]))
   }
   s2 <- exp(log_s2)
-  0.5 * sum(log(2 * pi * s2) + r^2 / s2)
+  res <- 0.5 * sum(log(2 * pi * s2) + r^2 / s2)
+  if (!is.finite(res)) {
+    return(1e10)
+  }
+  res
 }
 
 #' EGARCH(1,1) asymmetric volatility model
