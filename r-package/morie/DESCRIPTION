@@ -123,6 +123,7 @@ Collate:
   'antth.R'
   'archm.R'
   'arsau.R'
+  'audit_variables.R'
   'attnq.R'
   'bglup.R'
   'bkprp.R'
