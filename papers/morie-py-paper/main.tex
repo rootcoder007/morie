@@ -61,11 +61,13 @@ distribution. This paper describes the \proglang{Python}
 implementation, the wrapper API around \pkg{DoubleML}, the
 \pkg{RichResult} return-type design, and three reproducible
 examples on the open Ontario, federal, and Toronto Police Service
-records that the MRM framework integrates.  Version~0.9.5 ships
-275 textbook-derived callables in \code{morie.fn} across
-fourteen suites with full \proglang{R} parity, and adopts a
-licensing model under which the \proglang{Python} and
-\proglang{R} packages are both \code{AGPL-3.0-or-later}.
+records that the MRM framework integrates.  Version~0.9.5.4
+ships a lazily-loaded catalogue of textbook-derived callables in
+\code{morie.fn} (organised into fourteen thematic suites under
+the canonical reference texts of Section~\ref{sec:textbook-callables})
+with \proglang{R} parity verified by an automated cross-language
+test suite, and is released under \code{AGPL-3.0-or-later}
+matching the \proglang{R} companion package.
 }
 \Keywords{causal inference, observational inference,
 double machine learning, sociolegal statistics, Hawkes process,
@@ -74,7 +76,7 @@ psychometrics, \proglang{Python}}
 double machine learning, sociolegal statistics, Hawkes process,
 psychometrics, Python}
 % --- morie version stamp -----------------------------------------------------
-% This paper documents \pkg{morie} v0.9.5 (released 2026-05-18).  Specific
+% This paper documents \pkg{morie} v0.9.5.4 (released 2026-05-22).  Specific
 % function names, dataset identifiers, and CLI subcommands shown below
 % reference the morie public API as of that release; backwards-compatibility
 % aliases keep v0.x code references resolving across the v0.x series.
@@ -281,29 +283,30 @@ estimator family:
 \code{morie.causal.estimate\_att}, \code{estimate\_atc},
 \code{estimate\_aipw}, \code{estimate\_cate},
 \code{estimate\_gate}, \code{estimate\_late},
-\code{estimate\_irm}, and \code{estimate\_plr}. The first four
+\code{estimate\_irm}, and the PLR-style entry
+\code{estimate\_double\_ml}. The first four
 are implemented in pure \proglang{Python} using the identifying
 assumptions described in \citet{Ruhela2026MRM}; the latter four
 wrap \pkg{DoubleML} as detailed in Section~\ref{sec:wrapper}.
 
-\subsection{morie.weights}
+\subsection{Weighting helpers}
 
-The weights submodule provides
-\code{morie.weights.calculate\_ipw\_weights} (the propensity-score
-weighting routine with stabilisation and trimming),
-\code{morie.weights.calculate\_ebac} (the Widmark
+The weighting helpers live alongside the causal estimators:
+\code{morie.causal.calculate\_ipw\_weights} (the propensity-score
+weighting routine with stabilisation and trimming) and
+\code{morie.ebac.calculate\_ebac} (the Widmark
 blood-alcohol-content estimator used by Health Canada survey
-instruments), and helpers for design-based variance estimation
-via \pkg{statsmodels}.
+instruments), together with helpers for design-based variance
+estimation via \pkg{statsmodels}.
 
 \subsection{morie.signal}
 
 The signal submodule provides Butterworth filter primitives
 (\code{buttlp}, \code{butthp}, \code{buttbp}, \code{buttbs}),
-Savitzky--Golay smoothing (\code{sgolay\_smooth}), Hurst-exponent
-estimation by R/S analysis (\code{hurst\_r}), Higuchi fractal
+Savitzky--Golay smoothing (\code{sgolay}), Hurst-exponent
+estimation by R/S analysis (\code{hurst}), Higuchi fractal
 dimension (\code{hfd}), and a phonocardiogram band-pass filter
-(\code{pcg\_filter}).
+(\code{pcgflt}).
 
 \subsection[morie.tps spatial]{morie.tps\_spatial / morie.tps\_spatial\_advanced}
 
@@ -312,29 +315,41 @@ spatial autocorrelation estimators, kernel density estimators,
 and the Ripley-$K$ wrapper used by the MRM spatio-temporal
 modules.
 
-\subsection[morie.tps stochastic]{morie.tps\_stochastic}
+\subsection[morie.tps stochastic and statphysics]{morie.tps\_stochastic and morie.tps\_statphysics}
 
-This submodule provides Hawkes process maximum-likelihood
-estimation (\code{morie.tps\_stochastic.hawkes\_temporal\_fit} and the full non-Markovian \code{morie.tps\_hawkes\_advanced.fit\_hawkes\_general}; exponential
-Weibull and Lomax kernels under both constant and sinusoidal baselines), reaction--diffusion intensity-field
-estimation, L\'evy-flight displacement modelling, and
-Lotka--Volterra police--crime dynamics
+The stochastic submodule \code{morie.tps\_stochastic} provides
+the Markovian Hawkes baseline
+(\code{hawkes\_temporal\_fit}); the full non-Markovian Hawkes
+machinery lives in \code{morie.tps\_hawkes\_advanced}
+(\code{fit\_hawkes\_general}; exponential, gamma, Weibull, and
+Lomax kernels under both constant and sinusoidal baselines).
+Reaction--diffusion intensity-field estimation, L\'evy-flight
+displacement modelling, urban scaling, and Lotka--Volterra
+police--crime dynamics live in \code{morie.tps\_statphysics}
 \citep{Mohler2011, Ruhela2026Hawkes}.
 
 \subsection{morie.psymet}
 
-The psychometrics submodule \code{morie.psymet} provides classical-test-theory
-estimators (\code{cronbach\_alpha}, \code{mcdonald\_omega},
-\code{kuder\_richardson}) and item-response-theory estimators
-(1PL, 2PL, 3PL Rasch family).
+The psychometrics submodule \code{morie.psymet} provides
+classical-test-theory estimators under short mnemonic names:
+\code{crba} (Cronbach's $\alpha$ with Feldt confidence interval),
+\code{mcdo} (McDonald's $\omega$), \code{kmo} (Kaiser--Meyer--Olkin
+sampling adequacy), \code{bart} (Bartlett's sphericity), and
+\code{paran} (Horn parallel analysis). The mnemonics match the
+v0.9.5 short-form convention catalogued in
+Section~\ref{sec:textbook-callables}.
 
-\subsection{morie.crypto (forthcoming)}
+\subsection{morie.crypto}
 
-A cryptography submodule covering ML-KEM, ML-DSA, NTRU, and
-hybrid post-quantum primitives is on the v0.7 roadmap; the
-intent is educational reference implementations only, not
-production-audited primitives. Current development status is
-documented in the package's \texttt{ROADMAP.md}.
+The cryptography submodule ships ML-KEM, ML-DSA (Dilithium),
+NTRU, McEliece, elliptic-curve, ChaCha-Poly, and hybrid
+post-quantum primitives in \code{src/morie/crypto/}, together
+with a key-derivation helper, a polynomial-ring layer for
+lattice schemes, a hash-signature wrapper, and a small
+keystore. The intent is educational reference implementations
+only, not production-audited primitives; the module's docstring
+states this explicitly and refuses to expose primitives by
+default unless an opt-in flag is set.
 
 \subsection{morie.investigation}
 
@@ -624,7 +639,10 @@ library would introduce more weight than logic, the suite uses
 \code{numpy} primitives (or base \proglang{R} matrix
 primitives on the sibling side) directly.  All 275 callables
 were verified for \proglang{Python} + \proglang{R} parity at the
-v0.3.0 release (see the package \code{NEWS} file).
+v0.9.5.4 release (see the package \code{NEWS} file); the
+catalogue has since grown well past the v0.3.0 snapshot of 275
+callables, with the lazy-loader registry tracking the current
+entry list.
 
 The fourteen suites are enumerated in
 Table~\ref{tab:textbook-suites}, with the short submodule
@@ -656,12 +674,15 @@ Suite & $n$ & Reference & Representative call \\
 \bottomrule
 \end{tabular}
 \caption{The fourteen textbook-derived suites in \code{morie.fn}.
-Total: 275 callables, all with \proglang{Python}+\proglang{R}
-parity verified at v0.3.0.  The \code{missing\_stats} label
-is a historical artefact: the spec covers resampling,
+Counts reflect the v0.3.0 snapshot (275 callables across the
+fourteen suites); the lazy-loader registry has since added
+entries which are documented in the package \code{NEWS}.  All
+shipped callables carry \proglang{Python}+\proglang{R} parity
+verified at v0.9.5.4.  The \code{missing\_stats} label is a
+historical artefact: the spec covers resampling,
 quasi-Monte-Carlo, copula, and extreme-value-theory material,
-not missing-data methods proper; a true missing-data spec is
-deferred to v0.3.x.}
+not missing-data methods proper; a true missing-data spec is on
+the open tracker.}
 \label{tab:textbook-suites}
 \end{table}
 
@@ -673,12 +694,12 @@ form is \code{morie.fn.<short>.<full\_name>(\ldots)}, where the
 mnemonic matches the spec \code{name} field of the originating
 formula-index JSON and the function name matches the
 \code{full\_name} field, so a user can locate the originating
-specification and the cross-language sibling without guessing.  The \proglang{R} sibling additionally aliases the
-mnemonic so that both \code{sptau()} and
-\code{spatial\_autocorrelation()} resolve in a single namespace,
-as documented in \citet{Ruhela2026MorieR}.
+specification and the cross-language sibling without guessing.  The \proglang{R} sibling exports each callable under both its
+short mnemonic and its \code{morie\_*}-prefixed long form (e.g.\
+\code{sptau()} and \code{morie\_spatial\_autocorrelation()}), as
+documented in \citet{Ruhela2026MorieR}.
 
-\subsection{Caveats and v0.3.x deferrals}\label{sec:textbook-caveats}
+\subsection{Caveats and open deferrals}\label{sec:textbook-caveats}
 
 Numerical agreement between the \proglang{Python} and
 \proglang{R} sides is bit-identical for deterministic callables:
@@ -691,11 +712,11 @@ and gradient-boosting ensembles, MCMC posteriors in
 \code{time\_series\_advanced}), agreement is within Monte-Carlo
 tolerance under matched random-number seeds.  The
 \proglang{Python} smoke runs the \code{\_\_main\_\_} canonical-test
-block in every shipped module across all 275 callables; the
-\proglang{R} smoke confirms that all 319 \proglang{R} files in the
-source tree source cleanly under base \proglang{R} with only the
-declared \code{Suggests:} optional packages installed.  Three
-honest deferrals carry over from the v0.3.x tracker: an opt-in
+block in every shipped module across the curated callable set;
+the \proglang{R} smoke confirms that all 331 \proglang{R} files
+in the source tree source cleanly under base \proglang{R} with
+only the declared \code{Suggests:} optional packages installed.
+Three honest deferrals carry over in the open tracker: an opt-in
 deterministic mode for the stochastic callables, a true
 missing-data suite to replace the misnamed \code{missing\_stats}
 spec, and a tighter cross-language MLE-tolerance pin for the
