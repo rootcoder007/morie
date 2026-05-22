@@ -40,34 +40,30 @@ ORCID: \orcidlink{0009-0004-1750-3592}
 
 \Abstract{
 The \proglang{Python} package \pkg{morie} (Multi-domain Open
-Research and Inferential Estimation) implements a curated
-dual-language toolkit for observational inference, with explicit
-support for the MRM (Multilevel Reconciliation Methodology) framework as a
-sociolegal application target. The package provides a unified
-entry point to double-machine-learning interactive regression and
-partial-linear estimators by wrapping the \proglang{Python}
-package \pkg{DoubleML} \citep{Bach2022DoubleMLpy} via the
-\pkg{scikit-learn} learner interface \citep{Pedregosa2011}; it
-provides independent implementations of inverse-probability-weighting,
-augmented inverse-probability-weighting, propensity-score
-matching, survey-weighted estimation, signal processing
-primitives, spatial statistics, statistical physics of crime
-(Hawkes processes), psychometric estimators, and a suite of MRM
-modules for ingestion of Canadian open carceral data. The package
-is released on the Python Package Index (PyPI) at
-\href{https://pypi.org/project/morie/}{pypi.org/project/morie} with
-PEP 740 sigstore attestations on every wheel and source
-distribution. This paper describes the \proglang{Python}
-implementation, the wrapper API around \pkg{DoubleML}, the
-\pkg{RichResult} return-type design, and three reproducible
-examples on the open Ontario, federal, and Toronto Police Service
-records that the MRM framework integrates.  Version~0.9.5.4
-ships a lazily-loaded catalogue of textbook-derived callables in
-\code{morie.fn} (organised into fourteen thematic suites under
-the canonical reference texts of Section~\ref{sec:textbook-callables})
-with \proglang{R} parity verified by an automated cross-language
-test suite, and is released under \code{AGPL-3.0-or-later}
-matching the \proglang{R} companion package.
+Research and Inferential Estimation) is a working bench for
+observational inference. Its centre of gravity is causal
+estimation under the doubly-robust and double-machine-learning
+playbooks; around that centre sit the tools an empirical
+worker reaches for in the same afternoon --- propensity
+weighting, matching, survey-weighted regression, signal
+processing, spatial autocorrelation, self-exciting point
+processes for crime, and psychometric reliability. \pkg{morie}
+wraps \pkg{DoubleML} \citep{Bach2022DoubleMLpy} under the
+\pkg{scikit-learn} learner interface \citep{Pedregosa2011} and
+adds independent implementations where wrapping was the wrong
+shape. It also hosts the MRM (Multilevel Reconciliation
+Methodology) framework, a sociolegal application target with
+ingestion modules for five Canadian carceral and police
+records. This paper is a tour of the \proglang{Python}
+implementation: the wrapper around \pkg{DoubleML}, the
+\code{RichResult} return type, and three worked examples on
+open Ontario, federal, and Toronto Police Service data.
+Version~0.9.5.4 is released on the Python Package Index (PyPI)
+at
+\href{https://pypi.org/project/morie/}{pypi.org/project/morie}
+with PEP~740 sigstore attestations on every distribution,
+under \code{AGPL-3.0-or-later}; the \proglang{R} companion
+package is released under the same licence.
 }
 \Keywords{causal inference, observational inference,
 double machine learning, sociolegal statistics, Hawkes process,
@@ -89,54 +85,58 @@ psychometrics, Python}
 \section{Introduction}
 \label{sec:intro}
 
-The \proglang{Python} package \pkg{morie}\footnote{\textit{morie} is
-pronounced ``MOY-rye'', like the Greek \textit{Moirai},
-the Fates.} provides a curated
-multi-domain toolkit for observational inference. The Python
-implementation is released under \code{AGPL-3.0-or-later}, a
-strong copyleft licence under which any modified version that is
-distributed, or offered to users over a network, must publish its
-source.  The R companion
-package \citep{Ruhela2026MorieR} is likewise released under
-\code{AGPL-3.0-or-later}, matching the Python package.  The
-package supports a
-unified estimator interface for the average treatment effect
-(ATE), the average treatment effect on the treated (ATT), the
-conditional and group average treatment effects (CATE, GATE), the
-local average treatment effect (LATE), and the augmented
-inverse-probability-weighting (AIPW) estimator. Double machine
-learning is exposed through wrappers around the \pkg{DoubleML}
-classes \citep{Bach2022DoubleMLpy, Bach2024DoubleML}, which in
-turn rely on \pkg{scikit-learn} \citep{Pedregosa2011} for the
-nuisance-function learners. Outside causal inference, the package
-provides signal processing primitives, cryptographic primitives,
-spatial statistics, statistical-physics models of crime, and
-psychometric estimators that complement the causal-inference core.
+\pkg{morie}\footnote{\textit{morie} is pronounced ``MOY-rye'',
+like the Greek \textit{Moirai}, the Fates.} is a
+\proglang{Python} toolkit for observational inference, written
+so that the methods used in sociolegal research can be used by
+others on the same evidentiary footing. The \proglang{Python}
+and \proglang{R} packages \citep{Ruhela2026MorieR} share a
+single C++ numeric core (since v0.9.1) and a single licence,
+\code{AGPL-3.0-or-later}: any redistribution or
+network-hosted modification must publish its source. The strict
+copyleft is deliberate. Carceral and oversight evidence has a
+long history of being privatised after analysis; the licence is
+the smallest hedge against that. The package exposes a unified
+estimator interface --- the average treatment effect (ATE), the
+average treatment effect on the treated (ATT), the conditional
+and group average treatment effects (CATE, GATE), the local
+average treatment effect (LATE), and the augmented
+inverse-probability-weighting (AIPW) estimator --- and threads
+double machine learning through wrappers around the
+\pkg{DoubleML} classes
+\citep{Bach2022DoubleMLpy, Bach2024DoubleML}, which themselves
+rely on \pkg{scikit-learn} \citep{Pedregosa2011} for the
+nuisance-function learners. Outside causal inference,
+\pkg{morie} ships signal-processing, cryptographic,
+spatial-statistics, statistical-physics-of-crime, and
+psychometric estimators that complement the causal core.
 
-\pkg{morie} is positioned alongside the established
-\proglang{Python} ecosystem of causal-inference packages:
-\pkg{DoubleML} \citep{Bach2022DoubleMLpy} for canonical
+\pkg{morie} builds upon a robust ecosystem of foundational
+\proglang{Python} packages: \pkg{DoubleML}
+\citep{Bach2022DoubleMLpy} for canonical
 double-machine-learning estimators, \pkg{causalml} (Uber) for
-heterogeneous treatment effects, \pkg{EconML} (Microsoft) for the
-ATE / CATE estimator family from the econometrics literature,
-\pkg{dowhy} (Microsoft) for end-to-end causal-inference
-pipelines, and \pkg{CausalPy} (PyMC) for Bayesian
-quasi-experimental designs. The package does not duplicate these
-established estimators where they already exist in the
-\proglang{Python} stack; instead, it wraps them under a single
-function-naming convention and pairs them with the MRM modules
-that target Canadian open carceral and police-oversight data.
+heterogeneous treatment effects, \pkg{EconML} (Microsoft) for
+the ATE / CATE estimator family from the econometrics
+literature, \pkg{dowhy} (Microsoft) for end-to-end
+causal-inference pipelines, and \pkg{CausalPy} (PyMC) for
+Bayesian quasi-experimental designs. Rather than reimplementing
+these established methods, \pkg{morie} unifies them under a
+single function-naming convention and a single result idiom,
+and pairs them with the MRM modules that target Canadian open
+carceral and police-oversight data.
 
-The MRM modules implement the unified framework of
-\citet{Ruhela2026MRM} for analysis across five Canadian sources:
-the Offender Tracking Information System (\OTIS, A01-RCDD), the
+Canada's carceral, police, and oversight data are scattered
+across five agencies that do not coordinate: Ontario's
+Offender Tracking Information System (\OTIS, A01-RCDD), the
 federal Structured Intervention Unit Implementation Advisory
 Panel, the Ontario Special Investigations Unit (\SIU), the
 Toronto Police Service (\TPS) open data, and the federal
 Corrections and Conditional Release Statistical Overview. The
-framework's theoretical foundations are presented in
-\citet{Ruhela2026MRM}; this paper concerns its \proglang{Python}
-software realisation.
+MRM framework \citep{Ruhela2026MRM} is the bridge --- a
+fiscal-quarter index and a set of canonical schemas that lets
+a single analysis traverse all five. The MRM modules in
+\pkg{morie} carry that bridge in code; this paper is about how
+the \proglang{Python} realisation makes the traversal cheap.
 
 The companion paper \citep{Ruhela2026MorieR} describes the
 \proglang{R} implementation, which is functionally parallel to the
@@ -395,20 +395,25 @@ of intermediate state.
 
 \subsection{The RichResult return type}
 
-Every estimator in \pkg{morie} returns a \code{RichResult}, a
+The result object is the place where most observational-inference
+packages quietly disappoint. A regression returns a long table;
+a DML run returns a class instance whose \code{\_\_repr\_\_} is
+a debugger string. \pkg{morie} returns a \code{RichResult}: a
 dataclass-derived object that inherits from \code{dict} and
 populates itself with the canonical result fields
 (\code{estimate}, \code{se}, \code{ci\_lower}, \code{ci\_upper},
-\code{p\_value}, \code{n}, \code{n\_treated}, \code{interpretation}).
-The dataclass inheritance pattern provides two simultaneous use
-modes: \code{isinstance(result, dict)} returns \code{True} (so
-results can be passed to any \code{dict}-consuming downstream
-code), and \code{result.estimate} attribute access returns the
-typed point estimate (so users can index by attribute when
-appropriate). The multi-section pretty-printer renders the result
-as a panel of labelled fields when called interactively; when
-used programmatically, the result behaves as an ordinary
-dictionary.
+\code{p\_value}, \code{n}, \code{n\_treated},
+\code{interpretation}). Because the class subclasses
+\code{dict}, \code{isinstance(result, dict)} returns
+\code{True} and the result drops into any pipeline that consumes
+mappings; because it is a dataclass, \code{result.estimate}
+attribute access returns the typed point estimate when a user
+indexes by name. The multi-section pretty-printer renders the
+result as a panel of labelled fields with a written
+interpretation when called interactively; the same object
+behaves as an ordinary dictionary when used programmatically.
+The same object, two faces --- programmatic when you index it,
+narrative when you print it.
 
 \subsection{describe()}
 
@@ -754,22 +759,27 @@ code is incorporated.
 \section{Conclusion}
 \label{sec:conclusion}
 
-The \proglang{Python} package \pkg{morie} provides a curated
-multi-domain toolkit for observational inference, with explicit
-support for the MRM framework as a sociolegal application target.
-The wrapper architecture around \pkg{DoubleML} offers a thin
-function-style API; the eight thematic groups provide a
-unified namespace for the broader observational-inference,
-signal-processing, spatial, statistical-physics, and psychometric
-routines that complement the causal core. The MRM modules
-implement the framework of \citet{Ruhela2026MRM} on the five
-Canadian sources through a common ingestion pipeline.
+\pkg{morie} is a working bench, not a manifesto. The wrapper
+around \pkg{DoubleML} is thin on purpose. The MRM modules are
+written against the actual schemas of the actual Canadian
+sources, not against an idealised data model. The
+textbook-derived callables in \code{morie.fn} exist because the
+textbook is often the shortest path to a method that hasn't yet
+landed in a maintained package. The AGPL is here because the
+work this code supports must remain part of the public record.
 
-The package is released on PyPI with PEP 740 sigstore
-attestations on every wheel and source distribution, and the
-source repository is at \url{https://github.com/hadesllm/morie}.
-Contributions follow the process documented in the
-\texttt{CONTRIBUTING.md} of the source repository.
+The honest limits, as of v0.9.5.4: the \code{morie.crypto}
+educational primitives ship on the \proglang{Python} side and
+are planned as a native \proglang{R} + Rcpp port for v1.0.0;
+the \code{morie.describe()} pedagogical narratives ship on the
+\proglang{Python} side and an \proglang{R} equivalent is
+planned for v0.9.5.5.
+
+The package is released on PyPI with PEP~740 sigstore
+attestations on every wheel and source distribution. The source
+repository is at \url{https://github.com/hadesllm/morie};
+contributions follow the process documented in
+\texttt{CONTRIBUTING.md}.
 
 \section*{Acknowledgements}
 
