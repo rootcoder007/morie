@@ -1,4 +1,4 @@
-# MORIE
+# MORIE 森
 
 **Multi-domain Open Research and Inferential Estimation**
 
