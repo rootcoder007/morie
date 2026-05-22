@@ -105,28 +105,16 @@ PLR, partially linear regression;
 IRM, interactive regression model;
 AIPW, augmented inverse-probability weighting.
 
-The MRM acronym expands to \emph{Multilevel Reconciliation
-Methodology} --- following the modelling-acronym tradition that
-names a method by what it does (cf.\ DML for double/debiased
-machine learning).  At the individual ($c11$) level and the
-placement ($b01$) level the framework operates on microdata; at
-the aggregate level it operates on $\chi^{2}$ summaries; the
-``multilevel'' label captures this dual operation, and
-``reconciliation'' captures the cross-source schema integration
-that no single-source analysis can perform.
-
-Two mentorship and methodological-lineage influences shape the
-framework.  Glenn McNamara (retired Statistics Canada and Ontario
-Provincial Police HQ statistician, $\sim 30$ years' experience in
-correctional and criminal-justice data design) contributed the
-federal correctional data layout and the multi-source
-identification primitives that make the framework portable across
-the five Canadian data sources catalogued below.  Angela Zorro
-Medina (Centre for Criminology and Sociolegal Studies,
-University of Toronto; criminological methodology, JMP tradition)
-contributed the
-causal-identification scaffolding linking the provincial and
-federal levels.
+The name is meant plainly. \emph{Multilevel} marks the fact that
+MRM operates on two strata of evidence at once: microdata at the
+individual ($c11$) and placement ($b01$) levels, and $\chi^{2}$
+summaries at the aggregate level. \emph{Reconciliation} names
+what no single source can do alone --- making five incompatible
+Canadian administrative schemas speak to one another.
+\emph{Methodology}, in the tradition of DML (double/debiased
+machine learning) and similar methods-by-what-they-do labels,
+signals that this is a coordinated practice, not a single
+estimator.
 
 Canadian carceral, police, and oversight data are produced by a
 fragmented administrative landscape: provincial corrections agencies
@@ -1232,13 +1220,7 @@ same notational and mechanism-categorisation discipline.
 
 \section*{Acknowledgements}
 
-The author thanks Glenn McNamara, retired statistician with the
-Ontario Government and Statistics Canada, for distribution-theory
-mentorship that grounds the per-individual estimator ensemble, and
-Professor Angela Zorro Medina, Centre for Criminology and
-Sociolegal Studies, University of Toronto, for the methodological
-lineage adopted by the framework's identification strategy. The
-author thanks Jeroen Ooms for maintaining the r-universe
+The author thanks Jeroen Ooms for maintaining the r-universe
 infrastructure on which the \pkg{morie} \proglang{R} binaries are built,
 and the DoubleML team (Philipp Bach, Malte~S.\ Kurz, Victor
 Chernozhukov, Martin Spindler, Sven Klaassen) for the BSD-3-Clause
