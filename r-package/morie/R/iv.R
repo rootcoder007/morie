@@ -436,7 +436,7 @@ morie_iv_sargan <- function(data, outcome, endogenous, instruments,
     f   <- .morie_iv_build_formula(outcome, endogenous, instruments, exogenous)
     fit <- ivreg::ivreg(f, data = data)
     diag_tbl <- summary(fit, diagnostics = TRUE)$diagnostics
-    if ("Sargan" %in% rownames(diag))
+    if ("Sargan" %in% rownames(diag_tbl))
       return(list(statistic = diag_tbl["Sargan", "statistic"],
                   p_value   = diag_tbl["Sargan", "p-value"],
                   name = "Sargan"))
@@ -485,7 +485,7 @@ morie_iv_hausman <- function(data, outcome, endogenous, instruments,
     f   <- .morie_iv_build_formula(outcome, endogenous, instruments, exogenous)
     fit <- ivreg::ivreg(f, data = data)
     diag_tbl <- summary(fit, diagnostics = TRUE)$diagnostics
-    if ("Wu-Hausman" %in% rownames(diag))
+    if ("Wu-Hausman" %in% rownames(diag_tbl))
       return(list(statistic = diag_tbl["Wu-Hausman", "statistic"],
                   p_value   = diag_tbl["Wu-Hausman", "p-value"],
                   name = "Wu-Hausman / Hausman"))
