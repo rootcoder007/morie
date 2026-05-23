@@ -281,6 +281,11 @@ morie_cache_store <- function(data, table_name, db_path = NULL, con = NULL) {
   h <- .morie_db_handle(con, db_path)
   if (h$close) on.exit(DBI::dbDisconnect(h$con), add = TRUE)
   DBI::dbWriteTable(h$con, table_name, data, overwrite = TRUE)
+  # Auto-create the cardinality-driven indexes for known dataset
+  # tables (SIU, OTIS a01/b01..d07, ARSAU uof_*, TPS crime-table
+  # family). Unknown table_names are silently no-op. See
+  # R/db_indexes.R for the per-dataset registry + cardinality rationale.
+  morie_db_create_indexes(h$con, table_name)
   invisible(nrow(data))
 }
 
