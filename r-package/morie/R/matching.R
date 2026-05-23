@@ -637,39 +637,61 @@ morie_matching_mahalanobis <- function(data, treatment, covariates,
   X_t <- X[treated_idx, , drop = FALSE]
   X_c <- X[control_idx, , drop = FALSE]
 
-  used_controls <- character(0)
-  recs <- list()
-  for (i in seq_along(treated_idx)) {
-    t_id <- treated_idx[i]
-    diffs <- sweep(X_c, 2L, X_t[i, ], "-")
-    dists <- sqrt(pmax(rowSums((diffs %*% cov_inv) * diffs), 0))
-    if (!is.null(exact)) {
-      ok <- rep(TRUE, length(control_idx))
-      for (v in exact) {
-        ok <- ok & (df[control_idx, v] == df[t_id, v])
-      }
-      if (!any(ok)) next
-      ord <- order(dists)
-      ord <- ord[ok[ord]]
+  # Fast path: no exact-blocking and C++ kernels available -> compute
+  # the full distance matrix in C++ (Cholesky whitening) and do NN
+  # selection in C++. The exact-blocking branch keeps the R loop
+  # because the per-treated `ok` mask is multi-variable.
+  if (is.null(exact) &&
+      .morie_matching_have_cpp("morie_matching_mahalanobis_pairs_cpp") &&
+      .morie_matching_have_cpp("morie_matching_nn_select_cpp") &&
+      length(treated_idx) > 0L && length(control_idx) > 0L) {
+    D <- morie_matching_mahalanobis_pairs_cpp(X_t, X_c, cov_inv)
+    cal <- if (is.null(caliper)) Inf else as.numeric(caliper)
+    sel <- morie_matching_nn_select_cpp(D, as.logical(replace), cal,
+                                         as.integer(n_neighbors))
+    match_df <- if (length(sel$treated_pos) == 0L) {
+      .morie_matching_empty_pairs()
     } else {
-      ord <- order(dists)
+      data.frame(treated_idx = treated_idx[sel$treated_pos],
+                 control_idx = control_idx[sel$control_pos],
+                 distance    = sel$distance,
+                 stringsAsFactors = FALSE)
     }
-    matched <- 0L
-    for (j in ord) {
-      d <- dists[j]
-      if (!is.null(caliper) && d > caliper) break
-      c_id <- control_idx[j]
-      if (!replace && c_id %in% used_controls) next
-      recs[[length(recs) + 1L]] <- data.frame(
-        treated_idx = t_id, control_idx = c_id,
-        distance = as.numeric(d), stringsAsFactors = FALSE
-      )
-      used_controls <- c(used_controls, c_id)
-      matched <- matched + 1L
-      if (matched >= n_neighbors) break
+  } else {
+    used_controls <- character(0)
+    recs <- list()
+    for (i in seq_along(treated_idx)) {
+      t_id <- treated_idx[i]
+      diffs <- sweep(X_c, 2L, X_t[i, ], "-")
+      dists <- sqrt(pmax(rowSums((diffs %*% cov_inv) * diffs), 0))
+      if (!is.null(exact)) {
+        ok <- rep(TRUE, length(control_idx))
+        for (v in exact) {
+          ok <- ok & (df[control_idx, v] == df[t_id, v])
+        }
+        if (!any(ok)) next
+        ord <- order(dists)
+        ord <- ord[ok[ord]]
+      } else {
+        ord <- order(dists)
+      }
+      matched <- 0L
+      for (j in ord) {
+        d <- dists[j]
+        if (!is.null(caliper) && d > caliper) break
+        c_id <- control_idx[j]
+        if (!replace && c_id %in% used_controls) next
+        recs[[length(recs) + 1L]] <- data.frame(
+          treated_idx = t_id, control_idx = c_id,
+          distance = as.numeric(d), stringsAsFactors = FALSE
+        )
+        used_controls <- c(used_controls, c_id)
+        matched <- matched + 1L
+        if (matched >= n_neighbors) break
+      }
     }
+    match_df <- if (length(recs)) do.call(rbind, recs) else .morie_matching_empty_pairs()
   }
-  match_df <- if (length(recs)) do.call(rbind, recs) else .morie_matching_empty_pairs()
   all_ids <- unique(c(match_df$treated_idx, match_df$control_idx))
   matched_data <- df[rownames(df) %in% all_ids, , drop = FALSE]
 

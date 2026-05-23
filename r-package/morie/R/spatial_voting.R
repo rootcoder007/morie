@@ -492,11 +492,19 @@ morie_spatial_voting_smacof <- function(D,
   d_X <- .sv_pairwise_dist(X)
   stress <- sum(W * (D - d_X) ^ 2) / 2
   it <- 0L
+  use_cpp <- .sv_have_cpp("morie_spatial_smacof_step_cpp")
   for (it in seq_len(max_iter)) {
-    Bm <- compute_B(d_X)
-    X_new <- V_inv %*% Bm %*% X
-    d_X <- .sv_pairwise_dist(X_new)
-    stress_new <- sum(W * (D - d_X) ^ 2) / 2
+    if (use_cpp) {
+      step <- morie_spatial_smacof_step_cpp(X, D, W)
+      X_new <- step$coordinates
+      stress_new <- step$stress
+      d_X <- step$distances
+    } else {
+      Bm <- compute_B(d_X)
+      X_new <- V_inv %*% Bm %*% X
+      d_X <- .sv_pairwise_dist(X_new)
+      stress_new <- sum(W * (D - d_X) ^ 2) / 2
+    }
     if (abs(stress - stress_new) < tol) {
       X <- X_new; stress <- stress_new; break
     }
@@ -1603,19 +1611,24 @@ morie_spatial_voting_em_irt <- function(votes,
   a     <- matrix(stats::rnorm(n_votes * n_dims) * 0.5, n_votes, n_dims)
   d     <- numeric(n_votes)
   iter <- 0L
+  use_cpp_theta <- .sv_have_cpp("morie_spatial_emirt_theta_update_cpp")
   for (iter in seq_len(max_iter)) {
     theta_old <- theta
-    for (i in seq_len(n_leg)) {
-      valid <- mask[i, ]; if (sum(valid) == 0L) next
-      y_i <- votes[i, valid]
-      a_i <- a[valid, , drop = FALSE]; d_i <- d[valid]
-      eta <- pmin(pmax(as.numeric(a_i %*% theta[i, ]) + d_i, -20), 20)
-      p <- 1 / (1 + exp(-eta))
-      residual <- y_i - p
-      w <- p * (1 - p) + 1e-10
-      H <- crossprod(a_i, a_i * w) + diag(n_dims)
-      g <- crossprod(a_i, residual)
-      theta[i, ] <- theta[i, ] + as.numeric(solve(H, g))
+    if (use_cpp_theta) {
+      theta <- morie_spatial_emirt_theta_update_cpp(theta, a, d, votes)
+    } else {
+      for (i in seq_len(n_leg)) {
+        valid <- mask[i, ]; if (sum(valid) == 0L) next
+        y_i <- votes[i, valid]
+        a_i <- a[valid, , drop = FALSE]; d_i <- d[valid]
+        eta <- pmin(pmax(as.numeric(a_i %*% theta[i, ]) + d_i, -20), 20)
+        p <- 1 / (1 + exp(-eta))
+        residual <- y_i - p
+        w <- p * (1 - p) + 1e-10
+        H <- crossprod(a_i, a_i * w) + diag(n_dims)
+        g <- crossprod(a_i, residual)
+        theta[i, ] <- theta[i, ] + as.numeric(solve(H, g))
+      }
     }
     for (j in seq_len(n_votes)) {
       valid <- mask[, j]; if (sum(valid) == 0L) next
