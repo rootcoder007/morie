@@ -4,7 +4,7 @@
 \alias{morie_pps_sample}
 \title{Probability proportional to size (PPS) sampling}
 \usage{
-morie_pps_sample(df, size_col, n, seed = 42L)
+morie_pps_sample(df, size_col, n, seed = 42L, replace = FALSE)
 }
 \arguments{
 \item{df}{A data frame.}

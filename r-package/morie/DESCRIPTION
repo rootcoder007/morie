@@ -45,7 +45,7 @@ Imports:
   stats,
   utils,
   Rcpp
-LinkingTo: Rcpp
+LinkingTo: Rcpp, RcppArmadillo
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
 Suggests:
   digest,

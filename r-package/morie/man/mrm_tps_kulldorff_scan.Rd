@@ -13,6 +13,7 @@ mrm_tps_kulldorff_scan(
   window_years = 4,
   n_centers = 60L,
   n_permutations = 199L,
+  n_top_clusters = 1L,
   seed = 42L
 )
 }
