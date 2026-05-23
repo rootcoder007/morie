@@ -3,9 +3,6 @@
 # resolution path and morie_download_bootstrap's per-key loop.
 
 .cw21_db <- function() {
-  testthat::skip_if_not_installed("DBI")
-  testthat::skip_if_not_installed("RSQLite")
-  testthat::skip_if_not_installed("jsonlite")
 }
 
 test_that("morie_fetch_ckan resolves a resource id from package metadata", {

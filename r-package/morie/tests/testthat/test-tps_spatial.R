@@ -4,7 +4,6 @@
 # KDE. Synthetic Toronto-bbox incidents drive every call.
 
 set.seed(1L)
-skip_if_not_installed("morie")
 
 .mk_tps_inc <- function(n = 400L, seed = 1L, n_hoods = 15L) {
   set.seed(seed)
@@ -43,7 +42,6 @@ test_that("morie_tps_morans_i_neighbourhood warns when too few hoods", {
 })
 
 test_that("morie_tps_morans_i_neighbourhood: use_spdep path runs when avail", {
-  skip_if_not_installed("spdep")
   df <- .mk_tps_inc(400L)
   rr <- morie_tps_morans_i_neighbourhood(df, use_spdep = TRUE)
   expect_s3_class(rr, "morie_tps_spatial_result")

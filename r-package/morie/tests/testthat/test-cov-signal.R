@@ -5,7 +5,6 @@
 # paths run when 'signal' / 'pracma' are installed.
 
 test_that("Butterworth + Savitzky-Golay filters run via the signal pkg", {
-  skip_if_not_installed("signal")
   set.seed(1)
   tt <- seq(0, 1, length.out = 600)
   x <- sin(2 * pi * 5 * tt) + 0.5 * sin(2 * pi * 60 * tt)
@@ -18,7 +17,6 @@ test_that("Butterworth + Savitzky-Golay filters run via the signal pkg", {
 })
 
 test_that("morie_hurst_r estimates the Hurst exponent via pracma", {
-  skip_if_not_installed("pracma")
   set.seed(2)
   r <- morie_hurst_r(cumsum(stats::rnorm(2048)))
   expect_true(r$interpretation %in%

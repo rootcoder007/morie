@@ -5,7 +5,6 @@
 # coverage report exercises code-paths without a TPS data bridge.
 
 set.seed(1L)
-skip_if_not_installed("morie")
 
 .mk_tps_points <- function(n = 200L, seed = 1L) {
   set.seed(seed)
@@ -100,7 +99,6 @@ test_that("morie_tps_dbscan_clusters warns with tiny input", {
 })
 
 test_that("morie_tps_dbscan_clusters subsamples", {
-  skip_if_not_installed("dbscan")
   set.seed(1L)
   df <- .mk_tps_points(n = 500L)
   rr <- morie_tps_dbscan_clusters(df, eps_km = 1, min_samples = 5L,

@@ -372,7 +372,6 @@ test_that("morie_sign_test_power: optional alpha widens rejection region", {
 })
 
 test_that("buttlp: lowpass filter preserves length", {
-  skip_if_not_installed("signal")
   set.seed(1)
   t <- seq(0, 1, length.out = 200)
   x <- sin(2 * pi * 5 * t) + 0.5 * sin(2 * pi * 60 * t)
@@ -385,7 +384,6 @@ test_that("buttlp: lowpass filter preserves length", {
 })
 
 test_that("butthp: highpass filter preserves length", {
-  skip_if_not_installed("signal")
   set.seed(1)
   t <- seq(0, 1, length.out = 200)
   x <- 5 * t + sin(2 * pi * 10 * t)
@@ -395,7 +393,6 @@ test_that("butthp: highpass filter preserves length", {
 })
 
 test_that("buttbp: bandpass filter preserves length", {
-  skip_if_not_installed("signal")
   set.seed(1)
   t <- seq(0, 1, length.out = 300)
   x <- sin(2 * pi * 2 * t) + sin(2 * pi * 10 * t)
@@ -405,7 +402,6 @@ test_that("buttbp: bandpass filter preserves length", {
 })
 
 test_that("buttbs: bandstop filter with default cutoffs preserves length", {
-  skip_if_not_installed("signal")
   set.seed(1)
   t <- seq(0, 1, length.out = 300)
   x <- sin(2 * pi * 10 * t) + sin(2 * pi * 60 * t)
@@ -415,7 +411,6 @@ test_that("buttbs: bandstop filter with default cutoffs preserves length", {
 })
 
 test_that("morie_sgolay_smooth: default window/polyorder preserves length", {
-  skip_if_not_installed("signal")
   set.seed(1)
   x <- sin(2 * pi * 3 * seq(0, 1, length.out = 120)) + rnorm(120, sd = 0.2)
   res <- morie_sgolay_smooth(x)
@@ -426,7 +421,6 @@ test_that("morie_sgolay_smooth: default window/polyorder preserves length", {
 })
 
 test_that("morie_hurst_r: returns H and interpretation", {
-  skip_if_not_installed("pracma")
   set.seed(1)
   x <- cumsum(rnorm(512))
   res <- morie_hurst_r(x)
@@ -441,7 +435,6 @@ test_that("hfd: Python-bridge path is not exercised offline", {
 })
 
 test_that("morie_pcg_filter: convenience preset preserves length", {
-  skip_if_not_installed("signal")
   set.seed(1)
   x <- rnorm(600)
   res <- morie_pcg_filter(x)

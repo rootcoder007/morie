@@ -105,7 +105,6 @@ test_that("mixture_of_experts() clamps top_k to the number of experts", {
 })
 
 test_that("morie_marker_variance() reports the VanRaden / naive split", {
-  skip_if_not_installed("morie")
   set.seed(16)
   M <- matrix(sample(0:2, 160L, replace = TRUE), nrow = 20L, ncol = 8L)
   y <- as.numeric(M %*% rnorm(8L) + 0.5 * rnorm(20L))

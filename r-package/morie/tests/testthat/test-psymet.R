@@ -74,7 +74,6 @@ test_that("morie_psymet_omega runs and is bounded in [0,1]", {
 })
 
 test_that("morie_psymet_omega delegates when psych is installed", {
-  skip_if_not_installed("psych")
   X <- .make_items(n = 60, k = 5, rho = 0.55)
   res <- morie_psymet_omega(X, nf = 1)
   expect_true(is.numeric(res$total))
@@ -142,7 +141,6 @@ test_that("morie_psymet_kmo returns msa in (0,1] and one MSA per item", {
 })
 
 test_that("morie_psymet_kmo delegates to psych::KMO when installed", {
-  skip_if_not_installed("psych")
   X <- .make_items(n = 80, k = 4, rho = 0.5)
   res <- morie_psymet_kmo(X)
   expect_true(is.numeric(res$msa))

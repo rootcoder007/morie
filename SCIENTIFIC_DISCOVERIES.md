@@ -217,7 +217,7 @@ relevant paper §.
 ## How to re-run any finding
 
 ```bash
-pip install morie==0.2.0
+pip install morie==0.9.5.6
 python -m morie.demo           # 30-second showcase with animations
 ```
 

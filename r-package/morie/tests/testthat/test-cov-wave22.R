@@ -53,7 +53,6 @@ test_that(".morie_parse_file errors when a reader package is absent", {
 })
 
 test_that(".morie_parse_file html returns multiple tables / the document", {
-  skip_if_not_installed("xml2")
   h <- tempfile(fileext = ".html")
   writeLines(paste0(
     "<html><body>",
@@ -105,7 +104,6 @@ test_that("morie_ckan_search jsonlite-missing + failed + empty-resources", {
 })
 
 test_that("morie_ckan_search handles failure and empty-resource datasets", {
-  skip_if_not_installed("jsonlite")
   testthat::local_mocked_bindings(
     .morie_read_text = function(url) '{"success":false}',
     .package = "morie"
@@ -137,7 +135,6 @@ test_that("morie_fetch_arcgis: jsonlite stop, empty, and multi-page", {
 })
 
 test_that("morie_fetch_arcgis paginates and handles empty layers", {
-  skip_if_not_installed("jsonlite")
   # max_records = 0 -> the loop breaks immediately, empty frame
   testthat::local_mocked_bindings(
     .morie_read_text = function(url) {

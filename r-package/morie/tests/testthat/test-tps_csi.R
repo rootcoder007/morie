@@ -5,7 +5,6 @@
 # TPS data.frames.
 
 set.seed(1L)
-skip_if_not_installed("morie")
 
 test_that("MORIE_TPS_TOTAL_CSI_WEIGHTS exposes the 9 CSI categories", {
   w <- MORIE_TPS_TOTAL_CSI_WEIGHTS()

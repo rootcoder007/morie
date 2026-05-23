@@ -22,7 +22,6 @@ test_that("require_fbi_key honours explicit key + env", {
 
 test_that("flatten_nibrs collapses nested + list values", {
   set.seed(1)
-  skip_if_not_installed("jsonlite")
   rec <- list(
     offense = list(code = "13A", category = "AA"),
     tags = c("a", "b"),
@@ -105,7 +104,6 @@ test_that("get_json requires httr2", {
 
 test_that("get_json with httr2 fails clean off-network", {
   set.seed(1)
-  skip_if_not_installed("httr2")
   res <- tryCatch(
     morie:::.morie_forensics_get_json("http://127.0.0.1:1/path",
                                       timeout = 1, label = "test"),

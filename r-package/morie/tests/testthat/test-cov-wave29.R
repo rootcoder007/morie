@@ -76,7 +76,6 @@ test_that("morie_builtin_db dev fallback + .fuzzy_match_key name match", {
 })
 
 test_that("morie_load_dataset: unsupported-format and not-found stops", {
-  testthat::skip_if_not_installed("DBI")
   cat <- morie_dataset_catalog()
   ld <- tempfile("ld-")
   dir.create(ld)

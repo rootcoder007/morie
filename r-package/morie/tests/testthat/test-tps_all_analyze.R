@@ -5,7 +5,6 @@
 # the cross-dataset orchestrator.
 
 set.seed(1L)
-skip_if_not_installed("morie")
 
 .mk_tps_full <- function(n = 200L, seed = 1L) {
   set.seed(seed)

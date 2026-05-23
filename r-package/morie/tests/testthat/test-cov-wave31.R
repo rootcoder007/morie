@@ -10,8 +10,6 @@
 # return rmgarch-shaped values, so the branch executes end to end.
 
 test_that("morie_dcc_multivariate_garch assembles the rmgarch-path result", {
-  testthat::skip_if_not_installed("rmgarch")
-  testthat::skip_if_not_installed("rugarch")
   set.seed(31)
   X <- matrix(rnorm(40 * 3), 40, 3)
 

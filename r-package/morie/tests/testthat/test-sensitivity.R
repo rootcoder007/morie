@@ -184,7 +184,6 @@ test_that("specification_curve empty result path returns NA medians", {
 })
 
 test_that("specification_curve robust model branch runs when MASS available", {
-  skip_if_not_installed("MASS")
   set.seed(1)
   d <- data.frame(y = rnorm(120), tx = rbinom(120, 1, 0.5),
                   a = rnorm(120))

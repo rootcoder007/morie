@@ -65,7 +65,6 @@ test_that("ingest_statcan_csv requires httr2", {
 
 test_that("ingest_statcan_csv fails clean off-network", {
   set.seed(1)
-  skip_if_not_installed("httr2")
   res <- tryCatch(
     morie_ingest_statcan_csv("http://127.0.0.1:1/x.zip", timeout = 1),
     error = function(e) NULL

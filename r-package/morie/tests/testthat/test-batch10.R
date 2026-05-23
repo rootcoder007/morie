@@ -34,7 +34,6 @@ test_that("morie_horowitz_plr_bandwidth handles zero-IQR / constant data", {
 })
 
 test_that("morie_horowitz_quantile_regression returns estimate and se", {
-  skip_if_not_installed("MASS")
   set.seed(3)
   x <- rnorm(120)
   y <- 1 + 2 * x + rnorm(120)
@@ -48,7 +47,6 @@ test_that("morie_horowitz_quantile_regression returns estimate and se", {
 })
 
 test_that("morie_horowitz_quantile_regression works at non-median tau", {
-  skip_if_not_installed("MASS")
   set.seed(4)
   x <- rnorm(100)
   y <- x + rnorm(100)
@@ -72,7 +70,6 @@ test_that("morie_horowitz_quantile_regression flags invalid tau", {
 })
 
 test_that("morie_horowitz_quantile_regression handles a design matrix", {
-  skip_if_not_installed("MASS")
   set.seed(6)
   X <- cbind(rnorm(120), rnorm(120))
   y <- X[, 1] - X[, 2] + rnorm(120)
@@ -82,7 +79,6 @@ test_that("morie_horowitz_quantile_regression handles a design matrix", {
 })
 
 test_that("morie_horowitz_sample_selection returns coefficients", {
-  skip_if_not_installed("MASS")
   set.seed(7)
   n <- 200
   z <- rnorm(n)
@@ -116,7 +112,6 @@ test_that("morie_horowitz_sample_selection flags too few selected", {
 })
 
 test_that("morie_horowitz_treatment_effect returns ATE with bootstrap SE", {
-  skip_if_not_installed("MASS")
   set.seed(9)
   n <- 120
   x <- rnorm(n)
@@ -132,7 +127,6 @@ test_that("morie_horowitz_treatment_effect returns ATE with bootstrap SE", {
 })
 
 test_that("morie_horowitz_treatment_effect respects .bootstrap = FALSE", {
-  skip_if_not_installed("MASS")
   set.seed(10)
   n <- 100
   x <- rnorm(n)
@@ -144,7 +138,6 @@ test_that("morie_horowitz_treatment_effect respects .bootstrap = FALSE", {
 })
 
 test_that("morie_horowitz_treatment_effect accepts an explicit bandwidth", {
-  skip_if_not_installed("MASS")
   set.seed(11)
   n <- 90
   x <- rnorm(n)
@@ -203,7 +196,6 @@ test_that("morie_horowitz_local_ate flags a weak instrument", {
 })
 
 test_that("morie_horowitz_wild_bootstrap returns estimate and CI", {
-  skip_if_not_installed("MASS")
   set.seed(15)
   x <- rnorm(80)
   y <- 2 * x + rnorm(80)
@@ -220,7 +212,6 @@ test_that("morie_horowitz_wild_bootstrap returns estimate and CI", {
 })
 
 test_that("morie_horowitz_wild_bootstrap handles a multi-column design", {
-  skip_if_not_installed("MASS")
   set.seed(16)
   X <- cbind(1, rnorm(80), rnorm(80))
   y <- X %*% c(1, 2, -1) + rnorm(80)
@@ -230,7 +221,6 @@ test_that("morie_horowitz_wild_bootstrap handles a multi-column design", {
 })
 
 test_that("morie_horowitz_wild_bootstrap accepts precomputed residuals", {
-  skip_if_not_installed("MASS")
   set.seed(17)
   x <- rnorm(60)
   y <- x + rnorm(60)
@@ -604,7 +594,6 @@ test_that("morie_inspect_output reports missing files", {
 })
 
 test_that("morie_inspect_output reads a JSON file", {
-  skip_if_not_installed("jsonlite")
   tmp <- tempfile(fileext = ".json")
   jsonlite::write_json(list(estimate = 0.123, se = 0.045), tmp,
     auto_unbox = TRUE
@@ -642,7 +631,6 @@ test_that("morie_inspect_output flags an unsupported extension", {
 })
 
 test_that("morie_verify_statistical_output passes a clean output", {
-  skip_if_not_installed("jsonlite")
   tmp <- tempfile(fileext = ".json")
   jsonlite::write_json(
     list(ate = 0.5, se = 0.1, ci_lower = 0.3, ci_upper = 0.7, n = 200),
@@ -656,7 +644,6 @@ test_that("morie_verify_statistical_output passes a clean output", {
 })
 
 test_that("morie_verify_statistical_output fails a bad CI ordering", {
-  skip_if_not_installed("jsonlite")
   tmp <- tempfile(fileext = ".json")
   jsonlite::write_json(
     list(ate = 0.5, se = -0.1, ci_lower = 0.9, ci_upper = 0.1, n = 0),
@@ -737,7 +724,6 @@ test_that("morie_compare_nested_logistic_models errors on non-subset reduced mod
 })
 
 test_that("morie_run_treatment_effects_analysis returns ate with CI", {
-  skip_if_not_installed("MASS")
   set.seed(42)
   df <- data.frame(
     y = rnorm(200),

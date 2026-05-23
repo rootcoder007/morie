@@ -45,9 +45,6 @@ test_that("morie_estimate_double_ml recovers true ATE on simple DGP", {
 })
 
 test_that("morie_estimate_double_ml uses DoubleML when available", {
-  skip_if_not_installed("DoubleML")
-  skip_if_not_installed("mlr3")
-  skip_if_not_installed("mlr3learners")
   skip_if_not_installed("ranger")
   df <- make_dml_df(n = 300)
   res <- morie_estimate_double_ml(df, "y", "d", c("x1", "x2", "x3"),
@@ -98,9 +95,6 @@ test_that("morie_estimate_irm CI covers true effect with high probability", {
 })
 
 test_that("morie_estimate_irm uses DoubleML when available", {
-  skip_if_not_installed("DoubleML")
-  skip_if_not_installed("mlr3")
-  skip_if_not_installed("mlr3learners")
   df <- make_dml_df(n = 300)
   res <- morie_estimate_irm(df, "d", "y", c("x1", "x2", "x3"),
                             n_folds = 3L)

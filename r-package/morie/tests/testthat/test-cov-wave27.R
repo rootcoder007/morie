@@ -199,7 +199,6 @@ test_that(".run_power_design_module_extended handles a single-gender frame", {
 # ---- 6. database remaining branches --------------------------------------
 
 test_that("morie_load_dataset covers the unsupported-format stop", {
-  testthat::skip_if_not_installed("DBI")
   cat <- morie_dataset_catalog()
   local_dir <- tempfile("ld-")
   dir.create(local_dir)

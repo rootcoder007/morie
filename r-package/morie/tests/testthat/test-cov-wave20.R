@@ -4,8 +4,6 @@
 # local-file / cache branches of morie_load_cpads().
 
 .cw20_db <- function() {
-  testthat::skip_if_not_installed("DBI")
-  testthat::skip_if_not_installed("RSQLite")
 }
 
 test_that("morie_load_dataset reads from the built-in database tier", {

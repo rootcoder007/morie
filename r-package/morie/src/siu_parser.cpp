@@ -18,7 +18,7 @@
 #include <vector>
 
 // parser_version stamped into every emitted row.
-#define MORIE_SIU_PARSER_VERSION "0.2.0"
+#define MORIE_SIU_PARSER_VERSION "0.9.5.6"
 
 namespace {
 

@@ -39,7 +39,7 @@ Python-parity-verified before applying):
 * `R/spatial_voting.R` Hare 2018 + King 2003 citation corrections.
 * `R/tps_statphysics.R` Helbing 2010 venue corrected (NJP not PNAS).
 
-Earlier from 2026-05-22 marathon (already in 0.9.5.5 in tree):
+Earlier from 2026-05-22 marathon (already in 0.9.5.6 in tree):
 
 * Cox-Snell residuals use per-row `y[,"status"]` not scalar `nevent`.
 * JKn replicate weights rewritten to Wolter 2007 form (one PSU per
@@ -52,7 +52,7 @@ Earlier from 2026-05-22 marathon (already in 0.9.5.5 in tree):
 * tps_statphysics inspection-game payoff matrix transposed back to
   match Python convention.
 
-# morie 0.9.5.5 - 2026-05-22
+# morie 0.9.5.6 - 2026-05-22
 
 R-side `describe()` parity closure. Patch release that closes one
 of the two parity gaps named in v0.9.5.4: the pedagogical
@@ -609,7 +609,7 @@ Security patch.
   crafted HTML page. The pattern is now linear-time; parsing of valid
   SIU index pages is unchanged. (CodeQL `py/redos`, high severity.)
 * `User-Agent` strings across the data-ingestion modules were stale
-  (`morie/0.2.0`–`morie/0.6.1`) and are now aligned to the release
+  (`morie/0.9.5.6`–`morie/0.6.1`) and are now aligned to the release
   version.
 * No API changes.
 
@@ -689,7 +689,7 @@ bump.
   CITATION.cff. Sphinx install snippets + Docker tag examples
   un-pinned from stale versions.
 
-# morie 0.2.0 — 2026-05-11
+# morie 0.9.5.6 — 2026-05-11
 
 * Completes Python <-> R full parity: adds Python
   `morie.mrm_classify_mandela()` as the dual of the R-side

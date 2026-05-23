@@ -159,7 +159,6 @@ test_that("dataset_load errors on missing file and unknown extension", {
 
 test_that("dataset_load reads JSON when jsonlite present", {
   set.seed(1)
-  skip_if_not_installed("jsonlite")
   tmp <- tempfile(fileext = ".json")
   jsonlite::write_json(data.frame(a = 1:2), tmp)
   df <- morie_dataset_load(tmp)

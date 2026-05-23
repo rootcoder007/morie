@@ -23,7 +23,6 @@ set.seed(1L)
 
 # Skip the whole file if morie's RNG / Rich-result plumbing is missing.
 # (Defensive: every other test in the suite already imports morie.)
-skip_if_not_installed("morie")
 
 # Helper: detect whether the dataset bridge is installed.  When it is,
 # the data-seeded routines should be tested against real TPS data in

@@ -39,7 +39,6 @@ test_that("arcgis_query errors without httr2", {
 
 test_that("arcgis_query fails clean off-network", {
   set.seed(1)
-  skip_if_not_installed("httr2")
   res <- tryCatch(
     morie:::.morie_tps_arcgis_query("http://127.0.0.1:1/layer", timeout = 1),
     error = function(e) NULL

@@ -5,7 +5,6 @@
 # gated with skip_if_not_installed("ggplot2").
 
 set.seed(1L)
-skip_if_not_installed("morie")
 
 .mk_ring <- function(cx, cy, r = 0.01) {
   ang <- seq(0, 2 * pi, length.out = 8)
@@ -62,7 +61,6 @@ test_that("morie_tps_project_xy is approximately origin-centred", {
 })
 
 test_that("morie_tps_render_choropleth runs without writing", {
-  skip_if_not_installed("ggplot2")
   polys <- .mk_polys_df()
   p <- morie_tps_render_choropleth(polys, rate_col = "ASSAULT_RATE_2024",
                                     show_ids = FALSE)
@@ -75,7 +73,6 @@ test_that("morie_tps_render_choropleth errors when rate_col absent", {
 })
 
 test_that("morie_tps_render_points runs with synthetic incidents", {
-  skip_if_not_installed("ggplot2")
   set.seed(1L)
   df <- data.frame(
     LAT_WGS84  = 43.65 + rnorm(60, 0, 0.01),
@@ -91,8 +88,6 @@ test_that("morie_tps_render_points errors when no in-bbox rows", {
 })
 
 test_that("morie_tps_render_points with dbscan colours points", {
-  skip_if_not_installed("ggplot2")
-  skip_if_not_installed("dbscan")
   set.seed(1L)
   df <- data.frame(
     LAT_WGS84  = 43.65 + rnorm(80, 0, 0.01),
@@ -121,7 +116,6 @@ test_that("morie_tps_render_yearly_grid errors on missing prefix", {
 })
 
 test_that("morie_tps_render_dbscan returns a ggplot when available", {
-  skip_if_not_installed("ggplot2")
   set.seed(1L)
   pts <- data.frame(
     lat = 43.65 + rnorm(60, 0, 0.01),
@@ -136,7 +130,6 @@ test_that("morie_tps_render_dbscan errors on missing coords", {
 })
 
 test_that("morie_tps_render_district_proportional returns a ggplot", {
-  skip_if_not_installed("ggplot2")
   polys <- data.frame(
     centroid_lat = 43.65 + (0:3) * 0.02,
     centroid_lon = -79.40 + (0:3) * 0.02,
@@ -159,7 +152,6 @@ test_that("morie_tps_render_satscan_panel stubs when llr absent", {
 })
 
 test_that("morie_tps_render_satscan_panel runs when llr supplied", {
-  skip_if_not_installed("ggplot2")
   clusters <- data.frame(lat = c(43.7, 43.65),
                           lon = c(-79.4, -79.45),
                           radius_km = c(1, 2),
@@ -173,7 +165,6 @@ test_that("morie_tps_render_satscan_panel errors on bad input", {
 })
 
 test_that("morie_tps_render_quad returns or is null on minimal data", {
-  skip_if_not_installed("ggplot2")
   set.seed(1L)
   data <- list(
     points = data.frame(

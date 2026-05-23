@@ -107,7 +107,6 @@ test_that("morie_vecm errors on too-short series or bad rank", {
 })
 
 test_that("vines computes partial-correlation matrix and loglik", {
-  skip_if_not_installed("MASS")
   set.seed(0)
   Sigma <- matrix(c(1, 0.5, 0.3, 0.5, 1, 0.4, 0.3, 0.4, 1), 3)
   z <- MASS::mvrnorm(200, c(0, 0, 0), Sigma)
@@ -124,7 +123,6 @@ test_that("vines computes partial-correlation matrix and loglik", {
 })
 
 test_that("vines returns NA estimate when n<3 or d<2", {
-  skip_if_not_installed("MASS")
   r <- morie:::vines(matrix(c(1, 2), ncol = 1))
   expect_true(is.na(r$estimate))
   expect_match(r$method, "n<3")
@@ -472,7 +470,6 @@ test_that("morie_xavier_initialization alias is identical to morie_xavir_xavier_
 })
 
 test_that("morie_xgboost_objective fits a regression model", {
-  skip_if_not_installed("xgboost")
   set.seed(13)
   x <- matrix(rnorm(80), ncol = 4)
   y <- x[, 1] + rnorm(20, sd = 0.1)
@@ -492,7 +489,6 @@ test_that("morie_xgboost_objective fits a regression model", {
 })
 
 test_that("morie_xgboost_objective fits a classification model", {
-  skip_if_not_installed("xgboost")
   set.seed(14)
   x <- matrix(rnorm(80), ncol = 4)
   y <- as.integer(x[, 1] > 0)
@@ -505,7 +501,6 @@ test_that("morie_xgboost_objective fits a classification model", {
 })
 
 test_that("morie_xgboost_objective auto-detects the task and coerces a vector x", {
-  skip_if_not_installed("xgboost")
   set.seed(15)
   x <- rnorm(30)
   y <- x + rnorm(30, sd = 0.1)

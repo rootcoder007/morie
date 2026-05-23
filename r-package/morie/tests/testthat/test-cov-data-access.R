@@ -12,7 +12,6 @@ test_that("morie_fetch reads tsv, xml and html over file://", {
   expect_s3_class(d, "data.frame")
   expect_equal(nrow(d), 2L)
 
-  skip_if_not_installed("xml2")
   xml <- tempfile(fileext = ".xml")
   writeLines("<root><item>1</item><item>2</item></root>", xml)
   on.exit(unlink(xml), add = TRUE)
@@ -77,7 +76,6 @@ test_that(".morie_parse_file rejects an unsupported format", {
 })
 
 test_that("morie_ckan_search parses a mocked package_search response", {
-  skip_if_not_installed("jsonlite")
   fake <- paste0(
     '{"success":true,"result":{"results":[',
     '{"title":"Cannabis Survey","id":"ds-1","resources":[',
@@ -96,7 +94,6 @@ test_that("morie_ckan_search parses a mocked package_search response", {
 })
 
 test_that("morie_ckan_search returns an empty frame on no results", {
-  skip_if_not_installed("jsonlite")
   testthat::local_mocked_bindings(
     .morie_read_text = function(url) {
       '{"success":true,"result":{"results":[]}}'
@@ -109,7 +106,6 @@ test_that("morie_ckan_search returns an empty frame on no results", {
 })
 
 test_that("morie_fetch_arcgis parses a mocked FeatureServer response", {
-  skip_if_not_installed("jsonlite")
   fake <- paste0(
     '{"features":[{"attributes":{"OBJECTID":1,"NAME":"a"}},',
     '{"attributes":{"OBJECTID":2,"NAME":"b"}}],',
@@ -127,7 +123,6 @@ test_that("morie_fetch_arcgis parses a mocked FeatureServer response", {
 })
 
 test_that("morie_fetch_arcgis surfaces an ArcGIS error payload", {
-  skip_if_not_installed("jsonlite")
   testthat::local_mocked_bindings(
     .morie_read_text = function(url) {
       '{"error":{"code":400,"message":"Invalid query"}}'
@@ -141,7 +136,6 @@ test_that("morie_fetch_arcgis surfaces an ArcGIS error payload", {
 })
 
 test_that("morie_fetch dispatches format='arcgis' to morie_fetch_arcgis", {
-  skip_if_not_installed("jsonlite")
   testthat::local_mocked_bindings(
     .morie_read_text = function(url) {
       '{"features":[{"attributes":{"OBJECTID":7}}],"exceededTransferLimit":false}'

@@ -4,8 +4,6 @@
 # resolution tiers of morie_load_dataset().
 
 .cdb2_have_db <- function() {
-  testthat::skip_if_not_installed("DBI")
-  testthat::skip_if_not_installed("RSQLite")
 }
 
 test_that("morie_dataset_info returns metadata and fuzzy-matches", {

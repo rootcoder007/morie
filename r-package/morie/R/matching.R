@@ -252,6 +252,11 @@ morie_matching_common_support <- function(data, treatment,
 # Nearest-neighbour propensity score matching
 # ---------------------------------------------------------------------------
 
+#' @noRd
+.morie_matching_have_cpp <- function(name) {
+  exists(name, envir = asNamespace("morie"), inherits = FALSE)
+}
+
 #' Nearest-neighbour propensity-score matching
 #'
 #' For each treated unit, finds the \code{n_neighbors} closest control units
@@ -279,10 +284,6 @@ morie_matching_common_support <- function(data, treatment,
 #'                                        caliper = 0.2)
 #' }
 #' @export
-.morie_matching_have_cpp <- function(name) {
-  exists(name, envir = asNamespace("morie"), inherits = FALSE)
-}
-
 morie_matching_nearest_neighbor <- function(data, treatment, covariates,
                                             n_neighbors = 1L,
                                             caliper = NULL,

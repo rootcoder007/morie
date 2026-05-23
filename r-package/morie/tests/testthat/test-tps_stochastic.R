@@ -6,7 +6,6 @@
 # without touching disk or network.
 
 set.seed(1L)
-skip_if_not_installed("morie")
 
 .mk_tps_dates <- function(n = 600L, start_year = 2015L, seed = 1L) {
   set.seed(seed)

@@ -392,7 +392,6 @@ test_that("morie_return_level alias matches retlv", {
 })
 
 test_that("morie_random_forest_ensemble runs a small regression forest", {
-  skip_if_not_installed("randomForest")
   set.seed(19)
   X <- matrix(rnorm(120), ncol = 3)
   y <- X[, 1] + 0.5 * X[, 2] + rnorm(40, sd = 0.2)
@@ -414,7 +413,6 @@ test_that("morie_random_forest_ensemble runs a small regression forest", {
 })
 
 test_that("morie_random_forest_ensemble auto-detects a classification task", {
-  skip_if_not_installed("randomForest")
   set.seed(20)
   X <- matrix(rnorm(120), ncol = 3)
   y <- as.integer(X[, 1] > 0)
@@ -427,7 +425,6 @@ test_that("morie_random_forest_ensemble auto-detects a classification task", {
 })
 
 test_that("morie_random_forest_ensemble accepts a max_depth argument", {
-  skip_if_not_installed("randomForest")
   set.seed(21)
   X <- matrix(rnorm(120), ncol = 3)
   y <- X[, 1] + rnorm(40, sd = 0.2)

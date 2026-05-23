@@ -17,15 +17,12 @@ test_that("ingest_cihi_xlsx errors without httr2", {
 
 test_that("ingest_cihi_xlsx errors without readxl", {
   set.seed(1)
-  skip_if_not_installed("httr2")
   skip_if(requireNamespace("readxl", quietly = TRUE))
   expect_error(morie_ingest_cihi_xlsx("http://x/a.xlsx"), "readxl")
 })
 
 test_that("ingest_cihi_xlsx fails clean off-network", {
   set.seed(1)
-  skip_if_not_installed("httr2")
-  skip_if_not_installed("readxl")
   res <- tryCatch(
     morie_ingest_cihi_xlsx("http://127.0.0.1:1/x.xlsx", timeout = 1),
     error = function(e) NULL
@@ -41,8 +38,6 @@ test_that("pick_data_sheet errors without readxl", {
 
 test_that("pick_data_sheet picks largest sheet when readxl present", {
   set.seed(1)
-  skip_if_not_installed("readxl")
-  skip_if_not_installed("writexl")
   tmp <- tempfile(fileext = ".xlsx")
   writexl::write_xlsx(list(
     small = data.frame(a = 1:2),

@@ -34,7 +34,6 @@ test_that("socrata_get errors without httr2", {
 
 test_that("socrata_get fails clean off-network", {
   set.seed(1)
-  skip_if_not_installed("httr2")
   res <- tryCatch(
     morie:::.morie_chicago_socrata_get("http://127.0.0.1:1/x", limit = 1L, timeout = 1),
     error = function(e) NULL

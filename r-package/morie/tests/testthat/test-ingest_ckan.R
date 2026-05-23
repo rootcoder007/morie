@@ -61,7 +61,6 @@ test_that("read_path errors for xlsx/json/parquet without packages", {
 
 test_that("read_path JSON roundtrip with jsonlite installed", {
   set.seed(1)
-  skip_if_not_installed("jsonlite")
   tmp <- tempfile(fileext = ".json")
   jsonlite::write_json(data.frame(a = 1:2, b = c("p", "q")), tmp)
   out <- morie:::.morie_ckan_read_path(tmp, "json")

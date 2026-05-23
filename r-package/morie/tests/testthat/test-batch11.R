@@ -23,7 +23,6 @@ test_that("morie_estimate_irm errors without Suggests packages or returns valid 
       "required for morie_estimate_irm"
     )
   } else {
-    skip_if_not_installed("data.table")
     res <- morie_estimate_irm(df,
       treatment = "T", outcome = "Y",
       covariates = c("X1", "X2", "X3"),

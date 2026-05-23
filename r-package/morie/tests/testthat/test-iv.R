@@ -168,7 +168,6 @@ test_that("morie_iv_conditional_lr runs", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_iv_sargan returns NA when just-identified (fallback)", {
-  skip_if_not_installed("ivreg")
   df <- make_iv_data(n = 400)
   out <- morie_iv_sargan(df, "y", "d", "z")
   expect_true(all(c("statistic", "p_value", "name") %in% names(out)))

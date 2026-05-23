@@ -53,7 +53,6 @@ test_that("mrm_tps_moran_clustering runs on TPS lat/long data", {
 })
 
 test_that("mrm_tps_load_hawkes_refit reads a manifest, errors if absent", {
-  skip_if_not_installed("jsonlite")
   expect_error(mrm_tps_load_hawkes_refit("/no/such/manifest.json"))
   mf <- tempfile("hawkes-", fileext = ".json")
   on.exit(unlink(mf), add = TRUE)

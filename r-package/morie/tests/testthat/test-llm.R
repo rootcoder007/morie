@@ -158,8 +158,6 @@ test_that("request_completion errors without httr2/jsonlite", {
 
 test_that("request_completion fails clean off-network", {
   set.seed(1)
-  skip_if_not_installed("httr2")
-  skip_if_not_installed("jsonlite")
   res <- tryCatch(
     morie_llm_request_completion("http://127.0.0.1:1", "m",
                                  list(list(role = "user", content = "x")),

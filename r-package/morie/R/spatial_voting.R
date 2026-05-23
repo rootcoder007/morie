@@ -408,6 +408,11 @@ morie_spatial_voting_double_centering <- function(D) {
   .sv_double_centering(D)
 }
 
+#' @noRd
+.sv_have_cpp <- function(name = "morie_spatial_classical_mds_cpp") {
+  exists(name, envir = asNamespace("morie"), inherits = FALSE)
+}
+
 #' Classical (metric) multidimensional scaling
 #'
 #' Torgerson scaling via eigendecomposition of the double-centred matrix.
@@ -421,10 +426,6 @@ morie_spatial_voting_double_centering <- function(D) {
 #' D <- as.matrix(dist(matrix(rnorm(40), 10)))
 #' morie_spatial_voting_classical_mds(D, n_dims = 2)
 #' @export
-.sv_have_cpp <- function(name = "morie_spatial_classical_mds_cpp") {
-  exists(name, envir = asNamespace("morie"), inherits = FALSE)
-}
-
 morie_spatial_voting_classical_mds <- function(D, n_dims = 2L) {
   D <- as.matrix(D)
   if (.sv_have_cpp("morie_spatial_classical_mds_cpp")) {

@@ -80,10 +80,6 @@ test_that("morie_estimate_irm errors when DoubleML is unavailable", {
 })
 
 test_that("morie_estimate_irm runs the DoubleML IRM when packages are present", {
-  skip_if_not_installed("DoubleML")
-  skip_if_not_installed("mlr3")
-  skip_if_not_installed("mlr3learners")
-  skip_if_not_installed("data.table")
   set.seed(1)
   n <- 240
   X <- matrix(stats::rnorm(n * 4), n, 4)

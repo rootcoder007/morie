@@ -82,6 +82,11 @@ morie_dsp_alpha_trimmed_mean <- function(x, window = 5L, alpha = 0.2) {
   y
 }
 
+#' @noRd
+.morie_dsp_cpp_ok <- function(name) {
+  exists(name, envir = asNamespace("morie"), inherits = FALSE)
+}
+
 #' Median filter
 #'
 #' Sliding-window median. Robust to impulsive (salt-and-pepper) noise.
@@ -91,10 +96,6 @@ morie_dsp_alpha_trimmed_mean <- function(x, window = 5L, alpha = 0.2) {
 #' @return Filtered vector, length(x).
 #' @references Rangayyan & Krishnan (2015), Ch. 3, sec. 3.4.
 #' @export
-.morie_dsp_cpp_ok <- function(name) {
-  exists(name, envir = asNamespace("morie"), inherits = FALSE)
-}
-
 morie_dsp_median_filter <- function(x, kernel_size = 5L) {
   x <- as.numeric(x)
   k <- as.integer(kernel_size)

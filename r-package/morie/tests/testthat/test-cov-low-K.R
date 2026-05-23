@@ -39,7 +39,6 @@ test_that("morie_estimate_gate returns NA row for tiny / single-treatment subgro
 
 # ==== dtrsp.R ====
 test_that("morie_decision_tree_split entropy criterion runs on small data", {
-  testthat::skip_if_not_installed("rpart")
   set.seed(1)
   x <- matrix(rnorm(80), 40, 2)
   y <- as.factor(rbinom(40, 1, 0.5))
@@ -120,7 +119,6 @@ test_that("morie_inspect_output handles unsupported extensions, csv + rds", {
 })
 
 test_that("morie_verify_statistical_output handles missing file", {
-  testthat::skip_if_not_installed("jsonlite")
   res_missing <- morie_verify_statistical_output(tempfile(fileext = ".json"))
   expect_false(res_missing$passed)
 })

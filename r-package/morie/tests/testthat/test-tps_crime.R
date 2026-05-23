@@ -5,7 +5,6 @@
 # All driven by named lists of synthetic TPS data.frames.
 
 set.seed(1L)
-skip_if_not_installed("morie")
 
 .mk_tps_cat <- function(n = 120L, seed = 1L, n_hoods = 15L) {
   set.seed(seed)

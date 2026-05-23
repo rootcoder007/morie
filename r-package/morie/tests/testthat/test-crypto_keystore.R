@@ -38,15 +38,11 @@ test_that("resolve_path expands ~", {
 
 test_that("read_store errors on missing keystore", {
   set.seed(1)
-  skip_if_not_installed("sodium")
-  skip_if_not_installed("jsonlite")
   expect_error(morie:::.morie_read_store(tempfile()), "not found")
 })
 
 test_that("create -> store -> load roundtrip recovers sk", {
   set.seed(1)
-  skip_if_not_installed("sodium")
-  skip_if_not_installed("jsonlite")
   path <- .tmp_keystore()
   on.exit(unlink(path, force = TRUE))
 
@@ -67,8 +63,6 @@ test_that("create -> store -> load roundtrip recovers sk", {
 
 test_that("keystore_list returns stored key names", {
   set.seed(1)
-  skip_if_not_installed("sodium")
-  skip_if_not_installed("jsonlite")
   path <- .tmp_keystore()
   on.exit(unlink(path, force = TRUE))
   pwd <- "pw"
@@ -81,8 +75,6 @@ test_that("keystore_list returns stored key names", {
 
 test_that("create rejects existing keystore", {
   set.seed(1)
-  skip_if_not_installed("sodium")
-  skip_if_not_installed("jsonlite")
   path <- .tmp_keystore()
   on.exit(unlink(path, force = TRUE))
   morie_crypto_keystore_create("pw", path = path)
@@ -91,8 +83,6 @@ test_that("create rejects existing keystore", {
 
 test_that("store rejects non-raw pk/sk + non-string name", {
   set.seed(1)
-  skip_if_not_installed("sodium")
-  skip_if_not_installed("jsonlite")
   path <- .tmp_keystore()
   on.exit(unlink(path, force = TRUE))
   morie_crypto_keystore_create("pw", path = path)
@@ -102,8 +92,6 @@ test_that("store rejects non-raw pk/sk + non-string name", {
 
 test_that("load errors when key not present", {
   set.seed(1)
-  skip_if_not_installed("sodium")
-  skip_if_not_installed("jsonlite")
   path <- .tmp_keystore()
   on.exit(unlink(path, force = TRUE))
   morie_crypto_keystore_create("pw", path = path)
@@ -112,8 +100,6 @@ test_that("load errors when key not present", {
 
 test_that("load with wrong password fails clean", {
   set.seed(1)
-  skip_if_not_installed("sodium")
-  skip_if_not_installed("jsonlite")
   path <- .tmp_keystore()
   on.exit(unlink(path, force = TRUE))
   morie_crypto_keystore_create("right", path = path)
@@ -123,7 +109,6 @@ test_that("load with wrong password fails clean", {
 
 test_that("derive_key requires raw salt + single-string password", {
   set.seed(1)
-  skip_if_not_installed("sodium")
   expect_error(morie:::.morie_derive_key("pw", "notraw"), "raw")
   expect_error(morie:::.morie_derive_key(c("a", "b"), as.raw(1:4)), "single")
 })

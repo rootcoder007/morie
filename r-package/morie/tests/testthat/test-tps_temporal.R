@@ -5,7 +5,6 @@
 # OCC_MONTH / OCC_DOW / OCC_HOUR drive each callable.
 
 set.seed(1L)
-skip_if_not_installed("morie")
 
 .mk_yoy <- function(n = 400L, seed = 1L, start = 2010L, end = 2024L) {
   set.seed(seed)

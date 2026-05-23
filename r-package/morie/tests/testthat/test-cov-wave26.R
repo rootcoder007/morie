@@ -114,7 +114,6 @@ test_that("data_access: download ext fallback + remaining format switch", {
   expect_equal(morie:::.morie_detect_format("file:///x/y.xls"), "xlsx")
   expect_equal(morie:::.morie_detect_format("file:///x/y.htm"), "html")
   expect_equal(morie:::.morie_detect_format("http://h/q?a=1"), "csv")
-  skip_if_not_installed("readxl")
   p <- readxl::readxl_example("datasets.xlsx") # ships with readxl
   expect_s3_class(morie:::.morie_parse_file(p, "xlsx", TRUE), "data.frame")
 })
@@ -133,8 +132,6 @@ test_that("morie_builtin_db / .fuzzy_match_key cover their tails", {
 })
 
 test_that("morie_load_dataset covers the local-xlsx, CKAN and final stop", {
-  testthat::skip_if_not_installed("DBI")
-  testthat::skip_if_not_installed("RSQLite")
   cat <- morie_dataset_catalog()
   # CKAN datastore branch: a key with a ckan_resource_id, no local file
   ck <- cat$key[nzchar(cat$ckan_resource_id) & !file.exists(cat$local_path)]
@@ -155,7 +152,6 @@ test_that("morie_load_dataset covers the local-xlsx, CKAN and final stop", {
 })
 
 test_that("morie_download_bootstrap covers the unknown-key + CKAN-error path", {
-  testthat::skip_if_not_installed("DBI")
   testthat::local_mocked_bindings(
     morie_fetch_ckan = function(...) stop("simulated CKAN failure"),
     .package = "morie"

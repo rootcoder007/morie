@@ -96,7 +96,7 @@ morie_crypto_keystore_create <- function(password,
   if (file.exists(p)) {
     stop(sprintf("Keystore already exists: %s", p), call. = FALSE)
   }
-  salt <- sodium::random(16L)
+  salt <- sodium::random(32L)
   invisible(.morie_derive_key(password, salt))
   store <- list(salt = .morie_raw_to_hex(salt), keys = list())
   .morie_write_store(store, path)
