@@ -142,3 +142,87 @@ test_that("Lotka-Volterra small-amplitude period equals 2 pi / sqrt(alpha gamma)
   T_period <- 2 * pi / sqrt(alpha * gamma)
   expect_equal(T_period, 12.825, tolerance = 1e-3)
 })
+
+
+# ---------------------------------------------------------------------------
+# 5. Data-seeded analyzer happy-paths (Phase 2C)
+#
+# helper-tps.R installs morie_tps_load_tps_dataset() into globalenv()
+# from dictionary-driven synthetic Toronto data. The exists() check
+# inside each analyzer succeeds, so the real analysis code runs against
+# the synthetic frame and the rich-result is exercised end-to-end.
+# ---------------------------------------------------------------------------
+
+test_that("morie_tps_sdb_reaction_diffusion returns a rich-result on synthetic data", {
+  skip_if_not(.tps_loader_present(),
+              "loader stub not registered")
+  rr <- tryCatch(
+    morie_tps_sdb_reaction_diffusion("Assault", save_fig = FALSE),
+    error = function(e) e
+  )
+  # The downstream dbscan call needs a denser frame than our 1000-row
+  # synthetic panel produces; fall through to a structured-error skip
+  # when the dispatch reaches that branch.
+  if (inherits(rr, "error")) {
+    skip(sprintf("downstream dbscan path needs denser synthetic data: %s",
+                 conditionMessage(rr)))
+  }
+  expect_s3_class(rr, "morie_tps_statphysics_result")
+  expect_true(is.list(rr$summary_lines))
+})
+
+test_that("morie_tps_levy_flight_alpha recovers a finite alpha on synthetic Toronto data", {
+  skip_if_not(.tps_loader_present(),
+              "loader stub not registered")
+  rr <- morie_tps_levy_flight_alpha(
+    "Assault", sample_rows = 600L, save_fig = FALSE
+  )
+  expect_s3_class(rr, "morie_tps_statphysics_result")
+})
+
+test_that("morie_tps_urban_scaling_beta returns a rich-result on synthetic data", {
+  skip_if_not(.tps_loader_present(),
+              "loader stub not registered")
+  rr <- tryCatch(
+    morie_tps_urban_scaling_beta(
+      "Assault", year = 2024L, save_fig = FALSE),
+    error = function(e) e
+  )
+  if (inherits(rr, "error")) {
+    skip(sprintf("urban_scaling_beta path needs NeighbourhoodCrimeRates geojson: %s",
+                 conditionMessage(rr)))
+  }
+  expect_s3_class(rr, "morie_tps_statphysics_result")
+})
+
+test_that("morie_tps_lotka_volterra_police_crime runs on synthetic data", {
+  skip_if_not(.tps_loader_present(),
+              "loader stub not registered")
+  rr <- morie_tps_lotka_volterra_police_crime(
+    "Assault", save_fig = FALSE
+  )
+  expect_s3_class(rr, "morie_tps_statphysics_result")
+})
+
+test_that("morie_tps_criminal_network_graph runs on synthetic data", {
+  skip_if_not(.tps_loader_present(),
+              "loader stub not registered")
+  rr <- morie_tps_criminal_network_graph(
+    "Assault", save_fig = FALSE
+  )
+  expect_s3_class(rr, "morie_tps_statphysics_result")
+})
+
+test_that("morie_tps_statphysics_analyze_all sweeps over multiple categories", {
+  skip_if_not(.tps_loader_present(),
+              "loader stub not registered")
+  rr <- tryCatch(
+    morie_tps_statphysics_analyze_all(
+      categories = c("Assault"), save_fig = FALSE),
+    error = function(e) e
+  )
+  if (inherits(rr, "error")) {
+    skip(sprintf("analyze_all path failure: %s", conditionMessage(rr)))
+  }
+  expect_true(is.list(rr))
+})

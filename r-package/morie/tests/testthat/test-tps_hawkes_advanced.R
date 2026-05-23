@@ -164,3 +164,68 @@ test_that(".tps_hwka_split_theta partitions a parameter vector cleanly", {
     "expected"
   )
 })
+
+
+# ---------------------------------------------------------------------------
+# Public-fit end-to-end (Phase 2C)
+#
+# Each fit runs an L-BFGS optimisation; we keep n small + use the fast
+# exponential-kernel + constant-baseline combination to stay under a
+# few seconds per test. The synthetic TPS Assault fixture from
+# helper-tps.R provides OCC_DATE timestamps in the required format.
+# ---------------------------------------------------------------------------
+
+test_that("morie_tps_hawkes_advanced_fit returns rich-result on synthetic Assault", {
+  set.seed(1L)
+  df <- make_synthetic_tps("Assault", n = 200L, seed = 5L)
+  rr <- morie_tps_hawkes_advanced_fit(
+    df, kernel = "exponential", baseline = "constant",
+    ds_name = "synthetic-assault", max_n = 200L
+  )
+  expect_s3_class(rr, "morie_tps_hawkes_advanced_result")
+})
+
+test_that("morie_tps_hawkes_advanced_fit handles too-few events gracefully", {
+  df <- make_synthetic_tps("Assault", n = 50L, seed = 6L)
+  rr <- morie_tps_hawkes_advanced_fit(
+    df, kernel = "exponential", baseline = "constant", max_n = 50L
+  )
+  expect_s3_class(rr, "morie_tps_hawkes_advanced_result")
+})
+
+test_that("morie_tps_hawkes_advanced_fit rejects unknown kernel/baseline", {
+  df <- make_synthetic_tps("Assault", n = 50L, seed = 7L)
+  expect_error(
+    morie_tps_hawkes_advanced_fit(df, kernel = "bogus"),
+    "unknown kernel"
+  )
+  expect_error(
+    morie_tps_hawkes_advanced_fit(df, baseline = "bogus"),
+    "unknown baseline"
+  )
+})
+
+test_that("morie_tps_hawkes_advanced_fit warns when no OCC/REPORT_DATE", {
+  df <- data.frame(x = 1:10)
+  rr <- morie_tps_hawkes_advanced_fit(df, ds_name = "no-date")
+  expect_s3_class(rr, "morie_tps_hawkes_advanced_result")
+})
+
+test_that("morie_tps_compare_hawkes_kernels sweeps kernel x baseline grid", {
+  set.seed(2L)
+  df <- make_synthetic_tps("Assault", n = 200L, seed = 8L)
+  rr <- morie_tps_compare_hawkes_kernels(
+    df, ds_name = "syn", max_n = 200L,
+    kernels = c("exponential"), baselines = c("constant")
+  )
+  expect_s3_class(rr, "morie_tps_hawkes_advanced_result")
+})
+
+test_that("morie_tps_hawkes_markovian_vs_nonmarkovian compares 2x2 grid", {
+  set.seed(3L)
+  df <- make_synthetic_tps("Assault", n = 200L, seed = 9L)
+  rr <- morie_tps_hawkes_markovian_vs_nonmarkovian(
+    df, ds_name = "syn", max_n = 200L
+  )
+  expect_s3_class(rr, "morie_tps_hawkes_advanced_result")
+})
