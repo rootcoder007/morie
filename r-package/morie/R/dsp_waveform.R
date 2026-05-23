@@ -325,9 +325,12 @@ morie_dsp_higuchi_fd <- function(x, kmax = 10L) {
   for (k in seq_len(kmax)) {
     lm_sum <- 0
     for (m in seq_len(k)) {
-      n_pts <- (n - m) %/% k
+      n_pts <- (n - m) %/% k  # Higuchi (1988) M = floor((N-m)/k)
       if (n_pts < 2L) next
-      idx <- seq.int(0L, n_pts - 1L) * k + m
+      # Need M+1 indices to get M differences (matches Higuchi eq 1 exactly).
+      # Earlier `seq(0, n_pts-1)` gave only M-1 differences.
+      idx <- seq.int(0L, n_pts) * k + m
+      idx <- idx[idx <= n]
       seg <- x[idx]
       lm_sum <- lm_sum + sum(abs(diff(seg))) * (n - 1) / (n_pts * k)
     }

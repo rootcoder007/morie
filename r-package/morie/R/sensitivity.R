@@ -568,10 +568,17 @@ manski_bounds <- function(outcome_treated, outcome_control,
   upper <- e1 * p1 + y_max * p0 - (e0 * p0 + y_min * p1)
   lower_s <- e1 - e0 - (y_max - y_min) * (1 - p1)
   upper_s <- e1 - e0 + (y_max - y_min) *      p1
-  list(lower_bound = min(lower, lower_s),
-       upper_bound = max(upper, upper_s),
+  # When two valid lower bounds (resp. upper bounds) are available,
+  # the TIGHTER (more informative) lower bound is the LARGER one,
+  # and the tighter upper bound is the SMALLER one. v0.9.5.6+ uses
+  # the strict-Manski max/min combination; pre-v0.9.5.6 took the
+  # loosest (widest) interval which over-reported uncertainty.
+  lo <- max(lower, lower_s)
+  hi <- min(upper, upper_s)
+  list(lower_bound = lo,
+       upper_bound = hi,
        point_estimate = e1 - e0,
-       width = max(upper, upper_s) - min(lower, lower_s))
+       width = hi - lo)
 }
 
 

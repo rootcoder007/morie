@@ -31,7 +31,7 @@
   if (length(t) != length(e))
     stop("time and event must have equal length.", call. = FALSE)
   ok <- is.finite(t) & is.finite(e) & t >= 0
-  list(time = t[ok], event = as.integer(e[ok]))
+  list(time = t[ok], event = as.integer(e[ok]), ok = ok)
 }
 
 #' Kaplan-Meier product-limit survival estimator.
@@ -113,7 +113,10 @@ morie_survival_logrank <- function(time, event, group,
   .req_survival()
   weight <- match.arg(weight)
   v <- .validate_te(time, event)
-  g <- group[seq_along(v$time)]
+  # Align group with the SAME rows that v kept; previously this
+  # took the first length(v$time) entries of group, which desyncs
+  # whenever any row was filtered.
+  g <- group[v$ok]
   rho <- switch(weight, logrank = 0, peto = 1, gehan = 1, tarone = 1)
   sd <- survival::survdiff(survival::Surv(v$time, v$event) ~ g, rho = rho)
   df <- length(sd$n) - 1
@@ -289,7 +292,7 @@ morie_survival_parametric <- function(time, event,
 morie_survival_concordance <- function(time, event, risk_score) {
   .req_survival()
   v <- .validate_te(time, event)
-  rs <- risk_score[seq_along(v$time)]
+  rs <- risk_score[v$ok]
   c_obj <- survival::concordance(
     survival::Surv(v$time, v$event) ~ rs, reverse = TRUE
   )
@@ -397,7 +400,7 @@ morie_survival_finegray <- function(data, duration_col, event_col,
 morie_survival_hr <- function(time, event, group, confidence = 0.95) {
   .req_survival()
   v <- .validate_te(time, event)
-  g <- group[seq_along(v$time)]
+  g <- group[v$ok]
   if (length(unique(g)) != 2)
     stop("hazard_ratio requires exactly 2 groups.", call. = FALSE)
   x <- as.integer(g == sort(unique(g))[2])

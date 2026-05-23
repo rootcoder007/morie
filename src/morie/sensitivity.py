@@ -752,11 +752,16 @@ def manski_bounds(
     lower_simple = e1 - e0 - (y_max - y_min) * (1 - p1)
     upper_simple = e1 - e0 + (y_max - y_min) * p1
 
+    # Two valid lower (resp. upper) bounds: keep the TIGHTER one.
+    # v0.9.5.6+ uses the strict-Manski max(lo)/min(hi) combination;
+    # pre-v0.9.5.6 picked min/max which over-reported uncertainty.
+    lo = max(lower, lower_simple)
+    hi = min(upper, upper_simple)
     return {
-        "lower_bound": float(min(lower, lower_simple)),
-        "upper_bound": float(max(upper, upper_simple)),
+        "lower_bound": float(lo),
+        "upper_bound": float(hi),
         "point_estimate": float(e1 - e0),
-        "width": float(max(upper, upper_simple) - min(lower, lower_simple)),
+        "width": float(hi - lo),
     }
 
 

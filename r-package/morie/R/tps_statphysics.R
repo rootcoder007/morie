@@ -399,7 +399,14 @@ morie_tps_levy_flight_alpha <- function(category = "Assault",
                           length(steps), lmin_km)
     ))
   }
-  n <- length(steps)
+  # Hill MLE: strictly drop ties at the lower bound so log(s/lmin)=0
+  # terms don't bias alpha upward (steps == lmin_km contribute 0 to
+  # the denominator but still increment n). v0.9.5.6+ uses strict `>`
+  # per the textbook Hill estimator; the prior `>=` slightly
+  # over-estimated alpha when many values equalled the floor.
+  mask  <- steps > lmin_km
+  steps <- steps[mask]
+  n     <- length(steps)
   alpha <- 1 + n / sum(log(steps / lmin_km))
   set.seed(11L)
   boots <- vapply(seq_len(200L), function(i) {

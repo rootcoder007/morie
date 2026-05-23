@@ -270,13 +270,14 @@ Rcpp::List morie_spatial_classical_mds_cpp(const arma::mat& D, int n_dims) {
             d_model(j, i) = dij;
         }
     }
+    // v0.9.5.6+: Kruskal stress-1 normalises by sum(D^2), not sum(d_model^2).
     double num = 0.0, den = 0.0;
     for (arma::uword i = 0; i < n; ++i) {
         for (arma::uword j = 0; j < n; ++j) {
             if (D(i, j) > 0.0) {
                 const double r = d_model(i, j) - D(i, j);
                 num += r * r;
-                den += d_model(i, j) * d_model(i, j);
+                den += D(i, j) * D(i, j);
             }
         }
     }

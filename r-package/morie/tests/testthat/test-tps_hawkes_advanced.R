@@ -51,11 +51,11 @@ test_that(".tps_hwka_kernel_density(weibull) matches dweibull", {
 })
 
 test_that(".tps_hwka_kernel_density(lomax) matches its analytic form", {
-  # f(u) = (alpha - 1) c^{alpha-1} (u + c)^{-alpha}
+  # v0.9.5.6+ scipy form: f(u) = alpha * c^alpha * (u + c)^{-(alpha+1)}
   alpha <- 3.0; c_ <- 1.0
   u <- c(0, 0.5, 1, 2, 5)
   got <- morie:::.tps_hwka_kernel_density(u, "lomax", c(alpha, c_))
-  want <- (alpha - 1) * c_^(alpha - 1) * (u + c_)^(-alpha)
+  want <- alpha * c_^alpha * (u + c_)^(-(alpha + 1))
   expect_equal(got, want, tolerance = 1e-10)
 })
 
@@ -89,10 +89,10 @@ test_that(".tps_hwka_kernel_cdf(weibull) matches pweibull", {
 })
 
 test_that(".tps_hwka_kernel_cdf(lomax) hits closed-form anchor", {
-  # F(u) = 1 - (c / (u + c))^(alpha - 1).
-  # At alpha=3, c=1, u=1: F = 1 - (1/2)^2 = 0.75 exactly.
+  # v0.9.5.6+ scipy form: F(u) = 1 - (c / (u + c))^alpha.
+  # At alpha=3, c=1, u=1: F = 1 - (1/2)^3 = 0.875 exactly.
   got <- morie:::.tps_hwka_kernel_cdf(1, "lomax", c(3, 1))
-  expect_equal(got, 0.75, tolerance = 1e-12)
+  expect_equal(got, 0.875, tolerance = 1e-12)
 })
 
 

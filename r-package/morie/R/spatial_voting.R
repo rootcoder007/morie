@@ -206,8 +206,16 @@ morie_spatial_voting_aldrich_mckelvey <- function(Z,
     for (j in seq_len(n_stim)) {
       valid <- mask[, j]
       if (sum(valid) < 1L) next
-      num  <- sum((Z[valid, j] - alpha[valid]) / beta[valid])
-      zhat[j] <- num / sum(valid)
+      # v0.9.5.6+: Aldrich-McKelvey (1977) precision-weighted stimulus
+      # update z_j = sum_i beta_i (Z_ij - alpha_i) / sum_i beta_i^2,
+      # NOT the unweighted mean. The unweighted form biases the
+      # estimate under heterogeneous respondent reliability.
+      denom <- sum(beta[valid]^2)
+      if (denom < 1e-12) {
+        zhat[j] <- mean((Z[valid, j] - alpha[valid]) / beta[valid])
+      } else {
+        zhat[j] <- sum(beta[valid] * (Z[valid, j] - alpha[valid])) / denom
+      }
     }
     zhat <- zhat - mean(zhat)
     if (stats::sd(zhat) > 0) zhat <- zhat / stats::sd(zhat)
@@ -431,9 +439,11 @@ morie_spatial_voting_classical_mds <- function(D, n_dims = 2L) {
   d_model <- .sv_pairwise_dist(coords)
   valid <- D > 0
   stress <- 0
-  if (sum(valid) > 0 && sum(d_model[valid] ^ 2) > 0) {
+  # v0.9.5.6+: Kruskal stress-1 normalises by sum(D^2), not by
+  # sum(d_model^2) (which collapses to zero when the model is underfit).
+  if (sum(valid) > 0 && sum(D[valid] ^ 2) > 0) {
     stress <- sqrt(sum((d_model[valid] - D[valid]) ^ 2) /
-                   sum(d_model[valid] ^ 2))
+                   sum(D[valid] ^ 2))
   }
   total <- sum(abs(vals))
   fit <- if (total > 0) sum(pos) / total else 0
@@ -1752,8 +1762,15 @@ morie_spatial_voting_wordfish <- function(dtm,
   for (iter in seq_len(max_iter)) {
     omega_old <- omega
     if (.sv_have_cpp("morie_spatial_wordfish_omega_update_cpp")) {
+      # Note: the C++ kernel internally standardises omega WITHOUT
+      # rescaling beta. Apply the beta/alpha correction here so the
+      # parameterisation eta = psi + alpha + beta*omega is invariant
+      # across iterations (v0.9.5.6+ strict-identifiability fix).
+      m_om <- mean(omega); s_om <- stats::sd(omega) + 1e-12
       omega <- as.numeric(morie_spatial_wordfish_omega_update_cpp(
         dtm, psi, alpha, beta, omega))
+      alpha <- alpha + beta * m_om   # absorb mean shift into alpha
+      beta  <- beta * s_om           # rescale beta to standardised scale
     } else {
       for (i in seq_len(n_docs)) {
         eta <- psi[i] + alpha + beta * omega[i]
@@ -1762,7 +1779,15 @@ morie_spatial_voting_wordfish <- function(dtm,
         h <- -sum(beta ^ 2 * mu) - 1
         omega[i] <- omega[i] - g / h
       }
-      omega <- (omega - mean(omega)) / (stats::sd(omega) + 1e-12)
+      # v0.9.5.6+: couple the omega standardisation with an alpha + beta
+      # rescale so eta = psi + alpha + beta*omega is invariant. Pre-
+      # v0.9.5.6 only standardised omega which silently distorted beta
+      # and degraded convergence.
+      m_om  <- mean(omega)
+      s_om  <- stats::sd(omega) + 1e-12
+      omega <- (omega - m_om) / s_om
+      alpha <- alpha + beta * m_om
+      beta  <- beta * s_om
     }
     for (j in seq_len(n_words)) {
       eta <- psi + alpha[j] + beta[j] * omega

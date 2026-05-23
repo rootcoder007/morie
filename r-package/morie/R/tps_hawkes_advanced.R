@@ -130,9 +130,10 @@ NULL
     },
     lomax = {
       alpha <- psi[1]; c_ <- psi[2]
-      # log-space: (alpha - 1) c^{alpha-1} (u + c)^{-alpha}
-      log_d <- log(alpha - 1) + (alpha - 1) * log(c_) -
-               alpha * log(u + c_)
+      # v0.9.5.6+: scipy.stats.lomax convention.
+      # log-space: alpha * c^alpha * (u + c)^{-(alpha+1)}
+      log_d <- log(alpha) + alpha * log(c_) -
+               (alpha + 1) * log(u + c_)
       exp(log_d)
     },
     stop(sprintf("unknown kernel kind: %s", kind))
@@ -149,7 +150,7 @@ NULL
     exponential = 1 - exp(-psi[1] * u),
     gamma = stats::pgamma(u, shape = psi[1], rate = psi[2]),
     weibull = 1 - exp(-(u / psi[2]) ^ psi[1]),
-    lomax = 1 - (psi[2] / (u + psi[2])) ^ (psi[1] - 1),
+    lomax = 1 - (psi[2] / (u + psi[2])) ^ psi[1],  # v0.9.5.6+: scipy
     stop(sprintf("unknown kernel kind: %s", kind))
   )
 }
@@ -228,7 +229,7 @@ NULL
   if (eta <= 1e-6 || eta >= 0.999) return(1e12)
   if (any(psi <= 1e-6)) return(1e12)
   if (identical(kernel_kind, "lomax") && psi[1] <= 1.001) {
-    return(1e12)  # need alpha > 1 for finite mean
+    return(1e12)  # need alpha > 1 for finite mean (scipy convention)
   }
 
   n <- length(t)

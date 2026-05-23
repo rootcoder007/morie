@@ -258,11 +258,18 @@ morie_iv_wald <- function(data, outcome, treatment, instrument, alpha = 0.05) {
   num <- mean(y[z == 1]) - mean(y[z == 0])
   den <- mean(d[z == 1]) - mean(d[z == 0])
   beta <- num / den
-  # delta-method SE
+  # Delta-method SE for beta = num/den, with the often-omitted
+  # Cov(num, den) term that previous morie (and most textbooks) drop.
+  # Per-z-stratum: cov(mean(y), mean(d)) = cov(y, d) / n.
   n1 <- sum(z == 1); n0 <- sum(z == 0)
   v_y <- stats::var(y[z == 1]) / n1 + stats::var(y[z == 0]) / n0
   v_d <- stats::var(d[z == 1]) / n1 + stats::var(d[z == 0]) / n0
-  se  <- sqrt(v_y / den^2 + (num^2 / den^4) * v_d)
+  c_yd <- stats::cov(y[z == 1], d[z == 1]) / n1 +
+          stats::cov(y[z == 0], d[z == 0]) / n0
+  se  <- sqrt(max(v_y / den^2 +
+                    (num^2 / den^4) * v_d -
+                    2 * (num / den^3) * c_yd,
+                  0))
   .morie_iv_result(c(LATE = beta), c(LATE = se), length(y),
                    method = "wald (LATE)", alpha = alpha)
 }
@@ -540,7 +547,16 @@ morie_iv_jive <- function(data, outcome, endogenous, instruments,
   if (any(abs(1 - hd) < 1e-10))
     stop("JIVE: leverage of 1 detected (perfect fit); cannot leave-one-out.",
          call. = FALSE)
-  Xhat <- (H %*% X - hd * X) / (1 - hd)  # vector-recycle, not n*n diag
+  # JIVE projects ONLY the endogenous columns (Angrist-Imbens-Krueger 1999);
+  # the intercept and exogenous columns pass through unchanged. The earlier
+  # form `Xhat <- (H %*% X - hd * X) / (1 - hd)` projected every column,
+  # including the intercept + exogenous controls, which biases the IV
+  # estimator. Matches src/morie/iv.py:1604-1613.
+  D <- as.matrix(df[, endogenous, drop = FALSE]); storage.mode(D) <- "double"
+  D_hat_full <- H %*% D
+  D_hat_jive <- (D_hat_full - hd * D) / (1 - hd)
+  Xhat <- X
+  Xhat[, endogenous] <- D_hat_jive
   beta <- as.numeric(solve(crossprod(Xhat, X), crossprod(Xhat, y)))
   names(beta) <- colnames(X)
   resid <- as.numeric(y - X %*% beta)

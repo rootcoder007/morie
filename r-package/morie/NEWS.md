@@ -1,3 +1,57 @@
+# morie 0.9.5.6 - 2026-05-23
+
+Formula corrections (affect Python AND R sibling identically):
+
+* `iv.morie_iv_wald` / `iv.wald_estimator` Wald-LATE delta-method SE
+  previously omitted the Cov(num, den) term, biasing the SE under
+  realistic Y-D correlation. Now includes `- 2*(num/den^3) *
+  cov(y, d) / n` per-stratum aggregation.
+* `dsp_waveform.morie_dsp_higuchi_fd` / `_waveform.higuchi_fd`
+  fractal dimension previously summed M-1 differences instead of M
+  (Higuchi 1988 eq 1 specifies floor((N-m)/k) summands). Fixed by
+  using M+1 indices so diff() yields M terms.
+
+R-side feature additions:
+
+* 4 new RcppArmadillo C++ kernel files (`src/morie_hawkes.cpp`,
+  `morie_dsp.cpp`, `morie_matching.cpp`, `morie_spatial.cpp`)
+  exposing 14 // [[Rcpp::export]] symbols.
+* R wrappers in `R/{tps_hawkes_advanced,dsp_filters,matching,
+  spatial_voting}.R` now dispatch to the C++ kernels when the
+  compiled .so is loaded, falling back to pure-R otherwise.
+* DESCRIPTION: `LinkingTo: Rcpp, RcppArmadillo` (was: Rcpp).
+
+Other fixes carried from the 5-layer review on 2026-05-22 (all
+Python-parity-verified before applying):
+
+* `R/survival.R` `.validate_te` now returns `ok` mask; KM/HR/concordance
+  callers re-align `group`/`risk_score` by mask instead of `seq_along`.
+* `R/iv.R` JIVE projects only the endogenous columns (was: every
+  column including intercept and exogenous controls), matching
+  `src/morie/iv.py:1604-1613`.
+* `R/did.R` `morie_did_aggregate_gt_att` SE uses `k = cell count`
+  (was: `nrow(g)`, equivalent only when nrow(g)==1).
+* `R/did.R` `morie_did_test_parallel_trends` returns
+  `joint_chi2 + joint_df`, keeps `joint_f_stat` as alias.
+* `R/inference.R` Clopper-Pearson exact CI handles `successes==0`
+  and `successes==n` edges instead of calling `qbeta(., 0, .)`.
+* `R/weights.R` `morie_weights_brr` warns on odd-size strata.
+* `R/spatial_voting.R` Hare 2018 + King 2003 citation corrections.
+* `R/tps_statphysics.R` Helbing 2010 venue corrected (NJP not PNAS).
+
+Earlier from 2026-05-22 marathon (already in 0.9.5.5 in tree):
+
+* Cox-Snell residuals use per-row `y[,"status"]` not scalar `nevent`.
+* JKn replicate weights rewritten to Wolter 2007 form (one PSU per
+  replicate, scale survivors by n_h/(n_h-1)); aggregator uses
+  `((n_h-1)/n_h)*sum_{i in h} diffs_sq_i`.
+* Mann-Whitney effect size `r = Z/sqrt(n1+n2)` (was: `n1*n2`).
+* Li-Ji `n_effective_tests` sums fractional part for all eigenvalues.
+* Sampling proportional alloc keeps stratum names so weights aren't NA.
+* Abadie-Imbens SE splits by treatment, denom is `n_treated^2`.
+* tps_statphysics inspection-game payoff matrix transposed back to
+  match Python convention.
+
 # morie 0.9.5.5 - 2026-05-22
 
 R-side `describe()` parity closure. Patch release that closes one

@@ -56,11 +56,13 @@ inline double dens_scalar(double u, Kind kind, const double *psi) {
                              * std::exp(-std::pow(x, alpha));
     }
     case Kind::Lomax: {
+        // v0.9.5.6+: scipy.stats.lomax convention.
+        // alpha * c^alpha * (u+c)^-(alpha+1).
         const double alpha = psi[0];
         const double c     = psi[1];
-        const double log_d = std::log(alpha - 1.0)
-                           + (alpha - 1.0) * std::log(c)
-                           - alpha * std::log(u + c);
+        const double log_d = std::log(alpha)
+                           + alpha * std::log(c)
+                           - (alpha + 1.0) * std::log(u + c);
         return std::exp(log_d);
     }
     }
@@ -82,9 +84,10 @@ inline double cdf_scalar(double u, Kind kind, const double *psi) {
         return 1.0 - std::exp(-std::pow(u / lam, alpha));
     }
     case Kind::Lomax: {
+        // v0.9.5.6+: scipy convention 1 - (c/(u+c))^alpha (was: alpha-1).
         const double alpha = psi[0];
         const double c     = psi[1];
-        return 1.0 - std::pow(c / (u + c), alpha - 1.0);
+        return 1.0 - std::pow(c / (u + c), alpha);
     }
     }
     return 0.0;
