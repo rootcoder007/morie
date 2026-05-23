@@ -99,7 +99,16 @@ NULL
 # Kernel densities and CDFs (vectorised; mirrors the Python branch table)
 # ---------------------------------------------------------------------------
 
+.tps_hwka_cpp_ok <- function() {
+  exists("morie_hawkes_pair_excitation_sum_cpp",
+         envir = asNamespace("morie"), inherits = FALSE)
+}
+
 .tps_hwka_kernel_density <- function(u, kind, psi) {
+  if (.tps_hwka_cpp_ok()) {
+    return(morie_hawkes_kernel_density_cpp(as.numeric(u), kind,
+                                            as.numeric(psi)))
+  }
   u <- as.numeric(u)
   switch(kind,
     exponential = {
@@ -131,6 +140,10 @@ NULL
 }
 
 .tps_hwka_kernel_cdf <- function(u, kind, psi) {
+  if (.tps_hwka_cpp_ok()) {
+    return(morie_hawkes_kernel_cdf_cpp(as.numeric(u), kind,
+                                        as.numeric(psi)))
+  }
   u <- as.numeric(u)
   switch(kind,
     exponential = 1 - exp(-psi[1] * u),
@@ -160,6 +173,12 @@ NULL
 
 .tps_hwka_baseline_integral <- function(T_, kind, alpha) {
   if (identical(kind, "constant")) return(exp(alpha[1]) * T_)
+  if (identical(kind, "sinusoidal") && .tps_hwka_cpp_ok()) {
+    n_grid <- max(64L, as.integer(T_) + 1L)
+    return(morie_hawkes_baseline_integral_cpp(as.numeric(T_),
+                                               as.numeric(alpha),
+                                               n_grid))
+  }
   grid <- seq(0, T_, length.out = max(64L, as.integer(T_) + 1L))
   vals <- .tps_hwka_baseline(grid, kind, alpha, T_)
   # Trapezoidal rule.
@@ -214,17 +233,27 @@ NULL
 
   n <- length(t)
   nu_at_t <- .tps_hwka_baseline(t, baseline_kind, a, T_)
-  log_sum <- 0
-  for (i in seq_len(n)) {
-    if (i == 1L) {
-      lam_i <- nu_at_t[1]
-    } else {
-      lags <- t[i] - t[seq_len(i - 1L)]
-      lam_i <- nu_at_t[i] +
-               eta * sum(.tps_hwka_kernel_density(lags, kernel_kind, psi))
+  if (.tps_hwka_cpp_ok()) {
+    excite <- morie_hawkes_pair_excitation_sum_cpp(as.numeric(t),
+                                                    as.numeric(eta),
+                                                    kernel_kind,
+                                                    as.numeric(psi))
+    lam <- nu_at_t + excite
+    if (any(lam <= 0)) return(1e12)
+    log_sum <- sum(log(lam))
+  } else {
+    log_sum <- 0
+    for (i in seq_len(n)) {
+      if (i == 1L) {
+        lam_i <- nu_at_t[1]
+      } else {
+        lags <- t[i] - t[seq_len(i - 1L)]
+        lam_i <- nu_at_t[i] +
+                 eta * sum(.tps_hwka_kernel_density(lags, kernel_kind, psi))
+      }
+      if (lam_i <= 0) return(1e12)
+      log_sum <- log_sum + log(lam_i)
     }
-    if (lam_i <= 0) return(1e12)
-    log_sum <- log_sum + log(lam_i)
   }
   integral <- .tps_hwka_baseline_integral(T_, baseline_kind, a) +
               eta * sum(.tps_hwka_kernel_cdf(T_ - t, kernel_kind, psi))

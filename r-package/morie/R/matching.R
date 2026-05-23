@@ -279,6 +279,10 @@ morie_matching_common_support <- function(data, treatment,
 #'                                        caliper = 0.2)
 #' }
 #' @export
+.morie_matching_have_cpp <- function(name) {
+  exists(name, envir = asNamespace("morie"), inherits = FALSE)
+}
+
 morie_matching_nearest_neighbor <- function(data, treatment, covariates,
                                             n_neighbors = 1L,
                                             caliper = NULL,
@@ -1706,9 +1710,17 @@ morie_matching_abadie_imbens_se <- function(data, outcome, treatment,
   # Abadie-Imbens (2006) eq 14 for ATT:
   #   V_ATT = (1/N_t^2) * [ sum_{i: D=1} sigma^2(X_i, 1)
   #                       + sum_{j: D=0} K_j^2 * sigma^2(X_j, 0) ]
-  # Split by treatment status; previous form `sum((1+K)^2*sigma2)/n^2`
-  # used (1+K)^2 for both arms and divided by total n^2 — wrong scale.
   t_vec <- as.integer(df[[treatment]])
+  if (.morie_matching_have_cpp("morie_matching_abadie_imbens_kernel_cpp")) {
+    V <- morie_matching_abadie_imbens_kernel_cpp(y, t_vec,
+                                                  as.integer(seq_len(n)[
+                                                    match(match_pairs$treated_idx,
+                                                          rownames(df))]),
+                                                  as.integer(seq_len(n)[
+                                                    match(match_pairs$control_idx,
+                                                          rownames(df))]))
+    return(sqrt(max(V, 0)))
+  }
   is_t <- t_vec == 1L
   n_treated <- max(sum(is_t), 1L)
   V <- (sum(sigma2[is_t]) + sum((K[!is_t]^2) * sigma2[!is_t])) /

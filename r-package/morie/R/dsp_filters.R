@@ -91,6 +91,10 @@ morie_dsp_alpha_trimmed_mean <- function(x, window = 5L, alpha = 0.2) {
 #' @return Filtered vector, length(x).
 #' @references Rangayyan & Krishnan (2015), Ch. 3, sec. 3.4.
 #' @export
+.morie_dsp_cpp_ok <- function(name) {
+  exists(name, envir = asNamespace("morie"), inherits = FALSE)
+}
+
 morie_dsp_median_filter <- function(x, kernel_size = 5L) {
   x <- as.numeric(x)
   k <- as.integer(kernel_size)
@@ -99,6 +103,9 @@ morie_dsp_median_filter <- function(x, kernel_size = 5L) {
   half <- k %/% 2L
   n <- length(x)
   if (n == 0L) return(numeric(0))
+  if (.morie_dsp_cpp_ok("morie_dsp_median_filter_cpp")) {
+    return(morie_dsp_median_filter_cpp(x, k))
+  }
   # Zero-pad to mimic scipy.signal.medfilt's default behaviour.
   padded <- c(rep(0, half), x, rep(0, half))
   vapply(seq_len(n), function(i) stats::median(padded[i:(i + k - 1L)]),
@@ -157,6 +164,9 @@ morie_dsp_lms <- function(x, d, order = 16L, mu = 0.01) {
   x <- as.numeric(x); d <- as.numeric(d)
   if (length(x) != length(d)) stop("x and d must be the same length")
   order <- as.integer(order)
+  if (.morie_dsp_cpp_ok("morie_dsp_lms_cpp")) {
+    return(morie_dsp_lms_cpp(x, d, order, as.numeric(mu)))
+  }
   n <- length(x)
   w <- numeric(order)
   y <- numeric(n); e <- numeric(n)
@@ -185,6 +195,9 @@ morie_dsp_nlms <- function(x, d, order = 16L, mu = 0.5, eps = 1e-8) {
   x <- as.numeric(x); d <- as.numeric(d)
   if (length(x) != length(d)) stop("x and d must be the same length")
   order <- as.integer(order)
+  if (.morie_dsp_cpp_ok("morie_dsp_nlms_cpp")) {
+    return(morie_dsp_nlms_cpp(x, d, order, as.numeric(mu), as.numeric(eps)))
+  }
   n <- length(x)
   w <- numeric(order)
   y <- numeric(n); e <- numeric(n)
@@ -215,6 +228,9 @@ morie_dsp_rls <- function(x, d, order = 16L, lam = 0.99, delta = 100) {
   x <- as.numeric(x); d <- as.numeric(d)
   if (length(x) != length(d)) stop("x and d must be the same length")
   order <- as.integer(order)
+  if (.morie_dsp_cpp_ok("morie_dsp_rls_cpp")) {
+    return(morie_dsp_rls_cpp(x, d, order, as.numeric(lam), as.numeric(delta)))
+  }
   n <- length(x)
   w <- numeric(order)
   P <- delta * diag(order)
@@ -449,6 +465,9 @@ morie_dsp_cross_correlation <- function(x, y, max_lag = NULL) {
   n <- length(x)
   if (is.null(max_lag)) max_lag <- n - 1L
   max_lag <- as.integer(max_lag)
+  if (.morie_dsp_cpp_ok("morie_dsp_cross_correlation_cpp")) {
+    return(morie_dsp_cross_correlation_cpp(x, y, max_lag))
+  }
   xc <- x - mean(x); yc <- y - mean(y)
   nrm <- sqrt(sum(xc^2) * sum(yc^2))
   # r(tau) = sum_t xc(t) * yc(t + tau) over valid overlap;

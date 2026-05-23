@@ -413,8 +413,15 @@ morie_spatial_voting_double_centering <- function(D) {
 #' D <- as.matrix(dist(matrix(rnorm(40), 10)))
 #' morie_spatial_voting_classical_mds(D, n_dims = 2)
 #' @export
+.sv_have_cpp <- function(name = "morie_spatial_classical_mds_cpp") {
+  exists(name, envir = asNamespace("morie"), inherits = FALSE)
+}
+
 morie_spatial_voting_classical_mds <- function(D, n_dims = 2L) {
   D <- as.matrix(D)
+  if (.sv_have_cpp("morie_spatial_classical_mds_cpp")) {
+    return(morie_spatial_classical_mds_cpp(D, as.integer(n_dims)))
+  }
   B <- .sv_double_centering(D)
   ev <- eigen(B, symmetric = TRUE)
   vals <- ev$values
@@ -1365,6 +1372,18 @@ morie_spatial_voting_dw_nominate <- function(votes, n_dims = 2L,
   for (j in seq_len(n_votes)) nv[j, ] <- nv[j, ] /
                                          (sqrt(sum(nv[j, ] ^ 2)) + 1e-12)
   mid <- matrix(0, n_votes, n_dims)
+  if (.sv_have_cpp("morie_spatial_nominate_iterate_cpp")) {
+    res <- morie_spatial_nominate_iterate_cpp(votes, X, w, nv, mid,
+                                               as.numeric(beta),
+                                               as.integer(max_iter))
+    return(list(ideal_points    = res$ideal_points,
+                dim_weights     = res$dim_weights,
+                normal_vectors  = res$normal_vectors,
+                cutpoints       = res$cutpoints,
+                log_lik         = res$log_lik,
+                gmp             = res$gmp,
+                n_dims          = n_dims))
+  }
   for (iter in seq_len(max_iter)) {
     for (j in seq_len(n_votes)) {
       valid <- mask[, j]; if (sum(valid) < 2L) next
@@ -1717,14 +1736,19 @@ morie_spatial_voting_wordfish <- function(dtm,
   iter <- 0L
   for (iter in seq_len(max_iter)) {
     omega_old <- omega
-    for (i in seq_len(n_docs)) {
-      eta <- psi[i] + alpha + beta * omega[i]
-      mu <- exp(pmin(pmax(eta, -20), 20))
-      g <- sum(beta * (dtm[i, ] - mu))
-      h <- -sum(beta ^ 2 * mu) - 1
-      omega[i] <- omega[i] - g / h
+    if (.sv_have_cpp("morie_spatial_wordfish_omega_update_cpp")) {
+      omega <- as.numeric(morie_spatial_wordfish_omega_update_cpp(
+        dtm, psi, alpha, beta, omega))
+    } else {
+      for (i in seq_len(n_docs)) {
+        eta <- psi[i] + alpha + beta * omega[i]
+        mu <- exp(pmin(pmax(eta, -20), 20))
+        g <- sum(beta * (dtm[i, ] - mu))
+        h <- -sum(beta ^ 2 * mu) - 1
+        omega[i] <- omega[i] - g / h
+      }
+      omega <- (omega - mean(omega)) / (stats::sd(omega) + 1e-12)
     }
-    omega <- (omega - mean(omega)) / (stats::sd(omega) + 1e-12)
     for (j in seq_len(n_words)) {
       eta <- psi + alpha[j] + beta[j] * omega
       mu <- exp(pmin(pmax(eta, -20), 20))
