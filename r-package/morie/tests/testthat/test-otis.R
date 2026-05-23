@@ -6,24 +6,13 @@ set.seed(1)
 # Synthetic OTIS placement frame mirroring the canonical column shape
 # ---------------------------------------------------------------------------
 
+# Use the dictionary-driven b01 panel from helper-otis.R: real columns,
+# real categorical levels ("Eastern"/"Western"/"Toronto" regions,
+# "Female"/"Male" genders, "Yes"/"No" alerts, all 7 SegReason_ flags).
+# The wrong-region-code local fixture below was triggering silent
+# tryCatch+skip bail-outs in every analyzer call.
 make_otis_placements <- function(n = 60, seed = 1) {
-  set.seed(seed)
-  data.frame(
-    UniqueIndividual_ID = sprintf("id%04d", sample.int(20, n, replace = TRUE)),
-    EndFiscalYear = sample(2018:2024, n, replace = TRUE),
-    Gender = sample(c("M", "F"), n, replace = TRUE),
-    Age_Category = sample(c("18-24", "25-34", "35-44", "45+"), n, replace = TRUE),
-    Region_AtTimeOfPlacement = sample(c("Central", "East", "West", "North"),
-                                      n, replace = TRUE),
-    Region_MostRecentPlacement = sample(c("Central", "East", "West", "North"),
-                                        n, replace = TRUE),
-    MentalHealth_Alert = sample(0:1, n, replace = TRUE, prob = c(0.6, 0.4)),
-    SuicideRisk_Alert = sample(0:1, n, replace = TRUE, prob = c(0.7, 0.3)),
-    SuicideWatch_Alert = sample(0:1, n, replace = TRUE, prob = c(0.85, 0.15)),
-    Number_Of_Placements = sample(1:5, n, replace = TRUE),
-    NumberConsecutiveDays_Segregation = sample(0:25, n, replace = TRUE),
-    stringsAsFactors = FALSE
-  )
+  make_synthetic_otis("b01", n = n, seed = seed)
 }
 
 # ---------------------------------------------------------------------------

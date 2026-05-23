@@ -7,25 +7,13 @@ set.seed(1)
 # analyzers. Here we focus on more thorough churn coverage with
 # distinct seeds and structural assertions.
 
+# Dictionary-driven b01 panel from helper-otis.R — real columns, real
+# categorical levels ("Eastern"/"Western"/"Toronto" regions,
+# "Female"/"Male" genders, "Yes"/"No" alert values). The local fixture
+# below was using stale region codes ("East/West/North") that caused
+# every churn analyzer to silently skip via tryCatch.
 make_churn_df <- function(n = 200, seed = 7) {
-  set.seed(seed)
-  data.frame(
-    UniqueIndividual_ID = sprintf("id%04d", sample.int(40, n, replace = TRUE)),
-    EndFiscalYear = sample(2018:2024, n, replace = TRUE),
-    Gender = sample(c("M", "F"), n, replace = TRUE),
-    Age_Category = sample(c("18-24", "25-34", "35-44", "45+"),
-                          n, replace = TRUE),
-    Region_AtTimeOfPlacement = sample(c("Central", "East", "West", "North"),
-                                      n, replace = TRUE),
-    Region_MostRecentPlacement = sample(c("Central", "East", "West", "North"),
-                                        n, replace = TRUE),
-    MentalHealth_Alert = sample(0:1, n, replace = TRUE),
-    SuicideRisk_Alert = sample(0:1, n, replace = TRUE),
-    SuicideWatch_Alert = sample(0:1, n, replace = TRUE),
-    Number_Of_Placements = sample(1:6, n, replace = TRUE),
-    NumberConsecutiveDays_Segregation = sample(0:30, n, replace = TRUE),
-    stringsAsFactors = FALSE
-  )
+  make_synthetic_otis("b01", n = n, seed = seed)
 }
 
 churn_fns <- c(

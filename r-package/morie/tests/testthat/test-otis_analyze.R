@@ -2,22 +2,10 @@
 library(testthat)
 set.seed(1)
 
+# Dictionary-driven b01 panel from helper-otis.R — see comment in
+# test-otis.R for why we replaced the stale-region-codes local fixture.
 make_otis_data <- function(n = 80, seed = 1) {
-  set.seed(seed)
-  data.frame(
-    UniqueIndividual_ID = sprintf("id%04d", sample.int(30, n, replace = TRUE)),
-    EndFiscalYear = sample(2018:2024, n, replace = TRUE),
-    Gender = sample(c("M", "F"), n, replace = TRUE),
-    Age_Category = sample(c("18-24", "25-34", "35-44"), n, replace = TRUE),
-    Region_AtTimeOfPlacement = sample(c("Central", "East", "West"), n, replace = TRUE),
-    Region_MostRecentPlacement = sample(c("Central", "East", "West"), n, replace = TRUE),
-    MentalHealth_Alert = sample(0:1, n, replace = TRUE),
-    SuicideRisk_Alert = sample(0:1, n, replace = TRUE),
-    SuicideWatch_Alert = sample(0:1, n, replace = TRUE),
-    Number_Of_Placements = sample(1:5, n, replace = TRUE),
-    NumberConsecutiveDays_Segregation = sample(0:25, n, replace = TRUE),
-    stringsAsFactors = FALSE
-  )
+  make_synthetic_otis("b01", n = n, seed = seed)
 }
 
 # ---------------------------------------------------------------------------
