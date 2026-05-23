@@ -141,21 +141,24 @@ NULL
 
 
 .siu_p_trim_to_body <- function(text) {
-  m <- gregexpr("(?:^|\\
+  if (!is.character(text) || length(text) == 0L || !nzchar(text)) return(text)
+  m <- tryCatch(gregexpr("(?:^|\\
 )\\s*Mandate of the SIU\\s*\\
 ",
-                text, perl = TRUE)[[1L]]
-  if (length(m) >= 2L && m[1L] != -1L) {
+                text, perl = TRUE)[[1L]],
+                error = function(e) -1L)
+  if (length(m) >= 2L && isTRUE(m[1L] != -1L)) {
     return(substr(text, m[2L], nchar(text)))
   }
-  if (length(m) == 1L && m[1L] != -1L) {
+  if (length(m) == 1L && isTRUE(m[1L] != -1L)) {
     return(substr(text, m[1L], nchar(text)))
   }
-  m2 <- gregexpr("(?:^|\\
+  m2 <- tryCatch(gregexpr("(?:^|\\
 )\\s*The Investigation\\s*\\
 ",
-                 text, perl = TRUE)[[1L]]
-  if (length(m2) >= 2L && m2[1L] != -1L) {
+                 text, perl = TRUE)[[1L]],
+                 error = function(e) -1L)
+  if (length(m2) >= 2L && isTRUE(m2[1L] != -1L)) {
     return(substr(text, m2[2L], nchar(text)))
   }
   text
@@ -295,15 +298,21 @@ NULL
 
 
 .siu_p_detect_police_service <- function(text) {
+  if (!is.character(text) || length(text) == 0L ||
+      is.na(text[1L]) || !nzchar(text)) return(NA_character_)
   cleaned <- gsub(.SIU_P_NPC_RE, "", text,
                   perl = TRUE, ignore.case = TRUE)
+  if (!nzchar(cleaned)) return(NA_character_)
   counts <- integer(0L)
   for (nm in .SIU_P_POLICE_SERVICES) {
-    c_ <- length(gregexpr(.siu_p_re_escape(nm), cleaned,
-                          perl = TRUE)[[1L]])
-    if (c_ > 0L && !attr(gregexpr(.siu_p_re_escape(nm), cleaned,
-                                   perl = TRUE)[[1L]],
-                          "match.length")[1L] == -1L) {
+    gm <- tryCatch(gregexpr(.siu_p_re_escape(nm), cleaned,
+                            perl = TRUE)[[1L]],
+                   error = function(e) -1L)
+    if (length(gm) == 0L || is.na(gm[1L])) next
+    c_ <- length(gm)
+    ml <- attr(gm, "match.length")
+    if (c_ > 0L && !is.null(ml) && !is.na(ml[1L]) &&
+        isTRUE(ml[1L] != -1L)) {
       counts[nm] <- c_
     }
   }
@@ -465,12 +474,19 @@ NULL
       }
     }
   }
-  s_m <- regexpr(.SIU_P_NARRATIVE_START_RE, text,
-                 perl = TRUE, ignore.case = TRUE)
-  e_m <- regexpr(.SIU_P_NARRATIVE_END_RE, text,
-                 perl = TRUE, ignore.case = TRUE)
-  s <- if (s_m[1L] == -1L) 1L else s_m[1L]
-  e <- if (e_m[1L] == -1L) nchar(text) else e_m[1L] - 1L
+  if (!is.character(text) || length(text) == 0L || is.na(text[1L]) ||
+      !nzchar(text)) return(text)
+  s_m <- tryCatch(regexpr(.SIU_P_NARRATIVE_START_RE, text,
+                          perl = TRUE, ignore.case = TRUE),
+                  error = function(e) -1L)
+  e_m <- tryCatch(regexpr(.SIU_P_NARRATIVE_END_RE, text,
+                          perl = TRUE, ignore.case = TRUE),
+                  error = function(e) -1L)
+  s <- if (length(s_m) == 0L || is.na(s_m[1L]) ||
+           isTRUE(s_m[1L] == -1L)) 1L else as.integer(s_m[1L])
+  e <- if (length(e_m) == 0L || is.na(e_m[1L]) ||
+           isTRUE(e_m[1L] == -1L)) nchar(text) else as.integer(e_m[1L]) - 1L
+  if (is.na(s) || is.na(e)) return(text)
   if (e > s) substr(text, s, e) else text
 }
 

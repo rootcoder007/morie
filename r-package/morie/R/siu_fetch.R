@@ -233,7 +233,7 @@ morie_siu_cache_path <- function(cache_dir = file.path(tempdir(), "morie", "siu"
 
   dec_pat <- paste0(
     "(?:no reasonable grounds|reasonable grounds|charge\\(s\\)? was|",
-    "withdrawn|director'?s decision|charges? were laid)"
+    "withdrawn|charges? were laid)"
   )
   m <- regmatches(html, regexpr(dec_pat, html, perl = TRUE,
     ignore.case = TRUE))

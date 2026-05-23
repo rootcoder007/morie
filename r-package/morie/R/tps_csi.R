@@ -132,10 +132,11 @@ morie_tps_csi_weight <- function(category, variant = c("total", "violent"),
                                    weights = NULL) {
   variant <- match.arg(variant)
   if (!is.null(weights)) {
-    v <- weights[[category]]
+    v <- if (category %in% names(weights)) weights[[category]] else NULL
     return(if (is.null(v)) 0.0 else as.numeric(v))
   }
   tbl <- if (variant == "total") .TOTAL_CSI_WEIGHTS else .VIOLENT_CSI_WEIGHTS
+  if (!(category %in% names(tbl))) return(0.0)
   v <- tbl[[category]]
   if (is.null(v)) 0.0 else as.numeric(v)
 }

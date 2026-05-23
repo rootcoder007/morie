@@ -1,30 +1,3 @@
-#' Return the canonical CPADS local-data contract
-#'
-#' @return Named list describing the expected local CPADS contract.
-#' @examples
-#' morie_cpads_contract()
-#' @export
-morie_cpads_contract <- function() {
-  list(
-    source_kind = "local_private_file",
-    expected_wrangled_path = "data/cache/cpads_pumf_wrangled.rds",
-    required_variables = c(
-      "weight",
-      "alcohol_past12m",
-      "heavy_drinking_30d",
-      "ebac_tot",
-      "ebac_legal",
-      "cannabis_any_use",
-      "age_group",
-      "gender",
-      "province_region",
-      "mental_health",
-      "physical_health"
-    ),
-    note = "CPADS row-level data must be supplied locally and must not be committed to git."
-  )
-}
-
 #' Validate a CPADS analysis data frame
 #'
 #' @param data Data frame to validate.

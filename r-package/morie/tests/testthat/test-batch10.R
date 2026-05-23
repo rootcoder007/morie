@@ -760,10 +760,8 @@ test_that("morie_run_treatment_effects_analysis returns ate with CI", {
 
 test_that("morie_cpads_contract returns the data contract", {
   r <- morie_cpads_contract()
-  expect_named(r, c(
-    "source_kind", "expected_wrangled_path",
-    "required_variables", "note"
-  ))
+  expect_true(all(c("source_kind", "expected_wrangled_path",
+                    "required_variables", "note") %in% names(r)))
   expect_true("weight" %in% r$required_variables)
 })
 

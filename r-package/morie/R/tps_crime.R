@@ -62,7 +62,8 @@ NULL
 #' @noRd
 .tps_result <- function(title, summary_lines = list(), tables = list(),
                           interpretation = "", warnings = character(0),
-                          payload = list(), call = NULL) {
+                          payload = list(), call = NULL,
+                          sections = list(), ...) {
   out <- list(
     title = title,
     call = call,
@@ -70,7 +71,9 @@ NULL
     tables = tables,
     warnings = warnings,
     interpretation = interpretation,
-    payload = payload
+    payload = payload,
+    sections = sections,
+    ...
   )
   class(out) <- c("morie_tps_result", "morie_rich_result", "list")
   out

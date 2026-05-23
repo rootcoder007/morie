@@ -415,7 +415,13 @@ regression_table <- function(models, exponentiate = FALSE,
   result_df <- do.call(rbind.data.frame,
                         c(lapply(norm, as.data.frame, stringsAsFactors = FALSE),
                           stringsAsFactors = FALSE))
-  rownames(result_df) <- row_labels
+  # Disambiguate duplicate empty labels for row.names (SE / CI rows).
+  rn <- make.unique(ifelse(nzchar(row_labels), row_labels,
+                            paste0(".row", seq_along(row_labels))),
+                    sep = "_")
+  rownames(result_df) <- rn
+  # Stash the human-readable labels in a column for users that need them.
+  result_df <- cbind(term = row_labels, result_df, stringsAsFactors = FALSE)
   fmt <- match.arg(output_format,
                     c("dataframe", "latex", "html", "markdown", "text", "csv"))
   .tbl_to_format(result_df, fmt, title = title,

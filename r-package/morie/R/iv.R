@@ -334,8 +334,31 @@ morie_iv_cragg_donald <- function(data, endogenous, instruments,
   if (.morie_iv_have_ivreg()) {
     f   <- .morie_iv_build_formula(outcome, endogenous, instruments,
                                    exogenous)
-    fit <- ivreg::ivreg(f, data = data)
-    diag_tbl <- summary(fit, diagnostics = TRUE)$diagnostics
+    fit <- tryCatch(ivreg::ivreg(f, data = data),
+                    error = function(e) NULL)
+    if (is.null(fit)) {
+      return(list(statistic = NA_real_, p_value = NA_real_,
+                  name = "Cragg-Donald (ivreg fit failed)",
+                  details = list(outcome_used = outcome)))
+    }
+    diag_tbl <- tryCatch(summary(fit, diagnostics = TRUE)$diagnostics,
+                         error = function(e) NULL)
+    if (is.null(diag_tbl) ||
+        !("Weak instruments" %in% rownames(diag_tbl))) {
+      # First-stage F as Cragg-Donald approximation for just-identified.
+      fs <- morie_iv_first_stage_diagnostics(data, endogenous, instruments,
+                                              exogenous)
+      f_stat <- unname(fs$F[1])
+      k_ins <- length(instruments)
+      df2 <- nrow(data) - length(c(instruments, exogenous)) - 1L
+      p_val <- if (is.finite(f_stat) && df2 > 0)
+                  1 - stats::pf(f_stat, k_ins, df2)
+               else NA_real_
+      return(list(statistic = f_stat,
+                  p_value   = p_val,
+                  name      = "Cragg-Donald (first-stage F fallback)",
+                  details   = list(fit = fit, outcome_used = outcome)))
+    }
     list(statistic = unname(diag_tbl["Weak instruments", "statistic"]),
          p_value   = unname(diag_tbl["Weak instruments", "p-value"]),
          name      = "Cragg-Donald / weak instruments",
@@ -589,8 +612,8 @@ morie_iv_split_sample <- function(data, outcome, endogenous, instruments,
   })
   d2_aug <- d2
   for (i in seq_along(endogenous))
-    d2_aug[[paste0("__hat_", endogenous[i])]] <- pred_list[[i]]
-  rhs2 <- paste(c(paste0("__hat_", endogenous), exogenous), collapse = " + ")
+    d2_aug[[paste0("hatcol_", endogenous[i])]] <- pred_list[[i]]
+  rhs2 <- paste(c(paste0("hatcol_", endogenous), exogenous), collapse = " + ")
   fit2 <- stats::lm(stats::as.formula(paste(outcome, "~", rhs2)),
                     data = d2_aug)
   cf <- stats::coef(fit2); se <- sqrt(diag(stats::vcov(fit2)))

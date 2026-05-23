@@ -505,10 +505,15 @@ specification_curve <- function(data, outcome, treatment,
         cf <- tryCatch(summary(fit)$coefficients,
                          error = function(e) NULL)
         if (is.null(cf) || !(treatment %in% rownames(cf))) next
-        est <- cf[treatment, "Estimate"]
-        se_ <- cf[treatment, "Std. Error"]
-        pv  <- if ("Pr(>|t|)" %in% colnames(cf)) cf[treatment, "Pr(>|t|)"]
-               else if ("Pr(>|z|)" %in% colnames(cf)) cf[treatment, "Pr(>|z|)"]
+        cn <- colnames(cf)
+        est_col <- if ("Estimate" %in% cn) "Estimate"
+                   else if ("Value" %in% cn) "Value"
+                   else cn[1L]
+        se_col  <- if ("Std. Error" %in% cn) "Std. Error" else cn[2L]
+        est <- cf[treatment, est_col]
+        se_ <- cf[treatment, se_col]
+        pv  <- if ("Pr(>|t|)" %in% cn) cf[treatment, "Pr(>|t|)"]
+               else if ("Pr(>|z|)" %in% cn) cf[treatment, "Pr(>|z|)"]
                else NA_real_
         estimates <- c(estimates, est)
         ses       <- c(ses, se_)

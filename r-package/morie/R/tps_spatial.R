@@ -59,7 +59,7 @@ NULL
 }
 
 
-.tps_hood_counts <- function(df, hood_col) {
+.tps_hood_counts <- function(df, hood_col = "HOOD_158") {
   s <- df[[hood_col]]
   s <- s[!is.na(s)]
   s <- s[toupper(as.character(s)) != "NSA"]

@@ -342,22 +342,25 @@ collinearity_diagnostics <- function(X, column_names = NULL) {
   condition_number <- sqrt(eigenvalues[1] / max(eigenvalues[p], 1e-10))
   condition_indices <- sqrt(eigenvalues[1] / pmax(eigenvalues, 1e-10))
 
-  corr <- stats::cor(X)
+  corr <- suppressWarnings(stats::cor(X))
   collinear_pairs <- list()
-  for (i in seq_len(p - 1L)) {
-    for (j in (i + 1L):p) {
-      if (abs(corr[i, j]) > 0.8) {
-        collinear_pairs[[length(collinear_pairs) + 1L]] <- list(
-          var1 = column_names[i], var2 = column_names[j],
-          correlation = as.numeric(corr[i, j])
-        )
+  if (p >= 2L) {
+    for (i in seq_len(p - 1L)) {
+      for (j in (i + 1L):p) {
+        cij <- corr[i, j]
+        if (!is.na(cij) && abs(cij) > 0.8) {
+          collinear_pairs[[length(collinear_pairs) + 1L]] <- list(
+            var1 = column_names[i], var2 = column_names[j],
+            correlation = as.numeric(cij)
+          )
+        }
       }
     }
   }
-  n_collinear <- sum(vifs > 10)
+  n_collinear <- sum(vifs > 10, na.rm = TRUE)
 
   .new_collin_diag(
-    vif = as.list(vifs), cond_num = as.numeric(condition_number),
+    vif = vifs, cond_num = as.numeric(condition_number),
     cond_idx = condition_indices, var_decomp = var_decomp_df,
     eigvals = eigenvalues, n_collin = n_collinear,
     pairs = collinear_pairs
