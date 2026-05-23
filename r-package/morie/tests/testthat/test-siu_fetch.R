@@ -181,7 +181,7 @@ test_that("fetch_cases errors on non-integer years", {
 
 test_that("fetch_cases live scrape returns a path or skip", {
   set.seed(1)
-  skip_on_cran()
+  testthat::skip_if_offline("www.siu.on.ca")
   d <- tempfile("siu_live_")
   res <- tryCatch(
     morie_siu_fetch_cases(years = 2023L, cache_dir = d,
@@ -196,7 +196,7 @@ test_that("fetch_cases live scrape returns a path or skip", {
 
 test_that("fetch_dataframe returns a data.frame or skip on network", {
   set.seed(1)
-  skip_on_cran()
+  testthat::skip_if_offline("www.siu.on.ca")
   d <- tempfile("siu_live_df_")
   res <- tryCatch(
     morie_siu_fetch_dataframe(years = 2023L, cache_dir = d,
@@ -217,7 +217,6 @@ test_that("fetch_dataframe returns a data.frame or skip on network", {
 
 test_that(".siu_fetch_http_get errors on a clearly unreachable host (offline-friendly)", {
   set.seed(1)
-  skip_on_cran()
   # 192.0.2.0/24 is TEST-NET-1 -- reserved for documentation; will not
   # route. Confirms the error path is reachable without leaking out.
   res <- tryCatch(

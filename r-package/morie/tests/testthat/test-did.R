@@ -158,7 +158,6 @@ test_that("morie_did_parallel_trends_data returns group-by-time means", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_did_group_time_att returns a data frame with att", {
-  skip_on_cran()
   df <- make_did_panel(n_units = 50, n_periods = 6, tau = 0.6, seed = 4)
   out <- tryCatch(
     morie_did_group_time_att(df, "y", "unit", "time", "treat_time",

@@ -99,7 +99,6 @@ test_that("morie_db_connect() falls back to SQLite when duckdb absent", {
 
 # ---- 3. PostgreSQL (server backend; CI only, opt-in via env var) ---------
 test_that("DBI/PostgreSQL cache round-trip (CI only)", {
-  testthat::skip_on_cran()
   testthat::skip_if_not(
     identical(Sys.getenv("MORIE_PG_TEST"), "true"),
     message = "Set MORIE_PG_TEST=true (and a live postgres service) to run."

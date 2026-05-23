@@ -43,7 +43,6 @@ test_that("morie_siu_index returns a data.frame with at least one row", {
 })
 
 test_that("morie_siu_refresh_manifest accepts canonical args (skip on CRAN/offline)", {
-  testthat::skip_on_cran()
   testthat::skip_if_offline()
   # Tiny range so this stays cheap even when run. The point is to
   # exercise the dispatch + arg-parsing + (if the SIU host is up) one
@@ -63,7 +62,6 @@ test_that("morie_siu_refresh_manifest accepts canonical args (skip on CRAN/offli
 })
 
 test_that("morie_siu_translate_fr_to_en honours its preconditions", {
-  testthat::skip_on_cran()
   # Without a pre-fetched SIU.csv, the function emits a structured
   # error pointing the user at morie_fetch_siu(). That error path is
   # itself part of the public contract — verify it.

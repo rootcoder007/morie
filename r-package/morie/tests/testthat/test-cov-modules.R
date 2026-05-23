@@ -213,7 +213,6 @@ test_that("ipw micro-helpers run", {
 })
 
 test_that("morie_run_morie_module runs in-memory-safe modules via a raw CSV", {
-  skip_on_cran()
   csv <- tempfile("cpads-raw-", fileext = ".csv")
   utils::write.csv(make_raw_cpads(n = 1600L, seed = 909L), csv,
     row.names = FALSE
