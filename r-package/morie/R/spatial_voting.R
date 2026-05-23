@@ -942,8 +942,12 @@ morie_spatial_voting_bayesian_am <- function(Z, n_samples = 1000L,
                                              burn_in = 200L,
                                              prior_sd = 10.0) {
   if (requireNamespace("basicspace", quietly = TRUE)) {
-    out <- try(basicspace::aldmck(Z, respondent = 0, polarity = 1,
-                                  missing = NA), silent = TRUE)
+    # basicspace::aldmck rejects `missing = NA` (it expects integer
+    # sentinels). Letting it default + casting to numeric is the
+    # safe path for arbitrary floating-point input matrices.
+    Z <- as.matrix(Z); mode(Z) <- "numeric"
+    out <- try(basicspace::aldmck(Z, respondent = 0, polarity = 1),
+               silent = TRUE)
     if (!inherits(out, "try-error")) {
       return(list(
         zeta_mean = as.numeric(out$stimuli),
@@ -965,6 +969,20 @@ morie_spatial_voting_bayesian_mds <- function(D, n_dims = 2L,
                                               n_samples = 1000L,
                                               burn_in = 200L,
                                               sigma_init = 1.0) {
+  # smacof::mds is a deterministic stress-minimiser that finds the
+  # posterior mode of the Oh & Raftery (2001) lognormal-distance MDS
+  # model under a flat prior. We expose it here under bayesian_mds as
+  # the standing R-side implementation pending a full MCMC port.
+  if (requireNamespace("smacof", quietly = TRUE)) {
+    fit <- smacof::mds(stats::as.dist(D), ndim = n_dims,
+                       type = "ratio", verbose = FALSE)
+    return(list(
+      coords = unname(as.matrix(fit$conf)),
+      stress = as.numeric(fit$stress),
+      n_dims = n_dims,
+      engine = "smacof (deterministic MDS; full Bayesian not ported)"
+    ))
+  }
   .NOT_PORTED("morie_spatial_voting_bayesian_mds")
 }
 
@@ -979,6 +997,19 @@ morie_spatial_voting_bayesian_mds <- function(D, n_dims = 2L,
 morie_spatial_voting_bayesian_unfolding <- function(D, n_dims = 2L,
                                                     n_samples = 1000L,
                                                     burn_in = 200L) {
+  # smacof::unfolding is the deterministic-mode equivalent of the
+  # Bakker & Poole (2013) sampler under a flat prior.
+  if (requireNamespace("smacof", quietly = TRUE)) {
+    fit <- smacof::unfolding(as.matrix(D), ndim = n_dims,
+                             verbose = FALSE)
+    return(list(
+      coords_r = unname(as.matrix(fit$conf.row)),
+      coords_s = unname(as.matrix(fit$conf.col)),
+      stress   = as.numeric(fit$stress),
+      n_dims   = n_dims,
+      engine   = "smacof::unfolding (deterministic; full Bayesian not ported)"
+    ))
+  }
   .NOT_PORTED("morie_spatial_voting_bayesian_unfolding")
 }
 
@@ -993,6 +1024,22 @@ morie_spatial_voting_bayesian_unfolding <- function(D, n_dims = 2L,
 morie_spatial_voting_cjr_irt <- function(votes, n_dims = 1L,
                                          n_samples = 1000L,
                                          burn_in = 200L) {
+  # pscl::ideal is the canonical R implementation of the
+  # Clinton-Jackman-Rivers (2004) Bayesian IRT sampler.
+  if (requireNamespace("pscl", quietly = TRUE)) {
+    # `notInLegis` defaults to 9 in pscl::rollcall; overriding with NA
+    # collides with `missing = NA` ("codes are not unique").
+    rc <- pscl::rollcall(as.matrix(votes), yea = 1L, nay = 0L)
+    fit <- pscl::ideal(rc, d = as.integer(n_dims),
+                      maxiter = as.integer(n_samples + burn_in),
+                      thin = max(1L, as.integer(n_samples %/% 100L)),
+                      burnin = as.integer(burn_in), verbose = FALSE)
+    return(list(
+      ideal_points = unname(as.matrix(fit$xbar)),
+      n_dims = n_dims, n_samples = n_samples,
+      engine = "pscl::ideal (Clinton-Jackman-Rivers Bayesian IRT)"
+    ))
+  }
   .NOT_PORTED("morie_spatial_voting_cjr_irt")
 }
 
@@ -1565,6 +1612,32 @@ morie_spatial_voting_ordinal_irt <- function(Y, n_dims = 1L,
                                              n_samples = 500L,
                                              burn_in = 100L,
                                              seed = 42L) {
+  # MCMCpack::MCMCordfactanal runs ordinal factor-analytic IRT with a
+  # Gibbs-sampler; it's the closest R-side equivalent to ordIRT.
+  if (requireNamespace("MCMCpack", quietly = TRUE)) {
+    Y <- as.matrix(Y)
+    df <- as.data.frame(Y)
+    for (j in seq_along(df)) df[[j]] <- as.ordered(df[[j]])
+    # MCMCordfactanal needs a formula + data; passing a matrix
+    # directly yields "no terms component nor attribute".
+    f <- stats::as.formula(
+      paste("~", paste(names(df), collapse = " + ")))
+    fit <- tryCatch(
+      MCMCpack::MCMCordfactanal(
+        x = f, data = df, factors = as.integer(n_dims),
+        burnin = as.integer(burn_in),
+        mcmc   = as.integer(n_samples),
+        verbose = 0L, seed = as.integer(seed)),
+      error = function(e) e
+    )
+    if (!inherits(fit, "error")) {
+      return(list(
+        ideal_points = unname(as.matrix(summary(fit)$statistics[, "Mean", drop = FALSE])),
+        n_dims = n_dims, n_samples = n_samples,
+        engine = "MCMCpack::MCMCordfactanal (ordinal Bayesian IRT)"
+      ))
+    }
+  }
   .NOT_PORTED("morie_spatial_voting_ordinal_irt")
 }
 
@@ -1586,6 +1659,40 @@ morie_spatial_voting_dynamic_irt <- function(votes, time_periods,
                                              n_samples = 500L,
                                              burn_in = 100L,
                                              seed = 42L) {
+  # emIRT::dynIRT is the deterministic EM-based dynamic-IRT solver
+  # from Imai-Lo-Olmsted (2016), suitable as the standing R-side
+  # implementation pending a full MCMC-with-random-walk-prior port.
+  if (requireNamespace("emIRT", quietly = TRUE)) {
+    votes <- as.matrix(votes)
+    n_leg <- nrow(votes); n_vote <- ncol(votes)
+    tp <- as.integer(time_periods)
+    n_periods <- max(tp)
+    rc_data <- list(
+      rc = votes,
+      startlegis = rep(1L, n_leg),
+      endlegis   = rep(n_periods, n_leg),
+      bill.session = tp,
+      T = n_periods
+    )
+    starts <- list(alpha = matrix(0, n_vote, 1),
+                   beta  = matrix(0, n_vote, 1),
+                   x     = matrix(0, n_leg, n_periods))
+    priors <- list(x.mu0 = 0, x.sigma0 = 1, beta.mu = 0,
+                   beta.sigma = matrix(c(1, 0, 0, 1), 2, 2),
+                   omega2 = 0.1)
+    fit <- tryCatch(
+      emIRT::dynIRT(.rc = rc_data, .starts = starts,
+                   .priors = priors, .control = list()),
+      error = function(e) e
+    )
+    if (!inherits(fit, "error")) {
+      return(list(
+        ideal_points = unname(as.matrix(fit$means$x)),
+        n_periods = n_periods, n_samples = n_samples,
+        engine = "emIRT::dynIRT (EM-based dynamic IRT; MCMC port pending)"
+      ))
+    }
+  }
   .NOT_PORTED("morie_spatial_voting_dynamic_irt")
 }
 
