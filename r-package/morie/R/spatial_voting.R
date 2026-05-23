@@ -1659,40 +1659,11 @@ morie_spatial_voting_dynamic_irt <- function(votes, time_periods,
                                              n_samples = 500L,
                                              burn_in = 100L,
                                              seed = 42L) {
-  # emIRT::dynIRT is the deterministic EM-based dynamic-IRT solver
-  # from Imai-Lo-Olmsted (2016), suitable as the standing R-side
-  # implementation pending a full MCMC-with-random-walk-prior port.
-  if (requireNamespace("emIRT", quietly = TRUE)) {
-    votes <- as.matrix(votes)
-    n_leg <- nrow(votes); n_vote <- ncol(votes)
-    tp <- as.integer(time_periods)
-    n_periods <- max(tp)
-    rc_data <- list(
-      rc = votes,
-      startlegis = rep(1L, n_leg),
-      endlegis   = rep(n_periods, n_leg),
-      bill.session = tp,
-      T = n_periods
-    )
-    starts <- list(alpha = matrix(0, n_vote, 1),
-                   beta  = matrix(0, n_vote, 1),
-                   x     = matrix(0, n_leg, n_periods))
-    priors <- list(x.mu0 = 0, x.sigma0 = 1, beta.mu = 0,
-                   beta.sigma = matrix(c(1, 0, 0, 1), 2, 2),
-                   omega2 = 0.1)
-    fit <- tryCatch(
-      emIRT::dynIRT(.rc = rc_data, .starts = starts,
-                   .priors = priors, .control = list()),
-      error = function(e) e
-    )
-    if (!inherits(fit, "error")) {
-      return(list(
-        ideal_points = unname(as.matrix(fit$means$x)),
-        n_periods = n_periods, n_samples = n_samples,
-        engine = "emIRT::dynIRT (EM-based dynamic IRT; MCMC port pending)"
-      ))
-    }
-  }
+  # emIRT::dynIRT has a finicky shape contract for the priors block
+  # (per-legislator x.mu0/x.sigma0/omega2 as n_leg x 1 matrices;
+  # beta.mu as 2 x 1; etc.) that varies subtly across emIRT releases.
+  # Until we wire a stable adapter, this stays .NOT_PORTED so the
+  # call site fails fast rather than returning a half-fit result.
   .NOT_PORTED("morie_spatial_voting_dynamic_irt")
 }
 
