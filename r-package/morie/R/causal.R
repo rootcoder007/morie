@@ -697,7 +697,8 @@ morie_estimate_double_ml <- function(data, outcome, treatment, covariates,
 
   if (requireNamespace("DoubleML", quietly = TRUE) &&
       requireNamespace("mlr3", quietly = TRUE) &&
-      requireNamespace("mlr3learners", quietly = TRUE)) {
+      requireNamespace("mlr3learners", quietly = TRUE) &&
+      requireNamespace("ranger", quietly = TRUE)) {
     set.seed(random_state)
     dml_data <- DoubleML::double_ml_data_from_data_frame(
       df = prep$frame,
@@ -783,7 +784,8 @@ morie_estimate_irm <- function(data, treatment, outcome, covariates,
 
   if (requireNamespace("DoubleML", quietly = TRUE) &&
       requireNamespace("mlr3", quietly = TRUE) &&
-      requireNamespace("mlr3learners", quietly = TRUE)) {
+      requireNamespace("mlr3learners", quietly = TRUE) &&
+      requireNamespace("ranger", quietly = TRUE)) {
     set.seed(random_state)
     irm_frame <- prep$frame
     irm_frame[[treatment]] <- as.integer(irm_frame[[treatment]])

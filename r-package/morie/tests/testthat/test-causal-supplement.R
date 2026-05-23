@@ -48,6 +48,7 @@ test_that("morie_estimate_double_ml uses DoubleML when available", {
   skip_if_not_installed("DoubleML")
   skip_if_not_installed("mlr3")
   skip_if_not_installed("mlr3learners")
+  skip_if_not_installed("ranger")
   df <- make_dml_df(n = 300)
   res <- morie_estimate_double_ml(df, "y", "d", c("x1", "x2", "x3"),
                                   n_folds = 3L)

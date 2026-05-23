@@ -242,7 +242,9 @@ mrm_threshold_specific_ordinal <- function(
   )
   out$interpretation <- interp
 
-  .mrm_result(out, class = "mrm_threshold_specific_ordinal")
+  class(out) <- c("mrm_threshold_specific_ordinal",
+                  "morie_mrm_result", "morie_rich_result", "list")
+  out
 }
 
 
