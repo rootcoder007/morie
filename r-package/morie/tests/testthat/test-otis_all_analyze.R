@@ -6,36 +6,15 @@ set.seed(1)
 # Synthetic OTIS panel — covers Mandela / DML / per-year analyzers
 # ---------------------------------------------------------------------------
 
+# Backwards-compat shim — the helper-otis.R dispatcher supersedes the
+# old one-size-fits-all panel, but a few tests below still refer to it
+# by name. Keep these stubs delegating to the proper per-id fixtures.
 make_otis_panel <- function(n = 200, seed = 1) {
-  set.seed(seed)
-  data.frame(
-    UniqueIndividual_ID = sprintf("id%04d", sample.int(60, n, replace = TRUE)),
-    EndFiscalYear = sample(2018:2024, n, replace = TRUE),
-    Gender = sample(c("M", "F"), n, replace = TRUE),
-    Age_Category = sample(c("18-24", "25-34", "35-44", "45+"),
-                          n, replace = TRUE),
-    Region_AtTimeOfPlacement = sample(c("Central", "East", "West", "North"),
-                                      n, replace = TRUE),
-    Region_MostRecentPlacement = sample(c("Central", "East", "West", "North"),
-                                        n, replace = TRUE),
-    MentalHealth_Alert = sample(0:1, n, replace = TRUE),
-    SuicideRisk_Alert = sample(0:1, n, replace = TRUE),
-    SuicideWatch_Alert = sample(0:1, n, replace = TRUE),
-    Number_Of_Placements = sample(1:6, n, replace = TRUE),
-    NumberConsecutiveDays_Segregation = sample(0:40, n, replace = TRUE),
-    stringsAsFactors = FALSE
-  )
+  make_synthetic_otis("b01", n = n, seed = seed)
 }
 
 make_datasets_list <- function(seed = 2) {
-  set.seed(seed)
-  out <- list()
-  for (id in c("a01", paste0("b0", 1:9),
-               paste0("c0", 1:9), "c10", "c11", "c12",
-               paste0("d0", 1:7))) {
-    out[[id]] <- make_otis_panel(80, seed = nchar(id) + seed)
-  }
-  out
+  make_synthetic_otis_datasets_complete(n = 80L, seed = seed)
 }
 
 # ---------------------------------------------------------------------------
@@ -79,16 +58,26 @@ per_dataset_fns <- c(
   paste0("morie_otis_analyze_d0", 1:7)
 )
 
+# Each id in {b01..b09, c01..c12, d01..d07} gets a fixture sized to its
+# own column schema via make_synthetic_otis(id) — feeding a single
+# common panel triggers silent tryCatch bail-outs everywhere.
 for (nm in per_dataset_fns) {
   local({
     fn_name <- nm
-    test_that(paste(fn_name, "runs on synthetic data or skips"), {
+    # Extract id (e.g. "morie_otis_analyze_b03" -> "b03")
+    id <- sub("^morie_otis_analyze_", "", fn_name)
+    test_that(paste(fn_name, "runs on per-id synthetic data"), {
       skip_if_not(exists(fn_name), paste(fn_name, "not exported"))
-      df <- make_otis_panel(120, seed = nchar(fn_name) + 5)
+      df <- make_synthetic_otis(id, n = 200L,
+                                seed = nchar(fn_name) + 5L)
       res <- tryCatch(do.call(fn_name, list(df)),
-                      error = function(e) NULL,
+                      error = function(e) e,
                       warning = function(w) NULL)
-      skip_if(is.null(res), paste(fn_name, "needs richer structure"))
+      # If still skipping, surface what's missing rather than swallow it:
+      if (inherits(res, "error")) {
+        skip(sprintf("%s errored on synthetic %s panel: %s",
+                     fn_name, id, conditionMessage(res)))
+      }
       expect_true(is.list(res) || is.data.frame(res) ||
                   is.numeric(res) || is.character(res))
     })
@@ -109,13 +98,20 @@ ruhela_aggregate_fns <- c(
 for (nm in ruhela_aggregate_fns) {
   local({
     fn_name <- nm
-    test_that(paste(fn_name, "runs or skips cleanly"), {
+    # Strip "_ruhela_aggregate" suffix to recover the dataset id.
+    id <- sub("_ruhela_aggregate$", "",
+              sub("^morie_otis_analyze_", "", fn_name))
+    test_that(paste(fn_name, "runs on per-id synthetic data"), {
       skip_if_not(exists(fn_name), paste(fn_name, "not exported"))
-      df <- make_otis_panel(100, seed = nchar(fn_name) + 7)
+      df <- make_synthetic_otis(id, n = 200L,
+                                seed = nchar(fn_name) + 7L)
       res <- tryCatch(do.call(fn_name, list(df)),
-                      error = function(e) NULL,
+                      error = function(e) e,
                       warning = function(w) NULL)
-      skip_if(is.null(res), paste(fn_name, "needs richer structure"))
+      if (inherits(res, "error")) {
+        skip(sprintf("%s errored on synthetic %s panel: %s",
+                     fn_name, id, conditionMessage(res)))
+      }
       expect_true(is.list(res) || is.data.frame(res) ||
                   is.numeric(res) || is.character(res))
     })
