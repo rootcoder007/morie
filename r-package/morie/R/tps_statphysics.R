@@ -833,7 +833,7 @@ morie_tps_inspection_game_phase <- function(n_temptations = 20L,
       "phase emerges where T < 1 and gamma small; pure-defection ",
       "phase where T > ~1 + gamma/2. Mixed P+C phase along the ",
       "boundary. D'Orsogna & Perc 2015 sec. 5; Helbing, Szolnoki & ",
-      "Perc 2010 PNAS."),
+      "Perc 2010 NJP 12:083005."),
     payload = list(Ts = Ts, gs = gs, crime = crime)
   )
 }

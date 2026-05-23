@@ -1066,8 +1066,10 @@ morie_spatial_voting_bayesian_irt_posterior <- function(chain,
 #' @param tol Tolerance (unused; kept for API parity).
 #' @return List with `ideal_points`, `cutpoints`, `normals`,
 #'   `correct_class`, `iterations`.
-#' @references Hare et al. (2018), "Bayesian Estimation of Spatial Models
-#'   with Anchoring Vignettes."
+#' @references Hare, C., Liu, T.-P., and Lupton, R. N. (2018). "What Ordered
+#'   Optimal Classification reveals about ideological structure, cleavages,
+#'   and polarization in the American mass public." *Public Choice*,
+#'   176(1), 57-78.
 #' @examples
 #' Y <- matrix(sample(1:4, 60, replace = TRUE), 15, 4)
 #' morie_spatial_voting_ordered_oc(Y, n_dims = 1L, max_iter = 20L)
@@ -1154,8 +1156,8 @@ morie_spatial_voting_ordered_oc <- function(Y,
 #' @return List with `corrected_scores`, `thresholds`, `dif_estimates`,
 #'   `vignette_order`, `n_respondents`, `n_vignettes`.
 #' @references King, G., Murray, C. J. L., Salomon, J. A., and Tandon, A.
-#'   (2004). "Enhancing the Validity and Cross-Cultural Comparability of
-#'   Measurement in Survey Research." *APSR*, 98(1).
+#'   (2003). "Enhancing the Validity and Cross-Cultural Comparability of
+#'   Measurement in Survey Research." *APSR*, 97(4), 567-583.
 #' @examples
 #' Y <- sample(1:5, 30, replace = TRUE)
 #' V <- matrix(sample(1:5, 30 * 3, replace = TRUE), 30, 3)

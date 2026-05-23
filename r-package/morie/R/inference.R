@@ -294,11 +294,13 @@ morie_proportion_ci <- function(successes, n, alpha = 0.05,
     margin <- z * sqrt(p * (1 - p) / n + z^2 / (4 * n^2)) / denom
     ci <- c(centre - margin, centre + margin)
   } else if (method == "exact") {
-    ci <- stats::qbeta(
-      c(alpha / 2, 1 - alpha / 2),
-      c(successes, successes + 1),
-      c(n - successes + 1, n - successes)
-    )
+    # Clopper-Pearson, with explicit edge-case handling so that
+    # qbeta(., 0, .) (which is undefined) never gets called.
+    lo <- if (successes == 0L) 0
+          else stats::qbeta(alpha / 2, successes, n - successes + 1)
+    hi <- if (successes == n)  1
+          else stats::qbeta(1 - alpha / 2, successes + 1, n - successes)
+    ci <- c(lo, hi)
   } else {
     margin <- z * sqrt(p * (1 - p) / n)
     ci <- c(p - margin, p + margin)

@@ -407,7 +407,8 @@ morie_did_event_study <- function(data, outcome, unit, time, treatment_time,
 #' @param unit Optional unit identifier (currently unused; reserved).
 #' @param cluster Cluster variable for robust SE.
 #' @param pre_periods Optional explicit list of pre-treatment times.
-#' @return A list with \code{coefficients}, \code{joint_f_stat},
+#' @return A list with \code{coefficients}, \code{joint_chi2} (and
+#'   its alias \code{joint_f_stat}), \code{joint_df},
 #'   \code{joint_p_value}, \code{parallel_trends_plausible}.
 #' @export
 morie_did_test_parallel_trends <- function(data, outcome, treatment, time,
@@ -455,9 +456,15 @@ morie_did_test_parallel_trends <- function(data, outcome, treatment, time,
   is_ <- pmax(fit$se[(start_idx + 1):(start_idx + length(test_periods))], 1e-10)
   chi2 <- sum((ib / is_)^2)
   joint_p <- stats::pchisq(chi2, df = length(test_periods), lower.tail = FALSE)
+  # chi2 already IS a chi-square; dividing by k gave a mean-chi-square,
+  # NOT an F. p-value uses pchisq(chi2, k). Report both for callers that
+  # need either label; keep joint_f_stat as alias of joint_chi2 for
+  # backward compatibility.
   list(
     coefficients              = coef_df,
-    joint_f_stat              = chi2 / length(test_periods),
+    joint_chi2                = chi2,
+    joint_df                  = length(test_periods),
+    joint_f_stat              = chi2,
     joint_p_value             = joint_p,
     parallel_trends_plausible = joint_p > 0.05
   )
@@ -737,7 +744,12 @@ morie_did_aggregate_gt_att <- function(gt_results,
                       stop("Unknown aggregation: ", aggregation))
   rows <- lapply(split(df, df[[group_col]]), function(g) {
     est <- mean(g[[att_col]], na.rm = TRUE)
-    se  <- sqrt(mean(g[[se_col]]^2, na.rm = TRUE) / nrow(g))
+    # SE of a simple average of k independent estimates:
+    #   sqrt(sum(se_i^2)) / k  ==  sqrt(mean(se_i^2) / k)
+    # (was: sqrt(mean(se^2)/nrow(g)) which collides with `k` only when
+    # nrow(g) == 1; underestimated by sqrt(k) for k > 1.)
+    k <- nrow(g)
+    se <- sqrt(mean(g[[se_col]]^2, na.rm = TRUE) / k)
     ci  <- .morie_did_make_ci(est, se)
     data.frame(group = g[[group_col]][1], estimate = est,
                std_error = se, ci_lower = ci[1], ci_upper = ci[2])

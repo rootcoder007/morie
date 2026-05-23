@@ -420,6 +420,13 @@ morie_weights_brr <- function(weights, strata, n_replicates = NULL,
   for (h in seq_along(us)) {
     idx <- which(s == us[h])
     if (length(idx) < 2) next
+    if (length(idx) %% 2L != 0L) {
+      warning(sprintf(paste0("BRR stratum '%s' has odd size %d; results ",
+                              "may be biased; use survey::as.svrepdesign(., ",
+                              "type = \"BRR\") for exact Hadamard ordering."),
+                       us[h], length(idx)),
+              call. = FALSE)
+    }
     mid <- length(idx) %/% 2
     a <- idx[seq_len(mid)]; b <- idx[seq.int(mid + 1, length(idx))]
     for (r in seq_len(n_replicates)) {
