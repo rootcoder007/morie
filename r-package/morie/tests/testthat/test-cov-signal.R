@@ -37,11 +37,14 @@ test_that(".morie_py_call builds the bridge command and shells out", {
   expect_true(any(grepl("[1,2,3]", captured, fixed = TRUE)))
 })
 
-test_that("hfd delegates to the Python bridge", {
-  testthat::local_mocked_bindings(
-    system2 = function(command, args, ...) "1.42", .package = "base"
-  )
-  expect_equal(hfd(cumsum(stats::rnorm(50)), kmax = 5L), "1.42")
+test_that("hfd returns a structured higuchi_fd list on a deterministic input", {
+  set.seed(1L)
+  out <- hfd(cumsum(stats::rnorm(50)), kmax = 5L)
+  expect_type(out, "list")
+  expect_equal(out$name, "higuchi_fd")
+  expect_true(is.finite(out$value))
+  expect_equal(out$extra$kmax, 5L)
+  expect_length(out$extra$L_k, 5L)
 })
 
 test_that("filters fall back to the Python bridge without the signal pkg", {

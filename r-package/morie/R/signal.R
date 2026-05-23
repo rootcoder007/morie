@@ -187,22 +187,54 @@ morie_hurst_r <- function(x) {
 #' Higuchi fractal dimension
 #'
 #' Estimates the Higuchi (1988) fractal dimension of a 1-D time series via
-#' length scaling across `k` time-lags. Used in EEG and biological-signal
-#' complexity analysis. Values typically fall in \[1, 2\]; higher values
-#' indicate greater signal complexity.
+#' length scaling across `k` time-lags. Values typically fall in \[1, 2\];
+#' higher values indicate greater signal complexity.
 #'
-#' @param x Numeric vector.
+#' Reference: Higuchi, T. (1988) "Approach to an irregular time series on
+#' the basis of the fractal theory", *Physica D* 31(2):277--283.
+#'
+#' @param x Numeric vector (length \eqn{\geq} 4).
 #' @param kmax Maximum k (default 10).
-#' @return List with the fractal-dimension value.
+#' @return List with `value` (D), `name`, and `extra` (`kmax`, `n`,
+#'   `L_k`).
 #' @export
 #' @examples
 #' \donttest{
 #' set.seed(1)
 #' x <- cumsum(rnorm(1000))
-#' hfd(x, kmax = 10)
+#' hfd(x, kmax = 10)$value
 #' }
 hfd <- function(x, kmax = 10L) {
-  .morie_py_call("hfd", x, kmax)
+  x <- as.numeric(x)
+  n <- length(x)
+  kmax <- as.integer(kmax)
+  if (n < 4L || kmax < 2L) {
+    return(list(name = "higuchi_fd", value = NA_real_,
+                extra = list(kmax = kmax, n = n)))
+  }
+  kmax <- min(kmax, n - 1L)
+  l_k <- rep(NA_real_, kmax)
+  for (k in seq_len(kmax)) {
+    l_m <- numeric(k)
+    for (m in seq_len(k)) {
+      idx_max <- (n - m) %/% k
+      if (idx_max < 1L) next
+      i <- seq_len(idx_max)
+      diffs <- abs(x[m + i * k] - x[m + (i - 1L) * k])
+      l_m[m] <- sum(diffs) * (n - 1L) / (idx_max * k * k)
+    }
+    l_k[k] <- mean(l_m[l_m > 0], na.rm = TRUE)
+  }
+  valid <- is.finite(l_k) & l_k > 0
+  if (sum(valid) < 2L) {
+    return(list(name = "higuchi_fd", value = NA_real_,
+                extra = list(kmax = kmax, n = n, L_k = l_k)))
+  }
+  fd <- unname(-stats::coef(stats::lm(
+    log(l_k[valid]) ~ log(seq_len(kmax)[valid])))[2])
+  list(name = "higuchi_fd",
+       value = as.numeric(fd),
+       extra = list(kmax = kmax, n = n, L_k = l_k))
 }
 
 #' Phonocardiogram (PCG) bandpass filter
