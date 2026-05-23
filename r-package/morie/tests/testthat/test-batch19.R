@@ -132,7 +132,9 @@ test_that("morie_cluster_sample: too many clusters errors", {
 
 test_that("morie_pps_sample: returns n rows with Hansen-Hurwitz weights", {
   df <- data.frame(s = c(1, 2, 3, 4, 5), x = 1:5)
-  out <- morie_pps_sample(df, "s", n = 10)
+  # Hansen-Hurwitz is with-replacement; pass replace=TRUE explicitly
+  # (default switched to WoR for Python parity 2026-05-22).
+  out <- morie_pps_sample(df, "s", n = 10, replace = TRUE)
   expect_equal(nrow(out), 10L)
   expect_true(all(out$.weight > 0))
   expect_true(all(is.finite(out$.weight)))

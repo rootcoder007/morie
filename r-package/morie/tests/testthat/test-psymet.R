@@ -54,7 +54,8 @@ test_that("morie_psymet_alpha returns NA components for single item", {
 })
 
 test_that("morie_psymet_alpha handles zero total variance", {
-  X <- matrix(c(1, -1, 1, -1, 1, -1, 1, -1), ncol = 2)
+  # Constant rowsums (1+3, 2+2, 3+1) = (4, 4, 4) -> total variance = 0
+  X <- matrix(c(1, 2, 3, 3, 2, 1), ncol = 2)
   res <- morie_psymet_alpha(X)
   expect_true(is.na(res$raw))
 })

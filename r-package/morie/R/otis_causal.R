@@ -665,19 +665,14 @@ morie_otis_classify_mandela_combo <- function(mh, sr, sw,
                         NA_character_)
   alert_count <- mh + sr + sw
 
-  if (!is.na(days) && exists("morie_siu_classify_mandela",
-                              mode = "function")) {
-    sm <- tryCatch(
-      morie_siu_classify_mandela(days_in_siu = as.numeric(days),
-                                  hours_per_day = as.numeric(hours_per_day),
-                                  total_placements = 1L),
-      error = function(e) NULL
-    )
-    mandela_cat <- if (!is.null(sm)) sm$category else NA_character_
-  } else if (!is.na(days)) {
-    # Pure Mandela threshold: > 15 days = prolonged solitary = torture
-    mandela_cat <- if (as.numeric(days) > 15) "torture"
-                   else if (as.numeric(days) >= 1) "at-risk"
+  if (!is.na(days)) {
+    # Pure Mandela threshold: > 15 days = prolonged solitary = torture.
+    # (The fancier 22-hr / 4-hr-missed delegation to
+    # morie_siu_classify_mandela needs SIU-specific inputs we don't
+    # have at this aggregation level.)
+    days_n <- as.numeric(days)
+    mandela_cat <- if (days_n > 15) "torture"
+                   else if (days_n >= 1) "at-risk"
                    else "compliant"
   } else {
     # Alert-only proxy: any active alert -> at-risk; none -> compliant

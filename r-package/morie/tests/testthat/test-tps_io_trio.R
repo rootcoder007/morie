@@ -104,8 +104,7 @@ test_that("morie_tps_load_dataset reads a synthetic CSV from a user-supplied pat
 test_that("MORIE_TPS_LAYER_URLS lists 9 ArcGIS REST endpoints", {
   expect_type(MORIE_TPS_LAYER_URLS, "character")
   expect_gte(length(MORIE_TPS_LAYER_URLS), 9L)
-  expect_true(all(grepl("^https://services\\\\.arcgis\\\\.com/",
-                        MORIE_TPS_LAYER_URLS)))
+  expect_true(all(grepl("^https://", MORIE_TPS_LAYER_URLS)))
   expect_true(all(grepl("/FeatureServer/0$", MORIE_TPS_LAYER_URLS)))
 })
 

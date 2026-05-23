@@ -119,7 +119,7 @@ test_that("panel_summary names chair + members + URL + mandate dates", {
   expect_match(s, "Member")
   expect_match(s, "2021-04", fixed = TRUE)
   expect_match(s, "2024-12", fixed = TRUE)
-  expect_match(s, "publicsafety\\\\.gc\\\\.ca")
+  expect_match(s, "publicsafety\\.gc\\.ca")
 })
 
 # ---------------------------------------------------------------------------
@@ -128,7 +128,7 @@ test_that("panel_summary names chair + members + URL + mandate dates", {
 
 test_that("MORIE_SIUIAP_URL is an https URL", {
   set.seed(1)
-  expect_match(MORIE_SIUIAP_URL, "^https://www\\\\.publicsafety\\\\.gc\\\\.ca/")
+  expect_match(MORIE_SIUIAP_URL, "^https://www\\.publicsafety\\.gc\\.ca/")
 })
 
 test_that("MORIE_SIUIAP_PANEL_MANDATE mentions the 2024-12 end date", {

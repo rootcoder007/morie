@@ -33,7 +33,9 @@ test_that("morie_survival_km log-log CI method works", {
   d <- .make_surv(50)
   res <- morie_survival_km(d$time, d$event, ci_method = "log-log")
   expect_match(res$method, "log-log")
-  expect_true(all(res$ci_lower <= res$survival + 1e-8))
+  # Log-log CIs are NA when S(t) is 0 or 1; check only the well-defined entries.
+  ok <- !is.na(res$ci_lower) & !is.na(res$survival)
+  expect_true(all(res$ci_lower[ok] <= res$survival[ok] + 1e-8))
 })
 
 test_that("morie_survival_km accepts NA / negative times by dropping them", {

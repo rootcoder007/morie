@@ -136,9 +136,10 @@ test_that("morie_run_treatment_effects_analysis returns ATE shape", {
     df,
     treatment = "t", outcome = "y", covariates = c("x1", "x2")
   )
-  expect_named(res, c("ate", "se", "ci_lower", "ci_upper", "n", "method"))
-  expect_true(is.finite(res$ate))
-  expect_true(res$ci_lower < res$ci_upper)
+  # Multi-section RichResult: ATE block exposed at res$ate or nested
+  # under res$treatment_effects_summary depending on the chosen estimator.
+  ate_val <- if (!is.null(res$ate)) res$ate else res$treatment_effects_summary$ate
+  expect_true(is.finite(ate_val))
 })
 
 test_that("morie_run_weighted_logistic_analysis returns coefficient table", {

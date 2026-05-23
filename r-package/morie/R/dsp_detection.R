@@ -139,7 +139,11 @@ morie_dsp_onset_detect <- function(x, fs, energy_window_ms = 20,
   win <- max(1L, as.integer(energy_window_ms * fs / 1000))
   kernel <- rep(1 / win, win)
   energy <- .same_convolve(x^2, kernel)
-  baseline <- stats::median(energy)
+  # Robust noise floor: 10th percentile (was: median, which sits inside
+  # the burst on a flat-then-loud signal and yields a too-high threshold).
+  baseline <- max(stats::quantile(energy, 0.1, na.rm = TRUE,
+                                   names = FALSE),
+                   .Machine$double.eps)
   thr <- baseline * threshold_factor
   onsets <- integer(0); above <- FALSE
   for (i in seq_along(energy)) {
@@ -161,6 +165,10 @@ morie_dsp_onset_detect <- function(x, fs, energy_window_ms = 20,
 #'   Liang et al. (1997).
 #' @export
 morie_dsp_shannon_energy <- function(x) {
+  # Normalise to max amplitude so x_sq lies in [0, 1] and the entropy
+  # form -p log(p) stays non-negative even when |x| > 1.
+  m <- max(abs(x))
+  if (m > 0) x <- x / m
   x_sq <- pmax(x^2, 1e-12)
   -x_sq * log(x_sq)
 }

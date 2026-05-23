@@ -193,7 +193,7 @@ morie_dsp_nlms <- function(x, d, order = 16L, mu = 0.5, eps = 1e-8) {
     nrm <- sum(seg * seg) + eps
     y[i] <- sum(w * seg)
     e[i] <- d[i] - y[i]
-    w <- w + (2 * mu / nrm) * e[i] * seg
+    w <- w + (mu / nrm) * e[i] * seg
   }
   list(y = y, e = e)
 }
@@ -446,14 +446,25 @@ morie_dsp_wiener_hopf <- function(Rxx, rxd) {
 morie_dsp_cross_correlation <- function(x, y, max_lag = NULL) {
   x <- as.numeric(x); y <- as.numeric(y)
   if (length(x) != length(y)) stop("x and y must be the same length")
-  if (is.null(max_lag)) max_lag <- length(x) - 1L
+  n <- length(x)
+  if (is.null(max_lag)) max_lag <- n - 1L
+  max_lag <- as.integer(max_lag)
   xc <- x - mean(x); yc <- y - mean(y)
-  # numpy.correlate(xc, yc, "full") at lag k is sum_i xc[i+k] * yc[i].
-  full <- stats::convolve(xc, rev(yc), type = "open")
-  mid <- (length(full) + 1L) %/% 2L
   nrm <- sqrt(sum(xc^2) * sum(yc^2))
-  if (nrm > 0) full <- full / nrm
-  full[(mid - max_lag):(mid + max_lag)]
+  # r(tau) = sum_t xc(t) * yc(t + tau) over valid overlap;
+  # returns 2*max_lag + 1 values, lag 0 sits at the centre index.
+  lags <- seq.int(-max_lag, max_lag)
+  out <- vapply(lags, function(tau) {
+    if (tau >= 0L) {
+      i <- seq.int(1L, n - tau)
+      sum(xc[i] * yc[i + tau])
+    } else {
+      i <- seq.int(1L - tau, n)
+      sum(xc[i] * yc[i + tau])
+    }
+  }, numeric(1L))
+  if (nrm > 0) out <- out / nrm
+  out
 }
 
 #' Even-odd decomposition of a finite signal

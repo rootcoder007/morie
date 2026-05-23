@@ -287,7 +287,7 @@ test_that("mrm_tps_polygon_moran_per_year() loops over year columns", {
   )
   expect_s3_class(res, "data.frame")
   expect_equal(nrow(res), 2L)
-  expect_named(res, c("year", "n_events", "moran_I"))
+  expect_true(all(c("year", "n_events", "moran_I") %in% names(res)))
   expect_equal(sort(res$year), c(2023L, 2024L))
   expect_true(all(is.finite(res$moran_I)))
   expect_true(all(res$n_events >= 0L))

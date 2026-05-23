@@ -289,11 +289,18 @@ test_that("morie_weights_jackknife JKn requires strata", {
                regexp = "strata")
 })
 
-test_that("morie_weights_jackknife JKn returns one column per stratum", {
+test_that("morie_weights_jackknife JKn returns one column per PSU", {
+  # Wolter (2007) JKn drops ONE PSU per replicate and scales the
+  # surviving in-stratum PSUs by n_h/(n_h-1). Matrix is n-by-n.
   w <- rep(1, 6)
   s <- c("a", "a", "a", "b", "b", "b")
   R <- morie_weights_jackknife(w, strata = s, jk_type = "JKn")
-  expect_equal(dim(R), c(6, 2))
+  expect_equal(dim(R), c(6, 6))
+  expect_equal(attr(R, "morie_jkn_strata"), s)
+  # Replicate 1 drops PSU 1 (stratum a, n_h=3): 0 on row 1, 1.5 on rows 2-3.
+  expect_equal(R[1, 1], 0)
+  expect_equal(R[2, 1], 1.5)
+  expect_equal(R[4, 1], 1)
 })
 
 test_that("morie_weights_brr returns matrix with correct dims", {

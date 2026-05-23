@@ -156,7 +156,10 @@ test_that("morie_matching_full runs end-to-end", {
 test_that("morie_matching_subclassify returns subclass-tagged data", {
   df <- make_match_df(n = 300)
   res <- morie_matching_subclassify(df, "d", c("x1", "x2"))
-  expect_s3_class(res, "morie_match_result")
+  expect_true(is.list(res))
+  expect_true(all(c("data_with_strata", "stratum_effects") %in% names(res)))
+  expect_s3_class(res$data_with_strata, "data.frame")
+  expect_s3_class(res$stratum_effects, "data.frame")
 })
 
 
@@ -171,7 +174,11 @@ test_that("morie_matching_entropy_balance produces weights", {
     error = function(e) NULL
   )
   skip_if(is.null(res), "entropy balancing unavailable")
-  expect_s3_class(res, "morie_match_result")
+  # morie_matching_entropy_balance returns a named numeric weight vector
+  # (treated units = 1, controls = Hainmueller dual weights).
+  expect_true(is.numeric(res))
+  expect_equal(length(res), nrow(df))
+  expect_true(all(res >= 0))
 })
 
 

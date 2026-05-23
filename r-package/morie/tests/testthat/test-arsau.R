@@ -159,7 +159,7 @@ test_that("ckan_url builds an https URL containing the resource id", {
   set.seed(1)
   url <- morie_arsau_ckan_url("main_records", "2023")
   expect_type(url, "character")
-  expect_match(url, "^https://data\\\\.ontario\\\\.ca/api/3/action/datastore_search")
+  expect_match(url, "^https://data\\.ontario\\.ca/api/3/action/datastore_search")
   expect_match(url, "resource_id=94f303a2-963e-4fd1-958d-6681b310cb6d")
   expect_match(url, "limit=5000")
 })
