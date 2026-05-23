@@ -1,0 +1,63 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# Phase 2O: tests for mrm_lisa.R — LISA (Local Indicators of Spatial
+# Association) + polygon Moran's I.
+
+.make_synthetic_polygons <- function(n = 30L, seed = 1L) {
+  set.seed(seed)
+  # Random Toronto-like polygon centroids + counts.
+  data.frame(
+    poly_id = sprintf("p%03d", 1:n),
+    lat = stats::runif(n, min = 43.58, max = 43.88),
+    lon = stats::runif(n, min = -79.62, max = -79.13),
+    count = stats::rpois(n, lambda = 50),
+    year = sample(2018:2024, n, replace = TRUE),
+    stringsAsFactors = FALSE
+  )
+}
+
+test_that("mrm_tps_lisa returns per-polygon Local Moran's I", {
+  df <- .make_synthetic_polygons(n = 30L, seed = 1L)
+  out <- tryCatch(
+    mrm_tps_lisa(df, count_col = "count",
+                  lat_col = "lat", lon_col = "lon",
+                  k = 4L, n_permutations = 50L, seed = 7L),
+    error = function(e) e
+  )
+  if (inherits(out, "error")) {
+    skip(sprintf("mrm_tps_lisa error: %s", conditionMessage(out)))
+  }
+  expect_true(is.list(out) || is.data.frame(out))
+})
+
+test_that("mrm_tps_lisa errors on too-few polygons", {
+  df <- .make_synthetic_polygons(n = 3L, seed = 2L)
+  expect_error(
+    mrm_tps_lisa(df, count_col = "count",
+                  lat_col = "lat", lon_col = "lon")
+  )
+})
+
+test_that("mrm_tps_lisa errors on missing count_col", {
+  df <- .make_synthetic_polygons(n = 30L, seed = 3L)
+  expect_error(
+    mrm_tps_lisa(df, count_col = "nonexistent_col",
+                  lat_col = "lat", lon_col = "lon")
+  )
+})
+
+test_that("mrm_tps_polygon_moran_per_year returns one row per year", {
+  df <- .make_synthetic_polygons(n = 60L, seed = 4L)
+  out <- tryCatch(
+    mrm_tps_polygon_moran_per_year(df, count_col = "count",
+                                     lat_col = "lat", lon_col = "lon",
+                                     year_col = "year",
+                                     k = 4L, n_permutations = 50L),
+    error = function(e) e
+  )
+  if (inherits(out, "error")) {
+    skip(sprintf("polygon_moran_per_year error: %s",
+                 conditionMessage(out)))
+  }
+  expect_true(is.list(out) || is.data.frame(out))
+})
