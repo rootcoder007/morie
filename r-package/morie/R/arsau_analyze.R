@@ -45,7 +45,7 @@
 #' Ontario Ministry of the Solicitor General. \emph{Annual Report on
 #' Special and Adaptive Units / Data on Police Use of Force in
 #' Ontario}: 2020-2022, 2023, and 2024 releases.
-#' \url{https://data.ontario.ca/dataset/data-on-police-use-of-force}.
+#' \url{https://data.ontario.ca/dataset/police-use-of-force-race-based-data}.
 #' Technical notes accompanying each annual release describe the
 #' data-quality reasons for the 2023 weapon-records invalidity flag.
 #'

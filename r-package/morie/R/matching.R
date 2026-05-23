@@ -177,7 +177,7 @@ morie_matching_trim_propensity <- function(ps, lower = 0.01, upper = 0.99) {
 #' @param ps_col Propensity-score column name (default
 #'   \code{"propensity_score"}).
 #' @param method One of \code{"minmax"} (overlap of ranges) or
-#'   \code{"trim"} (drop the extreme 5\% of each tail).
+#'   \code{"trim"} (drop the extreme 5 percent of each tail).
 #' @return A subset of \code{data} on common support.
 #' @examples
 #' \dontrun{

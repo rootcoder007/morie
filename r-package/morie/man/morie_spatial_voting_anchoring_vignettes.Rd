@@ -27,6 +27,6 @@ morie_spatial_voting_anchoring_vignettes(Y, V)
 }
 \references{
 King, G., Murray, C. J. L., Salomon, J. A., and Tandon, A.
-(2004). "Enhancing the Validity and Cross-Cultural Comparability of
-Measurement in Survey Research." \emph{APSR}, 98(1).
+(2003). "Enhancing the Validity and Cross-Cultural Comparability of
+Measurement in Survey Research." \emph{APSR}, 97(4), 567-583.
 }

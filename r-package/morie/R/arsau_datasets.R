@@ -41,7 +41,7 @@
 #' Ontario Ministry of the Solicitor General. \emph{Data on Police Use
 #' of Force in Ontario}, 2020-2022 / 2023 / 2024 releases.  Published
 #' on the Ontario Data Catalogue:
-#' \url{https://data.ontario.ca/dataset/data-on-police-use-of-force}.
+#' \url{https://data.ontario.ca/dataset/police-use-of-force-race-based-data}.
 #' CKAN \code{datastore_search} endpoint:
 #' \url{https://data.ontario.ca/api/3/action/datastore_search}.
 #' Each annual release ships per-resource technical notes; the 2023
@@ -478,7 +478,7 @@ morie_arsau_download <- function(target_dir, ...) {
     "NotYetPorted: morie_arsau_download() is not yet implemented in R. ",
     "Use the Python pipeline (scripts/refresh_arsau.py) or download ",
     "the CSVs manually from ",
-    "https://data.ontario.ca/dataset/data-on-police-use-of-force ",
+    "https://data.ontario.ca/dataset/police-use-of-force-race-based-data ",
     "and point MORIE_ARSAU_DIR at the result.",
     call. = FALSE
   )

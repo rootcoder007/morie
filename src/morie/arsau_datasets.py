@@ -7,7 +7,7 @@ provincial release of Police Use-of-Force incident records (formally
 Ontario"). The data are published on the Ontario Data Catalogue
 (``data.ontario.ca``) as a multi-year CKAN package; the public-facing
 landing page is
-https://data.ontario.ca/dataset/data-on-police-use-of-force.
+https://data.ontario.ca/dataset/police-use-of-force-race-based-data.
 
 This module ships:
 
@@ -451,7 +451,7 @@ def _load_one_entry(
             f"{entry.year_or_range}/{entry.csv_filename}\n"
             f"  - set MORIE_ARSAU_DIR to such a directory\n"
             f"  - download the file from "
-            f"https://data.ontario.ca/dataset/data-on-police-use-of-force"
+            f"https://data.ontario.ca/dataset/police-use-of-force-race-based-data"
         )
 
     df = pd.read_csv(csv_path, low_memory=False)

@@ -8,7 +8,7 @@ ARSAU = the Ontario Ministry of the Solicitor General's provincial
 release of Police Use-of-Force incident records (formally
 "Race-Based and Identity-Based Data on Police Use of Force in
 Ontario").  Published on the Ontario Data Catalogue at
-\url{https://data.ontario.ca/dataset/data-on-police-use-of-force}.
+\url{https://data.ontario.ca/dataset/police-use-of-force-race-based-data}.
 }
 \details{
 This file ships the R-side equivalents of the Python
