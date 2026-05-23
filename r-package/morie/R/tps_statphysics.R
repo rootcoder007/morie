@@ -795,12 +795,17 @@ morie_tps_inspection_game_phase <- function(n_temptations = 20L,
       Tv <- Ts[i]; gv <- gs[j]
       x <- c(0.34, 0.33, 0.33) + 0.01 * stats::rnorm(3L)
       x <- pmax(x, 0); x <- x / sum(x)
-      P <- matrix(c(1, Tv, 1 - gv,
-                     0, 0,  1 - gv,
-                     1, Tv - 1, 1 - gv),
+      # Rows = strategy played by self (C, P, O); columns = opponent
+      # strategy. Matches src/morie/tps_statphysics.py:587-591 verbatim:
+      #   C: [1,     0,       1]
+      #   P: [T,     0,       T-1]
+      #   O: [1-g,   1-g,     1-g]
+      # Earlier draft had this matrix transposed, which inverted the
+      # phase diagram. Fixed 2026-05-22.
+      P <- matrix(c(1,      0,       1,
+                     Tv,    0,       Tv - 1,
+                     1 - gv, 1 - gv, 1 - gv),
                    nrow = 3L, byrow = TRUE)
-      # P is 3x3 with rows = strategy, columns = opponent strategy;
-      # row order matches the Python (C, P, O) convention.
       for (k in seq_len(n_steps)) {
         fit <- as.numeric(P %*% x)
         phi <- sum(x * fit)
