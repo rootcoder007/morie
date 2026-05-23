@@ -27,6 +27,8 @@ Y <- matrix(sample(1:4, 60, replace = TRUE), 15, 4)
 morie_spatial_voting_ordered_oc(Y, n_dims = 1L, max_iter = 20L)
 }
 \references{
-Hare et al. (2018), "Bayesian Estimation of Spatial Models
-with Anchoring Vignettes."
+Hare, C., Liu, T.-P., and Lupton, R. N. (2018). "What Ordered
+Optimal Classification reveals about ideological structure, cleavages,
+and polarization in the American mass public." \emph{Public Choice},
+176(1), 57-78.
 }

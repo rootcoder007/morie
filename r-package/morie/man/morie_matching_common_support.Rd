@@ -20,7 +20,7 @@ morie_matching_common_support(
 \code{"propensity_score"}).}
 
 \item{method}{One of \code{"minmax"} (overlap of ranges) or
-\code{"trim"} (drop the extreme 5\\% of each tail).}
+\code{"trim"} (drop the extreme 5 percent of each tail).}
 }
 \value{
 A subset of \code{data} on common support.

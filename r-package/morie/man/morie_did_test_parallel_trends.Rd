@@ -30,7 +30,8 @@ morie_did_test_parallel_trends(
 \item{pre_periods}{Optional explicit list of pre-treatment times.}
 }
 \value{
-A list with \code{coefficients}, \code{joint_f_stat},
+A list with \code{coefficients}, \code{joint_chi2} (and
+its alias \code{joint_f_stat}), \code{joint_df},
 \code{joint_p_value}, \code{parallel_trends_plausible}.
 }
 \description{
