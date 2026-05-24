@@ -192,6 +192,90 @@ morie_datasets_vancouver_fire_halls <- function(offline = TRUE,
   df
 }
 
+# ---------------------------------------------------------------------------
+# Phase 3EEE3 -- 4 more bundled Vancouver fixtures
+# ---------------------------------------------------------------------------
+
+#' Vancouver community centre locations
+#'
+#' Phase 3EEE3. Bundled 27-row snapshot of City-run community
+#' centres. Useful as an "anchor institutions" overlay for analyses
+#' of neighbourhood-level crime + social-service access.
+#'
+#' @rdname vancouver_crime_adjacent
+#' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @export
+morie_datasets_vancouver_community_centres <- function(offline = TRUE,
+                                                         max_features = NULL) {
+  df <- if (offline)
+    .morie_vancouver_fixture("vancouver_community_centres.csv")
+  else morie_datasets_vancouver_opendata_by_id("community-centres",
+                                                  limit = 50L)
+  if (!is.null(max_features))
+    df <- utils::head(df, as.integer(max_features))
+  df
+}
+
+#' Vancouver community food markets and farmers markets
+#'
+#' Phase 3EEE3. Bundled 91-row snapshot of community + farmers
+#' markets across Vancouver. Useful for food-access / quality-of-life
+#' overlays.
+#'
+#' @rdname vancouver_crime_adjacent
+#' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @export
+morie_datasets_vancouver_community_food_markets <- function(offline = TRUE,
+                                                              max_features = NULL) {
+  df <- if (offline)
+    .morie_vancouver_fixture("vancouver_community_food_markets.csv")
+  else morie_datasets_vancouver_opendata_by_id(
+    "community-food-markets-and-farmers-markets", limit = 100L)
+  if (!is.null(max_features))
+    df <- utils::head(df, as.integer(max_features))
+  df
+}
+
+#' Vancouver designated disability parking spaces
+#'
+#' Phase 3EEE3. Bundled 100-row sample of designated disability
+#' parking locations across Vancouver (out of 159 total).
+#'
+#' @rdname vancouver_crime_adjacent
+#' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @export
+morie_datasets_vancouver_disability_parking <- function(offline = TRUE,
+                                                          max_features = NULL) {
+  df <- if (offline)
+    .morie_vancouver_fixture("vancouver_disability_parking.csv")
+  else morie_datasets_vancouver_opendata_by_id("disability-parking",
+                                                  limit = 100L)
+  if (!is.null(max_features))
+    df <- utils::head(df, as.integer(max_features))
+  df
+}
+
+#' Vancouver public art registry
+#'
+#' Phase 3EEE3. Bundled 100-row sample of Vancouver's public art
+#' registry (out of 747 total) -- artist, install year,
+#' neighbourhood, primary material. Useful as a CPTED-style
+#' "place-making" overlay variable.
+#'
+#' @rdname vancouver_crime_adjacent
+#' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @export
+morie_datasets_vancouver_public_art <- function(offline = TRUE,
+                                                  max_features = NULL) {
+  df <- if (offline)
+    .morie_vancouver_fixture("vancouver_public_art.csv")
+  else morie_datasets_vancouver_opendata_by_id("public-art",
+                                                  limit = 100L)
+  if (!is.null(max_features))
+    df <- utils::head(df, as.integer(max_features))
+  df
+}
+
 #' Fetch records from a Vancouver Open Data dataset by ID
 #'
 #' Phase 3CCC4. Hits the Opendatasoft v2.1 `/records` endpoint for

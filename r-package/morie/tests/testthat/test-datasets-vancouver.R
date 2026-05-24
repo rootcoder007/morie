@@ -53,3 +53,48 @@ test_that("max_features cap honoured on all 5 wrappers", {
     expect_equal(nrow(fn(offline = TRUE, max_features = 2L)), 2L)
   }
 })
+
+# ========================================== Phase 3EEE3 deeper coverage
+
+test_that("morie_datasets_vancouver_community_centres reads 27-row fixture", {
+  df <- morie_datasets_vancouver_community_centres(offline = TRUE)
+  expect_s3_class(df, "data.frame")
+  expect_equal(nrow(df), 27L)
+  expect_true("name" %in% names(df))
+  expect_true("address" %in% names(df))
+})
+
+test_that("morie_datasets_vancouver_community_food_markets reads 91-row fixture", {
+  df <- morie_datasets_vancouver_community_food_markets(offline = TRUE)
+  expect_s3_class(df, "data.frame")
+  expect_equal(nrow(df), 91L)
+  expect_true("marketname_location_host" %in% names(df))
+})
+
+test_that("morie_datasets_vancouver_disability_parking reads 100-row fixture", {
+  df <- morie_datasets_vancouver_disability_parking(offline = TRUE)
+  expect_s3_class(df, "data.frame")
+  expect_equal(nrow(df), 100L)
+  expect_true("spaces" %in% names(df))
+  # Vancouver lat/lon range
+  expect_true(all(df$lon > -124 & df$lon < -122, na.rm = TRUE))
+})
+
+test_that("morie_datasets_vancouver_public_art reads 100-row sample", {
+  df <- morie_datasets_vancouver_public_art(offline = TRUE)
+  expect_s3_class(df, "data.frame")
+  expect_equal(nrow(df), 100L)
+  for (col in c("title_of_work", "type", "neighbourhood",
+                "yearofinstallation"))
+    expect_true(col %in% names(df),
+                 info = sprintf("missing %s", col))
+})
+
+test_that("max_features cap honoured on all 4 new Vancouver wrappers", {
+  for (fn in list(morie_datasets_vancouver_community_centres,
+                   morie_datasets_vancouver_community_food_markets,
+                   morie_datasets_vancouver_disability_parking,
+                   morie_datasets_vancouver_public_art)) {
+    expect_equal(nrow(fn(offline = TRUE, max_features = 5L)), 5L)
+  }
+})
