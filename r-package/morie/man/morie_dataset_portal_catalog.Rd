@@ -9,8 +9,8 @@ morie_dataset_portal_catalog(portal = NULL)
 \arguments{
 \item{portal}{Optional character filter: \code{"chicago"}, \code{"nyc_nypd"},
 \code{"nyc_opendata"}, \code{"tps_arcgis_hub"}, \code{"tps_psdp"},
-\code{"ontario_ckan"}, \code{"vancouver_opendata"}. \code{NULL} (default)
-returns all portals.}
+\code{"ontario_ckan"}, \code{"vancouver_opendata"}, \code{"vpd_geodash"}.
+\code{NULL} (default) returns all portals.}
 }
 \value{
 A \code{data.frame} with one row per dataset. Columns:
@@ -42,6 +42,10 @@ endpoint (open).
 \item \strong{ckan}         -- CKAN datastore (open).
 \item \strong{opendatasoft_v21} -- Opendatasoft Explore API v2.1
 \verb{/api/explore/v2.1/catalog/datasets/<id>/records} (open).
+\item \strong{manual_download} -- Data is gated behind manual
+T&C acceptance via a publisher web UI; no automation API.
+Caller downloads manually and passes the local path to the
+morie loader. Used by VPD GeoDASH.
 }
 }
 \note{

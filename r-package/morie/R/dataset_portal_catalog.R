@@ -47,6 +47,10 @@
 #'   \item \strong{ckan}         -- CKAN datastore (open).
 #'   \item \strong{opendatasoft_v21} -- Opendatasoft Explore API v2.1
 #'     `/api/explore/v2.1/catalog/datasets/<id>/records` (open).
+#'   \item \strong{manual_download} -- Data is gated behind manual
+#'     T&C acceptance via a publisher web UI; no automation API.
+#'     Caller downloads manually and passes the local path to the
+#'     morie loader. Used by VPD GeoDASH.
 #' }
 #'
 #' @note SODA3 (`/api/v3/views/<id>/query.{json,csv}`) requires
@@ -57,8 +61,8 @@
 #'
 #' @param portal Optional character filter: `"chicago"`, `"nyc_nypd"`,
 #'   `"nyc_opendata"`, `"tps_arcgis_hub"`, `"tps_psdp"`,
-#'   `"ontario_ckan"`, `"vancouver_opendata"`. `NULL` (default)
-#'   returns all portals.
+#'   `"ontario_ckan"`, `"vancouver_opendata"`, `"vpd_geodash"`.
+#'   `NULL` (default) returns all portals.
 #' @return A `data.frame` with one row per dataset. Columns:
 #'   `dataset_key`, `source`, `id`, `api_modes`, `loader`,
 #'   `dict_url`, `n_rows_bundled`.
@@ -182,6 +186,17 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
       stringsAsFactors = FALSE))
   }
 
+  # --- VPD GeoDASH (manual download, sample bundled) -----------
+  push(data.frame(
+    dataset_key = "vpd_crime",
+    source = "vpd_geodash",
+    id = "crimedata_csv_AllNeighbourhoods_AllYears",
+    api_modes = "manual_download",
+    loader = "morie_datasets_vpd_crime",
+    dict_url = "https://geodash.vpd.ca/opendata/",
+    n_rows_bundled = .morie_portal_fixture_rows("vpd_crime_sample.csv"),
+    stringsAsFactors = FALSE))
+
   out <- do.call(rbind, rows)
   rownames(out) <- NULL
 
@@ -191,7 +206,8 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
                                       "nyc_opendata",
                                       "tps_arcgis_hub", "tps_psdp",
                                       "ontario_ckan",
-                                      "vancouver_opendata"))
+                                      "vancouver_opendata",
+                                      "vpd_geodash"))
     out <- out[out$source == portal, , drop = FALSE]
     rownames(out) <- NULL
   }
