@@ -148,3 +148,52 @@ test_that("3FFF2: mode is ignored on non-Socrata sources (VPD bundled)", {
   df <- morie_datasets_load_by_key("vpd_crime", mode = "soda3")
   expect_equal(nrow(df), 550L)
 })
+
+# ========================================== Phase 3HHH5 collision handling
+
+test_that("3HHH5: ambiguous dataset_key errors with helpful source= hint", {
+  expect_error(
+    morie_datasets_load_by_key("public-art"),
+    regexp = "ambiguous.*toronto_opendata.*vancouver_opendata|ambiguous.*vancouver_opendata.*toronto_opendata")
+})
+
+test_that("3HHH5: source= disambiguates collision (Vancouver)", {
+  # Vancouver public-art is an Opendatasoft id -- network call live mode.
+  # Mock the underlying fetcher so the test stays offline.
+  testthat::with_mocked_bindings(
+    morie_datasets_vancouver_opendata_by_id = function(id, ...) {
+      data.frame(dataset_id = id, source = "van-mock",
+                  stringsAsFactors = FALSE)
+    },
+    .package = "morie",
+    code = {
+      df <- morie_datasets_load_by_key("public-art",
+                                          source = "vancouver_opendata")
+      expect_equal(df$dataset_id, "public-art")
+    })
+})
+
+test_that("3HHH5: source= disambiguates collision (Toronto)", {
+  testthat::with_mocked_bindings(
+    morie_datasets_toronto_open_ckan_resource = function(resource_id,
+                                                            limit, ...) {
+      data.frame(id = resource_id, source = "tor-mock",
+                  stringsAsFactors = FALSE)
+    },
+    .morie_ckan_resolve_first_csv = function(package_name, ckan_base) {
+      sprintf("fake-resource-uuid-for-%s", package_name)
+    },
+    .package = "morie",
+    code = {
+      df <- morie_datasets_load_by_key("public-art",
+                                          source = "toronto_opendata")
+      expect_equal(df$id, "fake-resource-uuid-for-public-art")
+    })
+})
+
+test_that("3HHH5: source= with unknown value errors with available list", {
+  expect_error(
+    morie_datasets_load_by_key("public-art",
+                                  source = "atlantis_opendata"),
+    regexp = "no entry for source.*atlantis_opendata.*Available")
+})

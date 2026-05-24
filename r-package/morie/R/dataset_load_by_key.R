@@ -54,6 +54,11 @@
 #'   its native default (soda2 today). 3FFF2.
 #' @param app_token Optional Socrata application token forwarded
 #'   to SODA3-capable loaders. 3FFF2.
+#' @param source Optional portal disambiguator (e.g.,
+#'   `"vancouver_opendata"` vs `"toronto_opendata"`) used when the
+#'   `dataset_key` collides across portals. 3HHH5. Omit when the key
+#'   is unique (the common case); pass when an ambiguous-key error
+#'   is raised to pick the intended portal.
 #' @return A `data.frame` (or, for StatCan, the WDS metadata list).
 #' @examples
 #' # VPD bundled sample
@@ -73,7 +78,8 @@ morie_datasets_load_by_key <- function(dataset_key,
                                          max_features = NULL,
                                          mode = c("auto", "soda2",
                                                    "soda3", "odata"),
-                                         app_token = NULL) {
+                                         app_token = NULL,
+                                         source = NULL) {
   mode <- match.arg(mode)
   cat_df <- morie_dataset_portal_catalog()
   row <- cat_df[cat_df$dataset_key == dataset_key, , drop = FALSE]
@@ -83,8 +89,28 @@ morie_datasets_load_by_key <- function(dataset_key,
       dataset_key), call. = FALSE)
   }
   if (nrow(row) > 1L) {
-    # Same key across multiple sources -- prefer the first.
-    row <- row[1L, , drop = FALSE]
+    # 3HHH5: dataset_key collides across portals (e.g., "public-art"
+    # exists on both Vancouver Opendatasoft and Toronto CKAN).
+    # Require an explicit source= to disambiguate instead of silently
+    # picking the first match.
+    if (is.null(source)) {
+      stop(sprintf(paste0(
+        "dataset_key '%s' is ambiguous -- present in %d sources: %s. ",
+        "Pass source = '<one_of_the_above>' to disambiguate."),
+        dataset_key, nrow(row),
+        paste(sort(unique(row$source)), collapse = ", ")),
+        call. = FALSE)
+    }
+    row <- row[row$source == source, , drop = FALSE]
+    if (nrow(row) == 0L) {
+      stop(sprintf(paste0(
+        "dataset_key '%s' has no entry for source = '%s'. ",
+        "Available sources: %s."),
+        dataset_key, source,
+        paste(sort(unique(cat_df$source[cat_df$dataset_key == dataset_key])),
+              collapse = ", ")),
+        call. = FALSE)
+    }
   }
   src    <- row$source
   id     <- row$id
