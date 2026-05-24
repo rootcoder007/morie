@@ -76,6 +76,122 @@ morie_datasets_vancouver_opendata_layers <- function(offline = TRUE,
   df
 }
 
+#' Bundled Vancouver Open Data crime-adjacent civic datasets
+#'
+#' Phase 3DDD1. Five small fixtures harvested live from
+#' opendata.vancouver.ca for offline reproducibility -- chosen to
+#' surface neighbourhood-level civic context useful in carceral /
+#' policing analysis even though VPD itself publishes crime data
+#' separately (see [morie_datasets_vpd_crime()]).
+#'
+#' \tabular{lll}{
+#'   \strong{Loader}      \tab \strong{Dataset slug}     \tab \strong{Rows} \cr
+#'   `morie_datasets_vancouver_graffiti()` \tab `graffiti` \tab 100 (of 7683) \cr
+#'   `morie_datasets_vancouver_noise_control_areas()` \tab `noise-control-areas` \tab 3 \cr
+#'   `morie_datasets_vancouver_homeless_shelters()` \tab `homeless-shelter-locations` \tab 17 \cr
+#'   `morie_datasets_vancouver_property_use_inspection_districts()` \tab `property-use-inspection-districts` \tab 23 \cr
+#'   `morie_datasets_vancouver_fire_halls()` \tab `fire-halls` \tab 20 \cr
+#' }
+#'
+#' All loaders accept the same `offline = TRUE` (default) /
+#' `max_features` interface as the other morie dataset wrappers.
+#'
+#' @name vancouver_crime_adjacent
+NULL
+
+.morie_vancouver_fixture <- function(fname) {
+  path <- system.file("extdata", fname, package = "morie")
+  if (!nzchar(path))
+    stop(sprintf("bundled Vancouver fixture missing: %s", fname),
+         call. = FALSE)
+  utils::read.csv(path, stringsAsFactors = FALSE, check.names = FALSE)
+}
+
+#' Vancouver graffiti incident records (sample)
+#' @rdname vancouver_crime_adjacent
+#' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @export
+morie_datasets_vancouver_graffiti <- function(offline = TRUE,
+                                                max_features = NULL) {
+  if (offline) {
+    df <- .morie_vancouver_fixture("vancouver_graffiti_sample.csv")
+  } else {
+    df <- morie_datasets_vancouver_opendata_by_id("graffiti",
+                                                    limit = 100L,
+                                                    format = "json")
+    if ("geo_point_2d" %in% names(df)) {
+      df$lon <- df$geo_point_2d$lon
+      df$lat <- df$geo_point_2d$lat
+      df$geo_point_2d <- NULL
+    }
+    df$geom <- NULL
+  }
+  if (!is.null(max_features))
+    df <- utils::head(df, as.integer(max_features))
+  df
+}
+
+#' Vancouver noise control areas (bylaw zones)
+#' @rdname vancouver_crime_adjacent
+#' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @export
+morie_datasets_vancouver_noise_control_areas <- function(offline = TRUE,
+                                                            max_features = NULL) {
+  df <- if (offline)
+    .morie_vancouver_fixture("vancouver_noise_control_areas.csv")
+  else morie_datasets_vancouver_opendata_by_id("noise-control-areas",
+                                                  limit = 10L)
+  if (!is.null(max_features))
+    df <- utils::head(df, as.integer(max_features))
+  df
+}
+
+#' Vancouver homeless shelter locations
+#' @rdname vancouver_crime_adjacent
+#' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @export
+morie_datasets_vancouver_homeless_shelters <- function(offline = TRUE,
+                                                         max_features = NULL) {
+  df <- if (offline)
+    .morie_vancouver_fixture("vancouver_homeless_shelters.csv")
+  else morie_datasets_vancouver_opendata_by_id("homeless-shelter-locations",
+                                                  limit = 50L)
+  if (!is.null(max_features))
+    df <- utils::head(df, as.integer(max_features))
+  df
+}
+
+#' Vancouver property use inspection districts
+#' @rdname vancouver_crime_adjacent
+#' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @export
+morie_datasets_vancouver_property_use_inspection_districts <- function(
+    offline = TRUE, max_features = NULL) {
+  df <- if (offline)
+    .morie_vancouver_fixture(
+      "vancouver_property_use_inspection_districts.csv")
+  else morie_datasets_vancouver_opendata_by_id(
+    "property-use-inspection-districts", limit = 50L)
+  if (!is.null(max_features))
+    df <- utils::head(df, as.integer(max_features))
+  df
+}
+
+#' Vancouver fire hall locations
+#' @rdname vancouver_crime_adjacent
+#' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @export
+morie_datasets_vancouver_fire_halls <- function(offline = TRUE,
+                                                  max_features = NULL) {
+  df <- if (offline)
+    .morie_vancouver_fixture("vancouver_fire_halls.csv")
+  else morie_datasets_vancouver_opendata_by_id("fire-halls",
+                                                  limit = 50L)
+  if (!is.null(max_features))
+    df <- utils::head(df, as.integer(max_features))
+  df
+}
+
 #' Fetch records from a Vancouver Open Data dataset by ID
 #'
 #' Phase 3CCC4. Hits the Opendatasoft v2.1 `/records` endpoint for
