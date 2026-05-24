@@ -322,4 +322,223 @@ morie_datasets_tps_arcgis_hub_download <- function(hub_id,
   dest
 }
 
-# (`%||%` is provided by other modules; no local re-definition needed.)
+# ---------------------------------------------------------------------------
+# Generic ArcGIS Online item resolution + by-id loading (portal-agnostic).
+# 3SS+ generalisation: the resolve + fetch logic works for ANY ArcGIS
+# Online item id, not just TPS Hub catalog entries. Useful when you
+# already know the GUID and don't need (or want) to round-trip through
+# a portal-specific catalog. Examples: EsriCanadaEducation's "Toronto
+# Zoning per Neighbourhood" (af06159170914808983959df6163fc86), City
+# of Toronto Open Data org items, any per-user Esri Online dataset.
+# ---------------------------------------------------------------------------
+
+#' Resolve any ArcGIS Online item id to its FeatureServer URL +
+#' canonical metadata.
+#'
+#' Lightweight discovery helper -- one network call to the ArcGIS
+#' Online items API (`/sharing/rest/content/items/<item_id>?f=json`),
+#' returns a single-row data.frame with the same columns the TPS Hub
+#' catalog (\code{\link{morie_datasets_tps_arcgis_hub_layers}})
+#' returns: `hub_id`, `title`, `type`, `feature_server_url`, `owner`,
+#' `tags`, `snippet`. Use this when the item is NOT in the bundled
+#' TPS catalog (any non-TorontoPoliceService item).
+#'
+#' @param item_id 32-char hex GUID for an ArcGIS Online item.
+#' @return A `data.frame` with one row.
+#' @examples
+#' # Vee's Toronto Zoning per Neighbourhood discovery
+#' # m <- morie_datasets_arcgis_item_metadata(
+#' #   "af06159170914808983959df6163fc86")
+#' # m$title  #> "Toronto Zoning per Neighbourhood"
+#' @export
+morie_datasets_arcgis_item_metadata <- function(item_id) {
+  if (!grepl("^[a-f0-9]{32}$", item_id)) {
+    stop(sprintf(paste0("morie ArcGIS item_id must be a 32-char hex ",
+                         "GUID; got '%s'"), item_id), call. = FALSE)
+  }
+  body <- .morie_dataset_http_json(
+    sprintf("https://www.arcgis.com/sharing/rest/content/items/%s",
+            item_id),
+    query = list(f = "json"))
+  data.frame(
+    hub_id = item_id,
+    title  = body$title %||% "",
+    type   = body$type  %||% "",
+    feature_server_url = body$url %||% "",
+    owner  = body$owner %||% "",
+    tags   = paste(unlist(body$tags) %||% character(), collapse = "; "),
+    snippet = substr(body$snippet %||% "", 1L, 300L),
+    stringsAsFactors = FALSE)
+}
+
+#' Generic by-id loader for any ArcGIS Online Feature Service item.
+#'
+#' Portal-agnostic sibling to
+#' [morie_datasets_tps_arcgis_hub_by_id()]. Works for ANY ArcGIS
+#' Online item GUID (not just TPS Hub catalog entries). Same five
+#' format paths (json / geojson / csv / shapefile / fgdb).
+#'
+#' The hub_id is ALWAYS resolved live (via the items API) because
+#' there's no bundled catalog for non-TPS items. If you find
+#' yourself calling this against the same item repeatedly, consider
+#' adding a named wrapper (e.g. the shipped
+#' \code{\link{morie_datasets_toronto_zoning_per_neighbourhood}}
+#' wraps EsriCanadaEducation's `af06159170914808983959df6163fc86`
+#' with bundled fixtures for offline use).
+#'
+#' @param item_id 32-char hex GUID.
+#' @param format One of `"json"` (default), `"geojson"`, `"csv"`,
+#'   `"shapefile"`, `"fgdb"`.
+#' @param where Optional SoQL-style WHERE for the FeatureServer
+#'   query. Default `"1=1"`.
+#' @param max_features Optional row cap.
+#' @param layer_idx Integer layer index (default `0L`).
+#' @param dest Optional destination path for binary downloads.
+#' @return A `data.frame` (json / csv), parsed GeoJSON list, or
+#'   file path (binary).
+#' @export
+morie_datasets_arcgis_item_by_id <- function(item_id,
+                                               format = "json",
+                                               where = "1=1",
+                                               max_features = NULL,
+                                               layer_idx = 0L,
+                                               dest = NULL) {
+  format <- match.arg(format, choices = .MORIE_TPS_HUB_FORMATS)
+  # Always live-resolve -- there's no portal-agnostic offline catalog.
+  fs_url <- .morie_dataset_tps_hub_resolve(item_id, offline = FALSE)
+  if (format == "json") {
+    layer_url <- sprintf("%s/%d/query", fs_url, as.integer(layer_idx))
+    query <- list(where = where, outFields = "*", f = "json",
+                  returnGeometry = "false")
+    if (!is.null(max_features)) {
+      query$resultRecordCount <- as.integer(max_features)
+    }
+    body <- .morie_dataset_http_json(layer_url, query = query)
+    feats <- body$features
+    if (is.null(feats) || length(feats) == 0L) return(data.frame())
+    return(.morie_dataset_records_to_df(lapply(feats, function(f) f$attributes)))
+  }
+  if (format == "geojson") {
+    layer_url <- sprintf("%s/%d/query", fs_url, as.integer(layer_idx))
+    query <- list(where = where, outFields = "*", f = "geojson")
+    if (!is.null(max_features)) {
+      query$resultRecordCount <- as.integer(max_features)
+    }
+    return(.morie_dataset_http_json(layer_url, query = query))
+  }
+  if (format == "csv") {
+    csv_url <- sprintf(paste0(
+      "https://hub.arcgis.com/api/v3/datasets/%s_%d/",
+      "downloads/data"),
+      item_id, as.integer(layer_idx))
+    raw <- .morie_dataset_http_text(csv_url,
+                                     query = list(format = "csv"))
+    return(utils::read.csv(text = raw, stringsAsFactors = FALSE,
+                            check.names = FALSE))
+  }
+  fmt_token <- switch(format, shapefile = "shp", fgdb = "fgdb")
+  bin_url <- sprintf(paste0(
+    "https://hub.arcgis.com/api/v3/datasets/%s_%d/",
+    "downloads/data?format=%s"),
+    item_id, as.integer(layer_idx), fmt_token)
+  if (is.null(dest)) {
+    suffix <- switch(format, shapefile = ".shp.zip", fgdb = ".fgdb.zip")
+    dest <- tempfile(fileext = suffix)
+  }
+  if (!requireNamespace("httr2", quietly = TRUE)) {
+    stop("morie ArcGIS binary download requires the 'httr2' package.",
+         call. = FALSE)
+  }
+  req <- httr2::request(bin_url)
+  resp <- httr2::req_perform(req)
+  bytes <- httr2::resp_body_raw(resp)
+  writeBin(bytes, dest)
+  dest
+}
+
+# ---------------------------------------------------------------------------
+# Toronto Zoning per Neighbourhood (EsriCanadaEducation,
+# af06159170914808983959df6163fc86) -- 3SS+ named wrapper.
+# ---------------------------------------------------------------------------
+
+.MORIE_TORONTO_ZONING_ITEM_ID <- "af06159170914808983959df6163fc86"
+
+#' Toronto Zoning per Neighbourhood (EsriCanadaEducation)
+#'
+#' Wraps EsriCanadaEducation's ArcGIS Online Feature Service
+#' `ZonesofToronto_Neighbourhoods`
+#' (item id `af06159170914808983959df6163fc86`; FeatureServer at
+#' `services.arcgis.com/As5CFN3ThbQpy8Ph/.../ZonesofToronto_Neighbourhoods/FeatureServer`).
+#' Two layers in the service:
+#'
+#' \describe{
+#'   \item{`layer = "neighbourhoods"` (FeatureServer layer 0)}{Polygon
+#'     boundaries for Toronto neighbourhoods with a 39-column
+#'     demographic schema -- total population, sex split, 18 age
+#'     brackets (0-4 through 85+), senior + youth + child aggregates,
+#'     and 10 specific language counts (Chinese, Italian, Korean,
+#'     Persian, Portuguese, Russian, Spanish, Tagalog, Tamil, Urdu)
+#'     plus a `HomeLanguageCategory` total.}
+#'   \item{`layer = "zoning_stats"` (FeatureServer table 1)}{Per-
+#'     neighbourhood zoning-area stats -- 4 columns (`OBJECTID`,
+#'     `ZoneDesc`, `Neighbourhood_Name`, `SUM_Area`). Many rows per
+#'     neighbourhood, one per `ZoneDesc` (Commercial, Residential,
+#'     Industrial, etc.).}
+#' }
+#'
+#' Offline mode reads bundled 5-row synthetic fixtures
+#' (`toronto_zoning_neighbourhoods_sample.csv` /
+#' `toronto_zoning_stats_sample.csv`) -- SYNTH-stamped, not
+#' attributable to actual Toronto neighbourhoods. Live mode hits
+#' the FeatureServer via the 3SS+ generic
+#' [morie_datasets_arcgis_item_by_id()] resolver.
+#'
+#' @param layer One of `"neighbourhoods"` (default, polygon
+#'   demographics) or `"zoning_stats"` (per-zone area table).
+#' @param format One of `"json"` (default), `"geojson"`, `"csv"`,
+#'   `"shapefile"`, `"fgdb"`. Only honoured when `offline = FALSE`.
+#' @param where Optional FeatureServer WHERE filter (live mode).
+#' @param max_features Optional row cap.
+#' @param offline Logical; if `TRUE` (default), read the bundled
+#'   synthetic fixture.
+#' @return A `data.frame` (json / csv / offline), parsed GeoJSON
+#'   list, or file path (binary).
+#' @references Esri Canada Education -- ArcGIS Online item
+#'   `af06159170914808983959df6163fc86`.
+#' @examples
+#' df <- morie_datasets_toronto_zoning_per_neighbourhood(offline = TRUE)
+#' head(df[, c("Neighbourhood", "Total_Population", "Seniors65andover")])
+#' @export
+morie_datasets_toronto_zoning_per_neighbourhood <- function(
+    layer = c("neighbourhoods", "zoning_stats"),
+    format = "json",
+    where = "1=1",
+    max_features = NULL,
+    offline = TRUE) {
+  layer <- match.arg(layer)
+  layer_idx <- if (layer == "neighbourhoods") 0L else 1L
+  if (isTRUE(offline)) {
+    fixture <- if (layer == "neighbourhoods") {
+      "toronto_zoning_neighbourhoods_sample.csv"
+    } else {
+      "toronto_zoning_stats_sample.csv"
+    }
+    path <- system.file("extdata", fixture, package = "morie")
+    if (!nzchar(path)) {
+      stop(sprintf("bundled Toronto Zoning fixture %s missing",
+                   fixture), call. = FALSE)
+    }
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE)
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  morie_datasets_arcgis_item_by_id(
+    .MORIE_TORONTO_ZONING_ITEM_ID,
+    format = format,
+    where = where,
+    max_features = max_features,
+    layer_idx = layer_idx)
+}
