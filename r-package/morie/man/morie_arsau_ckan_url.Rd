@@ -23,5 +23,5 @@ sidecar (e.g. the 2023 weapon_records release).
 }
 \references{
 Ontario Data Catalogue CKAN API:
-\url{https://data.ontario.ca/api/3/action/datastore_search}.
+\code{datastore_search} (\url{https://data.ontario.ca/}).
 }

@@ -43,7 +43,7 @@
 #' on the Ontario Data Catalogue:
 #' \url{https://data.ontario.ca/dataset/police-use-of-force-race-based-data}.
 #' CKAN \code{datastore_search} endpoint:
-#' \url{https://data.ontario.ca/api/3/action/datastore_search}.
+#' \code{datastore_search} (\url{https://data.ontario.ca/}).
 #' Each annual release ships per-resource technical notes; the 2023
 #' weapon_records release is explicitly flagged as containing
 #' non-compliant data and the open-data file is renamed accordingly.
@@ -126,7 +126,7 @@ morie_arsau_registry_df <- function(language = "en") {
 #' @return A \code{data.frame} with columns \code{name},
 #'   \code{type}, \code{notes}.
 #' @references CKAN \emph{datastore_search} response schema, as
-#'   served by \code{https://data.ontario.ca/api/3/action/datastore_search}.
+#'   served by \code{datastore_search} (\url{https://data.ontario.ca/}).
 #' @export
 morie_arsau_sidecar_schema <- function(sidecar) {
   if (!is.list(sidecar)) {
@@ -372,7 +372,7 @@ morie_arsau_read_markdown_dictionary <- function(path) {
 #' @param limit Integer; CKAN \code{limit} parameter.  Default 5000.
 #' @return Character scalar URL, or \code{NA_character_}.
 #' @references Ontario Data Catalogue CKAN API:
-#'   \url{https://data.ontario.ca/api/3/action/datastore_search}.
+#'   \code{datastore_search} (\url{https://data.ontario.ca/}).
 #' @export
 morie_arsau_ckan_url <- function(kind, year, limit = 5000L) {
   reg <- ARSAU_REGISTRY()

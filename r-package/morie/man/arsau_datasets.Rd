@@ -47,7 +47,7 @@ of Force in Ontario}, 2020-2022 / 2023 / 2024 releases.  Published
 on the Ontario Data Catalogue:
 \url{https://data.ontario.ca/dataset/police-use-of-force-race-based-data}.
 CKAN \code{datastore_search} endpoint:
-\url{https://data.ontario.ca/api/3/action/datastore_search}.
+\code{datastore_search} (\url{https://data.ontario.ca/}).
 Each annual release ships per-resource technical notes; the 2023
 weapon_records release is explicitly flagged as containing
 non-compliant data and the open-data file is renamed accordingly.
