@@ -481,10 +481,14 @@ morie_datasets_tps_layers <- function() {
 #' \enumerate{
 #'   \item A pre-wrangled local RDS at `morie_cpads_contract()$expected_wrangled_path`
 #'         (only useful if you've already produced one), OR
-#'   \item the bundled 30-row synthetic fixture at
+#'   \item the bundled 30-row real PUMF sample at
 #'         `inst/extdata/cpads_pumf_synthetic.csv` (when `offline = TRUE`,
-#'         the default), OR
-#'   \item the live PUMF CSV from open.canada.ca:
+#'         the default; carries all 394 raw PUMF columns plus the 11
+#'         morie canonical analysis aliases), OR
+#'   \item the live PUMF via the CKAN
+#'         \href{https://docs.ckan.org/en/latest/maintaining/datastore.html#ckanext.datastore.logic.action.datastore_search}{datastore_search}
+#'         API (default, supports \code{limit}/\code{q}) or the full
+#'         PUMF CSV (with \code{mode = "csv"}):
 #'         \url{https://open.canada.ca/data/dataset/736fa9b2-62e4-4e31-aea4-51869605b363/resource/d2639429-c304-45a6-90b3-770562f4d46d/download/cpads-2021-2022-pumf2.csv}
 #'         (when `offline = FALSE`).
 #' }
@@ -498,16 +502,30 @@ morie_datasets_tps_layers <- function() {
 #' \url{https://health-infobase.canada.ca/substance-use/}.
 #'
 #' @param offline Logical. `TRUE` (default) prefers the bundled fixture
-#'   for fast/CRAN-safe runs; `FALSE` fetches the live CKAN PUMF CSV.
-#' @return A `data.frame` with morie's canonical CPADS analysis
-#'   columns (`weight`, `alcohol_past12m`, `heavy_drinking_30d`,
-#'   `ebac_tot`, `ebac_legal`, `cannabis_any_use`, `age_group`,
-#'   `gender`, `province_region`, `mental_health`, `physical_health`).
+#'   for fast/CRAN-safe runs; `FALSE` fetches the live PUMF.
+#' @param mode Character; one of `"datastore_search"` (default;
+#'   queryable CKAN datastore endpoint, supports `limit`/`q`) or
+#'   `"csv"` (whole PUMF CSV download). Ignored when `offline = TRUE`.
+#' @param limit Integer or `NULL`; row cap, forwarded to
+#'   `datastore_search` when `mode = "datastore_search"`. `NULL`
+#'   returns the datastore default (100 rows).
+#' @param q Character or `NULL`; free-text query forwarded to
+#'   `datastore_search` (e.g. `q = "title:jones"`). Ignored for
+#'   `mode = "csv"`.
+#' @return A `data.frame` carrying every CPADS PUMF column plus
+#'   morie's canonical analysis aliases (`weight`,
+#'   `alcohol_past12m`, `heavy_drinking_30d`, `ebac_tot`,
+#'   `ebac_legal`, `cannabis_any_use`, `age_group`, `gender`,
+#'   `province_region`, `mental_health`, `physical_health`).
 #' @seealso [morie_cpads_contract()] for the canonical schema +
 #'   column map; [morie_datasets_load_by_key()] for catalog-wide
 #'   dispatch.
 #' @export
-morie_datasets_cpads <- function(offline = TRUE) {
+morie_datasets_cpads <- function(offline = TRUE,
+                                 mode = c("datastore_search", "csv"),
+                                 limit = NULL,
+                                 q = NULL) {
+  mode <- match.arg(mode)
   contract <- morie_cpads_contract()
   if (file.exists(contract$expected_wrangled_path)) {
     frame <- readRDS(contract$expected_wrangled_path)
@@ -516,13 +534,31 @@ morie_datasets_cpads <- function(offline = TRUE) {
   if (isTRUE(offline)) {
     return(.morie_dataset_read_synthetic("cpads_pumf_synthetic", "cpads"))
   }
-  url <- paste0(
-    "https://open.canada.ca/data/dataset/",
-    "736fa9b2-62e4-4e31-aea4-51869605b363/resource/",
-    "d2639429-c304-45a6-90b3-770562f4d46d/download/",
-    "cpads-2021-2022-pumf2.csv"
-  )
-  morie_fetch(url, format = "csv")
+  raw <- if (identical(mode, "datastore_search")) {
+    query <- list(
+      resource_id = "d2639429-c304-45a6-90b3-770562f4d46d"
+    )
+    if (!is.null(limit)) query$limit <- as.integer(limit)
+    if (!is.null(q)) query$q <- as.character(q)
+    body <- .morie_dataset_http_json(
+      "https://open.canada.ca/data/api/3/action/datastore_search",
+      query = query
+    )
+    records <- body$result$records %||% body$records %||% body
+    .morie_dataset_records_to_df(records)
+  } else {
+    morie_fetch(paste0(
+      "https://open.canada.ca/data/dataset/",
+      "736fa9b2-62e4-4e31-aea4-51869605b363/resource/",
+      "d2639429-c304-45a6-90b3-770562f4d46d/download/",
+      "cpads-2021-2022-pumf2.csv"
+    ), format = "csv")
+  }
+  if (morie_cpads_has_raw_columns(raw)) {
+    morie_cpads_canonicalize_frame(raw)
+  } else {
+    raw
+  }
 }
 
 #' Load the OTIS A01 Restrictive-Confinement Detailed Dataset
@@ -1236,7 +1272,11 @@ morie_datasets_nibrs <- function(year = NULL, max_features = NULL,
                                  state = NULL, offense = NULL,
                                  api_key = NULL, offline = FALSE) {
   if (isTRUE(offline)) {
-    df <- .morie_dataset_read_synthetic("nibrs_synthetic", "nibrs")
+    df <- .morie_dataset_read_synthetic(
+      "nibrs_synthetic", "nibrs",
+      columns = c("ori", "state_abbr", "offense_code", "offense_name",
+                  "data_year", "incident_count")
+    )
     if (!is.null(max_features) && nrow(df) > 0L) {
       df <- utils::head(df, as.integer(max_features))
     }
@@ -1271,7 +1311,10 @@ morie_datasets_namus_missing_persons <- function(state = NULL,
                                                  offline = FALSE) {
   if (isTRUE(offline)) {
     df <- .morie_dataset_read_synthetic(
-      "namus_missing_persons_synthetic", "namus_missing_persons"
+      "namus_missing_persons_synthetic", "namus_missing_persons",
+      columns = c("caseNumber", "firstName", "lastName", "state",
+                  "city", "county", "ageFrom", "ageTo", "sex",
+                  "race", "dateOfLastContact")
     )
     if (!is.null(state) && "state" %in% colnames(df)) {
       df <- df[toupper(as.character(df$state)) == toupper(state), , drop = FALSE]

@@ -4,17 +4,35 @@
 \alias{morie_datasets_cpads}
 \title{Load the Canadian Postsecondary Alcohol and Drug-use Survey (CPADS)}
 \usage{
-morie_datasets_cpads(offline = TRUE)
+morie_datasets_cpads(
+  offline = TRUE,
+  mode = c("datastore_search", "csv"),
+  limit = NULL,
+  q = NULL
+)
 }
 \arguments{
 \item{offline}{Logical. \code{TRUE} (default) prefers the bundled fixture
-for fast/CRAN-safe runs; \code{FALSE} fetches the live CKAN PUMF CSV.}
+for fast/CRAN-safe runs; \code{FALSE} fetches the live PUMF.}
+
+\item{mode}{Character; one of \code{"datastore_search"} (default;
+queryable CKAN datastore endpoint, supports \code{limit}/\code{q}) or
+\code{"csv"} (whole PUMF CSV download). Ignored when \code{offline = TRUE}.}
+
+\item{limit}{Integer or \code{NULL}; row cap, forwarded to
+\code{datastore_search} when \code{mode = "datastore_search"}. \code{NULL}
+returns the datastore default (100 rows).}
+
+\item{q}{Character or \code{NULL}; free-text query forwarded to
+\code{datastore_search} (e.g. \code{q = "title:jones"}). Ignored for
+\code{mode = "csv"}.}
 }
 \value{
-A \code{data.frame} with morie's canonical CPADS analysis
-columns (\code{weight}, \code{alcohol_past12m}, \code{heavy_drinking_30d},
-\code{ebac_tot}, \code{ebac_legal}, \code{cannabis_any_use}, \code{age_group},
-\code{gender}, \code{province_region}, \code{mental_health}, \code{physical_health}).
+A \code{data.frame} carrying every CPADS PUMF column plus
+morie's canonical analysis aliases (\code{weight},
+\code{alcohol_past12m}, \code{heavy_drinking_30d}, \code{ebac_tot},
+\code{ebac_legal}, \code{cannabis_any_use}, \code{age_group}, \code{gender},
+\code{province_region}, \code{mental_health}, \code{physical_health}).
 }
 \description{
 Resolves a CPADS analysis frame from one of three sources:
@@ -23,10 +41,14 @@ Resolves a CPADS analysis frame from one of three sources:
 \enumerate{
 \item A pre-wrangled local RDS at \code{morie_cpads_contract()$expected_wrangled_path}
 (only useful if you've already produced one), OR
-\item the bundled 30-row synthetic fixture at
+\item the bundled 30-row real PUMF sample at
 \code{inst/extdata/cpads_pumf_synthetic.csv} (when \code{offline = TRUE},
-the default), OR
-\item the live PUMF CSV from open.canada.ca:
+the default; carries all 394 raw PUMF columns plus the 11
+morie canonical analysis aliases), OR
+\item the live PUMF via the CKAN
+\href{https://docs.ckan.org/en/latest/maintaining/datastore.html#ckanext.datastore.logic.action.datastore_search}{datastore_search}
+API (default, supports \code{limit}/\code{q}) or the full
+PUMF CSV (with \code{mode = "csv"}):
 \url{https://open.canada.ca/data/dataset/736fa9b2-62e4-4e31-aea4-51869605b363/resource/d2639429-c304-45a6-90b3-770562f4d46d/download/cpads-2021-2022-pumf2.csv}
 (when \code{offline = FALSE}).
 }

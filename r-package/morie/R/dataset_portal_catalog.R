@@ -81,6 +81,7 @@
 # 14 portal registries (~2.8s on a modern laptop); memoizing keeps
 # subsequent morie_datasets_load_by_key() lookups instant. Cleared
 # via morie_dataset_portal_catalog_clear_cache().
+#' @noRd
 .morie_portal_catalog_env <- new.env(parent = emptyenv())
 
 #' Clear the session-scoped portal-catalog cache
