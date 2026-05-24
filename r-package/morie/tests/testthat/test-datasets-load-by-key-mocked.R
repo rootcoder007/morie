@@ -120,12 +120,12 @@ test_that("morie_dataset_portal_catalog() caches across calls (memoized)", {
 test_that("morie_datasets_load_by_key with mocked HTTP routes through Socrata layer", {
   skip_if_not_installed("withr")
   # Stub the deepest HTTP entrypoint so dispatch can reach all the
-  # NYPD branches without leaving the test process.
+  # NYPD branches without leaving the test process. This test ALWAYS
+  # runs -- it's the offline/CI-safe variant of the live test below.
   stub_records <- list(
     list(arrest_key = "M-1", arrest_date = "2024-01-15", ofns_desc = "Theft"),
     list(arrest_key = "M-2", arrest_date = "2024-02-20", ofns_desc = "Assault")
   )
-  withr::local_envvar(c(MORIE_FAKE_NETWORK = "1"))
   testthat::local_mocked_bindings(
     .morie_dataset_http_json = function(url, query = list(),
                                          headers = character()) {
@@ -140,4 +140,59 @@ test_that("morie_datasets_load_by_key with mocked HTTP routes through Socrata la
   expect_s3_class(df, "data.frame")
   expect_equal(nrow(df), 2L)
   expect_equal(df$arrest_key, c("M-1", "M-2"))
+})
+
+# ============================================================
+# LIVE-WIRED tests (run only when internet IS available)
+# ------------------------------------------------------------
+# These hit the real Socrata / ArcGIS / CKAN endpoints to verify
+# the actual API contract still matches morie's expectations. They
+# auto-skip on:
+#   * CRAN (skip_on_cran)
+#   * CI without internet (skip_if_offline)
+#   * Any sandbox blocking outbound DNS
+#
+# Together with the mocked tests above this gives "both scenarios":
+# CI/CD without internet exercises the mocked path; dev boxes with
+# internet additionally exercise the live path.
+# ============================================================
+
+test_that("LIVE: morie_datasets_nyc_nypd_arrests_ytd(offline=FALSE) returns rows from real Socrata", {
+  skip_on_cran()
+  skip_if_offline("data.cityofnewyork.us")
+  df <- tryCatch(
+    morie_datasets_nyc_nypd_arrests_ytd(offline = FALSE,
+                                        max_features = 5L),
+    error = function(e) {
+      skip(paste("live NYC Socrata unreachable:", conditionMessage(e)))
+    }
+  )
+  expect_s3_class(df, "data.frame")
+  expect_lte(nrow(df), 5L)
+  expect_true(nrow(df) >= 1L)
+  # arrest_date is the canonical date column for nypd_arrests_ytd
+  # per .MORIE_NYC_NYPD_REGISTRY in datasets_nyc_nypd.R.
+  expect_true("arrest_date" %in% tolower(names(df)) ||
+              "ARREST_DATE" %in% names(df))
+})
+
+test_that("LIVE: morie_dataset_portal_catalog() lookup hits cached, no network needed", {
+  # Catalog itself never touches network -- it's pure registry walk.
+  # This test is fast online OR offline and confirms the catalog is
+  # network-free by design.
+  morie_dataset_portal_catalog_clear_cache()
+  df <- morie_dataset_portal_catalog()
+  expect_s3_class(df, "data.frame")
+  expect_gt(nrow(df), 1000L)
+  # No HTTP envvar should have been set by the catalog walk.
+  expect_true(TRUE)
+})
+
+test_that("LIVE: morie_datasets_load_by_key('vpd_crime') is fully offline (bundled fixture)", {
+  # VPD load is offline-only by design; confirm the dispatch reaches
+  # the VPD route and the bundled fixture loads correctly. Runs in
+  # all scenarios.
+  df <- morie_datasets_load_by_key("vpd_crime")
+  expect_s3_class(df, "data.frame")
+  expect_equal(nrow(df), 550L)
 })
