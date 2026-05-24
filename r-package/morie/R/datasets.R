@@ -63,37 +63,110 @@
   sprintf("OCC_YEAR = %d", as.integer(year))
 }
 
-#' Minimal httr2 GET that returns a parsed JSON body or raises.
+#' Assemble a fully-formed URL with percent-encoded query parameters.
+#' Mirrors httr2::req_url_query() but doesn't require httr2 at the
+#' call site -- needed so the libcurl-backed C++ HTTP path can take
+#' a single, already-built URL.
 #' @keywords internal
 #' @noRd
-.morie_dataset_http_json <- function(url, query = NULL) {
-  if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie datasets HTTP fetch requires the 'httr2' package.")
-  }
-  req <- httr2::request(url)
-  if (!is.null(query)) {
-    req <- httr2::req_url_query(req, !!!query)
-  }
-  resp <- httr2::req_perform(req)
-  httr2::resp_body_json(resp, simplifyVector = TRUE)
+.morie_dataset_build_url <- function(url, query = NULL) {
+  if (is.null(query) || length(query) == 0L) return(url)
+  pairs <- vapply(seq_along(query), function(i) {
+    nm <- names(query)[[i]]
+    val <- query[[i]]
+    if (is.null(val) || length(val) == 0L) return(NA_character_)
+    paste0(utils::URLencode(as.character(nm), reserved = TRUE),
+           "=",
+           utils::URLencode(as.character(val), reserved = TRUE))
+  }, character(1L))
+  pairs <- pairs[!is.na(pairs)]
+  if (length(pairs) == 0L) return(url)
+  sep <- if (grepl("\\?", url)) "&" else "?"
+  paste0(url, sep, paste(pairs, collapse = "&"))
 }
 
-#' Minimal httr2 GET that returns the response body as a single
-#' character string (UTF-8). Used by loaders that consume raw CSV /
-#' TSV / plain-text files served outside Socrata-style APIs (e.g.
-#' the chicagopolice.org public-arrests CSV).
+#' Detect whether the C++ libcurl backend (morie_http.cpp, 3VV) is
+#' available. The Rcpp export only exists when the package was built
+#' with libcurl visible to curl-config; on minimal CRAN macOS images
+#' the C++ symbols may be absent. Fallback: httr2.
 #' @keywords internal
 #' @noRd
-.morie_dataset_http_text <- function(url, query = NULL) {
-  if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie datasets HTTP fetch requires the 'httr2' package.")
+.morie_dataset_http_backend_cpp <- function() {
+  exists(".morie_http_get",
+         where = asNamespace("morie"),
+         mode = "function")
+}
+
+#' GET that returns the response body as a UTF-8 character string.
+#' 3VV: routes through morie's C++ libcurl backend (.morie_http_get,
+#' src/morie_http.cpp) when available; falls back to httr2 if not.
+#' @keywords internal
+#' @noRd
+.morie_dataset_http_text <- function(url, query = NULL,
+                                       headers = character(),
+                                       timeout_s = 60L) {
+  full_url <- .morie_dataset_build_url(url, query)
+  if (.morie_dataset_http_backend_cpp()) {
+    return(.morie_http_get(full_url, timeout_s = as.integer(timeout_s),
+                            headers = as.character(headers)))
   }
-  req <- httr2::request(url)
-  if (!is.null(query)) {
-    req <- httr2::req_url_query(req, !!!query)
+  if (!requireNamespace("httr2", quietly = TRUE)) {
+    stop("morie datasets HTTP fetch needs either the libcurl-backed ",
+         "C++ backend (built into morie.so via src/morie_http.cpp) ",
+         "or the 'httr2' R package.")
+  }
+  req <- httr2::request(full_url)
+  if (length(headers) > 0L) {
+    # Convert "Key: Value" strings into a named list for req_headers.
+    kv <- strsplit(headers, ":\\s*", n = 2L)
+    kv <- Filter(function(x) length(x) == 2L, kv)
+    if (length(kv) > 0L) {
+      named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
+                                vapply(kv, `[[`, character(1L), 1L))
+      req <- do.call(httr2::req_headers, c(list(req), as.list(named)))
+    }
   }
   resp <- httr2::req_perform(req)
   httr2::resp_body_string(resp)
+}
+
+#' GET + parse JSON. 3VV: when the C++ backend is available the
+#' body is fetched via libcurl then parsed via jsonlite (avoids the
+#' httr2 dep entirely); falls back to httr2 + httr2::resp_body_json
+#' otherwise.
+#' @keywords internal
+#' @noRd
+.morie_dataset_http_json <- function(url, query = NULL,
+                                       headers = character(),
+                                       timeout_s = 60L) {
+  full_url <- .morie_dataset_build_url(url, query)
+  if (.morie_dataset_http_backend_cpp()) {
+    body <- .morie_http_get(full_url,
+                             timeout_s = as.integer(timeout_s),
+                             headers = as.character(headers))
+    if (!nzchar(body)) {
+      stop(sprintf("morie HTTP fetch failed (libcurl returned empty body): %s",
+                   full_url), call. = FALSE)
+    }
+    return(jsonlite::fromJSON(body, simplifyVector = TRUE))
+  }
+  if (!requireNamespace("httr2", quietly = TRUE)) {
+    stop("morie datasets HTTP fetch needs either the libcurl-backed ",
+         "C++ backend (built into morie.so via src/morie_http.cpp) ",
+         "or the 'httr2' R package.")
+  }
+  req <- httr2::request(full_url)
+  if (length(headers) > 0L) {
+    kv <- strsplit(headers, ":\\s*", n = 2L)
+    kv <- Filter(function(x) length(x) == 2L, kv)
+    if (length(kv) > 0L) {
+      named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
+                                vapply(kv, `[[`, character(1L), 1L))
+      req <- do.call(httr2::req_headers, c(list(req), as.list(named)))
+    }
+  }
+  resp <- httr2::req_perform(req)
+  httr2::resp_body_json(resp, simplifyVector = TRUE)
 }
 
 #' Convert a list-of-records / data.frame response into a clean data.frame.

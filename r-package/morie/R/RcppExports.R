@@ -69,6 +69,30 @@ morie_hawkes_baseline_integral_cpp <- function(T_horizon, alpha, n_grid = 0L) {
     .Call(`_morie_morie_hawkes_baseline_integral_cpp`, T_horizon, alpha, n_grid)
 }
 
+#' Synchronous HTTP(S) GET via the shared libcurl backend (C++).
+#'
+#' Phase-3VV promoted helper. Returns the response body as a length-1
+#' character vector. On any libcurl-level failure returns the empty
+#' string (parity with the SIU parser's transport contract).
+#'
+#' @param url Fully-formed URL.
+#' @param timeout_s Total request timeout in seconds.
+#' @param headers Character vector of `"Key: Value"` HTTP headers.
+#' @param user_agent Optional User-Agent override.
+#' @param follow_redirects Logical; default `TRUE`.
+#' @return Length-1 character vector with the response body.
+#' @keywords internal
+.morie_http_get <- function(url, timeout_s = 60L, headers = as.character( c()), user_agent = "", follow_redirects = TRUE) {
+    .Call(`_morie_morie_http_get_`, url, timeout_s, headers, user_agent, follow_redirects)
+}
+
+#' libcurl version string the morie C++ backend was built against.
+#' @return Length-1 character vector.
+#' @keywords internal
+.morie_http_curl_version <- function() {
+    .Call(`_morie_morie_http_curl_version_`)
+}
+
 morie_matching_mahalanobis_pairs_cpp <- function(X_t, X_c, S_inv) {
     .Call(`_morie_morie_matching_mahalanobis_pairs_cpp`, X_t, X_c, S_inv)
 }
