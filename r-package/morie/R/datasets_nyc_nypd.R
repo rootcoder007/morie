@@ -23,40 +23,82 @@
   nypd_arrests_historic = list(
     resource_id = "8h9b-rp9u",
     label = "NYPD Arrests Data (Historic)",
-    fixture = "nypd_arrests_historic_sample.csv"),
+    fixture = "nypd_arrests_historic_sample.csv",
+    permalink = "https://data.cityofnewyork.us/d/8h9b-rp9u",
+    data_dictionary_url = NA_character_,
+    footnotes_url = NA_character_),
   nypd_arrests_ytd = list(
     resource_id = "uip8-fykc",
     label = "NYPD Arrest Data (Year to Date)",
-    fixture = "nypd_arrests_ytd_sample.csv"),
+    fixture = "nypd_arrests_ytd_sample.csv",
+    permalink = "https://data.cityofnewyork.us/d/uip8-fykc",
+    data_dictionary_url = paste0(
+      "https://data.cityofnewyork.us/api/views/uip8-fykc/files/",
+      "f0dbff24-5794-4034-a52d-b091e8dd61a8?download=true",
+      "&filename=NYPD_Arrest_YTD_DataDictionary.xlsx"),
+    footnotes_url = paste0(
+      "https://data.cityofnewyork.us/api/views/uip8-fykc/files/",
+      "62a746df-66ca-4603-aae4-46c02bac2972?download=true",
+      "&filename=NYPD_Arrest_Incident_Level_Data_Footnotes.pdf")),
   nypd_complaint_historic = list(
     resource_id = "qgea-i56i",
     label = "NYPD Complaint Data Historic",
-    fixture = "nypd_complaint_historic_sample.csv"),
+    fixture = "nypd_complaint_historic_sample.csv",
+    permalink = "https://data.cityofnewyork.us/d/qgea-i56i",
+    data_dictionary_url = NA_character_,
+    footnotes_url = NA_character_),
   nypd_complaint_ytd = list(
     resource_id = "5uac-w243",
     label = "NYPD Complaint Data Current (Year To Date)",
-    fixture = "nypd_complaint_ytd_sample.csv"),
+    fixture = "nypd_complaint_ytd_sample.csv",
+    permalink = "https://data.cityofnewyork.us/d/5uac-w243",
+    data_dictionary_url = NA_character_,
+    footnotes_url = NA_character_),
   nypd_hate_crimes = list(
     resource_id = "bqiq-cu78",
     label = "NYPD Hate Crimes",
-    fixture = "nypd_hate_crimes_sample.csv"),
+    fixture = "nypd_hate_crimes_sample.csv",
+    permalink = "https://data.cityofnewyork.us/d/bqiq-cu78",
+    data_dictionary_url = NA_character_,
+    footnotes_url = NA_character_),
   nypd_uof_incidents = list(
     resource_id = "f4tj-796d",
     label = "NYPD Use of Force Incidents",
-    fixture = "nypd_uof_incidents_sample.csv"),
+    fixture = "nypd_uof_incidents_sample.csv",
+    permalink = "https://data.cityofnewyork.us/d/f4tj-796d",
+    data_dictionary_url = NA_character_,
+    footnotes_url = NA_character_),
   nypd_uof_subjects = list(
     resource_id = "dufe-vxb7",
     label = "NYPD Use of Force: Subjects",
-    fixture = "nypd_uof_subjects_sample.csv"),
+    fixture = "nypd_uof_subjects_sample.csv",
+    permalink = "https://data.cityofnewyork.us/d/dufe-vxb7",
+    data_dictionary_url = NA_character_,
+    footnotes_url = NA_character_),
   nypd_vehicle_stops = list(
     resource_id = "hn9i-dwpr",
     label = "NYPD Vehicle Stop Reports",
-    fixture = "nypd_vehicle_stops_sample.csv"))
+    fixture = "nypd_vehicle_stops_sample.csv",
+    permalink = "https://data.cityofnewyork.us/d/hn9i-dwpr",
+    data_dictionary_url = NA_character_,
+    footnotes_url = NA_character_))
 
 #' List the NYPD criminal-justice Socrata datasets wrapped by morie
 #'
-#' @return A `data.frame` with columns `dataset_key`, `label`,
-#'   `resource_id`, `resource_url`, `fixture`.
+#' @return A `data.frame` with 8 columns:
+#'   `dataset_key`, `label`, `resource_id`, `resource_url`,
+#'   `permalink` (`data.cityofnewyork.us/d/<id>` stable redirect),
+#'   `data_dictionary_url` (XLSX, when published as a dataset
+#'   attachment; `NA_character_` otherwise),
+#'   `footnotes_url` (PDF, when published; `NA_character_` otherwise),
+#'   `fixture` (bundled-fixture filename).
+#'
+#' Currently only `nypd_arrests_ytd` carries the
+#' canonical NYC OpenData attachment URLs (XLSX dictionary + PDF
+#' footnotes). The other 7 entries leave those slots `NA`; PRs
+#' welcome to fill them in when the asset UUIDs are looked up at
+#' the dataset's landing page.
+#'
 #' @export
 morie_datasets_nyc_nypd_layers <- function() {
   rows <- lapply(names(.MORIE_NYC_NYPD_REGISTRY), function(k) {
@@ -67,6 +109,9 @@ morie_datasets_nyc_nypd_layers <- function() {
       resource_url = sprintf(
         "https://data.cityofnewyork.us/resource/%s.json",
         e$resource_id),
+      permalink = e$permalink,
+      data_dictionary_url = e$data_dictionary_url,
+      footnotes_url = e$footnotes_url,
       fixture = e$fixture,
       stringsAsFactors = FALSE)
   })
@@ -74,6 +119,29 @@ morie_datasets_nyc_nypd_layers <- function() {
   rownames(out) <- NULL
   out
 }
+
+#' Socrata default-API-cap note
+#'
+#' All NYC OpenData SODA2 endpoints apply a default cap of 1,000 rows
+#' per request unless an explicit `$limit` (or `$$app_token` for
+#' authenticated requests) is supplied. For the NYPD CJ datasets
+#' wrapped here that means:
+#'
+#'   * `morie_datasets_nyc_nypd_arrests_ytd(offline = FALSE)` returns
+#'     **only 1,000 rows** by default, even though the live feed
+#'     carries ~69,300 rows.
+#'   * Pass `max_features = N` to lift the cap to N rows in a single
+#'     request (Socrata enforces a hard server-side cap of 50,000
+#'     rows per request).
+#'   * For full pulls over the cap, paginate via repeated requests
+#'     with `$offset` -- not yet wired into morie; track GH issue or
+#'     pull yourself via `httr2::request()` + `$offset`.
+#'
+#' The bundled fixtures (offline mode) are unaffected -- they ship 5
+#' rows each as deterministic sample data.
+#'
+#' @name morie_nyc_nypd_socrata_cap_note
+NULL
 
 # ---------------------------------------------------------------------------
 # Shared factory

@@ -12,7 +12,9 @@ test_that("morie_datasets_nyc_nypd_layers returns the full 8-row NYPD registry",
   expect_equal(nrow(reg), 8L)
   expect_setequal(names(reg),
                   c("dataset_key", "label", "resource_id",
-                    "resource_url", "fixture"))
+                    "resource_url", "permalink",
+                    "data_dictionary_url", "footnotes_url",
+                    "fixture"))
   expected_keys <- c("nypd_arrests_historic", "nypd_arrests_ytd",
                       "nypd_complaint_historic",
                       "nypd_complaint_ytd",
@@ -26,6 +28,28 @@ test_that("morie_datasets_nyc_nypd_layers returns the full 8-row NYPD registry",
   # All resource_urls hit data.cityofnewyork.us.
   expect_true(all(grepl(
     "^https://data\\.cityofnewyork\\.us/resource/", reg$resource_url)))
+  # All 8 datasets have a stable /d/<id> permalink.
+  expect_true(all(grepl(
+    "^https://data\\.cityofnewyork\\.us/d/[a-z0-9]{4}-[a-z0-9]{4}$",
+    reg$permalink)))
+})
+
+test_that("nypd_arrests_ytd carries the canonical XLSX data dictionary + PDF footnotes URLs", {
+  reg <- morie_datasets_nyc_nypd_layers()
+  ytd <- reg[reg$dataset_key == "nypd_arrests_ytd", ]
+  expect_false(is.na(ytd$data_dictionary_url))
+  expect_match(ytd$data_dictionary_url,
+               "NYPD_Arrest_YTD_DataDictionary\\.xlsx$")
+  expect_false(is.na(ytd$footnotes_url))
+  expect_match(ytd$footnotes_url,
+               "NYPD_Arrest_Incident_Level_Data_Footnotes\\.pdf$")
+})
+
+test_that("the other 7 NYPD entries leave data_dictionary_url + footnotes_url as NA (lookup pending)", {
+  reg <- morie_datasets_nyc_nypd_layers()
+  pending <- reg[reg$dataset_key != "nypd_arrests_ytd", ]
+  expect_true(all(is.na(pending$data_dictionary_url)))
+  expect_true(all(is.na(pending$footnotes_url)))
 })
 
 # =================================================== per-loader offline schemas
