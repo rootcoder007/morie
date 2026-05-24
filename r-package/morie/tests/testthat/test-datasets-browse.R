@@ -43,11 +43,11 @@ test_that("api_mode filter restricts to a protocol substring", {
 
 test_that("api_mode filter accepts multi-protocol vector", {
   d <- morie_datasets_browse(api_mode = c("ckan", "statcan_wds"))
-  # ckan matches ontario_ckan + montreal_opendata (3EEE1); statcan_wds
-  # matches statcan_ccjs.
+  # ckan matches ontario_ckan + montreal_opendata + toronto_opendata;
+  # statcan_wds matches statcan_ccjs.
   expect_setequal(unique(d$source),
                   c("ontario_ckan", "montreal_opendata",
-                    "statcan_ccjs"))
+                    "toronto_opendata", "statcan_ccjs"))
 })
 
 test_that("loader_pattern uses perl-style regex", {
@@ -80,8 +80,8 @@ test_that("morie_datasets_summary() returns one row per portal", {
   expect_setequal(names(s),
                   c("source", "n_datasets", "api_modes",
                     "n_with_bundled_fixture"))
-  # Should match the catalog's 10 portals (3EEE1 added MTL).
-  expect_equal(nrow(s), 10L)
+  # Should match the catalog's 11 portals (3EEE2 added TO Open).
+  expect_equal(nrow(s), 11L)
   # n_datasets must sum to the catalog total.
   expect_equal(sum(s$n_datasets),
                 nrow(morie_dataset_portal_catalog()))

@@ -64,8 +64,8 @@
 #' @param portal Optional character filter: `"chicago"`, `"nyc_nypd"`,
 #'   `"nyc_opendata"`, `"tps_arcgis_hub"`, `"tps_psdp"`,
 #'   `"ontario_ckan"`, `"vancouver_opendata"`, `"vpd_geodash"`,
-#'   `"statcan_ccjs"`, `"montreal_opendata"`. `NULL` (default)
-#'   returns all portals.
+#'   `"statcan_ccjs"`, `"montreal_opendata"`, `"toronto_opendata"`.
+#'   `NULL` (default) returns all portals.
 #' @return A `data.frame` with one row per dataset. Columns:
 #'   `dataset_key`, `source`, `id`, `api_modes`, `loader`,
 #'   `dict_url`, `n_rows_bundled`.
@@ -189,6 +189,31 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
       stringsAsFactors = FALSE))
   }
 
+  # --- Toronto Open Data CKAN crime-adjacent (3EEE2) -----------
+  tor <- morie_datasets_toronto_open_crime_adjacent_layers(offline = TRUE)
+  for (i in seq_len(nrow(tor))) {
+    push(data.frame(
+      dataset_key = tor$package_name[i],
+      source = "toronto_opendata",
+      id = tor$package_name[i],
+      api_modes = "ckan",
+      loader = if (tor$package_name[i] == "ambulance-station-locations")
+                 "morie_datasets_toronto_ambulance_stations"
+              else if (tor$package_name[i] ==
+                         "police-annual-statistical-report-miscellaneous-data")
+                 "morie_datasets_toronto_asr_miscellaneous"
+              else "morie_datasets_toronto_open_ckan_resource",
+      dict_url = sprintf("https://open.toronto.ca/dataset/%s",
+                          tor$package_name[i]),
+      n_rows_bundled = if (tor$package_name[i] == "ambulance-station-locations")
+                         46L
+                       else if (tor$package_name[i] ==
+                                  "police-annual-statistical-report-miscellaneous-data")
+                         40L
+                       else NA_integer_,
+      stringsAsFactors = FALSE))
+  }
+
   # --- Montreal Open Data CKAN (Loi/Justice/Securite group) ----
   mtl <- morie_datasets_montreal_justice_safety_layers(offline = TRUE)
   for (i in seq_len(nrow(mtl))) {
@@ -247,7 +272,8 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
                                       "vancouver_opendata",
                                       "vpd_geodash",
                                       "statcan_ccjs",
-                                      "montreal_opendata"))
+                                      "montreal_opendata",
+                                      "toronto_opendata"))
     out <- out[out$source == portal, , drop = FALSE]
     rownames(out) <- NULL
   }
