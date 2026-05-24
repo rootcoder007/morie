@@ -731,6 +731,11 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
 #' @param max_features Optional total cap across all paged requests.
 #' @param base_url Portal base URL.  Default
 #'   `"https://data.cityofchicago.org"`.
+#' @note SODA3 (`/api/v3/views/<id>/query.{json,csv}`) requires
+#'   authentication per Socrata's API documentation
+#'   (\url{https://support.socrata.com/hc/en-us/articles/34730618169623-SODA3-API}).
+#'   Pass an `app_token` (Socrata application token) for higher
+#'   per-host rate limits and to satisfy authenticated endpoints.
 #' @keywords internal
 #' @noRd
 .morie_dataset_soda3_query <- function(view_id, soql = "SELECT *",
