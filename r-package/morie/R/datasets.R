@@ -553,6 +553,130 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
   do.call(rbind, chunks)
 }
 
+#' Generic Socrata OData v4 fetch
+#'
+#' Socrata exposes every dataset (base + filtered + map) under a
+#' third API mode in addition to SODA2 + SODA3 -- **OData v4** at
+#' `/api/odata/v4/<view_id>`. OData is the protocol Tableau, Power
+#' BI, Excel, and other BI tools speak natively; reaching it from
+#' R is mostly useful when you want morie to ingest the same way
+#' those tools do, or to use OData-specific features like
+#' server-driven `@odata.nextLink` pagination.
+#'
+#' Coverage parity vs the other two API modes:
+#'   * **Base datasets** (e.g. `ijzp-q8t2`): all three modes work.
+#'   * **Derived / map / filtered views** (e.g. `ahwe-kpsy`): OData
+#'     returns `value: [{}]` (empty objects) -- same failure mode as
+#'     SODA2. Use SODA3 ([.morie_dataset_soda3_query()]) for these.
+#'
+#' **Known Socrata limitation -- `$filter`**. As of 2026-05 Socrata's
+#' OData parser frequently rejects equality filters with
+#' `"The types 'Edm.Boolean' and 'Edm.String' (or 'Edm.Decimal') are
+#' not compatible."` -- the filter expression tree is mis-typed
+#' inside Socrata's engine. `$top`, `$skip`, `$select`, and
+#' `$orderby` all work reliably. If you need filtering, prefer SODA3
+#' (`morie_datasets_chicago_crime_soql`) or SODA2's `$where`
+#' (`morie_datasets_chicago_crime`).
+#'
+#' Pagination:
+#'   * `paginate = TRUE` follows the server-provided
+#'     `@odata.nextLink` until it disappears (Socrata returns a
+#'     nextLink whenever there are more rows; absence == exhausted).
+#'   * `max_features` caps the total row count across pages.
+#'   * `max_pages` is the safety net.
+#'
+#' Each response also carries `@odata.id` / `@odata.context` /
+#' `@odata.metadata` metadata fields per row; these are stripped
+#' from the returned data.frame so columns match the dataset schema.
+#'
+#' @param view_id Socrata view id (UUID `xxxx-xxxx` or publisher alias).
+#' @param filter Optional OData `$filter` string (caller-supplied
+#'   verbatim). See limitation above.
+#' @param select Optional OData `$select` (comma-separated column
+#'   list); defaults to `NULL` = all columns.
+#' @param orderby Optional OData `$orderby`.
+#' @param top Optional integer `$top` (per-request row count when
+#'   `paginate = FALSE`; per-page row count when `paginate = TRUE`).
+#'   `NULL` accepts server default.
+#' @param skip Optional integer `$skip` (start offset, mostly useful
+#'   when `paginate = FALSE`).
+#' @param app_token Optional Socrata app token (sent as `X-App-Token`).
+#' @param paginate Logical; if `TRUE`, follow `@odata.nextLink`.
+#' @param max_pages Safety net on paginated walks.
+#' @param max_features Optional total row cap.
+#' @param base_url Portal base URL. Default Chicago.
+#' @keywords internal
+#' @noRd
+.morie_dataset_odata_fetch <- function(view_id, filter = NULL,
+                                        select = NULL,
+                                        orderby = NULL,
+                                        top = NULL, skip = NULL,
+                                        app_token = NULL,
+                                        paginate = FALSE,
+                                        max_pages = 200L,
+                                        max_features = NULL,
+                                        base_url = "https://data.cityofchicago.org") {
+  if (!requireNamespace("httr2", quietly = TRUE)) {
+    stop("morie datasets HTTP fetch requires the 'httr2' package.")
+  }
+  strip_odata_meta <- function(df) {
+    if (!is.data.frame(df) || ncol(df) == 0L) return(df)
+    drop <- grepl("^@odata\\.", names(df))
+    if (any(drop)) df[, !drop, drop = FALSE] else df
+  }
+  send <- function(url, query = NULL) {
+    req <- httr2::request(url)
+    if (!is.null(query) && length(query) > 0L) {
+      req <- httr2::req_url_query(req, !!!query)
+    }
+    if (!is.null(app_token)) {
+      req <- httr2::req_headers(req, `X-App-Token` = app_token)
+    }
+    resp <- httr2::req_perform(req)
+    httr2::resp_body_json(resp, simplifyVector = TRUE)
+  }
+  build_query <- function() {
+    q <- list()
+    if (!is.null(filter)) q$`$filter` <- filter
+    if (!is.null(select)) q$`$select` <- select
+    if (!is.null(orderby)) q$`$orderby` <- orderby
+    if (!is.null(top)) q$`$top` <- as.integer(top)
+    if (!is.null(skip)) q$`$skip` <- as.integer(skip)
+    q
+  }
+  url0 <- sprintf("%s/api/odata/v4/%s", base_url, view_id)
+  if (!isTRUE(paginate)) {
+    body <- send(url0, build_query())
+    df <- .morie_dataset_records_to_df(body$value)
+    return(strip_odata_meta(df))
+  }
+  # Paginated mode: follow @odata.nextLink until absent / empty /
+  # max_features / max_pages.
+  cap <- if (is.null(max_features)) NA_integer_ else as.integer(max_features)
+  max_pages <- as.integer(max_pages)
+  chunks <- vector("list", 0L)
+  total <- 0L
+  body <- send(url0, build_query())
+  for (pg in seq_len(max_pages)) {
+    chunk <- strip_odata_meta(.morie_dataset_records_to_df(body$value))
+    n <- if (is.data.frame(chunk)) nrow(chunk) else 0L
+    if (n == 0L) break
+    # Truncate the last chunk if it would push us past cap.
+    if (!is.na(cap) && total + n > cap) {
+      chunk <- chunk[seq_len(cap - total), , drop = FALSE]
+      n <- nrow(chunk)
+    }
+    chunks[[length(chunks) + 1L]] <- chunk
+    total <- total + n
+    if (!is.na(cap) && total >= cap) break
+    next_link <- body[["@odata.nextLink"]]
+    if (is.null(next_link) || !nzchar(next_link)) break
+    body <- send(next_link)
+  }
+  if (length(chunks) == 0L) return(data.frame())
+  do.call(rbind, chunks)
+}
+
 #' City of Chicago "Crimes -- 2001 to Present" feed (`ijzp-q8t2`)
 #'
 #' Wraps the City of Chicago "Crimes -- 2001 to Present" open dataset
@@ -963,6 +1087,89 @@ morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
                                 paginate = paginate,
                                 page_size = page_size,
                                 max_pages = max_pages)
+}
+
+# ---------------------------------------------------------------------------
+# Chicago Crimes -- OData v4 wrapper (3RR)
+# ---------------------------------------------------------------------------
+
+#' City of Chicago Crimes feed via OData v4 (`ijzp-q8t2`)
+#'
+#' Third Socrata API mode: OData v4 at
+#' `/api/odata/v4/<view_id>`, the same protocol Tableau / Power BI /
+#' Excel speak natively. Use this when you want morie to consume the
+#' Crimes feed the same way those tools do, or when you want
+#' server-driven `@odata.nextLink` pagination instead of the
+#' client-driven `$offset` walk that SODA2/SODA3 use.
+#'
+#' When to reach for which API mode:
+#'
+#' \tabular{lll}{
+#'   \strong{Mode}      \tab \strong{morie wrapper}                       \tab \strong{best for} \cr
+#'   SODA2              \tab [morie_datasets_chicago_crime()]            \tab base-feed pulls + `$where` filtering \cr
+#'   SODA3 (SoQL)       \tab [morie_datasets_chicago_crime_soql()]       \tab arbitrary `SELECT ... WHERE` \cr
+#'   SODA3 (map view)   \tab [morie_datasets_chicago_crime_map()]        \tab derived/filtered views (ahwe-kpsy) \cr
+#'   OData v4           \tab `morie_datasets_chicago_crime_odata()`      \tab third-party tool ingestion \cr
+#' }
+#'
+#' **Known Socrata limitation.** `$filter` is unreliable on Socrata's
+#' OData implementation -- the parser frequently rejects equality
+#' filters with `"The types 'Edm.Boolean' and 'Edm.String' (or
+#' 'Edm.Decimal') are not compatible."`. `$top` / `$skip` /
+#' `$select` / `$orderby` all work; for filtering, use SODA3.
+#'
+#' @param filter Optional OData `$filter` string (caller-supplied
+#'   verbatim; see limitation above).
+#' @param select Optional comma-separated column list.
+#' @param orderby Optional OData `$orderby`.
+#' @param top Optional per-request row count (= `$top`).
+#' @param skip Optional start offset (= `$skip`).
+#' @param max_features Optional total row cap across pages.
+#' @param offline Logical; default `TRUE` reads the bundled 22-col
+#'   `chicago_crime_synthetic.csv` fixture.
+#' @param resource_id Optional view id override (default
+#'   `"ijzp-q8t2"`; pass `"crimes"` for the publisher alias).
+#' @param paginate Logical; if `TRUE`, follow `@odata.nextLink`.
+#' @param max_pages Safety net on paginated walks.
+#' @param app_token Optional Socrata app token (sent as `X-App-Token`).
+#' @return A `data.frame`.
+#' @references Socrata OData docs:
+#'   \url{https://support.socrata.com/hc/en-us/articles/115005364207-Access-Data-Insights-Data-using-OData}
+#' @examples
+#' df <- morie_datasets_chicago_crime_odata(offline = TRUE)
+#' nrow(df)
+#' @export
+morie_datasets_chicago_crime_odata <- function(filter = NULL,
+                                                 select = NULL,
+                                                 orderby = NULL,
+                                                 top = NULL,
+                                                 skip = NULL,
+                                                 max_features = NULL,
+                                                 offline = TRUE,
+                                                 resource_id = NULL,
+                                                 paginate = FALSE,
+                                                 max_pages = 200L,
+                                                 app_token = NULL) {
+  if (isTRUE(offline)) {
+    df <- .morie_dataset_read_synthetic(
+      "chicago_crime_synthetic", "chicago_crime_odata",
+      columns = .MORIE_CHICAGO_CRIME_COLUMNS)
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  if (is.null(resource_id)) resource_id <- "ijzp-q8t2"
+  .morie_dataset_odata_fetch(resource_id,
+                              filter = filter,
+                              select = select,
+                              orderby = orderby,
+                              top = top,
+                              skip = skip,
+                              app_token = app_token,
+                              paginate = paginate,
+                              max_pages = max_pages,
+                              max_features = max_features)
 }
 
 # ---------------------------------------------------------------------------
