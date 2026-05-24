@@ -326,7 +326,7 @@ morie_tps_render_choropleth <- function(polys,
                           ggplot2::aes(x = .data$x, y = .data$y,
                                        group = .data$ring,
                                        fill = .data$val)) +
-      ggplot2::geom_polygon(colour = border_color, size = border_lw) +
+      ggplot2::geom_polygon(colour = border_color, linewidth = border_lw) +
       ggplot2::scale_fill_distiller(palette = cmap, direction = 1,
                                     name = morie_tps_pretty_label(rate_col)) +
       ggplot2::coord_equal() +
@@ -572,7 +572,7 @@ morie_tps_render_yearly_grid <- function(polys,
                         ggplot2::aes(x = .data$x, y = .data$y,
                                      group = .data$ring,
                                      fill = .data$val)) +
-    ggplot2::geom_polygon(colour = "white", size = 0.1) +
+    ggplot2::geom_polygon(colour = "white", linewidth = 0.1) +
     ggplot2::scale_fill_distiller(palette = cmap, direction = 1,
                                   name = prefix) +
     ggplot2::coord_equal() +
@@ -620,7 +620,7 @@ morie_tps_render_yearly_grid <- function(polys,
                         x = x, xend = x,
                         y = y - size / 2, yend = y + size / 2,
                         arrow = grid::arrow(length = grid::unit(0.15, "cm")),
-                        colour = "#222222", size = 0.6),
+                        colour = "#222222", linewidth = 0.6),
       ggplot2::annotate("text", x = x, y = y + size / 2 + 0.3 * size,
                         label = "N", size = 3, colour = "#222222")
     )
@@ -639,7 +639,7 @@ morie_tps_render_yearly_grid <- function(polys,
     list(
       ggplot2::annotate("segment", x = x, xend = x + length_km,
                         y = y, yend = y,
-                        colour = "#222222", size = 0.8),
+                        colour = "#222222", linewidth = 0.8),
       ggplot2::annotate("text", x = x + length_km / 2, y = y - 0.4,
                         label = sprintf("%g km", length_km),
                         size = 2.8, colour = "#222222")
