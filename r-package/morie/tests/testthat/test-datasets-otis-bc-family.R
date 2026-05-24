@@ -146,33 +146,63 @@ test_that("OTIS c12 aggregate-by-region loads 6-col schema", {
   expect_equal(ncol(df), 6L)
 })
 
-# =================================================== live-mode "lookup pending"
+# =================================================== auto-resolve via registry (post-3KK)
 
-test_that("every b/c wrapper errors with 'lookup pending' when offline=FALSE + no resource_id", {
-  wrappers <- list(
-    morie_datasets_otis_b01_segregation_detailed,
-    morie_datasets_otis_b02_segregation_total_days,
-    morie_datasets_otis_b03_seg_alerts_by_institution,
-    morie_datasets_otis_b04_seg_consecutive_by_region,
-    morie_datasets_otis_b05_seg_consecutive_lengths,
-    morie_datasets_otis_b06_seg_reason_by_institution,
-    morie_datasets_otis_b07_seg_alerts_by_gender,
-    morie_datasets_otis_b08_seg_consecutive_by_institution,
-    morie_datasets_otis_b09_seg_n_times,
-    morie_datasets_otis_c01_individuals_total,
-    morie_datasets_otis_c02_individuals_by_institution,
-    morie_datasets_otis_c03_individuals_race_by_gender,
-    morie_datasets_otis_c04_individuals_race_by_region,
-    morie_datasets_otis_c05_individuals_religion_by_region,
-    morie_datasets_otis_c06_individuals_age_by_region,
-    morie_datasets_otis_c07_individuals_alerts,
-    morie_datasets_otis_c08_individuals_religion_by_gender,
-    morie_datasets_otis_c09_individuals_age_by_gender,
-    morie_datasets_otis_c10_aggregate_durations_by_institution,
-    morie_datasets_otis_c11_aggregate_lengths,
-    morie_datasets_otis_c12_aggregate_durations_by_region)
-  for (fn in wrappers) {
-    expect_error(fn(offline = FALSE), regexp = "lookup pending")
+test_that("every b/c wrapper auto-resolves canonical resource_id from the registry", {
+  # Map: wrapper -> expected wired CKAN resource_id.
+  expected <- list(
+    list(fn = morie_datasets_otis_b01_segregation_detailed,
+         rid = "406e6d90-d568-4553-8ca7-bc9f90e133b9"),
+    list(fn = morie_datasets_otis_b02_segregation_total_days,
+         rid = "84161f23-ee75-48b4-97df-3b19b8bbd745"),
+    list(fn = morie_datasets_otis_b03_seg_alerts_by_institution,
+         rid = "ef45902a-b946-49fe-8c2f-f778e8357e1f"),
+    list(fn = morie_datasets_otis_b04_seg_consecutive_by_region,
+         rid = "d76d8f65-6318-4a45-b4c7-5b9a2d985408"),
+    list(fn = morie_datasets_otis_b05_seg_consecutive_lengths,
+         rid = "754e8cde-5c74-4c0a-9782-79767a2b26b0"),
+    list(fn = morie_datasets_otis_b06_seg_reason_by_institution,
+         rid = "af633c35-2f98-4ca6-8629-02aa8acd237a"),
+    list(fn = morie_datasets_otis_b07_seg_alerts_by_gender,
+         rid = "38090dad-9f73-4a0b-8a7b-ca2477fc0030"),
+    list(fn = morie_datasets_otis_b08_seg_consecutive_by_institution,
+         rid = "73c77cf2-faeb-4136-a897-ed4d4c19e240"),
+    list(fn = morie_datasets_otis_b09_seg_n_times,
+         rid = "df24e943-d52b-43a8-a10e-a3cc906e26bb"),
+    list(fn = morie_datasets_otis_c01_individuals_total,
+         rid = "81bc03cc-b3f6-4983-b717-11f85fa90330"),
+    list(fn = morie_datasets_otis_c02_individuals_by_institution,
+         rid = "cb4ed82f-c67a-430a-9cb5-5e5698a06ddf"),
+    list(fn = morie_datasets_otis_c03_individuals_race_by_gender,
+         rid = "0532a199-3a4f-45b4-b79b-6db7920ff7f2"),
+    list(fn = morie_datasets_otis_c04_individuals_race_by_region,
+         rid = "b38f754f-9141-4ea3-a10c-a071473ed00a"),
+    list(fn = morie_datasets_otis_c05_individuals_religion_by_region,
+         rid = "c899bf66-bd7b-4305-8ccc-ae031e041df8"),
+    list(fn = morie_datasets_otis_c06_individuals_age_by_region,
+         rid = "4e4c91e9-ae29-4ab6-864e-bcda896c7882"),
+    list(fn = morie_datasets_otis_c07_individuals_alerts,
+         rid = "879cf325-a7a7-4d48-bc69-ea050d8a4d4e"),
+    list(fn = morie_datasets_otis_c08_individuals_religion_by_gender,
+         rid = "8fc09ce2-5097-4a94-af29-abcdcd5aa015"),
+    list(fn = morie_datasets_otis_c09_individuals_age_by_gender,
+         rid = "0e990da6-5427-453e-91ba-b6f24dee2ef2"),
+    list(fn = morie_datasets_otis_c10_aggregate_durations_by_institution,
+         rid = "eaf6d52a-210a-48ef-822a-294e9346c45c"),
+    list(fn = morie_datasets_otis_c11_aggregate_lengths,
+         rid = "9c7b74a5-53ad-4ef0-a7a6-97772cd01c55"),
+    list(fn = morie_datasets_otis_c12_aggregate_durations_by_region,
+         rid = "d7080653-69fc-4f38-8d83-709fe16ae465"))
+  for (R in expected) {
+    out <- testthat::with_mocked_bindings(
+      .morie_ontario_ckan_dump_csv = function(resource_id,
+                                                limit = 200000L) {
+        expect_equal(resource_id, R$rid)
+        data.frame(EndFiscalYear = 2024L)
+      },
+      .package = "morie",
+      code = R$fn(offline = FALSE))
+    expect_s3_class(out, "data.frame")
   }
 })
 
@@ -224,9 +254,8 @@ test_that("OTIS c11 dispatches via mock when resource_id is supplied", {
 
 # =================================================== registry integration
 
-test_that("morie_datasets_ontario_ckan_layers now includes all 21 lookup-pending b/c entries", {
+test_that("morie_datasets_ontario_ckan_layers includes all 21 b/c entries with wired resource_ids", {
   reg <- morie_datasets_ontario_ckan_layers()
-  # 9 ARSAU + 1 OTIS d01 wired + 7 OTIS lookup-pending (3HH) + 21 new = 38.
   expect_true(nrow(reg) >= 38L)
   b_keys <- sprintf("otis_b%02d_%s", 1:9,
                      c("segregation_detailed",
@@ -253,10 +282,14 @@ test_that("morie_datasets_ontario_ckan_layers now includes all 21 lookup-pending
                        "aggregate_durations_by_region"))
   for (k in c(b_keys, c_keys))
     expect_true(k %in% reg$dataset_key)
-  # Combined lookup-pending OTIS entries: 7 + 21 = 28.
-  na_entries <- reg[is.na(reg$resource_id), ]
-  expect_equal(nrow(na_entries), 28L)
-  expect_true(all(na_entries$family == "otis"))
+  # Post-3KK: every b/c entry has a wired CKAN UUID resource_id.
+  subset <- reg[reg$dataset_key %in% c(b_keys, c_keys), ]
+  expect_false(any(is.na(subset$resource_id)))
+  expect_true(all(grepl("^[0-9a-f]{8}-[0-9a-f]{4}",
+                         subset$resource_id)))
+  # And the FULL Ontario CKAN registry now has zero NA resource_ids
+  # (all 38 dataset_keys are wired live-mode ready).
+  expect_false(any(is.na(reg$resource_id)))
 })
 
 test_that("morie_datasets_ontario_ckan_by_key('otis_c03_individuals_race_by_gender', offline=TRUE) reads bundled fixture", {

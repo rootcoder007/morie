@@ -447,144 +447,144 @@ morie_datasets_arsau_detailed_dataset <- function(offline = TRUE,
   # works against bundled fixtures, live mode requires the user pass
   # resource_id = ... explicitly. PRs welcome to fill these in.
   otis_a01_restrictive_confinement = list(
-    resource_id = NA_character_,
+    resource_id = "5a0c5804-a055-4031-9743-73f556e43bb4",
     label = "OTIS a01 Restrictive Confinement detailed",
     fixture = "otis_a01_restrictive_confinement_sample.csv",
     family = "otis", year = "all"),
   otis_d02_deaths_by_gender = list(
-    resource_id = NA_character_,
+    resource_id = "9de64ab4-0860-499d-8303-014bff5ec412",
     label = "OTIS d02 Deaths-in-Custody by gender",
     fixture = "otis_d02_deaths_by_gender_sample.csv",
     family = "otis", year = "all"),
   otis_d03_deaths_by_race = list(
-    resource_id = NA_character_,
+    resource_id = "3aaec288-2ab9-4850-851d-e40a69517df5",
     label = "OTIS d03 Deaths-in-Custody by race",
     fixture = "otis_d03_deaths_by_race_sample.csv",
     family = "otis", year = "all"),
   otis_d04_deaths_by_religion = list(
-    resource_id = NA_character_,
+    resource_id = "46437725-4ba6-454b-b4e1-0c05402c84ca",
     label = "OTIS d04 Deaths-in-Custody by religion",
     fixture = "otis_d04_deaths_by_religion_sample.csv",
     family = "otis", year = "all"),
   otis_d05_deaths_by_age_category = list(
-    resource_id = NA_character_,
+    resource_id = "45820ef9-e23a-4b4b-800a-c13c99dd5b0a",
     label = "OTIS d05 Deaths-in-Custody by age category",
     fixture = "otis_d05_deaths_by_age_category_sample.csv",
     family = "otis", year = "all"),
   otis_d06_cause_by_alert = list(
-    resource_id = NA_character_,
+    resource_id = "cc9dd090-25fe-45b1-b6b0-ae3409fa133b",
     label = "OTIS d06 Deaths-in-Custody cause-by-alert",
     fixture = "otis_d06_cause_by_alert_sample.csv",
     family = "otis", year = "all"),
   otis_d07_alerts_by_housing_unit = list(
-    resource_id = NA_character_,
+    resource_id = "6bb46038-5f50-4908-8c14-fdf31a4d3d98",
     label = "OTIS d07 Deaths-in-Custody alerts by housing unit",
     fixture = "otis_d07_alerts_by_housing_unit_sample.csv",
     family = "otis", year = "all"),
   # OTIS b01-b09 Segregation family (lookup-pending live mode).
   otis_b01_segregation_detailed = list(
-    resource_id = NA_character_,
+    resource_id = "406e6d90-d568-4553-8ca7-bc9f90e133b9",
     label = "OTIS b01 Segregation detailed",
     fixture = "otis_b01_segregation_detailed_sample.csv",
     family = "otis", year = "all"),
   otis_b02_segregation_total_days = list(
-    resource_id = NA_character_,
+    resource_id = "84161f23-ee75-48b4-97df-3b19b8bbd745",
     label = "OTIS b02 Segregation total days",
     fixture = "otis_b02_segregation_total_days_sample.csv",
     family = "otis", year = "all"),
   otis_b03_seg_alerts_by_institution = list(
-    resource_id = NA_character_,
+    resource_id = "ef45902a-b946-49fe-8c2f-f778e8357e1f",
     label = "OTIS b03 Segregation alerts by institution",
     fixture = "otis_b03_seg_alerts_by_institution_sample.csv",
     family = "otis", year = "all"),
   otis_b04_seg_consecutive_by_region = list(
-    resource_id = NA_character_,
+    resource_id = "d76d8f65-6318-4a45-b4c7-5b9a2d985408",
     label = "OTIS b04 Segregation consecutive durations by region",
     fixture = "otis_b04_seg_consecutive_by_region_sample.csv",
     family = "otis", year = "all"),
   otis_b05_seg_consecutive_lengths = list(
-    resource_id = NA_character_,
+    resource_id = "754e8cde-5c74-4c0a-9782-79767a2b26b0",
     label = "OTIS b05 Segregation consecutive lengths",
     fixture = "otis_b05_seg_consecutive_lengths_sample.csv",
     family = "otis", year = "all"),
   otis_b06_seg_reason_by_institution = list(
-    resource_id = NA_character_,
+    resource_id = "af633c35-2f98-4ca6-8629-02aa8acd237a",
     label = "OTIS b06 Segregation reason by institution",
     fixture = "otis_b06_seg_reason_by_institution_sample.csv",
     family = "otis", year = "all"),
   otis_b07_seg_alerts_by_gender = list(
-    resource_id = NA_character_,
+    resource_id = "38090dad-9f73-4a0b-8a7b-ca2477fc0030",
     label = "OTIS b07 Segregation alerts by gender",
     fixture = "otis_b07_seg_alerts_by_gender_sample.csv",
     family = "otis", year = "all"),
   otis_b08_seg_consecutive_by_institution = list(
-    resource_id = NA_character_,
+    resource_id = "73c77cf2-faeb-4136-a897-ed4d4c19e240",
     label = "OTIS b08 Segregation consecutive durations by institution",
     fixture = "otis_b08_seg_consecutive_by_institution_sample.csv",
     family = "otis", year = "all"),
   otis_b09_seg_n_times = list(
-    resource_id = NA_character_,
+    resource_id = "df24e943-d52b-43a8-a10e-a3cc906e26bb",
     label = "OTIS b09 Individuals by N times in segregation",
     fixture = "otis_b09_seg_n_times_sample.csv",
     family = "otis", year = "all"),
   # OTIS c01-c12 Individuals-in-Segregation+RC family (lookup-pending).
   otis_c01_individuals_total = list(
-    resource_id = NA_character_,
+    resource_id = "81bc03cc-b3f6-4983-b717-11f85fa90330",
     label = "OTIS c01 Individuals total",
     fixture = "otis_c01_individuals_total_sample.csv",
     family = "otis", year = "all"),
   otis_c02_individuals_by_institution = list(
-    resource_id = NA_character_,
+    resource_id = "cb4ed82f-c67a-430a-9cb5-5e5698a06ddf",
     label = "OTIS c02 Individuals by institution",
     fixture = "otis_c02_individuals_by_institution_sample.csv",
     family = "otis", year = "all"),
   otis_c03_individuals_race_by_gender = list(
-    resource_id = NA_character_,
+    resource_id = "0532a199-3a4f-45b4-b79b-6db7920ff7f2",
     label = "OTIS c03 Individuals race by gender",
     fixture = "otis_c03_individuals_race_by_gender_sample.csv",
     family = "otis", year = "all"),
   otis_c04_individuals_race_by_region = list(
-    resource_id = NA_character_,
+    resource_id = "b38f754f-9141-4ea3-a10c-a071473ed00a",
     label = "OTIS c04 Individuals race by region",
     fixture = "otis_c04_individuals_race_by_region_sample.csv",
     family = "otis", year = "all"),
   otis_c05_individuals_religion_by_region = list(
-    resource_id = NA_character_,
+    resource_id = "c899bf66-bd7b-4305-8ccc-ae031e041df8",
     label = "OTIS c05 Individuals religion by region",
     fixture = "otis_c05_individuals_religion_by_region_sample.csv",
     family = "otis", year = "all"),
   otis_c06_individuals_age_by_region = list(
-    resource_id = NA_character_,
+    resource_id = "4e4c91e9-ae29-4ab6-864e-bcda896c7882",
     label = "OTIS c06 Individuals age by region",
     fixture = "otis_c06_individuals_age_by_region_sample.csv",
     family = "otis", year = "all"),
   otis_c07_individuals_alerts = list(
-    resource_id = NA_character_,
+    resource_id = "879cf325-a7a7-4d48-bc69-ea050d8a4d4e",
     label = "OTIS c07 Individuals alerts",
     fixture = "otis_c07_individuals_alerts_sample.csv",
     family = "otis", year = "all"),
   otis_c08_individuals_religion_by_gender = list(
-    resource_id = NA_character_,
+    resource_id = "8fc09ce2-5097-4a94-af29-abcdcd5aa015",
     label = "OTIS c08 Individuals religion by gender",
     fixture = "otis_c08_individuals_religion_by_gender_sample.csv",
     family = "otis", year = "all"),
   otis_c09_individuals_age_by_gender = list(
-    resource_id = NA_character_,
+    resource_id = "0e990da6-5427-453e-91ba-b6f24dee2ef2",
     label = "OTIS c09 Individuals age by gender",
     fixture = "otis_c09_individuals_age_by_gender_sample.csv",
     family = "otis", year = "all"),
   otis_c10_aggregate_durations_by_institution = list(
-    resource_id = NA_character_,
+    resource_id = "eaf6d52a-210a-48ef-822a-294e9346c45c",
     label = "OTIS c10 Aggregate durations by institution",
     fixture = "otis_c10_aggregate_durations_by_institution_sample.csv",
     family = "otis", year = "all"),
   otis_c11_aggregate_lengths = list(
-    resource_id = NA_character_,
+    resource_id = "9c7b74a5-53ad-4ef0-a7a6-97772cd01c55",
     label = "OTIS c11 Aggregate lengths",
     fixture = "otis_c11_aggregate_lengths_sample.csv",
     family = "otis", year = "all"),
   otis_c12_aggregate_durations_by_region = list(
-    resource_id = NA_character_,
+    resource_id = "d7080653-69fc-4f38-8d83-709fe16ae465",
     label = "OTIS c12 Aggregate durations by region",
     fixture = "otis_c12_aggregate_durations_by_region_sample.csv",
     family = "otis", year = "all"))
@@ -630,9 +630,13 @@ morie_datasets_ontario_ckan_layers <- function() {
 # raises with a clear "lookup pending" message until the resource_id
 # is supplied via the registry or the resource_id= override.
 
-# Internal shared dispatch for the lookup-pending OTIS wrappers.
+# Internal shared dispatch for the OTIS wrappers. Resource ids are
+# auto-resolved from .MORIE_ONTARIO_CKAN_REGISTRY[[registry_key]] when
+# the caller doesn't pass an explicit override; if the registry entry
+# is also missing or NA the function errors with a clear message.
 .morie_otis_lookup_pending_dispatch <- function(dataset_label, fixture,
-                                                  offline, resource_id) {
+                                                  offline, resource_id,
+                                                  registry_key = NULL) {
   if (isTRUE(offline)) {
     path <- system.file("extdata", fixture, package = "morie")
     if (!nzchar(path)) {
@@ -642,7 +646,12 @@ morie_datasets_ontario_ckan_layers <- function() {
     return(utils::read.csv(path, stringsAsFactors = FALSE,
                             check.names = FALSE))
   }
-  if (is.null(resource_id)) {
+  if (is.null(resource_id) && !is.null(registry_key)) {
+    entry <- .MORIE_ONTARIO_CKAN_REGISTRY[[registry_key]]
+    if (!is.null(entry) && !is.na(entry$resource_id))
+      resource_id <- entry$resource_id
+  }
+  if (is.null(resource_id) || is.na(resource_id)) {
     stop(sprintf(paste0(
       "Live mode for OTIS %s needs an explicit resource_id ",
       "(canonical Ontario CKAN id lookup pending in the morie ",
@@ -669,7 +678,7 @@ morie_datasets_otis_a01_restrictive_confinement <- function(
   .morie_otis_lookup_pending_dispatch(
     "a01 Restrictive Confinement",
     "otis_a01_restrictive_confinement_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_a01_restrictive_confinement")
 }
 
 #' OTIS d02 -- Deaths in custody by gender
@@ -680,7 +689,7 @@ morie_datasets_otis_d02_deaths_by_gender <- function(offline = TRUE,
   .morie_otis_lookup_pending_dispatch(
     "d02 Deaths-in-Custody by gender",
     "otis_d02_deaths_by_gender_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_d02_deaths_by_gender")
 }
 
 #' OTIS d03 -- Deaths in custody by race
@@ -691,7 +700,7 @@ morie_datasets_otis_d03_deaths_by_race <- function(offline = TRUE,
   .morie_otis_lookup_pending_dispatch(
     "d03 Deaths-in-Custody by race",
     "otis_d03_deaths_by_race_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_d03_deaths_by_race")
 }
 
 #' OTIS d04 -- Deaths in custody by religion
@@ -702,7 +711,7 @@ morie_datasets_otis_d04_deaths_by_religion <- function(offline = TRUE,
   .morie_otis_lookup_pending_dispatch(
     "d04 Deaths-in-Custody by religion",
     "otis_d04_deaths_by_religion_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_d04_deaths_by_religion")
 }
 
 #' OTIS d05 -- Deaths in custody by age category
@@ -713,7 +722,7 @@ morie_datasets_otis_d05_deaths_by_age_category <- function(
   .morie_otis_lookup_pending_dispatch(
     "d05 Deaths-in-Custody by age category",
     "otis_d05_deaths_by_age_category_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_d05_deaths_by_age_category")
 }
 
 #' OTIS d06 -- Deaths in custody by alert type x institution
@@ -724,7 +733,7 @@ morie_datasets_otis_d06_cause_by_alert <- function(offline = TRUE,
   .morie_otis_lookup_pending_dispatch(
     "d06 Deaths-in-Custody cause-by-alert",
     "otis_d06_cause_by_alert_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_d06_cause_by_alert")
 }
 
 #' OTIS d07 -- Deaths in custody alerts x housing unit
@@ -735,7 +744,7 @@ morie_datasets_otis_d07_alerts_by_housing_unit <- function(
   .morie_otis_lookup_pending_dispatch(
     "d07 Deaths-in-Custody alerts by housing unit",
     "otis_d07_alerts_by_housing_unit_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_d07_alerts_by_housing_unit")
 }
 
 # ---------------------------------------------------------------------------
@@ -750,7 +759,7 @@ morie_datasets_otis_b01_segregation_detailed <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b01 Segregation detailed",
-    "otis_b01_segregation_detailed_sample.csv", offline, resource_id)
+    "otis_b01_segregation_detailed_sample.csv", offline, resource_id, registry_key = "otis_b01_segregation_detailed")
 }
 
 #' OTIS b02 -- Segregation total days per individual
@@ -760,7 +769,7 @@ morie_datasets_otis_b02_segregation_total_days <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b02 Segregation total days",
-    "otis_b02_segregation_total_days_sample.csv", offline, resource_id)
+    "otis_b02_segregation_total_days_sample.csv", offline, resource_id, registry_key = "otis_b02_segregation_total_days")
 }
 
 #' OTIS b03 -- Segregation placements: alerts + hold by institution
@@ -770,7 +779,7 @@ morie_datasets_otis_b03_seg_alerts_by_institution <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b03 Segregation alerts by institution",
-    "otis_b03_seg_alerts_by_institution_sample.csv", offline, resource_id)
+    "otis_b03_seg_alerts_by_institution_sample.csv", offline, resource_id, registry_key = "otis_b03_seg_alerts_by_institution")
 }
 
 #' OTIS b04 -- Segregation consecutive durations by region
@@ -780,7 +789,7 @@ morie_datasets_otis_b04_seg_consecutive_by_region <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b04 Segregation consecutive durations by region",
-    "otis_b04_seg_consecutive_by_region_sample.csv", offline, resource_id)
+    "otis_b04_seg_consecutive_by_region_sample.csv", offline, resource_id, registry_key = "otis_b04_seg_consecutive_by_region")
 }
 
 #' OTIS b05 -- Segregation placements by consecutive-length bucket
@@ -790,7 +799,7 @@ morie_datasets_otis_b05_seg_consecutive_lengths <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b05 Segregation consecutive lengths",
-    "otis_b05_seg_consecutive_lengths_sample.csv", offline, resource_id)
+    "otis_b05_seg_consecutive_lengths_sample.csv", offline, resource_id, registry_key = "otis_b05_seg_consecutive_lengths")
 }
 
 #' OTIS b06 -- Segregation placements: reason for placement by institution
@@ -800,7 +809,7 @@ morie_datasets_otis_b06_seg_reason_by_institution <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b06 Segregation reason by institution",
-    "otis_b06_seg_reason_by_institution_sample.csv", offline, resource_id)
+    "otis_b06_seg_reason_by_institution_sample.csv", offline, resource_id, registry_key = "otis_b06_seg_reason_by_institution")
 }
 
 #' OTIS b07 -- Segregation placements: alerts + hold by gender
@@ -810,7 +819,7 @@ morie_datasets_otis_b07_seg_alerts_by_gender <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b07 Segregation alerts by gender",
-    "otis_b07_seg_alerts_by_gender_sample.csv", offline, resource_id)
+    "otis_b07_seg_alerts_by_gender_sample.csv", offline, resource_id, registry_key = "otis_b07_seg_alerts_by_gender")
 }
 
 #' OTIS b08 -- Segregation consecutive durations by institution
@@ -821,7 +830,7 @@ morie_datasets_otis_b08_seg_consecutive_by_institution <- function(
   .morie_otis_lookup_pending_dispatch(
     "b08 Segregation consecutive durations by institution",
     "otis_b08_seg_consecutive_by_institution_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_b08_seg_consecutive_by_institution")
 }
 
 #' OTIS b09 -- Individuals in segregation by number of times placed
@@ -831,7 +840,7 @@ morie_datasets_otis_b09_seg_n_times <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b09 Individuals by N times in segregation",
-    "otis_b09_seg_n_times_sample.csv", offline, resource_id)
+    "otis_b09_seg_n_times_sample.csv", offline, resource_id, registry_key = "otis_b09_seg_n_times")
 }
 
 # ---------------------------------------------------------------------------
@@ -845,7 +854,7 @@ morie_datasets_otis_c01_individuals_total <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c01 Individuals total",
-    "otis_c01_individuals_total_sample.csv", offline, resource_id)
+    "otis_c01_individuals_total_sample.csv", offline, resource_id, registry_key = "otis_c01_individuals_total")
 }
 
 #' OTIS c02 -- Individuals by institution
@@ -856,7 +865,7 @@ morie_datasets_otis_c02_individuals_by_institution <- function(
   .morie_otis_lookup_pending_dispatch(
     "c02 Individuals by institution",
     "otis_c02_individuals_by_institution_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_c02_individuals_by_institution")
 }
 
 #' OTIS c03 -- Individuals by race x gender
@@ -866,7 +875,7 @@ morie_datasets_otis_c03_individuals_race_by_gender <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c03 Individuals race by gender",
-    "otis_c03_individuals_race_by_gender_sample.csv", offline, resource_id)
+    "otis_c03_individuals_race_by_gender_sample.csv", offline, resource_id, registry_key = "otis_c03_individuals_race_by_gender")
 }
 
 #' OTIS c04 -- Individuals by race x region
@@ -876,7 +885,7 @@ morie_datasets_otis_c04_individuals_race_by_region <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c04 Individuals race by region",
-    "otis_c04_individuals_race_by_region_sample.csv", offline, resource_id)
+    "otis_c04_individuals_race_by_region_sample.csv", offline, resource_id, registry_key = "otis_c04_individuals_race_by_region")
 }
 
 #' OTIS c05 -- Individuals by religion x region
@@ -887,7 +896,7 @@ morie_datasets_otis_c05_individuals_religion_by_region <- function(
   .morie_otis_lookup_pending_dispatch(
     "c05 Individuals religion by region",
     "otis_c05_individuals_religion_by_region_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_c05_individuals_religion_by_region")
 }
 
 #' OTIS c06 -- Individuals by age category x region
@@ -897,7 +906,7 @@ morie_datasets_otis_c06_individuals_age_by_region <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c06 Individuals age by region",
-    "otis_c06_individuals_age_by_region_sample.csv", offline, resource_id)
+    "otis_c06_individuals_age_by_region_sample.csv", offline, resource_id, registry_key = "otis_c06_individuals_age_by_region")
 }
 
 #' OTIS c07 -- Individuals: alerts + hold flags
@@ -907,7 +916,7 @@ morie_datasets_otis_c07_individuals_alerts <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c07 Individuals alerts",
-    "otis_c07_individuals_alerts_sample.csv", offline, resource_id)
+    "otis_c07_individuals_alerts_sample.csv", offline, resource_id, registry_key = "otis_c07_individuals_alerts")
 }
 
 #' OTIS c08 -- Individuals by religion x gender
@@ -918,7 +927,7 @@ morie_datasets_otis_c08_individuals_religion_by_gender <- function(
   .morie_otis_lookup_pending_dispatch(
     "c08 Individuals religion by gender",
     "otis_c08_individuals_religion_by_gender_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_c08_individuals_religion_by_gender")
 }
 
 #' OTIS c09 -- Individuals by age category x gender
@@ -928,7 +937,7 @@ morie_datasets_otis_c09_individuals_age_by_gender <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c09 Individuals age by gender",
-    "otis_c09_individuals_age_by_gender_sample.csv", offline, resource_id)
+    "otis_c09_individuals_age_by_gender_sample.csv", offline, resource_id, registry_key = "otis_c09_individuals_age_by_gender")
 }
 
 #' OTIS c10 -- Aggregate durations by institution
@@ -939,7 +948,7 @@ morie_datasets_otis_c10_aggregate_durations_by_institution <- function(
   .morie_otis_lookup_pending_dispatch(
     "c10 Aggregate durations by institution",
     "otis_c10_aggregate_durations_by_institution_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_c10_aggregate_durations_by_institution")
 }
 
 #' OTIS c11 -- Aggregate lengths
@@ -949,7 +958,7 @@ morie_datasets_otis_c11_aggregate_lengths <- function(
   offline = TRUE, resource_id = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c11 Aggregate lengths",
-    "otis_c11_aggregate_lengths_sample.csv", offline, resource_id)
+    "otis_c11_aggregate_lengths_sample.csv", offline, resource_id, registry_key = "otis_c11_aggregate_lengths")
 }
 
 #' OTIS c12 -- Aggregate durations by region
@@ -960,7 +969,7 @@ morie_datasets_otis_c12_aggregate_durations_by_region <- function(
   .morie_otis_lookup_pending_dispatch(
     "c12 Aggregate durations by region",
     "otis_c12_aggregate_durations_by_region_sample.csv",
-    offline, resource_id)
+    offline, resource_id, registry_key = "otis_c12_aggregate_durations_by_region")
 }
 
 #' Generic Ontario CKAN dataset loader (by registry key)
