@@ -2,16 +2,45 @@
 % Please edit documentation in R/datasets.R
 \name{morie_datasets_cpads}
 \alias{morie_datasets_cpads}
-\title{Load the morie CPADS analysis frame.}
+\title{Load the Canadian Postsecondary Alcohol and Drug-use Survey (CPADS)}
 \usage{
-morie_datasets_cpads()
+morie_datasets_cpads(offline = TRUE)
+}
+\arguments{
+\item{offline}{Logical. \code{TRUE} (default) prefers the bundled fixture
+for fast/CRAN-safe runs; \code{FALSE} fetches the live CKAN PUMF CSV.}
 }
 \value{
-A \code{data.frame} with morie's canonical CPADS analysis columns.
+A \code{data.frame} with morie's canonical CPADS analysis
+columns (\code{weight}, \code{alcohol_past12m}, \code{heavy_drinking_30d},
+\code{ebac_tot}, \code{ebac_legal}, \code{cannabis_any_use}, \code{age_group},
+\code{gender}, \code{province_region}, \code{mental_health}, \code{physical_health}).
 }
 \description{
-Resolves in order: (1) a real Statistics Canada PUMF on disk at the
-contract path, or (2) the bundled 1,200-row synthetic frame with the
-canonical schema but random values.  Warns when the synthetic frame
-is used.
+Resolves a CPADS analysis frame from one of three sources:
+}
+\details{
+\enumerate{
+\item A pre-wrangled local RDS at \code{morie_cpads_contract()$expected_wrangled_path}
+(only useful if you've already produced one), OR
+\item the bundled 30-row synthetic fixture at
+\code{inst/extdata/cpads_pumf_synthetic.csv} (when \code{offline = TRUE},
+the default), OR
+\item the live PUMF CSV from open.canada.ca:
+\url{https://open.canada.ca/data/dataset/736fa9b2-62e4-4e31-aea4-51869605b363/resource/d2639429-c304-45a6-90b3-770562f4d46d/download/cpads-2021-2022-pumf2.csv}
+(when \code{offline = FALSE}).
+}
+
+CPADS is open data published by Health Canada / Statistics Canada
+(Open Government Licence -- Canada). Aggregate dashboards at
+\url{https://health-infobase.canada.ca/substance-use/reports/cpads/};
+PUMF user guide:
+\url{https://open.canada.ca/data/dataset/736fa9b2-62e4-4e31-aea4-51869605b363/resource/a078e4c3-a910-4349-b00e-6ea0d31d391d/download/20212022-cpads-pumf-user-guide.pdf}.
+Sister surveys (CSADS, CSUS, CTADS) are at
+\url{https://health-infobase.canada.ca/substance-use/}.
+}
+\seealso{
+\code{\link[=morie_cpads_contract]{morie_cpads_contract()}} for the canonical schema +
+column map; \code{\link[=morie_datasets_load_by_key]{morie_datasets_load_by_key()}} for catalog-wide
+dispatch.
 }

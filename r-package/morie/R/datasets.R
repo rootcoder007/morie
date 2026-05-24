@@ -474,22 +474,55 @@ morie_datasets_tps_layers <- function() {
 # CPADS / OTIS
 # ---------------------------------------------------------------------------
 
-#' Load the morie CPADS analysis frame.
+#' Load the Canadian Postsecondary Alcohol and Drug-use Survey (CPADS)
 #'
-#' Resolves in order: (1) a real Statistics Canada PUMF on disk at the
-#' contract path, or (2) the bundled 1,200-row synthetic frame with the
-#' canonical schema but random values.  Warns when the synthetic frame
-#' is used.
+#' Resolves a CPADS analysis frame from one of three sources:
 #'
-#' @return A `data.frame` with morie's canonical CPADS analysis columns.
+#' \enumerate{
+#'   \item A pre-wrangled local RDS at `morie_cpads_contract()$expected_wrangled_path`
+#'         (only useful if you've already produced one), OR
+#'   \item the bundled 30-row synthetic fixture at
+#'         `inst/extdata/cpads_pumf_synthetic.csv` (when `offline = TRUE`,
+#'         the default), OR
+#'   \item the live PUMF CSV from open.canada.ca:
+#'         \url{https://open.canada.ca/data/dataset/736fa9b2-62e4-4e31-aea4-51869605b363/resource/d2639429-c304-45a6-90b3-770562f4d46d/download/cpads-2021-2022-pumf2.csv}
+#'         (when `offline = FALSE`).
+#' }
+#'
+#' CPADS is open data published by Health Canada / Statistics Canada
+#' (Open Government Licence -- Canada). Aggregate dashboards at
+#' \url{https://health-infobase.canada.ca/substance-use/reports/cpads/};
+#' PUMF user guide:
+#' \url{https://open.canada.ca/data/dataset/736fa9b2-62e4-4e31-aea4-51869605b363/resource/a078e4c3-a910-4349-b00e-6ea0d31d391d/download/20212022-cpads-pumf-user-guide.pdf}.
+#' Sister surveys (CSADS, CSUS, CTADS) are at
+#' \url{https://health-infobase.canada.ca/substance-use/}.
+#'
+#' @param offline Logical. `TRUE` (default) prefers the bundled fixture
+#'   for fast/CRAN-safe runs; `FALSE` fetches the live CKAN PUMF CSV.
+#' @return A `data.frame` with morie's canonical CPADS analysis
+#'   columns (`weight`, `alcohol_past12m`, `heavy_drinking_30d`,
+#'   `ebac_tot`, `ebac_legal`, `cannabis_any_use`, `age_group`,
+#'   `gender`, `province_region`, `mental_health`, `physical_health`).
+#' @seealso [morie_cpads_contract()] for the canonical schema +
+#'   column map; [morie_datasets_load_by_key()] for catalog-wide
+#'   dispatch.
 #' @export
-morie_datasets_cpads <- function() {
+morie_datasets_cpads <- function(offline = TRUE) {
   contract <- morie_cpads_contract()
   if (file.exists(contract$expected_wrangled_path)) {
     frame <- readRDS(contract$expected_wrangled_path)
     return(morie_cpads_canonicalize_frame(frame))
   }
-  .morie_dataset_read_synthetic("cpads_pumf_synthetic", "cpads")
+  if (isTRUE(offline)) {
+    return(.morie_dataset_read_synthetic("cpads_pumf_synthetic", "cpads"))
+  }
+  url <- paste0(
+    "https://open.canada.ca/data/dataset/",
+    "736fa9b2-62e4-4e31-aea4-51869605b363/resource/",
+    "d2639429-c304-45a6-90b3-770562f4d46d/download/",
+    "cpads-2021-2022-pumf2.csv"
+  )
+  morie_fetch(url, format = "csv")
 }
 
 #' Load the OTIS A01 Restrictive-Confinement Detailed Dataset

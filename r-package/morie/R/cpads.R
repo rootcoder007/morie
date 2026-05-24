@@ -46,28 +46,44 @@
   ebac_legal = "ebac_legal"
 )
 
-#' Return the CPADS local-private data contract.
+#' Return the CPADS analysis-frame contract.
 #'
-#' Describes the morie CPADS contract: the canonical analysis variables
-#' expected in a wrangled frame, the raw -> canonical column map, and
-#' the conventional on-disk cache path.  CPADS row-level data is
-#' FOI/agreement-only and must never be committed to a public repo.
+#' Describes the morie CPADS contract: the canonical analysis
+#' variables expected in a wrangled frame, the raw -> canonical
+#' column map, and the conventional on-disk cache path used when a
+#' user has wrangled the PUMF themselves.
 #'
-#' @return A named list with fields `source_kind`, `expected_wrangled_path`,
-#'   `required_variables`, `raw_column_map`, and `note`.
+#' CPADS is open data (Open Government Licence -- Canada). The
+#' Public Use Microdata File is available at open.canada.ca, dataset
+#' `736fa9b2-62e4-4e31-aea4-51869605b363` (resource
+#' `d2639429-c304-45a6-90b3-770562f4d46d`,
+#' file `cpads-2021-2022-pumf2.csv`). Aggregate dashboards at
+#' \url{https://health-infobase.canada.ca/substance-use/reports/cpads/}.
+#' morie ships a 30-row synthetic at
+#' `inst/extdata/cpads_pumf_synthetic.csv` for offline CRAN-safe
+#' tests; `morie_datasets_cpads(offline = FALSE)` fetches the live
+#' PUMF. Earlier morie versions wrongly claimed CPADS was
+#' "FOI/agreement-only"; that was incorrect and has been retracted
+#' as of 3MMM.
+#'
+#' @return A named list with fields `source_kind`,
+#'   `expected_wrangled_path`, `required_variables`,
+#'   `raw_column_map`, and `note`.
 #' @export
 #' @examples
 #' contract <- morie_cpads_contract()
 #' contract$required_variables
 morie_cpads_contract <- function() {
   list(
-    source_kind = "local_private_file",
+    source_kind = "open_data_pumf",
     expected_wrangled_path = "data/cache/cpads_pumf_wrangled.rds",
     required_variables = as.character(.MORIE_CPADS_REQUIRED_VARIABLES),
     raw_column_map = .MORIE_CPADS_RAW_COLUMN_MAP,
     note = paste(
-      "CPADS row-level data must be supplied locally",
-      "and must not be committed to git."
+      "CPADS PUMF is open data (OGL-Canada). morie ships a synthetic",
+      "fixture for offline tests; pass offline = FALSE to fetch the",
+      "live CKAN PUMF from open.canada.ca resource",
+      "d2639429-c304-45a6-90b3-770562f4d46d."
     )
   )
 }
