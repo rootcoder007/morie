@@ -38,74 +38,101 @@
 .MORIE_TPS_PSDP_BASE_ARCGIS <-
   "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services"
 
+#
+# Each entry carries:
+#   arcgis_url - direct FeatureServer layer URL (the pre-3TT+ live
+#                  path; still honoured when the caller passes
+#                  layer_url = ... as an override).
+#   fixture    - bundled offline sample CSV.
+#   label      - human-readable label for the discovery table.
+#   hub_id     - 32-char hex GUID matching the canonical TPS Hub
+#                  catalog entry; the new 3TT+ default live path
+#                  routes through morie_datasets_tps_arcgis_hub_by_id
+#                  using this id (verified live against
+#                  inst/extdata/tps_arcgis_hub_catalog.csv during 3TT+).
+
 .MORIE_TPS_PSDP_REGISTRY <- list(
   assault = list(
     arcgis_url = paste0(.MORIE_TPS_PSDP_BASE_ARCGIS,
                         "/Assault_Open_Data/FeatureServer/0"),
     fixture = "tps_psdp_assault_sample.csv",
-    label = "Assault"),
+    label = "Assault",
+    hub_id = "b4d0398d37eb4aa184065ed625ddb922"),
   autotheft = list(
     arcgis_url = paste0(.MORIE_TPS_PSDP_BASE_ARCGIS,
                         "/Auto_Theft_Open_Data/FeatureServer/0"),
     fixture = "tps_psdp_autotheft_sample.csv",
-    label = "AutoTheft"),
+    label = "AutoTheft",
+    hub_id = "95ab41aee16847dba8453bf1688249d6"),
   bicycletheft = list(
     arcgis_url = paste0(.MORIE_TPS_PSDP_BASE_ARCGIS,
                         "/Bicycle_Thefts_Open_Data/FeatureServer/0"),
     fixture = "tps_psdp_bicycletheft_sample.csv",
-    label = "BicycleTheft"),
+    label = "BicycleTheft",
+    hub_id = "a89d10d5e28444ceb0c8d1d4c0ee39cc"),
   breakandenter = list(
     arcgis_url = paste0(.MORIE_TPS_PSDP_BASE_ARCGIS,
                         "/Break_and_Enter_Open_Data/FeatureServer/0"),
     fixture = "tps_psdp_breakandenter_sample.csv",
-    label = "BreakAndEnter"),
+    label = "BreakAndEnter",
+    hub_id = "040ead448df2412da252cfbb532e77ac"),
   hatecrimes = list(
     arcgis_url = paste0(.MORIE_TPS_PSDP_BASE_ARCGIS,
                         "/Hate_Crimes_Open_Data/FeatureServer/0"),
     fixture = "tps_psdp_hatecrimes_sample.csv",
-    label = "HateCrimes"),
+    label = "HateCrimes",
+    hub_id = "3dc9a8fae28b42c7aaf8fc62c7fbfdaa"),
   homicides = list(
     arcgis_url = paste0(.MORIE_TPS_PSDP_BASE_ARCGIS,
                         "/Homicides_Open_Data_ASR_RC_TBL_002/FeatureServer/0"),
     fixture = "tps_psdp_homicides_sample.csv",
-    label = "Homicides"),
+    label = "Homicides",
+    hub_id = "d96bf5b67c1c49879f354dad51cf81f9"),
   intimate_partner_family_violence = list(
     arcgis_url = paste0(.MORIE_TPS_PSDP_BASE_ARCGIS,
                         "/Intimate_Partner_and_Family_Violence_Open_Data/FeatureServer/0"),
     fixture = "tps_psdp_intimate_partner_family_violence_sample.csv",
-    label = "IntimatePartnerAndFamilyViolence"),
+    label = "IntimatePartnerAndFamilyViolence",
+    hub_id = "724113c886ee4df2b917dcc047f82d26"),
   robbery = list(
     arcgis_url = paste0(.MORIE_TPS_PSDP_BASE_ARCGIS,
                         "/Robbery_Open_Data/FeatureServer/0"),
     fixture = "tps_psdp_robbery_sample.csv",
-    label = "Robbery"),
+    label = "Robbery",
+    hub_id = "d0e1e98de5f945faa2fe635dee3f4062"),
   shooting_firearm_discharges = list(
     arcgis_url = paste0(.MORIE_TPS_PSDP_BASE_ARCGIS,
                         "/Shooting_and_Firearm_Discharges_Open_Data/FeatureServer/0"),
     fixture = "tps_psdp_shooting_firearm_discharges_sample.csv",
-    label = "ShootingAndFirearmDischarges"),
+    label = "ShootingAndFirearmDischarges",
+    hub_id = "64ddeca12da34403869968ec725e23c4"),
   theft_from_motor_vehicle = list(
     arcgis_url = paste0(.MORIE_TPS_PSDP_BASE_ARCGIS,
                         "/Theft_From_Motor_Vehicle_Open_Data/FeatureServer/0"),
     fixture = "tps_psdp_theft_from_motor_vehicle_sample.csv",
-    label = "TheftFromMotorVehicle"),
+    label = "TheftFromMotorVehicle",
+    hub_id = "d9303bc20f8a4351b7744a8703eecb80"),
   theft_over = list(
     arcgis_url = paste0(.MORIE_TPS_PSDP_BASE_ARCGIS,
                         "/Theft_Over_Open_Data/FeatureServer/0"),
     fixture = "tps_psdp_theft_over_sample.csv",
-    label = "TheftOver")
+    label = "TheftOver",
+    hub_id = "7530d9b637c340059ccb81a782481c04")
 )
 
 #' List the TPS PSDP layers wrapped by morie
 #'
 #' @return A `data.frame` with columns `layer_key`, `label`,
-#'   `arcgis_url`, `fixture`.
+#'   `arcgis_url`, `fixture`, `hub_id` (3TT+ canonical id matching
+#'   the TPS Hub catalog).
 #' @export
 morie_tps_psdp_layers <- function() {
   rows <- lapply(names(.MORIE_TPS_PSDP_REGISTRY), function(k) {
     e <- .MORIE_TPS_PSDP_REGISTRY[[k]]
     data.frame(layer_key = k, label = e$label,
-                arcgis_url = e$arcgis_url, fixture = e$fixture,
+                arcgis_url = e$arcgis_url,
+                fixture = e$fixture,
+                hub_id = e$hub_id %||% NA_character_,
                 stringsAsFactors = FALSE)
   })
   out <- do.call(rbind, rows)
@@ -114,7 +141,9 @@ morie_tps_psdp_layers <- function() {
 }
 
 # ---------------------------------------------------------------------------
-# Factory
+# Factory (3TT+: live default routes through the TPS Hub canonical
+# hub_id loader; layer_url override remains as the backward-compat
+# escape hatch for callers who want a non-canonical FeatureServer URL).
 # ---------------------------------------------------------------------------
 
 .morie_tps_psdp_dispatch <- function(layer_key, year, max_features,
@@ -149,12 +178,32 @@ morie_tps_psdp_layers <- function() {
     }
     return(df)
   }
-  if (is.null(layer_url)) layer_url <- entry$arcgis_url
   where <- if (is.null(year)) "1=1" else sprintf("OCC_YEAR = %d",
                                                   as.integer(year))
-  .morie_tps_psdp_feature_query(layer_url, where = where,
-                                  max_features = max_features,
-                                  return_geometry = FALSE)
+  # Backward-compat escape hatch: if the caller passes a layer_url
+  # override, hit it directly via the pre-3TT+ FeatureServer query
+  # helper. This preserves the historical behaviour for callers
+  # depending on non-canonical mirrors.
+  if (!is.null(layer_url)) {
+    return(.morie_tps_psdp_feature_query(
+      layer_url, where = where,
+      max_features = max_features,
+      return_geometry = FALSE))
+  }
+  # 3TT+ canonical path: route through the TPS Hub catalog by
+  # hub_id. Same underlying FeatureServer, but the resolution +
+  # query goes through morie_datasets_tps_arcgis_hub_by_id so all
+  # 71 TPS Hub items share a single code path.
+  morie_datasets_tps_arcgis_hub_by_id(
+    entry$hub_id,
+    format = "json",
+    where = where,
+    max_features = max_features,
+    layer_idx = 0L,
+    offline = TRUE)  # offline=TRUE here means "resolve the
+                      # FeatureServer URL via the bundled catalog
+                      # (no network for the resolve step)"; the
+                      # data query itself always hits the network.
 }
 
 # ---------------------------------------------------------------------------

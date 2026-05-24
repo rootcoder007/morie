@@ -207,10 +207,17 @@ morie_datasets_otis_d01_deaths_in_custody <- function(offline = TRUE,
 # ---------------------------------------------------------------------------
 
 # Canonical ArcGIS FeatureServer URL for the TPS PSDP MHA layer
-# (333c4e1c96314741a83425045b6a7642_0).
+# (333c4e1c96314741a83425045b6a7642_0). Kept for backward compat
+# with callers that override via `layer_url = ...`; the 3TT+
+# canonical live path routes through the TPS Hub catalog hub_id
+# .MORIE_TPS_PSDP_MHA_HUB_ID below.
 .MORIE_TPS_PSDP_MHA_LAYER_URL <- paste0(
   "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/",
   "Mental_Health_Act_Apprehensions_Open_Data/FeatureServer/0")
+
+# 3TT+ canonical TPS Hub item id for Mental Health Act Apprehensions.
+# Verified live against the TPS Hub catalog API 2026-05-24.
+.MORIE_TPS_PSDP_MHA_HUB_ID <- "333c4e1c96314741a83425045b6a7642"
 
 #' TPS Mental Health Act Apprehensions (PSDP)
 #'
@@ -258,12 +265,29 @@ morie_datasets_tps_mha_apprehensions <- function(year = NULL,
     }
     return(df)
   }
-  if (is.null(layer_url)) layer_url <- .MORIE_TPS_PSDP_MHA_LAYER_URL
   where <- if (is.null(year)) "1=1" else sprintf("OCC_YEAR = %d",
                                                   as.integer(year))
-  .morie_tps_psdp_feature_query(layer_url, where = where,
-                                  max_features = max_features,
-                                  return_geometry = FALSE)
+  # Backward-compat escape hatch: if the caller passes a layer_url
+  # override, hit it directly via the pre-3TT+ FeatureServer query
+  # helper. Preserves the historical override behaviour.
+  if (!is.null(layer_url)) {
+    return(.morie_tps_psdp_feature_query(
+      layer_url, where = where,
+      max_features = max_features,
+      return_geometry = FALSE))
+  }
+  # 3TT+ canonical path: route through the TPS Hub catalog by
+  # hub_id. Single code path with the other 11 PSDP wrappers and
+  # the 60 3TT bulk-generated wrappers.
+  morie_datasets_tps_arcgis_hub_by_id(
+    .MORIE_TPS_PSDP_MHA_HUB_ID,
+    format = "json",
+    where = where,
+    max_features = max_features,
+    layer_idx = 0L,
+    offline = TRUE)  # offline=TRUE only means "resolve URL from
+                      # the bundled catalog" -- the data query
+                      # still hits the network.
 }
 
 # ---------------------------------------------------------------------------

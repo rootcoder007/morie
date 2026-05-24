@@ -123,18 +123,26 @@ test_that("morie_datasets_tps_mha_apprehensions(offline=TRUE) honours year + max
   expect_true(nrow(df) <= 5L)
 })
 
-test_that("morie_datasets_tps_mha_apprehensions(offline=FALSE) dispatches via mocked ArcGIS", {
+test_that("morie_datasets_tps_mha_apprehensions(offline=FALSE) routes through TPS Hub hub_id 333c4e1c... (3TT+)", {
+  # 3TT+: MHA live dispatch was migrated from
+  # .morie_tps_psdp_feature_query (direct FeatureServer URL) to
+  # morie_datasets_tps_arcgis_hub_by_id with hub_id 333c4e1c...
   stub_df <- data.frame(
     OBJECTID = c(1L, 2L),
     EVENT_UNIQUE_ID = c("LIVE-MHA-001", "LIVE-MHA-002"),
     OCC_YEAR = c(2024L, 2024L),
     APPREHENSION_TYPE = c("MHA Section 16", "MHA Section 17"))
   testthat::local_mocked_bindings(
-    .morie_tps_psdp_feature_query = function(layer_url, where,
-                                                max_features = NULL,
-                                                return_geometry = FALSE) {
-      expect_match(layer_url, "Mental_Health_Act_Apprehensions_Open_Data")
+    morie_datasets_tps_arcgis_hub_by_id = function(hub_id,
+                                                     format = "json",
+                                                     where = "1=1",
+                                                     max_features = NULL,
+                                                     layer_idx = 0L,
+                                                     offline = TRUE,
+                                                     dest = NULL) {
+      expect_equal(hub_id, "333c4e1c96314741a83425045b6a7642")
       expect_equal(where, "OCC_YEAR = 2024")
+      expect_equal(format, "json")
       stub_df
     },
     .package = "morie")
@@ -145,12 +153,17 @@ test_that("morie_datasets_tps_mha_apprehensions(offline=FALSE) dispatches via mo
                c("MHA Section 16", "MHA Section 17"))
 })
 
-test_that("morie_datasets_tps_mha_apprehensions(offline=FALSE) defaults to 1=1 when year is NULL", {
+test_that("morie_datasets_tps_mha_apprehensions(offline=FALSE) (3TT+) defaults to 1=1 when year is NULL", {
   testthat::local_mocked_bindings(
-    .morie_tps_psdp_feature_query = function(layer_url, where,
-                                                max_features = NULL,
-                                                return_geometry = FALSE) {
+    morie_datasets_tps_arcgis_hub_by_id = function(hub_id,
+                                                     format = "json",
+                                                     where = "1=1",
+                                                     max_features = NULL,
+                                                     layer_idx = 0L,
+                                                     offline = TRUE,
+                                                     dest = NULL) {
       expect_equal(where, "1=1")
+      expect_equal(hub_id, "333c4e1c96314741a83425045b6a7642")
       data.frame(OBJECTID = 1L)
     },
     .package = "morie")

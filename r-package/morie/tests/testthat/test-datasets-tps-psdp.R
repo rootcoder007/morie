@@ -7,12 +7,13 @@
 
 # ============================================================== registry helper
 
-test_that("morie_tps_psdp_layers returns the full 11-layer registry", {
+test_that("morie_tps_psdp_layers returns the full 11-layer registry (post-3TT+ includes hub_id)", {
   reg <- morie_tps_psdp_layers()
   expect_s3_class(reg, "data.frame")
   expect_equal(nrow(reg), 11L)
   expect_setequal(names(reg),
-                  c("layer_key", "label", "arcgis_url", "fixture"))
+                  c("layer_key", "label", "arcgis_url", "fixture",
+                    "hub_id"))  # +hub_id in 3TT+
   for (k in c("assault", "autotheft", "bicycletheft",
               "breakandenter", "hatecrimes", "homicides",
               "intimate_partner_family_violence", "robbery",
@@ -22,6 +23,8 @@ test_that("morie_tps_psdp_layers returns the full 11-layer registry", {
   # Every ArcGIS URL is on the TPS S9th0jAJ7bqgIRjw FeatureServer host.
   expect_true(all(grepl(
     "^https://services\\.arcgis\\.com/S9th0jAJ7bqgIRjw/", reg$arcgis_url)))
+  # 3TT+: all 11 hub_ids are 32-char hex GUIDs.
+  expect_true(all(grepl("^[a-f0-9]{32}$", reg$hub_id)))
 })
 
 # ====================================================== offline-mode fixtures
@@ -126,31 +129,39 @@ test_that("offline max_features truncates to first N rows", {
 
 # ====================================================== mocked ArcGIS dispatch
 
-test_that("offline=FALSE dispatches via .morie_tps_psdp_feature_query for every layer", {
-  # One dispatch test per cluster representative (assault for cluster A,
-  # bicycletheft for B, hatecrimes for C, homicides for D, ipfv for E,
-  # shooting for F) -- covers all 6 schema clusters.
+test_that("offline=FALSE (3TT+) routes through morie_datasets_tps_arcgis_hub_by_id with the canonical hub_id for every layer", {
+  # 3TT+: the live dispatch was migrated from
+  # .morie_tps_psdp_feature_query (direct FeatureServer URL) to
+  # morie_datasets_tps_arcgis_hub_by_id (routed through the TPS Hub
+  # catalog by hub_id). One spot-check per cluster representative.
   reps <- list(
     list(fn = morie_datasets_tps_assault,
-         expect_url = "Assault_Open_Data"),
+         hub_id = "b4d0398d37eb4aa184065ed625ddb922"),
     list(fn = morie_datasets_tps_bicycletheft,
-         expect_url = "Bicycle_Thefts_Open_Data"),
+         hub_id = "a89d10d5e28444ceb0c8d1d4c0ee39cc"),
     list(fn = morie_datasets_tps_hatecrimes,
-         expect_url = "Hate_Crimes_Open_Data"),
+         hub_id = "3dc9a8fae28b42c7aaf8fc62c7fbfdaa"),
     list(fn = morie_datasets_tps_homicides,
-         expect_url = "Homicides_Open_Data"),
+         hub_id = "d96bf5b67c1c49879f354dad51cf81f9"),
     list(fn = morie_datasets_tps_intimate_partner_family_violence,
-         expect_url = "Intimate_Partner_and_Family_Violence_Open_Data"),
+         hub_id = "724113c886ee4df2b917dcc047f82d26"),
     list(fn = morie_datasets_tps_shooting_firearm_discharges,
-         expect_url = "Shooting_and_Firearm_Discharges_Open_Data"))
+         hub_id = "64ddeca12da34403869968ec725e23c4"))
   for (R in reps) {
     captured <- local({
       stub <- data.frame(OBJECTID = 1L)
       testthat::with_mocked_bindings(
-        .morie_tps_psdp_feature_query = function(layer_url, where,
-                                                    max_features = NULL,
-                                                    return_geometry = FALSE) {
-          expect_match(layer_url, R$expect_url)
+        morie_datasets_tps_arcgis_hub_by_id = function(hub_id,
+                                                         format = "json",
+                                                         where = "1=1",
+                                                         max_features = NULL,
+                                                         layer_idx = 0L,
+                                                         offline = TRUE,
+                                                         dest = NULL) {
+          expect_equal(hub_id, R$hub_id)
+          expect_equal(format, "json")
+          expect_equal(where, "OCC_YEAR = 2024")
+          expect_equal(layer_idx, 0L)
           stub
         },
         .package = "morie",
@@ -176,12 +187,17 @@ test_that("offline=FALSE honours layer_url override", {
   expect_equal(captured$OBJECTID, 99L)
 })
 
-test_that("offline=FALSE defaults to where = '1=1' when year is NULL", {
+test_that("offline=FALSE (3TT+) defaults to where = '1=1' when year is NULL", {
   testthat::with_mocked_bindings(
-    .morie_tps_psdp_feature_query = function(layer_url, where,
-                                                max_features = NULL,
-                                                return_geometry = FALSE) {
+    morie_datasets_tps_arcgis_hub_by_id = function(hub_id,
+                                                     format = "json",
+                                                     where = "1=1",
+                                                     max_features = NULL,
+                                                     layer_idx = 0L,
+                                                     offline = TRUE,
+                                                     dest = NULL) {
       expect_equal(where, "1=1")
+      expect_equal(hub_id, "d0e1e98de5f945faa2fe635dee3f4062")  # robbery
       data.frame(OBJECTID = 1L)
     },
     .package = "morie",
