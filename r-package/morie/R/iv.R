@@ -245,8 +245,8 @@ morie_iv_cue_gmm <- function(data, outcome, endogenous, instruments,
 
 #' Wald (single-instrument) estimator
 #'
-#' \code{\hat\beta = (\bar y_{z=1} - \bar y_{z=0}) /
-#'                 (\bar d_{z=1} - \bar d_{z=0})}.
+#' \eqn{\hat\beta = (\bar y_{z=1} - \bar y_{z=0}) /
+#'                 (\bar d_{z=1} - \bar d_{z=0})}{hatbeta = (bar y_z=1 - bar y_z=0) / (bar d_z=1 - bar d_z=0)}.
 #' @param data Data frame.
 #' @param outcome Outcome column.
 #' @param treatment Endogenous treatment column.

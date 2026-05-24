@@ -37,7 +37,7 @@ plain-language \code{interpretation}, and machine-readable
 Data sources: anonymized Ontario MCSCS placement records released
 under the Jahn v. Ontario (2020) settlement. The canonical OTIS
 table has 76,934 rows (FY 2022/23 -- 2024/25). See
-\code{\link{morie_otis_load}} in \code{otis_analyze.R} for the
+\eqn{\link{morie_otis_load}}{link{morie_otis_load}} in \code{otis_analyze.R} for the
 canonical loader.
 \subsection{Year-lock invariant}{
 

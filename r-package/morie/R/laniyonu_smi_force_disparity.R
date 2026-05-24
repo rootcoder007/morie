@@ -20,9 +20,9 @@
 #' }
 #'
 #' The count model is
-#' \deqn{y_{vti} \sim \mathrm{NegBin}(n_{vti} \exp(\mu + \alpha_v + \delta_t + \beta_i), \phi)}
+#' \deqn{y_{vti} \sim \mathrm{NegBin}(n_{vti} \exp(\mu + \alpha_v + \delta_t + \beta_i), \phi)}{y_vti ~ NegBin(n_vti exp(mu + alpha_v + delta_t + beta_i), phi)}
 #' with \eqn{v} = PwSMI vs non-SMI, \eqn{t} = year, \eqn{i} = area.
-#' The headline coefficient \code{\alpha_v} is the log relative-risk of
+#' The headline coefficient \eqn{\alpha_v}{alpha_v} is the log relative-risk of
 #' police use of force against PwSMI vs non-SMI.
 #'
 #' Paper headlines: RR PwSMI = 11.6x (tract); 10.2x (precinct).
@@ -35,7 +35,7 @@
 #'
 #' Surfaces a \code{warning()} on every call: the SMI flag on force
 #' events is a proxy biased TOWARD THE NULL (officers miss more SMI
-#' than they over-attribute), so the estimated \code{\alpha_v} is a
+#' than they over-attribute), so the estimated \eqn{\alpha_v}{alpha_v} is a
 #' \strong{conservative lower bound} on the true disparity.
 #'
 #' @references

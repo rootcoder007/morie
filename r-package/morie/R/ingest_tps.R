@@ -157,7 +157,7 @@ morie_ingest_tps_layers <- function() {
 #' \code{exceededTransferLimit} flag, emitting one data.frame.
 #'
 #' @param layer_url Full URL to a FeatureServer layer, e.g. one of
-#'   the entries in \code{\link{morie_ingest_tps_layers}}.
+#'   the entries in \eqn{\link{morie_ingest_tps_layers}}{link{morie_ingest_tps_layers}}.
 #' @param where ArcGIS WHERE clause.  Default \code{"1=1"} fetches
 #'   everything.  Examples: \code{"OCC_YEAR = 2024"},
 #'   \code{"OCC_YEAR BETWEEN 2020 AND 2025"}.
@@ -247,17 +247,17 @@ morie_ingest_tps_feature_layer <- function(
 #' Fetch a TPS open-data layer by short name
 #'
 #' Convenience wrapper around
-#' \code{\link{morie_ingest_tps_feature_layer}} that takes a
+#' \eqn{\link{morie_ingest_tps_feature_layer}}{link{morie_ingest_tps_feature_layer}} that takes a
 #' registry short-name (e.g. \code{"major-crime"},
 #' \code{"shooting-firearms"}) instead of a raw FeatureServer URL.
 #'
-#' @param layer Short name from \code{\link{morie_ingest_tps_layers}}.
+#' @param layer Short name from \eqn{\link{morie_ingest_tps_layers}}{link{morie_ingest_tps_layers}}.
 #' @param year Optional shortcut for \code{OCC_YEAR = <year>} when
 #'   \code{where} is \code{NULL}.
 #' @param where Raw ArcGIS WHERE clause (overrides \code{year}).
 #' @param return_geometry Include longitude/latitude columns.
 #' @param max_features Optional hard cap on rows.
-#' @param ... Forwarded to \code{\link{morie_ingest_tps_feature_layer}}.
+#' @param ... Forwarded to \eqn{\link{morie_ingest_tps_feature_layer}}{link{morie_ingest_tps_feature_layer}}.
 #' @return A base R \code{data.frame}.
 #' @export
 morie_ingest_tps_fetch <- function(layer,

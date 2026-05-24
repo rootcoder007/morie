@@ -40,7 +40,7 @@ any covariate columns.}
 \item{alpha}{Significance level for confidence intervals (default 0.05).}
 }
 \value{
-A result list; see \code{\link{morie_did_2x2}}.  \code{p_value}
+A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.  \code{p_value}
 is the bootstrap p-value.
 }
 \description{

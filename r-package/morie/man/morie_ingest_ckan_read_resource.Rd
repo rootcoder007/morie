@@ -35,7 +35,7 @@ A base R \code{data.frame}.
 \description{
 \code{url_or_id} may be a direct download URL (as it appears in
 \code{resource$url}) or a CKAN resource id, in which case the URL
-is resolved via \code{\link{morie_ingest_ckan_resource_show}}.
+is resolved via \eqn{\link{morie_ingest_ckan_resource_show}}{link{morie_ingest_ckan_resource_show}}.
 }
 \details{
 Format detection: if \code{as_format} is given it wins.  Otherwise

@@ -21,7 +21,7 @@ and CKAN resource ID (if available).
 }
 \details{
 Keys match the Python DATASET_CATALOG in \code{data.py} exactly.
-Use \code{\link{morie_load_dataset}} to load by key.
+Use \eqn{\link{morie_load_dataset}}{link{morie_load_dataset}} to load by key.
 }
 \examples{
 cat <- morie_dataset_catalog()

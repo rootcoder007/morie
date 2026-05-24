@@ -23,7 +23,7 @@ Named list: \code{late}, \code{se}, \code{ci_lower}, \code{ci_upper},
 }
 \description{
 Uses a binary instrument \eqn{Z} to identify the LATE (Imbens & Angrist, 1994):
-\deqn{LATE = \frac{Cov(Y, Z)}{Cov(T, Z)}}
+\deqn{LATE = \frac{Cov(Y, Z)}{Cov(T, Z)}}{LATE = (Cov(Y, Z))/(Cov(T, Z))}
 }
 \details{
 With covariates, uses two-stage OLS (Wald within residuals).

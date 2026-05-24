@@ -3,7 +3,7 @@
 #' 1D heat diffusion solver (explicit finite differences)
 #'
 #' R parity for \code{morie.fn.diffu.heat_diffusion}.  Forward-Euler
-#' update of \code{\partial_t T = \alpha \partial_x^2 T} with Dirichlet
+#' update of \eqn{\partial_t T = \alpha \partial_x^2 T}{partial_t T = alpha partial_x^2 T} with Dirichlet
 #' (fixed-endpoint) boundary conditions.
 #'
 #' @param T0 Initial temperature profile (numeric vector, length >= 3).
@@ -49,13 +49,13 @@ morie_diffu_heat_diffusion <- function(T0, alpha = 0.01, dx = 0.1, dt = 0.01,
 #' R parity for \code{morie.fn.diffu.diffusion_forward}.
 #'
 #' \deqn{x_t = \sqrt{\bar\alpha_t}\, x_0 +
-#'       \sqrt{1 - \bar\alpha_t}\, \varepsilon}
+#'       \sqrt{1 - \bar\alpha_t}\, \varepsilon}{x_t = sqrt(baralpha_t) x_0 + sqrt(1 - baralpha_t) epsilon}
 #'
-#' with linear \code{\beta} schedule from \code{1e-4} to \code{0.02}.
+#' with linear \eqn{\beta}{beta} schedule from \code{1e-4} to \code{0.02}.
 #'
 #' @param x0 Clean sample.
 #' @param t Diffusion timestep (1..\code{num_steps}).
-#' @param betas Optional custom \code{\beta} schedule.
+#' @param betas Optional custom \eqn{\beta}{beta} schedule.
 #' @param num_steps Total diffusion steps (default 1000).
 #' @param noise Pre-generated Gaussian noise.
 #' @param seed RNG seed.

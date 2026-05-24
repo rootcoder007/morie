@@ -16,18 +16,18 @@
 #' Functions
 #' ---------
 #' \itemize{
-#'   \item \code{\link{kernel_eval}}: evaluate a kernel function.
-#'   \item \code{\link{nw_regression}}: Nadaraya-Watson kernel regression.
-#'   \item \code{\link{local_linear}}: local linear kernel regression.
-#'   \item \code{\link{kde}}: kernel density estimation.
-#'   \item \code{\link{silverman_bandwidth}}: rule-of-thumb bandwidth.
-#'   \item \code{\link{loocv_bandwidth}}: leave-one-out CV bandwidth
+#'   \item \eqn{\link{kernel_eval}}{link{kernel_eval}}: evaluate a kernel function.
+#'   \item \eqn{\link{nw_regression}}{link{nw_regression}}: Nadaraya-Watson kernel regression.
+#'   \item \eqn{\link{local_linear}}{link{local_linear}}: local linear kernel regression.
+#'   \item \eqn{\link{kde}}{link{kde}}: kernel density estimation.
+#'   \item \eqn{\link{silverman_bandwidth}}{link{silverman_bandwidth}}: rule-of-thumb bandwidth.
+#'   \item \eqn{\link{loocv_bandwidth}}{link{loocv_bandwidth}}: leave-one-out CV bandwidth
 #'     for NW regression.
-#'   \item \code{\link{kernel_cond_moments}}: kernel-weighted mean
+#'   \item \eqn{\link{kernel_cond_moments}}{link{kernel_cond_moments}}: kernel-weighted mean
 #'     and variance.
-#'   \item \code{\link{gam_smoother}}: \code{mgcv::gam} thin-plate
+#'   \item \eqn{\link{gam_smoother}}{link{gam_smoother}}: \code{mgcv::gam} thin-plate
 #'     smoother fit + predict.
-#'   \item \code{\link{SemiparKernels}}: object-style wrapper.
+#'   \item \eqn{\link{SemiparKernels}}{link{SemiparKernels}}: object-style wrapper.
 #' }
 #'
 #' @name morie_semipar_bridge

@@ -7,5 +7,5 @@
 morie_weights_design(selection_probs)
 }
 \description{
-\code{w_i = 1 / \pi_i}.
+\eqn{w_i = 1 / \pi_i}{w_i = 1 / pi_i}.
 }

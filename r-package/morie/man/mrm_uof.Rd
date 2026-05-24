@@ -15,22 +15,22 @@ to a notebook without further post-processing.
 \subsection{Functions}{
 
 \itemize{
-\item \code{\link{mrm_uof_force_concentration}}: Hill-MLE Pareto
+\item \eqn{\link{mrm_uof_force_concentration}}{link{mrm_uof_force_concentration}}: Hill-MLE Pareto
 exponent + Gini coefficient + top-5 / top-10 share for incident
 counts aggregated by force / service.
-\item \code{\link{mrm_uof_weapon_diversity}}: weapon-by-force
+\item \eqn{\link{mrm_uof_weapon_diversity}}{link{mrm_uof_weapon_diversity}}: weapon-by-force
 contingency: chi-square, Cramer's V, and the top-3 cells by
 standardised Pearson residual.
-\item \code{\link{mrm_uof_yoy_change}}: year-on-year percentage
+\item \eqn{\link{mrm_uof_yoy_change}}{link{mrm_uof_yoy_change}}: year-on-year percentage
 change with a manual largest-gap change-point fallback (the R
 side does not require \pkg{ruptures}).
-\item \code{\link{mrm_uof_region_locality}}: region-at-time vs.
+\item \eqn{\link{mrm_uof_region_locality}}{link{mrm_uof_region_locality}}: region-at-time vs.
 region-now contingency: diagonal share, chi-square, Cramer's V.
-\item \code{\link{mrm_uof_demographic_disparity}}: per-category
+\item \eqn{\link{mrm_uof_demographic_disparity}}{link{mrm_uof_demographic_disparity}}: per-category
 outcome rates with Wilson 95\\% intervals, risk-ratio versus a
 baseline group, optional non-parametric bootstrap percentile
 interval on the risk ratio.
-\item \code{\link{mrm_uof_data_quality_audit}}: per-column null
+\item \eqn{\link{mrm_uof_data_quality_audit}}{link{mrm_uof_data_quality_audit}}: per-column null
 and dtype audit, with optional schema-comparison against a
 supplied CKAN sidecar list or column-spec list.
 }

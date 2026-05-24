@@ -27,7 +27,7 @@ any covariate columns.}
 
 \item{covariates}{Optional character vector of covariate column names.}
 
-\item{delta_range}{Numeric vector of \code{\delta} values to evaluate
+\item{delta_range}{Numeric vector of \eqn{\delta}{delta} values to evaluate
 (default \code{seq(0, 2, 0.25)}).}
 
 \item{cluster}{Optional cluster ID column for CR1 standard errors.}
@@ -39,8 +39,8 @@ A data frame with columns \code{delta}, \code{ci_lower},
 \code{ci_upper}, \code{covers_zero}.
 }
 \description{
-For each \code{\delta}, computes a bias-adjusted confidence set under
-the bound \code{|\mathrm{bias}| \le \delta \hat\sigma} (Rambachan &
+For each \eqn{\delta}{delta}, computes a bias-adjusted confidence set under
+the bound \eqn{|\mathrm{bias}| \le \delta \hat\sigma}{|bias| <= delta hatsigma} (Rambachan &
 Roth, 2023, conservative version).
 }
 \references{

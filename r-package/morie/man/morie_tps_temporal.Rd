@@ -16,14 +16,14 @@ to a notebook.
 \subsection{Functions}{
 
 \itemize{
-\item \code{\link{morie_tps_year_over_year_trend}}: OLS slope /
+\item \eqn{\link{morie_tps_year_over_year_trend}}{link{morie_tps_year_over_year_trend}}: OLS slope /
 intercept / R-squared on yearly incident counts.
-\item \code{\link{morie_tps_seasonal_pattern}}: month / DOW /
+\item \eqn{\link{morie_tps_seasonal_pattern}}{link{morie_tps_seasonal_pattern}}: month / DOW /
 hour cyclic counts plus chi-square uniformity tests.
-\item \code{\link{morie_tps_changepoint_detection}}: Pettitt's
+\item \eqn{\link{morie_tps_changepoint_detection}}{link{morie_tps_changepoint_detection}}: Pettitt's
 non-parametric change-point on yearly counts (no external
 change-point dependency).
-\item \code{\link{morie_tps_arima_forecast}}: ARIMA(1,1,1)
+\item \eqn{\link{morie_tps_arima_forecast}}{link{morie_tps_arima_forecast}}: ARIMA(1,1,1)
 forecast on monthly counts via \code{stats::arima}.
 }
 }

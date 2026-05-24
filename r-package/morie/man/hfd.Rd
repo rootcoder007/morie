@@ -7,7 +7,7 @@
 hfd(x, kmax = 10L)
 }
 \arguments{
-\item{x}{Numeric vector (length \code{\geq} 4).}
+\item{x}{Numeric vector (length \eqn{\geq}{>=} 4).}
 
 \item{kmax}{Maximum k (default 10).}
 }

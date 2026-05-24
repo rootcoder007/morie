@@ -21,7 +21,7 @@ morie_ingest_statcan_cansim(
 rather than using its on-disk cache.}
 
 \item{...}{Further arguments forwarded to
-\code{\link[cansim]{get_cansim}}.}
+\eqn{\link[cansim]{get_cansim}}{link[cansim]{get_cansim}}.}
 }
 \value{
 A base R \code{data.frame}.
@@ -31,7 +31,7 @@ Convenience wrapper around the CRAN \pkg{cansim} package, which
 talks to the Statistics Canada NDM ("cansim") tabular data API.
 Use this for canonical CANSIM tables (e.g. \code{"35-10-0177-01"})
 rather than for PUMF \code{_CSV.zip} downloads --- those go
-through \code{\link{morie_ingest_statcan_csv}}.
+through \eqn{\link{morie_ingest_statcan_csv}}{link{morie_ingest_statcan_csv}}.
 }
 \details{
 If the \code{STATCAN_API_KEY} environment variable is set, it is
@@ -46,5 +46,5 @@ head(df)
 }
 }
 \seealso{
-\code{\link{morie_ingest_statcan_csv}}
+\eqn{\link{morie_ingest_statcan_csv}}{link{morie_ingest_statcan_csv}}
 }

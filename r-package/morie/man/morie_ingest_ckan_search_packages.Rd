@@ -31,7 +31,7 @@ A base R \code{data.frame}.
 }
 \description{
 Convenience wrapper over
-\code{\link{morie_ingest_ckan_package_search}} that flattens the
+\eqn{\link{morie_ingest_ckan_package_search}}{link{morie_ingest_ckan_package_search}} that flattens the
 most-useful columns into a single data.frame: \code{id},
 \code{name}, \code{title}, \code{organization}, \code{license_id},
 \code{metadata_modified}, \code{num_resources}, \code{url} (the

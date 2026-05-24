@@ -68,9 +68,9 @@ morie_estimate_propensity_scores <- function(data, treatment, covariates,
 #' Estimate the Average Treatment Effect (ATE) via Hajek IPW
 #'
 #' The Hajek estimator uses stabilised IPW weights:
-#' \deqn{\widehat{ATE} = \bar{y}_1^{w} - \bar{y}_0^{w}}
-#' where \code{\bar{y}_t^{w} = \sum_{T_i=t} w_i Y_i / \sum_{T_i=t} w_i}
-#' and \code{w_i = T_i/\hat{e}(X_i) + (1-T_i)/(1-\hat{e}(X_i))}.
+#' \deqn{\widehat{ATE} = \bar{y}_1^{w} - \bar{y}_0^{w}}{ATE_hat = y_bar_1^w - y_bar_0^w}
+#' where \eqn{\bar{y}_t^{w} = \sum_{T_i=t} w_i Y_i / \sum_{T_i=t} w_i}{y_bar_t^w = sum_T_i=t w_i Y_i / sum_T_i=t w_i}
+#' and \eqn{w_i = T_i/\hat{e}(X_i) + (1-T_i)/(1-\hat{e}(X_i))}{w_i = T_i/e_hat(X_i) + (1-T_i)/(1-e_hat(X_i))}.
 #'
 #' @param data A data frame.
 #' @param treatment Name of the binary treatment column.
@@ -125,7 +125,7 @@ morie_estimate_ate <- function(data, treatment, outcome, covariates,
 #' Estimate the Average Treatment Effect on the Treated (ATT)
 #'
 #' Treated units receive weight 1; controls receive
-#' \code{w_i = \hat{e}(X_i)/(1-\hat{e}(X_i))}.
+#' \eqn{w_i = \hat{e}(X_i)/(1-\hat{e}(X_i))}{w_i = e_hat(X_i)/(1-e_hat(X_i))}.
 #'
 #' @inheritParams morie_estimate_ate
 #' @return Named list: `att`, `se`, `ci_lower`, `ci_upper`, `n_treated`.
@@ -173,7 +173,7 @@ morie_estimate_att <- function(data, treatment, outcome, covariates,
 #' Estimate the Average Treatment Effect on the Controls (ATC)
 #'
 #' Control units receive weight 1; treated units receive
-#' \code{w_i = (1-\hat{e}(X_i))/\hat{e}(X_i)}.
+#' \eqn{w_i = (1-\hat{e}(X_i))/\hat{e}(X_i)}{w_i = (1-e_hat(X_i))/e_hat(X_i)}.
 #'
 #' @inheritParams morie_estimate_ate
 #' @return Named list: `atc`, `se`, `ci_lower`, `ci_upper`, `n_control`.
@@ -332,7 +332,7 @@ morie_estimate_gate <- function(data, treatment, outcome, covariates,
 #'
 #' The **T-learner** fits separate outcome models on treated and control
 #' units, then predicts the counterfactual for each unit:
-#' \code{\widehat{CATE}_i = \hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)}.
+#' \eqn{\widehat{CATE}_i = \hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)}{CATE_hat_i = mu_hat_1(X_i) - mu_hat_0(X_i)}.
 #'
 #' The **S-learner** fits one model with treatment as a feature.
 #'
@@ -390,7 +390,7 @@ morie_estimate_cate <- function(data, treatment, outcome, covariates,
 #' Estimate the Local Average Treatment Effect (LATE) via 2SLS / Wald
 #'
 #' Uses a binary instrument \eqn{Z} to identify the LATE (Imbens & Angrist, 1994):
-#' \deqn{LATE = \frac{Cov(Y, Z)}{Cov(T, Z)}}
+#' \deqn{LATE = \frac{Cov(Y, Z)}{Cov(T, Z)}}{LATE = (Cov(Y, Z))/(Cov(T, Z))}
 #'
 #' With covariates, uses two-stage OLS (Wald within residuals).
 #' Requires `ivreg::ivreg()` if available; otherwise falls back to the
@@ -488,7 +488,7 @@ morie_estimate_late <- function(data, treatment, outcome, instrument,
 #'
 #' The E-value quantifies the minimum strength of confounding association
 #' needed to fully explain away an observed treatment effect:
-#' \deqn{E = RR + \sqrt{RR \cdot (RR - 1)}}
+#' \deqn{E = RR + \sqrt{RR \cdot (RR - 1)}}{E = RR + sqrt(RR * (RR - 1))}
 #'
 #' For a risk ratio \eqn{RR < 1}, use \eqn{1/RR} before applying the formula.
 #'
@@ -516,8 +516,8 @@ morie_e_value <- function(rr, rr_lower = NULL) {
 
 #' Rosenbaum bounds sensitivity analysis
 #'
-#' For a range of hidden-confounding levels \code{\Gamma}, tests whether
-#' the treatment effect remains significant. A large \code{\Gamma} at
+#' For a range of hidden-confounding levels \eqn{\Gamma}{Gamma}, tests whether
+#' the treatment effect remains significant. A large \eqn{\Gamma}{Gamma} at
 #' which the result remains significant indicates robustness.
 #'
 #' Uses Wilcoxon signed-rank statistic bounds for matched designs.
@@ -526,7 +526,7 @@ morie_e_value <- function(rr, rr_lower = NULL) {
 #' @param treated Numeric vector of outcomes for treated units.
 #' @param control Numeric vector of outcomes for control units
 #'   (may differ in length from `treated` for unmatched designs).
-#' @param gamma_range Numeric vector of \code{\Gamma} values to test.
+#' @param gamma_range Numeric vector of \eqn{\Gamma}{Gamma} values to test.
 #' @return Data frame with columns: `gamma`, `p_lower`, `p_upper`.
 #' @examples
 #' morie_sensitivity_rosenbaum(treated = rnorm(30, 0.5), control = rnorm(30))
@@ -572,7 +572,7 @@ morie_sensitivity_rosenbaum <- function(treated, control,
 #' G-computation (outcome regression) ATE estimator
 #'
 #' Estimates the ATE by:
-#' \deqn{\widehat{ATE} = \frac{1}{n}\sum_i \bigl[\hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)\bigr]}
+#' \deqn{\widehat{ATE} = \frac{1}{n}\sum_i \bigl[\hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)\bigr]}{ATE_hat = (1)/(n)sum_i bigl[mu_hat_1(X_i) - mu_hat_0(X_i)bigr]}
 #'
 #' @inheritParams morie_estimate_aipw
 #' @return Named list: `ate`, `se`, `ci_lower`, `ci_upper`.

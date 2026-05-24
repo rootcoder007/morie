@@ -10,16 +10,16 @@
 #' ---------
 #'
 #' \itemize{
-#'   \item \code{\link{morie_tps_temporal_summary}}: year / month / dow / hour rollups.
-#'   \item \code{\link{morie_tps_spatial_summary}}: neighbourhood / division /
+#'   \item \eqn{\link{morie_tps_temporal_summary}}{link{morie_tps_temporal_summary}}: year / month / dow / hour rollups.
+#'   \item \eqn{\link{morie_tps_spatial_summary}}{link{morie_tps_spatial_summary}}: neighbourhood / division /
 #'     premises / location-type + lat-lon bbox.
-#'   \item \code{\link{morie_tps_offence_summary}}: OFFENCE / UCR / CSI rollups.
-#'   \item \code{\link{morie_tps_neighbourhood_concentration}}: Gini +
+#'   \item \eqn{\link{morie_tps_offence_summary}}{link{morie_tps_offence_summary}}: OFFENCE / UCR / CSI rollups.
+#'   \item \eqn{\link{morie_tps_neighbourhood_concentration}}{link{morie_tps_neighbourhood_concentration}}: Gini +
 #'     top-10/top-20 share across HOOD_158.
-#'   \item \code{\link{morie_tps_crime_compare}}: side-by-side counts
+#'   \item \eqn{\link{morie_tps_crime_compare}}{link{morie_tps_crime_compare}}: side-by-side counts
 #'     and YoY across multiple TPS data.frames.
-#'   \item \code{\link{morie_tps_analyze_one}}: full bundle on one frame.
-#'   \item \code{\link{morie_tps_analyze_all}}: full bundle across every
+#'   \item \eqn{\link{morie_tps_analyze_one}}{link{morie_tps_analyze_one}}: full bundle on one frame.
+#'   \item \eqn{\link{morie_tps_analyze_all}}{link{morie_tps_analyze_all}}: full bundle across every
 #'     TPS data.frame supplied in a named list.
 #'   \item \code{morie_tps_analyze_assault()}, ...,
 #'     \code{morie_tps_analyze_theftover()}: 13 thin convenience aliases.
@@ -575,7 +575,7 @@ morie_tps_analyze_theftover <- .tps_alias_factory("TheftOver")
 #'   When \code{NULL}, no files are written.
 #' @return A named \code{list} of \code{morie_tps_result} values, plus
 #'   a \code{`__cross_compare__`} entry from
-#'   \code{\link{morie_tps_crime_compare}}.
+#'   \eqn{\link{morie_tps_crime_compare}}{link{morie_tps_crime_compare}}.
 #' @export
 morie_tps_analyze_all <- function(dfs, out_dir = NULL) {
   stopifnot(is.list(dfs), length(dfs) > 0L,

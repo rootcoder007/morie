@@ -16,7 +16,7 @@ morie_fairness_city_profile(
 }
 \arguments{
 \item{name}{Character identifier used with
-\code{\link{morie_fairness_get_city}}.}
+\eqn{\link{morie_fairness_get_city}}{link{morie_fairness_get_city}}.}
 
 \item{area_col}{Column holding the area / district / precinct
 identifier. Required.}

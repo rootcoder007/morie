@@ -83,7 +83,7 @@
 #' morie_describe(morie_aalen)    # function-object form
 #' }
 #'
-#' @seealso \code{\link{morie_describe_by_name}} for the
+#' @seealso \eqn{\link{morie_describe_by_name}}{link{morie_describe_by_name}} for the
 #'   string-only variant that does not capture symbol names.
 #' @export
 morie_describe <- function(callable) {
@@ -103,7 +103,7 @@ morie_describe <- function(callable) {
   morie_describe_by_name(name)
 }
 
-#' String-only variant of \code{\link{morie_describe}}.
+#' String-only variant of \eqn{\link{morie_describe}}{link{morie_describe}}.
 #'
 #' Use this when you want to pass a name as a string and avoid the
 #' unquoted-symbol capture behaviour of \code{morie_describe}.

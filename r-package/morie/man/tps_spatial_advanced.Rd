@@ -5,23 +5,23 @@
 \title{Heavyweight spatial statistics for TPS data}
 \description{
 R parity of \code{morie.tps_spatial_advanced}. Builds on
-\code{\link{tps_spatial}} (global Moran's I, LISA, KDE) with:
+\eqn{\link{tps_spatial}}{link{tps_spatial}} (global Moran's I, LISA, KDE) with:
 }
 \details{
 \itemize{
-\item \code{\link{morie_tps_ripley_k}}: Ripley's K function for
+\item \eqn{\link{morie_tps_ripley_k}}{link{morie_tps_ripley_k}}: Ripley's K function for
 point-pattern clustering at multiple radii.
-\item \code{\link{morie_tps_getis_ord_g_star}}: local
+\item \eqn{\link{morie_tps_getis_ord_g_star}}{link{morie_tps_getis_ord_g_star}}: local
 Getis-Ord Gi* hot/cold-spot z-scores.
-\item \code{\link{morie_tps_dbscan_clusters}}: density-based
+\item \eqn{\link{morie_tps_dbscan_clusters}}{link{morie_tps_dbscan_clusters}}: density-based
 clusters on lat/long (via \pkg{dbscan}, optional).
-\item \code{\link{morie_tps_polygon_morans_i}}: polygon-aware
+\item \eqn{\link{morie_tps_polygon_morans_i}}{link{morie_tps_polygon_morans_i}}: polygon-aware
 Moran's I from an \pkg{sf} object's actual polygon centroids
 (instead of the centroid-only k-NN approximation in
-\code{\link{morie_tps_morans_i_neighbourhood}}).
-\item \code{\link{morie_tps_bivariate_moran}}: bivariate Moran's I
+\eqn{\link{morie_tps_morans_i_neighbourhood}}{link{morie_tps_morans_i_neighbourhood}}).
+\item \eqn{\link{morie_tps_bivariate_moran}}{link{morie_tps_bivariate_moran}}: bivariate Moran's I
 between two attributes at the same polygons.
-\item \code{\link{morie_tps_moran_sweep_heatmap}}: a (category x
+\item \eqn{\link{morie_tps_moran_sweep_heatmap}}{link{morie_tps_moran_sweep_heatmap}}: a (category x
 year) sweep of polygon Moran's I.
 }
 

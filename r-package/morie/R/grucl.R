@@ -6,7 +6,7 @@
 #' \code{[W_z; W_r; W_n]}.
 #'
 #' \deqn{z, r = \sigma(\ldots); \quad n = \tanh(W_n x + r \odot U_n h); \quad
-#'       h = (1 - z) \odot n + z \odot h_\text{prev}}
+#'       h = (1 - z) \odot n + z \odot h_\text{prev}}{z, r = sigma(...); n = tanh(W_n x + r odot U_n h); h = (1 - z) odot n + z odot h_prev}
 #'
 #' @param x Numeric vector.
 #' @param h_prev Previous hidden state.
@@ -14,7 +14,7 @@
 #' @param hidden_size Hidden size.
 #' @param seed RNG seed.
 #' @param deterministic_seed Optional integer; if non-NULL, a SHA-keyed
-#'   seed from \code{\link{morie_det_rng}("grucl", deterministic_seed)} is
+#'   seed from \eqn{\link{morie_det_rng}("grucl", deterministic_seed)}{link{morie_det_rng}("grucl", deterministic_seed)} is
 #'   installed before sampling so Py<->R streams agree.  Overrides
 #'   \code{seed} when set.
 #' @return Named list \code{(h, estimate, z, r, n, method)}.

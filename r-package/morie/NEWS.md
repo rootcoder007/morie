@@ -1,3 +1,42 @@
+# morie 0.9.5.9 - 2026-05-24
+
+## Correctness recovery: math typesetting restored
+
+Phase 3LLL reverses the destructive `\eqn{LATEX}` -> `\code{LATEX}` swap
+shipped in commit f399ec41a (Phase 3KKK1+2). That swap eliminated the
+"Lost-braces" warning but at the cost of stripping LaTeX math
+typesetting from the PDF/HTML manual and turning every greek letter,
+`\hat`, `\sum`, `\frac`, etc. into an "unknown macro" warning at
+`R CMD check`.
+
+The proper Rd-compliant fix is the two-argument form:
+
+    \eqn{LATEX}{ASCII fallback}      # inline
+    \deqn{LATEX}{ASCII fallback}     # display
+
+Every affected line (104 R files) now uses this form, preserving PDF
+math while satisfying the Rd parser. Driven by `fix_rd_math.py`, a
+LaTeX->ASCII transformer covering the common Greek alphabet,
+operators (`\sum`, `\int`, `\hat`, `\bar`, `\frac`, `\sqrt`), and
+relation symbols.
+
+## Auto-install helper for optional dependencies
+
+New `morie_install_extras()` lets users install the ~50 optional
+`Suggests:` packages in one call. CRAN policy forbids
+`install.packages()` at `.onLoad()` time, so morie ships an opt-in
+helper instead. Three modes:
+
+    morie_install_extras()                       # missing only (default)
+    morie_install_extras("all", ask = FALSE)     # everything, CI-safe
+    morie_install_extras(c("hawkes", "sf"))      # named subset
+
+The helper also probes for the C system libraries `libcurl`,
+`libsodium`, and `liboqs` and prints platform-specific install hints
+when any are missing. System libraries must be installed BEFORE
+re-installing morie so the configure-time probes link the C/C++
+backends against them.
+
 # morie 0.9.5.8 - 2026-05-24
 
 ## Bulk open-data catalog explosion

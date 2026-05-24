@@ -43,7 +43,7 @@
 #'
 #' morie functions that persist artifacts to disk (e.g.
 #' \code{morie_fetch_siu(cache_html = TRUE)}) default to a
-#' \emph{session-scoped} subdirectory of \code{\link[base]{tempdir}()},
+#' \emph{session-scoped} subdirectory of \eqn{\link[base]{tempdir}()}{link[base]{tempdir}()},
 #' which R automatically removes when the session ends. This is the
 #' most conservative CRAN-Policy-compliant default: nothing morie
 #' writes ever survives the R session unless the user explicitly
@@ -61,7 +61,7 @@
 #' }
 #'
 #' The persistent location is \code{tools::R_user_dir("morie", "cache")}
-#' (R \code{\ge} 4.0), which on Linux defaults to
+#' (R \eqn{\ge}{>=} 4.0), which on Linux defaults to
 #' \code{~/.cache/R/morie/}, on macOS to
 #' \code{~/Library/Caches/org.R-project.R/R/morie/}, and on Windows to
 #' \code{\%LOCALAPPDATA\%/R/cache/R/morie/}. Users can override this
@@ -69,7 +69,7 @@
 #' before calling \code{morie_cache_dir()}.
 #'
 #' \strong{Active management.} CRAN Policy requires persistent caches
-#' to be actively managed. Use \code{\link{morie_cache_clear}()} to
+#' to be actively managed. Use \eqn{\link{morie_cache_clear}()}{link{morie_cache_clear}()} to
 #' empty the persistent cache (or a subdirectory of it). Cached SIU
 #' HTML is ~80-100 MB at full sweep, so clearing it occasionally is
 #' usually unnecessary, but it is supported.
@@ -84,7 +84,7 @@
 #' morie_cache_dir()
 #' # Per-subsystem persistent path:
 #' morie_cache_dir("siu")
-#' @seealso \code{\link{morie_cache_clear}}
+#' @seealso \eqn{\link{morie_cache_clear}}{link{morie_cache_clear}}
 #' @export
 morie_cache_dir <- function(subdir = NULL) {
   override <- Sys.getenv("MORIE_CACHE_DIR", "")
@@ -101,7 +101,7 @@ morie_cache_dir <- function(subdir = NULL) {
 #' Removes files cached by morie under
 #' \code{tools::R_user_dir("morie", "cache")} (or
 #' \code{MORIE_CACHE_DIR} if set). morie's default behaviour writes
-#' caches to a session-scoped \code{\link[base]{tempdir}()}
+#' caches to a session-scoped \eqn{\link[base]{tempdir}()}{link[base]{tempdir}()}
 #' subdirectory, so this function only matters if you have explicitly
 #' opted in to persistent caching by passing
 #' \code{cache_dir = morie_cache_dir(...)} to any of the morie
@@ -119,7 +119,7 @@ morie_cache_dir <- function(subdir = NULL) {
 #' # Non-interactive: skip the confirmation prompt.
 #' morie_cache_clear("siu", confirm = FALSE)
 #' }
-#' @seealso \code{\link{morie_cache_dir}}
+#' @seealso \eqn{\link{morie_cache_dir}}{link{morie_cache_dir}}
 #' @export
 morie_cache_clear <- function(subdir = NULL, confirm = interactive()) {
   path <- morie_cache_dir(subdir)
@@ -608,7 +608,7 @@ morie_fetch_ckan <- function(dataset_key = "cpads", limit = Inf,
 #' #   host = "localhost", dbname = "morie", user = "...")
 #' # df <- morie_load_dataset("ocp21", con = con)
 #' }
-#' @seealso \code{\link{morie_fetch}}, \code{\link{morie_ckan_search}}
+#' @seealso \eqn{\link{morie_fetch}}{link{morie_fetch}}, \eqn{\link{morie_ckan_search}}{link{morie_ckan_search}}
 #' @export
 morie_load_dataset <- function(key, db_path = NULL, refresh = FALSE,
                                con = NULL) {

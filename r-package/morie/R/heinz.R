@@ -4,7 +4,7 @@
 #'
 #' R parity for \code{morie.fn.heinz.he_initialization}.
 #'
-#' \deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in}}\right)}
+#' \deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in}}\right)}{W ~ N(0, tfrac{2}{n_in})}
 #'
 #' @param fan_in Number of input units.
 #' @param fan_out Number of output units (NULL returns a length-\code{fan_in}
@@ -12,7 +12,7 @@
 #' @param seed RNG seed.
 #' @param mode One of \code{"normal"} (default) or \code{"uniform"}.
 #' @param deterministic_seed Optional integer; if non-NULL, a SHA-keyed
-#'   seed from \code{\link{morie_det_rng}("heinz", deterministic_seed)} is
+#'   seed from \eqn{\link{morie_det_rng}("heinz", deterministic_seed)}{link{morie_det_rng}("heinz", deterministic_seed)} is
 #'   installed before sampling so Py<->R streams agree.  Overrides
 #'   \code{seed} when set.
 #' @return Named list \code{(W, estimate, mean, std, shape, method)}.

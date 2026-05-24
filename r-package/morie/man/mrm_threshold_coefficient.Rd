@@ -7,7 +7,7 @@
 mrm_threshold_coefficient(x, covariate)
 }
 \arguments{
-\item{x}{A result from \code{\link{mrm_threshold_specific_ordinal}}.}
+\item{x}{A result from \eqn{\link{mrm_threshold_specific_ordinal}}{link{mrm_threshold_specific_ordinal}}.}
 
 \item{covariate}{Character, name of one covariate.}
 }

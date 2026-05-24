@@ -42,7 +42,7 @@ A named list with classes \code{morie_mrm_result},
 Implements the standard LeSage & Pace formula:
 }
 \details{
-\deqn{(I - \rho W)^{-1} (I \beta_k + W \theta_k)}
+\deqn{(I - \rho W)^{-1} (I \beta_k + W \theta_k)}{(I - rho W)^-1 (I beta_k + W theta_k)}
 
 for each covariate \eqn{k}. The diagonal of the resulting
 per-observation effects matrix is averaged for the \emph{direct}

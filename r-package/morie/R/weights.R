@@ -21,7 +21,7 @@
 
 #' Design weights from inclusion probabilities.
 #'
-#' \code{w_i = 1 / \pi_i}.
+#' \eqn{w_i = 1 / \pi_i}{w_i = 1 / pi_i}.
 #' @export
 morie_weights_design <- function(selection_probs) {
   p <- as.numeric(selection_probs)
@@ -36,7 +36,7 @@ morie_weights_design <- function(selection_probs) {
 
 #' Post-stratification weight adjustment.
 #'
-#' \eqn{w_i^{ps} = w_i \cdot N_h / \hat{N}_h}.
+#' \eqn{w_i^{ps} = w_i \cdot N_h / \hat{N}_h}{w_i^ps = w_i * N_h / N_hat_h}.
 #' @export
 morie_weights_poststratify <- function(weights, strata, population_totals) {
   w <- as.numeric(weights); s <- as.character(strata)
@@ -321,7 +321,7 @@ morie_weights_diagnostics <- function(weights) {
   )
 }
 
-#' Kish effective sample size: \code{(\sum w_i)^2 / \sum w_i^2}.
+#' Kish effective sample size: \eqn{(\sum w_i)^2 / \sum w_i^2}{(sum w_i)^2 / sum w_i^2}.
 #' @export
 morie_weights_ess <- function(weights) {
   w <- as.numeric(weights); s <- sum(w)

@@ -15,24 +15,24 @@
 #' those.  It adds the remaining surface from the Python source:
 #'
 #' \itemize{
-#'   \item \code{\link{morie_arsau_registry_df}}: the registry as a
+#'   \item \eqn{\link{morie_arsau_registry_df}}{link{morie_arsau_registry_df}}: the registry as a
 #'         tidy \code{data.frame} (one row per published file), the
 #'         canonical R equivalent of \code{ARSAU_REGISTRY} in Python.
-#'   \item \code{\link{morie_arsau_sidecar_schema}}: simplified
+#'   \item \eqn{\link{morie_arsau_sidecar_schema}}{link{morie_arsau_sidecar_schema}}: simplified
 #'         \code{[name, type, notes]} extraction from a CKAN sidecar
 #'         (mirrors \code{morie.arsau_datasets.sidecar_schema}).
-#'   \item \code{\link{morie_arsau_sidecar_to_frame}}: convert the
+#'   \item \eqn{\link{morie_arsau_sidecar_to_frame}}{link{morie_arsau_sidecar_to_frame}}: convert the
 #'         array-of-arrays \code{records} body of a CKAN sidecar to a
 #'         \code{data.frame} keyed by \code{fields[].id} (mirrors
 #'         \code{morie.arsau_datasets.sidecar_to_frame}).
-#'   \item \code{\link{morie_arsau_read_xlsx_dictionary}}: read an
+#'   \item \eqn{\link{morie_arsau_read_xlsx_dictionary}}{link{morie_arsau_read_xlsx_dictionary}}: read an
 #'         Ontario-Catalogue XLSX data-dictionary sidecar
 #'         (requires \pkg{readxl}; gated with \code{requireNamespace}).
-#'   \item \code{\link{morie_arsau_read_markdown_dictionary}}: read an
+#'   \item \eqn{\link{morie_arsau_read_markdown_dictionary}}{link{morie_arsau_read_markdown_dictionary}}: read an
 #'         Ontario-Catalogue Markdown data-dictionary sidecar with no
 #'         extra dependencies.
-#'   \item \code{\link{morie_arsau_ckan_url}} +
-#'         \code{\link{morie_arsau_fetch_sidecar}}: build the upstream
+#'   \item \eqn{\link{morie_arsau_ckan_url}}{link{morie_arsau_ckan_url}} +
+#'         \eqn{\link{morie_arsau_fetch_sidecar}}{link{morie_arsau_fetch_sidecar}}: build the upstream
 #'         CKAN \code{datastore_search} URL and (optionally) fetch
 #'         the sidecar JSON via \pkg{httr2}.
 #' }
@@ -62,7 +62,7 @@ NULL
 #' package's internal registry, with the same columns as the Python
 #' \code{ARSAU_REGISTRY} mapping but in row-major \code{data.frame}
 #' form.  The underlying list-of-lists is still available via
-#' \code{\link{ARSAU_REGISTRY}}.
+#' \eqn{\link{ARSAU_REGISTRY}}{link{ARSAU_REGISTRY}}.
 #'
 #' @param language "en" or "fr"; selects the description column.
 #' @return A \code{data.frame} with columns \code{year_or_range},
@@ -116,7 +116,7 @@ morie_arsau_registry_df <- function(language = "en") {
 #' Extract a simplified \code{[name, type, notes]} schema from a
 #' parsed CKAN sidecar.
 #'
-#' Accepts the result of \code{\link{morie_arsau_read_sidecar}} (a
+#' Accepts the result of \eqn{\link{morie_arsau_read_sidecar}}{link{morie_arsau_read_sidecar}} (a
 #' list with \code{fields} and \code{records} entries) and returns a
 #' tidy \code{data.frame} of column metadata.  Entries that lack an
 #' \code{id} are dropped.
@@ -397,15 +397,15 @@ morie_arsau_ckan_url <- function(kind, year, limit = 5000L) {
 #' Fetch the CKAN sidecar JSON for a registry entry.
 #'
 #' Optional helper.  Requires \pkg{httr2} (and \pkg{jsonlite} via the
-#' existing \code{\link{morie_arsau_read_sidecar}} contract).
+#' existing \eqn{\link{morie_arsau_read_sidecar}}{link{morie_arsau_read_sidecar}} contract).
 #'
 #' @param kind One of \code{ARSAU_KINDS()}.
 #' @param year One of \code{ARSAU_YEARS()}.
 #' @param limit Integer; CKAN \code{limit} parameter.  Default 5000.
 #' @param timeout_sec Request timeout in seconds.  Default 30.
 #' @return A list with \code{fields} and \code{records}, ready for
-#'   \code{\link{morie_arsau_sidecar_schema}} /
-#'   \code{\link{morie_arsau_sidecar_to_frame}}.
+#'   \eqn{\link{morie_arsau_sidecar_schema}}{link{morie_arsau_sidecar_schema}} /
+#'   \eqn{\link{morie_arsau_sidecar_to_frame}}{link{morie_arsau_sidecar_to_frame}}.
 #' @references Ontario Data Catalogue CKAN API.
 #' @export
 morie_arsau_fetch_sidecar <- function(kind, year, limit = 5000L,

@@ -31,11 +31,11 @@ between baseline and follow-up.}
 
 \item{baseline_marginalisation_quantile}{Numeric in (0, 1); default
 0.5. Tract is eligible if baseline income AND rent are
-\code{\le} this quantile.}
+\eqn{\le}{<=} this quantile.}
 
 \item{gentrification_growth_quantile}{Numeric in (0, 1); default
 0.667. Tract gentrifies if college growth AND rent growth are
-\code{\ge} this quantile.}
+\eqn{\ge}{>=} this quantile.}
 }
 \value{
 A named list with classes \code{morie_mrm_result},

@@ -17,7 +17,7 @@
 #' Moran's-I diagnostic that justifies SDM over OLS. We deliberately
 #' do NOT fit the SDM ourselves -- \pkg{spdep}/\pkg{spatialreg} are
 #' hard deps we don't want to force. The caller passes the estimated
-#' \code{\rho} + \code{\beta} vectors; this primitive does the
+#' \eqn{\rho}{rho} + \eqn{\beta}{beta} vectors; this primitive does the
 #' decomposition arithmetic.
 #'
 #' @name mrm_spatial_spillover
@@ -40,7 +40,7 @@ NULL
 #'
 #' Implements the standard LeSage & Pace formula:
 #'
-#' \deqn{(I - \rho W)^{-1} (I \beta_k + W \theta_k)}
+#' \deqn{(I - \rho W)^{-1} (I \beta_k + W \theta_k)}{(I - rho W)^-1 (I beta_k + W theta_k)}
 #'
 #' for each covariate \eqn{k}. The diagonal of the resulting
 #' per-observation effects matrix is averaged for the \emph{direct}
@@ -226,9 +226,9 @@ mrm_spatial_spillover_decomposition <- function(rho,
 #' Statistic:
 #'
 #' \deqn{I = \frac{n}{\sum_{ij} w_{ij}} \cdot
-#'   \frac{e^\top W e}{e^\top e}, \quad e = r - \bar r.}
+#'   \frac{e^\top W e}{e^\top e}, \quad e = r - \bar r.}{I = frac{n}{sum_ij w_ij} * (e^top W e)/(e^top e), e = r - bar r.}
 #'
-#' \code{I \in [-1, 1]}. Positive -> clustering, negative ->
+#' \eqn{I \in [-1, 1]}{I in [-1, 1]}. Positive -> clustering, negative ->
 #' dispersion, ~0 -> spatial randomness.
 #'
 #' @param residuals Numeric vector of length N (e.g. OLS residuals).

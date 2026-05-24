@@ -331,7 +331,7 @@ morie_datasets_tps_arcgis_hub_download <- function(hub_id,
 #' Lightweight discovery helper -- one network call to the ArcGIS
 #' Online items API (`/sharing/rest/content/items/<item_id>?f=json`),
 #' returns a single-row data.frame with the same columns the TPS Hub
-#' catalog (\code{\link{morie_datasets_tps_arcgis_hub_layers}})
+#' catalog (\eqn{\link{morie_datasets_tps_arcgis_hub_layers}}{link{morie_datasets_tps_arcgis_hub_layers}})
 #' returns: `hub_id`, `title`, `type`, `feature_server_url`, `owner`,
 #' `tags`, `snippet`. Use this when the item is NOT in the bundled
 #' TPS catalog (any non-TorontoPoliceService item).
@@ -375,7 +375,7 @@ morie_datasets_arcgis_item_metadata <- function(item_id) {
 #' there's no bundled catalog for non-TPS items. If you find
 #' yourself calling this against the same item repeatedly, consider
 #' adding a named wrapper (e.g. the shipped
-#' \code{\link{morie_datasets_toronto_zoning_per_neighbourhood}}
+#' \eqn{\link{morie_datasets_toronto_zoning_per_neighbourhood}}{link{morie_datasets_toronto_zoning_per_neighbourhood}}
 #' wraps EsriCanadaEducation's `af06159170914808983959df6163fc86`
 #' with bundled fixtures for offline use).
 #'

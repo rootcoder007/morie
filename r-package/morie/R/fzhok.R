@@ -3,7 +3,7 @@
 #' Fauzi: Higher-order (order-4) Gaussian-based kernel (Ch 1)
 #'
 #' KDE with order-4 Wand-Jones (1995, eq 2.8) kernel
-#' \code{K_4(u) = (1/2)(3-u^2)\phi(u)}.  Bias reduces from O(h^2)
+#' \eqn{K_4(u) = (1/2)(3-u^2)\phi(u)}{K_4(u) = (1/2)(3-u^2)phi(u)}.  Bias reduces from O(h^2)
 #' to O(h^4).  Note: K_4 takes negative values so f_hat may be < 0.
 #'
 #' @param x Numeric vector.

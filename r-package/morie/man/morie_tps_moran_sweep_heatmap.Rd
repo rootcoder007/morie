@@ -34,7 +34,7 @@ forwarded to \code{morie_tps_polygon_morans_i}.}
 A named list with the (category x year) Moran's I matrix.
 }
 \description{
-Loops \code{\link{morie_tps_polygon_morans_i}} over a grid of
+Loops \eqn{\link{morie_tps_polygon_morans_i}}{link{morie_tps_polygon_morans_i}} over a grid of
 value-column prefixes and years, returning the resulting matrix
 of Moran's I values for downstream visualisation as a heatmap.
 }

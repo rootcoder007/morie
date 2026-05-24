@@ -20,18 +20,18 @@
 #' Public callables:
 #'
 #' \itemize{
-#'   \item \code{\link{morie_arsau_analyze_main_records}}
+#'   \item \eqn{\link{morie_arsau_analyze_main_records}}{link{morie_arsau_analyze_main_records}}
 #'         (per year, 2023 / 2024)
-#'   \item \code{\link{morie_arsau_analyze_individual_records}}
+#'   \item \eqn{\link{morie_arsau_analyze_individual_records}}{link{morie_arsau_analyze_individual_records}}
 #'         (per year, 2023 / 2024)
-#'   \item \code{\link{morie_arsau_analyze_probe_cycle_records}}
+#'   \item \eqn{\link{morie_arsau_analyze_probe_cycle_records}}{link{morie_arsau_analyze_probe_cycle_records}}
 #'         (per year, 2023 / 2024)
-#'   \item \code{\link{morie_arsau_analyze_weapon_records}}
+#'   \item \eqn{\link{morie_arsau_analyze_weapon_records}}{link{morie_arsau_analyze_weapon_records}}
 #'         (per year, 2023 / 2024; 2023 requires
 #'         \code{allow_invalid = TRUE})
-#'   \item \code{\link{morie_arsau_analyze_aggregate_summary}}
+#'   \item \eqn{\link{morie_arsau_analyze_aggregate_summary}}{link{morie_arsau_analyze_aggregate_summary}}
 #'         (2020-2022)
-#'   \item \code{\link{morie_arsau_analyze_detailed_dataset}}
+#'   \item \eqn{\link{morie_arsau_analyze_detailed_dataset}}{link{morie_arsau_analyze_detailed_dataset}}
 #'         (2020-2022)
 #' }
 #'
@@ -179,18 +179,18 @@ NULL
 #'
 #' Chains:
 #' \itemize{
-#'   \item \code{\link{mrm_uof_force_concentration}} over
+#'   \item \eqn{\link{mrm_uof_force_concentration}}{link{mrm_uof_force_concentration}} over
 #'         \code{PoliceService}
-#'   \item \code{\link{mrm_uof_weapon_diversity}} over
+#'   \item \eqn{\link{mrm_uof_weapon_diversity}}{link{mrm_uof_weapon_diversity}} over
 #'         \code{IncidentType x PoliceService}
-#'   \item \code{\link{mrm_uof_data_quality_audit}} against the
+#'   \item \eqn{\link{mrm_uof_data_quality_audit}}{link{mrm_uof_data_quality_audit}} against the
 #'         published CKAN sidecar (when present)
 #' }
 #'
 #' Region-locality is NOT meaningful for main_records — only the
 #' \code{OPP_PoliceService_Region} column is published, and it pairs
 #' one column with itself.  See
-#' \code{\link{morie_arsau_analyze_detailed_dataset}} for the
+#' \eqn{\link{morie_arsau_analyze_detailed_dataset}}{link{morie_arsau_analyze_detailed_dataset}} for the
 #' 2020-2022 layout that exposes more region columns.
 #'
 #' @param year 2023 or 2024.
@@ -254,7 +254,7 @@ morie_arsau_analyze_main_records <- function(year, language = "en", data_dir = N
 #' @param language "en" or "fr".
 #' @param data_dir Optional explicit ARSAU root.
 #' @param bootstrap_reps Integer; forwarded to
-#'   \code{\link{mrm_uof_demographic_disparity}}.  Set to e.g. 1000 to
+#'   \eqn{\link{mrm_uof_demographic_disparity}}{link{mrm_uof_demographic_disparity}}.  Set to e.g. 1000 to
 #'   get percentile-bootstrap CIs on the risk ratios.
 #' @return A list classed
 #'   \code{c("morie_arsau_result", "morie_rich_result", "list")}.
@@ -446,7 +446,7 @@ morie_arsau_analyze_probe_cycle_records <- function(year, language = "en",
 
 #' Analysis of ARSAU weapon_records.
 #'
-#' Chains \code{\link{mrm_uof_weapon_diversity}} over
+#' Chains \eqn{\link{mrm_uof_weapon_diversity}}{link{mrm_uof_weapon_diversity}} over
 #' \code{Weapon x Location} (the only two categorical columns the file
 #' publishes) plus a Weapon-only frequency table plus a data-quality
 #' audit.
@@ -668,12 +668,12 @@ morie_arsau_analyze_aggregate_summary <- function(year_range = "2020-2022",
 #'
 #' Chains:
 #' \itemize{
-#'   \item \code{\link{mrm_uof_force_concentration}} on
+#'   \item \eqn{\link{mrm_uof_force_concentration}}{link{mrm_uof_force_concentration}} on
 #'         \code{POLICE_SERVICE}
-#'   \item \code{\link{mrm_uof_weapon_diversity}} on
+#'   \item \eqn{\link{mrm_uof_weapon_diversity}}{link{mrm_uof_weapon_diversity}} on
 #'         \code{POLICE_SERVICE x ASSIGNMENT_TYPE}
-#'   \item \code{\link{mrm_uof_yoy_change}} on \code{REPORTING_YEAR}
-#'   \item \code{\link{mrm_uof_data_quality_audit}}
+#'   \item \eqn{\link{mrm_uof_yoy_change}}{link{mrm_uof_yoy_change}} on \code{REPORTING_YEAR}
+#'   \item \eqn{\link{mrm_uof_data_quality_audit}}{link{mrm_uof_data_quality_audit}}
 #' }
 #'
 #' @param year_range "2020-2022".

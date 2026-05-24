@@ -18,10 +18,10 @@ morie_fetch_siu(
 }
 \arguments{
 \item{cache_dir}{Output directory. Defaults to a session-scoped
-subdirectory of \code{\link[base]{tempdir}()} that R cleans up
+subdirectory of \eqn{\link[base]{tempdir}()}{link[base]{tempdir}()} that R cleans up
 automatically. For persistent cross-session caching pass
 \code{cache_dir = morie_cache_dir("siu")} instead; see
-\code{\link{morie_cache_dir}} and \code{\link{morie_cache_clear}}.}
+\eqn{\link{morie_cache_dir}}{link{morie_cache_dir}} and \eqn{\link{morie_cache_clear}}{link{morie_cache_clear}}.}
 
 \item{overwrite}{Logical; if \code{FALSE} and \code{SIU.csv} already
 exists in \code{cache_dir}, its path is returned without reparsing.}

@@ -16,7 +16,7 @@ A \code{data.frame} with columns \code{name},
 \code{type}, \code{notes}.
 }
 \description{
-Accepts the result of \code{\link{morie_arsau_read_sidecar}} (a
+Accepts the result of \eqn{\link{morie_arsau_read_sidecar}}{link{morie_arsau_read_sidecar}} (a
 list with \code{fields} and \code{records} entries) and returns a
 tidy \code{data.frame} of column metadata.  Entries that lack an
 \code{id} are dropped.

@@ -19,7 +19,7 @@ morie_ingest_bigquery_query(
 falls back to the \code{GCP_PROJECT} env var, then to ADC.}
 
 \item{page_size}{Rows per download page (forwarded to
-\code{\link[bigrquery]{bq_table_download}}).}
+\eqn{\link[bigrquery]{bq_table_download}}{link[bigrquery]{bq_table_download}}).}
 
 \item{max_rows}{Optional cap on rows downloaded (defaults to
 \code{Inf}, i.e. all rows).}
@@ -56,6 +56,6 @@ head(df)
 }
 }
 \seealso{
-\code{\link{morie_ingest_bigquery_table}},
-\code{\link{morie_ingest_bigquery_build_sql}}
+\eqn{\link{morie_ingest_bigquery_table}}{link{morie_ingest_bigquery_table}},
+\eqn{\link{morie_ingest_bigquery_build_sql}}{link{morie_ingest_bigquery_build_sql}}
 }

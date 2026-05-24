@@ -4,10 +4,10 @@
 #'
 #' R parity for \code{morie.fn.bkprp.backpropagation}.
 #'
-#' For \code{L = \tfrac{1}{2n}\sum (a - y)^2} with
-#' \code{a = \sigma(W x + b)}:
+#' For \eqn{L = \tfrac{1}{2n}\sum (a - y)^2}{L = (1)/(2n)sum (a - y)^2} with
+#' \eqn{a = \sigma(W x + b)}{a = sigma(W x + b)}:
 #' \deqn{\partial L / \partial W = \delta x^\top, \quad
-#'       \delta = (a - y) \odot \sigma'(z)}
+#'       \delta = (a - y) \odot \sigma'(z)}{d L / d W = delta x^top, delta = (a - y) odot sigma'(z)}
 #'
 #' @param x Numeric matrix \code{(batch, n_in)} or vector.
 #' @param y Numeric matrix \code{(batch, n_out)} or vector.

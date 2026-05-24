@@ -5,14 +5,14 @@
 #' R parity for \code{morie.fn.trfbl.transformer_block}.
 #'
 #' \deqn{h_1 = \mathrm{LN}(x + \mathrm{MHA}(x)), \quad
-#'       h_2 = \mathrm{LN}(h_1 + \mathrm{FFN}(h_1))}
+#'       h_2 = \mathrm{LN}(h_1 + \mathrm{FFN}(h_1))}{h_1 = LN(x + MHA(x)), h_2 = LN(h_1 + FFN(h_1))}
 #'
 #' @param x Numeric matrix \code{(seq_len, d_model)}.
 #' @param num_heads Number of attention heads.
 #' @param d_ff Width of feed-forward layer (default \code{4 * d_model}).
 #' @param seed RNG seed.
 #' @param deterministic_seed Optional integer; if non-NULL, a SHA-keyed
-#'   seed from \code{\link{morie_det_rng}("trfbl", deterministic_seed)} is
+#'   seed from \eqn{\link{morie_det_rng}("trfbl", deterministic_seed)}{link{morie_det_rng}("trfbl", deterministic_seed)} is
 #'   installed before sampling so Py<->R streams agree.  Overrides
 #'   \code{seed} when set.
 #' @return Named list \code{(output, estimate, h1, num_heads, d_ff, method)}.

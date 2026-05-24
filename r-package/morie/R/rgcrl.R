@@ -1,6 +1,6 @@
 #' Correlation dimension (Grassberger-Procaccia) -- Rangayyan Ch 7
 #'
-#' Slope of \code{\log C(r)} vs \code{\log r} in the middle scaling region.
+#' Slope of \eqn{\log C(r)}{log C(r)} vs \eqn{\log r}{log r} in the middle scaling region.
 #'
 #' @param x Numeric vector.
 #' @param m Embedding dimension (default 3).

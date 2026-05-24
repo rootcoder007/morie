@@ -21,7 +21,7 @@ morie_arsau_analyze_weapon_records(
 \arguments{
 \item{year}{2023 or 2024.}
 
-\item{allow_invalid}{See \code{\link{morie_arsau_load_weapon_records}}.}
+\item{allow_invalid}{See \eqn{\link{morie_arsau_load_weapon_records}}{link{morie_arsau_load_weapon_records}}.}
 
 \item{language}{"en" or "fr".}
 
@@ -32,7 +32,7 @@ A list classed
 \code{c("morie_arsau_result", "morie_rich_result", "list")}.
 }
 \description{
-Chains \code{\link{mrm_uof_weapon_diversity}} over
+Chains \eqn{\link{mrm_uof_weapon_diversity}}{link{mrm_uof_weapon_diversity}} over
 \code{Weapon x Location} (the only two categorical columns the file
 publishes) plus a Weapon-only frequency table plus a data-quality
 audit.

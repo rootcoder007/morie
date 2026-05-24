@@ -5,7 +5,7 @@
 #' Director's Reports index at \url{https://www.siu.on.ca/en/directors_reports.php}.
 #' This is the R port of \code{morie.siu_fetch} -- the lightweight
 #' \code{httr2}/\code{rvest} path that complements the C/C++ harvester
-#' in \code{\link{morie_fetch_siu}}. Use this when:
+#' in \eqn{\link{morie_fetch_siu}}{link{morie_fetch_siu}}. Use this when:
 #'
 #' \itemize{
 #'   \item you want a tiny R-only dependency footprint (no compiled code);
@@ -25,11 +25,11 @@
 #' the unfiltered index, which surfaces the most recent posts.
 #'
 #' @section Cache directory:
-#' By default this writes \code{SIU.csv} under \code{\link[base]{tempdir}()}
+#' By default this writes \code{SIU.csv} under \eqn{\link[base]{tempdir}()}{link[base]{tempdir}()}
 #' so R cleans it up at end of session. Pass \code{cache_dir =
 #' morie_cache_dir("siu")} explicitly to opt into a persistent cross-
-#' session cache; see \code{\link{morie_cache_dir}} and
-#' \code{\link{morie_cache_clear}} (no implicit writes to \code{~/.cache}).
+#' session cache; see \eqn{\link{morie_cache_dir}}{link{morie_cache_dir}} and
+#' \eqn{\link{morie_cache_clear}}{link{morie_cache_clear}} (no implicit writes to \code{~/.cache}).
 #'
 #' @name morie_siu_fetch
 NULL
@@ -253,7 +253,7 @@ morie_siu_cache_path <- function(cache_dir = file.path(tempdir(), "morie", "siu"
 #' \code{cache_dir}.
 #'
 #' This is the lightweight R-only path. For the full 64-column corpus
-#' use \code{\link{morie_fetch_siu}} (compiled C++ harvester).
+#' use \eqn{\link{morie_fetch_siu}}{link{morie_fetch_siu}} (compiled C++ harvester).
 #'
 #' @param years Integer vector of fiscal years to scrape, or \code{NULL}
 #'   (default) to scrape the unfiltered index. Years above
@@ -368,7 +368,7 @@ morie_siu_fetch_cases <- function(
 
 #' Scrape Ontario SIU Director's Reports and return a data frame
 #'
-#' Thin wrapper over \code{\link{morie_siu_fetch_cases}}, returning a
+#' Thin wrapper over \eqn{\link{morie_siu_fetch_cases}}{link{morie_siu_fetch_cases}}, returning a
 #' data frame instead of the CSV path. Mirrors the Python
 #' \code{fetch_siu_dataframe()} adapter used by the dataset catalog.
 #'

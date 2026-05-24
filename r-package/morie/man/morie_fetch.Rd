@@ -29,8 +29,8 @@ extract (matched by basename, then by substring).}
 \item{simplify}{For \code{json}/\code{xml}/\code{html}, whether to
 simplify into a data.frame where possible (default \code{TRUE}).}
 
-\item{...}{Passed to the underlying reader (e.g. \code{\link{read.csv}}
-arguments, or \code{\link{morie_fetch_arcgis}} arguments).}
+\item{...}{Passed to the underlying reader (e.g. \eqn{\link{read.csv}}{link{read.csv}}
+arguments, or \eqn{\link{morie_fetch_arcgis}}{link{morie_fetch_arcgis}} arguments).}
 }
 \value{
 A data.frame for tabular formats; a list or document object
@@ -48,7 +48,7 @@ via \code{...}.
 \details{
 Supported formats: \code{csv}, \code{tsv}, \code{json}, \code{xml},
 \code{html}, \code{xlsx}, \code{zip} (extract one member), and
-\code{arcgis} (delegates to \code{\link{morie_fetch_arcgis}}).
+\code{arcgis} (delegates to \eqn{\link{morie_fetch_arcgis}}{link{morie_fetch_arcgis}}).
 }
 \examples{
 \dontrun{
@@ -61,5 +61,5 @@ js <- morie_fetch("https://api.example.org/records",
 }
 }
 \seealso{
-\code{\link{morie_ckan_search}}, \code{\link{morie_fetch_arcgis}}
+\eqn{\link{morie_ckan_search}}{link{morie_ckan_search}}, \eqn{\link{morie_fetch_arcgis}}{link{morie_fetch_arcgis}}
 }

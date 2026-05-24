@@ -64,7 +64,7 @@
 #' streamed to a session-scoped tempfile (PUMF zips can be hundreds
 #' of megabytes), and the tempfile is removed when the function
 #' returns. Nothing is written under \code{~/.cache} unless the
-#' caller explicitly opts in via \code{\link{morie_cache_dir}}.
+#' caller explicitly opts in via \eqn{\link{morie_cache_dir}}{link{morie_cache_dir}}.
 #'
 #' Note that a StatCan \emph{catalogue} page (e.g.
 #' \code{/n1/en/catalogue/82M0013X}) is only an HTML index --- the
@@ -79,8 +79,8 @@
 #' @param timeout HTTP timeout in seconds (default 600).
 #' @param user_agent User-Agent string sent with the request.
 #' @param ... Further arguments forwarded to
-#'   \code{\link[readr]{read_csv}} (or
-#'   \code{\link[utils]{read.csv}} if \pkg{readr} is unavailable).
+#'   \eqn{\link[readr]{read_csv}}{link[readr]{read_csv}} (or
+#'   \eqn{\link[utils]{read.csv}}{link[utils]{read.csv}} if \pkg{readr} is unavailable).
 #' @return A base R \code{data.frame}.
 #' @examples
 #' \dontrun{
@@ -92,8 +92,8 @@
 #' df <- morie_ingest_statcan_csv(url)
 #' head(df)
 #' }
-#' @seealso \code{\link{morie_ingest_statcan_cansim}},
-#'   \code{\link{morie_cache_dir}}
+#' @seealso \eqn{\link{morie_ingest_statcan_cansim}}{link{morie_ingest_statcan_cansim}},
+#'   \eqn{\link{morie_cache_dir}}{link{morie_cache_dir}}
 #' @export
 morie_ingest_statcan_csv <- function(url,
                                      member = NULL,
@@ -153,7 +153,7 @@ morie_ingest_statcan_csv <- function(url,
 #' talks to the Statistics Canada NDM ("cansim") tabular data API.
 #' Use this for canonical CANSIM tables (e.g. \code{"35-10-0177-01"})
 #' rather than for PUMF \code{_CSV.zip} downloads --- those go
-#' through \code{\link{morie_ingest_statcan_csv}}.
+#' through \eqn{\link{morie_ingest_statcan_csv}}{link{morie_ingest_statcan_csv}}.
 #'
 #' If the \code{STATCAN_API_KEY} environment variable is set, it is
 #' passed to \code{cansim::set_cansim_api_key()} so authenticated
@@ -165,7 +165,7 @@ morie_ingest_statcan_csv <- function(url,
 #' @param refresh If \code{TRUE}, force \pkg{cansim} to re-download
 #'   rather than using its on-disk cache.
 #' @param ... Further arguments forwarded to
-#'   \code{\link[cansim]{get_cansim}}.
+#'   \eqn{\link[cansim]{get_cansim}}{link[cansim]{get_cansim}}.
 #' @return A base R \code{data.frame}.
 #' @examples
 #' \dontrun{
@@ -173,7 +173,7 @@ morie_ingest_statcan_csv <- function(url,
 #' df <- morie_ingest_statcan_cansim("35-10-0177")
 #' head(df)
 #' }
-#' @seealso \code{\link{morie_ingest_statcan_csv}}
+#' @seealso \eqn{\link{morie_ingest_statcan_csv}}{link{morie_ingest_statcan_csv}}
 #' @export
 morie_ingest_statcan_cansim <- function(table_id,
                                         language = c("eng", "fra"),

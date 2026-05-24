@@ -24,8 +24,8 @@ first \code{.csv} entry.}
 \item{user_agent}{User-Agent string sent with the request.}
 
 \item{...}{Further arguments forwarded to
-\code{\link[readr]{read_csv}} (or
-\code{\link[utils]{read.csv}} if \pkg{readr} is unavailable).}
+\eqn{\link[readr]{read_csv}}{link[readr]{read_csv}} (or
+\eqn{\link[utils]{read.csv}}{link[utils]{read.csv}} if \pkg{readr} is unavailable).}
 }
 \value{
 A base R \code{data.frame}.
@@ -37,7 +37,7 @@ the contents as a base R \code{data.frame}. The archive is
 streamed to a session-scoped tempfile (PUMF zips can be hundreds
 of megabytes), and the tempfile is removed when the function
 returns. Nothing is written under \code{~/.cache} unless the
-caller explicitly opts in via \code{\link{morie_cache_dir}}.
+caller explicitly opts in via \eqn{\link{morie_cache_dir}}{link{morie_cache_dir}}.
 }
 \details{
 Note that a StatCan \emph{catalogue} page (e.g.
@@ -58,6 +58,6 @@ head(df)
 }
 }
 \seealso{
-\code{\link{morie_ingest_statcan_cansim}},
-\code{\link{morie_cache_dir}}
+\eqn{\link{morie_ingest_statcan_cansim}}{link{morie_ingest_statcan_cansim}},
+\eqn{\link{morie_cache_dir}}{link{morie_cache_dir}}
 }

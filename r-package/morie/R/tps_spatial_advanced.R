@@ -3,22 +3,22 @@
 #' Heavyweight spatial statistics for TPS data
 #'
 #' R parity of \code{morie.tps_spatial_advanced}. Builds on
-#' \code{\link{tps_spatial}} (global Moran's I, LISA, KDE) with:
+#' \eqn{\link{tps_spatial}}{link{tps_spatial}} (global Moran's I, LISA, KDE) with:
 #'
 #' \itemize{
-#'   \item \code{\link{morie_tps_ripley_k}}: Ripley's K function for
+#'   \item \eqn{\link{morie_tps_ripley_k}}{link{morie_tps_ripley_k}}: Ripley's K function for
 #'     point-pattern clustering at multiple radii.
-#'   \item \code{\link{morie_tps_getis_ord_g_star}}: local
+#'   \item \eqn{\link{morie_tps_getis_ord_g_star}}{link{morie_tps_getis_ord_g_star}}: local
 #'     Getis-Ord Gi* hot/cold-spot z-scores.
-#'   \item \code{\link{morie_tps_dbscan_clusters}}: density-based
+#'   \item \eqn{\link{morie_tps_dbscan_clusters}}{link{morie_tps_dbscan_clusters}}: density-based
 #'     clusters on lat/long (via \pkg{dbscan}, optional).
-#'   \item \code{\link{morie_tps_polygon_morans_i}}: polygon-aware
+#'   \item \eqn{\link{morie_tps_polygon_morans_i}}{link{morie_tps_polygon_morans_i}}: polygon-aware
 #'     Moran's I from an \pkg{sf} object's actual polygon centroids
 #'     (instead of the centroid-only k-NN approximation in
-#'     \code{\link{morie_tps_morans_i_neighbourhood}}).
-#'   \item \code{\link{morie_tps_bivariate_moran}}: bivariate Moran's I
+#'     \eqn{\link{morie_tps_morans_i_neighbourhood}}{link{morie_tps_morans_i_neighbourhood}}).
+#'   \item \eqn{\link{morie_tps_bivariate_moran}}{link{morie_tps_bivariate_moran}}: bivariate Moran's I
 #'     between two attributes at the same polygons.
-#'   \item \code{\link{morie_tps_moran_sweep_heatmap}}: a (category x
+#'   \item \eqn{\link{morie_tps_moran_sweep_heatmap}}{link{morie_tps_moran_sweep_heatmap}}: a (category x
 #'     year) sweep of polygon Moran's I.
 #' }
 #'
@@ -695,14 +695,14 @@ morie_tps_polygon_morans_i <- function(polygons,
 
 #' Bivariate Moran's I between two attributes at the same polygons
 #'
-#' Generalises \code{\link{morie_tps_polygon_morans_i}} to two
+#' Generalises \eqn{\link{morie_tps_polygon_morans_i}}{link{morie_tps_polygon_morans_i}} to two
 #' attributes: measures the cross-correlation between attribute X at
 #' location i and attribute Y at neighbouring locations j.
 #'
-#' \deqn{I_{xy} = \frac{n}{S_0}\,\frac{\sum_i \sum_j w_{ij}\, z^x_i\, z^y_j}{\sqrt{\sum_i (z^x_i)^2 \cdot \sum_i (z^y_i)^2}}}
+#' \deqn{I_{xy} = \frac{n}{S_0}\,\frac{\sum_i \sum_j w_{ij}\, z^x_i\, z^y_j}{\sqrt{\sum_i (z^x_i)^2 \cdot \sum_i (z^y_i)^2}}}{I_xy = (n)/(S_0) frac{sum_i sum_j w_ij z^x_i z^y_j}{sqrt(sum_i (z^x_i)^2 * sum_i (z^y_i)^2)}}
 #'
 #' Polygon centroids and k-NN weights are constructed exactly as in
-#' \code{\link{morie_tps_polygon_morans_i}}; distances use the
+#' \eqn{\link{morie_tps_polygon_morans_i}}{link{morie_tps_polygon_morans_i}}; distances use the
 #' haversine formula for parity with the Python source.
 #'
 #' @param polygons An \pkg{sf} object, or a data.frame with centroid
@@ -850,7 +850,7 @@ morie_tps_bivariate_moran <- function(polygons,
 
 #' Sweep polygon Moran's I across (category x year)
 #'
-#' Loops \code{\link{morie_tps_polygon_morans_i}} over a grid of
+#' Loops \eqn{\link{morie_tps_polygon_morans_i}}{link{morie_tps_polygon_morans_i}} over a grid of
 #' value-column prefixes and years, returning the resulting matrix
 #' of Moran's I values for downstream visualisation as a heatmap.
 #'

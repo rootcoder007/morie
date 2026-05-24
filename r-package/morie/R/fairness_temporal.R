@@ -10,7 +10,7 @@
 #' \emph{temporal instability} and \emph{cross-city divergence}
 #' become visible.
 #'
-#' Builds on the metrics in \code{\link{fairness_metrics}}.
+#' Builds on the metrics in \eqn{\link{fairness_metrics}}{link{fairness_metrics}}.
 #'
 #' @name fairness_temporal
 NULL

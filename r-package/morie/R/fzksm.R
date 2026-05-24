@@ -2,7 +2,7 @@
 
 #' Fauzi: Kolmogorov-Smirnov test with kernel-smoothed CDF (Ch 5)
 #'
-#' \code{D_n = \sup_t |\hat F_h(t) - F_0(t)|}.
+#' \eqn{D_n = \sup_t |\hat F_h(t) - F_0(t)|}{D_n = sup_t |hat F_h(t) - F_0(t)|}.
 #'
 #' @param x Numeric vector.
 #' @param cdf Either a SciPy-style CDF name (one of "norm" only here;

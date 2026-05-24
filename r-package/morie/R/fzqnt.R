@@ -2,7 +2,7 @@
 
 #' Fauzi: Asymptotic distribution of kernel quantile (Ch 3)
 #'
-#' \code{\sqrt n(\hat Q-Q) \to N(0,p(1-p)/f(Q)^2)}.
+#' \eqn{\sqrt n(\hat Q-Q) \to N(0,p(1-p)/f(Q)^2)}{sqrt n(hat Q-Q) -> N(0,p(1-p)/f(Q)^2)}.
 #'
 #' @param x Numeric vector.
 #' @param p Quantile probability in (0,1); default 0.5.

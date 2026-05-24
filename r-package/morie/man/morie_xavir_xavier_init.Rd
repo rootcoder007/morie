@@ -26,9 +26,9 @@ Named list \code{(weights, value, fan_in, fan_out, mean, std,
 R parity for \code{morie.fn.xavir.xavier_init}.
 }
 \details{
-\deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in} + n_{out}}\right)}
+\deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in} + n_{out}}\right)}{W ~ N(0, tfrac{2}{n_in + n_out})}
 (normal) or
-\code{W \sim U[-\sqrt{6/(n_{in}+n_{out})}, +\sqrt{6/(n_{in}+n_{out})}]}
+\eqn{W \sim U[-\sqrt{6/(n_{in}+n_{out})}, +\sqrt{6/(n_{in}+n_{out})}]}{W ~ U[-sqrt{6/(n_in+n_out)}, +sqrt{6/(n_in+n_out)}]}
 (uniform).
 }
 \examples{

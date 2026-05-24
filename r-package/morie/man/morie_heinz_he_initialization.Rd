@@ -32,7 +32,7 @@ vector).}
 \item{mode}{One of \code{"normal"} (default) or \code{"uniform"}.}
 
 \item{deterministic_seed}{Optional integer; if non-NULL, a SHA-keyed
-seed from \code{\link{morie_det_rng}("heinz", deterministic_seed)} is
+seed from \eqn{\link{morie_det_rng}("heinz", deterministic_seed)}{link{morie_det_rng}("heinz", deterministic_seed)} is
 installed before sampling so Py<->R streams agree.  Overrides
 \code{seed} when set.}
 }
@@ -43,7 +43,7 @@ Named list \code{(W, estimate, mean, std, shape, method)}.
 R parity for \code{morie.fn.heinz.he_initialization}.
 }
 \details{
-\deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in}}\right)}
+\deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in}}\right)}{W ~ N(0, tfrac{2}{n_in})}
 }
 \examples{
 # See the package vignettes for usage examples:

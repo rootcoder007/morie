@@ -14,7 +14,7 @@ morie_did_aggregate_gt_att(
 )
 }
 \arguments{
-\item{gt_results}{Output of \code{\link{morie_did_group_time_att}}.}
+\item{gt_results}{Output of \eqn{\link{morie_did_group_time_att}}{link{morie_did_group_time_att}}.}
 
 \item{aggregation}{One of \code{"overall"} (default), \code{"cohort"},
 \code{"calendar_time"}, \code{"event_time"}.}

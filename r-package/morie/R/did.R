@@ -127,10 +127,10 @@ NULL
 #'
 #' Estimates the canonical two-group / two-period DiD treatment effect
 #' \deqn{\hat\tau = (\bar Y_{1,\text{post}} - \bar Y_{1,\text{pre}})
-#'                 - (\bar Y_{0,\text{post}} - \bar Y_{0,\text{pre}}).}
+#'                 - (\bar Y_{0,\text{post}} - \bar Y_{0,\text{pre}}).}{hattau = (bar Y_1,post - bar Y_1,pre) - (bar Y_0,post - bar Y_0,pre).}
 #' With covariates, fits the regression
-#' \code{Y = \alpha + \beta D + \gamma P + \tau (D \times P) + X\delta + \varepsilon}
-#' and reports \code{\hat\tau}.
+#' \eqn{Y = \alpha + \beta D + \gamma P + \tau (D \times P) + X\delta + \varepsilon}{Y = alpha + beta D + gamma P + tau (D x P) + Xdelta + epsilon}
+#' and reports \eqn{\hat\tau}{hattau}.
 #'
 #' @param data A data frame containing the outcome, treatment, post and
 #'   any covariate columns.
@@ -196,13 +196,13 @@ morie_did_2x2 <- function(data, outcome, treatment, post,
 
 #' Repeated cross-section DiD (optionally weighted)
 #'
-#' Same specification as \code{\link{morie_did_2x2}} but accepts a survey
+#' Same specification as \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}} but accepts a survey
 #' weight column.  When \code{weights} is supplied, weighted least
 #' squares is used.
 #'
 #' @inheritParams morie_did_2x2
 #' @param weights Optional column of (sampling / survey) weights.
-#' @return A list of class results; see \code{\link{morie_did_2x2}}.
+#' @return A list of class results; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
 #' @export
 morie_did_repeated_cross_section <- function(data, outcome, treatment, post,
                                              covariates = NULL, weights = NULL,
@@ -244,14 +244,14 @@ morie_did_repeated_cross_section <- function(data, outcome, treatment, post,
 #' Two-way fixed-effects DiD (panel)
 #'
 #' Estimates \eqn{Y_{it} = \alpha_i + \lambda_t + \tau D_{it} + X'\delta
-#' + \varepsilon_{it}}.  Prefers \code{fixest::feols} for fast within
+#' + \varepsilon_{it}}{Y_it = alpha_i + lambda_t + tau D_it + X'delta + varepsilon_it}.  Prefers \code{fixest::feols} for fast within
 #' estimation with cluster-robust SE; falls back to a base-R two-way
 #' within-transform when \pkg{fixest} is not installed.
 #'
 #' @inheritParams morie_did_2x2
 #' @param unit Unit identifier column.
 #' @param time Time period column.
-#' @return A result list; see \code{\link{morie_did_2x2}}.
+#' @return A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
 #' @export
 morie_did_panel_fe <- function(data, outcome, treatment, unit, time,
                                covariates = NULL, cluster = NULL,
@@ -310,7 +310,7 @@ morie_did_panel_fe <- function(data, outcome, treatment, unit, time,
 #' Event-study DiD specification
 #'
 #' Constructs relative-time dummies \eqn{1\{t - g = k\}} for
-#' \code{k \in [-\text{leads}, \text{lags}]} (omitting
+#' \eqn{k \in [-\text{leads}, \text{lags}]}{k in [-leads, lags]} (omitting
 #' \code{reference_period}) and regresses the outcome on these
 #' indicators with unit and time fixed effects.
 #'
@@ -537,7 +537,7 @@ morie_did_parallel_trends_data <- function(data, outcome, treatment, time,
 #' Callaway--Sant'Anna group-time average treatment effects
 #'
 #' For each cohort \eqn{g} and each post-treatment calendar period
-#' \code{t}, estimates \code{\mathrm{ATT}(g, t)}.  Prefers
+#' \code{t}, estimates \eqn{\mathrm{ATT}(g, t)}{ATT(g, t)}.  Prefers
 #' \code{did::att_gt} (the reference implementation by Callaway &
 #' Sant'Anna); falls back to a base-R bootstrap-based estimator that
 #' mirrors the Python module when \pkg{did} is unavailable.
@@ -715,7 +715,7 @@ morie_did_group_time_att <- function(data, outcome, unit, time, treatment_time,
 
 #' Aggregate group-time ATTs into summary parameters
 #'
-#' @param gt_results Output of \code{\link{morie_did_group_time_att}}.
+#' @param gt_results Output of \eqn{\link{morie_did_group_time_att}}{link{morie_did_group_time_att}}.
 #' @param aggregation One of \code{"overall"} (default), \code{"cohort"},
 #'   \code{"calendar_time"}, \code{"event_time"}.
 #' @param time_col,cohort_col,att_col,se_col Column-name overrides.
@@ -764,8 +764,8 @@ morie_did_aggregate_gt_att <- function(gt_results,
 
 #' Staggered DiD via group-time ATTs with aggregation
 #'
-#' Convenience wrapper around \code{\link{morie_did_group_time_att}} and
-#' \code{\link{morie_did_aggregate_gt_att}}.
+#' Convenience wrapper around \eqn{\link{morie_did_group_time_att}}{link{morie_did_group_time_att}} and
+#' \eqn{\link{morie_did_aggregate_gt_att}}{link{morie_did_aggregate_gt_att}}.
 #'
 #' @inheritParams morie_did_group_time_att
 #' @return A list with \code{group_time}, \code{overall}, \code{by_cohort},
@@ -802,7 +802,7 @@ morie_did_staggered <- function(data, outcome, unit, time, treatment_time,
 #' @param or_model One of \code{"linear"} (default) or \code{"gbm"}.
 #' @param n_bootstrap Number of bootstrap replications.
 #' @param seed RNG seed.
-#' @return A result list; see \code{\link{morie_did_2x2}}.
+#' @return A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
 #' @references Sant'Anna, P. H. C., & Zhao, J. (2020). Doubly robust
 #'   difference-in-differences estimators. \emph{Journal of
 #'   Econometrics}, 219(1), 101--122.
@@ -922,7 +922,7 @@ morie_did_doubly_robust <- function(data, outcome, treatment, post,
 #' @inheritParams morie_did_2x2
 #' @param third_diff Binary variable defining the additional differencing
 #'   group.
-#' @return A result list; see \code{\link{morie_did_2x2}}.
+#' @return A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
 #' @export
 morie_did_triple_difference <- function(data, outcome, treatment, post,
                                         third_diff,
@@ -1101,7 +1101,7 @@ morie_did_bacon_decomposition <- function(data, outcome, treatment,
 #' @param n_bootstrap Bootstrap replications for placebo SE.
 #' @param seed RNG seed.
 #' @param alpha Significance level.
-#' @return A result list; see \code{\link{morie_did_2x2}}.
+#' @return A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
 #' @references Arkhangelsky, D., et al. (2021). Synthetic
 #'   difference-in-differences. \emph{American Economic Review},
 #'   111(12), 4088--4118.
@@ -1183,7 +1183,7 @@ morie_did_synthetic <- function(data, outcome, unit, time, treatment_time,
 #' @param n_bootstrap Number of bootstrap replications.
 #' @param weight_type \code{"rademacher"} (default) or \code{"webb"}.
 #' @param seed RNG seed.
-#' @return A result list; see \code{\link{morie_did_2x2}}.  \code{p_value}
+#' @return A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.  \code{p_value}
 #'   is the bootstrap p-value.
 #' @export
 morie_did_wild_cluster_bootstrap <- function(data, outcome, treatment, post,
@@ -1290,7 +1290,7 @@ morie_did_wild_cluster_bootstrap <- function(data, outcome, treatment, post,
 #'
 #' @inheritParams morie_did_2x2
 #' @param dose Continuous treatment-intensity column.
-#' @return A result list; see \code{\link{morie_did_2x2}}.
+#' @return A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
 #' @export
 morie_did_continuous_treatment <- function(data, outcome, dose, post,
                                            covariates = NULL,
@@ -1323,14 +1323,14 @@ morie_did_continuous_treatment <- function(data, outcome, dose, post,
 
 #' Fuzzy DiD (LATE) via 2SLS
 #'
-#' Uses \code{Z \times \mathrm{Post}} as an instrument for
-#' \code{D \times \mathrm{Post}} to recover a local average treatment
+#' Uses \eqn{Z \times \mathrm{Post}}{Z x Post} as an instrument for
+#' \eqn{D \times \mathrm{Post}}{D x Post} to recover a local average treatment
 #' effect under imperfect compliance.
 #'
 #' @inheritParams morie_did_2x2
 #' @param assignment Intent-to-treat assignment column.
 #' @param takeup Actual treatment-takeup column.
-#' @return A result list; see \code{\link{morie_did_2x2}}.
+#' @return A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
 #' @export
 morie_did_fuzzy <- function(data, outcome, assignment, takeup, post,
                             covariates = NULL,
@@ -1552,7 +1552,7 @@ morie_did_heterogeneous <- function(data, outcome, treatment, post, moderator,
 #' @param n_bootstrap Bootstrap replications.
 #' @param seed RNG seed.
 #' @param alpha Significance level.
-#' @return A result list; see \code{\link{morie_did_2x2}}.
+#' @return A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
 #' @references de Chaisemartin, C., & D'Haultfoeuille, X. (2020). Two-way
 #'   fixed effects estimators with heterogeneous treatment effects.
 #'   \emph{American Economic Review}, 110(9), 2964--2996.
@@ -1628,12 +1628,12 @@ morie_did_chaisemartin_dhaultfoeuille <- function(data, outcome, treatment,
 
 #' Sensitivity of DiD estimate to parallel-trends violations
 #'
-#' For each \code{\delta}, computes a bias-adjusted confidence set under
-#' the bound \code{|\mathrm{bias}| \le \delta \hat\sigma} (Rambachan &
+#' For each \eqn{\delta}{delta}, computes a bias-adjusted confidence set under
+#' the bound \eqn{|\mathrm{bias}| \le \delta \hat\sigma}{|bias| <= delta hatsigma} (Rambachan &
 #' Roth, 2023, conservative version).
 #'
 #' @inheritParams morie_did_2x2
-#' @param delta_range Numeric vector of \code{\delta} values to evaluate
+#' @param delta_range Numeric vector of \eqn{\delta}{delta} values to evaluate
 #'   (default \code{seq(0, 2, 0.25)}).
 #' @return A data frame with columns \code{delta}, \code{ci_lower},
 #'   \code{ci_upper}, \code{covers_zero}.

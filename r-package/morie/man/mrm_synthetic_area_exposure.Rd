@@ -49,7 +49,7 @@ logistic coefficient vector), plus \code{interpretation} +
 }
 \description{
 \enumerate{
-\item Fit logistic \code{P(\text{trait} | \text{covariates})} on
+\item Fit logistic \eqn{P(\text{trait} | \text{covariates})}{P(trait | covariates)} on
 the survey microdata.
 \item Apply fitted coefficients to area-level marginals from
 \code{area_df}.

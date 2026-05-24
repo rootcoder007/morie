@@ -12,7 +12,7 @@ On-demand scraper for the Ontario Special Investigations Unit (SIU)
 Director's Reports index at \url{https://www.siu.on.ca/en/directors_reports.php}.
 This is the R port of \code{morie.siu_fetch} -- the lightweight
 \code{httr2}/\code{rvest} path that complements the C/C++ harvester
-in \code{\link{morie_fetch_siu}}. Use this when:
+in \eqn{\link{morie_fetch_siu}}{link{morie_fetch_siu}}. Use this when:
 }
 \details{
 \itemize{
@@ -34,10 +34,10 @@ the unfiltered index, which surfaces the most recent posts.
 }
 \section{Cache directory}{
 
-By default this writes \code{SIU.csv} under \code{\link[base]{tempdir}()}
+By default this writes \code{SIU.csv} under \eqn{\link[base]{tempdir}()}{link[base]{tempdir}()}
 so R cleans it up at end of session. Pass \code{cache_dir =
 morie_cache_dir("siu")} explicitly to opt into a persistent cross-
-session cache; see \code{\link{morie_cache_dir}} and
-\code{\link{morie_cache_clear}} (no implicit writes to \code{~/.cache}).
+session cache; see \eqn{\link{morie_cache_dir}}{link{morie_cache_dir}} and
+\eqn{\link{morie_cache_clear}}{link{morie_cache_clear}} (no implicit writes to \code{~/.cache}).
 }
 

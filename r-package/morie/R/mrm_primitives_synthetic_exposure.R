@@ -10,11 +10,11 @@
 #' administrative census of that subpopulation exists, you can:
 #'
 #' \enumerate{
-#'   \item Fit \code{P(\text{trait} | \text{covariates})} on a national
+#'   \item Fit \eqn{P(\text{trait} | \text{covariates})}{P(trait | covariates)} on a national
 #'     probability sample (NCS-R for SMI; ACS-style survey for other
 #'     traits) using ONLY covariates also available at the area level.
 #'   \item Apply the fitted coefficients to area-level marginals from
-#'     ACS / census to predict \code{P(\text{trait})} per area.
+#'     ACS / census to predict \eqn{P(\text{trait})}{P(trait)} per area.
 #'   \item Multiply by area-level adult population to get a synthetic
 #'     "population at risk" denominator.
 #' }
@@ -89,7 +89,7 @@ NULL
 #' Compute the synthetic exposure offset for each area
 #'
 #' \enumerate{
-#'   \item Fit logistic \code{P(\text{trait} | \text{covariates})} on
+#'   \item Fit logistic \eqn{P(\text{trait} | \text{covariates})}{P(trait | covariates)} on
 #'     the survey microdata.
 #'   \item Apply fitted coefficients to area-level marginals from
 #'     \code{area_df}.

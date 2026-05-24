@@ -15,19 +15,7 @@ repeated_cv(
 )
 }
 \arguments{
-\item{X}{Matrix or data frame of features.}
-
-\item{y}{Vector of targets.}
-
-\item{model_fn}{Function \code{(X_train, y_train) -> model}.}
-
-\item{score_fn}{Function \code{(y_true, y_pred) -> scalar}.}
-
-\item{n_folds}{Number of folds.}
-
 \item{n_repeats}{Number of repetitions.}
-
-\item{seed}{Random seed.}
 }
 \value{
 A \code{morie_cv_result} pooling scores across repeats.

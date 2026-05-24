@@ -14,20 +14,20 @@ to standard proportional-odds specifications.
 }
 \details{
 This R port is the \strong{frequentist} analogue: for each cutpoint
-\code{k = 1, \ldots, K-1} a separate binary logit is fit to the
-indicator \code{1\{Y \le k\}}, so the coefficient vector
-\code{\beta_k} is unconstrained across thresholds.  When
-\code{MASS} is available we delegate to \code{\link[MASS]{polr}}
+\eqn{k = 1, \ldots, K-1}{k = 1, ..., K-1} a separate binary logit is fit to the
+indicator \eqn{1\{Y \le k\}}{1\{Y <= k\}}, so the coefficient vector
+\eqn{\beta_k}{beta_k} is unconstrained across thresholds.  When
+\code{MASS} is available we delegate to \eqn{\link[MASS]{polr}}{link[MASS]{polr}}
 for the proportional-odds (PO) baseline; otherwise the PO baseline
 is fit by a stacked-IRLS approximation matching the Python
 implementation.  The threshold-specific fits always run via
-\code{\link[stats]{glm}} with \code{family = binomial("logit")}.
+\eqn{\link[stats]{glm}}{link[stats]{glm}} with \code{family = binomial("logit")}.
 
 Standard threshold (proportional-odds, K levels, p covariates):
-\deqn{P(Y \le k \mid X) = \mathrm{logit}^{-1}(\alpha_k - X \beta)}
+\deqn{P(Y \le k \mid X) = \mathrm{logit}^{-1}(\alpha_k - X \beta)}{P(Y <= k mid X) = logit^-1(alpha_k - X beta)}
 
 Threshold-specific extension (one coefficient vector per cutpoint):
-\deqn{P(Y \le k \mid X) = \mathrm{logit}^{-1}(\alpha_k - X \beta_k)}
+\deqn{P(Y \le k \mid X) = \mathrm{logit}^{-1}(\alpha_k - X \beta_k)}{P(Y <= k mid X) = logit^-1(alpha_k - X beta_k)}
 }
 \references{
 O'Connell, M. & Laniyonu, A. (2025). Threshold-specific
@@ -35,5 +35,5 @@ cumulative-logit models for actuarial-risk audit.
 \emph{Race & Justice}, 15(3), 428--453.
 }
 \seealso{
-\code{\link{mrm_score_net_residual}}
+\eqn{\link{mrm_score_net_residual}}{link{mrm_score_net_residual}}
 }

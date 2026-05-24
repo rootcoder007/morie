@@ -7,7 +7,7 @@
 #'
 #' \deqn{f, i, o = \sigma(\ldots); \quad g = \tanh(\ldots); \quad
 #'       c = f \odot c_\text{prev} + i \odot g; \quad
-#'       h = o \odot \tanh(c)}
+#'       h = o \odot \tanh(c)}{f, i, o = sigma(...); g = tanh(...); c = f odot c_prev + i odot g; h = o odot tanh(c)}
 #'
 #' @param x Numeric vector (input).
 #' @param h_prev,c_prev Previous hidden / cell states (default zeros).
@@ -15,7 +15,7 @@
 #' @param hidden_size Hidden size \code{H}.
 #' @param seed RNG seed for default weights.
 #' @param deterministic_seed Optional integer; if non-NULL, a SHA-keyed
-#'   seed from \code{\link{morie_det_rng}("lstmc", deterministic_seed)} is
+#'   seed from \eqn{\link{morie_det_rng}("lstmc", deterministic_seed)}{link{morie_det_rng}("lstmc", deterministic_seed)} is
 #'   installed before sampling so Py<->R streams agree.  Overrides
 #'   \code{seed} when set.
 #' @return Named list \code{(h, c, estimate, i, f, g, o, method)}.

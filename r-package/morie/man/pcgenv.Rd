@@ -16,7 +16,7 @@ List with \code{filtered} (envelope), \code{name}, \code{fs}, \code{n_samples}.
 }
 \description{
 Shannon-energy envelope of a phonocardiogram (PCG): normalises the
-signal, computes \\code{-x^2 \\log x^2}, then box-smooths over a 20 ms
+signal, computes \\eqn{-x^2 \\log x^2}{-x^2 log x^2}, then box-smooths over a 20 ms
 window. The standard envelope used for S1/S2 segmentation.
 }
 \details{

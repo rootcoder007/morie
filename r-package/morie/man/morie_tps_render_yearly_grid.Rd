@@ -15,7 +15,7 @@ morie_tps_render_yearly_grid(
 }
 \arguments{
 \item{polys}{Polygon data.frame (see
-\code{\link{morie_tps_render_choropleth}}).}
+\eqn{\link{morie_tps_render_choropleth}}{link{morie_tps_render_choropleth}}).}
 
 \item{prefix}{Column-name prefix (default \code{"ASSAULT_RATE"}).}
 

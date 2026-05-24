@@ -14,8 +14,8 @@
 #'
 #' Following Chernozhukov et al. (2018), the IRM extends the partially linear
 #' model by allowing fully heterogeneous treatment effects:
-#' \deqn{Y = g_0(T, X) + U,\quad E[U|T,X] = 0}
-#' \deqn{T = m_0(X) + V,\quad E[V|X] = 0}
+#' \deqn{Y = g_0(T, X) + U,\quad E[U|T,X] = 0}{Y = g_0(T, X) + U, E[U|T,X] = 0}
+#' \deqn{T = m_0(X) + V,\quad E[V|X] = 0}{T = m_0(X) + V, E[V|X] = 0}
 #'
 #' @param data A `data.frame` containing outcome, treatment, and covariates.
 #' @param treatment Column name of the binary treatment.

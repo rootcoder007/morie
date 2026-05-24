@@ -18,22 +18,22 @@
 #' ---------
 #'
 #' \itemize{
-#'   \item \code{\link{morie_tps_sdb_reaction_diffusion}} — Short,
+#'   \item \eqn{\link{morie_tps_sdb_reaction_diffusion}}{link{morie_tps_sdb_reaction_diffusion}} — Short,
 #'     D'Orsogna and Brantingham (2008) hot-spot PDE, data-seeded.
-#'   \item \code{\link{morie_tps_levy_flight_alpha}} — Hill-MLE
+#'   \item \eqn{\link{morie_tps_levy_flight_alpha}}{link{morie_tps_levy_flight_alpha}} — Hill-MLE
 #'     Levy-flight tail exponent following Brockmann, Hufnagel and
 #'     Geisel (2006).
-#'   \item \code{\link{morie_tps_urban_scaling_beta}} — Bettencourt
+#'   \item \eqn{\link{morie_tps_urban_scaling_beta}}{link{morie_tps_urban_scaling_beta}} — Bettencourt
 #'     \emph{et al.} (2007) urban-scaling beta across the 158 Toronto
 #'     wards.
-#'   \item \code{\link{morie_tps_lotka_volterra_police_crime}} — Lotka-
+#'   \item \eqn{\link{morie_tps_lotka_volterra_police_crime}}{link{morie_tps_lotka_volterra_police_crime}} — Lotka-
 #'     Volterra predator-prey on yearly counts.
-#'   \item \code{\link{morie_tps_sdb_turing_demo}} — canonical Turing-
+#'   \item \eqn{\link{morie_tps_sdb_turing_demo}}{link{morie_tps_sdb_turing_demo}} — canonical Turing-
 #'     instability demo on a periodic lattice.
-#'   \item \code{\link{morie_tps_inspection_game_phase}} — three-
+#'   \item \eqn{\link{morie_tps_inspection_game_phase}}{link{morie_tps_inspection_game_phase}} — three-
 #'     strategy replicator phase diagram (Helbing, Szolnoki & Perc
 #'     2010).
-#'   \item \code{\link{morie_tps_criminal_network_graph}} — premise x
+#'   \item \eqn{\link{morie_tps_criminal_network_graph}}{link{morie_tps_criminal_network_graph}} — premise x
 #'     neighbourhood co-occurrence network (Diviak \emph{et al.}
 #'     2019-style projection from public TPS data).
 #' }
@@ -175,12 +175,12 @@ NULL
 #' Short-D'Orsogna-Brantingham 2008 hot-spot PDE
 #'
 #' Solves the coupled reaction-diffusion system
-#' \deqn{\partial_t A = \eta \nabla^2 A - \omega A + \theta \rho,}
+#' \deqn{\partial_t A = \eta \nabla^2 A - \omega A + \theta \rho,}{partial_t A = eta grad^2 A - omega A + theta rho,}
 #' \deqn{\partial_t \rho = \nabla \cdot (D \nabla \rho - 2 \rho \nabla
-#'   \log A) - \rho A + \gamma,}
+#'   \log A) - \rho A + \gamma,}{partial_t rho = grad * (D grad rho - 2 rho grad log A) - rho A + gamma,}
 #' on a cosine-corrected Toronto grid seeded by the observed incident
 #' histogram. Localised attractiveness spikes emerge whenever
-#' \code{(\eta, \omega, \theta, D, \gamma)} place the system in the
+#' \eqn{(\eta, \omega, \theta, D, \gamma)}{(eta, omega, theta, D, gamma)} place the system in the
 #' instability regime (D'Orsogna & Perc 2015, sec. 3.2).
 #'
 #' Steady-state spike count is compared against a DBSCAN cluster count
@@ -332,11 +332,11 @@ morie_tps_sdb_reaction_diffusion <- function(category = "Assault",
 #' Levy-flight tail exponent on consecutive-incident steps
 #'
 #' Computes the Hill maximum-likelihood estimator of the upper-tail
-#' Pareto exponent \code{\alpha} of the step-length distribution between
+#' Pareto exponent \eqn{\alpha}{alpha} of the step-length distribution between
 #' chronologically consecutive incidents, following Brockmann,
-#' Hufnagel & Geisel (2006). For a power-law tail \code{p(\ell) \propto
-#' \ell^{-\alpha}} on \code{\ell \ge \ell_{\min}} the Hill MLE is
-#' \deqn{\hat\alpha = 1 + n / \sum_i \log(\ell_i / \ell_{\min}).}
+#' Hufnagel & Geisel (2006). For a power-law tail \eqn{p(\ell) \propto
+#' \ell^{-\alpha}}{p(l) prop l^-alpha} on \eqn{\ell \ge \ell_{\min}}{l >= ell_min} the Hill MLE is
+#' \deqn{\hat\alpha = 1 + n / \sum_i \log(\ell_i / \ell_{\min}).}{hatalpha = 1 + n / sum_i log(ell_i / ell_min).}
 #' Standard error is obtained by 200 nonparametric bootstrap resamples.
 #'
 #' @param category TPS category name.
@@ -344,7 +344,7 @@ morie_tps_sdb_reaction_diffusion <- function(category = "Assault",
 #' @param lmin_km Lower tail cutoff in km.
 #' @param save_fig Whether to emit a log-log empirical-vs-fit PNG.
 #'
-#' @return A \code{morie_rich_result} with \code{\hat\alpha},
+#' @return A \code{morie_rich_result} with \eqn{\hat\alpha}{hatalpha},
 #'   bootstrap SE, sample-size diagnostics, and a Lévy-regime
 #'   interpretation.
 #'
@@ -449,11 +449,11 @@ morie_tps_levy_flight_alpha <- function(category = "Assault",
 #' Bettencourt urban-scaling exponent across the 158 Toronto wards
 #'
 #' Performs the standard log-log OLS scaling fit
-#' \deqn{\log y_i = \log Y_0 + \beta \log p_i + \varepsilon_i,}
+#' \deqn{\log y_i = \log Y_0 + \beta \log p_i + \varepsilon_i,}{log y_i = log Y_0 + beta log p_i + varepsilon_i,}
 #' where \eqn{y_i} is the crime count and \eqn{p_i} is the population
-#' of ward \code{i}. \code{\beta > 1} indicates super-linear (crime
-#' grows faster than population), \code{\beta = 1} linear, and
-#' \code{\beta < 1} sub-linear (protective) scaling (Bettencourt
+#' of ward \code{i}. \eqn{\beta > 1}{beta > 1} indicates super-linear (crime
+#' grows faster than population), \eqn{\beta = 1}{beta = 1} linear, and
+#' \eqn{\beta < 1}{beta < 1} sub-linear (protective) scaling (Bettencourt
 #' \emph{et al.} 2007; D'Orsogna & Perc 2015 sec. 4.1).
 #'
 #' @param category TPS category name.
@@ -461,7 +461,7 @@ morie_tps_levy_flight_alpha <- function(category = "Assault",
 #'   and crime columns.
 #' @param save_fig Whether to write a log-log scatter + fit PNG.
 #'
-#' @return A \code{morie_rich_result} with \code{\hat\beta}, its
+#' @return A \code{morie_rich_result} with \eqn{\hat\beta}{hatbeta}, its
 #'   standard error, R-squared, the back-transformed prefactor
 #'   \eqn{Y_0}, and a regime label (sub-linear, linear, super-linear).
 #'
@@ -570,11 +570,11 @@ morie_tps_urban_scaling_beta <- function(category = "Assault",
 #' rolling mean as a placeholder predator \eqn{y(t)} (TPS does not yet
 #' expose a public mass-stop / use-of-force time series). Under the
 #' classical Lotka-Volterra system,
-#' \deqn{\dot x = \alpha x - \beta x y, \quad \dot y = \delta x y - \gamma y,}
+#' \deqn{\dot x = \alpha x - \beta x y, \quad \dot y = \delta x y - \gamma y,}{dot x = alpha x - beta x y, dot y = delta x y - gamma y,}
 #' the small-amplitude oscillation around the equilibrium has period
-#' \code{T = 2 \pi / \sqrt{\alpha \gamma}}. Growth rate \code{\alpha} is
-#' estimated from log-differences of \code{x}; \code{\gamma} symmetrically
-#' from \code{y}; the interaction rates \code{\beta, \delta} follow by
+#' \eqn{T = 2 \pi / \sqrt{\alpha \gamma}}{T = 2 pi / sqrt(alpha gamma)}. Growth rate \eqn{\alpha}{alpha} is
+#' estimated from log-differences of \code{x}; \eqn{\gamma}{gamma} symmetrically
+#' from \code{y}; the interaction rates \eqn{\beta, \delta}{beta, delta} follow by
 #' the equilibrium relations.
 #'
 #' @param category TPS category name.

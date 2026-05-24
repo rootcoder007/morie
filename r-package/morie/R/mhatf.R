@@ -5,7 +5,7 @@
 #' R parity for \code{morie.fn.mhatf.multi_head_attention_full}.
 #'
 #' \deqn{\mathrm{MultiHead}(x) =
-#'       \mathrm{Concat}(\mathrm{head}_1, \ldots, \mathrm{head}_h) W^O}
+#'       \mathrm{Concat}(\mathrm{head}_1, \ldots, \mathrm{head}_h) W^O}{MultiHead(x) = Concat(head_1, ..., head_h) W^O}
 #'
 #' @param x Numeric matrix \code{(seq_len, d_model)}.
 #' @param num_heads Number of heads (must divide \code{d_model}).
@@ -13,7 +13,7 @@
 #' @param W_o Output projection (default identity).
 #' @param seed RNG seed for default weights.
 #' @param deterministic_seed Optional integer; if non-NULL, a SHA-keyed
-#'   seed from \code{\link{morie_det_rng}("mhatf", deterministic_seed)} is
+#'   seed from \eqn{\link{morie_det_rng}("mhatf", deterministic_seed)}{link{morie_det_rng}("mhatf", deterministic_seed)} is
 #'   installed before sampling so Py<->R streams agree.  Overrides
 #'   \code{seed} when set.
 #' @return Named list \code{(output, estimate, heads, num_heads, d_k,

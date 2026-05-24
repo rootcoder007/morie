@@ -21,6 +21,6 @@ This primitive is the SDM with the canonical decomposition + the
 Moran's-I diagnostic that justifies SDM over OLS. We deliberately
 do NOT fit the SDM ourselves -- \pkg{spdep}/\pkg{spatialreg} are
 hard deps we don't want to force. The caller passes the estimated
-\code{\rho} + \code{\beta} vectors; this primitive does the
+\eqn{\rho}{rho} + \eqn{\beta}{beta} vectors; this primitive does the
 decomposition arithmetic.
 }

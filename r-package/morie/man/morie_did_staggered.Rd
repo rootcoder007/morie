@@ -41,6 +41,6 @@ A list with \code{group_time}, \code{overall}, \code{by_cohort},
 \code{by_event_time}.
 }
 \description{
-Convenience wrapper around \code{\link{morie_did_group_time_att}} and
-\code{\link{morie_did_aggregate_gt_att}}.
+Convenience wrapper around \eqn{\link{morie_did_group_time_att}}{link{morie_did_group_time_att}} and
+\eqn{\link{morie_did_aggregate_gt_att}}{link{morie_did_aggregate_gt_att}}.
 }

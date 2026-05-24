@@ -6,7 +6,7 @@
 \description{
 R counterpart of \code{morie.audit_variables}.  Walks every column
 in every OTIS and ARSAU dataset known to the package, classifies
-each variable via \code{\link{morie_classify_variable}}, and
+each variable via \eqn{\link{morie_classify_variable}}{link{morie_classify_variable}}, and
 returns a single audit object (or pair of objects, when domain =
 "both") summarising coverage, levels of measurement, roles,
 cross-year-safety, and recommended methods per variable.
@@ -18,10 +18,10 @@ Rcpp only if profiling showed a real bottleneck.
 \subsection{Public callables}{
 
 \itemize{
-\item \code{\link{morie_audit_otis_variables}}
-\item \code{\link{morie_audit_arsau_variables}}
-\item \code{\link{morie_audit_all_variables}}
-\item \code{\link{morie_write_audit_markdown}}
+\item \eqn{\link{morie_audit_otis_variables}}{link{morie_audit_otis_variables}}
+\item \eqn{\link{morie_audit_arsau_variables}}{link{morie_audit_arsau_variables}}
+\item \eqn{\link{morie_audit_all_variables}}{link{morie_audit_all_variables}}
+\item \eqn{\link{morie_write_audit_markdown}}{link{morie_write_audit_markdown}}
 }
 }
 }

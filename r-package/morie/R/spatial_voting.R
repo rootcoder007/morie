@@ -124,7 +124,7 @@
 #' Recovers latent stimulus positions from perceptual placement data by
 #' estimating respondent-specific intercepts \eqn{a_i} and slopes
 #' \eqn{b_i} in the model
-#' \deqn{z_{ij} = a_i + b_i \hat{z}_j + \epsilon_{ij}.}
+#' \deqn{z_{ij} = a_i + b_i \hat{z}_j + \epsilon_{ij}.}{z_ij = a_i + b_i z_hat_j + epsilon_ij.}
 #' Delegates to `basicspace::aldmck` when the `basicspace` package is
 #' installed; otherwise a hand-rolled EM/least-squares fallback is used.
 #'
@@ -236,7 +236,7 @@ morie_spatial_voting_aldrich_mckelvey <- function(Z,
 #'
 #' Recovers respondent ideal points from an issue-scale response matrix
 #' via SVD on the column-centred matrix.  Implements Poole's (1998)
-#' decomposition \code{X_0 = \Psi W' + J_n c' + E_0}.  Delegates to
+#' decomposition \eqn{X_0 = \Psi W' + J_n c' + E_0}{X_0 = Psi W' + J_n c' + E_0}.  Delegates to
 #' `basicspace::blackbox` when available.
 #'
 #' @param X A respondent-by-issue numeric matrix of responses
@@ -397,8 +397,8 @@ morie_spatial_voting_optimal_classification <- function(votes,
 
 #' Double-center a distance matrix
 #'
-#' Computes \code{B = -\tfrac{1}{2} H D^{(2)} H} with
-#' \eqn{H = I - n^{-1}\mathbf{1}\mathbf{1}'}.
+#' Computes \eqn{B = -\tfrac{1}{2} H D^{(2)} H}{B = -(1)/(2) H D^(2) H} with
+#' \eqn{H = I - n^{-1}\mathbf{1}\mathbf{1}'}{H = I - n^-111'}.
 #' @param D Symmetric numeric distance matrix.
 #' @return The double-centered matrix \eqn{B}.
 #' @references Torgerson (1952); Armstrong et al. (2021), Section 3.
@@ -1644,7 +1644,7 @@ morie_spatial_voting_ordinal_irt <- function(Y, n_dims = 1L,
 #' Dynamic IRT with random-walk priors (stub)
 #'
 #' Time-series IRT where ideal points evolve via a random walk:
-#' \code{\phi_{i,t} \sim N(\phi_{i,t-1}, \tau^2)}.
+#' \eqn{\phi_{i,t} \sim N(\phi_{i,t-1}, \tau^2)}{phi_i,t ~ N(phi_i,t-1, tau^2)}.
 #'
 #' @param votes Vote matrix. @param time_periods Per-vote period indices.
 #' @param n_samples MCMC samples. @param burn_in Burn-in length.

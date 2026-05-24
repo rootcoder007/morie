@@ -23,8 +23,8 @@ Named list \code{(PE, estimate, seq_len, d_model, method)}.
 R parity for \code{morie.fn.posab.positional_encoding_abs}.
 }
 \details{
-\deqn{\mathrm{PE}(pos, 2i)   = \sin(pos / N^{2i/d})}
-\deqn{\mathrm{PE}(pos, 2i+1) = \cos(pos / N^{2i/d})}
+\deqn{\mathrm{PE}(pos, 2i)   = \sin(pos / N^{2i/d})}{PE(pos, 2i) = sin(pos / N^2i/d)}
+\deqn{\mathrm{PE}(pos, 2i+1) = \cos(pos / N^{2i/d})}{PE(pos, 2i+1) = cos(pos / N^2i/d)}
 }
 \examples{
 # See the package vignettes for usage examples:

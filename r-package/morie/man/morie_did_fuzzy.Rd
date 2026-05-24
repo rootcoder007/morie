@@ -34,10 +34,10 @@ any covariate columns.}
 \item{alpha}{Significance level for confidence intervals (default 0.05).}
 }
 \value{
-A result list; see \code{\link{morie_did_2x2}}.
+A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
 }
 \description{
-Uses \code{Z \times \mathrm{Post}} as an instrument for
-\code{D \times \mathrm{Post}} to recover a local average treatment
+Uses \eqn{Z \times \mathrm{Post}}{Z x Post} as an instrument for
+\eqn{D \times \mathrm{Post}}{D x Post} to recover a local average treatment
 effect under imperfect compliance.
 }

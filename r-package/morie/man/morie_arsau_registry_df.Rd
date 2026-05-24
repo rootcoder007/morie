@@ -20,7 +20,7 @@ Returns one row per \code{(year_or_range, kind)} entry in the
 package's internal registry, with the same columns as the Python
 \code{ARSAU_REGISTRY} mapping but in row-major \code{data.frame}
 form.  The underlying list-of-lists is still available via
-\code{\link{ARSAU_REGISTRY}}.
+\eqn{\link{ARSAU_REGISTRY}}{link{ARSAU_REGISTRY}}.
 }
 \references{
 Ontario Ministry of the Solicitor General, ARSAU

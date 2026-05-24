@@ -17,7 +17,7 @@
 #' SIU descriptive analyses (R port of \code{morie.siu.analyze})
 #'
 #' Turns a scraped SIU\code{_by_case.csv} (the canonical output of
-#' \code{\link{morie_fetch_siu}}) into a set of \code{RichResult}-style
+#' \eqn{\link{morie_fetch_siu}}{link{morie_fetch_siu}}) into a set of \code{RichResult}-style
 #' descriptive analyses. Each callable accepts either a path to the
 #' CSV or a data frame directly and returns a structured list with
 #' \code{title}, \code{summary_lines}, \code{tables},
@@ -27,15 +27,15 @@
 #' rich-output dispatch.
 #'
 #' These analyses are deliberately distinct from the published-table
-#' replicators in \code{\link{morie_siu_sprott_doob_feb2021}} and the
-#' Mandela classifier in \code{\link{morie_siu_classify_mandela}}:
+#' replicators in \eqn{\link{morie_siu_sprott_doob_feb2021}}{link{morie_siu_sprott_doob_feb2021}} and the
+#' Mandela classifier in \eqn{\link{morie_siu_classify_mandela}}{link{morie_siu_classify_mandela}}:
 #' those work from CSC SIU person-stay data, whereas these analyses
 #' work from the Ontario SIU \emph{director's-report} corpus.
 #'
 #' @name morie_siu_analyze
-#' @seealso \code{\link{morie_fetch_siu}},
-#'   \code{\link{morie_siu_classify_mandela}},
-#'   \code{\link{mrm_siu_per_service_rate}}.
+#' @seealso \eqn{\link{morie_fetch_siu}}{link{morie_fetch_siu}},
+#'   \eqn{\link{morie_siu_classify_mandela}}{link{morie_siu_classify_mandela}},
+#'   \eqn{\link{mrm_siu_per_service_rate}}{link{mrm_siu_per_service_rate}}.
 NULL
 
 
@@ -515,7 +515,7 @@ morie_siu_decision_timing <- function(data = NULL) {
 #' and tests independence with a Pearson chi-square (\code{
 #' stats::chisq.test}; p-value via \code{stats::pchisq}). Years with
 #' zero charge-decided cases are dropped. Complements
-#' \code{\link{morie_siu_verify_chi2}} in \code{sprott_doob.R}, which
+#' \eqn{\link{morie_siu_verify_chi2}}{link{morie_siu_verify_chi2}} in \code{sprott_doob.R}, which
 #' tests specific published 2x2 tables; this is a generic "did the
 #' charge rate move?" probe over the harvested SIU corpus.
 #'

@@ -28,7 +28,7 @@ A data.frame with one row per resource, columns:
 \description{
 Wraps the CKAN \code{package_search} action so users can discover
 datasets that are not in the built-in MORIE catalog and fetch them
-through \code{\link{morie_fetch_ckan}} or \code{\link{morie_fetch}}.
+through \eqn{\link{morie_fetch_ckan}}{link{morie_fetch_ckan}} or \eqn{\link{morie_fetch}}{link{morie_fetch}}.
 }
 \examples{
 \dontrun{
@@ -37,5 +37,5 @@ head(hits[, c("dataset_title", "resource_id", "format")])
 }
 }
 \seealso{
-\code{\link{morie_fetch_ckan}}, \code{\link{morie_fetch}}
+\eqn{\link{morie_fetch_ckan}}{link{morie_fetch_ckan}}, \eqn{\link{morie_fetch}}{link{morie_fetch}}
 }

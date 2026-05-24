@@ -27,17 +27,17 @@ and \code{year} is set, applies \code{year = <year>}.}
 \item{select}{Projection list (default \code{"*"}).}
 
 \item{billing_project, page_size, max_rows, quiet}{Forwarded to
-\code{\link{morie_ingest_bigquery_table}}.}
+\eqn{\link{morie_ingest_bigquery_table}}{link{morie_ingest_bigquery_table}}.}
 }
 \value{
 A base R \code{data.frame}.
 }
 \description{
 Convenience wrapper around
-\code{\link{morie_ingest_bigquery_table}} that pulls
+\eqn{\link{morie_ingest_bigquery_table}}{link{morie_ingest_bigquery_table}} that pulls
 \code{bigquery-public-data.chicago_crime.crime} - the Google
 BigQuery public-data mirror of the Socrata feed served by
-\code{\link{morie_ingest_chicago_crime}}.  Use this path when you
+\eqn{\link{morie_ingest_chicago_crime}}{link{morie_ingest_chicago_crime}}.  Use this path when you
 want SQL-side filtering or the full historical depth of the dataset
 without paging through SoQL.
 }
@@ -48,6 +48,6 @@ datasets are billed to the caller's project, not the dataset
 owner's.
 }
 \seealso{
-\code{\link{morie_ingest_chicago_crime}},
-\code{\link{morie_ingest_bigquery_table}}
+\eqn{\link{morie_ingest_chicago_crime}}{link{morie_ingest_chicago_crime}},
+\eqn{\link{morie_ingest_bigquery_table}}{link{morie_ingest_bigquery_table}}
 }

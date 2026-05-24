@@ -14,11 +14,11 @@ per-PwSMI, contact-per-undocumented, contact-per-homeless) and no
 administrative census of that subpopulation exists, you can:
 
 \enumerate{
-\item Fit \code{P(\text{trait} | \text{covariates})} on a national
+\item Fit \eqn{P(\text{trait} | \text{covariates})}{P(trait | covariates)} on a national
 probability sample (NCS-R for SMI; ACS-style survey for other
 traits) using ONLY covariates also available at the area level.
 \item Apply the fitted coefficients to area-level marginals from
-ACS / census to predict \code{P(\text{trait})} per area.
+ACS / census to predict \eqn{P(\text{trait})}{P(trait)} per area.
 \item Multiply by area-level adult population to get a synthetic
 "population at risk" denominator.
 }

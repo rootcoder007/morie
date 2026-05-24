@@ -5,7 +5,7 @@
 #' R parity for \code{morie.fn.rotrp.rotary_position_embedding}.
 #'
 #' Each pair (2i, 2i+1) is rotated by
-#' \code{\theta_{pos, i} = pos / N^{2i/d}}.
+#' \eqn{\theta_{pos, i} = pos / N^{2i/d}}{theta_pos, i = pos / N^2i/d}.
 #'
 #' @param x Numeric matrix \code{(seq_len, d_model)}, \code{d_model} even.
 #' @param base Frequency base (default 10000).

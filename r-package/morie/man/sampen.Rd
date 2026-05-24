@@ -18,10 +18,10 @@ List with \code{value} (SampEn), \code{name}, and \code{extra}
 (\code{m}, \code{r}, \code{tolerance}, \code{A}, \code{B}).
 }
 \description{
-Sample entropy (SampEn) of a 1-D signal: \\code{-\\log(A / B)}, where
+Sample entropy (SampEn) of a 1-D signal: \\eqn{-\\log(A / B)}{-log(A / B)}, where
 \\eqn{A} counts template-vector matches at embedding dimension
 \\eqn{m + 1} and \\eqn{B} at dimension \\eqn{m}, with Chebyshev distance
-tolerance \\code{r \\cdot \\mathrm{sd}(x)}.
+tolerance \\eqn{r \\cdot \\mathrm{sd}(x)}{r \* sd(x)}.
 }
 \details{
 Reference: Richman, J.S. & Moorman, J.R. (2000) "Physiological time-

@@ -31,7 +31,7 @@ morie_transformer_block(
 \item{seed}{RNG seed.}
 
 \item{deterministic_seed}{Optional integer; if non-NULL, a SHA-keyed
-seed from \code{\link{morie_det_rng}("trfbl", deterministic_seed)} is
+seed from \eqn{\link{morie_det_rng}("trfbl", deterministic_seed)}{link{morie_det_rng}("trfbl", deterministic_seed)} is
 installed before sampling so Py<->R streams agree.  Overrides
 \code{seed} when set.}
 }
@@ -43,7 +43,7 @@ R parity for \code{morie.fn.trfbl.transformer_block}.
 }
 \details{
 \deqn{h_1 = \mathrm{LN}(x + \mathrm{MHA}(x)), \quad
-      h_2 = \mathrm{LN}(h_1 + \mathrm{FFN}(h_1))}
+      h_2 = \mathrm{LN}(h_1 + \mathrm{FFN}(h_1))}{h_1 = LN(x + MHA(x)), h_2 = LN(h_1 + FFN(h_1))}
 }
 \examples{
 # See the package vignettes for usage examples:

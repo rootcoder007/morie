@@ -52,7 +52,7 @@ A list with \code{coefficients} (data frame),
 }
 \description{
 Constructs relative-time dummies \eqn{1\{t - g = k\}} for
-\code{k \in [-\text{leads}, \text{lags}]} (omitting
+\eqn{k \in [-\text{leads}, \text{lags}]}{k in [-leads, lags]} (omitting
 \code{reference_period}) and regresses the outcome on these
 indicators with unit and time fixed effects.
 }

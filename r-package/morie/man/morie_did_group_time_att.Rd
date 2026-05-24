@@ -51,7 +51,7 @@ A data frame with columns \code{cohort}, \code{time},
 }
 \description{
 For each cohort \eqn{g} and each post-treatment calendar period
-\code{t}, estimates \code{\mathrm{ATT}(g, t)}.  Prefers
+\code{t}, estimates \eqn{\mathrm{ATT}(g, t)}{ATT(g, t)}.  Prefers
 \code{did::att_gt} (the reference implementation by Callaway &
 Sant'Anna); falls back to a base-R bootstrap-based estimator that
 mirrors the Python module when \pkg{did} is unavailable.

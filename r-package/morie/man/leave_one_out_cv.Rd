@@ -6,15 +6,6 @@
 \usage{
 leave_one_out_cv(X, y, model_fn, score_fn)
 }
-\arguments{
-\item{X}{Matrix or data frame of features.}
-
-\item{y}{Vector of targets.}
-
-\item{model_fn}{Function \code{(X_train, y_train) -> model}.}
-
-\item{score_fn}{Function \code{(y_true, y_pred) -> scalar}.}
-}
 \value{
 A \code{morie_cv_result}.
 }

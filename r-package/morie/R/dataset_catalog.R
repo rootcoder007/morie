@@ -15,7 +15,7 @@
 #' and CKAN resource ID (if available).
 #'
 #' Keys match the Python DATASET_CATALOG in \code{data.py} exactly.
-#' Use \code{\link{morie_load_dataset}} to load by key.
+#' Use \eqn{\link{morie_load_dataset}}{link{morie_load_dataset}} to load by key.
 #'
 #' @return A data.frame with 44 rows (one per dataset) and columns:
 #'   key, name, source, survey, year, format, type, large_file,

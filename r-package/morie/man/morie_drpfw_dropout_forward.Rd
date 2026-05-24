@@ -31,7 +31,7 @@ morie_dropout_forward(
 \item{training}{If FALSE, returns input unchanged.}
 
 \item{deterministic_seed}{Optional integer; if non-NULL, a SHA-keyed
-seed from \code{\link{morie_det_rng}("drpfw", deterministic_seed)} is
+seed from \eqn{\link{morie_det_rng}("drpfw", deterministic_seed)}{link{morie_det_rng}("drpfw", deterministic_seed)} is
 installed before sampling so Py<->R streams agree.  Overrides
 \code{seed} when set.}
 }
@@ -42,7 +42,7 @@ Named list \code{(y, estimate, mask, p, kept_fraction, method)}.
 R parity for \code{morie.fn.drpfw.dropout_forward}.
 }
 \details{
-\deqn{y = x \odot m / (1-p), \quad m \sim \mathrm{Bernoulli}(1-p)}
+\deqn{y = x \odot m / (1-p), \quad m \sim \mathrm{Bernoulli}(1-p)}{y = x odot m / (1-p), m ~ Bernoulli(1-p)}
 }
 \examples{
 morie_drpfw_dropout_forward(x = rnorm(50))

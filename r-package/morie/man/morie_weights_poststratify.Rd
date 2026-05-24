@@ -7,5 +7,5 @@
 morie_weights_poststratify(weights, strata, population_totals)
 }
 \description{
-\eqn{w_i^{ps} = w_i \cdot N_h / \hat{N}_h}.
+\eqn{w_i^{ps} = w_i \cdot N_h / \hat{N}_h}{w_i^ps = w_i * N_h / N_hat_h}.
 }

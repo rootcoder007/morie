@@ -9,9 +9,9 @@ lists and exposes:
 }
 \details{
 \itemize{
-\item \code{\link{morie_otis_load}}: canonical CSV loader (reads
+\item \eqn{\link{morie_otis_load}}{link{morie_otis_load}}: canonical CSV loader (reads
 the Rscript-exported \code{otis_main.csv} mirror).
-\item \code{\link{morie_otis_all_analyses}}: driver that runs
+\item \eqn{\link{morie_otis_all_analyses}}{link{morie_otis_all_analyses}}: driver that runs
 rplace / astcmb / volat / rctrnd / otdesc on one data.frame and
 optionally serialises each result to disk under a user-supplied
 directory (CRAN-safe: never writes without an explicit

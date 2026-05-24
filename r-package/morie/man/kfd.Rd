@@ -13,8 +13,8 @@ kfd(x)
 List with \code{value} (D), \code{name}, and \code{extra} (\code{L}, \code{d}, \code{n}).
 }
 \description{
-Katz fractal dimension \\code{D = \\log_{10}(n - 1) / (\\log_{10}(n - 1) +
-\\log_{10}(d / L))} of a 1-D signal. \\eqn{L} is total path length and
+Katz fractal dimension \\eqn{D = \\log_{10}(n - 1) / (\\log_{10}(n - 1) +
+\\log_{10}(d / L))}{D = log_10(n - 1) / ( log_10(n - 1) + log_10(d / L))} of a 1-D signal. \\eqn{L} is total path length and
 \\eqn{d} is the diameter (max distance from the first sample).
 }
 \details{

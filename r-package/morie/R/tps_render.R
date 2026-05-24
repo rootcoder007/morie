@@ -26,16 +26,16 @@
 #' ---------
 #'
 #' \itemize{
-#'   \item \code{\link{morie_tps_project_xy}}: degrees -> rotated planar km.
-#'   \item \code{\link{morie_tps_pretty_label}}: \code{ASSAULT_RATE_2024} ->
+#'   \item \eqn{\link{morie_tps_project_xy}}{link{morie_tps_project_xy}}: degrees -> rotated planar km.
+#'   \item \eqn{\link{morie_tps_pretty_label}}{link{morie_tps_pretty_label}}: \code{ASSAULT_RATE_2024} ->
 #'     \code{"Assault rate * 2024"}.
-#'   \item \code{\link{morie_tps_district_for_centroid}}: lat/lon ->
+#'   \item \eqn{\link{morie_tps_district_for_centroid}}{link{morie_tps_district_for_centroid}}: lat/lon ->
 #'     pre-1998 borough name.
-#'   \item \code{\link{morie_tps_render_choropleth}}: polygon choropleth
+#'   \item \eqn{\link{morie_tps_render_choropleth}}{link{morie_tps_render_choropleth}}: polygon choropleth
 #'     (ggplot2 if available, else base R).
-#'   \item \code{\link{morie_tps_render_points}}: point-pattern map
+#'   \item \eqn{\link{morie_tps_render_points}}{link{morie_tps_render_points}}: point-pattern map
 #'     (incident dots + optional DBSCAN colouring).
-#'   \item \code{\link{morie_tps_render_yearly_grid}}: small-multiples
+#'   \item \eqn{\link{morie_tps_render_yearly_grid}}{link{morie_tps_render_yearly_grid}}: small-multiples
 #'     by year.
 #' }
 #'
@@ -518,7 +518,7 @@ morie_tps_render_points <- function(df,
 #' columns named \code{<prefix>_<year>}.
 #'
 #' @param polys Polygon data.frame (see
-#'   \code{\link{morie_tps_render_choropleth}}).
+#'   \eqn{\link{morie_tps_render_choropleth}}{link{morie_tps_render_choropleth}}).
 #' @param prefix Column-name prefix (default \code{"ASSAULT_RATE"}).
 #' @param years Integer vector of years (default 2014:2024).
 #' @param cmap Sequential palette name (default \code{"Reds"}).

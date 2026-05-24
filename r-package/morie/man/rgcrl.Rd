@@ -22,7 +22,7 @@ morie_rangayyan_correlation_dimension(x, m = 3L, tau = 1L, n_r = 20L)
 Named list \code{D2}, \code{log_r}, \code{log_C}, \code{m}, \code{tau}.
 }
 \description{
-Slope of \code{\log C(r)} vs \code{\log r} in the middle scaling region.
+Slope of \eqn{\log C(r)}{log C(r)} vs \eqn{\log r}{log r} in the middle scaling region.
 }
 \examples{
 set.seed(0)

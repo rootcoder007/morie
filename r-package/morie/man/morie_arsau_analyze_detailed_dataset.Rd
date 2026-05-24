@@ -30,12 +30,12 @@ A list classed
 \description{
 Chains:
 \itemize{
-\item \code{\link{mrm_uof_force_concentration}} on
+\item \eqn{\link{mrm_uof_force_concentration}}{link{mrm_uof_force_concentration}} on
 \code{POLICE_SERVICE}
-\item \code{\link{mrm_uof_weapon_diversity}} on
+\item \eqn{\link{mrm_uof_weapon_diversity}}{link{mrm_uof_weapon_diversity}} on
 \code{POLICE_SERVICE x ASSIGNMENT_TYPE}
-\item \code{\link{mrm_uof_yoy_change}} on \code{REPORTING_YEAR}
-\item \code{\link{mrm_uof_data_quality_audit}}
+\item \eqn{\link{mrm_uof_yoy_change}}{link{mrm_uof_yoy_change}} on \code{REPORTING_YEAR}
+\item \eqn{\link{mrm_uof_data_quality_audit}}{link{mrm_uof_data_quality_audit}}
 }
 }
 \references{

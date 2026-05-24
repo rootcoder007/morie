@@ -39,6 +39,6 @@ morie_describe(morie_aalen)    # function-object form
 
 }
 \seealso{
-\code{\link{morie_describe_by_name}} for the
+\eqn{\link{morie_describe_by_name}}{link{morie_describe_by_name}} for the
 string-only variant that does not capture symbol names.
 }

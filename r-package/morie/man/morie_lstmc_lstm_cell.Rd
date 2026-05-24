@@ -41,7 +41,7 @@ morie_lstm_cell(
 \item{seed}{RNG seed for default weights.}
 
 \item{deterministic_seed}{Optional integer; if non-NULL, a SHA-keyed
-seed from \code{\link{morie_det_rng}("lstmc", deterministic_seed)} is
+seed from \eqn{\link{morie_det_rng}("lstmc", deterministic_seed)}{link{morie_det_rng}("lstmc", deterministic_seed)} is
 installed before sampling so Py<->R streams agree.  Overrides
 \code{seed} when set.}
 }
@@ -55,7 +55,7 @@ R parity for \code{morie.fn.lstmc.lstm_cell}.  Gates stacked as
 \details{
 \deqn{f, i, o = \sigma(\ldots); \quad g = \tanh(\ldots); \quad
       c = f \odot c_\text{prev} + i \odot g; \quad
-      h = o \odot \tanh(c)}
+      h = o \odot \tanh(c)}{f, i, o = sigma(...); g = tanh(...); c = f odot c_prev + i odot g; h = o odot tanh(c)}
 }
 \examples{
 morie_lstmc_lstm_cell(x = rnorm(50))

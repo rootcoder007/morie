@@ -39,7 +39,7 @@ to use each row's parsed \code{_language} field.}
 translate. Defaults to every row whose \code{_language}
 differs from \code{target_lang} and has no override yet.}
 
-\item{model}{LLM model chain (see \code{\link{morie_siu_llm_extract}}).
+\item{model}{LLM model chain (see \eqn{\link{morie_siu_llm_extract}}{link{morie_siu_llm_extract}}).
 Default \code{"ollama"} for $0 cost via local Gemma / etc.}
 
 \item{fields}{Which text fields to translate. Defaults to the

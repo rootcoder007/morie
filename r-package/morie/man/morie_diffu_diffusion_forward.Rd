@@ -18,7 +18,7 @@ morie_diffu_diffusion_forward(
 
 \item{t}{Diffusion timestep (1..\code{num_steps}).}
 
-\item{betas}{Optional custom \code{\beta} schedule.}
+\item{betas}{Optional custom \eqn{\beta}{beta} schedule.}
 
 \item{num_steps}{Total diffusion steps (default 1000).}
 
@@ -34,9 +34,9 @@ R parity for \code{morie.fn.diffu.diffusion_forward}.
 }
 \details{
 \deqn{x_t = \sqrt{\bar\alpha_t}\, x_0 +
-      \sqrt{1 - \bar\alpha_t}\, \varepsilon}
+      \sqrt{1 - \bar\alpha_t}\, \varepsilon}{x_t = sqrt(baralpha_t) x_0 + sqrt(1 - baralpha_t) epsilon}
 
-with linear \code{\beta} schedule from \code{1e-4} to \code{0.02}.
+with linear \eqn{\beta}{beta} schedule from \code{1e-4} to \code{0.02}.
 }
 \examples{
 # See the package vignettes for usage examples:

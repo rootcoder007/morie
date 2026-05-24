@@ -25,7 +25,7 @@ pass a function for anything else) or a function F0(t).}
 Named list: statistic, p_value, h, n, method.
 }
 \description{
-\code{D_n = \sup_t |\hat F_h(t) - F_0(t)|}.
+\eqn{D_n = \sup_t |\hat F_h(t) - F_0(t)|}{D_n = sup_t |hat F_h(t) - F_0(t)|}.
 }
 \examples{
 fzksm(x = rnorm(50))

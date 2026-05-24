@@ -30,7 +30,7 @@ A list with components \code{zhat} (stimulus positions), \code{alpha},
 Recovers latent stimulus positions from perceptual placement data by
 estimating respondent-specific intercepts \eqn{a_i} and slopes
 \eqn{b_i} in the model
-\deqn{z_{ij} = a_i + b_i \hat{z}_j + \epsilon_{ij}.}
+\deqn{z_{ij} = a_i + b_i \hat{z}_j + \epsilon_{ij}.}{z_ij = a_i + b_i z_hat_j + epsilon_ij.}
 Delegates to \code{basicspace::aldmck} when the \code{basicspace} package is
 installed; otherwise a hand-rolled EM/least-squares fallback is used.
 }

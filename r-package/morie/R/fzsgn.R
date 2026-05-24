@@ -2,7 +2,7 @@
 
 #' Fauzi: Smoothed sign test (Ch 5)
 #'
-#' \code{S_n=\sum_i \Phi((X_i-\theta_0)/h)},
+#' \eqn{S_n=\sum_i \Phi((X_i-\theta_0)/h)}{S_n=sum_i Phi((X_i-theta_0)/h)},
 #' z = (S_n - n/2)/sqrt(n/4) ~ N(0,1).
 #'
 #' @param x Numeric vector.

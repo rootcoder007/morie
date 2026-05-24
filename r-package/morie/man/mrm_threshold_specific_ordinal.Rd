@@ -33,7 +33,7 @@ and the outcome is a factor, \code{levels()} is used; otherwise
 the proportional-odds baseline is fit and an LR test against the
 threshold-specific model is reported.}
 
-\item{max_iter, tol}{IRLS / GLM control passed to \code{\link[stats]{glm.fit}}.}
+\item{max_iter, tol}{IRLS / GLM control passed to \eqn{\link[stats]{glm.fit}}{link[stats]{glm.fit}}.}
 }
 \value{
 An object of class \code{c("mrm_threshold_specific_ordinal",
@@ -45,8 +45,8 @@ An object of class \code{c("mrm_threshold_specific_ordinal",
 \code{proportional_odds_p}.
 }
 \description{
-For each cumulative cutpoint \code{k = 1, \ldots, K-1}, fits an
-independent logistic regression of \code{1\{Y \le k\}} on the
+For each cumulative cutpoint \eqn{k = 1, \ldots, K-1}{k = 1, ..., K-1}, fits an
+independent logistic regression of \eqn{1\{Y \le k\}}{1\{Y <= k\}} on the
 covariates.  Optionally fits the proportional-odds baseline and
 returns the likelihood-ratio test of PO vs. threshold-specific.
 }

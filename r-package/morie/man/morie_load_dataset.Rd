@@ -41,5 +41,5 @@ df <- morie_load_dataset("ocp21", refresh = TRUE) # force re-fetch
 }
 }
 \seealso{
-\code{\link{morie_fetch}}, \code{\link{morie_ckan_search}}
+\eqn{\link{morie_fetch}}{link{morie_fetch}}, \eqn{\link{morie_ckan_search}}{link{morie_ckan_search}}
 }

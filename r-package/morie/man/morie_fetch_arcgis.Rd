@@ -46,5 +46,5 @@ df <- morie_fetch_arcgis(layer)
 }
 }
 \seealso{
-\code{\link{morie_fetch}}
+\eqn{\link{morie_fetch}}{link{morie_fetch}}
 }

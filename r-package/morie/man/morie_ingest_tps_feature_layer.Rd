@@ -17,7 +17,7 @@ morie_ingest_tps_feature_layer(
 }
 \arguments{
 \item{layer_url}{Full URL to a FeatureServer layer, e.g. one of
-the entries in \code{\link{morie_ingest_tps_layers}}.}
+the entries in \eqn{\link{morie_ingest_tps_layers}}{link{morie_ingest_tps_layers}}.}
 
 \item{where}{ArcGIS WHERE clause.  Default \code{"1=1"} fetches
 everything.  Examples: \code{"OCC_YEAR = 2024"},

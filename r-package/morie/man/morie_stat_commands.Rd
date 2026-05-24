@@ -18,16 +18,16 @@ packages.
 \subsection{Functions}{
 
 \itemize{
-\item \code{\link{stat_command}}: constructor for a single command.
-\item \code{\link{register_stat_command}}: add an entry to the
+\item \eqn{\link{stat_command}}{link{stat_command}}: constructor for a single command.
+\item \eqn{\link{register_stat_command}}{link{register_stat_command}}: add an entry to the
 registry, validating uniqueness of name and aliases.
-\item \code{\link{resolve_stat_command}}: look up by canonical
+\item \eqn{\link{resolve_stat_command}}{link{resolve_stat_command}}: look up by canonical
 name or alias.
-\item \code{\link{all_stat_command_names}}: sorted vector of all
+\item \eqn{\link{all_stat_command_names}}{link{all_stat_command_names}}: sorted vector of all
 names + aliases.
-\item \code{\link{commands_by_category}}: list of entries grouped
+\item \eqn{\link{commands_by_category}}{link{commands_by_category}}: list of entries grouped
 by category.
-\item \code{\link{run_stat_command}}: invoke a command's REPL
+\item \eqn{\link{run_stat_command}}{link{run_stat_command}}: invoke a command's REPL
 handler with the supplied arguments.
 }
 }

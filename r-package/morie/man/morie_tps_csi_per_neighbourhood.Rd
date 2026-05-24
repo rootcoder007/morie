@@ -23,7 +23,7 @@ morie_tps_csi_per_neighbourhood(
 A data.frame with one row per neighbourhood.
 }
 \description{
-Mirrors \code{\link{morie_tps_csi_per_year}} but groups by
+Mirrors \eqn{\link{morie_tps_csi_per_year}}{link{morie_tps_csi_per_year}} but groups by
 neighbourhood ID rather than fiscal year.  Population is not divided
 in here because TPS open data does not ship a per-ward population
 table; callers are expected to merge in the City of Toronto Open

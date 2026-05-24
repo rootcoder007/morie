@@ -15,6 +15,6 @@ category (e.g. \code{list(assault = <df>, robbery = <df>)}). Each
 data.frame must have \code{OCC_YEAR} or \code{REPORT_YEAR}.}
 }
 \description{
-Same body as \code{\link{morie_otis_tps_yoy_correlation}}; the alias
+Same body as \eqn{\link{morie_otis_tps_yoy_correlation}}{link{morie_otis_tps_yoy_correlation}}; the alias
 preserves the Python entry-point name.
 }

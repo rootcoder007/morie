@@ -20,22 +20,22 @@ available the routines fall back to a stop-stub explaining the gap.
 \subsection{Functions}{
 
 \itemize{
-\item \code{\link{morie_tps_sdb_reaction_diffusion}} — Short,
+\item \eqn{\link{morie_tps_sdb_reaction_diffusion}}{link{morie_tps_sdb_reaction_diffusion}} — Short,
 D'Orsogna and Brantingham (2008) hot-spot PDE, data-seeded.
-\item \code{\link{morie_tps_levy_flight_alpha}} — Hill-MLE
+\item \eqn{\link{morie_tps_levy_flight_alpha}}{link{morie_tps_levy_flight_alpha}} — Hill-MLE
 Levy-flight tail exponent following Brockmann, Hufnagel and
 Geisel (2006).
-\item \code{\link{morie_tps_urban_scaling_beta}} — Bettencourt
+\item \eqn{\link{morie_tps_urban_scaling_beta}}{link{morie_tps_urban_scaling_beta}} — Bettencourt
 \emph{et al.} (2007) urban-scaling beta across the 158 Toronto
 wards.
-\item \code{\link{morie_tps_lotka_volterra_police_crime}} — Lotka-
+\item \eqn{\link{morie_tps_lotka_volterra_police_crime}}{link{morie_tps_lotka_volterra_police_crime}} — Lotka-
 Volterra predator-prey on yearly counts.
-\item \code{\link{morie_tps_sdb_turing_demo}} — canonical Turing-
+\item \eqn{\link{morie_tps_sdb_turing_demo}}{link{morie_tps_sdb_turing_demo}} — canonical Turing-
 instability demo on a periodic lattice.
-\item \code{\link{morie_tps_inspection_game_phase}} — three-
+\item \eqn{\link{morie_tps_inspection_game_phase}}{link{morie_tps_inspection_game_phase}} — three-
 strategy replicator phase diagram (Helbing, Szolnoki & Perc
 2010).
-\item \code{\link{morie_tps_criminal_network_graph}} — premise x
+\item \eqn{\link{morie_tps_criminal_network_graph}}{link{morie_tps_criminal_network_graph}} — premise x
 neighbourhood co-occurrence network (Diviak \emph{et al.}
 2019-style projection from public TPS data).
 }

@@ -2,7 +2,7 @@
 #'
 #' Richman & Moorman (2000) sample entropy.
 #'
-#' \deqn{\mathrm{SampEn}(m, r) = -\ln(A / B)}
+#' \deqn{\mathrm{SampEn}(m, r) = -\ln(A / B)}{SampEn(m, r) = -ln(A / B)}
 #'
 #' where `B` is the number of unordered template-vector pairs of length
 #' `m` within Chebyshev distance `r` and `A` is the count at length

@@ -39,7 +39,7 @@ morie_gru_cell(
 \item{seed}{RNG seed.}
 
 \item{deterministic_seed}{Optional integer; if non-NULL, a SHA-keyed
-seed from \code{\link{morie_det_rng}("grucl", deterministic_seed)} is
+seed from \eqn{\link{morie_det_rng}("grucl", deterministic_seed)}{link{morie_det_rng}("grucl", deterministic_seed)} is
 installed before sampling so Py<->R streams agree.  Overrides
 \code{seed} when set.}
 }
@@ -52,7 +52,7 @@ R parity for \code{morie.fn.grucl.gru_cell}.  Gates stacked as
 }
 \details{
 \deqn{z, r = \sigma(\ldots); \quad n = \tanh(W_n x + r \odot U_n h); \quad
-      h = (1 - z) \odot n + z \odot h_\text{prev}}
+      h = (1 - z) \odot n + z \odot h_\text{prev}}{z, r = sigma(...); n = tanh(W_n x + r odot U_n h); h = (1 - z) odot n + z odot h_prev}
 }
 \examples{
 morie_grucl_gru_cell(x = rnorm(50))

@@ -69,7 +69,7 @@
 #' \code{where} is passed through unchanged; callers compose SQL
 #' fragments themselves and are responsible for not injecting hostile
 #' clauses (same contract as
-#' \code{\link{morie_ingest_bigquery_query}}).
+#' \eqn{\link{morie_ingest_bigquery_query}}{link{morie_ingest_bigquery_query}}).
 #'
 #' @param project,dataset,table Fully-qualified BigQuery table
 #'   reference, e.g. project \code{"bigquery-public-data"}, dataset
@@ -131,7 +131,7 @@ LIMIT ", format(lim, scientific = FALSE))
 #' @param billing_project Project to bill the query to. \code{NULL}
 #'   falls back to the \code{GCP_PROJECT} env var, then to ADC.
 #' @param page_size Rows per download page (forwarded to
-#'   \code{\link[bigrquery]{bq_table_download}}).
+#'   \eqn{\link[bigrquery]{bq_table_download}}{link[bigrquery]{bq_table_download}}).
 #' @param max_rows Optional cap on rows downloaded (defaults to
 #'   \code{Inf}, i.e. all rows).
 #' @param quiet Suppress \pkg{bigrquery} progress output.
@@ -148,8 +148,8 @@ LIMIT ", format(lim, scientific = FALSE))
 #' )
 #' head(df)
 #' }
-#' @seealso \code{\link{morie_ingest_bigquery_table}},
-#'   \code{\link{morie_ingest_bigquery_build_sql}}
+#' @seealso \eqn{\link{morie_ingest_bigquery_table}}{link{morie_ingest_bigquery_table}},
+#'   \eqn{\link{morie_ingest_bigquery_build_sql}}{link{morie_ingest_bigquery_build_sql}}
 #' @export
 morie_ingest_bigquery_query <- function(sql,
                                         billing_project = NULL,
@@ -201,8 +201,8 @@ morie_ingest_bigquery_query <- function(sql,
 #' Pull a BigQuery table (or filtered slice) into a data.frame
 #'
 #' Convenience wrapper around
-#' \code{\link{morie_ingest_bigquery_build_sql}} +
-#' \code{\link{morie_ingest_bigquery_query}}: builds a validated,
+#' \eqn{\link{morie_ingest_bigquery_build_sql}}{link{morie_ingest_bigquery_build_sql}} +
+#' \eqn{\link{morie_ingest_bigquery_query}}{link{morie_ingest_bigquery_query}}: builds a validated,
 #' backtick-quoted \code{SELECT} against a fully-qualified table and
 #' downloads the result.
 #'
@@ -231,7 +231,7 @@ morie_ingest_bigquery_query <- function(sql,
 #' )
 #' head(df)
 #' }
-#' @seealso \code{\link{morie_ingest_bigquery_query}}
+#' @seealso \eqn{\link{morie_ingest_bigquery_query}}{link{morie_ingest_bigquery_query}}
 #' @export
 morie_ingest_bigquery_table <- function(project, dataset, table,
                                         where = NULL,

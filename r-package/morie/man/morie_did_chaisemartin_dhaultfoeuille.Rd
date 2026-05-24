@@ -27,7 +27,7 @@ morie_did_chaisemartin_dhaultfoeuille(
 \item{alpha}{Significance level.}
 }
 \value{
-A result list; see \code{\link{morie_did_2x2}}.
+A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
 }
 \description{
 Computes the instantaneous treatment effect for switchers using

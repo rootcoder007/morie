@@ -6,7 +6,7 @@
 #' \code{area}, \code{risk}, \code{outcome}, \code{population},
 #' \code{group}. A \code{morie_city_profile} records which columns
 #' of one city's open-data export carry those five canonical fields,
-#' and \code{\link{morie_fairness_apply_profile}} renames an arbitrary
+#' and \eqn{\link{morie_fairness_apply_profile}}{link{morie_fairness_apply_profile}} renames an arbitrary
 #' city \code{data.frame} onto the canonical schema so the audit code
 #' never needs to know which city the data came from.
 #'
@@ -14,15 +14,15 @@
 #' ---------
 #'
 #' \itemize{
-#'   \item \code{\link{morie_fairness_city_profile}}: constructor for a
+#'   \item \eqn{\link{morie_fairness_city_profile}}{link{morie_fairness_city_profile}}: constructor for a
 #'     city profile object.
-#'   \item \code{\link{morie_fairness_register_city}}: register a
+#'   \item \eqn{\link{morie_fairness_register_city}}{link{morie_fairness_register_city}}: register a
 #'     profile in the process-local registry.
-#'   \item \code{\link{morie_fairness_get_city}}: look up a registered
+#'   \item \eqn{\link{morie_fairness_get_city}}{link{morie_fairness_get_city}}: look up a registered
 #'     profile by case-insensitive name.
-#'   \item \code{\link{morie_fairness_list_cities}}: list registered
+#'   \item \eqn{\link{morie_fairness_list_cities}}{link{morie_fairness_list_cities}}: list registered
 #'     profile names.
-#'   \item \code{\link{morie_fairness_apply_profile}}: rename a
+#'   \item \eqn{\link{morie_fairness_apply_profile}}{link{morie_fairness_apply_profile}}: rename a
 #'     \code{data.frame} onto the canonical schema.
 #' }
 #'
@@ -78,7 +78,7 @@ MORIE_FAIRNESS_CANONICAL_FIELDS <- c(
 #' to the audit.
 #'
 #' @param name Character identifier used with
-#'   \code{\link{morie_fairness_get_city}}.
+#'   \eqn{\link{morie_fairness_get_city}}{link{morie_fairness_get_city}}.
 #' @param area_col Column holding the area / district / precinct
 #'   identifier. Required.
 #' @param risk_col,outcome_col,population_col,group_col Optional

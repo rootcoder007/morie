@@ -43,12 +43,12 @@ integration parameters.
 }
 \description{
 Solves the coupled reaction-diffusion system
-\deqn{\partial_t A = \eta \nabla^2 A - \omega A + \theta \rho,}
+\deqn{\partial_t A = \eta \nabla^2 A - \omega A + \theta \rho,}{partial_t A = eta grad^2 A - omega A + theta rho,}
 \deqn{\partial_t \rho = \nabla \cdot (D \nabla \rho - 2 \rho \nabla
-  \log A) - \rho A + \gamma,}
+  \log A) - \rho A + \gamma,}{partial_t rho = grad * (D grad rho - 2 rho grad log A) - rho A + gamma,}
 on a cosine-corrected Toronto grid seeded by the observed incident
 histogram. Localised attractiveness spikes emerge whenever
-\code{(\eta, \omega, \theta, D, \gamma)} place the system in the
+\eqn{(\eta, \omega, \theta, D, \gamma)}{(eta, omega, theta, D, gamma)} place the system in the
 instability regime (D'Orsogna & Perc 2015, sec. 3.2).
 }
 \details{
