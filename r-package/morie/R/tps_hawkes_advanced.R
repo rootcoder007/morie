@@ -274,11 +274,15 @@ NULL
     mu   <- exp(a0)
     alpha <- eta * beta
     # hawkes::likelihoodHawkes returns -log-likelihood by convention.
+    # Signature is (lambda0, alpha, beta, history) -- no `end` argument
+    # in the CRAN release; the horizon is implicitly max(history).
+    # Caller is responsible for ensuring T_ == max(t) when delegating;
+    # otherwise the in-tree base-R path (.tps_hwka_neg_loglik_general)
+    # should be used to honour an arbitrary T_.
     val <- try(hawkes::likelihoodHawkes(lambda0 = mu,
                                          alpha   = alpha,
                                          beta    = beta,
-                                         history = t,
-                                         end     = T_),
+                                         history = t),
                silent = TRUE)
     if (!inherits(val, "try-error")) return(as.numeric(val))
   }

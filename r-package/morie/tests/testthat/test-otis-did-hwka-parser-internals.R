@@ -275,13 +275,10 @@ test_that(".tps_hwka_neg_loglik_external_exp returns numeric when hawkes is pres
   }
   set.seed(7L)
   t <- sort(stats::runif(30L, 0, 100))
-  out <- tryCatch(
-    morie:::.tps_hwka_neg_loglik_external_exp(
-      theta = c(log(0.5), 0.3, 1.0),
-      t = t, T_ = 100),
-    error = function(e) e)
-  if (inherits(out, "error")) {
-    skip(sprintf("external_exp error: %s", conditionMessage(out)))
-  }
-  expect_true(is.numeric(out))
+  # hawkes::likelihoodHawkes infers the horizon from max(history);
+  # pass T_ = max(t) so the delegation path is exercised.
+  out <- morie:::.tps_hwka_neg_loglik_external_exp(
+    theta = c(log(0.5), 0.3, 1.0),
+    t = t, T_ = max(t))
+  expect_true(is.numeric(out) && is.finite(out))
 })
