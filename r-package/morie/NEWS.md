@@ -1,3 +1,105 @@
+# morie 0.9.5.7 - 2026-05-24
+
+## Cross-portal open-data infrastructure
+
+Major sprint adding 14 open-data portals + a unified browse/load
+interface. The cross-portal `morie_dataset_portal_catalog()`
+now spans 9 cities + 1 federal source + ~800 dataset entries
+across 4 different API protocols.
+
+### Phase 3CCC -- NYC + TPS deep coverage
+
+* **3CCC1**: NYPD `law_code` resolver. New
+  `morie_datasets_nyc_nypd_law_books()` (46-row statute book ->
+  human name + jurisdiction dict; PL, VTL, CPL, ABC, AC, COR, AM,
+  PHL, ED, GB, GCI, HTH, PAR, LOC, FOA, RR, TAX, RPA, RP, PRL,
+  TWN, ...) + `morie_parse_nypd_law_code()` vectorised regex
+  parser. Added as 4th resolver in
+  `morie_datasets_nyc_nypd_resolved()`.
+* **3CCC2**: NYC multi-boundary loader bundle -- 5 new fixtures
+  (school districts / council districts / community districts /
+  NTAs 2020 / ZCTAs) + `morie_datasets_nyc_boundaries_catalog()`
+  unified index.
+* **3CCC3**: TPS Hub resolved-joins analyzer
+  (`morie_datasets_tps_psdp_resolved()`) -- division + hood158 +
+  hood140 + NIA + psdp_class 5-way join, mirrors the Chicago /
+  NYPD `_resolved()` patterns. Plus
+  `morie_datasets_tps_police_divisions()` (16 post-amalgamation
+  TPS divisions).
+* **3CCC4**: cross-portal `morie_dataset_portal_catalog()` -- 7
+  initial portals, 336 datasets, uniform schema (dataset_key,
+  source, id, api_modes, loader, dict_url, n_rows_bundled). Added
+  Vancouver Open Data (Opendatasoft v2.1, 190 datasets). Folded
+  SODA3-auth note into the SODA3 helper docstring per
+  Socrata support article 34730618169623.
+
+### Phase 3DDD -- Canadian municipal + federal coverage
+
+* **3DDD1**: 5 Vancouver crime-adjacent civic loaders -- graffiti
+  (100 / 7683), noise control areas (3), homeless shelters (17),
+  property use inspection districts (23), fire halls (20).
+* **3DDD2**: VPD GeoDASH crime loader. T&Cs gate auto-download,
+  so morie ships a stratified 550-row sample (50 x 11 TYPE
+  categories) + bundled legal disclaimer + user-`zip_path =` mode
+  for the full 915k-row feed.
+* **3DDD3**: Statistics Canada CCJS / CODR WDS REST API.
+  10-cube registry covering federal crime + corrections;
+  `morie_datasets_statcan_cube_metadata()` +
+  `morie_datasets_statcan_vectors()` +
+  `morie_datasets_statcan_full_csv_url()` wrappers.
+* **3DDD4**: `morie_datasets_browse()` + `morie_datasets_summary()`
+  -- filter the cross-portal catalog by keyword / portal /
+  api_mode / loader regex with AND-composable predicates.
+
+### Phase 3EEE -- Montreal + expanded Toronto/Vancouver + dispatcher
+
+* **3EEE1**: Montreal Open Data CKAN -- 23-row Loi/Justice/
+  Securite catalog + SIM (fire/EMS) interventions flagship loader
+  with 349-row stratified bundled sample + 170-row
+  INCIDENT_TYPE_DESC dict + generic CKAN dispatcher.
+* **3EEE2**: Toronto Open Data CKAN beyond TPS Hub -- 208-row
+  crime-adjacent catalog + ambulance stations + TPS ASR misc
+  aggregates + generic CKAN dispatcher.
+* **3EEE3**: Vancouver Open Data deeper coverage -- 4 more
+  fixtures (community centres, food markets, disability parking,
+  public art).
+* **3EEE4**: `morie_datasets_load_by_key()` -- single dispatcher
+  resolving any catalog dataset_key to its loader across all
+  portals.
+
+### Phase 3FFF -- dispatcher hardening + prairie cities
+
+* **3FFF1**: CKAN `package_show` -> first-CSV resource
+  auto-resolution. MTL + TO generic CKAN keys now Just Work
+  through `morie_datasets_load_by_key()`.
+* **3FFF2**: `mode = c("auto","soda2","soda3","odata")` +
+  `app_token` args on the dispatcher; routes through SODA3 for
+  Socrata-backed sources, silently ignored elsewhere.
+* **3FFF3**: Calgary + Edmonton + Ottawa loaders. Calgary +
+  Edmonton are Socrata (data.calgary.ca, data.edmonton.ca);
+  Ottawa is ArcGIS Hub (open.ottawa.ca, dispatches through the
+  existing 3SS+ generic ArcGIS pipeline). Crime-adjacent catalogs
+  + per-dataset bundled fixtures + generic Socrata-by-id
+  dispatchers.
+
+### Catalog totals (across 14 portals)
+
+```
+chicago             8     ontario_ckan       38
+nyc_nypd            8     vancouver_opendata 190
+nyc_opendata       10     vpd_geodash         1
+tps_arcgis_hub     71     statcan_ccjs       10
+tps_psdp           11     montreal_opendata  23
+                          toronto_opendata  208
+                          calgary_opendata  157
+                          edmonton_opendata 195
+                          ottawa_opendata   106
+```
+
+Total ~ 1044 catalog rows.
+
+---
+
 # morie 0.9.5.6 - 2026-05-23
 
 Formula corrections (affect Python AND R sibling identically):
