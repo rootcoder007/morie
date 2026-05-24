@@ -3,6 +3,10 @@
 # Phase 3RR: Socrata OData v4 integration. Helper +
 # chicago_crime_odata wrapper. @odata.nextLink server-driven
 # pagination, OData metadata-col stripping, X-App-Token header.
+#
+# Phase 3WW: rewritten to mock .morie_dataset_http_json (the
+# libcurl-or-httr2 transport boundary) instead of httr2 internals
+# directly.
 
 # ===================================================== (1) OData helper core
 
@@ -10,29 +14,20 @@ test_that(".morie_dataset_odata_fetch(paginate=FALSE) hits /api/odata/v4/<id> wi
   capture <- new.env()
   capture$urls <- character()
   testthat::local_mocked_bindings(
-    .morie_dataset_records_to_df = function(records) {
-      as.data.frame(do.call(rbind, lapply(records, as.data.frame,
-                                            stringsAsFactors = FALSE)))
+    .morie_dataset_http_json = function(url, query = NULL,
+                                          headers = character(),
+                                          timeout_s = 60L) {
+      capture$urls <- c(capture$urls,
+                         morie:::.morie_dataset_build_url(url, query))
+      list(value = list(list(id = "1", primary_type = "THEFT"),
+                          list(id = "2", primary_type = "BATTERY")),
+           `@odata.context` = "https://x/api/odata/v4/$metadata")
     },
     .package = "morie")
-  fake_perf <- function(req) {
-    capture$urls <- c(capture$urls, req$url)
-    structure(list(body_json = list(
-      value = list(list(id = "1", primary_type = "THEFT"),
-                    list(id = "2", primary_type = "BATTERY")),
-      `@odata.context` = "https://x/api/odata/v4/$metadata"
-    )), class = "httr2_response")
-  }
-  testthat::with_mocked_bindings(
-    req_perform = fake_perf,
-    resp_body_json = function(resp, simplifyVector = TRUE) resp$body_json,
-    .package = "httr2",
-    code = {
-      out <- morie:::.morie_dataset_odata_fetch(
-        "ijzp-q8t2",
-        select = "id,primary_type",
-        top = 2L)
-    })
+  out <- morie:::.morie_dataset_odata_fetch(
+    "ijzp-q8t2",
+    select = "id,primary_type",
+    top = 2L)
   expect_equal(length(capture$urls), 1L)
   u <- URLdecode(capture$urls[1L])
   expect_match(u, "data\\.cityofchicago\\.org/api/odata/v4/ijzp-q8t2")
@@ -43,23 +38,18 @@ test_that(".morie_dataset_odata_fetch(paginate=FALSE) hits /api/odata/v4/<id> wi
 test_that(".morie_dataset_odata_fetch strips @odata.* metadata cols from rows", {
   testthat::local_mocked_bindings(
     .morie_dataset_records_to_df = function(records) {
-      # Simulate a row with the @odata.id metadata col Socrata adds.
       data.frame(
         `@odata.id` = "https://x/api/odata/v4/ijzp-q8t2('row-aaaa.bbbb')",
         id = 1L, primary_type = "THEFT",
         check.names = FALSE, stringsAsFactors = FALSE)
     },
-    .package = "morie")
-  testthat::with_mocked_bindings(
-    req_perform = function(req) {
-      structure(list(body_json = list(value = list(list(id = 1L)))),
-                class = "httr2_response")
+    .morie_dataset_http_json = function(url, query = NULL,
+                                          headers = character(),
+                                          timeout_s = 60L) {
+      list(value = list(list(id = 1L)))
     },
-    resp_body_json = function(resp, simplifyVector = TRUE) resp$body_json,
-    .package = "httr2",
-    code = {
-      out <- morie:::.morie_dataset_odata_fetch("ijzp-q8t2")
-    })
+    .package = "morie")
+  out <- morie:::.morie_dataset_odata_fetch("ijzp-q8t2")
   expect_false("@odata.id" %in% names(out))
   expect_true("id" %in% names(out))
   expect_true("primary_type" %in% names(out))
@@ -68,13 +58,6 @@ test_that(".morie_dataset_odata_fetch strips @odata.* metadata cols from rows", 
 test_that(".morie_dataset_odata_fetch(paginate=TRUE) follows @odata.nextLink until absent", {
   capture <- new.env()
   capture$urls <- character()
-  testthat::local_mocked_bindings(
-    .morie_dataset_records_to_df = function(records) {
-      if (length(records) == 0L) return(data.frame())
-      as.data.frame(do.call(rbind, lapply(records, as.data.frame,
-                                            stringsAsFactors = FALSE)))
-    },
-    .package = "morie")
   call_count <- 0L
   responses <- list(
     # page 0: 3 rows + nextLink
@@ -85,20 +68,23 @@ test_that(".morie_dataset_odata_fetch(paginate=TRUE) follows @odata.nextLink unt
          `@odata.nextLink` = "https://x/api/odata/v4/ijzp-q8t2?%24skip=5"),
     # page 2: 0 rows -> stop
     list(value = list()))
-  fake_perf <- function(req) {
-    capture$urls <- c(capture$urls, req$url)
-    call_count <<- call_count + 1L
-    structure(list(body_json = responses[[call_count]]),
-              class = "httr2_response")
-  }
-  testthat::with_mocked_bindings(
-    req_perform = fake_perf,
-    resp_body_json = function(resp, simplifyVector = TRUE) resp$body_json,
-    .package = "httr2",
-    code = {
-      out <- morie:::.morie_dataset_odata_fetch("ijzp-q8t2",
-                                                  paginate = TRUE)
-    })
+  testthat::local_mocked_bindings(
+    .morie_dataset_records_to_df = function(records) {
+      if (length(records) == 0L) return(data.frame())
+      as.data.frame(do.call(rbind, lapply(records, as.data.frame,
+                                            stringsAsFactors = FALSE)))
+    },
+    .morie_dataset_http_json = function(url, query = NULL,
+                                          headers = character(),
+                                          timeout_s = 60L) {
+      capture$urls <- c(capture$urls,
+                         morie:::.morie_dataset_build_url(url, query))
+      call_count <<- call_count + 1L
+      responses[[call_count]]
+    },
+    .package = "morie")
+  out <- morie:::.morie_dataset_odata_fetch("ijzp-q8t2",
+                                              paginate = TRUE)
   # 3 requests: initial + 2 nextLinks. The 3rd returns empty -> stop.
   expect_equal(length(capture$urls), 3L)
   expect_match(capture$urls[2L], "%24skip=3")
@@ -114,22 +100,17 @@ test_that(".morie_dataset_odata_fetch(paginate=TRUE) stops when @odata.nextLink 
       as.data.frame(do.call(rbind, lapply(records, as.data.frame,
                                             stringsAsFactors = FALSE)))
     },
+    .morie_dataset_http_json = function(url, query = NULL,
+                                          headers = character(),
+                                          timeout_s = 60L) {
+      capture$urls <- c(capture$urls,
+                         morie:::.morie_dataset_build_url(url, query))
+      # Single page, no nextLink -> stop after 1 request.
+      list(value = list(list(id = "1"), list(id = "2")))
+    },
     .package = "morie")
-  fake_perf <- function(req) {
-    capture$urls <- c(capture$urls, req$url)
-    # Single page, no nextLink -> stop after 1 request.
-    structure(list(body_json = list(
-      value = list(list(id = "1"), list(id = "2")))),
-      class = "httr2_response")
-  }
-  testthat::with_mocked_bindings(
-    req_perform = fake_perf,
-    resp_body_json = function(resp, simplifyVector = TRUE) resp$body_json,
-    .package = "httr2",
-    code = {
-      out <- morie:::.morie_dataset_odata_fetch("ijzp-q8t2",
-                                                  paginate = TRUE)
-    })
+  out <- morie:::.morie_dataset_odata_fetch("ijzp-q8t2",
+                                              paginate = TRUE)
   expect_equal(length(capture$urls), 1L)
   expect_equal(nrow(out), 2L)
 })
@@ -140,28 +121,23 @@ test_that(".morie_dataset_odata_fetch(paginate=TRUE) honours max_features by tru
       as.data.frame(do.call(rbind, lapply(records, as.data.frame,
                                             stringsAsFactors = FALSE)))
     },
+    .morie_dataset_http_json = local({
+      count <- 0L
+      responses <- list(
+        list(value = list(list(id = "1"), list(id = "2"), list(id = "3")),
+             `@odata.nextLink` = "https://x/p2"),
+        list(value = list(list(id = "4"), list(id = "5"), list(id = "6")),
+             `@odata.nextLink` = "https://x/p3"))
+      function(url, query = NULL, headers = character(),
+                timeout_s = 60L) {
+        count <<- count + 1L
+        responses[[count]]
+      }
+    }),
     .package = "morie")
-  responses <- list(
-    list(value = list(list(id = "1"), list(id = "2"), list(id = "3")),
-         `@odata.nextLink` = "https://x/p2"),
-    list(value = list(list(id = "4"), list(id = "5"), list(id = "6")),
-         `@odata.nextLink` = "https://x/p3"))
-  count <- 0L
-  fake_perf <- function(req) {
-    count <<- count + 1L
-    structure(list(body_json = responses[[count]]),
-              class = "httr2_response")
-  }
-  testthat::with_mocked_bindings(
-    req_perform = fake_perf,
-    resp_body_json = function(resp, simplifyVector = TRUE) resp$body_json,
-    .package = "httr2",
-    code = {
-      out <- morie:::.morie_dataset_odata_fetch("ijzp-q8t2",
-                                                  paginate = TRUE,
-                                                  max_features = 4L)
-    })
-  expect_equal(count, 2L)
+  out <- morie:::.morie_dataset_odata_fetch("ijzp-q8t2",
+                                              paginate = TRUE,
+                                              max_features = 4L)
   expect_equal(nrow(out), 4L)
 })
 
@@ -170,21 +146,16 @@ test_that(".morie_dataset_odata_fetch sends app_token as X-App-Token header", {
   capture$headers <- list()
   testthat::local_mocked_bindings(
     .morie_dataset_records_to_df = function(records) data.frame(),
+    .morie_dataset_http_json = function(url, query = NULL,
+                                          headers = character(),
+                                          timeout_s = 60L) {
+      capture$headers[[length(capture$headers) + 1L]] <- headers
+      list(value = list())
+    },
     .package = "morie")
-  fake_perf <- function(req) {
-    capture$headers[[length(capture$headers) + 1L]] <- req$headers
-    structure(list(body_json = list(value = list())),
-              class = "httr2_response")
-  }
-  testthat::with_mocked_bindings(
-    req_perform = fake_perf,
-    resp_body_json = function(resp, simplifyVector = TRUE) resp$body_json,
-    .package = "httr2",
-    code = {
-      morie:::.morie_dataset_odata_fetch("ijzp-q8t2",
-                                           app_token = "tok-odata-xyz")
-    })
-  expect_equal(capture$headers[[1L]][["X-App-Token"]], "tok-odata-xyz")
+  morie:::.morie_dataset_odata_fetch("ijzp-q8t2",
+                                       app_token = "tok-odata-xyz")
+  expect_equal(capture$headers[[1L]], "X-App-Token: tok-odata-xyz")
 })
 
 test_that(".morie_dataset_odata_fetch passes $filter verbatim (caller-supplied)", {
@@ -192,22 +163,18 @@ test_that(".morie_dataset_odata_fetch passes $filter verbatim (caller-supplied)"
   capture$urls <- character()
   testthat::local_mocked_bindings(
     .morie_dataset_records_to_df = function(records) data.frame(),
+    .morie_dataset_http_json = function(url, query = NULL,
+                                          headers = character(),
+                                          timeout_s = 60L) {
+      capture$urls <- c(capture$urls,
+                         morie:::.morie_dataset_build_url(url, query))
+      list(value = list())
+    },
     .package = "morie")
-  fake_perf <- function(req) {
-    capture$urls <- c(capture$urls, req$url)
-    structure(list(body_json = list(value = list())),
-              class = "httr2_response")
-  }
-  testthat::with_mocked_bindings(
-    req_perform = fake_perf,
-    resp_body_json = function(resp, simplifyVector = TRUE) resp$body_json,
-    .package = "httr2",
-    code = {
-      morie:::.morie_dataset_odata_fetch(
-        "ijzp-q8t2",
-        filter = "year eq 2024",
-        orderby = "year desc")
-    })
+  morie:::.morie_dataset_odata_fetch(
+    "ijzp-q8t2",
+    filter = "year eq 2024",
+    orderby = "year desc")
   u <- URLdecode(capture$urls[1L])
   expect_match(u, "\\$filter=year eq 2024")
   expect_match(u, "\\$orderby=year desc")

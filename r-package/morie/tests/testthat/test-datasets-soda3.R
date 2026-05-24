@@ -4,128 +4,86 @@
 # (ahwe-kpsy, SODA3-only because SODA2 returns [{}] empty rows on
 # Socrata map/filtered views) + arbitrary-SoQL escape hatch for
 # the base ijzp-q8t2 / crimes feed.
+#
+# Phase 3WW: rewritten to mock .morie_dataset_http_json (the
+# libcurl-or-httr2 transport boundary) instead of httr2 internals
+# directly. Behaviour assertions are unchanged.
 
-# =================================================== (1) SODA3 helper core
+# =============================================================== (1) core
 
 test_that(".morie_dataset_soda3_query(paginate=FALSE) hits SODA3 query.json with the SoQL string in ?query=", {
-  calls <- list()
+  capture <- new.env()
+  capture$urls <- character()
+  capture$headers <- list()
   testthat::local_mocked_bindings(
-    .morie_dataset_records_to_df = function(records) {
-      calls[[length(calls) + 1L]] <<- records
-      data.frame(stub = seq_along(records))
+    .morie_dataset_http_json = function(url, query = NULL,
+                                          headers = character(),
+                                          timeout_s = 60L) {
+      capture$urls <- c(capture$urls,
+                         morie:::.morie_dataset_build_url(url, query))
+      capture$headers[[length(capture$headers) + 1L]] <- headers
+      list(list(id = "1"), list(id = "2"))
     },
     .package = "morie")
-  # Mock httr2 layer to capture the URL.
-  with_mocked_httr2_get <- function(handler) {
-    if (!requireNamespace("httr2", quietly = TRUE)) skip("httr2")
-    mockery_ish <- NULL
-    capture <- new.env()
-    capture$urls <- character()
-    capture$headers <- list()
-    fake_req_perform <- function(req) {
-      url <- req$url
-      capture$urls <- c(capture$urls, url)
-      capture$headers[[length(capture$headers) + 1L]] <- req$headers
-      structure(list(body_json = handler(url)),
-                class = "httr2_response")
-    }
-    fake_resp_body_json <- function(resp, simplifyVector = TRUE) {
-      resp$body_json
-    }
-    testthat::with_mocked_bindings(
-      req_perform = fake_req_perform,
-      resp_body_json = fake_resp_body_json,
-      .package = "httr2",
-      code = {
-        out <- morie:::.morie_dataset_soda3_query(
-          "ahwe-kpsy",
-          soql = "SELECT * WHERE primary_type='THEFT' LIMIT 5",
-          paginate = FALSE)
-        list(out = out, capture = capture)
-      })
-  }
-  result <- with_mocked_httr2_get(function(url) {
-    list(list(id = "1"), list(id = "2"))
-  })
-  expect_equal(length(result$capture$urls), 1L)
-  u <- result$capture$urls[1L]
+  out <- morie:::.morie_dataset_soda3_query(
+    "ahwe-kpsy",
+    soql = "SELECT * WHERE primary_type='THEFT' LIMIT 5",
+    paginate = FALSE)
+  expect_equal(length(capture$urls), 1L)
+  u <- capture$urls[1L]
   expect_match(u, "data\\.cityofchicago\\.org/api/v3/views/ahwe-kpsy/query\\.json")
-  expect_match(u, "query=SELECT")
-  expect_match(u, "primary_type")
+  expect_match(u, "query=SELECT", fixed = FALSE)
+  expect_match(URLdecode(u), "primary_type='THEFT'")
 })
 
 test_that(".morie_dataset_soda3_query(paginate=TRUE) walks LIMIT n OFFSET m baked into the SoQL string", {
   capture <- new.env()
   capture$soqls <- character()
-  # Mock the inner records-to-df function so we can pretend each
-  # request returns a deterministic number of rows.
+  call_count <- 0L
   responses <- list(
     list(list(id = "1"), list(id = "2"), list(id = "3")),  # page 0: 3 rows
     list(list(id = "4"), list(id = "5")),                  # page 1: 2 rows (short -> exhausted)
     list())                                                # never reached
-  call_count <- 0L
   testthat::local_mocked_bindings(
-    .morie_dataset_records_to_df = function(records) {
-      if (length(records) == 0L) return(data.frame())
-      as.data.frame(do.call(rbind, lapply(records, as.data.frame,
-                                            stringsAsFactors = FALSE)))
+    .morie_dataset_http_json = function(url, query = NULL,
+                                          headers = character(),
+                                          timeout_s = 60L) {
+      # query$query carries the SoQL string for SODA3 queries.
+      capture$soqls <- c(capture$soqls,
+                         if (!is.null(query) && !is.null(query$query))
+                           query$query else "")
+      call_count <<- call_count + 1L
+      responses[[call_count]]
     },
     .package = "morie")
-  fake_req_perform <- function(req) {
-    capture$soqls <- c(capture$soqls,
-                        sub(".*query=([^&]*).*", "\\1", req$url))
-    call_count <<- call_count + 1L
-    body <- responses[[call_count]]
-    structure(list(body_json = body), class = "httr2_response")
-  }
-  fake_resp_body_json <- function(resp, simplifyVector = TRUE) resp$body_json
-  testthat::with_mocked_bindings(
-    req_perform = fake_req_perform,
-    resp_body_json = fake_resp_body_json,
-    .package = "httr2",
-    code = {
-      out <- morie:::.morie_dataset_soda3_query(
-        "ahwe-kpsy",
-        soql = "SELECT * WHERE year=2024",
-        paginate = TRUE, page_size = 3L)
-      # 2 requests -- short 2nd page is the stop signal.
-      expect_equal(length(capture$soqls), 2L)
-      # First page: LIMIT 3 OFFSET 0.
-      expect_match(URLdecode(capture$soqls[1L]),
-                   "LIMIT 3 OFFSET 0$")
-      # Second page: LIMIT 3 OFFSET 3.
-      expect_match(URLdecode(capture$soqls[2L]),
-                   "LIMIT 3 OFFSET 3$")
-      # Caller's WHERE is preserved on every page.
-      expect_true(all(grepl("year=2024", URLdecode(capture$soqls))))
-      expect_equal(nrow(out), 5L)
-    })
+  out <- morie:::.morie_dataset_soda3_query(
+    "ahwe-kpsy",
+    soql = "SELECT * WHERE year=2024",
+    paginate = TRUE, page_size = 3L)
+  expect_equal(length(capture$soqls), 2L)
+  expect_match(capture$soqls[1L], "LIMIT 3 OFFSET 0$")
+  expect_match(capture$soqls[2L], "LIMIT 3 OFFSET 3$")
+  expect_true(all(grepl("year=2024", capture$soqls)))
+  expect_equal(nrow(out), 5L)
 })
 
 test_that(".morie_dataset_soda3_query(paginate=TRUE) strips caller-supplied LIMIT/OFFSET", {
   capture <- new.env()
   capture$soqls <- character()
-  count <- 0L
   testthat::local_mocked_bindings(
-    .morie_dataset_records_to_df = function(records) data.frame(),
+    .morie_dataset_http_json = function(url, query = NULL,
+                                          headers = character(),
+                                          timeout_s = 60L) {
+      capture$soqls <- c(capture$soqls,
+                         if (!is.null(query) && !is.null(query$query))
+                           query$query else "")
+      list()  # empty -> single request
+    },
     .package = "morie")
-  fake_perf <- function(req) {
-    capture$soqls <- c(capture$soqls,
-                        URLdecode(sub(".*query=([^&]*).*", "\\1",
-                                       req$url)))
-    count <<- count + 1L
-    structure(list(body_json = list()), class = "httr2_response")
-  }
-  testthat::with_mocked_bindings(
-    req_perform = fake_perf,
-    resp_body_json = function(resp, simplifyVector = TRUE) resp$body_json,
-    .package = "httr2",
-    code = {
-      morie:::.morie_dataset_soda3_query(
-        "ahwe-kpsy",
-        soql = "SELECT * WHERE year=2024 LIMIT 999 OFFSET 50",
-        paginate = TRUE, page_size = 100L)
-    })
+  morie:::.morie_dataset_soda3_query(
+    "ahwe-kpsy",
+    soql = "SELECT * WHERE year=2024 LIMIT 999 OFFSET 50",
+    paginate = TRUE, page_size = 100L)
   expect_equal(length(capture$soqls), 1L)
   # Caller's LIMIT 999 OFFSET 50 stripped; replaced by LIMIT 100 OFFSET 0.
   expect_match(capture$soqls[1L],
@@ -137,23 +95,18 @@ test_that(".morie_dataset_soda3_query sends app_token as X-App-Token header (not
   capture <- new.env()
   capture$headers <- list()
   testthat::local_mocked_bindings(
-    .morie_dataset_records_to_df = function(records) data.frame(),
+    .morie_dataset_http_json = function(url, query = NULL,
+                                          headers = character(),
+                                          timeout_s = 60L) {
+      capture$headers[[length(capture$headers) + 1L]] <- headers
+      list()
+    },
     .package = "morie")
-  fake_perf <- function(req) {
-    capture$headers[[length(capture$headers) + 1L]] <- req$headers
-    structure(list(body_json = list()), class = "httr2_response")
-  }
-  testthat::with_mocked_bindings(
-    req_perform = fake_perf,
-    resp_body_json = function(resp, simplifyVector = TRUE) resp$body_json,
-    .package = "httr2",
-    code = {
-      morie:::.morie_dataset_soda3_query(
-        "ahwe-kpsy", soql = "SELECT * LIMIT 1",
-        app_token = "fake-token-abc")
-    })
+  morie:::.morie_dataset_soda3_query(
+    "ahwe-kpsy", soql = "SELECT * LIMIT 1",
+    app_token = "fake-token-abc")
   expect_equal(length(capture$headers), 1L)
-  expect_equal(capture$headers[[1L]][["X-App-Token"]], "fake-token-abc")
+  expect_equal(capture$headers[[1L]], "X-App-Token: fake-token-abc")
 })
 
 # =================================== (2) chicago_crime_map (ahwe-kpsy)
@@ -163,8 +116,6 @@ test_that("morie_datasets_chicago_crime_map(offline=TRUE) reads bundled 39-col f
   expect_s3_class(df, "data.frame")
   expect_equal(ncol(df), 39L)
   expect_equal(nrow(df), 5L)
-  # Spot-check that we have the 4 reverse-geocoded extras and the 4
-  # Socrata-metadata cols and at least one :@computed_region_*.
   for (col in c("location_address", "location_city",
                 "location_state", "location_zip",
                 ":id", ":version", ":created_at", ":updated_at"))

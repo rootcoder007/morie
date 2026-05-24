@@ -581,18 +581,20 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
                                         max_pages = 200L,
                                         max_features = NULL,
                                         base_url = "https://data.cityofchicago.org") {
-  if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie datasets HTTP fetch requires the 'httr2' package.")
-  }
+  # 3WW: routes through .morie_dataset_http_json (libcurl backend
+  # from 3VV with httr2 fallback) instead of calling httr2 directly.
+  # Single HTTP code path for SODA2 + SODA3 + raw text fetches.
   url <- sprintf("%s/api/v3/views/%s/query.json", base_url, view_id)
+  headers <- if (is.null(app_token)) {
+    character()
+  } else {
+    paste0("X-App-Token: ", app_token)
+  }
   send_one <- function(soql_string) {
-    req <- httr2::request(url)
-    req <- httr2::req_url_query(req, query = soql_string)
-    if (!is.null(app_token)) {
-      req <- httr2::req_headers(req, `X-App-Token` = app_token)
-    }
-    resp <- httr2::req_perform(req)
-    records <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+    records <- .morie_dataset_http_json(
+      url,
+      query = list(query = soql_string),
+      headers = headers)
     .morie_dataset_records_to_df(records)
   }
   if (!isTRUE(paginate)) {
@@ -689,24 +691,22 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
                                         max_pages = 200L,
                                         max_features = NULL,
                                         base_url = "https://data.cityofchicago.org") {
-  if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie datasets HTTP fetch requires the 'httr2' package.")
-  }
+  # 3WW: routes through .morie_dataset_http_json (libcurl backend
+  # with httr2 fallback) instead of calling httr2 directly. Single
+  # HTTP code path across all four Socrata API modes (SODA2 SODA3
+  # OData + raw text) + the ArcGIS-Hub catalog discovery layer.
   strip_odata_meta <- function(df) {
     if (!is.data.frame(df) || ncol(df) == 0L) return(df)
     drop <- grepl("^@odata\\.", names(df))
     if (any(drop)) df[, !drop, drop = FALSE] else df
   }
+  headers <- if (is.null(app_token)) {
+    character()
+  } else {
+    paste0("X-App-Token: ", app_token)
+  }
   send <- function(url, query = NULL) {
-    req <- httr2::request(url)
-    if (!is.null(query) && length(query) > 0L) {
-      req <- httr2::req_url_query(req, !!!query)
-    }
-    if (!is.null(app_token)) {
-      req <- httr2::req_headers(req, `X-App-Token` = app_token)
-    }
-    resp <- httr2::req_perform(req)
-    httr2::resp_body_json(resp, simplifyVector = TRUE)
+    .morie_dataset_http_json(url, query = query, headers = headers)
   }
   build_query <- function() {
     q <- list()
@@ -724,7 +724,8 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
     return(strip_odata_meta(df))
   }
   # Paginated mode: follow @odata.nextLink until absent / empty /
-  # max_features / max_pages.
+  # max_features / max_pages. The nextLink is a fully-formed URL
+  # so we send it with no extra query parameters.
   cap <- if (is.null(max_features)) NA_integer_ else as.integer(max_features)
   max_pages <- as.integer(max_pages)
   chunks <- vector("list", 0L)
@@ -744,7 +745,7 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
     if (!is.na(cap) && total >= cap) break
     next_link <- body[["@odata.nextLink"]]
     if (is.null(next_link) || !nzchar(next_link)) break
-    body <- send(next_link)
+    body <- send(next_link, query = NULL)
   }
   if (length(chunks) == 0L) return(data.frame())
   do.call(rbind, chunks)
