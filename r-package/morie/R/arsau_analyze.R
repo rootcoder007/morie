@@ -108,7 +108,7 @@ NULL
     warnings <- c(
       warnings,
       paste0(
-        "Source dataset flagged invalid by the publishing ministry — ",
+        "Source dataset flagged invalid by the publishing ministry \u2014 ",
         "results below are presented for data-quality review only."
       )
     )
@@ -187,7 +187,7 @@ NULL
 #'         published CKAN sidecar (when present)
 #' }
 #'
-#' Region-locality is NOT meaningful for main_records — only the
+#' Region-locality is NOT meaningful for main_records \u2014 only the
 #' \code{OPP_PoliceService_Region} column is published, and it pairs
 #' one column with itself.  See
 #' \code{\link{morie_arsau_analyze_detailed_dataset}} for the
@@ -461,7 +461,7 @@ morie_arsau_analyze_probe_cycle_records <- function(year, language = "en",
 #' @return A list classed
 #'   \code{c("morie_arsau_result", "morie_rich_result", "list")}.
 #' @references Ontario Ministry of the Solicitor General, ARSAU 2023
-#'   and 2024 weapon_records technical notes — the 2023 release
+#'   and 2024 weapon_records technical notes \u2014 the 2023 release
 #'   accompanies an explicit invalidity flag.
 #' @export
 morie_arsau_analyze_weapon_records <- function(year, allow_invalid = FALSE,
@@ -546,7 +546,7 @@ morie_arsau_analyze_weapon_records <- function(year, allow_invalid = FALSE,
   extra <- ""
   if (!isTRUE(loaded$is_valid)) {
     extra <- paste0(
-      "These results are computed for data-quality review only — the ",
+      "These results are computed for data-quality review only \u2014 the ",
       "underlying file is the ministry-flagged invalid 2023 release. ",
       "Do NOT use the weapon frequencies or the chi-square association ",
       "in comparative analysis."

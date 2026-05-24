@@ -35,7 +35,7 @@ Chains \code{mrm_uof_force_concentration} (PoliceService),
 \code{mrm_uof_data_quality_audit} (against the CKAN sidecar).
 }
 \details{
-Region-locality is NOT meaningful for main_records — only the
+Region-locality is NOT meaningful for main_records \u2014 only the
 \code{OPP_PoliceService_Region} column is published, and it pairs
 one column with itself.  See
 \code{\link{morie_arsau_analyze_detailed_dataset}} for the

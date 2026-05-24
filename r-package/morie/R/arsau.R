@@ -11,7 +11,7 @@
 #' \code{morie.arsau_datasets} module:
 #'
 #' \itemize{
-#'   \item \code{ARSAU_REGISTRY()}: returns the registered (year × kind)
+#'   \item \code{ARSAU_REGISTRY()}: returns the registered (year \u00d7 kind)
 #'         entries as a list of lists.
 #'   \item \code{morie_arsau_load_main_records()},
 #'         \code{morie_arsau_load_individual_records()},
@@ -40,9 +40,9 @@
 #'   \item the \code{MORIE_ARSAU_DIR} environment variable
 #'   \item \code{MORIE_DATA_DIR/arsau}
 #'   \item \code{morie_cache_dir("arsau")} (only if already populated by
-#'         a previous \code{morie_arsau_download()} call — never
+#'         a previous \code{morie_arsau_download()} call \u2014 never
 #'         auto-created at read-time, per CRAN policy)
-#'   \item \code{system.file("extdata", "arsau", package = "morie")} —
+#'   \item \code{system.file("extdata", "arsau", package = "morie")} \u2014
 #'         the bundled tiny fixture for unit tests + tutorials
 #'   \item stop with a remediation paragraph
 #' }
@@ -212,8 +212,8 @@ NULL
     "2023", "weapon_records", "uof_weapon_records_invaliddata.csv",
     NULL,
     8711L, 4L, FALSE,
-    "2023 Ontario use-of-force weapon records — INVALID per the ministry's technical report. Do not use for comparative analysis.",
-    "Enregistrements 2023 sur les armes — DONNEES INVALIDES selon le rapport technique du ministere."
+    "2023 Ontario use-of-force weapon records \u2014 INVALID per the ministry's technical report. Do not use for comparative analysis.",
+    "Enregistrements 2023 sur les armes \u2014 DONNEES INVALIDES selon le rapport technique du ministere."
   ),
   `2024|individual_records` = .arsau_make_entry(
     "2024", "individual_records", "uof_individual_records.csv",
@@ -371,7 +371,7 @@ morie_arsau_read_sidecar <- function(path) {
 
   warnings <- character(0)
   if (!entry$is_valid) {
-    warnings <- c(warnings, "Ministry-flagged invalid data — do not use for comparative or quantitative analysis.")
+    warnings <- c(warnings, "Ministry-flagged invalid data \u2014 do not use for comparative or quantitative analysis.")
   }
   if (nrow(df) != entry$expected_rows) {
     warnings <- c(warnings, sprintf(
@@ -386,13 +386,13 @@ morie_arsau_read_sidecar <- function(path) {
   }
 
   interp <- if (tolower(substr(language, 1, 2)) == "fr") {
-    sprintf("Donnees ARSAU chargees: %s pour %s. %d lignes × %d colonnes. %s %s",
+    sprintf("Donnees ARSAU chargees: %s pour %s. %d lignes \u00d7 %d colonnes. %s %s",
             entry$kind, entry$year_or_range, nrow(df), ncol(df),
             if (entry$is_valid) "Validite: OK." else "INVALIDE.", desc)
   } else {
-    sprintf("ARSAU data loaded: %s for %s. %d rows × %d columns. %s %s",
+    sprintf("ARSAU data loaded: %s for %s. %d rows \u00d7 %d columns. %s %s",
             entry$kind, entry$year_or_range, nrow(df), ncol(df),
-            if (entry$is_valid) "Valid for analysis." else "INVALID — see warnings.",
+            if (entry$is_valid) "Valid for analysis." else "INVALID \u2014 see warnings.",
             desc)
   }
 
@@ -679,11 +679,11 @@ morie_arsau_describe <- function(kind, year, language = "en", data_dir = NULL,
   if (!csv_present) warnings <- c(warnings, sprintf("CSV not present under %s.", root))
 
   interp <- if (tolower(substr(language, 1, 2)) == "fr") {
-    sprintf("ARSAU %s pour %s: %d lignes × %d colonnes. %s %s",
+    sprintf("ARSAU %s pour %s: %d lignes \u00d7 %d colonnes. %s %s",
             entry$kind, entry$year_or_range, entry$expected_rows, entry$expected_cols,
             if (entry$is_valid) "Validite OK." else "DONNEES INVALIDES.", desc)
   } else {
-    sprintf("ARSAU %s for %s: %d rows × %d columns. %s %s",
+    sprintf("ARSAU %s for %s: %d rows \u00d7 %d columns. %s %s",
             entry$kind, entry$year_or_range, entry$expected_rows, entry$expected_cols,
             if (entry$is_valid) "Valid for analysis." else "INVALID.", desc)
   }

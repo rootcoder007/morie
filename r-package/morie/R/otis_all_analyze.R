@@ -487,12 +487,21 @@ morie_otis_analyze_c03 <- function(data) {
   }
 }
 
+#' Individuals in RC/seg by race x region (c04)
+#' @param data c04 data.frame from OTIS.
+#' @return RichResult with summary + race-by-region crosstab.
 #' @export
 morie_otis_analyze_c04 <- .otis_c_simple(
   "c04", "Individuals in RC/seg x race x region", "Race")
+#' Individuals in RC/seg by religion x region (c05)
+#' @param data c05 data.frame from OTIS.
+#' @return RichResult with summary + religion-by-region crosstab.
 #' @export
 morie_otis_analyze_c05 <- .otis_c_simple(
   "c05", "Individuals in RC/seg x religion x region", "Religion")
+#' Individuals in RC/seg by age category x region (c06)
+#' @param data c06 data.frame from OTIS.
+#' @return RichResult with summary + age-by-region crosstab.
 #' @export
 morie_otis_analyze_c06 <- .otis_c_simple(
   "c06", "Individuals in RC/seg x age category x region", "Age_Category")
@@ -515,9 +524,15 @@ morie_otis_analyze_c07 <- function(data) {
   )
 }
 
+#' Individuals by religion x gender (c08)
+#' @param data c08 data.frame from OTIS.
+#' @return RichResult with summary + religion-by-gender crosstab.
 #' @export
 morie_otis_analyze_c08 <- .otis_c_simple(
   "c08", "Individuals x religion x gender", "Religion", "Gender")
+#' Individuals by age category x gender (c09)
+#' @param data c09 data.frame from OTIS.
+#' @return RichResult with summary + age-by-gender crosstab.
 #' @export
 morie_otis_analyze_c09 <- .otis_c_simple(
   "c09", "Individuals x age category x gender", "Age_Category", "Gender")
@@ -614,19 +629,34 @@ morie_otis_analyze_d01 <- function(data) {
   }
 }
 
+#' Custodial deaths by gender (d02)
+#' @param data d02 data.frame from OTIS.
+#' @return RichResult with summary + deaths-by-gender crosstab.
 #' @export
 morie_otis_analyze_d02 <- .otis_d_simple(
   "d02", "Custodial deaths x gender", "Gender")
+#' Custodial deaths by race (d03)
+#' @param data d03 data.frame from OTIS.
+#' @return RichResult with summary + deaths-by-race crosstab.
 #' @export
 morie_otis_analyze_d03 <- .otis_d_simple(
   "d03", "Custodial deaths x race", "Race")
+#' Custodial deaths by religion (d04)
+#' @param data d04 data.frame from OTIS.
+#' @return RichResult with summary + deaths-by-religion crosstab.
 #' @export
 morie_otis_analyze_d04 <- .otis_d_simple(
   "d04", "Custodial deaths x religion", "Religion")
+#' Custodial deaths by age category (d05)
+#' @param data d05 data.frame from OTIS.
+#' @return RichResult with summary + deaths-by-age crosstab.
 #' @export
 morie_otis_analyze_d05 <- .otis_d_simple(
   "d05", "Custodial deaths x age category", "Age_Category")
 
+#' Custodial deaths by alert x medical cause (d06)
+#' @param data d06 data.frame from OTIS.
+#' @return RichResult with summary + medical-cause-by-alert crosstab.
 #' @export
 morie_otis_analyze_d06 <- function(data) {
   s <- .otis_summary_lines(data, "d06",
@@ -638,6 +668,9 @@ morie_otis_analyze_d06 <- function(data) {
   )
 }
 
+#' Custodial deaths by alert x housing unit (d07)
+#' @param data d07 data.frame from OTIS.
+#' @return RichResult with summary + housing-unit-by-alert crosstab.
 #' @export
 morie_otis_analyze_d07 <- function(data) {
   s <- .otis_summary_lines(data, "d07",
@@ -968,7 +1001,7 @@ morie_otis_analyze_ruhela_per_year <- function(data, ds_id,
                                                  out_dir = NULL) {
   .otis_not_yet_ported(
     sprintf("morie_otis_analyze_ruhela_per_year(%s)", ds_id),
-    "per-year DLRM × estimator triangulation")
+    "per-year DLRM \u00d7 estimator triangulation")
 }
 
 #' Per-year full-DLRM on a01 canonical formulation.

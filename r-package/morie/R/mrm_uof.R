@@ -81,7 +81,7 @@ NULL
   z2 <- z * z
   denom <- 1.0 + z2 / n
   centre <- (p + z2 / (2.0 * n)) / denom
-  # Uncorrected Wilson — the continuity-corrected form has corner
+  # Uncorrected Wilson \u2014 the continuity-corrected form has corner
   # cases that need square-root-of-negative guards. The uncorrected
   # form is universally finite and is what most R wrappers
   # (binom::binom.wilson, Hmisc::binconf) emit by default.
@@ -267,7 +267,7 @@ mrm_uof_force_concentration <- function(df, force_col, count_col = NULL) {
 
 #' Weapon-by-force contingency test
 #'
-#' Builds a weapon × force contingency table, runs a chi-square test
+#' Builds a weapon \u00d7 force contingency table, runs a chi-square test
 #' of independence, computes Cramer's V, and reports the top-3
 #' (weapon, force) cells by standardised Pearson residual.
 #'
@@ -310,7 +310,7 @@ mrm_uof_weapon_diversity <- function(df, weapon_col, force_col) {
   }
 
   # Suppress the always-fired warning about chi-square approximation
-  # — we surface our own version below based on inspected expecteds.
+  # \u2014 we surface our own version below based on inspected expecteds.
   ct <- suppressWarnings(stats::chisq.test(tab))
   chi2 <- as.numeric(ct$statistic)
   pvalue <- as.numeric(ct$p.value)
@@ -952,7 +952,7 @@ mrm_uof_data_quality_audit <- function(df, sidecar = NULL, expected_schema = NUL
       suspect_flags <- c(suspect_flags, sprintf("%s: constant value (%s)", e$column, format(e$min)))
     }
     if (!is.numeric(df[[e$column]]) && e$n_unique == n_rows && n_rows > 1L) {
-      suspect_flags <- c(suspect_flags, sprintf("%s: every value unique — possible identifier", e$column))
+      suspect_flags <- c(suspect_flags, sprintf("%s: every value unique \u2014 possible identifier", e$column))
     }
   }
 

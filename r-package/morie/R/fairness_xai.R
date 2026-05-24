@@ -132,7 +132,7 @@ morie_fairness_xai_permutation_importance <- function(predict_fn, X,
     ]
     if (length(flagged) > 0L) {
       warnings <- c(warnings, sprintf(
-        "protected attribute(s) %s rank in the top third of feature importance — the model leans materially on a protected characteristic, a direct bias signal.",
+        "protected attribute(s) %s rank in the top third of feature importance \u2014 the model leans materially on a protected characteristic, a direct bias signal.",
         paste(sprintf("'%s'", flagged), collapse = ", ")
       ))
     }
@@ -142,7 +142,7 @@ morie_fairness_xai_permutation_importance <- function(predict_fn, X,
     "The model relies most on '%s' (importance %.4f). %s",
     ranking[1L], top,
     if (length(warnings) > 0L)
-      "Protected attributes appear high in the ranking — see the warning above."
+      "Protected attributes appear high in the ranking \u2014 see the warning above."
     else "No protected attribute ranks in the top third."
   )
 
@@ -191,7 +191,7 @@ morie_fairness_xai_partial_dependence <- function(predict_fn, X, feature,
   rng_val <- max(pd_vals) - min(pd_vals)
 
   .xai_result(
-    sprintf("Partial Dependence — %s", nm[j]),
+    sprintf("Partial Dependence \u2014 %s", nm[j]),
     sprintf("morie_fairness_xai_partial_dependence(feature='%s', grid_size=%d)",
             nm[j], as.integer(grid_size)),
     summary_lines = list(
@@ -258,7 +258,7 @@ morie_fairness_xai_ale <- function(predict_fn, X, feature,
   rng_val <- max(ale) - min(ale)
 
   .xai_result(
-    sprintf("Accumulated Local Effects — %s", nm[j]),
+    sprintf("Accumulated Local Effects \u2014 %s", nm[j]),
     sprintf("morie_fairness_xai_ale(feature='%s', n_bins=%d)",
             nm[j], as.integer(n_bins)),
     summary_lines = list(
@@ -319,7 +319,7 @@ morie_fairness_xai_ceteris_paribus <- function(predict_fn, x, feature,
   swing <- max(profile) - min(profile)
 
   .xai_result(
-    sprintf("Ceteris-Paribus Profile — %s", nm[j]),
+    sprintf("Ceteris-Paribus Profile \u2014 %s", nm[j]),
     sprintf("morie_fairness_xai_ceteris_paribus(feature='%s', grid_size=%d)",
             nm[j], as.integer(grid_size)),
     summary_lines = list(

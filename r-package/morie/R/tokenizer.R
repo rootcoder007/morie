@@ -148,7 +148,7 @@ morie_tokenizer_decode <- function(tok, ids) {
   for (i in ids) {
     if (i >= 0L && i < length(tok$vocab)) {
       piece <- tok$vocab[i + 1L]
-      piece <- gsub("▁", " ", piece, fixed = TRUE)
+      piece <- gsub("\u2581", " ", piece, fixed = TRUE)
       if (startsWith(piece, "<0x") && endsWith(piece, ">")) {
         hex <- substr(piece, 4L, nchar(piece) - 1L)
         b <- suppressWarnings(strtoi(hex, base = 16L))
@@ -163,7 +163,7 @@ morie_tokenizer_decode <- function(tok, ids) {
 }
 
 .morie_tokenizer_bpe_encode <- function(tok, text) {
-  text <- paste0("▁", gsub(" ", "▁", text, fixed = TRUE))
+  text <- paste0("\u2581", gsub(" ", "\u2581", text, fixed = TRUE))
   tokens <- character()
   i <- 1L
   n <- nchar(text)

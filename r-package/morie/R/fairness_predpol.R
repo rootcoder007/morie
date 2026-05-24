@@ -168,7 +168,7 @@ morie_fairness_predpol_calibration_audit <- function(areas, mean_risk,
   rho <- NA_real_; pval <- NA_real_
   if (diff(range(mean_risk)) == 0 || diff(range(outcome_rate)) == 0) {
     warnings <- c(warnings,
-      "Spearman calibration correlation is undefined — predicted risk or realised outcome is constant across all areas.")
+      "Spearman calibration correlation is undefined \u2014 predicted risk or realised outcome is constant across all areas.")
   } else {
     sc <- suppressWarnings(stats::cor.test(mean_risk, outcome_rate,
                                            method = "spearman",
@@ -203,7 +203,7 @@ morie_fairness_predpol_calibration_audit <- function(areas, mean_risk,
   }
 
   if (!is.finite(rho)) {
-    cal <- "Overall calibration could not be assessed — predicted risk or realised outcome is constant across all areas."
+    cal <- "Overall calibration could not be assessed \u2014 predicted risk or realised outcome is constant across all areas."
   } else if (rho >= 0.7) {
     cal <- sprintf("Overall the ranking is well calibrated (Spearman rho = %.2f): predicted risk broadly tracks realised outcomes.", rho)
   } else if (rho >= 0.3) {
@@ -215,7 +215,7 @@ morie_fairness_predpol_calibration_audit <- function(areas, mean_risk,
   if (abs(worst) <= 0.5) {
     disp <- "No group's areas are systematically mis-ranked; the rank gaps are small across groups."
   } else if (worst > 0) {
-    disp <- sprintf("Group '%s' is over-predicted: its areas are ranked, on average, %.1f rank positions more dangerous than their realised outcomes warrant — the signature of disparate over-policing.",
+    disp <- sprintf("Group '%s' is over-predicted: its areas are ranked, on average, %.1f rank positions more dangerous than their realised outcomes warrant \u2014 the signature of disparate over-policing.",
                     worst_group, worst)
   } else {
     disp <- sprintf("Group '%s' is under-predicted: its areas are ranked, on average, %.1f rank positions less dangerous than their realised outcomes.",
@@ -333,7 +333,7 @@ morie_fairness_predpol_score_disparity <- function(score, group,
     anova_line <- ""
   }
   interp <- sprintf(
-    "Group mean risk scores span %.2f points (reference '%s'). %sNote: a score gap is not itself evidence of bias — it can reflect genuine base-rate differences. Pair this with morie_fairness_predpol_calibration_audit, which compares the score against realised outcomes.",
+    "Group mean risk scores span %.2f points (reference '%s'). %sNote: a score gap is not itself evidence of bias \u2014 it can reflect genuine base-rate differences. Pair this with morie_fairness_predpol_calibration_audit, which compares the score against realised outcomes.",
     spread, ref, anova_line
   )
 

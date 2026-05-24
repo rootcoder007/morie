@@ -38,14 +38,38 @@ NULL
 # Kernel type integer codes (mirror the Python enum)
 # ---------------------------------------------------------------------------
 
+#' Kernel type integer codes
+#'
+#' Integer codes used by morie's C++ semiparametric bridge to select
+#' the kernel function for local-polynomial smoothing. Mirror the
+#' Python `morie.semipar.KernelType` enum so an R caller can pass these
+#' constants directly to any C++ kernel routine.
+#'
+#' \itemize{
+#'   \item \code{KERNEL_GAUSSIAN}: \eqn{K(u) = (1/\sqrt{2\pi}) \exp(-u^2/2)}{K(u) = (1/sqrt(2 pi)) exp(-u^2 / 2)}
+#'   \item \code{KERNEL_EPANECHNIKOV}: \eqn{K(u) = (3/4)(1-u^2)}{K(u) = 0.75 (1 - u^2)} on |u| <= 1
+#'   \item \code{KERNEL_UNIFORM}: \eqn{K(u) = 1/2}{K(u) = 0.5} on |u| <= 1
+#'   \item \code{KERNEL_TRIANGULAR}: \eqn{K(u) = 1 - |u|}{K(u) = 1 - |u|} on |u| <= 1
+#'   \item \code{KERNEL_BIWEIGHT}: \eqn{K(u) = (15/16)(1-u^2)^2}{K(u) = (15/16) (1 - u^2)^2} on |u| <= 1
+#' }
+#'
+#' @format Integer scalars (0L, 1L, 2L, 3L, 4L).
+#' @name kernel-codes
+NULL
+
+#' @rdname kernel-codes
 #' @export
 KERNEL_GAUSSIAN <- 0L
+#' @rdname kernel-codes
 #' @export
 KERNEL_EPANECHNIKOV <- 1L
+#' @rdname kernel-codes
 #' @export
 KERNEL_UNIFORM <- 2L
+#' @rdname kernel-codes
 #' @export
 KERNEL_TRIANGULAR <- 3L
+#' @rdname kernel-codes
 #' @export
 KERNEL_BIWEIGHT <- 4L
 

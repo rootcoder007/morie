@@ -15,7 +15,7 @@ This file ships the R-side equivalents of the Python
 \code{morie.arsau_datasets} module:
 
 \itemize{
-\item \code{ARSAU_REGISTRY()}: returns the registered (year × kind)
+\item \code{ARSAU_REGISTRY()}: returns the registered (year \u00d7 kind)
 entries as a list of lists.
 \item \code{morie_arsau_load_main_records()},
 \code{morie_arsau_load_individual_records()},
@@ -42,9 +42,9 @@ below), which honours, in order:
 \item the \code{MORIE_ARSAU_DIR} environment variable
 \item \code{MORIE_DATA_DIR/arsau}
 \item \code{morie_cache_dir("arsau")} (only if already populated by
-a previous \code{morie_arsau_download()} call — never
+a previous \code{morie_arsau_download()} call \u2014 never
 auto-created at read-time, per CRAN policy)
-\item \code{system.file("extdata", "arsau", package = "morie")} —
+\item \code{system.file("extdata", "arsau", package = "morie")} \u2014
 the bundled tiny fixture for unit tests + tutorials
 \item stop with a remediation paragraph
 }

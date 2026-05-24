@@ -321,7 +321,7 @@ morie_arsau_analyze_weapon_records <- function(year, allow_invalid = FALSE,
   sub$data_quality <- mrm_uof_data_quality_audit(df, sidecar = loaded$sidecar)
 
   extra <- if (!loaded$is_valid) {
-    "These results are computed for data-quality review only — the underlying file is the ministry-flagged invalid 2023 release."
+    "These results are computed for data-quality review only \u2014 the underlying file is the ministry-flagged invalid 2023 release."
   } else ""
 
   .arsau_wrap(

@@ -27,13 +27,34 @@ NULL
 # Kernel functions (vectorised, support [-1, 1])
 # ---------------------------------------------------------------------------
 
+#' RDD kernel functions
+#'
+#' Vectorised kernel functions on the support |u| <= 1 (Gaussian is on
+#' the real line). Used by [morie_rdd_local_linear()] and friends for
+#' kernel weighting around the cutoff.
+#'
+#' \itemize{
+#'   \item \code{morie_rdd_kernel_triangular}: \eqn{K(u) = \max(1 - |u|, 0)}{K(u) = max(1 - |u|, 0)}
+#'   \item \code{morie_rdd_kernel_epanechnikov}: \eqn{K(u) = (3/4)(1 - u^2)}{K(u) = 0.75 (1 - u^2)} on |u| <= 1
+#'   \item \code{morie_rdd_kernel_uniform}: \eqn{K(u) = 1/2}{K(u) = 0.5} on |u| <= 1
+#'   \item \code{morie_rdd_kernel_gaussian}: \eqn{K(u) = \phi(u)}{K(u) = phi(u)}, the standard normal density
+#' }
+#'
+#' @param u Numeric vector of standardised distances from the cutoff
+#'   (i.e. \eqn{(x - c)/h}{(x - c) / h}).
+#' @return Numeric vector of kernel weights, same length as `u`.
+#' @name morie_rdd_kernels
+#' @rdname morie_rdd_kernels
 #' @export
 morie_rdd_kernel_triangular  <- function(u) pmax(1 - abs(u), 0)
+#' @rdname morie_rdd_kernels
 #' @export
 morie_rdd_kernel_epanechnikov <- function(u)
   ifelse(abs(u) <= 1, 0.75 * (1 - u^2), 0)
+#' @rdname morie_rdd_kernels
 #' @export
 morie_rdd_kernel_uniform <- function(u) ifelse(abs(u) <= 1, 0.5, 0)
+#' @rdname morie_rdd_kernels
 #' @export
 morie_rdd_kernel_gaussian <- function(u) stats::dnorm(u)
 
@@ -135,7 +156,7 @@ morie_rdd_bandwidth_ik <- function(x, y, cutoff = 0,
   morie_rdd_bandwidth_rot(x, y, cutoff)
 }
 
-#' Rule-of-thumb (ROT) bandwidth — Silverman-style on running variable
+#' Rule-of-thumb (ROT) bandwidth \u2014 Silverman-style on running variable
 #' @export
 morie_rdd_bandwidth_rot <- function(x, y, cutoff = 0) {
   sd_x  <- stats::sd(x)
@@ -284,7 +305,7 @@ morie_rdd_bias_corrected <- function(data, outcome, running, cutoff = 0,
   }
   res <- morie_rdd_sharp(data, outcome, running, cutoff, bandwidth, p,
                          kernel, alpha = alpha)
-  res$method <- "bias-corrected (sharp fallback — install rdrobust)"
+  res$method <- "bias-corrected (sharp fallback \u2014 install rdrobust)"
   res
 }
 
@@ -449,7 +470,7 @@ morie_rdd_bandwidth_sensitivity <- function(data, outcome, running,
   do.call(rbind, rows)
 }
 
-#' Regression kink design — slope discontinuity at the cutoff
+#' Regression kink design \u2014 slope discontinuity at the cutoff
 #' @export
 morie_rdd_kink <- function(data, outcome, running, cutoff = 0,
                            bandwidth = NULL, kernel = "triangular",
@@ -467,7 +488,7 @@ morie_rdd_kink <- function(data, outcome, running, cutoff = 0,
   # TODO: native local-quadratic derivative jump estimator
   res <- morie_rdd_sharp(data, outcome, running, cutoff, bandwidth, p = 2,
                          kernel = kernel, alpha = alpha)
-  res$method <- "kink (sharp fallback — install rdrobust)"
+  res$method <- "kink (sharp fallback \u2014 install rdrobust)"
   res
 }
 
