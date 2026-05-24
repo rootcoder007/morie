@@ -142,6 +142,15 @@ morie_datasets_load_by_key <- function(dataset_key,
     "vancouver_opendata" = {
       morie_datasets_vancouver_opendata_by_id(id)
     },
+    "calgary_opendata" = {
+      morie_datasets_calgary_socrata_by_id(id)
+    },
+    "edmonton_opendata" = {
+      morie_datasets_edmonton_socrata_by_id(id)
+    },
+    "ottawa_opendata" = {
+      morie_datasets_tps_arcgis_hub_by_id(id, max_features = max_features)
+    },
     "vpd_geodash" = {
       morie_datasets_vpd_crime(offline = offline,
                                 max_features = max_features)

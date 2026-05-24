@@ -17,14 +17,16 @@ test_that("morie_dataset_portal_catalog() returns unified schema", {
   expect_true(all(!is.na(d$loader) & nzchar(d$loader)))
 })
 
-test_that("catalog covers all 11 expected portals", {
+test_that("catalog covers all 14 expected portals", {
   d <- morie_dataset_portal_catalog()
   expect_setequal(unique(d$source),
                   c("chicago", "nyc_nypd", "nyc_opendata",
                     "tps_arcgis_hub", "tps_psdp",
                     "ontario_ckan", "vancouver_opendata",
                     "vpd_geodash", "statcan_ccjs",
-                    "montreal_opendata", "toronto_opendata"))
+                    "montreal_opendata", "toronto_opendata",
+                    "calgary_opendata", "edmonton_opendata",
+                    "ottawa_opendata"))
 })
 
 test_that("per-source row counts match expected", {
@@ -55,6 +57,11 @@ test_that("api_modes column reflects portal protocol", {
   expect_true(all(d$api_modes[d$source == "ontario_ckan"] == "ckan"))
   expect_true(all(d$api_modes[d$source == "montreal_opendata"] == "ckan"))
   expect_true(all(d$api_modes[d$source == "toronto_opendata"] == "ckan"))
+  # Calgary + Edmonton are Socrata.
+  expect_true(all(grepl("soda2", d$api_modes[d$source == "calgary_opendata"])))
+  expect_true(all(grepl("soda2", d$api_modes[d$source == "edmonton_opendata"])))
+  # Ottawa is ArcGIS Hub.
+  expect_true(all(grepl("arcgis", d$api_modes[d$source == "ottawa_opendata"])))
   # Vancouver = Opendatasoft v2.1.
   expect_true(all(d$api_modes[d$source == "vancouver_opendata"] ==
                      "opendatasoft_v21"))
@@ -71,7 +78,9 @@ test_that("portal= filter returns subset", {
   for (p in c("chicago", "nyc_nypd", "nyc_opendata",
               "tps_arcgis_hub", "tps_psdp", "ontario_ckan",
               "vancouver_opendata", "vpd_geodash",
-              "montreal_opendata")) {
+              "montreal_opendata", "toronto_opendata",
+              "calgary_opendata", "edmonton_opendata",
+              "ottawa_opendata")) {
     filt <- morie_dataset_portal_catalog(portal = p)
     expect_true(all(filt$source == p),
                  info = sprintf("portal=%s", p))

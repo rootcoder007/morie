@@ -64,7 +64,8 @@
 #' @param portal Optional character filter: `"chicago"`, `"nyc_nypd"`,
 #'   `"nyc_opendata"`, `"tps_arcgis_hub"`, `"tps_psdp"`,
 #'   `"ontario_ckan"`, `"vancouver_opendata"`, `"vpd_geodash"`,
-#'   `"statcan_ccjs"`, `"montreal_opendata"`, `"toronto_opendata"`.
+#'   `"statcan_ccjs"`, `"montreal_opendata"`, `"toronto_opendata"`,
+#'   `"calgary_opendata"`, `"edmonton_opendata"`, `"ottawa_opendata"`.
 #'   `NULL` (default) returns all portals.
 #' @return A `data.frame` with one row per dataset. Columns:
 #'   `dataset_key`, `source`, `id`, `api_modes`, `loader`,
@@ -189,6 +190,65 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
       stringsAsFactors = FALSE))
   }
 
+  # --- Calgary Open Data Socrata (3FFF3) -----------------------
+  cal <- morie_datasets_calgary_open_crime_adjacent_layers(offline = TRUE)
+  cal_n_map <- c("78gh-n26t" = 200L, "bdez-pds9" = 200L,
+                  "cqsb-2hhg" = 43L)
+  cal_loader_map <- c("78gh-n26t" = "morie_datasets_calgary_community_crime_stats",
+                       "bdez-pds9" = "morie_datasets_calgary_fire_response_calls",
+                       "cqsb-2hhg" = "morie_datasets_calgary_fire_stations")
+  for (i in seq_len(nrow(cal))) {
+    lk <- cal$soda_id[i]
+    push(data.frame(
+      dataset_key = lk,
+      source = "calgary_opendata",
+      id = lk,
+      api_modes = "soda2,soda2_csv,soda2_geojson,soda3,odata",
+      loader = unname(if (lk %in% names(cal_loader_map))
+                         cal_loader_map[[lk]]
+                       else "morie_datasets_calgary_socrata_by_id"),
+      dict_url = sprintf("https://data.calgary.ca/d/%s", lk),
+      n_rows_bundled = unname(if (lk %in% names(cal_n_map))
+                                 cal_n_map[[lk]] else NA_integer_),
+      stringsAsFactors = FALSE))
+  }
+
+  # --- Edmonton Open Data Socrata (3FFF3) ----------------------
+  edm <- morie_datasets_edmonton_open_crime_adjacent_layers(offline = TRUE)
+  edm_n_map <- c("e7aq-scxv" = 10L, "b4y7-zhnz" = 31L)
+  edm_loader_map <- c("e7aq-scxv" = "morie_datasets_edmonton_police_stations",
+                       "b4y7-zhnz" = "morie_datasets_edmonton_fire_stations")
+  for (i in seq_len(nrow(edm))) {
+    lk <- edm$soda_id[i]
+    push(data.frame(
+      dataset_key = lk,
+      source = "edmonton_opendata",
+      id = lk,
+      api_modes = "soda2,soda2_csv,soda2_geojson,soda3,odata",
+      loader = unname(if (lk %in% names(edm_loader_map))
+                         edm_loader_map[[lk]]
+                       else "morie_datasets_edmonton_socrata_by_id"),
+      dict_url = sprintf("https://data.edmonton.ca/d/%s", lk),
+      n_rows_bundled = unname(if (lk %in% names(edm_n_map))
+                                 edm_n_map[[lk]] else NA_integer_),
+      stringsAsFactors = FALSE))
+  }
+
+  # --- Ottawa Open Data ArcGIS Hub (3FFF3) ---------------------
+  ott <- morie_datasets_ottawa_open_crime_adjacent_layers(offline = TRUE)
+  for (i in seq_len(nrow(ott))) {
+    push(data.frame(
+      dataset_key = ott$hub_id[i],
+      source = "ottawa_opendata",
+      id = ott$hub_id[i],
+      api_modes = "arcgis_rest,arcgis_hub",
+      loader = "morie_datasets_tps_arcgis_hub_by_id",
+      dict_url = sprintf("https://open.ottawa.ca/datasets/%s",
+                          ott$hub_id[i]),
+      n_rows_bundled = NA_integer_,
+      stringsAsFactors = FALSE))
+  }
+
   # --- Toronto Open Data CKAN crime-adjacent (3EEE2) -----------
   tor <- morie_datasets_toronto_open_crime_adjacent_layers(offline = TRUE)
   for (i in seq_len(nrow(tor))) {
@@ -273,7 +333,10 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
                                       "vpd_geodash",
                                       "statcan_ccjs",
                                       "montreal_opendata",
-                                      "toronto_opendata"))
+                                      "toronto_opendata",
+                                      "calgary_opendata",
+                                      "edmonton_opendata",
+                                      "ottawa_opendata"))
     out <- out[out$source == portal, , drop = FALSE]
     rownames(out) <- NULL
   }

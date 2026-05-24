@@ -36,15 +36,18 @@ test_that("api_mode filter restricts to a protocol substring", {
   d <- morie_datasets_browse(api_mode = "soda3")
   # All matched rows must mention soda3.
   expect_true(all(grepl("soda3", d$api_modes)))
-  # NYC NYPD + Chicago + NYC OpenData = the three Socrata sources.
+  # Socrata-backed sources: NYC NYPD + Chicago + NYC OpenData +
+  # Calgary + Edmonton (3FFF3).
   expect_setequal(unique(d$source),
-                  c("nyc_nypd", "chicago", "nyc_opendata"))
+                  c("nyc_nypd", "chicago", "nyc_opendata",
+                    "calgary_opendata", "edmonton_opendata"))
 })
 
 test_that("api_mode filter accepts multi-protocol vector", {
   d <- morie_datasets_browse(api_mode = c("ckan", "statcan_wds"))
   # ckan matches ontario_ckan + montreal_opendata + toronto_opendata;
-  # statcan_wds matches statcan_ccjs.
+  # statcan_wds matches statcan_ccjs. (Calgary + Edmonton are soda*,
+  # Ottawa is arcgis.)
   expect_setequal(unique(d$source),
                   c("ontario_ckan", "montreal_opendata",
                     "toronto_opendata", "statcan_ccjs"))
@@ -80,8 +83,9 @@ test_that("morie_datasets_summary() returns one row per portal", {
   expect_setequal(names(s),
                   c("source", "n_datasets", "api_modes",
                     "n_with_bundled_fixture"))
-  # Should match the catalog's 11 portals (3EEE2 added TO Open).
-  expect_equal(nrow(s), 11L)
+  # Should match the catalog's 14 portals
+  # (3FFF3 added Calgary + Edmonton + Ottawa).
+  expect_equal(nrow(s), 14L)
   # n_datasets must sum to the catalog total.
   expect_equal(sum(s$n_datasets),
                 nrow(morie_dataset_portal_catalog()))

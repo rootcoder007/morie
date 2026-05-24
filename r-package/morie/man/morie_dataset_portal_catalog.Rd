@@ -10,7 +10,8 @@ morie_dataset_portal_catalog(portal = NULL)
 \item{portal}{Optional character filter: \code{"chicago"}, \code{"nyc_nypd"},
 \code{"nyc_opendata"}, \code{"tps_arcgis_hub"}, \code{"tps_psdp"},
 \code{"ontario_ckan"}, \code{"vancouver_opendata"}, \code{"vpd_geodash"},
-\code{"statcan_ccjs"}, \code{"montreal_opendata"}, \code{"toronto_opendata"}.
+\code{"statcan_ccjs"}, \code{"montreal_opendata"}, \code{"toronto_opendata"},
+\code{"calgary_opendata"}, \code{"edmonton_opendata"}, \code{"ottawa_opendata"}.
 \code{NULL} (default) returns all portals.}
 }
 \value{
