@@ -75,7 +75,7 @@ test_that("morie_estimate_irm errors when DoubleML is unavailable", {
     morie_estimate_irm(data.frame(Y = 1, T = 1, X1 = 1),
       treatment = "T", outcome = "Y", covariates = "X1"
     ),
-    "required"
+    "morie requires"
   )
 })
 

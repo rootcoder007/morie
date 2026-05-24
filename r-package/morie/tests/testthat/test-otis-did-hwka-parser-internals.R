@@ -159,7 +159,7 @@ test_that(".morie_matching_require errors when pkg is missing", {
   expect_error(
     morie:::.morie_matching_require("nonexistent_pkg_xyz",
                                       "fake_fn"),
-    regexp = "is required for")
+    regexp = "morie requires")
 })
 
 test_that(".morie_matching_te_empty returns NA fields + class morie_te_result", {
