@@ -492,24 +492,29 @@ morie_datasets_cpads <- function() {
   .morie_dataset_read_synthetic("cpads_pumf_synthetic", "cpads")
 }
 
-#' Load the morie OTIS A01-RCDD restrictive-confinement frame.
+#' Load the OTIS A01 Restrictive-Confinement Detailed Dataset
 #'
-#' Real OTIS data is FOI-only and cannot be shipped publicly; this
-#' function returns the bundled 800-row synthetic frame by default.
+#' Thin compatibility shim that delegates to
+#' [morie_datasets_otis_a01_restrictive_confinement()]. The OTIS A01
+#' dataset is published openly at
+#' \url{https://data.ontario.ca/dataset/data-on-inmates-in-ontario}
+#' (Ontario Solicitor General; Open Government Licence -- Ontario,
+#' CKAN resource id \code{5a0c5804-a055-4031-9743-73f556e43bb4}).
 #'
-#' @param offline Logical; if `TRUE` (default), return the synthetic
-#'   frame.  Passing `FALSE` raises -- morie cannot fetch real OTIS.
+#' Earlier morie versions wrongly claimed this data was FOI-only;
+#' that was incorrect and has been retracted as of 3MMM.
+#'
+#' @param offline Logical. `TRUE` (default) reads the bundled
+#'   `otis_a01_restrictive_confinement_sample.csv` fixture. `FALSE`
+#'   fetches the live CKAN dataset.
+#' @param ... Forwarded to
+#'   [morie_datasets_otis_a01_restrictive_confinement()].
 #' @return A `data.frame`.
+#' @seealso [morie_datasets_otis_a01_restrictive_confinement()],
+#'   [morie_datasets_load_by_key()].
 #' @export
-morie_datasets_otis_a01 <- function(offline = TRUE) {
-  if (!isTRUE(offline)) {
-    stop(
-      "morie_datasets_otis_a01(offline=FALSE): real OTIS data is FOI-only ",
-      "and morie cannot fetch it for you.  Pass offline=TRUE for the ",
-      "synthetic frame, or load your own copy with read.csv()."
-    )
-  }
-  .morie_dataset_read_synthetic("otis_a01_synthetic", "otis_a01")
+morie_datasets_otis_a01 <- function(offline = TRUE, ...) {
+  morie_datasets_otis_a01_restrictive_confinement(offline = offline, ...)
 }
 
 # ---------------------------------------------------------------------------
