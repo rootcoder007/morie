@@ -20,7 +20,7 @@ A list with \code{ideal_points}, \code{stimuli_weights}, \code{eigenvalues},
 \description{
 Recovers respondent ideal points from an issue-scale response matrix
 via SVD on the column-centred matrix.  Implements Poole's (1998)
-decomposition \eqn{X_0 = \Psi W' + J_n c' + E_0}.  Delegates to
+decomposition \code{X_0 = \Psi W' + J_n c' + E_0}.  Delegates to
 \code{basicspace::blackbox} when available.
 }
 \examples{

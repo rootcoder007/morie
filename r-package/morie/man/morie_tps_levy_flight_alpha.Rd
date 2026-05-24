@@ -21,16 +21,16 @@ morie_tps_levy_flight_alpha(
 \item{save_fig}{Whether to emit a log-log empirical-vs-fit PNG.}
 }
 \value{
-A \code{morie_rich_result} with \eqn{\hat\alpha},
+A \code{morie_rich_result} with \code{\hat\alpha},
 bootstrap SE, sample-size diagnostics, and a Lévy-regime
 interpretation.
 }
 \description{
 Computes the Hill maximum-likelihood estimator of the upper-tail
-Pareto exponent \eqn{\alpha} of the step-length distribution between
+Pareto exponent \code{\alpha} of the step-length distribution between
 chronologically consecutive incidents, following Brockmann,
-Hufnagel & Geisel (2006). For a power-law tail \eqn{p(\ell) \propto
-\ell^{-\alpha}} on \eqn{\ell \ge \ell_{\min}} the Hill MLE is
+Hufnagel & Geisel (2006). For a power-law tail \code{p(\ell) \propto
+\ell^{-\alpha}} on \code{\ell \ge \ell_{\min}} the Hill MLE is
 \deqn{\hat\alpha = 1 + n / \sum_i \log(\ell_i / \ell_{\min}).}
 Standard error is obtained by 200 nonparametric bootstrap resamples.
 }

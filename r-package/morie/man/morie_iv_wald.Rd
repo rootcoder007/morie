@@ -18,6 +18,6 @@ morie_iv_wald(data, outcome, treatment, instrument, alpha = 0.05)
 \item{alpha}{Significance level.}
 }
 \description{
-\eqn{\hat\beta = (\bar y_{z=1} - \bar y_{z=0}) /
+\code{\hat\beta = (\bar y_{z=1} - \bar y_{z=0}) /
                 (\bar d_{z=1} - \bar d_{z=0})}.
 }

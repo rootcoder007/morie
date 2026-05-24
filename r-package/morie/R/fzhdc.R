@@ -3,9 +3,9 @@
 #' Fauzi: Hoeffding (H-) decomposition of a degree-2 U-statistic (Ch 5)
 #'
 #' For a symmetric kernel g(x1,x2),
-#' \eqn{U_n = \binom{n}{2}^{-1}\sum_{i<j} g(X_i,X_j)},
-#' \eqn{\sigma_1^2 = \mathrm{Var}\, g_1(X)} (Hajek projection),
-#' \eqn{\mathrm{Var}(U_n) \approx 4\sigma_1^2/n}.
+#' \code{U_n = \binom{n}{2}^{-1}\sum_{i<j} g(X_i,X_j)},
+#' \code{\sigma_1^2 = \mathrm{Var}\, g_1(X)} (Hajek projection),
+#' \code{\mathrm{Var}(U_n) \approx 4\sigma_1^2/n}.
 #'
 #' @param x Numeric vector.
 #' @param kernel Function(a,b); default 0.5*(a-b)^2 (estimates variance).

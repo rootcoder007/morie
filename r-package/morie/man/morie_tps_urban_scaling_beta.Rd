@@ -19,7 +19,7 @@ and crime columns.}
 \item{save_fig}{Whether to write a log-log scatter + fit PNG.}
 }
 \value{
-A \code{morie_rich_result} with \eqn{\hat\beta}, its
+A \code{morie_rich_result} with \code{\hat\beta}, its
 standard error, R-squared, the back-transformed prefactor
 \eqn{Y_0}, and a regime label (sub-linear, linear, super-linear).
 }
@@ -27,9 +27,9 @@ standard error, R-squared, the back-transformed prefactor
 Performs the standard log-log OLS scaling fit
 \deqn{\log y_i = \log Y_0 + \beta \log p_i + \varepsilon_i,}
 where \eqn{y_i} is the crime count and \eqn{p_i} is the population
-of ward \eqn{i}. \eqn{\beta > 1} indicates super-linear (crime
-grows faster than population), \eqn{\beta = 1} linear, and
-\eqn{\beta < 1} sub-linear (protective) scaling (Bettencourt
+of ward \code{i}. \code{\beta > 1} indicates super-linear (crime
+grows faster than population), \code{\beta = 1} linear, and
+\code{\beta < 1} sub-linear (protective) scaling (Bettencourt
 \emph{et al.} 2007; D'Orsogna & Perc 2015 sec. 4.1).
 }
 \examples{

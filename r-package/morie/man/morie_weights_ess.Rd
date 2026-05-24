@@ -2,10 +2,10 @@
 % Please edit documentation in R/weights.R
 \name{morie_weights_ess}
 \alias{morie_weights_ess}
-\title{Kish effective sample size: \eqn{(\sum w_i)^2 / \sum w_i^2}.}
+\title{Kish effective sample size: \code{(\sum w_i)^2 / \sum w_i^2}.}
 \usage{
 morie_weights_ess(weights)
 }
 \description{
-Kish effective sample size: \eqn{(\sum w_i)^2 / \sum w_i^2}.
+Kish effective sample size: \code{(\sum w_i)^2 / \sum w_i^2}.
 }

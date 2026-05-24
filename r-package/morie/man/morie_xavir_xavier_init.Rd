@@ -28,7 +28,7 @@ R parity for \code{morie.fn.xavir.xavier_init}.
 \details{
 \deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in} + n_{out}}\right)}
 (normal) or
-\eqn{W \sim U[-\sqrt{6/(n_{in}+n_{out})}, +\sqrt{6/(n_{in}+n_{out})}]}
+\code{W \sim U[-\sqrt{6/(n_{in}+n_{out})}, +\sqrt{6/(n_{in}+n_{out})}]}
 (uniform).
 }
 \examples{

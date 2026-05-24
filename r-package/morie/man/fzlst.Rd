@@ -20,7 +20,7 @@ morie_fauzi_l_statistic(x, score = NULL, n_quad = 200L)
 Named list with estimate, se, n, method.
 }
 \description{
-\eqn{L_n = \sum_i c_{n,i} X_{(i)}} with
+\code{L_n = \sum_i c_{n,i} X_{(i)}} with
 \eqn{c_{n,i} = \int_{(i-1)/n}^{i/n} J(u) du}.
 Default J(u)=1 gives the sample mean.
 }

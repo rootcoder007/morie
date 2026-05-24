@@ -13,7 +13,7 @@ morie_spatial_voting_double_centering(D)
 The double-centered matrix \eqn{B}.
 }
 \description{
-Computes \eqn{B = -\tfrac{1}{2} H D^{(2)} H} with
+Computes \code{B = -\tfrac{1}{2} H D^{(2)} H} with
 \eqn{H = I - n^{-1}\mathbf{1}\mathbf{1}'}.
 }
 \examples{

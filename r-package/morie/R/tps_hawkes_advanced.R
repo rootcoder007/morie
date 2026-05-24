@@ -9,10 +9,10 @@
 #'
 #' The complete intensity is
 #' \deqn{\lambda(t) = \u(t) + \int_0^{t-} g(t - s) \, dN_s,}
-#' with kernel decomposition \eqn{g(u) = \eta \cdot \tilde g(u)} where
-#' \eqn{\eta \in (0, 1)} is the branching ratio (mean offspring per
-#' event) and \eqn{\tilde g} is a probability density on
-#' \eqn{[0, \infty)}. Stationarity requires \eqn{\eta < 1}.
+#' with kernel decomposition \code{g(u) = \eta \cdot \tilde g(u)} where
+#' \code{\eta \in (0, 1)} is the branching ratio (mean offspring per
+#' event) and \code{\tilde g} is a probability density on
+#' \code{[0, \infty)}. Stationarity requires \code{\eta < 1}.
 #'
 #' Supported kernels: exponential, gamma, Weibull, Lomax (Pareto-II).
 #' Supported baselines: constant and sinusoidal-with-trend

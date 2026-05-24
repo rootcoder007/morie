@@ -32,7 +32,7 @@ Named list \code{(value, T_final, T_initial, history,
 }
 \description{
 R parity for \code{morie.fn.diffu.heat_diffusion}.  Forward-Euler
-update of \eqn{\partial_t T = \alpha \partial_x^2 T} with Dirichlet
+update of \code{\partial_t T = \alpha \partial_x^2 T} with Dirichlet
 (fixed-endpoint) boundary conditions.
 }
 \examples{

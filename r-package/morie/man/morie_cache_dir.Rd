@@ -37,7 +37,7 @@ passing the result of \code{morie_cache_dir(subdir)} as the
 }
 
 The persistent location is \code{tools::R_user_dir("morie", "cache")}
-(R \eqn{\ge} 4.0), which on Linux defaults to
+(R \code{\ge} 4.0), which on Linux defaults to
 \code{~/.cache/R/morie/}, on macOS to
 \code{~/Library/Caches/org.R-project.R/R/morie/}, and on Windows to
 \code{\%LOCALAPPDATA\%/R/cache/R/morie/}. Users can override this

@@ -37,7 +37,7 @@ any covariate columns.}
 A result list; see \code{\link{morie_did_2x2}}.
 }
 \description{
-Uses \eqn{Z \times \mathrm{Post}} as an instrument for
-\eqn{D \times \mathrm{Post}} to recover a local average treatment
+Uses \code{Z \times \mathrm{Post}} as an instrument for
+\code{D \times \mathrm{Post}} to recover a local average treatment
 effect under imperfect compliance.
 }

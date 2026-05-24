@@ -17,7 +17,7 @@
 #' Moran's-I diagnostic that justifies SDM over OLS. We deliberately
 #' do NOT fit the SDM ourselves -- \pkg{spdep}/\pkg{spatialreg} are
 #' hard deps we don't want to force. The caller passes the estimated
-#' \eqn{\rho} + \eqn{\beta} vectors; this primitive does the
+#' \code{\rho} + \code{\beta} vectors; this primitive does the
 #' decomposition arithmetic.
 #'
 #' @name mrm_spatial_spillover
@@ -228,7 +228,7 @@ mrm_spatial_spillover_decomposition <- function(rho,
 #' \deqn{I = \frac{n}{\sum_{ij} w_{ij}} \cdot
 #'   \frac{e^\top W e}{e^\top e}, \quad e = r - \bar r.}
 #'
-#' \eqn{I \in [-1, 1]}. Positive -> clustering, negative ->
+#' \code{I \in [-1, 1]}. Positive -> clustering, negative ->
 #' dispersion, ~0 -> spatial randomness.
 #'
 #' @param residuals Numeric vector of length N (e.g. OLS residuals).

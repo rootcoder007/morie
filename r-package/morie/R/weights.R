@@ -21,7 +21,7 @@
 
 #' Design weights from inclusion probabilities.
 #'
-#' \eqn{w_i = 1 / \pi_i}.
+#' \code{w_i = 1 / \pi_i}.
 #' @export
 morie_weights_design <- function(selection_probs) {
   p <- as.numeric(selection_probs)
@@ -321,7 +321,7 @@ morie_weights_diagnostics <- function(weights) {
   )
 }
 
-#' Kish effective sample size: \eqn{(\sum w_i)^2 / \sum w_i^2}.
+#' Kish effective sample size: \code{(\sum w_i)^2 / \sum w_i^2}.
 #' @export
 morie_weights_ess <- function(weights) {
   w <- as.numeric(weights); s <- sum(w)

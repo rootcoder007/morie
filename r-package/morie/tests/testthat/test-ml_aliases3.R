@@ -253,7 +253,7 @@ test_that("sptau returns Spearman tau on (x, w) vectors", {
 
 test_that("unfdl runs an unfolding-distance latent model", {
   set.seed(21L)
-  D <- as.matrix(stats::dist(matrix(stats::rnorm(40 * 2), 20, 2)))
+  D <- as.matrix(stats::dist(matrix(stats::rnorm(20 * 2), 20, 2)))
   out <- tryCatch(unfdl(D, k = 2L, n_iter = 30L),
                   error = function(e) e)
   if (inherits(out, "error"))

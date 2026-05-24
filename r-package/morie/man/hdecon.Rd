@@ -12,7 +12,7 @@ hdecon(x, cutoff, n_fft = NULL)
 \item{cutoff}{Liftering cutoff (quefrency index). Coefficients above
 are zeroed to isolate the slow-varying component.}
 
-\item{n_fft}{FFT length (default: next power of 2 \\eqn{\\geq} \code{length(x)}).}
+\item{n_fft}{FFT length (default: next power of 2 \\code{\\geq} \code{length(x)}).}
 }
 \value{
 List with \code{filtered} (minimum-phase component \\eqn{h}),

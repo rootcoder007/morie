@@ -2,7 +2,7 @@
 
 #' Fauzi: Kernel survival function estimator (Ch 4)
 #'
-#' \eqn{\hat S_h(t)=1-\hat F_h(t)} with asymptotic 95\% CI.
+#' \code{\hat S_h(t)=1-\hat F_h(t)} with asymptotic 95\% CI.
 #'
 #' @param x Numeric vector (lifetimes).
 #' @param t Evaluation point; default median(x).

@@ -16,14 +16,14 @@ morie_sensitivity_rosenbaum(
 \item{control}{Numeric vector of outcomes for control units
 (may differ in length from \code{treated} for unmatched designs).}
 
-\item{gamma_range}{Numeric vector of \eqn{\Gamma} values to test.}
+\item{gamma_range}{Numeric vector of \code{\Gamma} values to test.}
 }
 \value{
 Data frame with columns: \code{gamma}, \code{p_lower}, \code{p_upper}.
 }
 \description{
-For a range of hidden-confounding levels \eqn{\Gamma}, tests whether
-the treatment effect remains significant. A large \eqn{\Gamma} at
+For a range of hidden-confounding levels \code{\Gamma}, tests whether
+the treatment effect remains significant. A large \code{\Gamma} at
 which the result remains significant indicates robustness.
 }
 \details{

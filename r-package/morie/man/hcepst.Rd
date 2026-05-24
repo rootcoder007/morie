@@ -9,7 +9,7 @@ hcepst(x, n_fft = NULL)
 \arguments{
 \item{x}{Numeric vector (1-D signal).}
 
-\item{n_fft}{FFT length (default: next power of 2 \\eqn{\\geq} \code{length(x)}).}
+\item{n_fft}{FFT length (default: next power of 2 \\code{\\geq} \code{length(x)}).}
 }
 \value{
 List with \code{filtered} (complex cepstrum, real-valued),
@@ -17,7 +17,7 @@ List with \code{filtered} (complex cepstrum, real-valued),
 \code{original_length}).
 }
 \description{
-Complex cepstrum: inverse FFT of \\eqn{\\log X(\\omega)} using the unwrapped
+Complex cepstrum: inverse FFT of \\code{\\log X(\\omega)} using the unwrapped
 phase. Unlike the real cepstrum, it preserves enough information to
 invert the operation, which is what enables homomorphic deconvolution.
 }

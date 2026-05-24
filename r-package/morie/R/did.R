@@ -129,8 +129,8 @@ NULL
 #' \deqn{\hat\tau = (\bar Y_{1,\text{post}} - \bar Y_{1,\text{pre}})
 #'                 - (\bar Y_{0,\text{post}} - \bar Y_{0,\text{pre}}).}
 #' With covariates, fits the regression
-#' \eqn{Y = \alpha + \beta D + \gamma P + \tau (D \times P) + X\delta + \varepsilon}
-#' and reports \eqn{\hat\tau}.
+#' \code{Y = \alpha + \beta D + \gamma P + \tau (D \times P) + X\delta + \varepsilon}
+#' and reports \code{\hat\tau}.
 #'
 #' @param data A data frame containing the outcome, treatment, post and
 #'   any covariate columns.
@@ -310,7 +310,7 @@ morie_did_panel_fe <- function(data, outcome, treatment, unit, time,
 #' Event-study DiD specification
 #'
 #' Constructs relative-time dummies \eqn{1\{t - g = k\}} for
-#' \eqn{k \in [-\text{leads}, \text{lags}]} (omitting
+#' \code{k \in [-\text{leads}, \text{lags}]} (omitting
 #' \code{reference_period}) and regresses the outcome on these
 #' indicators with unit and time fixed effects.
 #'
@@ -537,7 +537,7 @@ morie_did_parallel_trends_data <- function(data, outcome, treatment, time,
 #' Callaway--Sant'Anna group-time average treatment effects
 #'
 #' For each cohort \eqn{g} and each post-treatment calendar period
-#' \eqn{t}, estimates \eqn{\mathrm{ATT}(g, t)}.  Prefers
+#' \code{t}, estimates \code{\mathrm{ATT}(g, t)}.  Prefers
 #' \code{did::att_gt} (the reference implementation by Callaway &
 #' Sant'Anna); falls back to a base-R bootstrap-based estimator that
 #' mirrors the Python module when \pkg{did} is unavailable.
@@ -1323,8 +1323,8 @@ morie_did_continuous_treatment <- function(data, outcome, dose, post,
 
 #' Fuzzy DiD (LATE) via 2SLS
 #'
-#' Uses \eqn{Z \times \mathrm{Post}} as an instrument for
-#' \eqn{D \times \mathrm{Post}} to recover a local average treatment
+#' Uses \code{Z \times \mathrm{Post}} as an instrument for
+#' \code{D \times \mathrm{Post}} to recover a local average treatment
 #' effect under imperfect compliance.
 #'
 #' @inheritParams morie_did_2x2
@@ -1628,12 +1628,12 @@ morie_did_chaisemartin_dhaultfoeuille <- function(data, outcome, treatment,
 
 #' Sensitivity of DiD estimate to parallel-trends violations
 #'
-#' For each \eqn{\delta}, computes a bias-adjusted confidence set under
-#' the bound \eqn{|\mathrm{bias}| \le \delta \hat\sigma} (Rambachan &
+#' For each \code{\delta}, computes a bias-adjusted confidence set under
+#' the bound \code{|\mathrm{bias}| \le \delta \hat\sigma} (Rambachan &
 #' Roth, 2023, conservative version).
 #'
 #' @inheritParams morie_did_2x2
-#' @param delta_range Numeric vector of \eqn{\delta} values to evaluate
+#' @param delta_range Numeric vector of \code{\delta} values to evaluate
 #'   (default \code{seq(0, 2, 0.25)}).
 #' @return A data frame with columns \code{delta}, \code{ci_lower},
 #'   \code{ci_upper}, \code{covers_zero}.

@@ -23,9 +23,9 @@ Named list with estimate, sigma1_sq, sigma2_sq, se, n, n_pairs, method.
 }
 \description{
 For a symmetric kernel g(x1,x2),
-\eqn{U_n = \binom{n}{2}^{-1}\sum_{i<j} g(X_i,X_j)},
-\eqn{\sigma_1^2 = \mathrm{Var}\, g_1(X)} (Hajek projection),
-\eqn{\mathrm{Var}(U_n) \approx 4\sigma_1^2/n}.
+\code{U_n = \binom{n}{2}^{-1}\sum_{i<j} g(X_i,X_j)},
+\code{\sigma_1^2 = \mathrm{Var}\, g_1(X)} (Hajek projection),
+\code{\mathrm{Var}(U_n) \approx 4\sigma_1^2/n}.
 }
 \examples{
 fzhdc(x = rnorm(50))

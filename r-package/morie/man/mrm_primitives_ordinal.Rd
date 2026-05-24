@@ -14,9 +14,9 @@ to standard proportional-odds specifications.
 }
 \details{
 This R port is the \strong{frequentist} analogue: for each cutpoint
-\eqn{k = 1, \ldots, K-1} a separate binary logit is fit to the
-indicator \eqn{1\{Y \le k\}}, so the coefficient vector
-\eqn{\beta_k} is unconstrained across thresholds.  When
+\code{k = 1, \ldots, K-1} a separate binary logit is fit to the
+indicator \code{1\{Y \le k\}}, so the coefficient vector
+\code{\beta_k} is unconstrained across thresholds.  When
 \code{MASS} is available we delegate to \code{\link[MASS]{polr}}
 for the proportional-odds (PO) baseline; otherwise the PO baseline
 is fit by a stacked-IRLS approximation matching the Python

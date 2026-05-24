@@ -1768,7 +1768,7 @@ morie_matching_abadie_imbens_se <- function(data, outcome, treatment,
 #' @param data Data frame.
 #' @param outcome,treatment Column names.
 #' @param match_pairs Data frame of matched indices.
-#' @param gamma_range Optional numeric vector of \eqn{\Gamma} values.
+#' @param gamma_range Optional numeric vector of \code{\Gamma} values.
 #' @return A data frame with columns \code{gamma}, \code{p_lower},
 #'   \code{p_upper}, \code{significant_lower}, \code{significant_upper}.
 #' @references Rosenbaum, P. R. (2002). \emph{Observational Studies}

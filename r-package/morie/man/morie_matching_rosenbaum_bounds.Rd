@@ -19,7 +19,7 @@ morie_matching_rosenbaum_bounds(
 
 \item{match_pairs}{Data frame of matched indices.}
 
-\item{gamma_range}{Optional numeric vector of \eqn{\Gamma} values.}
+\item{gamma_range}{Optional numeric vector of \code{\Gamma} values.}
 }
 \value{
 A data frame with columns \code{gamma}, \code{p_lower},

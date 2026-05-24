@@ -28,8 +28,8 @@ Named list \code{(loss, estimate, dW, db, dx, a, z, method)}.
 R parity for \code{morie.fn.bkprp.backpropagation}.
 }
 \details{
-For \eqn{L = \tfrac{1}{2n}\sum (a - y)^2} with
-\eqn{a = \sigma(W x + b)}:
+For \code{L = \tfrac{1}{2n}\sum (a - y)^2} with
+\code{a = \sigma(W x + b)}:
 \deqn{\partial L / \partial W = \delta x^\top, \quad
       \delta = (a - y) \odot \sigma'(z)}
 }

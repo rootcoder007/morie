@@ -69,8 +69,8 @@ morie_estimate_propensity_scores <- function(data, treatment, covariates,
 #'
 #' The Hajek estimator uses stabilised IPW weights:
 #' \deqn{\widehat{ATE} = \bar{y}_1^{w} - \bar{y}_0^{w}}
-#' where \eqn{\bar{y}_t^{w} = \sum_{T_i=t} w_i Y_i / \sum_{T_i=t} w_i}
-#' and \eqn{w_i = T_i/\hat{e}(X_i) + (1-T_i)/(1-\hat{e}(X_i))}.
+#' where \code{\bar{y}_t^{w} = \sum_{T_i=t} w_i Y_i / \sum_{T_i=t} w_i}
+#' and \code{w_i = T_i/\hat{e}(X_i) + (1-T_i)/(1-\hat{e}(X_i))}.
 #'
 #' @param data A data frame.
 #' @param treatment Name of the binary treatment column.
@@ -125,7 +125,7 @@ morie_estimate_ate <- function(data, treatment, outcome, covariates,
 #' Estimate the Average Treatment Effect on the Treated (ATT)
 #'
 #' Treated units receive weight 1; controls receive
-#' \eqn{w_i = \hat{e}(X_i)/(1-\hat{e}(X_i))}.
+#' \code{w_i = \hat{e}(X_i)/(1-\hat{e}(X_i))}.
 #'
 #' @inheritParams morie_estimate_ate
 #' @return Named list: `att`, `se`, `ci_lower`, `ci_upper`, `n_treated`.
@@ -173,7 +173,7 @@ morie_estimate_att <- function(data, treatment, outcome, covariates,
 #' Estimate the Average Treatment Effect on the Controls (ATC)
 #'
 #' Control units receive weight 1; treated units receive
-#' \eqn{w_i = (1-\hat{e}(X_i))/\hat{e}(X_i)}.
+#' \code{w_i = (1-\hat{e}(X_i))/\hat{e}(X_i)}.
 #'
 #' @inheritParams morie_estimate_ate
 #' @return Named list: `atc`, `se`, `ci_lower`, `ci_upper`, `n_control`.
@@ -332,7 +332,7 @@ morie_estimate_gate <- function(data, treatment, outcome, covariates,
 #'
 #' The **T-learner** fits separate outcome models on treated and control
 #' units, then predicts the counterfactual for each unit:
-#' \eqn{\widehat{CATE}_i = \hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)}.
+#' \code{\widehat{CATE}_i = \hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)}.
 #'
 #' The **S-learner** fits one model with treatment as a feature.
 #'
@@ -516,8 +516,8 @@ morie_e_value <- function(rr, rr_lower = NULL) {
 
 #' Rosenbaum bounds sensitivity analysis
 #'
-#' For a range of hidden-confounding levels \eqn{\Gamma}, tests whether
-#' the treatment effect remains significant. A large \eqn{\Gamma} at
+#' For a range of hidden-confounding levels \code{\Gamma}, tests whether
+#' the treatment effect remains significant. A large \code{\Gamma} at
 #' which the result remains significant indicates robustness.
 #'
 #' Uses Wilcoxon signed-rank statistic bounds for matched designs.
@@ -526,7 +526,7 @@ morie_e_value <- function(rr, rr_lower = NULL) {
 #' @param treated Numeric vector of outcomes for treated units.
 #' @param control Numeric vector of outcomes for control units
 #'   (may differ in length from `treated` for unmatched designs).
-#' @param gamma_range Numeric vector of \eqn{\Gamma} values to test.
+#' @param gamma_range Numeric vector of \code{\Gamma} values to test.
 #' @return Data frame with columns: `gamma`, `p_lower`, `p_upper`.
 #' @examples
 #' morie_sensitivity_rosenbaum(treated = rnorm(30, 0.5), control = rnorm(30))

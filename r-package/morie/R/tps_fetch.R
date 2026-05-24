@@ -9,10 +9,14 @@
 # all I/O is gated behind a `requireNamespace` check so the package
 # can still be loaded on a network-free CRAN build.
 
-#' Per-category ArcGIS REST FeatureServer layer URLs.
+#' Per-category ArcGIS REST FeatureServer layer URLs (constant)
 #'
 #' Each layer's `/query` endpoint is appended at request time.
+#' Folded into the `morie_tps_layer_urls()` Rd via `@rdname` to
+#' avoid the case-insensitive filesystem collision between
+#' `MORIE_TPS_LAYER_URLS.Rd` and `morie_tps_layer_urls.Rd`.
 #'
+#' @rdname morie_tps_layer_urls
 #' @export
 MORIE_TPS_LAYER_URLS <- c(
   Assault = paste0(

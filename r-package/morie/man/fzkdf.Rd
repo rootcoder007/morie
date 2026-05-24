@@ -21,11 +21,11 @@ Named list: estimate, bias, variance, se, h, t, n, method.
 }
 \description{
 Kernel distribution-function estimator (KDFE)
-\eqn{\hat F_h(t) = n^{-1} \sum_i \Phi((t-X_i)/h)} and its asymptotic
+\code{\hat F_h(t) = n^{-1} \sum_i \Phi((t-X_i)/h)} and its asymptotic
 bias and variance:
 \deqn{\mathrm{Bias} = (h^2/2)\mu_2(K) f'(t),
       \quad \mathrm{Var}=F(t)(1-F(t))/n - 2 h r(K) f(t)/n.}
-For the Gaussian kernel \eqn{\mu_2=1, r(K)=1/(2\sqrt\pi)}.
+For the Gaussian kernel \code{\mu_2=1, r(K)=1/(2\sqrt\pi)}.
 }
 \examples{
 fzkdf(x = rnorm(50))

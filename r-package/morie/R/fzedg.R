@@ -4,7 +4,7 @@
 #'
 #' One-term Edgeworth correction to the normal approximation of the
 #' studentised kernel quantile.  Skewness of the indicator score
-#' \eqn{\gamma_1=(1-2p)/\sqrt{p(1-p)}} and
+#' \code{\gamma_1=(1-2p)/\sqrt{p(1-p)}} and
 #' \deqn{P(T_n \le z) \approx \Phi(z) - (\gamma_1/6)(z^2-1)\phi(z)/\sqrt n.}
 #'
 #' @param x Numeric vector (only n is used; result is asymptotic).

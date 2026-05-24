@@ -236,7 +236,7 @@ morie_spatial_voting_aldrich_mckelvey <- function(Z,
 #'
 #' Recovers respondent ideal points from an issue-scale response matrix
 #' via SVD on the column-centred matrix.  Implements Poole's (1998)
-#' decomposition \eqn{X_0 = \Psi W' + J_n c' + E_0}.  Delegates to
+#' decomposition \code{X_0 = \Psi W' + J_n c' + E_0}.  Delegates to
 #' `basicspace::blackbox` when available.
 #'
 #' @param X A respondent-by-issue numeric matrix of responses
@@ -397,7 +397,7 @@ morie_spatial_voting_optimal_classification <- function(votes,
 
 #' Double-center a distance matrix
 #'
-#' Computes \eqn{B = -\tfrac{1}{2} H D^{(2)} H} with
+#' Computes \code{B = -\tfrac{1}{2} H D^{(2)} H} with
 #' \eqn{H = I - n^{-1}\mathbf{1}\mathbf{1}'}.
 #' @param D Symmetric numeric distance matrix.
 #' @return The double-centered matrix \eqn{B}.
@@ -1644,7 +1644,7 @@ morie_spatial_voting_ordinal_irt <- function(Y, n_dims = 1L,
 #' Dynamic IRT with random-walk priors (stub)
 #'
 #' Time-series IRT where ideal points evolve via a random walk:
-#' \eqn{\phi_{i,t} \sim N(\phi_{i,t-1}, \tau^2)}.
+#' \code{\phi_{i,t} \sim N(\phi_{i,t-1}, \tau^2)}.
 #'
 #' @param votes Vote matrix. @param time_periods Per-vote period indices.
 #' @param n_samples MCMC samples. @param burn_in Burn-in length.

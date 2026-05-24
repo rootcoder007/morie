@@ -22,10 +22,10 @@ additionally carries class \\code{morie_rich_result}.
 }
 \description{
 Estimates the local FDR for each test as
-\\eqn{lfdr_i = \\pi_0 \\, f_0(z_i) / f(z_i)}, where
-\\eqn{z_i = \\Phi^{-1}(1 - p_i/2)} are two-sided z-scores, \\eqn{f_0} is the
+\\code{lfdr_i = \\pi_0 \\, f_0(z_i) / f(z_i)}, where
+\\code{z_i = \\Phi^{-1}(1 - p_i/2)} are two-sided z-scores, \\code{f_0} is the
 standard-normal null density, \\eqn{f} is a kernel density estimate of the
-observed z-scores, and \\eqn{\\pi_0} is the proportion of null hypotheses
+observed z-scores, and \\code{\\pi_0} is the proportion of null hypotheses
 estimated by the Storey-style cutoff at \\eqn{p > 0.5}.
 }
 \examples{

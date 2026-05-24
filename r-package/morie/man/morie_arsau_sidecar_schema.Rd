@@ -23,5 +23,5 @@ tidy \code{data.frame} of column metadata.  Entries that lack an
 }
 \references{
 CKAN \emph{datastore_search} response schema, as
-served by \code{https://data.ontario.ca/api/3/action/datastore_search}.
+served by \code{datastore_search} (\url{https://data.ontario.ca/}).
 }

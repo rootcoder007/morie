@@ -9,7 +9,8 @@ morie_datasets_load_by_key(
   offline = TRUE,
   max_features = NULL,
   mode = c("auto", "soda2", "soda3", "odata"),
-  app_token = NULL
+  app_token = NULL,
+  source = NULL
 )
 }
 \arguments{
@@ -30,6 +31,12 @@ its native default (soda2 today). 3FFF2.}
 
 \item{app_token}{Optional Socrata application token forwarded
 to SODA3-capable loaders. 3FFF2.}
+
+\item{source}{Optional portal disambiguator (e.g.,
+\code{"vancouver_opendata"} vs \code{"toronto_opendata"}) used when the
+\code{dataset_key} collides across portals. 3HHH5. Omit when the key
+is unique (the common case); pass when an ambiguous-key error
+is raised to pick the intended portal.}
 }
 \value{
 A \code{data.frame} (or, for StatCan, the WDS metadata list).

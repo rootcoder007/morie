@@ -48,7 +48,7 @@ Solves the coupled reaction-diffusion system
   \log A) - \rho A + \gamma,}
 on a cosine-corrected Toronto grid seeded by the observed incident
 histogram. Localised attractiveness spikes emerge whenever
-\eqn{(\eta, \omega, \theta, D, \gamma)} place the system in the
+\code{(\eta, \omega, \theta, D, \gamma)} place the system in the
 instability regime (D'Orsogna & Perc 2015, sec. 3.2).
 }
 \details{

@@ -13,8 +13,8 @@ pfd(x)
 List with \code{value} (D), \code{name}, and \code{extra} (\code{n_delta}, \code{n}).
 }
 \description{
-Petrosian fractal dimension \\eqn{D = \\log_{10}(N) / (\\log_{10}(N) +
-\\log_{10}(N / (N + 0.4 N_\\delta)))}, where \\eqn{N_\\delta} counts sign
+Petrosian fractal dimension \\code{D = \\log_{10}(N) / (\\log_{10}(N) +
+\\log_{10}(N / (N + 0.4 N_\\delta)))}, where \\code{N_\\delta} counts sign
 changes of the first difference. A fast complexity proxy for EEG/ECG.
 }
 \details{

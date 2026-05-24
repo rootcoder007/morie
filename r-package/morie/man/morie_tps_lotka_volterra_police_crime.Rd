@@ -23,9 +23,9 @@ expose a public mass-stop / use-of-force time series). Under the
 classical Lotka-Volterra system,
 \deqn{\dot x = \alpha x - \beta x y, \quad \dot y = \delta x y - \gamma y,}
 the small-amplitude oscillation around the equilibrium has period
-\eqn{T = 2 \pi / \sqrt{\alpha \gamma}}. Growth rate \eqn{\alpha} is
-estimated from log-differences of \eqn{x}; \eqn{\gamma} symmetrically
-from \eqn{y}; the interaction rates \eqn{\beta, \delta} follow by
+\code{T = 2 \pi / \sqrt{\alpha \gamma}}. Growth rate \code{\alpha} is
+estimated from log-differences of \code{x}; \code{\gamma} symmetrically
+from \code{y}; the interaction rates \code{\beta, \delta} follow by
 the equilibrium relations.
 }
 \examples{

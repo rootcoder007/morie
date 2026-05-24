@@ -40,8 +40,8 @@ Estimates the canonical two-group / two-period DiD treatment effect
 \deqn{\hat\tau = (\bar Y_{1,\text{post}} - \bar Y_{1,\text{pre}})
                 - (\bar Y_{0,\text{post}} - \bar Y_{0,\text{pre}}).}
 With covariates, fits the regression
-\eqn{Y = \alpha + \beta D + \gamma P + \tau (D \times P) + X\delta + \varepsilon}
-and reports \eqn{\hat\tau}.
+\code{Y = \alpha + \beta D + \gamma P + \tau (D \times P) + X\delta + \varepsilon}
+and reports \code{\hat\tau}.
 }
 \examples{
 \dontrun{

@@ -180,7 +180,7 @@ NULL
 #'   \log A) - \rho A + \gamma,}
 #' on a cosine-corrected Toronto grid seeded by the observed incident
 #' histogram. Localised attractiveness spikes emerge whenever
-#' \eqn{(\eta, \omega, \theta, D, \gamma)} place the system in the
+#' \code{(\eta, \omega, \theta, D, \gamma)} place the system in the
 #' instability regime (D'Orsogna & Perc 2015, sec. 3.2).
 #'
 #' Steady-state spike count is compared against a DBSCAN cluster count
@@ -332,10 +332,10 @@ morie_tps_sdb_reaction_diffusion <- function(category = "Assault",
 #' Levy-flight tail exponent on consecutive-incident steps
 #'
 #' Computes the Hill maximum-likelihood estimator of the upper-tail
-#' Pareto exponent \eqn{\alpha} of the step-length distribution between
+#' Pareto exponent \code{\alpha} of the step-length distribution between
 #' chronologically consecutive incidents, following Brockmann,
-#' Hufnagel & Geisel (2006). For a power-law tail \eqn{p(\ell) \propto
-#' \ell^{-\alpha}} on \eqn{\ell \ge \ell_{\min}} the Hill MLE is
+#' Hufnagel & Geisel (2006). For a power-law tail \code{p(\ell) \propto
+#' \ell^{-\alpha}} on \code{\ell \ge \ell_{\min}} the Hill MLE is
 #' \deqn{\hat\alpha = 1 + n / \sum_i \log(\ell_i / \ell_{\min}).}
 #' Standard error is obtained by 200 nonparametric bootstrap resamples.
 #'
@@ -344,7 +344,7 @@ morie_tps_sdb_reaction_diffusion <- function(category = "Assault",
 #' @param lmin_km Lower tail cutoff in km.
 #' @param save_fig Whether to emit a log-log empirical-vs-fit PNG.
 #'
-#' @return A \code{morie_rich_result} with \eqn{\hat\alpha},
+#' @return A \code{morie_rich_result} with \code{\hat\alpha},
 #'   bootstrap SE, sample-size diagnostics, and a Lévy-regime
 #'   interpretation.
 #'
@@ -451,9 +451,9 @@ morie_tps_levy_flight_alpha <- function(category = "Assault",
 #' Performs the standard log-log OLS scaling fit
 #' \deqn{\log y_i = \log Y_0 + \beta \log p_i + \varepsilon_i,}
 #' where \eqn{y_i} is the crime count and \eqn{p_i} is the population
-#' of ward \eqn{i}. \eqn{\beta > 1} indicates super-linear (crime
-#' grows faster than population), \eqn{\beta = 1} linear, and
-#' \eqn{\beta < 1} sub-linear (protective) scaling (Bettencourt
+#' of ward \code{i}. \code{\beta > 1} indicates super-linear (crime
+#' grows faster than population), \code{\beta = 1} linear, and
+#' \code{\beta < 1} sub-linear (protective) scaling (Bettencourt
 #' \emph{et al.} 2007; D'Orsogna & Perc 2015 sec. 4.1).
 #'
 #' @param category TPS category name.
@@ -461,7 +461,7 @@ morie_tps_levy_flight_alpha <- function(category = "Assault",
 #'   and crime columns.
 #' @param save_fig Whether to write a log-log scatter + fit PNG.
 #'
-#' @return A \code{morie_rich_result} with \eqn{\hat\beta}, its
+#' @return A \code{morie_rich_result} with \code{\hat\beta}, its
 #'   standard error, R-squared, the back-transformed prefactor
 #'   \eqn{Y_0}, and a regime label (sub-linear, linear, super-linear).
 #'
@@ -572,9 +572,9 @@ morie_tps_urban_scaling_beta <- function(category = "Assault",
 #' classical Lotka-Volterra system,
 #' \deqn{\dot x = \alpha x - \beta x y, \quad \dot y = \delta x y - \gamma y,}
 #' the small-amplitude oscillation around the equilibrium has period
-#' \eqn{T = 2 \pi / \sqrt{\alpha \gamma}}. Growth rate \eqn{\alpha} is
-#' estimated from log-differences of \eqn{x}; \eqn{\gamma} symmetrically
-#' from \eqn{y}; the interaction rates \eqn{\beta, \delta} follow by
+#' \code{T = 2 \pi / \sqrt{\alpha \gamma}}. Growth rate \code{\alpha} is
+#' estimated from log-differences of \code{x}; \code{\gamma} symmetrically
+#' from \code{y}; the interaction rates \code{\beta, \delta} follow by
 #' the equilibrium relations.
 #'
 #' @param category TPS category name.
