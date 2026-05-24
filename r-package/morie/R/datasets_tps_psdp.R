@@ -327,3 +327,192 @@ morie_datasets_tps_theft_over <- function(year = NULL,
   .morie_tps_psdp_dispatch("theft_over", year, max_features, offline,
                             layer_url)
 }
+
+# ---------------------------------------------------------------------------
+# TPS Police Divisions loader + Hub resolved-joins analyzer (3CCC3)
+# ---------------------------------------------------------------------------
+
+#' Toronto Police Service police division boundaries
+#'
+#' Phase 3CCC3. Bundled snapshot of the TPS Hub
+#' `fda21b25213c4c07b08c5162cba5081f` (TPS_POLICE_DIVISIONS) -- the
+#' 16 post-amalgamation TPS divisions (D11, D12, D13, D14, D22, D23,
+#' D31, D32, D33, D41, D42, D43, D51, D52, D53, D55) with unit name,
+#' address, and area_sqkm.
+#'
+#' @param offline If `TRUE` (default), reads the bundled CSV.
+#' @param max_features Optional row cap.
+#' @return A `data.frame` with `DIV`, `UNIT_NAME`, `ADDRESS`,
+#'   `CITY`, `AREA_SQKM`, plus shape area / perimeter fields.
+#' @examples
+#' df <- morie_datasets_tps_police_divisions(offline = TRUE)
+#' nrow(df)  # 16
+#' @export
+morie_datasets_tps_police_divisions <- function(offline = TRUE,
+                                                  max_features = NULL) {
+  if (offline) {
+    path <- system.file("extdata", "tps_police_divisions.csv",
+                        package = "morie")
+    if (!nzchar(path))
+      stop("bundled TPS police divisions fixture missing",
+           call. = FALSE)
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE,
+                           colClasses = c(DIV = "character"))
+  } else {
+    df <- morie_datasets_tps_arcgis_hub_by_id(
+            "fda21b25213c4c07b08c5162cba5081f",
+            max_features = max_features)
+  }
+  if (!is.null(max_features)) df <- utils::head(df, as.integer(max_features))
+  df
+}
+
+#' One-call TPS PSDP data + boundary metadata join
+#'
+#' Phase 3CCC3. Pulls a TPS PSDP crime dataset
+#' (`morie_datasets_tps_assault()` etc.) and left-joins its native
+#' DIVISION + HOOD_158 + HOOD_140 columns against the bundled
+#' boundary metadata loaders ([morie_datasets_tps_police_divisions()],
+#' [morie_to_neighbourhoods()] 158 + 140 + NIA flags) and the PSDP
+#' layer registry ([morie_tps_psdp_layers()]).
+#'
+#' Per-row PSDP datasets carry these ID columns natively:
+#' \itemize{
+#'   \item `DIVISION` (e.g., "D11") -- joins to police_divisions.DIV
+#'   \item `HOOD_158` (integer 1-158) -- joins to 158-neighbourhoods
+#'   \item `NEIGHBOURHOOD_158` (denormalised name)
+#'   \item `HOOD_140` (integer 1-140) -- joins to 140-neighbourhoods
+#'   \item `NEIGHBOURHOOD_140` (denormalised name)
+#' }
+#'
+#' Resolver columns are prefixed `division_*`, `hood158_*`,
+#' `hood140_*`, `nia_*`, `psdp_*` to avoid collisions. Left-join
+#' semantics (row count preserved).
+#'
+#' Mirrors the Chicago `morie_datasets_chicago_crime_resolved()`
+#' (3VV+) and NYPD `morie_datasets_nyc_nypd_resolved()` (3AAA-3CCC1)
+#' patterns.
+#'
+#' @param layer_key One of the PSDP `layer_key`s from
+#'   [morie_tps_psdp_layers()] (e.g., `"assault"`, `"autotheft"`,
+#'   `"homicides"`).
+#' @param year Optional year filter passed through to the underlying
+#'   loader.
+#' @param max_features Optional row cap.
+#' @param offline If `TRUE` (default), all data come from bundled
+#'   fixtures.
+#' @param layer_url Backward-compat override for non-canonical
+#'   FeatureServer URL.
+#' @param resolvers Character subset of
+#'   `c("division", "hood158", "hood140", "nia", "psdp_class")`.
+#'   Default joins all five.
+#' @return A wide `data.frame`: PSDP columns first, then prefixed
+#'   resolver columns.
+#' @examples
+#' df <- morie_datasets_tps_psdp_resolved("assault", offline = TRUE)
+#' names(df)
+#' @export
+morie_datasets_tps_psdp_resolved <- function(
+    layer_key,
+    year = NULL,
+    max_features = NULL,
+    offline = TRUE,
+    layer_url = NULL,
+    resolvers = c("division", "hood158", "hood140",
+                   "nia", "psdp_class")) {
+  resolvers <- match.arg(
+    resolvers,
+    choices = c("division", "hood158", "hood140",
+                 "nia", "psdp_class"),
+    several.ok = TRUE)
+  out <- .morie_tps_psdp_dispatch(layer_key, year, max_features,
+                                    offline, layer_url)
+  if (nrow(out) == 0L) return(out)
+
+  prefix_cols <- function(df, drop, prefix) {
+    keep <- setdiff(names(df), drop)
+    names(df)[match(keep, names(df))] <- paste0(prefix, "_", keep)
+    df
+  }
+
+  # DIVISION join.
+  if ("division" %in% resolvers && "DIVISION" %in% names(out)) {
+    div <- morie_datasets_tps_police_divisions(offline = TRUE)
+    names(div)[names(div) == "DIV"] <- "DIVISION"
+    div <- prefix_cols(div, drop = "DIVISION", prefix = "division")
+    out$DIVISION <- as.character(out$DIVISION)
+    div$DIVISION <- as.character(div$DIVISION)
+    out <- merge(out, div, by = "DIVISION",
+                  all.x = TRUE, sort = FALSE)
+  }
+
+  # HOOD_158 join.
+  if ("hood158" %in% resolvers && "HOOD_158" %in% names(out)) {
+    hd <- morie_to_neighbourhoods(version = "158")
+    # Use AREA_SHORT_CODE as the join key (matches HOOD_158).
+    if ("AREA_SHORT_CODE" %in% names(hd)) {
+      names(hd)[names(hd) == "AREA_SHORT_CODE"] <- "HOOD_158"
+    } else if ("AREA_LONG_CODE" %in% names(hd)) {
+      names(hd)[names(hd) == "AREA_LONG_CODE"] <- "HOOD_158"
+    }
+    hd <- prefix_cols(hd, drop = "HOOD_158", prefix = "hood158")
+    out$HOOD_158 <- as.character(out$HOOD_158)
+    hd$HOOD_158 <- as.character(hd$HOOD_158)
+    out <- merge(out, hd, by = "HOOD_158",
+                  all.x = TRUE, sort = FALSE)
+  }
+
+  # HOOD_140 join.
+  if ("hood140" %in% resolvers && "HOOD_140" %in% names(out)) {
+    hd <- morie_to_neighbourhoods(version = "140")
+    if ("AREA_SHORT_CODE" %in% names(hd)) {
+      names(hd)[names(hd) == "AREA_SHORT_CODE"] <- "HOOD_140"
+    } else if ("AREA_LONG_CODE" %in% names(hd)) {
+      names(hd)[names(hd) == "AREA_LONG_CODE"] <- "HOOD_140"
+    }
+    hd <- prefix_cols(hd, drop = "HOOD_140", prefix = "hood140")
+    out$HOOD_140 <- as.character(out$HOOD_140)
+    hd$HOOD_140 <- as.character(hd$HOOD_140)
+    out <- merge(out, hd, by = "HOOD_140",
+                  all.x = TRUE, sort = FALSE)
+  }
+
+  # NIA flag (Neighbourhood Improvement Area).  Joins on either
+  # HOOD_158 or HOOD_140 depending on what's present.
+  if ("nia" %in% resolvers) {
+    nia_col <- intersect(c("HOOD_158", "HOOD_140"), names(out))[1L]
+    if (!is.na(nia_col)) {
+      nia <- morie_to_neighbourhoods(version = "nia")
+      if ("AREA_SHORT_CODE" %in% names(nia)) {
+        names(nia)[names(nia) == "AREA_SHORT_CODE"] <- nia_col
+      }
+      nia$nia_is_nia <- TRUE
+      keep <- c(nia_col, "nia_is_nia")
+      if ("AREA_NAME" %in% names(nia))
+        keep <- c(keep, "AREA_NAME")
+      nia <- nia[, intersect(keep, names(nia)), drop = FALSE]
+      if ("AREA_NAME" %in% names(nia))
+        names(nia)[names(nia) == "AREA_NAME"] <- "nia_area_name"
+      out[[nia_col]] <- as.character(out[[nia_col]])
+      nia[[nia_col]] <- as.character(nia[[nia_col]])
+      out <- merge(out, nia, by = nia_col,
+                    all.x = TRUE, sort = FALSE)
+      out$nia_is_nia[is.na(out$nia_is_nia)] <- FALSE
+    }
+  }
+
+  # PSDP class join (which of the 11 PSDP layer types is this row).
+  if ("psdp_class" %in% resolvers) {
+    lay <- morie_tps_psdp_layers()
+    hit <- lay[lay$layer_key == layer_key, , drop = FALSE]
+    if (nrow(hit) == 1L) {
+      out$psdp_class_key   <- hit$layer_key
+      out$psdp_class_label <- hit$label
+      out$psdp_class_hub_id <- hit$hub_id
+    }
+  }
+
+  rownames(out) <- NULL
+  out
+}
