@@ -101,6 +101,36 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
       stringsAsFactors = FALSE))
   }
 
+  # --- NYC OpenData BULK (3GGG1, 2851 entities) ----------------
+  nyc_bulk <- morie_datasets_nyc_opendata_bulk_layers(offline = TRUE)
+  for (i in seq_len(nrow(nyc_bulk))) {
+    push(data.frame(
+      dataset_key = nyc_bulk$soda_id[i],
+      source = "nyc_opendata",
+      id = nyc_bulk$soda_id[i],
+      api_modes = "soda2,soda2_csv,soda2_geojson,soda3,odata",
+      loader = "morie_datasets_nyc_socrata_by_id",
+      dict_url = sprintf("https://data.cityofnewyork.us/d/%s",
+                          nyc_bulk$soda_id[i]),
+      n_rows_bundled = NA_integer_,
+      stringsAsFactors = FALSE))
+  }
+
+  # --- Chicago Open Data BULK (3GGG2, 1856 entities) -----------
+  chi_bulk <- morie_datasets_chicago_opendata_bulk_layers(offline = TRUE)
+  for (i in seq_len(nrow(chi_bulk))) {
+    push(data.frame(
+      dataset_key = chi_bulk$soda_id[i],
+      source = "chicago",
+      id = chi_bulk$soda_id[i],
+      api_modes = "soda2,soda2_csv,soda2_geojson,soda3,odata",
+      loader = "morie_datasets_chicago_socrata_by_id",
+      dict_url = sprintf("https://data.cityofchicago.org/d/%s",
+                          chi_bulk$soda_id[i]),
+      n_rows_bundled = NA_integer_,
+      stringsAsFactors = FALSE))
+  }
+
   # --- External Socrata (Chicago + NYPD SQF) --------------------
   ext <- morie_datasets_external_socrata_layers()
   for (i in seq_len(nrow(ext))) {
@@ -190,19 +220,17 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
       stringsAsFactors = FALSE))
   }
 
-  # --- Calgary Open Data Socrata (3FFF3) -----------------------
-  cal <- morie_datasets_calgary_open_crime_adjacent_layers(offline = TRUE)
+  # --- Calgary Open Data BULK (3GGG4, 933 entities) -----------
+  cal_bulk <- morie_datasets_calgary_opendata_bulk_layers(offline = TRUE)
   cal_n_map <- c("78gh-n26t" = 200L, "bdez-pds9" = 200L,
                   "cqsb-2hhg" = 43L)
   cal_loader_map <- c("78gh-n26t" = "morie_datasets_calgary_community_crime_stats",
                        "bdez-pds9" = "morie_datasets_calgary_fire_response_calls",
                        "cqsb-2hhg" = "morie_datasets_calgary_fire_stations")
-  for (i in seq_len(nrow(cal))) {
-    lk <- cal$soda_id[i]
+  for (i in seq_len(nrow(cal_bulk))) {
+    lk <- cal_bulk$soda_id[i]
     push(data.frame(
-      dataset_key = lk,
-      source = "calgary_opendata",
-      id = lk,
+      dataset_key = lk, source = "calgary_opendata", id = lk,
       api_modes = "soda2,soda2_csv,soda2_geojson,soda3,odata",
       loader = unname(if (lk %in% names(cal_loader_map))
                          cal_loader_map[[lk]]
@@ -213,17 +241,15 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
       stringsAsFactors = FALSE))
   }
 
-  # --- Edmonton Open Data Socrata (3FFF3) ----------------------
-  edm <- morie_datasets_edmonton_open_crime_adjacent_layers(offline = TRUE)
+  # --- Edmonton Open Data BULK (3GGG, 2027 entities) ----------
+  edm_bulk <- morie_datasets_edmonton_opendata_bulk_layers(offline = TRUE)
   edm_n_map <- c("e7aq-scxv" = 10L, "b4y7-zhnz" = 31L)
   edm_loader_map <- c("e7aq-scxv" = "morie_datasets_edmonton_police_stations",
                        "b4y7-zhnz" = "morie_datasets_edmonton_fire_stations")
-  for (i in seq_len(nrow(edm))) {
-    lk <- edm$soda_id[i]
+  for (i in seq_len(nrow(edm_bulk))) {
+    lk <- edm_bulk$soda_id[i]
     push(data.frame(
-      dataset_key = lk,
-      source = "edmonton_opendata",
-      id = lk,
+      dataset_key = lk, source = "edmonton_opendata", id = lk,
       api_modes = "soda2,soda2_csv,soda2_geojson,soda3,odata",
       loader = unname(if (lk %in% names(edm_loader_map))
                          edm_loader_map[[lk]]
@@ -234,43 +260,39 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
       stringsAsFactors = FALSE))
   }
 
-  # --- Ottawa Open Data ArcGIS Hub (3FFF3) ---------------------
-  ott <- morie_datasets_ottawa_open_crime_adjacent_layers(offline = TRUE)
-  for (i in seq_len(nrow(ott))) {
+  # --- Ottawa Open Data BULK (3GGG5, 287 datasets) ------------
+  ott_bulk <- morie_datasets_ottawa_opendata_bulk_layers(offline = TRUE)
+  for (i in seq_len(nrow(ott_bulk))) {
     push(data.frame(
-      dataset_key = ott$hub_id[i],
-      source = "ottawa_opendata",
-      id = ott$hub_id[i],
+      dataset_key = ott_bulk$hub_id[i],
+      source = "ottawa_opendata", id = ott_bulk$hub_id[i],
       api_modes = "arcgis_rest,arcgis_hub",
       loader = "morie_datasets_tps_arcgis_hub_by_id",
       dict_url = sprintf("https://open.ottawa.ca/datasets/%s",
-                          ott$hub_id[i]),
+                          ott_bulk$hub_id[i]),
       n_rows_bundled = NA_integer_,
       stringsAsFactors = FALSE))
   }
 
-  # --- Toronto Open Data CKAN crime-adjacent (3EEE2) -----------
-  tor <- morie_datasets_toronto_open_crime_adjacent_layers(offline = TRUE)
-  for (i in seq_len(nrow(tor))) {
+  # --- Toronto Open Data BULK (3GGG3, 540 packages) -----------
+  tor_bulk <- morie_datasets_toronto_opendata_bulk_layers(offline = TRUE)
+  tor_loader_map <- c(
+    "ambulance-station-locations" = "morie_datasets_toronto_ambulance_stations",
+    "police-annual-statistical-report-miscellaneous-data" = "morie_datasets_toronto_asr_miscellaneous")
+  tor_n_map <- c(
+    "ambulance-station-locations" = 46L,
+    "police-annual-statistical-report-miscellaneous-data" = 40L)
+  for (i in seq_len(nrow(tor_bulk))) {
+    lk <- tor_bulk$package_name[i]
     push(data.frame(
-      dataset_key = tor$package_name[i],
-      source = "toronto_opendata",
-      id = tor$package_name[i],
+      dataset_key = lk, source = "toronto_opendata", id = lk,
       api_modes = "ckan",
-      loader = if (tor$package_name[i] == "ambulance-station-locations")
-                 "morie_datasets_toronto_ambulance_stations"
-              else if (tor$package_name[i] ==
-                         "police-annual-statistical-report-miscellaneous-data")
-                 "morie_datasets_toronto_asr_miscellaneous"
-              else "morie_datasets_toronto_open_ckan_resource",
-      dict_url = sprintf("https://open.toronto.ca/dataset/%s",
-                          tor$package_name[i]),
-      n_rows_bundled = if (tor$package_name[i] == "ambulance-station-locations")
-                         46L
-                       else if (tor$package_name[i] ==
-                                  "police-annual-statistical-report-miscellaneous-data")
-                         40L
-                       else NA_integer_,
+      loader = unname(if (lk %in% names(tor_loader_map))
+                         tor_loader_map[[lk]]
+                       else "morie_datasets_toronto_open_ckan_resource"),
+      dict_url = sprintf("https://open.toronto.ca/dataset/%s", lk),
+      n_rows_bundled = unname(if (lk %in% names(tor_n_map))
+                                 tor_n_map[[lk]] else NA_integer_),
       stringsAsFactors = FALSE))
   }
 

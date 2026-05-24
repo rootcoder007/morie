@@ -143,10 +143,24 @@ morie_datasets_load_by_key <- function(dataset_key,
       morie_datasets_vancouver_opendata_by_id(id)
     },
     "calgary_opendata" = {
-      morie_datasets_calgary_socrata_by_id(id)
+      morie_datasets_calgary_socrata_by_id(
+        id, limit = if (is.null(max_features)) 1000L
+                    else as.integer(max_features))
+    },
+    "chicago" = {
+      morie_datasets_chicago_socrata_by_id(
+        id, limit = if (is.null(max_features)) 1000L
+                    else as.integer(max_features))
+    },
+    "nyc_opendata" = {
+      morie_datasets_nyc_socrata_by_id(
+        id, limit = if (is.null(max_features)) 1000L
+                    else as.integer(max_features))
     },
     "edmonton_opendata" = {
-      morie_datasets_edmonton_socrata_by_id(id)
+      morie_datasets_edmonton_socrata_by_id(
+        id, limit = if (is.null(max_features)) 1000L
+                    else as.integer(max_features))
     },
     "ottawa_opendata" = {
       morie_datasets_tps_arcgis_hub_by_id(id, max_features = max_features)

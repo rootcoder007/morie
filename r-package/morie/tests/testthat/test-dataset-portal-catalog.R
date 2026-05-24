@@ -29,16 +29,21 @@ test_that("catalog covers all 14 expected portals", {
                     "ottawa_opendata"))
 })
 
-test_that("per-source row counts match expected", {
+test_that("per-source row counts match expected (post-3GGG bulk)", {
   d <- morie_dataset_portal_catalog()
   src_n <- table(d$source)
   expect_equal(as.integer(src_n["nyc_nypd"]), 8L)
   expect_equal(as.integer(src_n["tps_psdp"]), 11L)
-  expect_equal(as.integer(src_n["nyc_opendata"]), 10L)
   expect_equal(as.integer(src_n["tps_arcgis_hub"]), 71L)
   expect_equal(as.integer(src_n["vancouver_opendata"]), 190L)
-  expect_true(as.integer(src_n["chicago"]) >= 5L)
   expect_true(as.integer(src_n["ontario_ckan"]) >= 30L)
+  # Post-3GGG bulk catalogs (these grew substantially):
+  expect_true(as.integer(src_n["nyc_opendata"]) >= 2000L)
+  expect_true(as.integer(src_n["chicago"]) >= 1500L)
+  expect_true(as.integer(src_n["toronto_opendata"]) >= 500L)
+  expect_true(as.integer(src_n["calgary_opendata"]) >= 900L)
+  expect_true(as.integer(src_n["edmonton_opendata"]) >= 2000L)
+  expect_true(as.integer(src_n["ottawa_opendata"]) >= 280L)
 })
 
 test_that("api_modes column reflects portal protocol", {
