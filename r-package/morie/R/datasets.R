@@ -407,7 +407,7 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
 #' @export
 morie_datasets_chicago_crime <- function(year = NULL,
                                          max_features = NULL,
-                                         offline = FALSE) {
+                                         offline = TRUE) {
   if (isTRUE(offline)) {
     df <- .morie_dataset_read_synthetic(
       "chicago_crime_synthetic", "chicago_crime",
@@ -449,7 +449,7 @@ morie_datasets_chicago_crime <- function(year = NULL,
 #' @export
 morie_datasets_nyc_stop_and_frisk <- function(year = NULL,
                                               max_features = NULL,
-                                              offline = FALSE) {
+                                              offline = TRUE) {
   if (isTRUE(offline)) {
     df <- .morie_dataset_read_synthetic("nyc_sqf_synthetic", "nyc_stop_and_frisk")
     if (!is.null(max_features) && nrow(df) > 0L) {
@@ -663,4 +663,51 @@ morie_datasets_nist_rds <- function(dataset_id = NULL, query = NULL,
   if (!is.null(max_features)) q$size <- as.integer(max_features)
   body <- .morie_dataset_http_json(url, query = q)
   .morie_dataset_records_to_df(body$ResultData %||% body)
+}
+
+# ---------------------------------------------------------------------------
+# Discovery: external (non-Ontario) Socrata feeds morie wraps
+# ---------------------------------------------------------------------------
+
+#' List the external Socrata datasets wrapped by morie
+#'
+#' Sibling discovery helper to [morie_datasets_ontario_ckan_layers()],
+#' covering the non-Ontario open-data Socrata portals morie ships
+#' offline-mode fixtures + mocked live-mode dispatch for.
+#'
+#' Coverage:
+#'   * City of Chicago "Crimes -- 2001 to Present" (`ijzp-q8t2`).
+#'   * NYC OpenData NYPD Stop, Question and Frisk (SQF) microdata --
+#'     three published years (2022 = `e4yi-bvqr`, 2023 = `rbed-zzin`,
+#'     2024 = `7v9w-k82r`).
+#'
+#' @return A `data.frame` with columns `dataset_key`, `label`,
+#'   `portal`, `resource_url`, `fixture`.
+#' @export
+morie_datasets_external_socrata_layers <- function() {
+  rows <- list(
+    list(dataset_key = "chicago_crime",
+         label = "City of Chicago -- Crimes (2001 to Present)",
+         portal = "data.cityofchicago.org",
+         resource_url = "https://data.cityofchicago.org/resource/ijzp-q8t2.json",
+         fixture = "chicago_crime_synthetic.csv"),
+    list(dataset_key = "nyc_sqf_2024",
+         label = "NYPD Stop, Question and Frisk -- 2024",
+         portal = "data.cityofnewyork.us",
+         resource_url = "https://data.cityofnewyork.us/resource/7v9w-k82r.json",
+         fixture = "nyc_sqf_synthetic.csv"),
+    list(dataset_key = "nyc_sqf_2023",
+         label = "NYPD Stop, Question and Frisk -- 2023",
+         portal = "data.cityofnewyork.us",
+         resource_url = "https://data.cityofnewyork.us/resource/rbed-zzin.json",
+         fixture = "nyc_sqf_synthetic.csv"),
+    list(dataset_key = "nyc_sqf_2022",
+         label = "NYPD Stop, Question and Frisk -- 2022",
+         portal = "data.cityofnewyork.us",
+         resource_url = "https://data.cityofnewyork.us/resource/e4yi-bvqr.json",
+         fixture = "nyc_sqf_synthetic.csv"))
+  out <- do.call(rbind, lapply(rows, as.data.frame,
+                                stringsAsFactors = FALSE))
+  rownames(out) <- NULL
+  out
 }
