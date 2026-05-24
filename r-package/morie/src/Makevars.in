@@ -4,4 +4,7 @@ CXX_STD = CXX17
 # filled in by ./configure (via curl-config) at install time, so the
 # committed Makefile carries no non-portable shell-call extension.
 PKG_CPPFLAGS = @cflags@
-PKG_LIBS = @libs@
+# Append R's BLAS/LAPACK/Fortran flags so RcppArmadillo's
+# dgesvx_/dgemm_/etc resolve at link time on Linux (macOS hides
+# this via the Accelerate framework but Linux/Pi exposes the gap).
+PKG_LIBS = @libs@ $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)

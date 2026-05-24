@@ -3,4 +3,5 @@ CXX_STD = CXX17
 # The SIU parser (siu_parser.cpp) links libcurl; the flags below are
 # filled in by ./configure.win (via pkg-config) at install time.
 PKG_CPPFLAGS = @cflags@
-PKG_LIBS = @libs@
+# Append R's BLAS/LAPACK/Fortran flags for RcppArmadillo symbols.
+PKG_LIBS = @libs@ $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
