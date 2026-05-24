@@ -9,9 +9,11 @@ morie_datasets_chicago_arrests(
   max_features = NULL,
   offline = TRUE,
   resource_id = NULL,
+  mode = c("soda2", "soda3"),
   paginate = FALSE,
   page_size = 1000L,
-  max_pages = 200L
+  max_pages = 200L,
+  app_token = NULL
 )
 }
 \arguments{

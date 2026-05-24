@@ -9,9 +9,11 @@ morie_datasets_chicago_police_districts(
   geometry = FALSE,
   max_features = NULL,
   resource_id = NULL,
+  mode = c("soda2", "soda3"),
   paginate = FALSE,
   page_size = 1000L,
-  max_pages = 200L
+  max_pages = 200L,
+  app_token = NULL
 )
 }
 \arguments{
