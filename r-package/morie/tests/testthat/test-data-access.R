@@ -63,9 +63,7 @@ test_that("morie_fetch extracts a member from a zip over file://", {
   on.exit(unlink(csv), add = TRUE)
   zp <- tempfile("dl-", fileext = ".zip")
   on.exit(unlink(zp), add = TRUE)
-  owd <- getwd()
-  setwd(dirname(csv))
-  on.exit(setwd(owd), add = TRUE)
+  withr::local_dir(dirname(csv))
   utils::zip(zp, basename(csv), flags = "-q")
   z <- morie_fetch(paste0("file://", zp),
     format = "zip",

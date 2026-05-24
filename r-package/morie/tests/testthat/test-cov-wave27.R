@@ -166,8 +166,7 @@ test_that(".morie_cvm_pvalue mid-range + dataset_profile fallbacks", {
 test_that(".cpads_default_csv + .resolve_cpads_csv cover their search paths", {
   wd <- tempfile("cpads-")
   dir.create(wd)
-  owd <- setwd(wd)
-  on.exit(setwd(owd), add = TRUE)
+  withr::local_dir(wd)
   rel <- "data/datasets/oc/CPADS/2021-2022/cpads-2021-2022-pumf2.csv"
   dir.create(dirname(rel), recursive = TRUE)
   writeLines("x", rel)

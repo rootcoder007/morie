@@ -119,8 +119,7 @@ test_that("morie_load_cpads returns NULL when offline and use_ckan = FALSE", {
   on.exit(unlink(db), add = TRUE)
   withr <- tempfile("cpads-wd-")
   dir.create(withr)
-  old <- setwd(withr)
-  on.exit(setwd(old), add = TRUE)
+  withr::local_dir(withr)
   res <- tryCatch(morie_load_cpads(db_path = db, use_ckan = FALSE),
     error = function(e) e
   )

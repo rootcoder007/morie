@@ -76,9 +76,7 @@ test_that("morie_fetch zip member matches by substring and errors if absent", {
   on.exit(unlink(csv), add = TRUE)
   zp <- tempfile("zm-", fileext = ".zip")
   on.exit(unlink(zp), add = TRUE)
-  owd <- getwd()
-  setwd(dirname(csv))
-  on.exit(setwd(owd), add = TRUE)
+  withr::local_dir(dirname(csv))
   utils::zip(zp, basename(csv), flags = "-q")
   base <- basename(csv)
   partial <- substr(base, 1, nchar(base) - 4) # drop ".csv"

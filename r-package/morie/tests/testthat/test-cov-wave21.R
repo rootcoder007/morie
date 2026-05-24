@@ -74,8 +74,7 @@ test_that("morie_download_bootstrap ingests a present local bootstrap file", {
   .cw21_db()
   wd <- tempfile("bs-")
   dir.create(wd)
-  owd <- setwd(wd)
-  on.exit(setwd(owd), add = TRUE)
+  withr::local_dir(wd)
   cat <- morie_dataset_catalog()
   lp <- cat$local_path[cat$key == "cu23bt"][1]
   dir.create(dirname(lp), recursive = TRUE, showWarnings = FALSE)
