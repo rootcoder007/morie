@@ -91,6 +91,50 @@ morie_datasets_vpd_legal_disclaimer <- function() {
 #'   \item Vehicle Collision or Pedestrian Struck (with Injury)
 #' }
 #'
+#' @section Data quality + interpretation caveats (per VPD GeoDASH disclaimer):
+#'
+#' \itemize{
+#'   \item \strong{Source}: extracted from the PRIME-BC Police Records
+#'         Management System (RMS); filtered + aggregated to comply
+#'         with the BC Freedom of Information & Protection of Privacy
+#'         Act (BC FIPPA).
+#'   \item \strong{`Offence Against a Person` is INTENTIONALLY aggregated}
+#'         to reduce re-identification risk. It bundles robbery,
+#'         assault (incl. sexual assault, domestic assault), and
+#'         other violent incidents EXCEPT `Assaults Against Police`.
+#'         Sub-categories are deliberately NOT exposed; do not
+#'         attempt to disaggregate this column.
+#'   \item \strong{`Other Theft` aggregates} shoplifting, theft of
+#'         personal property (over / under $5000), mail theft, and
+#'         utilities theft.
+#'   \item \strong{Reporting method}: 'All Offence' + 'Founded'
+#'         (incidents the investigating officer determined did
+#'         occur). This is \strong{NOT comparable} to Statistics
+#'         Canada's published numbers, which use 'UCR Survey'
+#'         Most-Serious-Offence (MSO) scoring. Do not mix VPD
+#'         GeoDASH totals with StatCan totals in the same
+#'         denominator.
+#'   \item \strong{Location precision is deliberately reduced}:
+#'         person-crimes have their X/Y \strong{randomized to
+#'         several blocks and offset to an intersection}; no
+#'         time/street-name is provided. Property-crimes are
+#'         provided at the \strong{hundred-block} level only. Never
+#'         interpret a row's X/Y as the actual scene of the
+#'         incident.
+#'   \item \strong{Crime classification + file status may change
+#'         retroactively} as investigations evolve. The dataset is
+#'         a snapshot, not an archive of fact.
+#'   \item \strong{Update schedule}: VPD refreshes the feed every
+#'         Sunday morning. Cache locally for reproducible analysis.
+#'   \item \strong{Not a calls-for-service log}: only incidents
+#'         that passed the founded-categorization filter appear.
+#'         Totals do \strong{not} reflect total calls or complaints
+#'         made to the VPD.
+#'   \item \strong{Liability disclaimer}: VPD / Vancouver Police
+#'         Board / City of Vancouver assume no liability for any
+#'         decision made from this data. morie surfaces it as-is.
+#' }
+#'
 #' @param offline If `TRUE` (default) and `zip_path`/`csv_path` are
 #'   `NULL`, reads the bundled 550-row sample.
 #' @param zip_path Optional path to a user-downloaded
