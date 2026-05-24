@@ -78,6 +78,24 @@
   httr2::resp_body_json(resp, simplifyVector = TRUE)
 }
 
+#' Minimal httr2 GET that returns the response body as a single
+#' character string (UTF-8). Used by loaders that consume raw CSV /
+#' TSV / plain-text files served outside Socrata-style APIs (e.g.
+#' the chicagopolice.org public-arrests CSV).
+#' @keywords internal
+#' @noRd
+.morie_dataset_http_text <- function(url, query = NULL) {
+  if (!requireNamespace("httr2", quietly = TRUE)) {
+    stop("morie datasets HTTP fetch requires the 'httr2' package.")
+  }
+  req <- httr2::request(url)
+  if (!is.null(query)) {
+    req <- httr2::req_url_query(req, !!!query)
+  }
+  resp <- httr2::req_perform(req)
+  httr2::resp_body_string(resp)
+}
+
 #' Convert a list-of-records / data.frame response into a clean data.frame.
 #' @keywords internal
 #' @noRd
@@ -815,6 +833,177 @@ morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
 }
 
 # ---------------------------------------------------------------------------
+# Chicago Open Data Arrests (Socrata, dpt3-jri9)
+# ---------------------------------------------------------------------------
+
+#' City of Chicago Open Data -- Arrests feed (`dpt3-jri9`)
+#'
+#' Wraps the City of Chicago "Arrests" open dataset (Socrata resource
+#' id `dpt3-jri9`; portal landing
+#' \url{https://data.cityofchicago.org/Public-Safety/Arrests/dpt3-jri9/about_data}).
+#' 24 columns covering up to four charges per arrest plus the
+#' pipe-concatenated rollup quartet (`charges_statute` /
+#' `charges_description` / `charges_type` / `charges_class`).
+#'
+#' Socrata accepts two resource specifiers interchangeably -- the
+#' numeric/UUID id (`/resource/dpt3-jri9.json`) and the human-readable
+#' alias the publisher assigned (`/resource/arrests.json`). morie
+#' defaults to the UUID for stability; pass `resource_id = "arrests"`
+#' if you want to exercise the alias path.
+#'
+#' Offline mode reads a bundled 5-row synthetic fixture
+#' (`inst/extdata/chicago_arrests_dpt3_jri9_sample.csv`) carrying the
+#' real upstream snake_case schema. Live mode hits the SODA2 endpoint
+#' via `.morie_dataset_socrata_fetch()` and honours the 3OO opt-in
+#' pagination (`paginate = TRUE`).
+#'
+#' @param year Integer or `NULL`; server-side year filter (uses
+#'   `date_extract_y(arrest_date) = <year>` SoQL).
+#' @param max_features Integer or `NULL`; cap on returned rows. When
+#'   `paginate = TRUE` this is the total cap across walked pages.
+#' @param offline Logical; if `TRUE` (default, safer post-3EE), read
+#'   the bundled synthetic frame.
+#' @param resource_id Optional Socrata resource id override. Accepts
+#'   the UUID (`dpt3-jri9`, default) or the publisher's alias
+#'   (`arrests`).
+#' @param paginate Logical; if `TRUE` and `offline = FALSE`, walk
+#'   SODA2 `$offset` in `page_size` chunks. Default `FALSE`.
+#' @param page_size Per-page row count when paginating (default 1,000,
+#'   the unauthenticated SODA2 ceiling).
+#' @param max_pages Safety net on paginated walks (default 200).
+#' @return A `data.frame` with the documented 24-col Socrata schema.
+#' @references City of Chicago Data Portal, "Arrests" (`dpt3-jri9`).
+#' @examples
+#' df <- morie_datasets_chicago_arrests(offline = TRUE)
+#' df$arrest_date
+#' @export
+morie_datasets_chicago_arrests <- function(year = NULL,
+                                            max_features = NULL,
+                                            offline = TRUE,
+                                            resource_id = NULL,
+                                            paginate = FALSE,
+                                            page_size = 1000L,
+                                            max_pages = 200L) {
+  if (isTRUE(offline)) {
+    path <- system.file("extdata",
+                        "chicago_arrests_dpt3_jri9_sample.csv",
+                        package = "morie")
+    if (!nzchar(path)) {
+      stop("bundled Chicago Arrests fixture missing", call. = FALSE)
+    }
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE)
+    if (!is.null(year) && "arrest_date" %in% colnames(df) &&
+        nrow(df) > 0L) {
+      yr <- substr(df$arrest_date, 1L, 4L)
+      df <- df[yr == as.character(as.integer(year)), , drop = FALSE]
+      rownames(df) <- NULL
+    }
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  if (is.null(resource_id)) resource_id <- "dpt3-jri9"
+  url <- sprintf("https://data.cityofchicago.org/resource/%s.json",
+                 resource_id)
+  where <- NULL
+  if (!is.null(year)) {
+    where <- sprintf("date_extract_y(arrest_date) = %d",
+                     as.integer(year))
+  }
+  .morie_dataset_socrata_fetch(url, where = where,
+                                max_features = max_features,
+                                paginate = paginate,
+                                page_size = page_size,
+                                max_pages = max_pages)
+}
+
+# ---------------------------------------------------------------------------
+# Chicago PD -- public historical arrests CSV (chicagopolice.org)
+# ---------------------------------------------------------------------------
+
+#' Chicago Police Department -- Public Arrest Data (2014-2017)
+#'
+#' Wraps the static historical arrests CSV published by the Chicago
+#' Police Department at
+#' \url{https://www.chicagopolice.org/statistics-data/public-arrest-data/}
+#' covering adult and juvenile arrests from 01 JAN 2014 through 31
+#' DEC 2017, with all personally identifying information removed.
+#' Ten upper-case-coded columns matching the CPD data dictionary:
+#'
+#' \describe{
+#'   \item{ARR_DISTRICT}{Chicago PD district (geographic boundary).}
+#'   \item{ARR_BEAT}{Chicago PD beat (geographic boundary).}
+#'   \item{ARR_YEAR}{Calendar year of the arrest.}
+#'   \item{ARR_MONTH}{Calendar month of the arrest.}
+#'   \item{RACE_CODE_CD}{Perceived race code.}
+#'   \item{FBI_CODE}{IUCR/FBI crime category code.}
+#'   \item{STATUTE}{ILCS / MCC statute charged.}
+#'   \item{STAT_DESCR}{Plain-text statute title.}
+#'   \item{CHARGE_CLASS_CD}{ILCS/MCC charge class code.}
+#'   \item{CHARGE_TYPE_CD}{"M" = misdemeanour, "F" = felony.}
+#' }
+#'
+#' Unlike the SODA2 feeds, CPD publishes this as a single direct CSV
+#' download with no documented API; the file URL is not stable across
+#' CPD's quarterly republications. morie therefore ships an offline-
+#' first loader; pass a `url` for live mode (visit the landing page
+#' to find the current direct-CSV URL).
+#'
+#' @param url Optional direct-CSV URL. If `NULL` and `offline = FALSE`,
+#'   the loader errors with a "lookup pending" message pointing at
+#'   the chicagopolice.org landing page.
+#' @param offline Logical; if `TRUE` (default), read the bundled
+#'   synthetic 5-row fixture
+#'   (`inst/extdata/cpd_public_release_arrests_sample.csv`).
+#' @param max_features Integer or `NULL`; cap on returned rows.
+#' @return A `data.frame` with the 10-col CPD schema.
+#' @references Chicago Police Department, "Public Arrest Data";
+#'   landing page at chicagopolice.org/statistics-data/public-
+#'   arrest-data/.
+#' @examples
+#' df <- morie_datasets_cpd_public_arrests(offline = TRUE)
+#' df$STAT_DESCR
+#' @export
+morie_datasets_cpd_public_arrests <- function(url = NULL,
+                                                offline = TRUE,
+                                                max_features = NULL) {
+  if (isTRUE(offline)) {
+    path <- system.file("extdata",
+                        "cpd_public_release_arrests_sample.csv",
+                        package = "morie")
+    if (!nzchar(path)) {
+      stop("bundled CPD public-arrests fixture missing",
+           call. = FALSE)
+    }
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE)
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  if (is.null(url) || !nzchar(url)) {
+    stop(paste0(
+      "morie_datasets_cpd_public_arrests: live mode requires `url`; ",
+      "the chicagopolice.org Public Arrest Data file's direct-CSV ",
+      "URL (lookup pending) is not stable across quarterly ",
+      "republications. Visit ",
+      "https://www.chicagopolice.org/statistics-data/public-arrest-data/",
+      " to find the current direct-CSV URL and pass it via `url = ...`."),
+      call. = FALSE)
+  }
+  raw <- .morie_dataset_http_text(url)
+  df <- utils::read.csv(text = raw, stringsAsFactors = FALSE,
+                         check.names = FALSE)
+  if (!is.null(max_features)) {
+    df <- utils::head(df, as.integer(max_features))
+  }
+  df
+}
+
+# ---------------------------------------------------------------------------
 # Discovery: external (non-Ontario) Socrata feeds morie wraps
 # ---------------------------------------------------------------------------
 
@@ -826,9 +1015,18 @@ morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
 #'
 #' Coverage:
 #'   * City of Chicago "Crimes -- 2001 to Present" (`ijzp-q8t2`).
+#'   * City of Chicago "Arrests" (`dpt3-jri9`; 3PP).
+#'   * City of Chicago "Boundaries-Neighborhoods" (`y6yq-dbs2`).
 #'   * NYC OpenData NYPD Stop, Question and Frisk (SQF) microdata --
 #'     three published years (2022 = `e4yi-bvqr`, 2023 = `rbed-zzin`,
 #'     2024 = `7v9w-k82r`).
+#'
+#' All Chicago Socrata endpoints accept both the numeric/UUID
+#' specifier (`/resource/<id>.json`) and the publisher's
+#' human-readable alias (`/resource/<alias>.json`, e.g.
+#' `/resource/arrests.json` or `/resource/crimes.json`). morie's
+#' wrappers default to the UUID for stability; pass `resource_id =
+#' "<alias>"` to exercise the alias path.
 #'
 #' @return A `data.frame` with columns `dataset_key`, `label`,
 #'   `portal`, `resource_url`, `fixture`.
@@ -840,6 +1038,11 @@ morie_datasets_external_socrata_layers <- function() {
          portal = "data.cityofchicago.org",
          resource_url = "https://data.cityofchicago.org/resource/ijzp-q8t2.json",
          fixture = "chicago_crime_synthetic.csv"),
+    list(dataset_key = "chicago_arrests",
+         label = "City of Chicago -- Arrests",
+         portal = "data.cityofchicago.org",
+         resource_url = "https://data.cityofchicago.org/resource/dpt3-jri9.json",
+         fixture = "chicago_arrests_dpt3_jri9_sample.csv"),
     list(dataset_key = "chicago_neighborhoods",
          label = "City of Chicago -- Boundaries-Neighborhoods (Office of Tourism)",
          portal = "data.cityofchicago.org",

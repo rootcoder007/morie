@@ -19,8 +19,16 @@ offline-mode fixtures + mocked live-mode dispatch for.
 Coverage:
 \itemize{
 \item City of Chicago "Crimes -- 2001 to Present" (\code{ijzp-q8t2}).
+\item City of Chicago "Arrests" (\code{dpt3-jri9}; 3PP).
+\item City of Chicago "Boundaries-Neighborhoods" (\code{y6yq-dbs2}).
 \item NYC OpenData NYPD Stop, Question and Frisk (SQF) microdata --
 three published years (2022 = \code{e4yi-bvqr}, 2023 = \code{rbed-zzin},
 2024 = \verb{7v9w-k82r}).
 }
+
+All Chicago Socrata endpoints accept both the numeric/UUID
+specifier (\verb{/resource/<id>.json}) and the publisher's
+human-readable alias (\verb{/resource/<alias>.json}, e.g.
+\verb{/resource/arrests.json} or \verb{/resource/crimes.json}). morie's
+wrappers default to the UUID for stability; pass \code{resource_id = "<alias>"} to exercise the alias path.
 }

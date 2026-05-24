@@ -51,8 +51,20 @@ data/manifest/outputs/
 #                          Toronto but ~30 MB; bundle the small
 #                          synthetic fixtures in r-package/morie/
 #                          inst/extdata/ instead.
+#   data/datasets/CPD/  — Chicago PD + Chicago Open Data bulk
+#                          (Arrests dpt3-jri9 ~217 MB CSV; Crimes
+#                          ijzp-q8t2 1-yr ~49 MB; PublicReleaseArrest
+#                          historical 2014-2017 ~30 MB; UoF annual
+#                          report PDFs). Bundle SYNTHETIC fixtures
+#                          in inst/extdata/, never the raw exports.
+#   data/datasets/NYPD/ — NYC OpenData NYPD Arrest YTD bulk
+#                          (uip8-fykc CSV/zip/geojson/kml/xlsx/xml
+#                          ~14 MB CSV but >150 MB across formats).
+#                          Bundle SYNTHETIC fixtures only.
 data/datasets/vsr/
 data/datasets/OT/
+data/datasets/CPD/
+data/datasets/NYPD/
 
 # Secrets / local config
 .env
