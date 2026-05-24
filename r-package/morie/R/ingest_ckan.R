@@ -18,7 +18,7 @@
 #   * `morie_ingest_ckan_fetch_package_csvs()` - all CSV/TSV resources
 #   * `morie_ingest_ckan_search_packages()`    - search -> flat df
 #
-# HTTP: `httr2`.  JSON: `httr2::resp_body_json()` (which delegates to
+# HTTP: routes via .morie_dataset_http_text + .morie_dataset_http_bytes (3YY -> libcurl C++ backend with httr2 fallback). JSON: jsonlite::fromJSON (which delegates to
 # jsonlite).  CSV/TSV: prefer `readr` when installed; fall back to
 # `utils::read.csv` / `read.delim`.  XLSX needs `readxl` (Suggests).
 # Parquet needs `arrow` (Suggests).  Each optional dep errors cleanly
@@ -32,49 +32,29 @@
 # and errors on unknown short names. Don't redefine it here — the
 # alphabetical load order would clobber the resolver and tests would fail.
 
-# Internal: build an authenticated httr2 request for one Action verb.
-.morie_ckan_build_req <- function(portal,
-                                  action,
-                                  params = NULL,
-                                  api_key = NULL,
-                                  user_agent = .MORIE_CKAN_DEFAULT_UA,
-                                  timeout = .MORIE_CKAN_DEFAULT_TIMEOUT) {
-  if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop(
-      "Package 'httr2' is required for morie_ingest_ckan_*(). ",
-      "install.packages('httr2')",
-      call. = FALSE
-    )
-  }
-  url <- sprintf(
-    "%s/api/3/action/%s", .morie_ckan_portal(portal), action
-  )
-  req <- httr2::request(url)
-  req <- httr2::req_user_agent(req, user_agent)
-  req <- httr2::req_timeout(req, timeout)
-  req <- httr2::req_retry(req, max_tries = 3L)
-  if (!is.null(api_key) && nzchar(api_key)) {
-    req <- httr2::req_headers(req, Authorization = api_key)
-  }
-  if (length(params)) {
-    req <- httr2::req_url_query(req, !!!params)
-  }
-  req
-}
-
-# Internal: perform an Action-API call and unwrap `result`.
+# Internal: perform a CKAN Action-API call and unwrap `result`.
+# 3YY: collapsed .morie_ckan_build_req + _call into a single
+# function that routes through .morie_dataset_http_text (libcurl
+# with httr2 fallback) + jsonlite::fromJSON(simplifyVector=FALSE).
 .morie_ckan_call <- function(portal,
                              action,
                              params = NULL,
                              api_key = NULL,
                              user_agent = .MORIE_CKAN_DEFAULT_UA,
                              timeout = .MORIE_CKAN_DEFAULT_TIMEOUT) {
-  req <- .morie_ckan_build_req(
-    portal = portal, action = action, params = params,
-    api_key = api_key, user_agent = user_agent, timeout = timeout
+  url <- sprintf(
+    "%s/api/3/action/%s", .morie_ckan_portal(portal), action
   )
-  resp <- tryCatch(
-    httr2::req_perform(req),
+  headers <- if (!is.null(api_key) && nzchar(api_key)) {
+    paste0("Authorization: ", api_key)
+  } else {
+    character()
+  }
+  body <- tryCatch(
+    .morie_dataset_http_text(url,
+                              query = params,
+                              headers = headers,
+                              timeout_s = as.integer(timeout)),
     error = function(e) {
       stop("morie CKAN ", action, " request failed: ",
         conditionMessage(e),
@@ -83,7 +63,7 @@
     }
   )
   payload <- tryCatch(
-    httr2::resp_body_json(resp, simplifyVector = FALSE),
+    jsonlite::fromJSON(body, simplifyVector = FALSE),
     error = function(e) {
       stop("morie CKAN ", action, ": response was not JSON: ",
         conditionMessage(e),
@@ -342,23 +322,25 @@ morie_ingest_ckan_read_resource <- function(portal,
     add = TRUE
   )
 
-  req <- httr2::request(url)
-  req <- httr2::req_user_agent(req, user_agent)
-  req <- httr2::req_timeout(req, timeout)
-  req <- httr2::req_retry(req, max_tries = 3L)
-  if (!is.null(api_key) && nzchar(api_key)) {
-    req <- httr2::req_headers(req, Authorization = api_key)
+  # 3YY: route through .morie_dataset_http_bytes (libcurl-backed
+  # raw-byte fetcher with httr2 fallback) + writeBin to tmp.
+  headers <- if (!is.null(api_key) && nzchar(api_key)) {
+    paste0("Authorization: ", api_key)
+  } else {
+    character()
   }
-  tryCatch(
-    httr2::req_perform(req, path = tmp),
-    error = function(e) {
-      stop("morie_ingest_ckan_read_resource: download failed for ", url,
-        "\
+  tryCatch({
+    bytes <- .morie_dataset_http_bytes(url,
+                                         headers = headers,
+                                         timeout_s = as.integer(timeout))
+    writeBin(bytes, tmp)
+  }, error = function(e) {
+    stop("morie_ingest_ckan_read_resource: download failed for ", url,
+      "\
   ", conditionMessage(e),
-        call. = FALSE
-      )
-    }
-  )
+      call. = FALSE
+    )
+  })
   tryCatch(
     .morie_ckan_read_path(tmp, fmt),
     error = function(e) {

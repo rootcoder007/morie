@@ -14,7 +14,7 @@
 # wrapper targets the documented Chicago "Crimes - 2001 to Present"
 # feed (resource id `ijzp-q8t2`, verified 2026-05-13).
 #
-# HTTP: `httr2`.  JSON: `httr2::resp_body_json()`.
+# HTTP: routes via .morie_dataset_http_text (3YY -> libcurl C++ backend with httr2 fallback). JSON: jsonlite::fromJSON(simplifyVector=FALSE).
 # Optional BigQuery mirror: `bigquery-public-data.chicago_crime` via
 # `morie_ingest_bigquery_table()` for analysts who prefer SQL on the
 # full historical mirror; see ingest_bigquery.R.
@@ -76,17 +76,20 @@ morie_ingest_chicago_resources <- function() {
   if (!is.null(select) && nzchar(select)) params[["$select"]] <- select
   if (!is.null(order) && nzchar(order)) params[["$order"]] <- order
 
-  req <- httr2::request(resource_url)
-  req <- httr2::req_user_agent(req, user_agent)
-  req <- httr2::req_timeout(req, timeout)
-  req <- httr2::req_retry(req, max_tries = 3L)
-  if (!is.null(app_token) && nzchar(app_token)) {
-    req <- httr2::req_headers(req, `X-App-Token` = app_token)
+  # 3YY: route through .morie_dataset_http_text (libcurl + httr2
+  # fallback) + parse JSON with simplifyVector = FALSE to preserve
+  # the list-of-records shape downstream code expects. app_token
+  # rides as X-App-Token header.
+  headers <- if (!is.null(app_token) && nzchar(app_token)) {
+    paste0("X-App-Token: ", app_token)
+  } else {
+    character()
   }
-  req <- httr2::req_url_query(req, !!!params)
-
-  resp <- tryCatch(
-    httr2::req_perform(req),
+  body <- tryCatch(
+    .morie_dataset_http_text(resource_url,
+                              query = params,
+                              headers = headers,
+                              timeout_s = as.integer(timeout)),
     error = function(e) {
       stop(
         "morie Chicago socrata GET failed (", resource_url, "): ",
@@ -95,7 +98,7 @@ morie_ingest_chicago_resources <- function() {
       )
     }
   )
-  payload <- httr2::resp_body_json(resp, simplifyVector = FALSE)
+  payload <- jsonlite::fromJSON(body, simplifyVector = FALSE)
   if (is.list(payload) && !is.null(payload$error)) {
     stop("morie Chicago socrata error: ",
       paste(utils::capture.output(str(payload)), collapse = " "),

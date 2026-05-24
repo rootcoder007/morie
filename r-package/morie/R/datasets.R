@@ -130,6 +130,52 @@
   httr2::resp_body_string(resp)
 }
 
+#' Synchronous POST + parse JSON. 3YY: routes through morie's C++
+#' libcurl .morie_http_post when available; falls back to httr2's
+#' req_body_json + req_perform + resp_body_json otherwise. Body
+#' (R list) is serialised via jsonlite::toJSON.
+#' @keywords internal
+#' @noRd
+.morie_dataset_http_post_json <- function(url, body, query = NULL,
+                                            headers = character(),
+                                            timeout_s = 60L,
+                                            auto_unbox = TRUE) {
+  full_url <- .morie_dataset_build_url(url, query)
+  body_str <- jsonlite::toJSON(body, auto_unbox = auto_unbox,
+                                 null = "null")
+  if (exists(".morie_http_post",
+              where = asNamespace("morie"),
+              mode = "function")) {
+    resp <- .morie_http_post(full_url,
+                              body = as.character(body_str),
+                              content_type = "application/json",
+                              timeout_s = as.integer(timeout_s),
+                              headers = as.character(headers))
+    if (!nzchar(resp)) {
+      stop(sprintf("morie HTTP POST failed (libcurl returned empty body): %s",
+                   full_url), call. = FALSE)
+    }
+    return(jsonlite::fromJSON(resp, simplifyVector = FALSE))
+  }
+  if (!requireNamespace("httr2", quietly = TRUE)) {
+    stop("morie datasets POST needs either the libcurl-backed C++ ",
+         "backend or the 'httr2' R package.")
+  }
+  req <- httr2::request(full_url)
+  req <- httr2::req_body_json(req, body, auto_unbox = auto_unbox)
+  if (length(headers) > 0L) {
+    kv <- strsplit(headers, ":\\s*", n = 2L)
+    kv <- Filter(function(x) length(x) == 2L, kv)
+    if (length(kv) > 0L) {
+      named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
+                                vapply(kv, `[[`, character(1L), 1L))
+      req <- do.call(httr2::req_headers, c(list(req), as.list(named)))
+    }
+  }
+  resp <- httr2::req_perform(req)
+  httr2::resp_body_json(resp, simplifyVector = FALSE)
+}
+
 #' Binary-safe GET. 3XX: routes through morie's C++ libcurl
 #' .morie_http_get_bytes when available; falls back to httr2's
 #' resp_body_raw otherwise. Returns a raw vector (no NUL truncation).

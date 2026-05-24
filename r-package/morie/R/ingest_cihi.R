@@ -32,17 +32,17 @@ morie_ingest_cihi_xlsx <- function(url, sheet = NULL, timeout = 120,
   if (!is.character(url) || length(url) != 1L || !nzchar(url))
     stop("`url` must be a single non-empty string.", call. = FALSE)
   if (!requireNamespace("httr2", quietly = TRUE))
-    stop("Package 'httr2' is required. install.packages('httr2')", call. = FALSE)
+    stop("Package 'httr2' is required as fallback. install.packages('httr2')",
+         call. = FALSE)
   if (!requireNamespace("readxl", quietly = TRUE))
     stop("Package 'readxl' is required. install.packages('readxl')", call. = FALSE)
   tmp <- tempfile(fileext = ".xlsx", tmpdir = tempdir())
   on.exit(if (file.exists(tmp)) unlink(tmp, force = TRUE), add = TRUE)
+  # 3YY: libcurl-backed binary fetch with httr2 fallback.
   tryCatch({
-    req <- httr2::request(url)
-    req <- httr2::req_user_agent(req, user_agent)
-    req <- httr2::req_timeout(req, timeout)
-    req <- httr2::req_retry(req, max_tries = 3L)
-    httr2::req_perform(req, path = tmp)
+    bytes <- .morie_dataset_http_bytes(url,
+                                         timeout_s = as.integer(timeout))
+    writeBin(bytes, tmp)
   }, error = function(e) {
     stop("morie_ingest_cihi_xlsx: download failed for ", url, "\n  ",
          conditionMessage(e), call. = FALSE)

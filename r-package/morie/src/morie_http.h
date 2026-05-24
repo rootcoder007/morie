@@ -62,6 +62,20 @@ std::vector<uint8_t> get_bytes(const std::string& url,
                                 const std::string& user_agent = std::string(),
                                 bool follow_redirects = true);
 
+// Synchronous HTTP(S) POST. Body is sent verbatim (caller is
+// responsible for serialisation, e.g. jsonlite::toJSON for JSON
+// bodies). content_type defaults to "application/json"; pass ""
+// to skip the Content-Type header (libcurl will use whatever the
+// caller put in `headers`). Returns the response body as a
+// std::string; empty string on transport failure.
+std::string post(const std::string& url,
+                  const std::string& body,
+                  const std::string& content_type = "application/json",
+                  int timeout_s = 60,
+                  const std::vector<std::string>& headers = {},
+                  const std::string& user_agent = std::string(),
+                  bool follow_redirects = true);
+
 // libcurl version string morie was built against. For diagnostics
 // + version-skew investigations.
 std::string curl_version();

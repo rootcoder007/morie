@@ -13,7 +13,7 @@
 #   * `morie_ingest_tps_layers()`        - registry as data.frame
 #   * `morie_ingest_tps_feature_layer()` - paged query -> data.frame
 #
-# HTTP: `httr2`.  JSON: `httr2::resp_body_json()`.
+# HTTP: routes via .morie_dataset_http_text (3YY -> libcurl C++ backend with httr2 fallback). JSON: jsonlite::fromJSON(simplifyVector=FALSE).
 # Geometry: the source layers are stored in WGS-1984 Web Mercator
 # (auxiliary sphere); we force `outSR=4326` so `geom_x`/`geom_y`
 # come back as longitude/latitude, not metres.
@@ -109,14 +109,12 @@ morie_ingest_tps_layers <- function() {
     resultRecordCount = as.integer(result_record_count),
     f = "json"
   )
-  req <- httr2::request(paste0(layer_url, "/query"))
-  req <- httr2::req_user_agent(req, user_agent)
-  req <- httr2::req_timeout(req, timeout)
-  req <- httr2::req_retry(req, max_tries = 3L)
-  req <- httr2::req_url_query(req, !!!params)
-
-  resp <- tryCatch(
-    httr2::req_perform(req),
+  # 3YY: route through .morie_dataset_http_text + jsonlite for
+  # simplifyVector = FALSE semantics (downstream expects list-of-records).
+  body <- tryCatch(
+    .morie_dataset_http_text(paste0(layer_url, "/query"),
+                              query = params,
+                              timeout_s = as.integer(timeout)),
     error = function(e) {
       stop("morie TPS layer query failed (", layer_url, "): ",
         conditionMessage(e),
@@ -124,7 +122,7 @@ morie_ingest_tps_layers <- function() {
       )
     }
   )
-  payload <- httr2::resp_body_json(resp, simplifyVector = FALSE)
+  payload <- jsonlite::fromJSON(body, simplifyVector = FALSE)
   if (!is.null(payload$error)) {
     stop("morie TPS layer query error: ",
       paste(utils::capture.output(str(payload$error)), collapse = " "),

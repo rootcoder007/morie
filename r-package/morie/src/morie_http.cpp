@@ -139,6 +139,42 @@ std::vector<uint8_t> get_bytes(const std::string& url,
   return buf;
 }
 
+std::string post(const std::string& url,
+                  const std::string& body,
+                  const std::string& content_type,
+                  int timeout_s,
+                  const std::vector<std::string>& headers,
+                  const std::string& user_agent,
+                  bool follow_redirects) {
+  std::string buf;
+  CURL* h = curl_easy_init();
+  if (h == nullptr) return buf;
+
+  // Build the effective headers: caller's list + Content-Type if
+  // not already there.
+  std::vector<std::string> all_headers = headers;
+  if (!content_type.empty()) {
+    all_headers.emplace_back("Content-Type: " + content_type);
+  }
+
+  struct curl_slist* hdrs = nullptr;
+  configure_handle(h, url, timeout_s, all_headers, user_agent,
+                    follow_redirects, &hdrs);
+  curl_easy_setopt(h, CURLOPT_WRITEFUNCTION, write_cb);
+  curl_easy_setopt(h, CURLOPT_WRITEDATA, &buf);
+  curl_easy_setopt(h, CURLOPT_POST, 1L);
+  curl_easy_setopt(h, CURLOPT_POSTFIELDS, body.c_str());
+  curl_easy_setopt(h, CURLOPT_POSTFIELDSIZE_LARGE,
+                    static_cast<curl_off_t>(body.size()));
+
+  const CURLcode rc = curl_easy_perform(h);
+  curl_easy_cleanup(h);
+  if (hdrs != nullptr) curl_slist_free_all(hdrs);
+
+  if (rc != CURLE_OK) return std::string();
+  return buf;
+}
+
 std::string curl_version() {
   return std::string(curl_version_info(CURLVERSION_NOW)->version);
 }
@@ -208,6 +244,37 @@ Rcpp::RawVector morie_http_get_bytes_(std::string url,
     std::copy(bytes.begin(), bytes.end(), out.begin());
   }
   return out;
+}
+
+//' Synchronous HTTP(S) POST via the shared libcurl backend (C++).
+//'
+//' Phase-3YY helper. Body is sent verbatim; for JSON payloads call
+//' `jsonlite::toJSON(...)` before passing in. Default content_type
+//' is "application/json"; pass "" to skip the Content-Type header
+//' (caller can set it explicitly via `headers`).
+//'
+//' @inheritParams .morie_http_get
+//' @param body Length-1 character vector containing the request body.
+//' @param content_type Content-Type header value (default
+//'   `"application/json"`). Empty string skips the header.
+//' @return Length-1 character vector with the response body. Empty
+//'   string on libcurl-level transport failure.
+//' @keywords internal
+// [[Rcpp::export(.morie_http_post)]]
+std::string morie_http_post_(std::string url,
+                             std::string body,
+                             std::string content_type = "application/json",
+                             int timeout_s = 60,
+                             Rcpp::CharacterVector headers = Rcpp::CharacterVector::create(),
+                             std::string user_agent = "",
+                             bool follow_redirects = true) {
+  std::vector<std::string> hdrs;
+  hdrs.reserve(headers.size());
+  for (int i = 0; i < headers.size(); ++i) {
+    hdrs.emplace_back(Rcpp::as<std::string>(headers[i]));
+  }
+  return morie::http::post(url, body, content_type, timeout_s,
+                            hdrs, user_agent, follow_redirects);
 }
 
 //' libcurl version string the morie C++ backend was built against.

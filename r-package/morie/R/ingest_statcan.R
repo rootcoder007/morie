@@ -119,11 +119,10 @@ morie_ingest_statcan_csv <- function(url,
 
   tryCatch(
     {
-      req <- httr2::request(url)
-      req <- httr2::req_user_agent(req, user_agent)
-      req <- httr2::req_timeout(req, timeout)
-      req <- httr2::req_retry(req, max_tries = 3L)
-      httr2::req_perform(req, path = tmp)
+      # 3YY: libcurl-backed binary fetch with httr2 fallback.
+      bytes <- .morie_dataset_http_bytes(url,
+                                           timeout_s = as.integer(timeout))
+      writeBin(bytes, tmp)
     },
     error = function(e) {
       stop(

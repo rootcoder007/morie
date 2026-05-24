@@ -102,6 +102,24 @@ morie_hawkes_baseline_integral_cpp <- function(T_horizon, alpha, n_grid = 0L) {
     .Call(`_morie_morie_http_get_bytes_`, url, timeout_s, headers, user_agent, follow_redirects)
 }
 
+#' Synchronous HTTP(S) POST via the shared libcurl backend (C++).
+#'
+#' Phase-3YY helper. Body is sent verbatim; for JSON payloads call
+#' `jsonlite::toJSON(...)` before passing in. Default content_type
+#' is "application/json"; pass "" to skip the Content-Type header
+#' (caller can set it explicitly via `headers`).
+#'
+#' @inheritParams .morie_http_get
+#' @param body Length-1 character vector containing the request body.
+#' @param content_type Content-Type header value (default
+#'   `"application/json"`). Empty string skips the header.
+#' @return Length-1 character vector with the response body. Empty
+#'   string on libcurl-level transport failure.
+#' @keywords internal
+.morie_http_post <- function(url, body, content_type = "application/json", timeout_s = 60L, headers = as.character( c()), user_agent = "", follow_redirects = TRUE) {
+    .Call(`_morie_morie_http_post_`, url, body, content_type, timeout_s, headers, user_agent, follow_redirects)
+}
+
 #' libcurl version string the morie C++ backend was built against.
 #' @return Length-1 character vector.
 #' @keywords internal
