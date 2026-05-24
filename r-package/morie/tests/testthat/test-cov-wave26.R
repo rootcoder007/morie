@@ -110,6 +110,7 @@ test_that("entheo align/binding/san cover empty + short-frame branches", {
 # ---- data_access remaining branches --------------------------------------
 
 test_that("data_access: download ext fallback + remaining format switch", {
+  skip_if_not_installed("readxl")
   expect_equal(morie:::.morie_detect_format("file:///x/y.tsv"), "tsv")
   expect_equal(morie:::.morie_detect_format("file:///x/y.xls"), "xlsx")
   expect_equal(morie:::.morie_detect_format("file:///x/y.htm"), "html")

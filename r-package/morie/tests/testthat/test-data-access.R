@@ -38,6 +38,7 @@ test_that(".morie_detect_format falls back to the URL extension", {
 })
 
 test_that("morie_fetch reads csv and json over file://", {
+  skip_if_not_installed("jsonlite")
   csv <- tempfile(fileext = ".csv")
   utils::write.csv(data.frame(a = 1:3, b = letters[1:3]), csv,
     row.names = FALSE

@@ -20,6 +20,8 @@ test_that("morie_fetch_ckan pulls CPADS PUMF from the open.canada.ca datastore",
 })
 
 test_that("morie_list_datasets shows all catalog entries", {
+  skip_if_not_installed("DBI")
+  skip_if_not_installed("RSQLite")
   skip_if_not(requireNamespace("DBI", quietly = TRUE), "DBI not installed")
   skip_if_not(requireNamespace("RSQLite", quietly = TRUE), "RSQLite not installed")
   ds <- morie_list_datasets()

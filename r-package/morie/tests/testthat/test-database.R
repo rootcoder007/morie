@@ -31,6 +31,9 @@ test_that("morie_builtin_db returns a path or NULL", {
 # ----------------------------------------------------- morie_db_connect
 
 test_that("morie_db_connect returns a DBI connection on a temp path", {
+  skip_if_not_installed("DBI")
+  skip_if_not_installed("RSQLite")
+  skip_if_not_installed("duckdb")
   skip_if_not(requireNamespace("RSQLite", quietly = TRUE) ||
                 requireNamespace("duckdb", quietly = TRUE),
               "no SQLite/duckdb backend installed")
@@ -47,6 +50,8 @@ test_that("morie_db_connect returns a DBI connection on a temp path", {
 # ------------------------------------- store/load/list round-trip on SQLite
 
 test_that("cache_store + cache_load round-trip on a SQLite db", {
+  skip_if_not_installed("DBI")
+  skip_if_not_installed("RSQLite")
   skip_if_not(requireNamespace("RSQLite", quietly = TRUE),
               "RSQLite not installed")
   con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
@@ -59,6 +64,8 @@ test_that("cache_store + cache_load round-trip on a SQLite db", {
 })
 
 test_that("cache_load returns NULL on missing table", {
+  skip_if_not_installed("DBI")
+  skip_if_not_installed("RSQLite")
   skip_if_not(requireNamespace("RSQLite", quietly = TRUE),
               "RSQLite not installed")
   con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
@@ -67,6 +74,8 @@ test_that("cache_load returns NULL on missing table", {
 })
 
 test_that("cache_list enumerates user-stored tables", {
+  skip_if_not_installed("DBI")
+  skip_if_not_installed("RSQLite")
   skip_if_not(requireNamespace("RSQLite", quietly = TRUE),
               "RSQLite not installed")
   con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
@@ -79,6 +88,8 @@ test_that("cache_list enumerates user-stored tables", {
 })
 
 test_that("cache_file imports a CSV into a named table", {
+  skip_if_not_installed("DBI")
+  skip_if_not_installed("RSQLite")
   skip_if_not(requireNamespace("RSQLite", quietly = TRUE),
               "RSQLite not installed")
   con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
@@ -95,6 +106,8 @@ test_that("cache_file imports a CSV into a named table", {
 # ----------------------------------------------------- dataset loaders (offline)
 
 test_that("morie_list_datasets returns a data.frame on a fresh in-mem db", {
+  skip_if_not_installed("DBI")
+  skip_if_not_installed("RSQLite")
   skip_if_not(requireNamespace("RSQLite", quietly = TRUE),
               "RSQLite not installed")
   con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
@@ -124,6 +137,8 @@ test_that("morie_userguide returns a path or NULL when no userguide", {
 })
 
 test_that("morie_load_cpads falls back gracefully without cache", {
+  skip_if_not_installed("DBI")
+  skip_if_not_installed("RSQLite")
   skip_if_not(requireNamespace("RSQLite", quietly = TRUE),
               "RSQLite not installed")
   con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")

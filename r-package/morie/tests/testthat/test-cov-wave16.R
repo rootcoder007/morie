@@ -3,6 +3,7 @@
 # and frns_temporal.R (multi-city temporal disparity audit).
 
 test_that("morie_inspect_output reports on json / csv / rds inputs", {
+  skip_if_not_installed("jsonlite")
   expect_equal(morie_inspect_output("/no/such/file.json")$status, "missing")
 
   jf <- tempfile(fileext = ".json")
@@ -42,6 +43,7 @@ test_that("morie_inspect_output flags unsupported and unreadable files", {
 })
 
 test_that("morie_verify_statistical_output runs its quality gates", {
+  skip_if_not_installed("jsonlite")
   expect_false(morie_verify_statistical_output("/no/such.json")$passed)
 
   vf <- tempfile(fileext = ".json")

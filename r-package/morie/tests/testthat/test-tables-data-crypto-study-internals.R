@@ -184,6 +184,8 @@ test_that(".morie_raw_to_hex errors on non-raw input", {
 })
 
 test_that(".morie_keystore_require errors if sodium is missing", {
+  skip_if_not_installed("jsonlite")
+  skip_if_not_installed("sodium")
   if (requireNamespace("sodium", quietly = TRUE) &&
       requireNamespace("jsonlite", quietly = TRUE)) {
     expect_silent(morie:::.morie_keystore_require())

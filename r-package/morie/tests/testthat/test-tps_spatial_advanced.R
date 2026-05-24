@@ -81,6 +81,7 @@ test_that("morie_tps_getis_ord_g_star warns when too few hoods", {
 })
 
 test_that("morie_tps_dbscan_clusters dispatches sensibly", {
+  skip_if_not_installed("dbscan")
   set.seed(1L)
   df <- .mk_tps_points(n = 200L)
   rr <- morie_tps_dbscan_clusters(df, eps_km = 1, min_samples = 5L)

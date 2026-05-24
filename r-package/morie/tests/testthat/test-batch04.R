@@ -478,6 +478,7 @@ test_that("morie_builtin_db returns a path string", {
 })
 
 test_that("morie cache round-trip works against a temp database", {
+  skip_if_not_installed("DBI")
   tmp <- tempfile(fileext = ".db")
   on.exit(unlink(tmp), add = TRUE)
 

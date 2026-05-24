@@ -163,6 +163,7 @@ test_that("morie_siu_llm_extract errors on empty HTML cache", {
 # =============================================================== anomaly_check
 
 test_that("morie_siu_anomaly_check returns per-field verdicts on staged cache", {
+  skip_if_not_installed("jsonlite")
   cache <- .stage_siu_cache(case_number = "24-OFD-001", drid = 4001L)
   on.exit(unlink(cache, recursive = TRUE), add = TRUE)
   mock_text <- jsonlite::toJSON(list(

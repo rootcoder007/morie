@@ -594,6 +594,7 @@ test_that("morie_inspect_output reports missing files", {
 })
 
 test_that("morie_inspect_output reads a JSON file", {
+  skip_if_not_installed("jsonlite")
   tmp <- tempfile(fileext = ".json")
   jsonlite::write_json(list(estimate = 0.123, se = 0.045), tmp,
     auto_unbox = TRUE
@@ -631,6 +632,7 @@ test_that("morie_inspect_output flags an unsupported extension", {
 })
 
 test_that("morie_verify_statistical_output passes a clean output", {
+  skip_if_not_installed("jsonlite")
   tmp <- tempfile(fileext = ".json")
   jsonlite::write_json(
     list(ate = 0.5, se = 0.1, ci_lower = 0.3, ci_upper = 0.7, n = 200),
@@ -644,6 +646,7 @@ test_that("morie_verify_statistical_output passes a clean output", {
 })
 
 test_that("morie_verify_statistical_output fails a bad CI ordering", {
+  skip_if_not_installed("jsonlite")
   tmp <- tempfile(fileext = ".json")
   jsonlite::write_json(
     list(ate = 0.5, se = -0.1, ci_lower = 0.9, ci_upper = 0.1, n = 0),

@@ -478,6 +478,7 @@ test_that("morie_grid_search_cv runs a regression grid search", {
 })
 
 test_that("morie_grid_search_cv errors clearly when caret is missing", {
+  skip_if_not_installed("caret")
   if (!requireNamespace("caret", quietly = TRUE)) {
     expect_error(
       morie_grid_search_cv(matrix(rnorm(20), ncol = 2), rnorm(10)),

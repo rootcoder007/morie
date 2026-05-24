@@ -98,6 +98,7 @@ test_that("morie_tps_render_points with dbscan colours points", {
 })
 
 test_that("morie_tps_render_yearly_grid requires ggplot2", {
+  skip_if_not_installed("ggplot2")
   polys <- .mk_polys_df()
   if (requireNamespace("ggplot2", quietly = TRUE)) {
     p <- morie_tps_render_yearly_grid(polys, prefix = "ASSAULT_RATE",

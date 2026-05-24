@@ -7,6 +7,7 @@
 }
 
 test_that("morie_load_dataset reads from the built-in database tier", {
+  skip_if_not_installed("DBI")
   .cw20_db()
   bdb <- tempfile(fileext = ".db")
   on.exit(unlink(bdb), add = TRUE)

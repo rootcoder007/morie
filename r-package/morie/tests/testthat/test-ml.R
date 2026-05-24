@@ -24,6 +24,7 @@ test_that("morie_ml_eval_robustness returns classification report", {
 })
 
 test_that("morie_ml_eval_robustness errors without randomForest", {
+  skip_if_not_installed("randomForest")
   skip_if(requireNamespace("randomForest", quietly = TRUE))
   s <- make_ml_split()
   expect_error(

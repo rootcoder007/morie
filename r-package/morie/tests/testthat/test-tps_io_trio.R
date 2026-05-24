@@ -120,6 +120,7 @@ test_that("morie_tps_fetch_category errors on an unknown category", {
 })
 
 test_that("the ArcGIS helper surfaces a clean install message when httr2 is absent", {
+  skip_if_not_installed("httr2")
   skip_if_not(requireNamespace("httr2", quietly = TRUE),
               "httr2 present; install-message branch not exercisable")
   # When httr2 IS present we cannot easily simulate its absence in the
@@ -173,6 +174,7 @@ test_that("morie_tps_load(csv) reads a synthetic CSV under an MORIE_TPS_DATA_DIR
 })
 
 test_that("excel reader surfaces a clean install message without readxl", {
+  skip_if_not_installed("readxl")
   skip_if(requireNamespace("readxl", quietly = TRUE),
           "readxl installed; install-message branch not exercisable")
   expect_error(
@@ -182,6 +184,7 @@ test_that("excel reader surfaces a clean install message without readxl", {
 })
 
 test_that("spatial readers surface a clean install message without sf", {
+  skip_if_not_installed("sf")
   skip_if(requireNamespace("sf", quietly = TRUE),
           "sf installed; install-message branch not exercisable")
   for (fmt in c("geojson", "featurecollection", "kml",
@@ -194,6 +197,8 @@ test_that("spatial readers surface a clean install message without sf", {
 })
 
 test_that("morie_tps_available_formats always includes csv and is a sorted character", {
+  skip_if_not_installed("readxl")
+  skip_if_not_installed("sf")
   out <- morie_tps_available_formats()
   expect_type(out, "character")
   expect_true("csv" %in% out)

@@ -85,6 +85,7 @@ test_that("rgwav wavelet path returns positive threshold and sigma", {
 })
 
 test_that("rgwav MA fallback warns when wavelets unavailable", {
+  skip_if_not_installed("wavelets")
   skip_if(
     requireNamespace("wavelets", quietly = TRUE),
     "wavelets installed; fallback path not exercised"

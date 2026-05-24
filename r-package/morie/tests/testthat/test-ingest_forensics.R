@@ -97,6 +97,7 @@ test_that("flatten_nist does not crash on minimal record", {
 })
 
 test_that("get_json requires httr2", {
+  skip_if_not_installed("httr2")
   set.seed(1)
   skip_if(requireNamespace("httr2", quietly = TRUE))
   expect_error(morie:::.morie_forensics_get_json("http://x"), "httr2")

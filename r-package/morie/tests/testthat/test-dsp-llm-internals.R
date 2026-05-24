@@ -234,6 +234,7 @@ test_that(".morie_bq_billing_project returns NULL on missing arg + env", {
 })
 
 test_that(".morie_bq_require errors when bigrquery is absent", {
+  skip_if_not_installed("bigrquery")
   if (requireNamespace("bigrquery", quietly = TRUE)) {
     skip("bigrquery is installed; skip negative-path test")
   }

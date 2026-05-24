@@ -106,6 +106,7 @@ test_that("morie_cache_dir respects MORIE_CACHE_DIR", {
 })
 
 test_that("morie_db_connect opens a SQLite handle on .db extension", {
+  skip_if_not_installed("DBI")
   tmp <- tempfile(fileext = ".db")
   withr::defer({
     try(DBI::dbDisconnect(con), silent = TRUE)
@@ -116,6 +117,8 @@ test_that("morie_db_connect opens a SQLite handle on .db extension", {
 })
 
 test_that("morie_cache_store + load + list round-trip via con", {
+  skip_if_not_installed("DBI")
+  skip_if_not_installed("RSQLite")
   set.seed(1)
   con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
   withr::defer(DBI::dbDisconnect(con))
@@ -130,6 +133,8 @@ test_that("morie_cache_store + load + list round-trip via con", {
 })
 
 test_that("morie_cache_load returns NULL for missing table", {
+  skip_if_not_installed("DBI")
+  skip_if_not_installed("RSQLite")
   con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
   withr::defer(DBI::dbDisconnect(con))
   expect_null(morie_cache_load("no_such_table", con = con))

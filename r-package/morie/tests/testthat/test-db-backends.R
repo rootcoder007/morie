@@ -27,6 +27,8 @@ test_that("DBI/SQLite cache round-trip via db_path", {
 })
 
 test_that("DBI/SQLite cache via pre-opened `con=`", {
+  skip_if_not_installed("DBI")
+  skip_if_not_installed("RSQLite")
 
   tmp_db <- tempfile(fileext = ".db")
   withr::defer(if (file.exists(tmp_db)) unlink(tmp_db))
@@ -51,6 +53,8 @@ test_that(".morie_db_handle rejects non-DBI input", {
 
 # ---- 2. DuckDB (default for new caches; columnar, larger data sizes) -----
 test_that("DBI/DuckDB cache round-trip via tempfile", {
+  skip_if_not_installed("DBI")
+  skip_if_not_installed("duckdb")
 
   tmp_db <- tempfile(fileext = ".duckdb")
   withr::defer(if (file.exists(tmp_db)) unlink(tmp_db))
@@ -70,6 +74,7 @@ test_that("DBI/DuckDB cache round-trip via tempfile", {
 })
 
 test_that("morie_db_connect() default opens DuckDB when available", {
+  skip_if_not_installed("DBI")
 
   tmp_dir <- tempfile("morie-test-")
   dir.create(tmp_dir)
@@ -83,6 +88,7 @@ test_that("morie_db_connect() default opens DuckDB when available", {
 })
 
 test_that("morie_db_connect() falls back to SQLite when duckdb absent", {
+  skip_if_not_installed("DBI")
 
   tmp_dir <- tempfile("morie-test-")
   dir.create(tmp_dir)

@@ -184,6 +184,7 @@ test_that("nyc_stop_and_frisk rejects unknown years", {
 })
 
 test_that("bigquery loader errors without bigrquery installed", {
+  skip_if_not_installed("bigrquery")
   set.seed(1)
   skip_if(requireNamespace("bigrquery", quietly = TRUE))
   expect_error(morie_datasets_bigquery("a", "b", "c"), "bigrquery")
@@ -241,6 +242,7 @@ test_that("nist_rds offline returns frame", {
 })
 
 test_that("http_json errors cleanly with httr2 absent", {
+  skip_if_not_installed("httr2")
   set.seed(1)
   skip_if(requireNamespace("httr2", quietly = TRUE))
   expect_error(morie:::.morie_dataset_http_json("http://invalid"), "httr2")

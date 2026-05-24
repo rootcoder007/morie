@@ -32,6 +32,7 @@ test_that("features_to_rows tolerates missing attributes", {
 })
 
 test_that("arcgis_query errors without httr2", {
+  skip_if_not_installed("httr2")
   set.seed(1)
   skip_if(requireNamespace("httr2", quietly = TRUE))
   expect_error(morie:::.morie_tps_arcgis_query("http://x"), "httr2")

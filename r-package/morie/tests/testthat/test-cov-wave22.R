@@ -53,6 +53,7 @@ test_that(".morie_parse_file errors when a reader package is absent", {
 })
 
 test_that(".morie_parse_file html returns multiple tables / the document", {
+  skip_if_not_installed("rvest")
   h <- tempfile(fileext = ".html")
   writeLines(paste0(
     "<html><body>",

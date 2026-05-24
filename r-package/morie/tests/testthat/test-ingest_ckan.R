@@ -46,6 +46,9 @@ test_that("read_path reads TSV roundtrip", {
 })
 
 test_that("read_path errors for xlsx/json/parquet without packages", {
+  skip_if_not_installed("arrow")
+  skip_if_not_installed("jsonlite")
+  skip_if_not_installed("readxl")
   set.seed(1)
   if (!requireNamespace("readxl", quietly = TRUE)) {
     expect_error(morie:::.morie_ckan_read_path("foo.xlsx", "xlsx"), "readxl")
@@ -60,6 +63,7 @@ test_that("read_path errors for xlsx/json/parquet without packages", {
 })
 
 test_that("read_path JSON roundtrip with jsonlite installed", {
+  skip_if_not_installed("jsonlite")
   set.seed(1)
   tmp <- tempfile(fileext = ".json")
   jsonlite::write_json(data.frame(a = 1:2, b = c("p", "q")), tmp)

@@ -270,6 +270,7 @@ test_that(".tps_hwka_baseline_integral constant = exp(alpha[1]) * T", {
 })
 
 test_that(".tps_hwka_neg_loglik_external_exp returns numeric when hawkes is present", {
+  skip_if_not_installed("hawkes")
   if (!requireNamespace("hawkes", quietly = TRUE)) {
     skip("hawkes package not installed")
   }

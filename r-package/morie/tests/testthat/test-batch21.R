@@ -329,6 +329,7 @@ test_that("morie_tsne_reduction wraps Rtsne and returns an embedding", {
 })
 
 test_that("morie_tsne_reduction errors when Rtsne is unavailable", {
+  skip_if_not_installed("Rtsne")
   if (!requireNamespace("Rtsne", quietly = TRUE)) {
     expect_error(morie_tsne_reduction(matrix(rnorm(40), 10, 4)), "Rtsne")
   } else {

@@ -38,6 +38,7 @@ test_that(".tps_temporal_monthly on empty input returns zero-row list", {
 # ==================================================================== survival.R
 
 test_that(".req_survival is silent when survival is installed", {
+  skip_if_not_installed("survival")
   if (requireNamespace("survival", quietly = TRUE)) {
     expect_silent(morie:::.req_survival())
   } else {
@@ -46,6 +47,7 @@ test_that(".req_survival is silent when survival is installed", {
 })
 
 test_that(".req_cmprsk is silent / errors based on availability", {
+  skip_if_not_installed("cmprsk")
   if (requireNamespace("cmprsk", quietly = TRUE)) {
     expect_silent(morie:::.req_cmprsk())
   } else {
@@ -240,6 +242,7 @@ test_that(".morie_db_indexes_for resolves table to its index spec", {
 # ============================================================== crypto_hybrid.R
 
 test_that(".morie_require_sodium silent / errors based on availability", {
+  skip_if_not_installed("sodium")
   if (requireNamespace("sodium", quietly = TRUE)) {
     expect_silent(morie:::.morie_require_sodium())
   } else {
@@ -249,6 +252,7 @@ test_that(".morie_require_sodium silent / errors based on availability", {
 })
 
 test_that(".morie_require_openssl silent / errors based on availability", {
+  skip_if_not_installed("openssl")
   if (requireNamespace("openssl", quietly = TRUE)) {
     expect_silent(morie:::.morie_require_openssl())
   } else {
@@ -258,6 +262,7 @@ test_that(".morie_require_openssl silent / errors based on availability", {
 })
 
 test_that(".morie_wrapping_key returns 32-byte raw via HKDF when openssl present", {
+  skip_if_not_installed("openssl")
   if (!requireNamespace("openssl", quietly = TRUE)) {
     skip("openssl not installed")
   }

@@ -146,6 +146,8 @@ test_that("probe_freeapi cached FALSE returns FALSE", {
 })
 
 test_that("request_completion errors without httr2/jsonlite", {
+  skip_if_not_installed("httr2")
+  skip_if_not_installed("jsonlite")
   set.seed(1)
   skip_if(requireNamespace("httr2", quietly = TRUE) &&
           requireNamespace("jsonlite", quietly = TRUE))

@@ -160,6 +160,7 @@ test_that("morie_run_weighted_logistic_analysis returns coefficient table", {
 })
 
 test_that("morie_inspect_output handles JSON/CSV/RDS extensions", {
+  skip_if_not_installed("jsonlite")
   tmp <- tempfile(fileext = ".json")
   on.exit(unlink(tmp), add = TRUE)
   jsonlite::write_json(list(estimate = 0.123, se = 0.045), tmp)
@@ -183,6 +184,7 @@ test_that("morie_inspect_output reports missing files", {
 })
 
 test_that("morie_verify_statistical_output runs sanity checks", {
+  skip_if_not_installed("jsonlite")
   tmp <- tempfile(fileext = ".json")
   on.exit(unlink(tmp), add = TRUE)
   jsonlite::write_json(
@@ -203,6 +205,7 @@ test_that("morie_verify_statistical_output runs sanity checks", {
 })
 
 test_that("morie_verify_statistical_output flags inverted CI", {
+  skip_if_not_installed("jsonlite")
   tmp <- tempfile(fileext = ".json")
   on.exit(unlink(tmp), add = TRUE)
   jsonlite::write_json(
@@ -216,6 +219,7 @@ test_that("morie_verify_statistical_output flags inverted CI", {
 })
 
 test_that("morie_estimate_irm errors informatively when DoubleML missing", {
+  skip_if_not_installed("DoubleML")
   # When DoubleML is installed locally we skip; otherwise verify the
   # error path. Either way, this just confirms the gate behaviour.
   if (!requireNamespace("DoubleML", quietly = TRUE)) {

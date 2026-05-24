@@ -37,6 +37,8 @@ test_that("polrz error guards fire", {
 })
 
 test_that("morie_xgboost_objective regression task on auto-detected continuous y", {
+  skip_if_not_installed("gbm")
+  skip_if_not_installed("xgboost")
   testthat::skip_if_not(
     requireNamespace("xgboost", quietly = TRUE) ||
       requireNamespace("gbm", quietly = TRUE),

@@ -58,6 +58,7 @@ test_that("cache store / load / list round-trip on a temp SQLite db", {
 })
 
 test_that("morie_cache_list returns an empty frame for an empty db", {
+  skip_if_not_installed("DBI")
   .cdb_have_db()
   db <- tempfile(fileext = ".db")
   on.exit(unlink(db), add = TRUE)

@@ -2,6 +2,9 @@
 # Batch 11 tests: irm, irtsp, isotn, jkest, johsn, kalmn, kmnsc, ksr01-08
 
 test_that("morie_estimate_irm errors without Suggests packages or returns valid list", {
+  skip_if_not_installed("DoubleML")
+  skip_if_not_installed("mlr3")
+  skip_if_not_installed("mlr3learners")
   set.seed(1)
   n <- 60
   X <- matrix(rnorm(n * 3), n, 3)

@@ -43,6 +43,8 @@ test_that(".morie_tps_read_csv honours nrows truncation", {
 })
 
 test_that(".morie_tps_read_excel requires readxl + reads xlsx via cache", {
+  skip_if_not_installed("readxl")
+  skip_if_not_installed("writexl")
   if (!requireNamespace("readxl", quietly = TRUE)) {
     skip("readxl not installed")
   }
@@ -66,6 +68,7 @@ test_that(".morie_tps_read_excel requires readxl + reads xlsx via cache", {
 })
 
 test_that(".morie_tps_read_geojson reads a GeoJSON via sf", {
+  skip_if_not_installed("sf")
   if (!requireNamespace("sf", quietly = TRUE)) {
     skip("sf not installed")
   }
@@ -234,6 +237,7 @@ test_that(".tps_draw_scalebar invisibly returns NULL on base graphics", {
 })
 
 test_that(".tps_draw_compass returns a list of ggplot annotates on gg path", {
+  skip_if_not_installed("ggplot2")
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     skip("ggplot2 not installed")
   }
@@ -242,6 +246,7 @@ test_that(".tps_draw_compass returns a list of ggplot annotates on gg path", {
 })
 
 test_that(".tps_draw_scalebar returns a list of ggplot annotates on gg path", {
+  skip_if_not_installed("ggplot2")
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     skip("ggplot2 not installed")
   }

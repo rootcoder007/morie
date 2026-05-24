@@ -27,6 +27,7 @@ test_that("rows_to_df binds list-of-named-lists", {
 })
 
 test_that("socrata_get errors without httr2", {
+  skip_if_not_installed("httr2")
   set.seed(1)
   skip_if(requireNamespace("httr2", quietly = TRUE))
   expect_error(morie:::.morie_chicago_socrata_get("http://x"), "httr2")
@@ -65,6 +66,7 @@ test_that("ingest_chicago_crime network-gated", {
 })
 
 test_that("ingest_chicago_crime_bigquery requires bigrquery", {
+  skip_if_not_installed("bigrquery")
   set.seed(1)
   skip_if(requireNamespace("bigrquery", quietly = TRUE))
   expect_error(morie_ingest_chicago_crime_bigquery(), "bigrquery")

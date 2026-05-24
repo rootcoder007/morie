@@ -211,6 +211,7 @@ test_that(".morie_ckan_read_path reads a CSV resource into a data.frame", {
 })
 
 test_that(".morie_ckan_build_req constructs an httr2 request object", {
+  skip_if_not_installed("httr2")
   if (!requireNamespace("httr2", quietly = TRUE)) {
     skip("httr2 not installed")
   }

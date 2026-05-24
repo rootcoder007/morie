@@ -2,6 +2,7 @@
 # Coverage tests for R/stat_bridge.R
 
 test_that("stat_bridge_registry_json emits JSON text", {
+  skip_if_not_installed("jsonlite")
   out <- stat_bridge_registry_json()
   expect_true(is.character(out))
   expect_true(nchar(out) > 0L)

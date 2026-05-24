@@ -161,6 +161,7 @@ test_that("morie_llm_detect_provider returns 'gemini' when GEMINI_API_KEY set + 
 # =============================================================== tps_io.R sf paths
 
 test_that(".morie_tps_read_sf_path reads a GeoJSON-by-path via sf", {
+  skip_if_not_installed("sf")
   if (!requireNamespace("sf", quietly = TRUE)) {
     skip("sf not installed")
   }
@@ -175,6 +176,7 @@ test_that(".morie_tps_read_sf_path reads a GeoJSON-by-path via sf", {
 })
 
 test_that(".morie_tps_read_kml reads a KML via sf + cache layout", {
+  skip_if_not_installed("sf")
   if (!requireNamespace("sf", quietly = TRUE)) {
     skip("sf not installed")
   }

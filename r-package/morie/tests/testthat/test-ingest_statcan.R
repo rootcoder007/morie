@@ -58,6 +58,7 @@ test_that("ingest_statcan_csv validates url", {
 })
 
 test_that("ingest_statcan_csv requires httr2", {
+  skip_if_not_installed("httr2")
   set.seed(1)
   skip_if(requireNamespace("httr2", quietly = TRUE))
   expect_error(morie_ingest_statcan_csv("http://x/a.zip"), "httr2")
@@ -78,6 +79,7 @@ test_that("ingest_statcan_cansim validates table_id", {
 })
 
 test_that("ingest_statcan_cansim errors without cansim package", {
+  skip_if_not_installed("cansim")
   set.seed(1)
   skip_if(requireNamespace("cansim", quietly = TRUE))
   expect_error(morie_ingest_statcan_cansim("35-10-0177"), "cansim")
