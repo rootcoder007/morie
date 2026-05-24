@@ -44,6 +44,8 @@ test_that("per-source row counts match expected (post-3GGG bulk)", {
   expect_true(as.integer(src_n["calgary_opendata"]) >= 900L)
   expect_true(as.integer(src_n["edmonton_opendata"]) >= 2000L)
   expect_true(as.integer(src_n["ottawa_opendata"]) >= 280L)
+  # 3HHH1: MTL bulk grew from 23 (justice subset) to 401 (full).
+  expect_true(as.integer(src_n["montreal_opendata"]) >= 400L)
 })
 
 test_that("api_modes column reflects portal protocol", {

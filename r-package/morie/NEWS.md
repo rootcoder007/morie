@@ -1,3 +1,61 @@
+# morie 0.9.5.8 - 2026-05-24
+
+## Bulk open-data catalog explosion
+
+Cross-portal `morie_dataset_portal_catalog()` grows from ~1,044
+rows to **9,242 rows across 14 portals**. Every Socrata / CKAN /
+ArcGIS Hub / Opendatasoft portal morie touches now has its full
+public catalog bundled offline.
+
+### Phase 3GGG -- 6-portal bulk harvest
+
+* **3GGG1**: NYC OpenData -- 2851 entities (2395 datasets + 294
+  maps + 162 filters/charts/hrefs/stories).
+* **3GGG2**: Chicago Open Data -- 1856 entities.
+* **3GGG3**: Toronto Open Data CKAN -- 540 packages.
+* **3GGG4**: Calgary (933) + Edmonton (2027) Socrata.
+* **3GGG5**: Ottawa Open Data Hub -- 287 datasets (via OGC
+  `startindex=` pagination, not Socrata `offset=`).
+* Replaced the per-portal crime-adjacent subset catalogs from
+  3EEE2/3FFF3 with the bulk variants (no API change -- the small
+  curated catalogs are still callable via the older loader names
+  for backwards compat).
+* New generic Socrata-by-id wrappers:
+  `morie_datasets_nyc_socrata_by_id()` +
+  `morie_datasets_chicago_socrata_by_id()` (mirror the 3FFF3
+  Calgary/Edmonton pattern). `morie_datasets_load_by_key()` routes
+  chicago + nyc_opendata sources through them; `max_features` now
+  threads as the SODA `$limit`.
+
+### Phase 3HHH -- full catalogs for the last two portals
+
+* **3HHH1**: Montreal Open Data CKAN full bulk -- 401 packages
+  (up from the 23-row Loi/Justice/Securite subset from 3EEE1).
+* **3HHH2**: Vancouver Opendatasoft v2.1 full bulk -- 190 datasets
+  with enriched schema (publisher, theme, license, records_count
+  added to the 3CCC4 fixture).
+
+### Catalog totals
+
+```
+calgary_opendata      933    nyc_opendata          2861
+chicago              1864    ontario_ckan            38
+edmonton_opendata    2027    ottawa_opendata        287
+montreal_opendata     401    statcan_ccjs            10
+nyc_nypd                8    toronto_opendata       540
+tps_arcgis_hub         71    tps_psdp                11
+vancouver_opendata    190    vpd_geodash              1
+                                                  -------
+                                                     9242
+```
+
+Bundled fixture footprint: ~3.4 MB of catalog metadata; per-row
+unwound this is the metadata equivalent of every NYC dataset
+descriptor + every CKAN package summary + every Hub item -- offline
+queryable via `morie_datasets_browse(keyword=...)`.
+
+---
+
 # morie 0.9.5.7 - 2026-05-24
 
 ## Cross-portal open-data infrastructure

@@ -7,6 +7,8 @@
 \alias{morie_datasets_calgary_opendata_bulk_layers}
 \alias{morie_datasets_edmonton_opendata_bulk_layers}
 \alias{morie_datasets_ottawa_opendata_bulk_layers}
+\alias{morie_datasets_montreal_opendata_bulk_layers}
+\alias{morie_datasets_vancouver_opendata_bulk_layers}
 \title{NYC OpenData bulk catalog (2851 entities)}
 \usage{
 morie_datasets_nyc_opendata_bulk_layers(offline = TRUE)
@@ -20,6 +22,10 @@ morie_datasets_calgary_opendata_bulk_layers(offline = TRUE)
 morie_datasets_edmonton_opendata_bulk_layers(offline = TRUE)
 
 morie_datasets_ottawa_opendata_bulk_layers(offline = TRUE)
+
+morie_datasets_montreal_opendata_bulk_layers(offline = TRUE)
+
+morie_datasets_vancouver_opendata_bulk_layers(offline = TRUE)
 }
 \arguments{
 \item{offline}{If \code{TRUE} (default), reads bundled CSV.}
@@ -28,15 +34,11 @@ morie_datasets_ottawa_opendata_bulk_layers(offline = TRUE)
 Tabular catalog snapshot.
 }
 \description{
-NYC OpenData bulk catalog (2851 entities)
+Phase 3HHH1. Bundled snapshot of every CKAN package on
+donnees.montreal.ca -- substantially broader than the 23-row
+Loi/Justice/Securite subset from 3EEE1.
 
-Chicago Open Data bulk catalog (1856 entities)
-
-Toronto Open Data bulk CKAN catalog (540 packages)
-
-Calgary Open Data bulk catalog (933 entities)
-
-Edmonton Open Data bulk catalog (2027 entities)
-
-Ottawa Open Data bulk ArcGIS Hub catalog (287 datasets)
+Phase 3HHH2. Bundled snapshot of every dataset on
+opendata.vancouver.ca with richer schema (publisher, theme,
+license, records_count).
 }

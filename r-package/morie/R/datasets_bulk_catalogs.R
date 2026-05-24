@@ -59,6 +59,30 @@ morie_datasets_ottawa_opendata_bulk_layers <- function(offline = TRUE) {
   .morie_bulk_fixture("ottawa_opendata_bulk_catalog.csv", offline)
 }
 
+#' Montreal Open Data bulk CKAN catalog (401 packages, 3HHH1)
+#'
+#' Phase 3HHH1. Bundled snapshot of every CKAN package on
+#' donnees.montreal.ca -- substantially broader than the 23-row
+#' Loi/Justice/Securite subset from 3EEE1.
+#'
+#' @rdname morie_datasets_nyc_opendata_bulk_layers
+#' @export
+morie_datasets_montreal_opendata_bulk_layers <- function(offline = TRUE) {
+  .morie_bulk_fixture("montreal_opendata_bulk_catalog.csv", offline)
+}
+
+#' Vancouver Open Data bulk Opendatasoft v2.1 catalog (190 datasets, 3HHH2)
+#'
+#' Phase 3HHH2. Bundled snapshot of every dataset on
+#' opendata.vancouver.ca with richer schema (publisher, theme,
+#' license, records_count).
+#'
+#' @rdname morie_datasets_nyc_opendata_bulk_layers
+#' @export
+morie_datasets_vancouver_opendata_bulk_layers <- function(offline = TRUE) {
+  .morie_bulk_fixture("vancouver_opendata_bulk_catalog.csv", offline)
+}
+
 # ---------------------------------------------------------------------------
 # Generic Socrata-by-id dispatchers for NYC + Chicago
 # (mirror morie_datasets_{calgary,edmonton}_socrata_by_id from 3FFF3)

@@ -206,16 +206,16 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
       stringsAsFactors = FALSE))
   }
 
-  # --- Vancouver Open Data (Opendatasoft v2.1) -----------------
-  van <- morie_datasets_vancouver_opendata_layers(offline = TRUE)
-  for (i in seq_len(nrow(van))) {
+  # --- Vancouver Open Data BULK (3HHH2, 190 datasets) ---------
+  van_bulk <- morie_datasets_vancouver_opendata_bulk_layers(offline = TRUE)
+  for (i in seq_len(nrow(van_bulk))) {
+    lk <- van_bulk$dataset_id[i]
     push(data.frame(
-      dataset_key = van$dataset_id[i],
-      source = "vancouver_opendata",
-      id = van$dataset_id[i],
+      dataset_key = lk, source = "vancouver_opendata", id = lk,
       api_modes = "opendatasoft_v21",
       loader = "morie_datasets_vancouver_opendata_by_id",
-      dict_url = NA_character_,
+      dict_url = sprintf("https://opendata.vancouver.ca/explore/dataset/%s",
+                          lk),
       n_rows_bundled = NA_integer_,
       stringsAsFactors = FALSE))
   }
@@ -296,22 +296,18 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
       stringsAsFactors = FALSE))
   }
 
-  # --- Montreal Open Data CKAN (Loi/Justice/Securite group) ----
-  mtl <- morie_datasets_montreal_justice_safety_layers(offline = TRUE)
-  for (i in seq_len(nrow(mtl))) {
+  # --- Montreal Open Data BULK (3HHH1, 401 packages) ----------
+  mtl_bulk <- morie_datasets_montreal_opendata_bulk_layers(offline = TRUE)
+  for (i in seq_len(nrow(mtl_bulk))) {
+    lk <- mtl_bulk$package_name[i]
     push(data.frame(
-      dataset_key = mtl$package_name[i],
-      source = "montreal_opendata",
-      id = mtl$package_name[i],
+      dataset_key = lk, source = "montreal_opendata", id = lk,
       api_modes = "ckan",
-      loader = if (mtl$package_name[i] ==
-                     "interventions-service-securite-incendie-montreal")
+      loader = if (lk == "interventions-service-securite-incendie-montreal")
                 "morie_datasets_montreal_sim_interventions"
               else "morie_datasets_montreal_ckan_resource",
-      dict_url = sprintf("https://donnees.montreal.ca/dataset/%s",
-                          mtl$package_name[i]),
-      n_rows_bundled = if (mtl$package_name[i] ==
-                              "interventions-service-securite-incendie-montreal")
+      dict_url = sprintf("https://donnees.montreal.ca/dataset/%s", lk),
+      n_rows_bundled = if (lk == "interventions-service-securite-incendie-montreal")
                          349L else NA_integer_,
       stringsAsFactors = FALSE))
   }
