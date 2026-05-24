@@ -462,6 +462,97 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
   do.call(rbind, chunks)
 }
 
+#' Generic Socrata SODA3 SoQL-query fetch
+#'
+#' SODA2 (`/resource/<id>.<ext>`) exposes datasets via key=value query
+#' parameters (`$where`, `$limit`, `$offset`). SODA3
+#' (`/api/v3/views/<id>/query.<ext>`) takes a single full SoQL string
+#' via `?query=SELECT ... WHERE ... ORDER BY ... LIMIT ... OFFSET ...`.
+#' This helper is the SODA3 sibling of [.morie_dataset_socrata_fetch()].
+#'
+#' Use SODA3 when:
+#'   * The dataset is a *filtered view* or *map view* (e.g.
+#'     `ahwe-kpsy` "Crimes - Map" derived from `ijzp-q8t2`). SODA2
+#'     against these returns `[{}]` -- empty rows -- because column
+#'     resolution doesn't fire on derived views.
+#'   * You want to send a full SoQL `SELECT ... WHERE ...` with
+#'     aggregations / joins / arbitrary expressions that SODA2's
+#'     URL-param grammar can't express.
+#'
+#' Pagination here uses `LIMIT n OFFSET m` clauses baked into the
+#' SoQL string (SODA3 does NOT accept `$offset` as a separate query
+#' parameter). If the caller's `soql` already contains its own
+#' `LIMIT` / `OFFSET`, the loader leaves it alone and treats the
+#' result as a single page; pagination mode strips any caller-supplied
+#' `LIMIT`/`OFFSET` before walking.
+#'
+#' @param view_id Socrata view id (UUID `xxxx-xxxx` or publisher
+#'   alias e.g. `crimes`).
+#' @param soql Raw SoQL string. Default `"SELECT *"`.
+#' @param app_token Optional Socrata app token (sent as `X-App-Token`
+#'   header, not as `$$app_token` query param -- SODA3 prefers the
+#'   header form).
+#' @param paginate Logical; if `TRUE`, walk `LIMIT page_size OFFSET m`
+#'   pages until exhausted.
+#' @param page_size Per-page row count when paginating.
+#' @param max_pages Safety net on paginated walks.
+#' @param max_features Optional total cap across all paged requests.
+#' @param base_url Portal base URL.  Default
+#'   `"https://data.cityofchicago.org"`.
+#' @keywords internal
+#' @noRd
+.morie_dataset_soda3_query <- function(view_id, soql = "SELECT *",
+                                        app_token = NULL,
+                                        paginate = FALSE,
+                                        page_size = 1000L,
+                                        max_pages = 200L,
+                                        max_features = NULL,
+                                        base_url = "https://data.cityofchicago.org") {
+  if (!requireNamespace("httr2", quietly = TRUE)) {
+    stop("morie datasets HTTP fetch requires the 'httr2' package.")
+  }
+  url <- sprintf("%s/api/v3/views/%s/query.json", base_url, view_id)
+  send_one <- function(soql_string) {
+    req <- httr2::request(url)
+    req <- httr2::req_url_query(req, query = soql_string)
+    if (!is.null(app_token)) {
+      req <- httr2::req_headers(req, `X-App-Token` = app_token)
+    }
+    resp <- httr2::req_perform(req)
+    records <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+    .morie_dataset_records_to_df(records)
+  }
+  if (!isTRUE(paginate)) {
+    return(send_one(soql))
+  }
+  # Paginated mode: strip caller-supplied LIMIT / OFFSET so we can
+  # control the walk ourselves. Use case-insensitive trailing match;
+  # we don't try to be clever about embedded LIMIT inside subqueries.
+  base_soql <- sub("\\s+limit\\s+\\d+\\s*(offset\\s+\\d+\\s*)?$",
+                    "", soql, ignore.case = TRUE)
+  page_size <- as.integer(page_size)
+  max_pages <- as.integer(max_pages)
+  cap <- if (is.null(max_features)) NA_integer_ else as.integer(max_features)
+  total <- 0L
+  offset <- 0L
+  chunks <- vector("list", 0L)
+  for (pg in seq_len(max_pages)) {
+    this_limit <- if (is.na(cap)) page_size else min(page_size, cap - total)
+    if (this_limit <= 0L) break
+    paged_soql <- sprintf("%s LIMIT %d OFFSET %d",
+                           base_soql, this_limit, offset)
+    chunk <- send_one(paged_soql)
+    n <- if (is.data.frame(chunk)) nrow(chunk) else 0L
+    if (n == 0L) break
+    chunks[[length(chunks) + 1L]] <- chunk
+    total <- total + n
+    offset <- offset + n
+    if (n < this_limit) break
+  }
+  if (length(chunks) == 0L) return(data.frame())
+  do.call(rbind, chunks)
+}
+
 #' City of Chicago "Crimes -- 2001 to Present" feed (`ijzp-q8t2`)
 #'
 #' Wraps the City of Chicago "Crimes -- 2001 to Present" open dataset
@@ -872,6 +963,175 @@ morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
                                 paginate = paginate,
                                 page_size = page_size,
                                 max_pages = max_pages)
+}
+
+# ---------------------------------------------------------------------------
+# Chicago Crimes -- "Map" filtered view (SODA3-only) + arbitrary-SoQL escape
+# ---------------------------------------------------------------------------
+
+#' City of Chicago "Crimes -- 2001 to Present -- Map" view (`ahwe-kpsy`)
+#'
+#' Wraps the Socrata MAP VIEW derived from the main Crimes feed
+#' (parent_fxf = `ijzp-q8t2`). Verified live as
+#' `type: map, parent_fxf: [ijzp-q8t2]` via the Socrata catalog API;
+#' landing page at
+#' \url{https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-Present-Map/ahwe-kpsy}.
+#'
+#' **SODA3-only**. The SODA2 endpoint `/resource/ahwe-kpsy.json` does
+#' technically return HTTP 200 but ships rows as empty objects
+#' (`[{}]`) -- column resolution doesn't fire on map/filtered views.
+#' This loader uses the SODA3 endpoint
+#' `/api/v3/views/ahwe-kpsy/query.json?query=SELECT ... WHERE ...`
+#' via [.morie_dataset_soda3_query()].
+#'
+#' The live ahwe-kpsy view returns a **39-column** schema:
+#'   * 22 base ijzp-q8t2 columns (id, case_number, date, ..., location)
+#'   * 4 reverse-geocoded extras (`location_address`, `location_city`,
+#'     `location_state`, `location_zip`)
+#'   * 4 Socrata-internal metadata cols (`:id`, `:version`,
+#'     `:created_at`, `:updated_at`)
+#'   * 9 `:@computed_region_*` spatial-overlay columns mapping each
+#'     row to other Chicago boundary layers (wards, community areas,
+#'     etc.) via Socrata's automatic point-in-polygon computation
+#'
+#' Offline mode reads a bundled 5-row 39-col fixture
+#' (`inst/extdata/chicago_crime_map_ahwe_kpsy_sample.csv`).
+#'
+#' @param date_from Lower bound on `date` (inclusive). Accepts a
+#'   `Date`, `POSIXct`, or ISO-8601 string. `NULL` defaults to one
+#'   year before `date_to` (matches the upstream Map view's rolling
+#'   1-year window).
+#' @param date_to Upper bound on `date` (exclusive). `NULL` defaults
+#'   to today.
+#' @param where Optional additional SoQL `WHERE` fragment ANDed onto
+#'   the date window. e.g. `"primary_type='HOMICIDE'"`.
+#' @param max_features Optional total row cap.
+#' @param offline Logical; if `TRUE` (default), read the bundled
+#'   39-col fixture.
+#' @param resource_id Optional view id override (default
+#'   `"ahwe-kpsy"`).
+#' @param paginate Logical; opt-in pagination via baked-in
+#'   `LIMIT n OFFSET m`.
+#' @param page_size Per-page row count when paginating.
+#' @param max_pages Safety net on paginated walks.
+#' @param app_token Optional Socrata app token (sent as
+#'   `X-App-Token`).
+#' @return A `data.frame` with the 39-col schema.
+#' @references City of Chicago Data Portal, "Crimes - 2001 to
+#'   Present - Map" (`ahwe-kpsy`), derived from `ijzp-q8t2`.
+#' @examples
+#' df <- morie_datasets_chicago_crime_map(offline = TRUE)
+#' df$primary_type
+#' @export
+morie_datasets_chicago_crime_map <- function(date_from = NULL,
+                                              date_to = NULL,
+                                              where = NULL,
+                                              max_features = NULL,
+                                              offline = TRUE,
+                                              resource_id = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L,
+                                              app_token = NULL) {
+  if (isTRUE(offline)) {
+    path <- system.file("extdata",
+                        "chicago_crime_map_ahwe_kpsy_sample.csv",
+                        package = "morie")
+    if (!nzchar(path)) {
+      stop("bundled Chicago Crime Map fixture missing", call. = FALSE)
+    }
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE)
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  # Live: build a date-windowed SoQL.
+  to_iso <- function(x) {
+    if (is.null(x)) return(NULL)
+    if (inherits(x, "POSIXt") || inherits(x, "Date")) {
+      return(format(x, "%Y-%m-%dT00:00:00.000"))
+    }
+    as.character(x)
+  }
+  d_to <- to_iso(if (is.null(date_to)) Sys.Date() else date_to)
+  d_from <- to_iso(if (is.null(date_from)) Sys.Date() - 365L else date_from)
+  clauses <- c(sprintf("`date` >= '%s'", d_from),
+               sprintf("`date` < '%s'", d_to))
+  if (!is.null(where) && nzchar(where)) clauses <- c(clauses, where)
+  soql <- sprintf("SELECT * WHERE %s",
+                   paste(clauses, collapse = " AND "))
+  if (is.null(resource_id)) resource_id <- "ahwe-kpsy"
+  .morie_dataset_soda3_query(resource_id, soql = soql,
+                              app_token = app_token,
+                              paginate = paginate,
+                              page_size = page_size,
+                              max_pages = max_pages,
+                              max_features = max_features)
+}
+
+#' City of Chicago Crimes feed -- arbitrary-SoQL escape hatch
+#'
+#' Sibling to [morie_datasets_chicago_crime()] but hits the
+#' **SODA3** `/api/v3/views/crimes/query.json` endpoint instead of
+#' SODA2's `/resource/ijzp-q8t2.json`. The 8.56M-row scale of the
+#' base feed makes SODA2's URL-param `$where` clumsy for non-trivial
+#' filters; SODA3 lets you send the full SoQL `SELECT ... WHERE ...
+#' ORDER BY ...` string in one go.
+#'
+#' @param where Optional SoQL `WHERE` fragment (without leading
+#'   `WHERE`). e.g. `"primary_type='HOMICIDE' AND year=2024"`.
+#' @param select Projection list (default `"*"`).
+#' @param order Optional SoQL `ORDER BY` fragment.
+#' @param max_features Optional total row cap.
+#' @param offline Logical; if `TRUE` (default), read the 22-col
+#'   `chicago_crime_synthetic.csv` fixture (same one
+#'   [morie_datasets_chicago_crime()] uses).
+#' @param resource_id Optional view id override (default
+#'   `"ijzp-q8t2"`; pass `"crimes"` for the publisher alias path).
+#' @param paginate Logical; opt-in pagination.
+#' @param page_size Per-page row count when paginating.
+#' @param max_pages Safety net.
+#' @param app_token Optional Socrata app token (sent as header).
+#' @return A `data.frame`.
+#' @examples
+#' df <- morie_datasets_chicago_crime_soql(offline = TRUE)
+#' nrow(df)
+#' @export
+morie_datasets_chicago_crime_soql <- function(where = NULL,
+                                                select = "*",
+                                                order = NULL,
+                                                max_features = NULL,
+                                                offline = TRUE,
+                                                resource_id = NULL,
+                                                paginate = FALSE,
+                                                page_size = 1000L,
+                                                max_pages = 200L,
+                                                app_token = NULL) {
+  if (isTRUE(offline)) {
+    df <- .morie_dataset_read_synthetic(
+      "chicago_crime_synthetic", "chicago_crime_soql",
+      columns = .MORIE_CHICAGO_CRIME_COLUMNS)
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  parts <- sprintf("SELECT %s", select)
+  if (!is.null(where) && nzchar(where)) {
+    parts <- paste(parts, sprintf("WHERE %s", where))
+  }
+  if (!is.null(order) && nzchar(order)) {
+    parts <- paste(parts, sprintf("ORDER BY %s", order))
+  }
+  if (is.null(resource_id)) resource_id <- "ijzp-q8t2"
+  .morie_dataset_soda3_query(resource_id, soql = parts,
+                              app_token = app_token,
+                              paginate = paginate,
+                              page_size = page_size,
+                              max_pages = max_pages,
+                              max_features = max_features)
 }
 
 # ---------------------------------------------------------------------------
