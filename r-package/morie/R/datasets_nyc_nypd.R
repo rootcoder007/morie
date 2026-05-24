@@ -120,7 +120,7 @@ morie_datasets_nyc_nypd_layers <- function() {
   out
 }
 
-#' Socrata default-API-cap note
+#' Socrata default-API-cap note + pagination wiring
 #'
 #' All NYC OpenData SODA2 endpoints apply a default cap of 1,000 rows
 #' per request unless an explicit `$limit` (or `$$app_token` for
@@ -130,15 +130,33 @@ morie_datasets_nyc_nypd_layers <- function() {
 #'   * `morie_datasets_nyc_nypd_arrests_ytd(offline = FALSE)` returns
 #'     **only 1,000 rows** by default, even though the live feed
 #'     carries ~69,300 rows.
-#'   * Pass `max_features = N` to lift the cap to N rows in a single
-#'     request (Socrata enforces a hard server-side cap of 50,000
-#'     rows per request).
-#'   * For full pulls over the cap, paginate via repeated requests
-#'     with `$offset` -- not yet wired into morie; track GH issue or
-#'     pull yourself via `httr2::request()` + `$offset`.
+#'   * Pass `max_features = N` to lift the single-request cap to N
+#'     rows (Socrata enforces a hard server-side cap of 50,000 rows
+#'     per request).
+#'   * **Pagination (wired in 3OO).** For full pulls over the cap,
+#'     pass `paginate = TRUE`. morie walks SODA2 `$offset` in
+#'     `page_size`-row chunks until the server returns a short page
+#'     (exhausted) or `max_features` is reached. Without an app_token
+#'     the per-request ceiling is 1,000 rows so `page_size = 1000` is
+#'     the default; with `page_size = 50000` + `app_token` you can
+#'     pull the full ~69K-row arrests_ytd feed in two requests.
+#'     `max_pages` (default 200) is a safety net against runaway pulls.
+#'
+#' Worked example:
+#'
+#' ```r
+#' # Full live pull of the YTD arrests feed (~69K rows over ~70 pages).
+#' df <- morie_datasets_nyc_nypd_arrests_ytd(
+#'   offline = FALSE, paginate = TRUE)
+#'
+#' # First 5,000 rows only (5 paged requests of 1,000 each).
+#' df <- morie_datasets_nyc_nypd_arrests_ytd(
+#'   offline = FALSE, paginate = TRUE, max_features = 5000L)
+#' ```
 #'
 #' The bundled fixtures (offline mode) are unaffected -- they ship 5
-#' rows each as deterministic sample data.
+#' rows each as deterministic sample data, and `max_features` simply
+#' truncates the fixture.
 #'
 #' @name morie_nyc_nypd_socrata_cap_note
 NULL
@@ -148,7 +166,10 @@ NULL
 # ---------------------------------------------------------------------------
 
 .morie_nyc_nypd_dispatch <- function(dataset_key, year, max_features,
-                                       offline, resource_id) {
+                                       offline, resource_id,
+                                       paginate = FALSE,
+                                       page_size = 1000L,
+                                       max_pages = 200L) {
   if (!(dataset_key %in% names(.MORIE_NYC_NYPD_REGISTRY))) {
     stop(sprintf(paste0(
       "unknown NYC NYPD dataset_key '%s'. Available: %s"),
@@ -197,7 +218,10 @@ NULL
     }
   }
   .morie_dataset_socrata_fetch(url, where = where,
-                                max_features = max_features)
+                                max_features = max_features,
+                                paginate = paginate,
+                                page_size = page_size,
+                                max_pages = max_pages)
 }
 
 #' Generic NYC NYPD dataset loader by registry key
@@ -205,23 +229,43 @@ NULL
 #' @param dataset_key One of the keys in
 #'   [morie_datasets_nyc_nypd_layers()].
 #' @param year Optional year filter (server-side SoQL).
-#' @param max_features Optional row cap.
+#' @param max_features Optional row cap. When `paginate = TRUE` this
+#'   is the total cap across walked pages.
 #' @param offline If `TRUE` (default), read the bundled fixture.
 #' @param resource_id Optional Socrata resource id override.
+#' @param paginate Logical; if `TRUE` and `offline = FALSE`, walk
+#'   SODA2 `$offset` in `page_size` chunks until exhausted or
+#'   `max_features` is reached. Default `FALSE` (single 1,000-row
+#'   request, matching the historical pre-3OO behaviour).
+#' @param page_size Per-page row count when paginating (default 1,000,
+#'   the unauthenticated SODA2 ceiling).
+#' @param max_pages Safety net on paginated walks (default 200 ->
+#'   up to 200,000 rows without an app_token).
 #' @return A `data.frame`.
 #' @export
 morie_datasets_nyc_nypd_by_key <- function(dataset_key,
                                              year = NULL,
                                              max_features = NULL,
                                              offline = TRUE,
-                                             resource_id = NULL) {
+                                             resource_id = NULL,
+                                             paginate = FALSE,
+                                             page_size = 1000L,
+                                             max_pages = 200L) {
   .morie_nyc_nypd_dispatch(dataset_key, year, max_features,
-                             offline, resource_id)
+                             offline, resource_id,
+                             paginate = paginate,
+                             page_size = page_size,
+                             max_pages = max_pages)
 }
 
 # ---------------------------------------------------------------------------
 # Eight per-dataset wrappers
 # ---------------------------------------------------------------------------
+#
+# All 8 share an identical signature -- year + max_features + offline +
+# resource_id (existing) plus the 3-arg pagination tail wired in 3OO
+# (paginate + page_size + max_pages). They forward verbatim to
+# .morie_nyc_nypd_dispatch().
 
 #' NYPD Arrests Data (Historic)
 #' @inheritParams morie_datasets_nyc_nypd_by_key
@@ -229,9 +273,15 @@ morie_datasets_nyc_nypd_by_key <- function(dataset_key,
 morie_datasets_nyc_nypd_arrests_historic <- function(year = NULL,
                                                        max_features = NULL,
                                                        offline = TRUE,
-                                                       resource_id = NULL) {
+                                                       resource_id = NULL,
+                                                       paginate = FALSE,
+                                                       page_size = 1000L,
+                                                       max_pages = 200L) {
   .morie_nyc_nypd_dispatch("nypd_arrests_historic", year,
-                             max_features, offline, resource_id)
+                             max_features, offline, resource_id,
+                             paginate = paginate,
+                             page_size = page_size,
+                             max_pages = max_pages)
 }
 
 #' NYPD Arrest Data (Year to Date)
@@ -240,9 +290,15 @@ morie_datasets_nyc_nypd_arrests_historic <- function(year = NULL,
 morie_datasets_nyc_nypd_arrests_ytd <- function(year = NULL,
                                                   max_features = NULL,
                                                   offline = TRUE,
-                                                  resource_id = NULL) {
+                                                  resource_id = NULL,
+                                                  paginate = FALSE,
+                                                  page_size = 1000L,
+                                                  max_pages = 200L) {
   .morie_nyc_nypd_dispatch("nypd_arrests_ytd", year, max_features,
-                             offline, resource_id)
+                             offline, resource_id,
+                             paginate = paginate,
+                             page_size = page_size,
+                             max_pages = max_pages)
 }
 
 #' NYPD Complaint Data Historic
@@ -251,9 +307,15 @@ morie_datasets_nyc_nypd_arrests_ytd <- function(year = NULL,
 morie_datasets_nyc_nypd_complaint_historic <- function(year = NULL,
                                                          max_features = NULL,
                                                          offline = TRUE,
-                                                         resource_id = NULL) {
+                                                         resource_id = NULL,
+                                                         paginate = FALSE,
+                                                         page_size = 1000L,
+                                                         max_pages = 200L) {
   .morie_nyc_nypd_dispatch("nypd_complaint_historic", year,
-                             max_features, offline, resource_id)
+                             max_features, offline, resource_id,
+                             paginate = paginate,
+                             page_size = page_size,
+                             max_pages = max_pages)
 }
 
 #' NYPD Complaint Data Current (Year To Date)
@@ -262,9 +324,15 @@ morie_datasets_nyc_nypd_complaint_historic <- function(year = NULL,
 morie_datasets_nyc_nypd_complaint_ytd <- function(year = NULL,
                                                     max_features = NULL,
                                                     offline = TRUE,
-                                                    resource_id = NULL) {
+                                                    resource_id = NULL,
+                                                    paginate = FALSE,
+                                                    page_size = 1000L,
+                                                    max_pages = 200L) {
   .morie_nyc_nypd_dispatch("nypd_complaint_ytd", year,
-                             max_features, offline, resource_id)
+                             max_features, offline, resource_id,
+                             paginate = paginate,
+                             page_size = page_size,
+                             max_pages = max_pages)
 }
 
 #' NYPD Hate Crimes
@@ -273,9 +341,15 @@ morie_datasets_nyc_nypd_complaint_ytd <- function(year = NULL,
 morie_datasets_nyc_nypd_hate_crimes <- function(year = NULL,
                                                   max_features = NULL,
                                                   offline = TRUE,
-                                                  resource_id = NULL) {
+                                                  resource_id = NULL,
+                                                  paginate = FALSE,
+                                                  page_size = 1000L,
+                                                  max_pages = 200L) {
   .morie_nyc_nypd_dispatch("nypd_hate_crimes", year, max_features,
-                             offline, resource_id)
+                             offline, resource_id,
+                             paginate = paginate,
+                             page_size = page_size,
+                             max_pages = max_pages)
 }
 
 #' NYPD Use of Force Incidents
@@ -284,9 +358,15 @@ morie_datasets_nyc_nypd_hate_crimes <- function(year = NULL,
 morie_datasets_nyc_nypd_uof_incidents <- function(year = NULL,
                                                     max_features = NULL,
                                                     offline = TRUE,
-                                                    resource_id = NULL) {
+                                                    resource_id = NULL,
+                                                    paginate = FALSE,
+                                                    page_size = 1000L,
+                                                    max_pages = 200L) {
   .morie_nyc_nypd_dispatch("nypd_uof_incidents", year, max_features,
-                             offline, resource_id)
+                             offline, resource_id,
+                             paginate = paginate,
+                             page_size = page_size,
+                             max_pages = max_pages)
 }
 
 #' NYPD Use of Force: Subjects
@@ -295,9 +375,15 @@ morie_datasets_nyc_nypd_uof_incidents <- function(year = NULL,
 morie_datasets_nyc_nypd_uof_subjects <- function(year = NULL,
                                                    max_features = NULL,
                                                    offline = TRUE,
-                                                   resource_id = NULL) {
+                                                   resource_id = NULL,
+                                                   paginate = FALSE,
+                                                   page_size = 1000L,
+                                                   max_pages = 200L) {
   .morie_nyc_nypd_dispatch("nypd_uof_subjects", year, max_features,
-                             offline, resource_id)
+                             offline, resource_id,
+                             paginate = paginate,
+                             page_size = page_size,
+                             max_pages = max_pages)
 }
 
 #' NYPD Vehicle Stop Reports
@@ -306,7 +392,13 @@ morie_datasets_nyc_nypd_uof_subjects <- function(year = NULL,
 morie_datasets_nyc_nypd_vehicle_stops <- function(year = NULL,
                                                     max_features = NULL,
                                                     offline = TRUE,
-                                                    resource_id = NULL) {
+                                                    resource_id = NULL,
+                                                    paginate = FALSE,
+                                                    page_size = 1000L,
+                                                    max_pages = 200L) {
   .morie_nyc_nypd_dispatch("nypd_vehicle_stops", year, max_features,
-                             offline, resource_id)
+                             offline, resource_id,
+                             paginate = paginate,
+                             page_size = page_size,
+                             max_pages = max_pages)
 }

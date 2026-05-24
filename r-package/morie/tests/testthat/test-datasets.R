@@ -175,7 +175,12 @@ test_that("nyc_stop_and_frisk offline returns frame", {
 
 test_that("nyc_stop_and_frisk rejects unknown years", {
   set.seed(1)
-  expect_error(morie_datasets_nyc_stop_and_frisk(year = 1990L), "no built-in")
+  # Year-validation lives in the live (non-offline) branch; post-3LL
+  # the default became offline=TRUE so we must opt back in explicitly
+  # to exercise the "no built-in resource" check.
+  expect_error(
+    morie_datasets_nyc_stop_and_frisk(year = 1990L, offline = FALSE),
+    "no built-in")
 })
 
 test_that("bigquery loader errors without bigrquery installed", {

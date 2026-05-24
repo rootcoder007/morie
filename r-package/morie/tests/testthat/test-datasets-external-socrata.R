@@ -34,7 +34,10 @@ test_that("morie_datasets_chicago_crime(offline=FALSE) dispatches via mocked Soc
   testthat::local_mocked_bindings(
     .morie_dataset_socrata_fetch = function(url, where = NULL,
                                               max_features = NULL,
-                                              app_token = NULL) {
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
       expect_match(url, "data\\.cityofchicago\\.org/resource/ijzp-q8t2\\.json$")
       expect_equal(where, "year=2024")
       expect_equal(max_features, 50L)
@@ -51,7 +54,10 @@ test_that("morie_datasets_chicago_crime(offline=FALSE) sends NULL where when yea
   testthat::local_mocked_bindings(
     .morie_dataset_socrata_fetch = function(url, where = NULL,
                                               max_features = NULL,
-                                              app_token = NULL) {
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
       expect_null(where)
       data.frame(id = 1L)
     },
@@ -90,7 +96,10 @@ test_that("morie_datasets_nyc_stop_and_frisk(offline=FALSE) routes by year to co
     out <- testthat::with_mocked_bindings(
       .morie_dataset_socrata_fetch = function(url, where = NULL,
                                                 max_features = NULL,
-                                                app_token = NULL) {
+                                                app_token = NULL,
+                                                paginate = FALSE,
+                                                page_size = 1000L,
+                                                max_pages = 200L) {
         expect_match(url, R$expect_url)
         data.frame(STOP_FRISK_ID = "LIVE", YEAR2 = R$year)
       },
@@ -106,7 +115,10 @@ test_that("morie_datasets_nyc_stop_and_frisk(offline=FALSE) defaults to most-rec
   testthat::local_mocked_bindings(
     .morie_dataset_socrata_fetch = function(url, where = NULL,
                                               max_features = NULL,
-                                              app_token = NULL) {
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
       # 2024 is the most-recent registered year -> 7v9w-k82r.
       expect_match(url, "7v9w-k82r")
       data.frame(STOP_FRISK_ID = "DEFAULT")
@@ -186,7 +198,10 @@ test_that("morie_datasets_chicago_neighborhoods(offline=FALSE) dispatches via mo
   testthat::local_mocked_bindings(
     .morie_dataset_socrata_fetch = function(url, where = NULL,
                                               max_features = NULL,
-                                              app_token = NULL) {
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
       # Default geometry = FALSE -> URL carries $select query string.
       expect_match(url,
                    "data\\.cityofchicago\\.org/resource/y6yq-dbs2\\.json\\?\\$select=pri_neigh,sec_neigh,shape_area,shape_len$")
@@ -202,7 +217,10 @@ test_that("morie_datasets_chicago_neighborhoods(offline=FALSE, geometry=TRUE) re
   testthat::local_mocked_bindings(
     .morie_dataset_socrata_fetch = function(url, where = NULL,
                                               max_features = NULL,
-                                              app_token = NULL) {
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
       # geometry = TRUE -> no $select, server returns full schema
       # including the_geom MultiPolygon.
       expect_match(url,
@@ -222,7 +240,10 @@ test_that("morie_datasets_chicago_neighborhoods honours resource_id override", {
   testthat::local_mocked_bindings(
     .morie_dataset_socrata_fetch = function(url, where = NULL,
                                               max_features = NULL,
-                                              app_token = NULL) {
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
       expect_match(url, "override-res-id\\.json")
       data.frame(pri_neigh = "OVERRIDE")
     },

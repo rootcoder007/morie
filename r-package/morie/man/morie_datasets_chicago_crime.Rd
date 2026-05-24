@@ -4,14 +4,34 @@
 \alias{morie_datasets_chicago_crime}
 \title{City of Chicago "Crimes -- 2001 to Present" feed.}
 \usage{
-morie_datasets_chicago_crime(year = NULL, max_features = NULL, offline = FALSE)
+morie_datasets_chicago_crime(
+  year = NULL,
+  max_features = NULL,
+  offline = TRUE,
+  paginate = FALSE,
+  page_size = 1000L,
+  max_pages = 200L
+)
 }
 \arguments{
 \item{year}{Integer or \code{NULL}; server-side year filter.}
 
-\item{max_features}{Integer or \code{NULL}; cap on returned rows.}
+\item{max_features}{Integer or \code{NULL}; cap on returned rows. When
+\code{paginate = TRUE} this is the total cap across all walked pages.}
 
 \item{offline}{Logical; if \code{TRUE}, return the bundled synthetic frame.}
+
+\item{paginate}{Logical; if \code{TRUE} and \code{offline = FALSE}, walk
+SODA2 \verb{$offset} in \code{page_size} chunks until the server returns a
+short page (exhausted) or \code{max_features} is reached. Default
+\code{FALSE} preserves the historical single-request behaviour (server
+default cap, 1,000 rows on the open Chicago portal).}
+
+\item{page_size}{Integer; per-page row count when \code{paginate = TRUE}.
+Default 1,000 (the unauthenticated SODA2 ceiling).}
+
+\item{max_pages}{Integer; safety net on \code{paginate = TRUE} walks
+(default 200 -> up to 200,000 rows without an app_token).}
 }
 \value{
 A \code{data.frame} with the documented Socrata schema.

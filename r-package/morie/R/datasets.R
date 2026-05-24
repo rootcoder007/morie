@@ -385,29 +385,88 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
 )
 
 #' Generic Socrata JSON fetch (handles `$where`, `$limit`, `$$app_token`).
+#'
+#' Two modes:
+#'   * `paginate = FALSE` (default): single SODA2 request. Honours
+#'     `$where`, `$limit = max_features` and `$$app_token`. Without an
+#'     explicit `$limit` the server enforces its default cap (1,000
+#'     rows on the open NYC + Chicago portals).
+#'   * `paginate = TRUE`: walk `$offset` in `page_size` chunks until
+#'     the server returns a short page (exhausted) or `max_features`
+#'     is reached. `max_pages` is a safety net against runaway pulls.
+#'     Without an app_token most portals cap `$limit` at 1,000 per
+#'     request, so the natural `page_size` is 1000; with a token the
+#'     hard server-side cap is 50,000.
+#'
 #' @keywords internal
 #' @noRd
 .morie_dataset_socrata_fetch <- function(url, where = NULL,
                                          max_features = NULL,
-                                         app_token = NULL) {
-  query <- list()
-  if (!is.null(where)) query$`$where` <- where
-  if (!is.null(max_features)) query$`$limit` <- as.integer(max_features)
-  if (!is.null(app_token)) query$`$$app_token` <- app_token
-  records <- .morie_dataset_http_json(url, query = query)
-  .morie_dataset_records_to_df(records)
+                                         app_token = NULL,
+                                         paginate = FALSE,
+                                         page_size = 1000L,
+                                         max_pages = 200L) {
+  if (!isTRUE(paginate)) {
+    query <- list()
+    if (!is.null(where)) query$`$where` <- where
+    if (!is.null(max_features)) query$`$limit` <- as.integer(max_features)
+    if (!is.null(app_token)) query$`$$app_token` <- app_token
+    records <- .morie_dataset_http_json(url, query = query)
+    return(.morie_dataset_records_to_df(records))
+  }
+  page_size <- as.integer(page_size)
+  if (is.na(page_size) || page_size <= 0L) {
+    stop(".morie_dataset_socrata_fetch: paginate=TRUE requires page_size >= 1.",
+         call. = FALSE)
+  }
+  max_pages <- as.integer(max_pages)
+  if (is.na(max_pages) || max_pages <= 0L) max_pages <- 200L
+  cap <- if (is.null(max_features)) NA_integer_ else as.integer(max_features)
+  total <- 0L
+  offset <- 0L
+  chunks <- vector("list", 0L)
+  for (pg in seq_len(max_pages)) {
+    this_limit <- if (is.na(cap)) page_size else min(page_size, cap - total)
+    if (this_limit <= 0L) break
+    query <- list(`$limit` = this_limit, `$offset` = offset)
+    if (!is.null(where)) query$`$where` <- where
+    if (!is.null(app_token)) query$`$$app_token` <- app_token
+    records <- .morie_dataset_http_json(url, query = query)
+    chunk <- .morie_dataset_records_to_df(records)
+    n <- if (is.data.frame(chunk)) nrow(chunk) else 0L
+    if (n == 0L) break
+    chunks[[length(chunks) + 1L]] <- chunk
+    total <- total + n
+    offset <- offset + n
+    if (n < this_limit) break
+  }
+  if (length(chunks) == 0L) return(data.frame())
+  do.call(rbind, chunks)
 }
 
 #' City of Chicago "Crimes -- 2001 to Present" feed.
 #'
 #' @param year Integer or `NULL`; server-side year filter.
-#' @param max_features Integer or `NULL`; cap on returned rows.
+#' @param max_features Integer or `NULL`; cap on returned rows. When
+#'   `paginate = TRUE` this is the total cap across all walked pages.
 #' @param offline Logical; if `TRUE`, return the bundled synthetic frame.
+#' @param paginate Logical; if `TRUE` and `offline = FALSE`, walk
+#'   SODA2 `$offset` in `page_size` chunks until the server returns a
+#'   short page (exhausted) or `max_features` is reached. Default
+#'   `FALSE` preserves the historical single-request behaviour (server
+#'   default cap, 1,000 rows on the open Chicago portal).
+#' @param page_size Integer; per-page row count when `paginate = TRUE`.
+#'   Default 1,000 (the unauthenticated SODA2 ceiling).
+#' @param max_pages Integer; safety net on `paginate = TRUE` walks
+#'   (default 200 -> up to 200,000 rows without an app_token).
 #' @return A `data.frame` with the documented Socrata schema.
 #' @export
 morie_datasets_chicago_crime <- function(year = NULL,
                                          max_features = NULL,
-                                         offline = TRUE) {
+                                         offline = TRUE,
+                                         paginate = FALSE,
+                                         page_size = 1000L,
+                                         max_pages = 200L) {
   if (isTRUE(offline)) {
     df <- .morie_dataset_read_synthetic(
       "chicago_crime_synthetic", "chicago_crime",
@@ -426,7 +485,10 @@ morie_datasets_chicago_crime <- function(year = NULL,
   .morie_dataset_socrata_fetch(
     "https://data.cityofchicago.org/resource/ijzp-q8t2.json",
     where = where,
-    max_features = max_features
+    max_features = max_features,
+    paginate = paginate,
+    page_size = page_size,
+    max_pages = max_pages
   )
 }
 
@@ -443,13 +505,22 @@ morie_datasets_chicago_crime <- function(year = NULL,
 #'
 #' @param year Integer or `NULL`; release year (one of 2022, 2023, 2024).
 #'   `NULL` defaults to the most-recent registered year.
-#' @param max_features Integer or `NULL`; cap on returned rows.
+#' @param max_features Integer or `NULL`; cap on returned rows. When
+#'   `paginate = TRUE` this is the total cap across all walked pages.
 #' @param offline Logical; if `TRUE`, return the bundled synthetic frame.
+#' @param paginate Logical; if `TRUE` and `offline = FALSE`, walk
+#'   SODA2 `$offset` in `page_size` chunks. Default `FALSE`.
+#' @param page_size Integer; per-page row count when paginating
+#'   (default 1,000, the unauthenticated SODA2 ceiling).
+#' @param max_pages Integer; safety net on paginated walks (default 200).
 #' @return A `data.frame`.  Schema is NOT normalised across years.
 #' @export
 morie_datasets_nyc_stop_and_frisk <- function(year = NULL,
                                               max_features = NULL,
-                                              offline = TRUE) {
+                                              offline = TRUE,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
   if (isTRUE(offline)) {
     df <- .morie_dataset_read_synthetic("nyc_sqf_synthetic", "nyc_stop_and_frisk")
     if (!is.null(max_features) && nrow(df) > 0L) {
@@ -470,7 +541,10 @@ morie_datasets_nyc_stop_and_frisk <- function(year = NULL,
   }
   .morie_dataset_socrata_fetch(
     .MORIE_NYC_SQF_RESOURCES[[as.character(chosen_year)]],
-    max_features = max_features
+    max_features = max_features,
+    paginate = paginate,
+    page_size = page_size,
+    max_pages = max_pages
   )
 }
 
@@ -704,7 +778,10 @@ morie_datasets_nist_rds <- function(dataset_id = NULL, query = NULL,
 morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
                                                   geometry = FALSE,
                                                   max_features = NULL,
-                                                  resource_id = NULL) {
+                                                  resource_id = NULL,
+                                                  paginate = FALSE,
+                                                  page_size = 1000L,
+                                                  max_pages = 200L) {
   if (isTRUE(offline)) {
     path <- system.file("extdata", "chicago_neighborhoods.csv",
                         package = "morie")
@@ -731,7 +808,10 @@ morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
                   "?$select=pri_neigh,sec_neigh,shape_area,shape_len")
   }
   .morie_dataset_socrata_fetch(url, where = where,
-                                max_features = max_features)
+                                max_features = max_features,
+                                paginate = paginate,
+                                page_size = page_size,
+                                max_pages = max_pages)
 }
 
 # ---------------------------------------------------------------------------

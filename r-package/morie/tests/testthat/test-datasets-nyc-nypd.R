@@ -156,7 +156,10 @@ test_that("each NYPD wrapper auto-resolves canonical resource_id from registry o
     out <- testthat::with_mocked_bindings(
       .morie_dataset_socrata_fetch = function(url, where = NULL,
                                                 max_features = NULL,
-                                                app_token = NULL) {
+                                                app_token = NULL,
+                                                paginate = FALSE,
+                                                page_size = 1000L,
+                                                max_pages = 200L) {
         expect_match(url,
                      sprintf(
                        "data\\.cityofnewyork\\.us/resource/%s\\.json$",
@@ -173,7 +176,10 @@ test_that("year filter emits the right SoQL $where for date-column datasets", {
   testthat::local_mocked_bindings(
     .morie_dataset_socrata_fetch = function(url, where = NULL,
                                               max_features = NULL,
-                                              app_token = NULL) {
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
       expect_equal(where, "date_extract_y(arrest_date) = 2024")
       data.frame(stub = 1L)
     },
@@ -187,7 +193,10 @@ test_that("year filter for hate_crimes uses complaint_year_number (no date_extra
   testthat::local_mocked_bindings(
     .morie_dataset_socrata_fetch = function(url, where = NULL,
                                               max_features = NULL,
-                                              app_token = NULL) {
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
       expect_equal(where, "complaint_year_number = 2023")
       data.frame(stub = 1L)
     },
@@ -201,7 +210,10 @@ test_that("year filter is omitted for uof_subjects (no date column)", {
   testthat::local_mocked_bindings(
     .morie_dataset_socrata_fetch = function(url, where = NULL,
                                               max_features = NULL,
-                                              app_token = NULL) {
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
       expect_null(where)
       data.frame(stub = 1L)
     },
@@ -215,7 +227,10 @@ test_that("resource_id override is honoured", {
   testthat::local_mocked_bindings(
     .morie_dataset_socrata_fetch = function(url, where = NULL,
                                               max_features = NULL,
-                                              app_token = NULL) {
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
       expect_match(url, "override-nypd-xyz\\.json$")
       data.frame(stub = 1L)
     },
@@ -238,7 +253,10 @@ test_that("morie_datasets_nyc_nypd_by_key dispatches to mocked Socrata on live",
   testthat::local_mocked_bindings(
     .morie_dataset_socrata_fetch = function(url, where = NULL,
                                               max_features = NULL,
-                                              app_token = NULL) {
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
       expect_match(url, "f4tj-796d\\.json$")
       data.frame(stub = 1L)
     },
