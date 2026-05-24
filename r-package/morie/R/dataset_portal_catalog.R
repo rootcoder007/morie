@@ -77,8 +77,45 @@
 #'
 #' tps <- morie_dataset_portal_catalog(portal = "tps_arcgis_hub")
 #' head(tps$dataset_key)
+# Session-scoped cache for the full ~9k-row catalog. Rebuilding scans
+# 14 portal registries (~2.8s on a modern laptop); memoizing keeps
+# subsequent morie_datasets_load_by_key() lookups instant. Cleared
+# via morie_dataset_portal_catalog_clear_cache().
+.morie_portal_catalog_env <- new.env(parent = emptyenv())
+
+#' Clear the session-scoped portal-catalog cache
+#'
+#' Forces the next [morie_dataset_portal_catalog()] call to rebuild
+#' from the per-portal registries. Useful after editing or extending
+#' a registry in an interactive session.
+#'
+#' @return Invisibly `NULL`.
+#' @export
+morie_dataset_portal_catalog_clear_cache <- function() {
+  rm(list = ls(.morie_portal_catalog_env),
+     envir = .morie_portal_catalog_env)
+  invisible(NULL)
+}
+
 #' @export
 morie_dataset_portal_catalog <- function(portal = NULL) {
+  cached <- .morie_portal_catalog_env$full
+  if (!is.null(cached)) {
+    out <- cached
+    if (!is.null(portal)) {
+      portal <- match.arg(portal,
+                          choices = c("chicago", "nyc_nypd", "nyc_opendata",
+                                      "tps_arcgis_hub", "tps_psdp",
+                                      "ontario_ckan", "vancouver_opendata",
+                                      "vpd_geodash", "statcan_ccjs",
+                                      "montreal_opendata", "toronto_opendata",
+                                      "calgary_opendata", "edmonton_opendata",
+                                      "ottawa_opendata"))
+      out <- out[out$source == portal, , drop = FALSE]
+      rownames(out) <- NULL
+    }
+    return(out)
+  }
   rows <- list()
   push <- function(r) rows[[length(rows) + 1L]] <<- r
 
@@ -340,6 +377,10 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
 
   out <- do.call(rbind, rows)
   rownames(out) <- NULL
+
+  # Memoize before subsetting so subsequent calls (with or without
+  # a `portal` filter) all benefit.
+  .morie_portal_catalog_env$full <- out
 
   if (!is.null(portal)) {
     portal <- match.arg(portal,

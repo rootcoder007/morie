@@ -61,19 +61,13 @@
 #'   is raised to pick the intended portal.
 #' @return A `data.frame` (or, for StatCan, the WDS metadata list).
 #' @examples
-#' \donttest{
-#' # VPD bundled sample
-#' df1 <- morie_datasets_load_by_key("vpd_crime")
-#' nrow(df1)
-#'
-#' # NYC NYPD arrests YTD bundled sample
-#' df2 <- morie_datasets_load_by_key("nypd_arrests_ytd")
-#' nrow(df2)
-#'
-#' # TPS PSDP layer
-#' df3 <- morie_datasets_load_by_key("assault")
-#' nrow(df3)
-#' }
+#' # All three calls below resolve to bundled offline fixtures (no
+#' # network). The first call warms the cross-portal catalog cache
+#' # (~2.8s); subsequent calls reuse it (<0.1s each).
+#' df1 <- morie_datasets_load_by_key("vpd_crime")           # 550 rows
+#' df2 <- morie_datasets_load_by_key("nypd_arrests_ytd")    # 5 rows
+#' df3 <- morie_datasets_load_by_key("assault")             # 5 rows
+#' c(vpd = nrow(df1), nypd = nrow(df2), tps_assault = nrow(df3))
 #' @export
 morie_datasets_load_by_key <- function(dataset_key,
                                          offline = TRUE,
