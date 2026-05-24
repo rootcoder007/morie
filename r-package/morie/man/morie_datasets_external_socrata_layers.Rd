@@ -25,6 +25,12 @@ Coverage:
 (\code{n9it-hstw}; 3PP+).
 \item City of Chicago "Boundaries-Police-Districts (current)"
 (\verb{24zt-jpfn}; 3PP+).
+\item City of Chicago "Boundaries-Wards (2023-)"
+(\verb{sp34-6z76}; 3UU, SODA3-only).
+\item City of Chicago "Boundaries-Community-Areas (current)"
+(\verb{cauq-8yn6}; 3UU, SODA3-only).
+\item City of Chicago "IUCR Code Dictionary"
+(\verb{c7ck-438e}; 3UU).
 \item NYC OpenData NYPD Stop, Question and Frisk (SQF) microdata --
 three published years (2022 = \code{e4yi-bvqr}, 2023 = \code{rbed-zzin},
 2024 = \verb{7v9w-k82r}).

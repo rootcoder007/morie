@@ -184,7 +184,7 @@ test_that("morie_datasets_cpd_public_arrests(offline=FALSE) honours max_features
 
 test_that("morie_datasets_external_socrata_layers now includes chicago_arrests (8 rows total post-3PP+)", {
   reg <- morie_datasets_external_socrata_layers()
-  expect_equal(nrow(reg), 8L)  # 5 Chicago (3PP+) + 3 nyc_sqf
+  expect_equal(nrow(reg), 11L)  # +chicago_wards + community_areas + iucr_codes (3UU)
   expect_true("chicago_arrests" %in% reg$dataset_key)
   arr <- reg[reg$dataset_key == "chicago_arrests", ]
   expect_equal(arr$resource_url,

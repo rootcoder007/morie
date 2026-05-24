@@ -713,12 +713,12 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
 #'     [morie_datasets_chicago_police_beats()] (`n9it-hstw`).}
 #'   \item{district}{morie wraps via
 #'     [morie_datasets_chicago_police_districts()] (`24zt-jpfn`).}
-#'   \item{ward}{City Council ward (50 wards) -- not yet wrapped;
-#'     lookup-pending at `sp34-6z76`.}
-#'   \item{community_area}{77 community areas -- not yet wrapped;
-#'     lookup-pending at `cauq-8yn6`.}
-#'   \item{iucr / fbi_code}{Illinois Uniform Crime Reporting codes
-#'     -- not yet wrapped; lookup-pending at `c7ck-438e`.}
+#'   \item{ward}{morie wraps via
+#'     [morie_datasets_chicago_wards()] (`sp34-6z76`, 3UU).}
+#'   \item{community_area}{morie wraps via
+#'     [morie_datasets_chicago_community_areas()] (`cauq-8yn6`, 3UU).}
+#'   \item{iucr / fbi_code}{morie wraps via
+#'     [morie_datasets_chicago_iucr_codes()] (`c7ck-438e`, 3UU).}
 #' }
 #'
 #' @param year Integer or `NULL`; server-side year filter.
@@ -1504,6 +1504,231 @@ morie_datasets_chicago_police_districts <- function(offline = TRUE,
 }
 
 # ---------------------------------------------------------------------------
+# Chicago Wards + Community Areas + IUCR codes (3UU)
+# Cross-references flagged by chicago_crime: every ijzp-q8t2 row carries
+#   * `ward`           -> wards          sp34-6z76 (50 wards, SODA3-only)
+#   * `community_area` -> community areas cauq-8yn6 (77 areas, SODA3-only)
+#   * `iucr`/`fbi_code` -> IUCR codes    c7ck-438e (410 codes, SODA2)
+# ---------------------------------------------------------------------------
+
+#' Chicago City Council Ward boundaries (`sp34-6z76`)
+#'
+#' Wraps the City of Chicago "Boundaries - Wards (2023-)" open dataset
+#' (Socrata resource id `sp34-6z76`; portal landing
+#' \url{https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Wards-2023-/sp34-6z76}).
+#' 50 wards in the current City Council district map. Resolves the
+#' `ward` foreign key carried by every
+#' [morie_datasets_chicago_crime()] row.
+#'
+#' **SODA3-only.** The SODA2 endpoint `/resource/sp34-6z76.json`
+#' returns empty objects -- this is a filtered/derived view on
+#' Socrata. Live mode uses SODA3
+#' (`/api/v3/views/sp34-6z76/query.json`) via
+#' [.morie_dataset_soda3_query()].
+#'
+#' Offline mode reads a bundled 50-row attribute-only fixture
+#' (`inst/extdata/chicago_wards.csv`: `ward` / `shape_leng` /
+#' `shape_area`). Live mode with `geometry = TRUE` also includes the
+#' `the_geom` MultiPolygon column.
+#'
+#' @param offline If `TRUE` (default), read the bundled fixture.
+#' @param geometry If `TRUE` and `offline = FALSE`, include the
+#'   `the_geom` MultiPolygon.
+#' @param max_features Optional row cap.
+#' @param resource_id Optional view id override (default
+#'   `"sp34-6z76"`).
+#' @param paginate Logical; 3OO/3QQ opt-in pagination via
+#'   `LIMIT n OFFSET m`.
+#' @param page_size Per-page row count when paginating.
+#' @param max_pages Safety net.
+#' @param app_token Optional Socrata app token (sent as
+#'   `X-App-Token`).
+#' @return A `data.frame` with 3 attribute cols (offline) or 4
+#'   including `the_geom` (live, `geometry = TRUE`).
+#' @references City of Chicago Data Portal, "Boundaries - Wards
+#'   (2023-)" (`sp34-6z76`).
+#' @examples
+#' df <- morie_datasets_chicago_wards(offline = TRUE)
+#' head(df)
+#' @export
+morie_datasets_chicago_wards <- function(offline = TRUE,
+                                          geometry = FALSE,
+                                          max_features = NULL,
+                                          resource_id = NULL,
+                                          paginate = FALSE,
+                                          page_size = 1000L,
+                                          max_pages = 200L,
+                                          app_token = NULL) {
+  if (isTRUE(offline)) {
+    path <- system.file("extdata", "chicago_wards.csv",
+                        package = "morie")
+    if (!nzchar(path)) {
+      stop("bundled Chicago wards fixture missing", call. = FALSE)
+    }
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE,
+                           colClasses = c(ward = "character"))
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  if (is.null(resource_id)) resource_id <- "sp34-6z76"
+  select_clause <- if (isTRUE(geometry)) {
+    "*"
+  } else {
+    "ward, shape_leng, shape_area"
+  }
+  soql <- sprintf("SELECT %s ORDER BY ward", select_clause)
+  .morie_dataset_soda3_query(resource_id, soql = soql,
+                              app_token = app_token,
+                              paginate = paginate,
+                              page_size = page_size,
+                              max_pages = max_pages,
+                              max_features = max_features)
+}
+
+#' Chicago Community Area boundaries (`cauq-8yn6`)
+#'
+#' Wraps the City of Chicago "Boundaries - Community Areas (current)"
+#' open dataset (Socrata resource id `cauq-8yn6`; portal landing
+#' \url{https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Community-Areas-current-/cauq-8yn6}).
+#' The 77 canonical Chicago community areas
+#' (Rogers Park, West Ridge, Uptown, Lincoln Square, ..., Edgewater).
+#' Resolves the `community_area` foreign key carried by every
+#' [morie_datasets_chicago_crime()] row.
+#'
+#' **SODA3-only** (same filtered/derived-view caveat as Wards).
+#'
+#' Offline mode reads a bundled 77-row attribute-only fixture
+#' (`inst/extdata/chicago_community_areas.csv`: 5 cols --
+#' `area_numbe`, `community`, `area_num_1`, `shape_area`,
+#' `shape_len`). The `community` column carries the official
+#' canonical name in ALL CAPS.
+#'
+#' @inheritParams morie_datasets_chicago_wards
+#' @return A `data.frame` with 5 attribute cols (offline) or 6
+#'   including `the_geom` (live, `geometry = TRUE`).
+#' @references City of Chicago Data Portal, "Boundaries - Community
+#'   Areas (current)" (`cauq-8yn6`).
+#' @examples
+#' df <- morie_datasets_chicago_community_areas(offline = TRUE)
+#' head(df[, c("area_numbe", "community")])
+#' @export
+morie_datasets_chicago_community_areas <- function(offline = TRUE,
+                                                     geometry = FALSE,
+                                                     max_features = NULL,
+                                                     resource_id = NULL,
+                                                     paginate = FALSE,
+                                                     page_size = 1000L,
+                                                     max_pages = 200L,
+                                                     app_token = NULL) {
+  if (isTRUE(offline)) {
+    path <- system.file("extdata", "chicago_community_areas.csv",
+                        package = "morie")
+    if (!nzchar(path)) {
+      stop("bundled Chicago community areas fixture missing",
+           call. = FALSE)
+    }
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE,
+                           colClasses = c(area_numbe = "character",
+                                          area_num_1 = "character"))
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  if (is.null(resource_id)) resource_id <- "cauq-8yn6"
+  select_clause <- if (isTRUE(geometry)) {
+    "*"
+  } else {
+    paste("area_numbe, community, area_num_1,",
+           "shape_area, shape_len")
+  }
+  soql <- sprintf("SELECT %s ORDER BY area_numbe", select_clause)
+  .morie_dataset_soda3_query(resource_id, soql = soql,
+                              app_token = app_token,
+                              paginate = paginate,
+                              page_size = page_size,
+                              max_pages = max_pages,
+                              max_features = max_features)
+}
+
+#' Chicago Police Department -- Illinois Uniform Crime Reporting
+#' (IUCR) code dictionary (`c7ck-438e`)
+#'
+#' Wraps the City of Chicago "Chicago Police Department - Illinois
+#' Uniform Crime Reporting (IUCR) Codes" reference table (Socrata
+#' resource id `c7ck-438e`; portal landing
+#' \url{https://data.cityofchicago.org/Public-Safety/Chicago-Police-Department-Illinois-Uniform-Crime-R/c7ck-438e}).
+#' 410 IUCR codes mapping the `iucr` foreign key carried by every
+#' [morie_datasets_chicago_crime()] row to a human-readable
+#' description. Five columns:
+#'
+#' \describe{
+#'   \item{iucr}{4-character IUCR code (e.g. `"110"` for homicide).}
+#'   \item{primary_description}{Top-level category (e.g.
+#'     `"HOMICIDE"`).}
+#'   \item{secondary_description}{Subcategory (e.g. `"FIRST DEGREE
+#'     MURDER"`).}
+#'   \item{index_code}{`"I"` (FBI index crime) or other.}
+#'   \item{active}{`TRUE` if the code is currently active.}
+#' }
+#'
+#' Available via SODA2 (single-shot or paginated) -- this is a
+#' base dataset, not a filtered view.
+#'
+#' Offline mode reads a bundled 410-row complete fixture
+#' (`inst/extdata/chicago_iucr_codes.csv`).
+#'
+#' @param offline If `TRUE` (default), read the bundled full
+#'   410-row fixture.
+#' @param max_features Optional row cap.
+#' @param resource_id Optional view id override.
+#' @param paginate Logical; 3OO opt-in pagination.
+#' @param page_size Per-page row count when paginating.
+#' @param max_pages Safety net.
+#' @return A `data.frame`.
+#' @references City of Chicago Data Portal, "Chicago Police
+#'   Department - Illinois Uniform Crime Reporting (IUCR) Codes"
+#'   (`c7ck-438e`).
+#' @examples
+#' df <- morie_datasets_chicago_iucr_codes(offline = TRUE)
+#' subset(df, primary_description == "HOMICIDE")
+#' @export
+morie_datasets_chicago_iucr_codes <- function(offline = TRUE,
+                                                max_features = NULL,
+                                                resource_id = NULL,
+                                                paginate = FALSE,
+                                                page_size = 1000L,
+                                                max_pages = 200L) {
+  if (isTRUE(offline)) {
+    path <- system.file("extdata", "chicago_iucr_codes.csv",
+                        package = "morie")
+    if (!nzchar(path)) {
+      stop("bundled Chicago IUCR codes fixture missing",
+           call. = FALSE)
+    }
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE,
+                           colClasses = c(iucr = "character",
+                                          index_code = "character"))
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  if (is.null(resource_id)) resource_id <- "c7ck-438e"
+  url <- sprintf("https://data.cityofchicago.org/resource/%s.json",
+                 resource_id)
+  .morie_dataset_socrata_fetch(url, max_features = max_features,
+                                paginate = paginate,
+                                page_size = page_size,
+                                max_pages = max_pages)
+}
+
+# ---------------------------------------------------------------------------
 # Chicago Open Data Arrests (Socrata, dpt3-jri9)
 # ---------------------------------------------------------------------------
 
@@ -1692,6 +1917,12 @@ morie_datasets_cpd_public_arrests <- function(url = NULL,
 #'     (`n9it-hstw`; 3PP+).
 #'   * City of Chicago "Boundaries-Police-Districts (current)"
 #'     (`24zt-jpfn`; 3PP+).
+#'   * City of Chicago "Boundaries-Wards (2023-)"
+#'     (`sp34-6z76`; 3UU, SODA3-only).
+#'   * City of Chicago "Boundaries-Community-Areas (current)"
+#'     (`cauq-8yn6`; 3UU, SODA3-only).
+#'   * City of Chicago "IUCR Code Dictionary"
+#'     (`c7ck-438e`; 3UU).
 #'   * NYC OpenData NYPD Stop, Question and Frisk (SQF) microdata --
 #'     three published years (2022 = `e4yi-bvqr`, 2023 = `rbed-zzin`,
 #'     2024 = `7v9w-k82r`).
@@ -1733,6 +1964,21 @@ morie_datasets_external_socrata_layers <- function() {
          portal = "data.cityofchicago.org",
          resource_url = "https://data.cityofchicago.org/resource/24zt-jpfn.json",
          fixture = "chicago_police_districts.csv"),
+    list(dataset_key = "chicago_wards",
+         label = "City of Chicago -- Boundaries-Wards (2023-)",
+         portal = "data.cityofchicago.org",
+         resource_url = "https://data.cityofchicago.org/resource/sp34-6z76.json",
+         fixture = "chicago_wards.csv"),
+    list(dataset_key = "chicago_community_areas",
+         label = "City of Chicago -- Boundaries-Community-Areas (current)",
+         portal = "data.cityofchicago.org",
+         resource_url = "https://data.cityofchicago.org/resource/cauq-8yn6.json",
+         fixture = "chicago_community_areas.csv"),
+    list(dataset_key = "chicago_iucr_codes",
+         label = "City of Chicago -- IUCR Code Dictionary",
+         portal = "data.cityofchicago.org",
+         resource_url = "https://data.cityofchicago.org/resource/c7ck-438e.json",
+         fixture = "chicago_iucr_codes.csv"),
     list(dataset_key = "nyc_sqf_2024",
          label = "NYPD Stop, Question and Frisk -- 2024",
          portal = "data.cityofnewyork.us",

@@ -141,7 +141,7 @@ test_that("morie_datasets_nyc_stop_and_frisk(offline=FALSE) errors on unknown ye
 test_that("morie_datasets_external_socrata_layers returns the full 6-row registry (3PP)", {
   reg <- morie_datasets_external_socrata_layers()
   expect_s3_class(reg, "data.frame")
-  expect_equal(nrow(reg), 8L)  # +chicago_arrests (3PP) + beats + districts (3PP+)
+  expect_equal(nrow(reg), 11L)  # +chicago_wards + community_areas + iucr_codes (3UU)
   expect_setequal(names(reg),
                   c("dataset_key", "label", "portal",
                     "resource_url", "fixture"))
@@ -150,6 +150,9 @@ test_that("morie_datasets_external_socrata_layers returns the full 6-row registr
                     "chicago_neighborhoods",
                     "chicago_police_beats",
                     "chicago_police_districts",
+                    "chicago_wards",  # 3UU
+                    "chicago_community_areas",  # 3UU
+                    "chicago_iucr_codes",  # 3UU
                     "nyc_sqf_2024", "nyc_sqf_2023", "nyc_sqf_2022"))
   expect_setequal(unique(reg$portal),
                   c("data.cityofchicago.org",
@@ -261,7 +264,7 @@ test_that("morie_datasets_chicago_neighborhoods honours resource_id override", {
 
 test_that("morie_datasets_external_socrata_layers includes chicago_neighborhoods", {
   reg <- morie_datasets_external_socrata_layers()
-  expect_equal(nrow(reg), 8L)  # +chicago_arrests (3PP) + beats + districts (3PP+)
+  expect_equal(nrow(reg), 11L)  # +chicago_wards + community_areas + iucr_codes (3UU)
   expect_true("chicago_neighborhoods" %in% reg$dataset_key)
   chi_nh <- reg[reg$dataset_key == "chicago_neighborhoods", ]
   expect_equal(chi_nh$resource_url,

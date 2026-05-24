@@ -72,11 +72,11 @@ that other Chicago datasets resolve:
 \code{\link[=morie_datasets_chicago_police_beats]{morie_datasets_chicago_police_beats()}} (\code{n9it-hstw}).}
 \item{district}{morie wraps via
 \code{\link[=morie_datasets_chicago_police_districts]{morie_datasets_chicago_police_districts()}} (\verb{24zt-jpfn}).}
-\item{ward}{City Council ward (50 wards) -- not yet wrapped;
-lookup-pending at \verb{sp34-6z76}.}
-\item{community_area}{77 community areas -- not yet wrapped;
-lookup-pending at \verb{cauq-8yn6}.}
-\item{iucr / fbi_code}{Illinois Uniform Crime Reporting codes
--- not yet wrapped; lookup-pending at \verb{c7ck-438e}.}
+\item{ward}{morie wraps via
+\code{\link[=morie_datasets_chicago_wards]{morie_datasets_chicago_wards()}} (\verb{sp34-6z76}, 3UU).}
+\item{community_area}{morie wraps via
+\code{\link[=morie_datasets_chicago_community_areas]{morie_datasets_chicago_community_areas()}} (\verb{cauq-8yn6}, 3UU).}
+\item{iucr / fbi_code}{morie wraps via
+\code{\link[=morie_datasets_chicago_iucr_codes]{morie_datasets_chicago_iucr_codes()}} (\verb{c7ck-438e}, 3UU).}
 }
 }
