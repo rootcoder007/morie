@@ -47,6 +47,13 @@
 #'   `FALSE` forces live mode for loaders that support it.
 #' @param max_features Optional row cap forwarded to the underlying
 #'   loader.
+#' @param mode One of `"auto"` (default), `"soda2"`, `"soda3"`,
+#'   `"odata"`. Only honoured for Socrata-backed sources
+#'   (chicago / nyc_nypd / nyc_opendata) that have a per-wrapper
+#'   `mode` argument. `"auto"` lets each underlying loader pick
+#'   its native default (soda2 today). 3FFF2.
+#' @param app_token Optional Socrata application token forwarded
+#'   to SODA3-capable loaders. 3FFF2.
 #' @return A `data.frame` (or, for StatCan, the WDS metadata list).
 #' @examples
 #' # VPD bundled sample
@@ -63,7 +70,11 @@
 #' @export
 morie_datasets_load_by_key <- function(dataset_key,
                                          offline = TRUE,
-                                         max_features = NULL) {
+                                         max_features = NULL,
+                                         mode = c("auto", "soda2",
+                                                   "soda3", "odata"),
+                                         app_token = NULL) {
+  mode <- match.arg(mode)
   cat_df <- morie_dataset_portal_catalog()
   row <- cat_df[cat_df$dataset_key == dataset_key, , drop = FALSE]
   if (nrow(row) == 0L) {
@@ -93,6 +104,12 @@ morie_datasets_load_by_key <- function(dataset_key,
     if ("offline" %in% names(args)) call_args$offline <- offline
     if ("max_features" %in% names(args))
       call_args$max_features <- max_features
+    # 3FFF2: thread mode + app_token to Socrata-backed wrappers
+    # that support them.
+    if ("mode" %in% names(args) && mode != "auto")
+      call_args$mode <- mode
+    if ("app_token" %in% names(args) && !is.null(app_token))
+      call_args$app_token <- app_token
     return(do.call(fn, call_args))
   }
 
@@ -133,9 +150,12 @@ morie_datasets_load_by_key <- function(dataset_key,
       morie_datasets_statcan_cube_metadata(as.integer(id))
     },
     "nyc_nypd" = {
-      morie_datasets_nyc_nypd_by_key(dataset_key,
-                                       max_features = max_features,
-                                       offline = offline)
+      args <- list(dataset_key = dataset_key,
+                    max_features = max_features,
+                    offline = offline)
+      if (mode != "auto") args$mode <- mode
+      if (!is.null(app_token)) args$app_token <- app_token
+      do.call(morie_datasets_nyc_nypd_by_key, args)
     },
     stop(sprintf(
       "morie_datasets_load_by_key('%s'): unhandled source '%s'.",

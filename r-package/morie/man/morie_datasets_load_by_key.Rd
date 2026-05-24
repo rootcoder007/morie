@@ -4,7 +4,13 @@
 \alias{morie_datasets_load_by_key}
 \title{Load a dataset by its cross-portal catalog \code{dataset_key}}
 \usage{
-morie_datasets_load_by_key(dataset_key, offline = TRUE, max_features = NULL)
+morie_datasets_load_by_key(
+  dataset_key,
+  offline = TRUE,
+  max_features = NULL,
+  mode = c("auto", "soda2", "soda3", "odata"),
+  app_token = NULL
+)
 }
 \arguments{
 \item{dataset_key}{A \code{dataset_key} from
@@ -15,6 +21,15 @@ morie_datasets_load_by_key(dataset_key, offline = TRUE, max_features = NULL)
 
 \item{max_features}{Optional row cap forwarded to the underlying
 loader.}
+
+\item{mode}{One of \code{"auto"} (default), \code{"soda2"}, \code{"soda3"},
+\code{"odata"}. Only honoured for Socrata-backed sources
+(chicago / nyc_nypd / nyc_opendata) that have a per-wrapper
+\code{mode} argument. \code{"auto"} lets each underlying loader pick
+its native default (soda2 today). 3FFF2.}
+
+\item{app_token}{Optional Socrata application token forwarded
+to SODA3-capable loaders. 3FFF2.}
 }
 \value{
 A \code{data.frame} (or, for StatCan, the WDS metadata list).

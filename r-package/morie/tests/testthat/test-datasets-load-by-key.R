@@ -99,3 +99,52 @@ test_that("3FFF1: TO CKAN generic dispatch auto-resolves first CSV resource", {
   expect_s3_class(df, "data.frame")
   expect_true(nrow(df) >= 1L)
 })
+
+# ========================================== Phase 3FFF2 mode= + app_token
+
+test_that("3FFF2: mode= argument signature accepts auto/soda2/soda3/odata", {
+  args <- formals(morie_datasets_load_by_key)
+  expect_true("mode" %in% names(args))
+  expect_equal(eval(args$mode), c("auto", "soda2", "soda3", "odata"))
+  expect_true("app_token" %in% names(args))
+})
+
+test_that("3FFF2: mode='auto' default is preserved (NYPD arrests offline)", {
+  df <- morie_datasets_load_by_key("nypd_arrests_ytd")
+  expect_equal(nrow(df), 5L)
+})
+
+test_that("3FFF2: mode='soda3' threads through to NYPD wrapper without error", {
+  # Offline path -- mode is accepted but bundled fixture still wins.
+  df <- morie_datasets_load_by_key("nypd_arrests_ytd", mode = "soda3")
+  expect_s3_class(df, "data.frame")
+  expect_equal(nrow(df), 5L)
+})
+
+test_that("3FFF2: mode='soda3' + app_token routed to Socrata wrapper", {
+  # Mock the SODA3 transport so we capture the mode + app_token threading.
+  seen <- list()
+  testthat::with_mocked_bindings(
+    .morie_dataset_soda3_query = function(view_id, soql = "SELECT *",
+                                            app_token = NULL,
+                                            base_url = "https://data.cityofchicago.org",
+                                            ...) {
+      seen <<- list(view_id = view_id, soql = soql,
+                    app_token = app_token, base_url = base_url)
+      data.frame(arrest_key = "M-1")
+    },
+    .package = "morie",
+    code = morie_datasets_load_by_key("nypd_arrests_ytd",
+                                         offline = FALSE,
+                                         mode = "soda3",
+                                         app_token = "tok-9999"))
+  expect_equal(seen$view_id, "uip8-fykc")
+  expect_equal(seen$app_token, "tok-9999")
+  expect_equal(seen$base_url, "https://data.cityofnewyork.us")
+})
+
+test_that("3FFF2: mode is ignored on non-Socrata sources (VPD bundled)", {
+  # mode= must NOT break the dispatch for non-Socrata wrappers.
+  df <- morie_datasets_load_by_key("vpd_crime", mode = "soda3")
+  expect_equal(nrow(df), 550L)
+})
