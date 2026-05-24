@@ -7,4 +7,11 @@ PKG_CPPFLAGS = @cflags@
 # Append R's BLAS/LAPACK/Fortran flags so RcppArmadillo's
 # dgesvx_/dgemm_/etc resolve at link time on Linux (macOS hides
 # this via the Accelerate framework but Linux/Pi exposes the gap).
-PKG_LIBS = @libs@ $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+#
+# Wrap the LAPACK/BLAS pair in -Wl,--no-as-needed because Debian/Ubuntu
+# ld defaults to --as-needed, which silently drops -llapack -lblas
+# when no preceding .o file directly references them (RcppArmadillo's
+# header-only inline calls slip past that check and the symbols stay
+# unresolved). Restore --as-needed after for the Fortran runtime so we
+# don't carry libgfortran as a hard dep if it's not actually used.
+PKG_LIBS = @libs@ -Wl,--no-as-needed $(LAPACK_LIBS) $(BLAS_LIBS) -Wl,--as-needed $(FLIBS)

@@ -4,4 +4,6 @@ CXX_STD = CXX17
 # filled in by ./configure.win (via pkg-config) at install time.
 PKG_CPPFLAGS = @cflags@
 # Append R's BLAS/LAPACK/Fortran flags for RcppArmadillo symbols.
+# (Windows linker doesn't honour --no-as-needed so plain append is
+# fine; the flag is GNU-ld-specific and only matters on Linux.)
 PKG_LIBS = @libs@ $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
