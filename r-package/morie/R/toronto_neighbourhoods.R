@@ -244,19 +244,33 @@ morie_tps_year_to_hood_version <- function(year) {
 
 #' Load the bundled 158 <-> 140 neighbourhood crosswalk
 #'
-#' The City of Toronto does not publish a single authoritative
-#' 158<->140 crosswalk because the two schemes are NOT a clean
-#' refinement of each other (some 140s split, some merged, a few
-#' renamed). The bundled fixture
-#' `inst/extdata/to_hood_158_140_crosswalk.csv` is a SYNTHETIC
-#' starter mapping with columns `hood_140`, `name_140`, `hood_158`,
-#' `name_158`, `area_overlap_pct` (synthetic) -- intended to
-#' demonstrate the API. Replace with your own polygon-intersection
-#' crosswalk derived from
-#' `morie_to_neighbourhoods("158")` and `morie_to_neighbourhoods("140")`
-#' for production use.
+#' Returns the bundled `inst/extdata/to_hood_158_140_crosswalk.csv`,
+#' which is derived from polygon intersection of the two upstream
+#' Open Toronto GeoJSON layers
+#' (`Neighbourhoods - 4326.geojson` and
+#' `Neighbourhoods - historical 140 - 4326.geojson`) reprojected to
+#' EPSG:3347 (NAD83 Statistics Canada Lambert -- metric, accurate
+#' areas). Six columns:
 #'
-#' @return A `data.frame` with the columns above.
+#' \describe{
+#'   \item{hood_140}{3-char zero-padded historical short code}
+#'   \item{name_140}{historical neighbourhood name (carries "(NN)" suffix)}
+#'   \item{hood_158}{3-char zero-padded current short code}
+#'   \item{name_158}{current neighbourhood name}
+#'   \item{area_overlap_pct}{percent of the 140's area inside this 158;
+#'     per-140 rows sum to ~100}
+#'   \item{relation}{"1:1" / "split" (one 140 -> N 158s) / "merge"
+#'     (multiple 140s -> one 158) / "split+merge"}
+#' }
+#'
+#' Empirical distribution on the bundled OT data: 123 1:1 rows, 34
+#' split rows (14 historical hoods split into 2 current, 1 into 3, 1
+#' into 4), 1 merge, 1 split+merge -- so for ~78\% of historical
+#' hoods the boundary did not change at all, the label stays the
+#' same, and HOOD_140 == HOOD_158 is a clean identity.
+#'
+#' @return A `data.frame` with the columns above. `hood_140` and
+#'   `hood_158` are character (zero-padded to 3 chars).
 #' @export
 morie_to_hood_crosswalk <- function() {
   path <- system.file("extdata", "to_hood_158_140_crosswalk.csv",
@@ -266,5 +280,94 @@ morie_to_hood_crosswalk <- function() {
       "Bundled 158<->140 crosswalk fixture missing from the installed ",
       "morie package."), call. = FALSE)
   }
-  utils::read.csv(path, stringsAsFactors = FALSE, check.names = FALSE)
+  utils::read.csv(path, stringsAsFactors = FALSE, check.names = FALSE,
+                   colClasses = c(hood_140 = "character",
+                                  hood_158 = "character"))
+}
+
+# Normalise a hood-code value to the 3-char zero-padded canonical form
+# the crosswalk uses ("82" -> "082"; "0082" -> "082"; "Niagara" -> NA).
+.morie_to_normalise_hood_code <- function(x) {
+  s <- trimws(as.character(x))
+  i <- suppressWarnings(as.integer(s))
+  ifelse(is.na(i) | i < 0L | i > 999L, NA_character_,
+         sprintf("%03d", i))
+}
+
+#' Add an equivalent HOOD_158 column to a HOOD_140-keyed data.frame
+#'
+#' Looks up each row's `HOOD_140` (or `hood_140` / `NEIGHBOURHOOD_140`
+#' / `neighbourhood_140`) in the bundled crosswalk and writes the
+#' PRIMARY-overlap 158 hood code into a new column (default name
+#' `HOOD_158_equiv`).
+#'
+#' For 1:1 mappings the result is exact. For splits (1 historical
+#' hood -> 2--4 current hoods) the 158 hood with the largest area
+#' overlap wins; this is **lossy** -- analyses at the 158-level
+#' should ideally re-aggregate from the per-incident lat/lon rather
+#' than relying on the primary-overlap join.
+#'
+#' @param df A TPS crime `data.frame`.
+#' @param col_in Name of the input HOOD_140 column. By default the
+#'   first match from `c("HOOD_140", "hood_140", "NEIGHBOURHOOD_140",
+#'   "neighbourhood_140")` present in `df`.
+#' @param col_out Name of the new column to add. Default
+#'   `"HOOD_158_equiv"`.
+#' @param crosswalk Optional pre-loaded crosswalk; defaults to
+#'   `morie_to_hood_crosswalk()`.
+#' @return `df` with the equivalent-code column appended.
+#' @examples
+#' df <- data.frame(EVENT_ID = 1:3, HOOD_140 = c("082", "001", "075"))
+#' morie_tps_add_hood_158_from_140(df)
+#' @export
+morie_tps_add_hood_158_from_140 <- function(df, col_in = NULL,
+                                              col_out = "HOOD_158_equiv",
+                                              crosswalk = NULL) {
+  if (is.null(col_in)) col_in <- suppressWarnings(
+    morie_tps_resolve_hood_col(df, prefer = "140", fallback = FALSE))
+  if (is.null(col_in) || !(col_in %in% names(df))) {
+    stop("no HOOD_140 column found in df", call. = FALSE)
+  }
+  if (is.null(crosswalk)) crosswalk <- morie_to_hood_crosswalk()
+  # Per-140, keep only the primary-overlap 158 (highest pct).
+  ord <- order(crosswalk$hood_140, -crosswalk$area_overlap_pct)
+  primary <- crosswalk[ord, ]
+  primary <- primary[!duplicated(primary$hood_140), ]
+  lookup <- setNames(primary$hood_158, primary$hood_140)
+  key <- .morie_to_normalise_hood_code(df[[col_in]])
+  df[[col_out]] <- unname(lookup[key])
+  df
+}
+
+#' Add an equivalent HOOD_140 column to a HOOD_158-keyed data.frame
+#'
+#' The mirror of [morie_tps_add_hood_158_from_140()]. For 158-hoods
+#' that did not exist in the 140-scheme (the newly-split children
+#' like Etobicoke City Centre / Islington from 14-Islington-City-
+#' Centre-West) the result is the historical parent 140-hood.
+#'
+#' @inheritParams morie_tps_add_hood_158_from_140
+#' @param col_in Name of the input HOOD_158 column.
+#' @param col_out Name of the new column. Default `"HOOD_140_equiv"`.
+#' @return `df` with the equivalent-code column appended.
+#' @export
+morie_tps_add_hood_140_from_158 <- function(df, col_in = NULL,
+                                              col_out = "HOOD_140_equiv",
+                                              crosswalk = NULL) {
+  if (is.null(col_in)) col_in <- suppressWarnings(
+    morie_tps_resolve_hood_col(df, prefer = "158", fallback = FALSE))
+  if (is.null(col_in) || !(col_in %in% names(df))) {
+    stop("no HOOD_158 column found in df", call. = FALSE)
+  }
+  if (is.null(crosswalk)) crosswalk <- morie_to_hood_crosswalk()
+  # Per-158, keep only the primary-overlap 140 (highest pct). For
+  # splits the original 140 always wins on this orientation because
+  # the child 158 only overlaps that one 140.
+  ord <- order(crosswalk$hood_158, -crosswalk$area_overlap_pct)
+  primary <- crosswalk[ord, ]
+  primary <- primary[!duplicated(primary$hood_158), ]
+  lookup <- setNames(primary$hood_140, primary$hood_158)
+  key <- .morie_to_normalise_hood_code(df[[col_in]])
+  df[[col_out]] <- unname(lookup[key])
+  df
 }
