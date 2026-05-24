@@ -11,6 +11,79 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// morie_crypto_sodium_available
+bool morie_crypto_sodium_available();
+RcppExport SEXP _morie_morie_crypto_sodium_available() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_sodium_available());
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_sodium_version
+std::string morie_crypto_sodium_version();
+RcppExport SEXP _morie_morie_crypto_sodium_version() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_sodium_version());
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_chacha20poly1305_encrypt
+SEXP morie_crypto_chacha20poly1305_encrypt(SEXP key_sxp, SEXP nonce_sxp, SEXP plaintext_sxp, SEXP aad_sxp);
+RcppExport SEXP _morie_morie_crypto_chacha20poly1305_encrypt(SEXP key_sxpSEXP, SEXP nonce_sxpSEXP, SEXP plaintext_sxpSEXP, SEXP aad_sxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type key_sxp(key_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type nonce_sxp(nonce_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type plaintext_sxp(plaintext_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type aad_sxp(aad_sxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_chacha20poly1305_encrypt(key_sxp, nonce_sxp, plaintext_sxp, aad_sxp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_chacha20poly1305_decrypt
+SEXP morie_crypto_chacha20poly1305_decrypt(SEXP key_sxp, SEXP nonce_sxp, SEXP ct_with_tag_sxp, SEXP aad_sxp);
+RcppExport SEXP _morie_morie_crypto_chacha20poly1305_decrypt(SEXP key_sxpSEXP, SEXP nonce_sxpSEXP, SEXP ct_with_tag_sxpSEXP, SEXP aad_sxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type key_sxp(key_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type nonce_sxp(nonce_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type ct_with_tag_sxp(ct_with_tag_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type aad_sxp(aad_sxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_chacha20poly1305_decrypt(key_sxp, nonce_sxp, ct_with_tag_sxp, aad_sxp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_hkdf_sha256
+SEXP morie_crypto_hkdf_sha256(SEXP ikm_sxp, SEXP length_sxp, SEXP salt_sxp, SEXP info_sxp);
+RcppExport SEXP _morie_morie_crypto_hkdf_sha256(SEXP ikm_sxpSEXP, SEXP length_sxpSEXP, SEXP salt_sxpSEXP, SEXP info_sxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type ikm_sxp(ikm_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type length_sxp(length_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type salt_sxp(salt_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type info_sxp(info_sxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_hkdf_sha256(ikm_sxp, length_sxp, salt_sxp, info_sxp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_random_bytes
+SEXP morie_crypto_random_bytes(int n);
+RcppExport SEXP _morie_morie_crypto_random_bytes(SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_random_bytes(n));
+    return rcpp_result_gen;
+END_RCPP
+}
 // morie_dsp_lms_cpp
 List morie_dsp_lms_cpp(NumericVector x, NumericVector d, int order, double mu);
 RcppExport SEXP _morie_morie_dsp_lms_cpp(SEXP xSEXP, SEXP dSEXP, SEXP orderSEXP, SEXP muSEXP) {
@@ -548,6 +621,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_morie_morie_crypto_sodium_available", (DL_FUNC) &_morie_morie_crypto_sodium_available, 0},
+    {"_morie_morie_crypto_sodium_version", (DL_FUNC) &_morie_morie_crypto_sodium_version, 0},
+    {"_morie_morie_crypto_chacha20poly1305_encrypt", (DL_FUNC) &_morie_morie_crypto_chacha20poly1305_encrypt, 4},
+    {"_morie_morie_crypto_chacha20poly1305_decrypt", (DL_FUNC) &_morie_morie_crypto_chacha20poly1305_decrypt, 4},
+    {"_morie_morie_crypto_hkdf_sha256", (DL_FUNC) &_morie_morie_crypto_hkdf_sha256, 4},
+    {"_morie_morie_crypto_random_bytes", (DL_FUNC) &_morie_morie_crypto_random_bytes, 1},
     {"_morie_morie_dsp_lms_cpp", (DL_FUNC) &_morie_morie_dsp_lms_cpp, 4},
     {"_morie_morie_dsp_nlms_cpp", (DL_FUNC) &_morie_morie_dsp_nlms_cpp, 5},
     {"_morie_morie_dsp_rls_cpp", (DL_FUNC) &_morie_morie_dsp_rls_cpp, 5},
