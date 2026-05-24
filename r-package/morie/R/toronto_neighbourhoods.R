@@ -242,32 +242,42 @@ morie_tps_year_to_hood_version <- function(year) {
   ifelse(is.na(y), NA_character_, ifelse(y >= 2022L, "158", "140"))
 }
 
-#' Load the bundled 158 <-> 140 neighbourhood crosswalk
+#' Load the bundled BIDIRECTIONAL 158 <-> 140 neighbourhood crosswalk
 #'
 #' Returns the bundled `inst/extdata/to_hood_158_140_crosswalk.csv`,
-#' which is derived from polygon intersection of the two upstream
-#' Open Toronto GeoJSON layers
-#' (`Neighbourhoods - 4326.geojson` and
+#' computed from polygon intersection of the two upstream Open Toronto
+#' GeoJSON layers (`Neighbourhoods - 4326.geojson` and
 #' `Neighbourhoods - historical 140 - 4326.geojson`) reprojected to
 #' EPSG:3347 (NAD83 Statistics Canada Lambert -- metric, accurate
-#' areas). Six columns:
+#' areas). Seven columns:
 #'
 #' \describe{
 #'   \item{hood_140}{3-char zero-padded historical short code}
 #'   \item{name_140}{historical neighbourhood name (carries "(NN)" suffix)}
 #'   \item{hood_158}{3-char zero-padded current short code}
 #'   \item{name_158}{current neighbourhood name}
-#'   \item{area_overlap_pct}{percent of the 140's area inside this 158;
-#'     per-140 rows sum to ~100}
+#'   \item{pct_140_in_158}{FORWARD: percent of the 140's area inside this
+#'     158. Per-140 rows sum to 100. Used by
+#'     [morie_tps_disaggregate_140_to_158()] as the cake-cutting
+#'     weight under a uniform-density assumption.}
+#'   \item{pct_158_in_140}{REVERSE: percent of the 158's area inside this
+#'     140. Per-158 rows sum to 100. For pure cake-cuts every split
+#'     child has `pct_158_in_140 == 100` (each 158 is entirely
+#'     inside its parent 140), so
+#'     [morie_tps_aggregate_158_to_140()] is mathematically EXACT
+#'     (lossless sum) for the 1:1 + split cohort. Only the one
+#'     split+merge sliver in the bundled OT data has a non-100
+#'     reverse percent.}
 #'   \item{relation}{"1:1" / "split" (one 140 -> N 158s) / "merge"
 #'     (multiple 140s -> one 158) / "split+merge"}
 #' }
 #'
-#' Empirical distribution on the bundled OT data: 123 1:1 rows, 34
-#' split rows (14 historical hoods split into 2 current, 1 into 3, 1
-#' into 4), 1 merge, 1 split+merge -- so for ~78\% of historical
-#' hoods the boundary did not change at all, the label stays the
-#' same, and HOOD_140 == HOOD_158 is a clean identity.
+#' Empirical distribution on the bundled OT data:
+#'
+#'   * 123 1:1 rows (78\% of 140 hoods)            -- both percents == 100
+#'   * 34 split rows (16 historical hoods)         -- pct_158_in_140 == 100
+#'   * 1 merge                                     -- both percents == 100
+#'   * 1 split+merge                               -- one sliver < 100
 #'
 #' @return A `data.frame` with the columns above. `hood_140` and
 #'   `hood_158` are character (zero-padded to 3 chars).
@@ -283,6 +293,16 @@ morie_to_hood_crosswalk <- function() {
   utils::read.csv(path, stringsAsFactors = FALSE, check.names = FALSE,
                    colClasses = c(hood_140 = "character",
                                   hood_158 = "character"))
+}
+
+# Backwards-compatibility: the original equivalency joiners (added in
+# the same phase) read `area_overlap_pct`; remap to the new
+# `pct_140_in_158` so they keep working.
+.morie_to_legacy_overlap_col <- function(cw) {
+  if (!"area_overlap_pct" %in% names(cw)) {
+    cw$area_overlap_pct <- cw$pct_140_in_158
+  }
+  cw
 }
 
 # Normalise a hood-code value to the 3-char zero-padded canonical form
@@ -329,9 +349,10 @@ morie_tps_add_hood_158_from_140 <- function(df, col_in = NULL,
     stop("no HOOD_140 column found in df", call. = FALSE)
   }
   if (is.null(crosswalk)) crosswalk <- morie_to_hood_crosswalk()
+  cw <- .morie_to_legacy_overlap_col(crosswalk)
   # Per-140, keep only the primary-overlap 158 (highest pct).
-  ord <- order(crosswalk$hood_140, -crosswalk$area_overlap_pct)
-  primary <- crosswalk[ord, ]
+  ord <- order(cw$hood_140, -cw$pct_140_in_158)
+  primary <- cw[ord, ]
   primary <- primary[!duplicated(primary$hood_140), ]
   lookup <- setNames(primary$hood_158, primary$hood_140)
   key <- .morie_to_normalise_hood_code(df[[col_in]])
@@ -360,14 +381,146 @@ morie_tps_add_hood_140_from_158 <- function(df, col_in = NULL,
     stop("no HOOD_158 column found in df", call. = FALSE)
   }
   if (is.null(crosswalk)) crosswalk <- morie_to_hood_crosswalk()
-  # Per-158, keep only the primary-overlap 140 (highest pct). For
-  # splits the original 140 always wins on this orientation because
-  # the child 158 only overlaps that one 140.
-  ord <- order(crosswalk$hood_158, -crosswalk$area_overlap_pct)
+  # Per-158, keep only the primary-overlap 140 (highest pct_158_in_140).
+  # For pure splits all children have pct_158_in_140 == 100 so this is
+  # the unique parent; for split+merge the dominant parent wins.
+  ord <- order(crosswalk$hood_158, -crosswalk$pct_158_in_140)
   primary <- crosswalk[ord, ]
   primary <- primary[!duplicated(primary$hood_158), ]
   lookup <- setNames(primary$hood_140, primary$hood_158)
   key <- .morie_to_normalise_hood_code(df[[col_in]])
   df[[col_out]] <- unname(lookup[key])
   df
+}
+
+#' Disaggregate per-140 counts to per-158 counts (uniform-density)
+#'
+#' Cake-cutting in the FORWARD direction. Given a `data.frame` of per-
+#' historical-hood counts (one row per `hood_140`, one or more numeric
+#' count columns), splits each 140's count across its 158-children in
+#' proportion to `pct_140_in_158 / 100`. For 1:1 hoods the count is
+#' passed through unchanged. For splits the count is partitioned
+#' (e.g. 140-75 Church-Yonge Corridor's 100 incidents become 59.24 in
+#' 158-168 Downtown Yonge East and 40.76 in 158-167 Church-Wellesley).
+#'
+#' This assumes UNIFORM SPATIAL DENSITY of the underlying events
+#' inside each 140-hood -- which is the best you can do without per-
+#' incident lat/lon. If you have lat/lon, prefer re-binning from
+#' points (via `sf::st_join` against
+#' `morie_to_neighbourhoods("158", offline = FALSE)`) over this
+#' uniform-density approximation.
+#'
+#' @param df A `data.frame` keyed on a 140-hood column.
+#' @param hood_140_col Name of the 140-hood column. Default
+#'   `"HOOD_140"`.
+#' @param count_cols Character vector of numeric count columns to
+#'   disaggregate. Default: every numeric column in `df` except
+#'   `hood_140_col`.
+#' @param crosswalk Optional pre-loaded crosswalk; defaults to
+#'   `morie_to_hood_crosswalk()`.
+#' @return A `data.frame` with columns `hood_158`, `name_158`,
+#'   `hood_140`, all chosen `count_cols` (now per-158 fractional
+#'   counts), and `pct_140_in_158` (the cake-cut weight applied).
+#' @examples
+#' df <- data.frame(HOOD_140 = c("075", "001"),
+#'                  incidents = c(100, 42))
+#' morie_tps_disaggregate_140_to_158(df)
+#' @export
+morie_tps_disaggregate_140_to_158 <- function(df,
+                                                hood_140_col = "HOOD_140",
+                                                count_cols = NULL,
+                                                crosswalk = NULL) {
+  if (!(hood_140_col %in% names(df))) {
+    stop(sprintf("hood_140_col '%s' not in df", hood_140_col),
+         call. = FALSE)
+  }
+  if (is.null(crosswalk)) crosswalk <- morie_to_hood_crosswalk()
+  if (is.null(count_cols)) {
+    count_cols <- names(df)[vapply(df, is.numeric, logical(1))]
+    count_cols <- setdiff(count_cols, hood_140_col)
+  }
+  if (length(count_cols) == 0L) {
+    stop("no numeric count columns found in df", call. = FALSE)
+  }
+  key <- .morie_to_normalise_hood_code(df[[hood_140_col]])
+  df_n <- df
+  df_n$.cw_key <- key
+  cw <- crosswalk[, c("hood_140", "name_140", "hood_158", "name_158",
+                       "pct_140_in_158")]
+  out <- merge(df_n, cw, by.x = ".cw_key", by.y = "hood_140",
+               all.x = TRUE, sort = FALSE)
+  w <- out$pct_140_in_158 / 100
+  for (cn in count_cols) {
+    out[[cn]] <- out[[cn]] * w
+  }
+  keep <- c("hood_158", "name_158", "hood_140", count_cols,
+            "pct_140_in_158")
+  names(out)[names(out) == ".cw_key"] <- "hood_140"
+  out[, keep, drop = FALSE]
+}
+
+#' Aggregate per-158 counts to per-140 counts (EXACT for pure cake-cuts)
+#'
+#' Cake-cutting in the REVERSE direction. Given a `data.frame` of per-
+#' current-hood counts (one row per `hood_158`, one or more numeric
+#' count columns), sums across the 158-children of each 140 weighted
+#' by `pct_158_in_140 / 100`. For 1:1 hoods the count passes through.
+#' For splits the children's counts are summed exactly (each child has
+#' `pct_158_in_140 == 100` for clean cake-cuts).
+#'
+#' Unlike [morie_tps_disaggregate_140_to_158()], this requires NO
+#' uniform-density assumption when the source is a clean cake-cut --
+#' the partition is exhaustive and disjoint by construction. The only
+#' lossy case is the `split+merge` edge (one Willowdale East sliver
+#' in the bundled OT data); the function handles it via the
+#' `pct_158_in_140` weights regardless.
+#'
+#' @param df A `data.frame` keyed on a 158-hood column.
+#' @param hood_158_col Name of the 158-hood column. Default
+#'   `"HOOD_158"`.
+#' @param count_cols Character vector of numeric count columns. By
+#'   default every numeric column except `hood_158_col`.
+#' @param crosswalk Optional pre-loaded crosswalk.
+#' @return A `data.frame` with one row per 140-hood, columns
+#'   `hood_140`, `name_140`, and the summed `count_cols`.
+#' @examples
+#' df <- data.frame(HOOD_158 = c("167", "168", "001"),
+#'                  incidents = c(40, 60, 42))
+#' morie_tps_aggregate_158_to_140(df)
+#' @export
+morie_tps_aggregate_158_to_140 <- function(df,
+                                             hood_158_col = "HOOD_158",
+                                             count_cols = NULL,
+                                             crosswalk = NULL) {
+  if (!(hood_158_col %in% names(df))) {
+    stop(sprintf("hood_158_col '%s' not in df", hood_158_col),
+         call. = FALSE)
+  }
+  if (is.null(crosswalk)) crosswalk <- morie_to_hood_crosswalk()
+  if (is.null(count_cols)) {
+    count_cols <- names(df)[vapply(df, is.numeric, logical(1))]
+    count_cols <- setdiff(count_cols, hood_158_col)
+  }
+  if (length(count_cols) == 0L) {
+    stop("no numeric count columns found in df", call. = FALSE)
+  }
+  key <- .morie_to_normalise_hood_code(df[[hood_158_col]])
+  df_n <- df
+  df_n$.cw_key <- key
+  cw <- crosswalk[, c("hood_140", "name_140", "hood_158",
+                       "pct_158_in_140")]
+  joined <- merge(df_n, cw, by.x = ".cw_key", by.y = "hood_158",
+                   all.x = TRUE, sort = FALSE)
+  w <- joined$pct_158_in_140 / 100
+  for (cn in count_cols) {
+    joined[[cn]] <- joined[[cn]] * w
+  }
+  agg <- stats::aggregate(
+    joined[, count_cols, drop = FALSE],
+    by = list(hood_140 = joined$hood_140,
+              name_140 = joined$name_140),
+    FUN = sum, na.rm = TRUE)
+  agg <- agg[order(agg$hood_140), ]
+  rownames(agg) <- NULL
+  agg
 }
