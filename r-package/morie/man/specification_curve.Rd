@@ -23,7 +23,7 @@ specification_curve(
 
 \item{covariate_sets}{List of character vectors (one per spec).}
 
-\item{sample_filters}{Optional. Accepted shapes (for Python↔R parity):
+\item{sample_filters}{Optional. Accepted shapes (for Python<->R parity):
 (a) \code{list(list(name = "...", fn = function(df) ...), ...)} (R native),
 (b) \code{list(c("name", fn), ...)} or \code{list(list("name", fn), ...)} (Python
 \code{list[tuple[str, callable]]} shape — positional pair). Default: full

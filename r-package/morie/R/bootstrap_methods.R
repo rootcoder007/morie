@@ -738,6 +738,13 @@ bootstrap_632 <- function(X, y, model_fn, score_fn,
 #'
 #' Supports plain, stratified, and grouped variants.
 #'
+#' Bootstrap-flavoured K-fold cross-validation (internal).
+#'
+#' Lower-level CV used by [repeated_cv()] / [leave_one_out_cv()].
+#' Public CV with `(fit_fn, predict_fn, X, y, ...)` signature lives in
+#' [cross_validate()] (validation.R). Renamed to avoid the symbol
+#' collision that R CMD check surfaced as unused-arg notes.
+#'
 #' @param X Numeric design matrix.
 #' @param y Response vector.
 #' @param model_fn Function \code{(X_train, y_train) -> model}.
@@ -747,10 +754,11 @@ bootstrap_632 <- function(X, y, model_fn, score_fn,
 #' @param groups Optional grouping vector (no group split across folds).
 #' @param seed Random seed.
 #' @return A \code{morie_cv_result}.
-#' @export
-cross_validate <- function(X, y, model_fn, score_fn,
-                           n_folds = 10L, stratify = NULL,
-                           groups = NULL, seed = 42L) {
+#' @keywords internal
+#' @noRd
+.boot_cross_validate <- function(X, y, model_fn, score_fn,
+                                 n_folds = 10L, stratify = NULL,
+                                 groups = NULL, seed = 42L) {
   set.seed(seed)
   X <- as.matrix(X); y <- as.numeric(y); n <- length(y)
 
@@ -801,7 +809,7 @@ cross_validate <- function(X, y, model_fn, score_fn,
 
 #' Repeated K-fold cross-validation
 #'
-#' @inheritParams cross_validate
+#' @inheritParams .boot_cross_validate
 #' @param n_repeats Number of repetitions.
 #' @return A \code{morie_cv_result} pooling scores across repeats.
 #' @export
@@ -810,8 +818,8 @@ repeated_cv <- function(X, y, model_fn, score_fn,
   all_scores <- numeric(0)
   all_fold_sizes <- integer(0)
   for (r in seq_len(n_repeats)) {
-    res <- cross_validate(X, y, model_fn, score_fn,
-                          n_folds = n_folds, seed = seed + r - 1L)
+    res <- .boot_cross_validate(X, y, model_fn, score_fn,
+                                n_folds = n_folds, seed = seed + r - 1L)
     all_scores <- c(all_scores, res$scores)
     all_fold_sizes <- c(all_fold_sizes, res$fold_sizes)
   }
@@ -829,9 +837,9 @@ repeated_cv <- function(X, y, model_fn, score_fn,
 
 #' Leave-one-out cross-validation
 #'
-#' @inheritParams cross_validate
+#' @inheritParams .boot_cross_validate
 #' @return A \code{morie_cv_result}.
 #' @export
 leave_one_out_cv <- function(X, y, model_fn, score_fn) {
-  cross_validate(X, y, model_fn, score_fn, n_folds = length(y))
+  .boot_cross_validate(X, y, model_fn, score_fn, n_folds = length(y))
 }

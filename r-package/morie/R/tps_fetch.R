@@ -62,7 +62,7 @@ morie_tps_list_categories <- function() {
 
 # Internal: one ArcGIS REST /query GET. Returns the parsed GeoJSON
 # list (raises on HTTP / JSON failure).
-.morie_tps_arcgis_query <- function(base_url, where, offset,
+.morie_tps_fetch_arcgis_query <- function(base_url, where, offset,
                                     max_records = 2000L,
                                     timeout = 120) {
   if (!requireNamespace("httr2", quietly = TRUE)) {
@@ -144,7 +144,7 @@ morie_tps_fetch_category <- function(category,
   fieldnames <- NULL
 
   repeat {
-    page <- .morie_tps_arcgis_query(
+    page <- .morie_tps_fetch_arcgis_query(
       base, where = where, offset = offset,
       max_records = max_records_per_page
     )

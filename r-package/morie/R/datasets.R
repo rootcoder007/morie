@@ -655,10 +655,12 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
                                          app_token = NULL,
                                          paginate = FALSE,
                                          page_size = 1000L,
-                                         max_pages = 200L) {
+                                         max_pages = 200L,
+                                         select = NULL) {
   if (!isTRUE(paginate)) {
     query <- list()
     if (!is.null(where)) query$`$where` <- where
+    if (!is.null(select)) query$`$select` <- select
     if (!is.null(max_features)) query$`$limit` <- as.integer(max_features)
     if (!is.null(app_token)) query$`$$app_token` <- app_token
     records <- .morie_dataset_http_json(url, query = query)
@@ -680,6 +682,7 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
     if (this_limit <= 0L) break
     query <- list(`$limit` = this_limit, `$offset` = offset)
     if (!is.null(where)) query$`$where` <- where
+    if (!is.null(select)) query$`$select` <- select
     if (!is.null(app_token)) query$`$$app_token` <- app_token
     records <- .morie_dataset_http_json(url, query = query)
     chunk <- .morie_dataset_records_to_df(records)

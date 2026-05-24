@@ -445,7 +445,7 @@ omitted_variable_bias <- function(estimate, se, dof, r2_yd_x,
 #' @param outcome        Outcome variable name.
 #' @param treatment      Treatment variable name.
 #' @param covariate_sets List of character vectors (one per spec).
-#' @param sample_filters Optional. Accepted shapes (for Python↔R parity):
+#' @param sample_filters Optional. Accepted shapes (for Python<->R parity):
 #'   (a) `list(list(name = "...", fn = function(df) ...), ...)` (R native),
 #'   (b) `list(c("name", fn), ...)` or `list(list("name", fn), ...)` (Python
 #'       `list[tuple[str, callable]]` shape — positional pair). Default: full

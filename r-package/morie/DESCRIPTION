@@ -14,8 +14,8 @@ Authors@R: c(
 Author: Vansh Singh Ruhela [aut, cre] (<https://orcid.org/0009-0004-1750-3592>)
 Maintainer: Vansh Singh Ruhela <hadesllm@proton.me>
 Description: Multi-domain scientific computing toolkit (branded as
-  'morie 森' — the Fates' Forest, combining the Greek 'Moirai' (the three
-  Fates) with the Japanese kanji 森 (mori, 'forest' — three trees
+  'morie' (morie 森, the Fates' Forest), combining the Greek 'Moirai' (the three
+  Fates) with the Japanese 'mori' (forest, three trees in the kanji
   stacked into one ideogram)) for observational inference and
   intervention analysis across
   scientific-experimentation contexts, hosting the MRM (Multilevel
