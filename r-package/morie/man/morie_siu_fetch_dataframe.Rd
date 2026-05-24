@@ -13,7 +13,7 @@ morie_siu_fetch_dataframe(...)
 A data frame with the six-column SIU header schema.
 }
 \description{
-Thin wrapper over \eqn{\link{morie_siu_fetch_cases}}{link{morie_siu_fetch_cases}}, returning a
+Thin wrapper over \code{\link{morie_siu_fetch_cases}}, returning a
 data frame instead of the CSV path. Mirrors the Python
 \code{fetch_siu_dataframe()} adapter used by the dataset catalog.
 }

@@ -14,11 +14,11 @@
 #' \eqn{k = 1, \ldots, K-1}{k = 1, ..., K-1} a separate binary logit is fit to the
 #' indicator \eqn{1\{Y \le k\}}{1\{Y <= k\}}, so the coefficient vector
 #' \eqn{\beta_k}{beta_k} is unconstrained across thresholds.  When
-#' \code{MASS} is available we delegate to \eqn{\link[MASS]{polr}}{link[MASS]{polr}}
+#' \code{MASS} is available we delegate to \code{\link[MASS]{polr}}
 #' for the proportional-odds (PO) baseline; otherwise the PO baseline
 #' is fit by a stacked-IRLS approximation matching the Python
 #' implementation.  The threshold-specific fits always run via
-#' \eqn{\link[stats]{glm}}{link[stats]{glm}} with \code{family = binomial("logit")}.
+#' \code{\link[stats]{glm}} with \code{family = binomial("logit")}.
 #'
 #' Standard threshold (proportional-odds, K levels, p covariates):
 #' \deqn{P(Y \le k \mid X) = \mathrm{logit}^{-1}(\alpha_k - X \beta)}{P(Y <= k mid X) = logit^-1(alpha_k - X beta)}
@@ -31,7 +31,7 @@
 #'   cumulative-logit models for actuarial-risk audit.
 #'   \emph{Race & Justice}, 15(3), 428--453.
 #' @name mrm_primitives_ordinal
-#' @seealso \eqn{\link{mrm_score_net_residual}}{link{mrm_score_net_residual}}
+#' @seealso \code{\link{mrm_score_net_residual}}
 NULL
 
 
@@ -91,7 +91,7 @@ NULL
 #' @param fit_proportional_odds_first Logical; if \code{TRUE} (default)
 #'   the proportional-odds baseline is fit and an LR test against the
 #'   threshold-specific model is reported.
-#' @param max_iter,tol IRLS / GLM control passed to \eqn{\link[stats]{glm.fit}}{link[stats]{glm.fit}}.
+#' @param max_iter,tol IRLS / GLM control passed to \code{\link[stats]{glm.fit}}.
 #' @return An object of class \code{c("mrm_threshold_specific_ordinal",
 #'   "morie_mrm_result", "list")} with elements
 #'   \code{threshold_labels}, \code{covariate_names},
@@ -253,7 +253,7 @@ mrm_threshold_specific_ordinal <- function(
 #' Convenience accessor mirroring
 #' \code{ThresholdSpecificOrdinalResult.coefficient_by_threshold()}.
 #'
-#' @param x A result from \eqn{\link{mrm_threshold_specific_ordinal}}{link{mrm_threshold_specific_ordinal}}.
+#' @param x A result from \code{\link{mrm_threshold_specific_ordinal}}.
 #' @param covariate Character, name of one covariate.
 #' @return A named numeric vector keyed by threshold label.
 #' @export

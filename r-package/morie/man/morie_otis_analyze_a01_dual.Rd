@@ -18,5 +18,5 @@ morie_otis_analyze_a01_dual(data = NULL, out_dir = NULL)
 Deprecated alias for \\code{morie_otis_analyze_a01_ruhela_formulations}.
 }
 \examples{
-\\dontrun{ morie_otis_analyze_a01_dual() }
+\dontrun{ morie_otis_analyze_a01_dual() }
 }

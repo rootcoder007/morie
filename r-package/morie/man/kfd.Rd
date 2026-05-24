@@ -22,7 +22,7 @@ Reference: Katz, M.J. (1988) "Fractals and the analysis of waveforms",
 \emph{Comput. Biol. Med.} 18(3):145--156.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 x <- cumsum(rnorm(1000))
 res <- kfd(x)

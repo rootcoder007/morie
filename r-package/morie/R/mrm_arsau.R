@@ -11,12 +11,12 @@
 #' ---------
 #'
 #' \itemize{
-#'   \item \eqn{\link{morie_arsau_analyze_main_records}}{link{morie_arsau_analyze_main_records}}
-#'   \item \eqn{\link{morie_arsau_analyze_individual_records}}{link{morie_arsau_analyze_individual_records}}
-#'   \item \eqn{\link{morie_arsau_analyze_probe_cycle_records}}{link{morie_arsau_analyze_probe_cycle_records}}
-#'   \item \eqn{\link{morie_arsau_analyze_weapon_records}}{link{morie_arsau_analyze_weapon_records}}
-#'   \item \eqn{\link{morie_arsau_analyze_aggregate_summary}}{link{morie_arsau_analyze_aggregate_summary}}
-#'   \item \eqn{\link{morie_arsau_analyze_detailed_dataset}}{link{morie_arsau_analyze_detailed_dataset}}
+#'   \item \code{\link{morie_arsau_analyze_main_records}}
+#'   \item \code{\link{morie_arsau_analyze_individual_records}}
+#'   \item \code{\link{morie_arsau_analyze_probe_cycle_records}}
+#'   \item \code{\link{morie_arsau_analyze_weapon_records}}
+#'   \item \code{\link{morie_arsau_analyze_aggregate_summary}}
+#'   \item \code{\link{morie_arsau_analyze_detailed_dataset}}
 #' }
 #'
 #' Each analyzer accepts the same \code{year} / \code{language} /
@@ -273,7 +273,7 @@ morie_arsau_analyze_probe_cycle_records <- function(year, language = "en",
 #' audit.  2023 needs \code{allow_invalid = TRUE}.
 #'
 #' @inheritParams morie_arsau_analyze_main_records
-#' @param allow_invalid See \eqn{\link{morie_arsau_load_weapon_records}}{link{morie_arsau_load_weapon_records}}.
+#' @param allow_invalid See \code{\link{morie_arsau_load_weapon_records}}.
 #' @export
 morie_arsau_analyze_weapon_records <- function(year, allow_invalid = FALSE,
                                                  language = "en", data_dir = NULL) {

@@ -28,7 +28,7 @@ differentiation of data by simplified least-squares procedures",
 \emph{Anal. Chem.} 36(8):1627--1639.
 }
 \examples{
-\\donttest{
+\donttest{
 if (requireNamespace("signal", quietly = TRUE)) {
   set.seed(1)
   x <- sin(seq(0, 2 * pi, length.out = 200)) + 0.1 * rnorm(200)

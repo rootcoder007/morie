@@ -17,7 +17,7 @@ A \code{data.frame} with one row.
 Lightweight discovery helper -- one network call to the ArcGIS
 Online items API (\verb{/sharing/rest/content/items/<item_id>?f=json}),
 returns a single-row data.frame with the same columns the TPS Hub
-catalog (\eqn{\link{morie_datasets_tps_arcgis_hub_layers}}{link{morie_datasets_tps_arcgis_hub_layers}})
+catalog (\code{\link{morie_datasets_tps_arcgis_hub_layers}})
 returns: \code{hub_id}, \code{title}, \code{type}, \code{feature_server_url}, \code{owner},
 \code{tags}, \code{snippet}. Use this when the item is NOT in the bundled
 TPS catalog (any non-TorontoPoliceService item).

@@ -22,11 +22,11 @@ A list classed
 \description{
 Chains:
 \itemize{
-\item \eqn{\link{mrm_uof_force_concentration}}{link{mrm_uof_force_concentration}} over
+\item \code{\link{mrm_uof_force_concentration}} over
 \code{PoliceService}
-\item \eqn{\link{mrm_uof_weapon_diversity}}{link{mrm_uof_weapon_diversity}} over
+\item \code{\link{mrm_uof_weapon_diversity}} over
 \code{IncidentType x PoliceService}
-\item \eqn{\link{mrm_uof_data_quality_audit}}{link{mrm_uof_data_quality_audit}} against the
+\item \code{\link{mrm_uof_data_quality_audit}} against the
 published CKAN sidecar (when present)
 }
 
@@ -38,7 +38,7 @@ Chains \code{mrm_uof_force_concentration} (PoliceService),
 Region-locality is NOT meaningful for main_records — only the
 \code{OPP_PoliceService_Region} column is published, and it pairs
 one column with itself.  See
-\eqn{\link{morie_arsau_analyze_detailed_dataset}}{link{morie_arsau_analyze_detailed_dataset}} for the
+\code{\link{morie_arsau_analyze_detailed_dataset}} for the
 2020-2022 layout that exposes more region columns.
 }
 \references{

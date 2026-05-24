@@ -48,7 +48,11 @@ Imports:
 LinkingTo: Rcpp, RcppArmadillo
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
 Suggests:
+  arrow,
+  bigrquery,
+  cansim,
   caret,
+  cmprsk,
   data.table,
   DBI,
   dbscan,
@@ -62,6 +66,7 @@ Suggests:
   gbm,
   ggplot2,
   glmnet,
+  hawkes,
   httr2,
   ivreg,
   jsonlite,
@@ -93,11 +98,13 @@ Suggests:
   rugarch,
   rvest,
   seewave,
+  sf,
   signal,
   smotefamily,
   sodium,
   spdep,
   survey,
+  survival,
   testthat (>= 3.0.0),
   urca,
   vars,

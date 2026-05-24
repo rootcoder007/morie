@@ -14,7 +14,7 @@
 #' @param hidden_size Hidden size.
 #' @param seed RNG seed.
 #' @param deterministic_seed Optional integer; if non-NULL, a SHA-keyed
-#'   seed from \eqn{\link{morie_det_rng}("grucl", deterministic_seed)}{link{morie_det_rng}("grucl", deterministic_seed)} is
+#'   seed from \code{\link{morie_det_rng}("grucl", deterministic_seed)} is
 #'   installed before sampling so Py<->R streams agree.  Overrides
 #'   \code{seed} when set.
 #' @return Named list \code{(h, estimate, z, r, n, method)}.

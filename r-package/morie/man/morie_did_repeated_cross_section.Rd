@@ -34,10 +34,10 @@ any covariate columns.}
 \item{alpha}{Significance level for confidence intervals (default 0.05).}
 }
 \value{
-A list of class results; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
+A list of class results; see \code{\link{morie_did_2x2}}.
 }
 \description{
-Same specification as \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}} but accepts a survey
+Same specification as \code{\link{morie_did_2x2}} but accepts a survey
 weight column.  When \code{weights} is supplied, weighted least
 squares is used.
 }

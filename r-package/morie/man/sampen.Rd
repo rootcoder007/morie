@@ -30,7 +30,7 @@ series analysis using approximate entropy and sample entropy",
 (refines Pincus, S.M. (1991), \emph{Proc. Natl. Acad. Sci. USA} 88:2297).
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 x <- sin(seq(0, 10 * pi, length.out = 500)) + 0.1 * rnorm(500)
 res <- sampen(x)

@@ -18,7 +18,7 @@ callers create it lazily only when they actually persist to disk.
 \description{
 morie functions that persist artifacts to disk (e.g.
 \code{morie_fetch_siu(cache_html = TRUE)}) default to a
-\emph{session-scoped} subdirectory of \eqn{\link[base]{tempdir}()}{link[base]{tempdir}()},
+\emph{session-scoped} subdirectory of \code{\link[base]{tempdir}()},
 which R automatically removes when the session ends. This is the
 most conservative CRAN-Policy-compliant default: nothing morie
 writes ever survives the R session unless the user explicitly
@@ -45,7 +45,7 @@ location by setting the \code{MORIE_CACHE_DIR} environment variable
 before calling \code{morie_cache_dir()}.
 
 \strong{Active management.} CRAN Policy requires persistent caches
-to be actively managed. Use \eqn{\link{morie_cache_clear}()}{link{morie_cache_clear}()} to
+to be actively managed. Use \code{\link{morie_cache_clear}()} to
 empty the persistent cache (or a subdirectory of it). Cached SIU
 HTML is ~80-100 MB at full sweep, so clearing it occasionally is
 usually unnecessary, but it is supported.
@@ -57,5 +57,5 @@ morie_cache_dir()
 morie_cache_dir("siu")
 }
 \seealso{
-\eqn{\link{morie_cache_clear}}{link{morie_cache_clear}}
+\code{\link{morie_cache_clear}}
 }

@@ -23,7 +23,7 @@ measures of Poincare plot geometry reflect nonlinear features of heart
 rate variability?", \emph{IEEE Trans. Biomed. Eng.} 48(11):1342--1347.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 rr <- 800 + cumsum(rnorm(200, sd = 20))
 res <- hrvnl(rr)

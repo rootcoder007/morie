@@ -26,7 +26,7 @@ Reference: Rangayyan, R.M. (2015) \emph{Biomedical Signal Analysis}, 2nd ed.,
 Wiley/IEEE Press, chapter on cepstral analysis.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 x <- sin(2 * pi * 5 * seq(0, 1, length.out = 512))
 res <- cepst(x)

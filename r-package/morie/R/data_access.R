@@ -184,7 +184,7 @@
 #'
 #' Supported formats: \code{csv}, \code{tsv}, \code{json}, \code{xml},
 #' \code{html}, \code{xlsx}, \code{zip} (extract one member), and
-#' \code{arcgis} (delegates to \eqn{\link{morie_fetch_arcgis}}{link{morie_fetch_arcgis}}).
+#' \code{arcgis} (delegates to \code{\link{morie_fetch_arcgis}}).
 #'
 #' @param url The resource URL.
 #' @param format One of \code{"auto"} (default), \code{"csv"},
@@ -196,8 +196,8 @@
 #'   extract (matched by basename, then by substring).
 #' @param simplify For \code{json}/\code{xml}/\code{html}, whether to
 #'   simplify into a data.frame where possible (default \code{TRUE}).
-#' @param ... Passed to the underlying reader (e.g. \eqn{\link{read.csv}}{link{read.csv}}
-#'   arguments, or \eqn{\link{morie_fetch_arcgis}}{link{morie_fetch_arcgis}} arguments).
+#' @param ... Passed to the underlying reader (e.g. \code{\link{read.csv}}
+#'   arguments, or \code{\link{morie_fetch_arcgis}} arguments).
 #' @return A data.frame for tabular formats; a list or document object
 #'   for non-tabular \code{json}/\code{xml}/\code{html}.
 #' @examples
@@ -209,7 +209,7 @@
 #'   format = "json", params = list(limit = 100)
 #' )
 #' }
-#' @seealso \eqn{\link{morie_ckan_search}}{link{morie_ckan_search}}, \eqn{\link{morie_fetch_arcgis}}{link{morie_fetch_arcgis}}
+#' @seealso \code{\link{morie_ckan_search}}, \code{\link{morie_fetch_arcgis}}
 #' @export
 morie_fetch <- function(url,
                         format = c(
@@ -272,7 +272,7 @@ morie_fetch <- function(url,
 #'
 #' Wraps the CKAN \code{package_search} action so users can discover
 #' datasets that are not in the built-in MORIE catalog and fetch them
-#' through \eqn{\link{morie_fetch_ckan}}{link{morie_fetch_ckan}} or \eqn{\link{morie_fetch}}{link{morie_fetch}}.
+#' through \code{\link{morie_fetch_ckan}} or \code{\link{morie_fetch}}.
 #'
 #' @param query Free-text search string.
 #' @param portal A known portal name (\code{"open.canada.ca"},
@@ -291,7 +291,7 @@ morie_fetch <- function(url,
 #' hits <- morie_ckan_search("cannabis survey", portal = "open.canada.ca")
 #' head(hits[, c("dataset_title", "resource_id", "format")])
 #' }
-#' @seealso \eqn{\link{morie_fetch_ckan}}{link{morie_fetch_ckan}}, \eqn{\link{morie_fetch}}{link{morie_fetch}}
+#' @seealso \code{\link{morie_fetch_ckan}}, \code{\link{morie_fetch}}
 #' @export
 morie_ckan_search <- function(query, portal = "open.canada.ca",
                               rows = 25L, ...) {
@@ -374,7 +374,7 @@ morie_ckan_search <- function(query, portal = "open.canada.ca",
 #' )
 #' df <- morie_fetch_arcgis(layer)
 #' }
-#' @seealso \eqn{\link{morie_fetch}}{link{morie_fetch}}
+#' @seealso \code{\link{morie_fetch}}
 #' @export
 morie_fetch_arcgis <- function(layer_url, where = "1=1", out_fields = "*",
                                params = NULL, page_size = 2000L,

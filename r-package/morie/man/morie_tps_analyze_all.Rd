@@ -16,7 +16,7 @@ When \code{NULL}, no files are written.}
 \value{
 A named \code{list} of \code{morie_tps_result} values, plus
 a \code{`__cross_compare__`} entry from
-\eqn{\link{morie_tps_crime_compare}}{link{morie_tps_crime_compare}}.
+\code{\link{morie_tps_crime_compare}}.
 }
 \description{
 Mirrors \code{morie.tps_all_analyze.analyze_all}.  Caller supplies

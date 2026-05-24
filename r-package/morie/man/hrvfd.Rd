@@ -25,7 +25,7 @@ and HF (0.15--0.40 Hz) bands.
 Reference: Task Force (1996), \emph{Circulation} 93(5):1043--1065.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 rr <- 800 + cumsum(rnorm(200, sd = 20))
 res <- hrvfd(rr)

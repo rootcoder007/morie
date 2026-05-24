@@ -15,17 +15,17 @@ predictions that already exist.
 \subsection{Functions}{
 
 \itemize{
-\item \eqn{\link{morie_fairness_disparate_impact}}{link{morie_fairness_disparate_impact}}: the four-fifths
+\item \code{\link{morie_fairness_disparate_impact}}: the four-fifths
 rule.
-\item \eqn{\link{morie_fairness_demographic_parity}}{link{morie_fairness_demographic_parity}}:
+\item \code{\link{morie_fairness_demographic_parity}}:
 favourable-rate gap.
-\item \eqn{\link{morie_fairness_equalized_odds}}{link{morie_fairness_equalized_odds}}: TPR/FPR gaps
+\item \code{\link{morie_fairness_equalized_odds}}: TPR/FPR gaps
 (needs ground truth).
-\item \eqn{\link{morie_fairness_average_odds_difference}}{link{morie_fairness_average_odds_difference}}: mean
+\item \code{\link{morie_fairness_average_odds_difference}}: mean
 TPR+FPR gap.
-\item \eqn{\link{morie_fairness_gini}}{link{morie_fairness_gini}}: concentration of a score
+\item \code{\link{morie_fairness_gini}}: concentration of a score
 distribution.
-\item \eqn{\link{morie_fairness_bias_amplification}}{link{morie_fairness_bias_amplification}}: composite
+\item \code{\link{morie_fairness_bias_amplification}}: composite
 of parity gap and inequality.
 }
 

@@ -29,7 +29,7 @@ the estimation of power spectra", \emph{IEEE Trans. Audio Electroacoust.}
 AU-15(2):70--73.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 t <- seq(0, 1, length.out = 1024)
 x <- sin(2 * pi * 50 * t) + 0.3 * rnorm(length(t))

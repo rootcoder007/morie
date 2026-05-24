@@ -7,7 +7,7 @@
 morie_audit_arsau_variables(dataset_specs = NULL)
 }
 \arguments{
-\item{dataset_specs}{See \eqn{\link{morie_audit_otis_variables}}{link{morie_audit_otis_variables}}.}
+\item{dataset_specs}{See \code{\link{morie_audit_otis_variables}}.}
 }
 \value{
 A list with class \code{morie_audit_result}.

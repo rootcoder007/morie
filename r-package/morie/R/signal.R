@@ -297,7 +297,7 @@ morie_pcg_filter <- function(x, fs = 2000, low = 25, high = 400) {
 #'   `name`, `fs`, `n_samples`, and `extra` (`quefrency`, `n_fft`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' x <- sin(2 * pi * 5 * seq(0, 1, length.out = 512))
 #' res <- cepst(x)
@@ -335,7 +335,7 @@ cepst <- function(x, n_fft = NULL) {
 #'   `original_length`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' x <- sin(2 * pi * 5 * seq(0, 1, length.out = 512))
 #' res <- hcepst(x)
@@ -380,7 +380,7 @@ hcepst <- function(x, n_fft = NULL) {
 #'   `name`, `fs`, `n_samples`, and `extra` (`excitation`, `cutoff`, `n_fft`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' x <- sin(2 * pi * 5 * seq(0, 1, length.out = 512))
 #' res <- hdecon(x, cutoff = 20)
@@ -439,7 +439,7 @@ hdecon <- function(x, cutoff, n_fft = NULL) {
 #'   (`scales`, `fluctuation`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' x <- cumsum(rnorm(2048))
 #' res <- dfa(x)
@@ -498,7 +498,7 @@ dfa <- function(x, scales = NULL) {
 #'   `n_peaks`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' fs <- 250
 #' t <- seq(0, 4, by = 1 / fs)
@@ -569,7 +569,7 @@ ecgdet <- function(ecg, fs) {
 #'   (`rr_ms`, `mean_rr`, `std_rr`, `n_intervals`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' rr <- rrint(c(100, 350, 600, 850, 1100), fs = 250)
 #' rr$value
 #' }
@@ -606,7 +606,7 @@ rrint <- function(r_peaks, fs) {
 #'   `hrv_triangular_index`, `n_intervals`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' rr <- 800 + cumsum(rnorm(200, sd = 20))
 #' res <- hrvtd(rr)
@@ -649,7 +649,7 @@ hrvtd <- function(rr) {
 #'   `hf_norm`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' rr <- 800 + cumsum(rnorm(200, sd = 20))
 #' res <- hrvfd(rr)
@@ -700,7 +700,7 @@ hrvfd <- function(rr, fs_interp = 4) {
 #'   (`sd1`, `sd2`, `sd1_sd2_ratio`, `n_intervals`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' rr <- 800 + cumsum(rnorm(200, sd = 20))
 #' res <- hrvnl(rr)
@@ -734,7 +734,7 @@ hrvnl <- function(rr) {
 #' @return List with `value` (D), `name`, and `extra` (`L`, `d`, `n`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' x <- cumsum(rnorm(1000))
 #' res <- kfd(x)
@@ -768,7 +768,7 @@ kfd <- function(x) {
 #' @return List with `value` (D), `name`, and `extra` (`n_delta`, `n`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' x <- cumsum(rnorm(1000))
 #' res <- pfd(x)
@@ -803,7 +803,7 @@ pfd <- function(x) {
 #'   `extra` (`freqs`, `order`, `ar_coefficients`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' t <- seq(0, 1, length.out = 512)
 #' x <- sin(2 * pi * 10 * t) + 0.5 * rnorm(length(t))
@@ -868,7 +868,7 @@ pburg <- function(x, fs, order = 16L, nfft = 256L) {
 #'   `extra` (`freqs`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' t <- seq(0, 1, length.out = 1024)
 #' x <- sin(2 * pi * 50 * t) + 0.3 * rnorm(length(t))
@@ -925,7 +925,7 @@ welch <- function(x, fs, nperseg = 256L) {
 #' @return List with `filtered` (envelope), `name`, `fs`, `n_samples`.
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' pcg <- rnorm(4000)
 #' res <- pcgenv(pcg, fs = 2000)
@@ -963,7 +963,7 @@ pcgenv <- function(pcg, fs) {
 #'   (`s1_indices`, `s2_indices`, `n_cycles`, `n_peaks`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' env <- abs(sin(seq(0, 20, length.out = 4000))) + 0.05 * rnorm(4000)
 #' env[env < 0] <- 0
@@ -1026,7 +1026,7 @@ pcgseg <- function(envelope, fs = 2000, min_gap_ms = 100) {
 #'   `fd_score`, `hf_score`, `ent_score`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' if (requireNamespace("signal", quietly = TRUE)) {
 #'   set.seed(1)
 #'   pcg <- rnorm(4000)
@@ -1091,7 +1091,7 @@ pcgmur <- function(pcg, fs) {
 #'   (`m`, `r`, `tolerance`, `A`, `B`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' set.seed(1)
 #' x <- sin(seq(0, 10 * pi, length.out = 500)) + 0.1 * rnorm(500)
 #' res <- sampen(x)
@@ -1146,7 +1146,7 @@ sampen <- function(x, m = 2L, r = 0.2) {
 #'   (`window`, `polyorder`).
 #' @export
 #' @examples
-#' \\donttest{
+#' \donttest{
 #' if (requireNamespace("signal", quietly = TRUE)) {
 #'   set.seed(1)
 #'   x <- sin(seq(0, 2 * pi, length.out = 200)) + 0.1 * rnorm(200)

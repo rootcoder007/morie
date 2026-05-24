@@ -5,7 +5,7 @@
 \title{SIU descriptive analyses (R port of \code{morie.siu.analyze})}
 \description{
 Turns a scraped SIU\code{_by_case.csv} (the canonical output of
-\eqn{\link{morie_fetch_siu}}{link{morie_fetch_siu}}) into a set of \code{RichResult}-style
+\code{\link{morie_fetch_siu}}) into a set of \code{RichResult}-style
 descriptive analyses. Each callable accepts either a path to the
 CSV or a data frame directly and returns a structured list with
 \code{title}, \code{summary_lines}, \code{tables},
@@ -16,13 +16,13 @@ rich-output dispatch.
 }
 \details{
 These analyses are deliberately distinct from the published-table
-replicators in \eqn{\link{morie_siu_sprott_doob_feb2021}}{link{morie_siu_sprott_doob_feb2021}} and the
-Mandela classifier in \eqn{\link{morie_siu_classify_mandela}}{link{morie_siu_classify_mandela}}:
+replicators in \code{\link{morie_siu_sprott_doob_feb2021}} and the
+Mandela classifier in \code{\link{morie_siu_classify_mandela}}:
 those work from CSC SIU person-stay data, whereas these analyses
 work from the Ontario SIU \emph{director's-report} corpus.
 }
 \seealso{
-\eqn{\link{morie_fetch_siu}}{link{morie_fetch_siu}},
-\eqn{\link{morie_siu_classify_mandela}}{link{morie_siu_classify_mandela}},
-\eqn{\link{mrm_siu_per_service_rate}}{link{mrm_siu_per_service_rate}}.
+\code{\link{morie_fetch_siu}},
+\code{\link{morie_siu_classify_mandela}},
+\code{\link{mrm_siu_per_service_rate}}.
 }

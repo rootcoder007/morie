@@ -24,18 +24,18 @@ below need patching.
 Public callables:
 
 \itemize{
-\item \eqn{\link{morie_arsau_analyze_main_records}}{link{morie_arsau_analyze_main_records}}
+\item \code{\link{morie_arsau_analyze_main_records}}
 (per year, 2023 / 2024)
-\item \eqn{\link{morie_arsau_analyze_individual_records}}{link{morie_arsau_analyze_individual_records}}
+\item \code{\link{morie_arsau_analyze_individual_records}}
 (per year, 2023 / 2024)
-\item \eqn{\link{morie_arsau_analyze_probe_cycle_records}}{link{morie_arsau_analyze_probe_cycle_records}}
+\item \code{\link{morie_arsau_analyze_probe_cycle_records}}
 (per year, 2023 / 2024)
-\item \eqn{\link{morie_arsau_analyze_weapon_records}}{link{morie_arsau_analyze_weapon_records}}
+\item \code{\link{morie_arsau_analyze_weapon_records}}
 (per year, 2023 / 2024; 2023 requires
 \code{allow_invalid = TRUE})
-\item \eqn{\link{morie_arsau_analyze_aggregate_summary}}{link{morie_arsau_analyze_aggregate_summary}}
+\item \code{\link{morie_arsau_analyze_aggregate_summary}}
 (2020-2022)
-\item \eqn{\link{morie_arsau_analyze_detailed_dataset}}{link{morie_arsau_analyze_detailed_dataset}}
+\item \code{\link{morie_arsau_analyze_detailed_dataset}}
 (2020-2022)
 }
 

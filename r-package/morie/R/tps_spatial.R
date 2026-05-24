@@ -24,12 +24,12 @@
 #' ---------
 #'
 #' \itemize{
-#'   \item \eqn{\link{morie_tps_morans_i_neighbourhood}}{link{morie_tps_morans_i_neighbourhood}}: global
+#'   \item \code{\link{morie_tps_morans_i_neighbourhood}}: global
 #'     Moran's I on neighbourhood-level incident counts.
-#'   \item \eqn{\link{morie_tps_local_morans_i}}{link{morie_tps_local_morans_i}}: LISA (local
+#'   \item \code{\link{morie_tps_local_morans_i}}: LISA (local
 #'     Moran's Ii) per neighbourhood with HH/LL/HL/LH quadrant
 #'     classification.
-#'   \item \eqn{\link{morie_tps_kde_density}}{link{morie_tps_kde_density}}: 2-D kernel density
+#'   \item \code{\link{morie_tps_kde_density}}: 2-D kernel density
 #'     estimate of geocoded incident points.
 #' }
 #'

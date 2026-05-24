@@ -37,12 +37,12 @@
 #' ---------
 #'
 #' \itemize{
-#'   \item \eqn{\link{morie_tps_hawkes_advanced_fit}}{link{morie_tps_hawkes_advanced_fit}} -- fit one
+#'   \item \code{\link{morie_tps_hawkes_advanced_fit}} -- fit one
 #'     (kernel, baseline) combination and produce a rich result with
 #'     time-rescaling KS diagnostics.
-#'   \item \eqn{\link{morie_tps_compare_hawkes_kernels}}{link{morie_tps_compare_hawkes_kernels}} -- 8-way AIC
+#'   \item \code{\link{morie_tps_compare_hawkes_kernels}} -- 8-way AIC
 #'     comparison across (kernel, baseline) combinations.
-#'   \item \eqn{\link{morie_tps_hawkes_markovian_vs_nonmarkovian}}{link{morie_tps_hawkes_markovian_vs_nonmarkovian}} --
+#'   \item \code{\link{morie_tps_hawkes_markovian_vs_nonmarkovian}} --
 #'     focused 2x2 comparison: classical exp/const vs gamma/
 #'     sinusoidal.
 #' }

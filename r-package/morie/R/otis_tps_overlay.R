@@ -265,7 +265,7 @@ morie_otis_tps_per_region_rollup <- function(otis_b01) {
 
 #' Composite overlay (alias for the YoY correlation)
 #'
-#' Same body as \eqn{\link{morie_otis_tps_yoy_correlation}}{link{morie_otis_tps_yoy_correlation}}; the alias
+#' Same body as \code{\link{morie_otis_tps_yoy_correlation}}; the alias
 #' preserves the Python entry-point name.
 #'
 #' @inheritParams morie_otis_tps_yoy_correlation

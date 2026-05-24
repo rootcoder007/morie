@@ -33,7 +33,7 @@ morie_did_synthetic(
 \item{alpha}{Significance level.}
 }
 \value{
-A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
+A result list; see \code{\link{morie_did_2x2}}.
 }
 \description{
 Requires the \pkg{synthdid} package

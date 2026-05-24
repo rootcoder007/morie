@@ -14,7 +14,7 @@ morie_ingest_tps_fetch(
 )
 }
 \arguments{
-\item{layer}{Short name from \eqn{\link{morie_ingest_tps_layers}}{link{morie_ingest_tps_layers}}.}
+\item{layer}{Short name from \code{\link{morie_ingest_tps_layers}}.}
 
 \item{year}{Optional shortcut for \code{OCC_YEAR = <year>} when
 \code{where} is \code{NULL}.}
@@ -25,14 +25,14 @@ morie_ingest_tps_fetch(
 
 \item{max_features}{Optional hard cap on rows.}
 
-\item{...}{Forwarded to \eqn{\link{morie_ingest_tps_feature_layer}}{link{morie_ingest_tps_feature_layer}}.}
+\item{...}{Forwarded to \code{\link{morie_ingest_tps_feature_layer}}.}
 }
 \value{
 A base R \code{data.frame}.
 }
 \description{
 Convenience wrapper around
-\eqn{\link{morie_ingest_tps_feature_layer}}{link{morie_ingest_tps_feature_layer}} that takes a
+\code{\link{morie_ingest_tps_feature_layer}} that takes a
 registry short-name (e.g. \code{"major-crime"},
 \code{"shooting-firearms"}) instead of a raw FeatureServer URL.
 }

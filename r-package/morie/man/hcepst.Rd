@@ -26,7 +26,7 @@ Reference: Oppenheim, A.V. & Schafer, R.W. (2009) \emph{Discrete-Time Signal
 Processing}, 3rd ed., Pearson, chapter on cepstral analysis.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 x <- sin(2 * pi * 5 * seq(0, 1, length.out = 512))
 res <- hcepst(x)

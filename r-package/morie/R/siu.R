@@ -52,10 +52,10 @@
 #' parser themselves, which is fair use of public oversight reports.
 #'
 #' @param cache_dir Output directory. Defaults to a session-scoped
-#'   subdirectory of \eqn{\link[base]{tempdir}()}{link[base]{tempdir}()} that R cleans up
+#'   subdirectory of \code{\link[base]{tempdir}()} that R cleans up
 #'   automatically. For persistent cross-session caching pass
 #'   \code{cache_dir = morie_cache_dir("siu")} instead; see
-#'   \eqn{\link{morie_cache_dir}}{link{morie_cache_dir}} and \eqn{\link{morie_cache_clear}}{link{morie_cache_clear}}.
+#'   \code{\link{morie_cache_dir}} and \code{\link{morie_cache_clear}}.
 #' @param overwrite Logical; if \code{FALSE} and \code{SIU.csv} already
 #'   exists in \code{cache_dir}, its path is returned without reparsing.
 #' @param max_drid Highest director's-report id to fetch. \code{NULL}
@@ -1845,7 +1845,7 @@ morie_siu_sanity_check <- function(df) {
 #' @param case_numbers Character vector of SIU case numbers to
 #'   translate. Defaults to every row whose \code{_language}
 #'   differs from \code{target_lang} and has no override yet.
-#' @param model LLM model chain (see \eqn{\link{morie_siu_llm_extract}}{link{morie_siu_llm_extract}}).
+#' @param model LLM model chain (see \code{\link{morie_siu_llm_extract}}).
 #'   Default \code{"ollama"} for $0 cost via local Gemma / etc.
 #' @param fields Which text fields to translate. Defaults to the
 #'   long-form fields that benefit most from translation:

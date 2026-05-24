@@ -25,7 +25,7 @@ segmentation algorithm based on heart sound envelogram",
 \emph{Comput. Cardiol.}, pp. 105--108.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 pcg <- rnorm(4000)
 res <- pcgenv(pcg, fs = 2000)

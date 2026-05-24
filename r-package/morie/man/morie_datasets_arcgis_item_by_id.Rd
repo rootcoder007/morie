@@ -43,7 +43,7 @@ The hub_id is ALWAYS resolved live (via the items API) because
 there's no bundled catalog for non-TPS items. If you find
 yourself calling this against the same item repeatedly, consider
 adding a named wrapper (e.g. the shipped
-\eqn{\link{morie_datasets_toronto_zoning_per_neighbourhood}}{link{morie_datasets_toronto_zoning_per_neighbourhood}}
+\code{\link{morie_datasets_toronto_zoning_per_neighbourhood}}
 wraps EsriCanadaEducation's \code{af06159170914808983959df6163fc86}
 with bundled fixtures for offline use).
 }

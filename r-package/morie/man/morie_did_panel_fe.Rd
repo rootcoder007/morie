@@ -34,7 +34,7 @@ any covariate columns.}
 \item{alpha}{Significance level for confidence intervals (default 0.05).}
 }
 \value{
-A result list; see \eqn{\link{morie_did_2x2}}{link{morie_did_2x2}}.
+A result list; see \code{\link{morie_did_2x2}}.
 }
 \description{
 Estimates \eqn{Y_{it} = \alpha_i + \lambda_t + \tau D_{it} + X'\delta

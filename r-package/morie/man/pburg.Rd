@@ -29,7 +29,7 @@ Reference: Marple, S.L. (1987) \emph{Digital Spectral Analysis with
 Applications}, Prentice-Hall, on the Burg algorithm.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 t <- seq(0, 1, length.out = 512)
 x <- sin(2 * pi * 10 * t) + 0.5 * rnorm(length(t))

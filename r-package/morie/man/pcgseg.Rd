@@ -27,7 +27,7 @@ Reference: Liang, Lukkarinen & Hartimo (1997), \emph{Comput. Cardiol.},
 pp. 105--108.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 env <- abs(sin(seq(0, 20, length.out = 4000))) + 0.05 * rnorm(4000)
 env[env < 0] <- 0

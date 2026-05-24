@@ -39,7 +39,7 @@ six-column CSV (\code{case_number}, \code{police_service},
 }
 \details{
 This is the lightweight R-only path. For the full 64-column corpus
-use \eqn{\link{morie_fetch_siu}}{link{morie_fetch_siu}} (compiled C++ harvester).
+use \code{\link{morie_fetch_siu}} (compiled C++ harvester).
 }
 \examples{
 \dontrun{

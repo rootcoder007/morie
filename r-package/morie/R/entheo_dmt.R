@@ -227,7 +227,7 @@ morie_entheo_dataset_overview <- function() {
 #' EEG band-power decomposition via Welch PSD
 #'
 #' R parity of \code{morie.entheo_dmt.spectral_band_power}. Wraps
-#' \eqn{\link{rgpsd}}{link{rgpsd}} (morie's Welch PSD; same algorithm as SciPy's
+#' \code{\link{rgpsd}} (morie's Welch PSD; same algorithm as SciPy's
 #' \code{welch}) and integrates the PSD over each canonical band by
 #' the trapezoidal rule.
 #'

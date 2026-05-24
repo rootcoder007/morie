@@ -23,7 +23,7 @@ sequences and recognition of different preictal EEG patterns",
 \emph{Proc. 8th IEEE Symp. Comput.-Based Med. Syst.}, pp. 212--217.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 x <- cumsum(rnorm(1000))
 res <- pfd(x)

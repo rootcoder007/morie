@@ -12,7 +12,7 @@
 #' @param seed RNG seed.
 #' @param mode One of \code{"normal"} (default) or \code{"uniform"}.
 #' @param deterministic_seed Optional integer; if non-NULL, a SHA-keyed
-#'   seed from \eqn{\link{morie_det_rng}("heinz", deterministic_seed)}{link{morie_det_rng}("heinz", deterministic_seed)} is
+#'   seed from \code{\link{morie_det_rng}("heinz", deterministic_seed)} is
 #'   installed before sampling so Py<->R streams agree.  Overrides
 #'   \code{seed} when set.
 #' @return Named list \code{(W, estimate, mean, std, shape, method)}.

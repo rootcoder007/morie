@@ -17,12 +17,12 @@ morie_arsau_fetch_sidecar(kind, year, limit = 5000L, timeout_sec = 30L)
 }
 \value{
 A list with \code{fields} and \code{records}, ready for
-\eqn{\link{morie_arsau_sidecar_schema}}{link{morie_arsau_sidecar_schema}} /
-\eqn{\link{morie_arsau_sidecar_to_frame}}{link{morie_arsau_sidecar_to_frame}}.
+\code{\link{morie_arsau_sidecar_schema}} /
+\code{\link{morie_arsau_sidecar_to_frame}}.
 }
 \description{
 Optional helper.  Requires \pkg{httr2} (and \pkg{jsonlite} via the
-existing \eqn{\link{morie_arsau_read_sidecar}}{link{morie_arsau_read_sidecar}} contract).
+existing \code{\link{morie_arsau_read_sidecar}} contract).
 }
 \references{
 Ontario Data Catalogue CKAN API.

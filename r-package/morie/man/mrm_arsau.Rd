@@ -14,12 +14,12 @@ and the source sidecar (if present).
 \subsection{Functions}{
 
 \itemize{
-\item \eqn{\link{morie_arsau_analyze_main_records}}{link{morie_arsau_analyze_main_records}}
-\item \eqn{\link{morie_arsau_analyze_individual_records}}{link{morie_arsau_analyze_individual_records}}
-\item \eqn{\link{morie_arsau_analyze_probe_cycle_records}}{link{morie_arsau_analyze_probe_cycle_records}}
-\item \eqn{\link{morie_arsau_analyze_weapon_records}}{link{morie_arsau_analyze_weapon_records}}
-\item \eqn{\link{morie_arsau_analyze_aggregate_summary}}{link{morie_arsau_analyze_aggregate_summary}}
-\item \eqn{\link{morie_arsau_analyze_detailed_dataset}}{link{morie_arsau_analyze_detailed_dataset}}
+\item \code{\link{morie_arsau_analyze_main_records}}
+\item \code{\link{morie_arsau_analyze_individual_records}}
+\item \code{\link{morie_arsau_analyze_probe_cycle_records}}
+\item \code{\link{morie_arsau_analyze_weapon_records}}
+\item \code{\link{morie_arsau_analyze_aggregate_summary}}
+\item \code{\link{morie_arsau_analyze_detailed_dataset}}
 }
 
 Each analyzer accepts the same \code{year} / \code{language} /

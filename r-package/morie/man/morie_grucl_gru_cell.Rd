@@ -39,7 +39,7 @@ morie_gru_cell(
 \item{seed}{RNG seed.}
 
 \item{deterministic_seed}{Optional integer; if non-NULL, a SHA-keyed
-seed from \eqn{\link{morie_det_rng}("grucl", deterministic_seed)}{link{morie_det_rng}("grucl", deterministic_seed)} is
+seed from \code{\link{morie_det_rng}("grucl", deterministic_seed)} is
 installed before sampling so Py<->R streams agree.  Overrides
 \code{seed} when set.}
 }

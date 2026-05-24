@@ -26,7 +26,7 @@ rate variability: standards of measurement, physiological
 interpretation, and clinical use", \emph{Circulation} 93(5):1043--1065.
 }
 \examples{
-\\donttest{
+\donttest{
 rr <- rrint(c(100, 350, 600, 850, 1100), fs = 250)
 rr$value
 }

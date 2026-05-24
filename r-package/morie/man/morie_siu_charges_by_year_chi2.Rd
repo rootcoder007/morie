@@ -21,7 +21,7 @@ Cross-tabulates \code{charges_recommended} against incident-year
 and tests independence with a Pearson chi-square (\code{
 stats::chisq.test}; p-value via \code{stats::pchisq}). Years with
 zero charge-decided cases are dropped. Complements
-\eqn{\link{morie_siu_verify_chi2}}{link{morie_siu_verify_chi2}} in \code{sprott_doob.R}, which
+\code{\link{morie_siu_verify_chi2}} in \code{sprott_doob.R}, which
 tests specific published 2x2 tables; this is a generic "did the
 charge rate move?" probe over the harvested SIU corpus.
 }

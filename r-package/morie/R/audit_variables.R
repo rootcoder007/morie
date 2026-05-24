@@ -3,7 +3,7 @@
 #'
 #' R counterpart of \code{morie.audit_variables}.  Walks every column
 #' in every OTIS and ARSAU dataset known to the package, classifies
-#' each variable via \eqn{\link{morie_classify_variable}}{link{morie_classify_variable}}, and
+#' each variable via \code{\link{morie_classify_variable}}, and
 #' returns a single audit object (or pair of objects, when domain =
 #' "both") summarising coverage, levels of measurement, roles,
 #' cross-year-safety, and recommended methods per variable.
@@ -16,10 +16,10 @@
 #' ----------------
 #'
 #' \itemize{
-#'   \item \eqn{\link{morie_audit_otis_variables}}{link{morie_audit_otis_variables}}
-#'   \item \eqn{\link{morie_audit_arsau_variables}}{link{morie_audit_arsau_variables}}
-#'   \item \eqn{\link{morie_audit_all_variables}}{link{morie_audit_all_variables}}
-#'   \item \eqn{\link{morie_write_audit_markdown}}{link{morie_write_audit_markdown}}
+#'   \item \code{\link{morie_audit_otis_variables}}
+#'   \item \code{\link{morie_audit_arsau_variables}}
+#'   \item \code{\link{morie_audit_all_variables}}
+#'   \item \code{\link{morie_write_audit_markdown}}
 #' }
 #'
 #' @name audit_variables
@@ -155,7 +155,7 @@ morie_audit_otis_variables <- function(dataset_specs = NULL) {
 
 #' Audit every ARSAU variable.
 #'
-#' @param dataset_specs See \eqn{\link{morie_audit_otis_variables}}{link{morie_audit_otis_variables}}.
+#' @param dataset_specs See \code{\link{morie_audit_otis_variables}}.
 #' @return A list with class \code{morie_audit_result}.
 #' @export
 morie_audit_arsau_variables <- function(dataset_specs = NULL) {

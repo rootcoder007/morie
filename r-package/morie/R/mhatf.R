@@ -13,7 +13,7 @@
 #' @param W_o Output projection (default identity).
 #' @param seed RNG seed for default weights.
 #' @param deterministic_seed Optional integer; if non-NULL, a SHA-keyed
-#'   seed from \eqn{\link{morie_det_rng}("mhatf", deterministic_seed)}{link{morie_det_rng}("mhatf", deterministic_seed)} is
+#'   seed from \code{\link{morie_det_rng}("mhatf", deterministic_seed)} is
 #'   installed before sampling so Py<->R streams agree.  Overrides
 #'   \code{seed} when set.
 #' @return Named list \code{(output, estimate, heads, num_heads, d_k,

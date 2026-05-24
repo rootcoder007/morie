@@ -38,5 +38,5 @@ repository script \code{scripts/export_otis_csv.R}.
 }
 }
 \seealso{
-\eqn{\link{morie_cache_dir}}{link{morie_cache_dir}}.
+\code{\link{morie_cache_dir}}.
 }

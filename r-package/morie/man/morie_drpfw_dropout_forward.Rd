@@ -31,7 +31,7 @@ morie_dropout_forward(
 \item{training}{If FALSE, returns input unchanged.}
 
 \item{deterministic_seed}{Optional integer; if non-NULL, a SHA-keyed
-seed from \eqn{\link{morie_det_rng}("drpfw", deterministic_seed)}{link{morie_det_rng}("drpfw", deterministic_seed)} is
+seed from \code{\link{morie_det_rng}("drpfw", deterministic_seed)} is
 installed before sampling so Py<->R streams agree.  Overrides
 \code{seed} when set.}
 }

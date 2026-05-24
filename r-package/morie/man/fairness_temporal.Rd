@@ -14,5 +14,5 @@ Amplification Score - are computed for every (\code{city},
 become visible.
 }
 \details{
-Builds on the metrics in \eqn{\link{fairness_metrics}}{link{fairness_metrics}}.
+Builds on the metrics in \code{\link{fairness_metrics}}.
 }

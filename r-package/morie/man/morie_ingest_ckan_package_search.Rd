@@ -40,7 +40,7 @@ A named list as returned by the CKAN Action API.
 Calls the CKAN \code{package_search} Action verb against a portal
 base URL and returns the raw result list (\code{count},
 \code{results}, etc.).  For a flattened metadata data.frame, use
-\eqn{\link{morie_ingest_ckan_search_packages}}{link{morie_ingest_ckan_search_packages}}.
+\code{\link{morie_ingest_ckan_search_packages}}.
 }
 \examples{
 \dontrun{

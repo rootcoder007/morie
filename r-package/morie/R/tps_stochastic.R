@@ -15,14 +15,14 @@
 #' ---------
 #'
 #' \itemize{
-#'   \item \eqn{\link{morie_tps_hawkes_temporal_fit}}{link{morie_tps_hawkes_temporal_fit}}: fit mu, kappa,
+#'   \item \code{\link{morie_tps_hawkes_temporal_fit}}: fit mu, kappa,
 #'     omega of an exponential-kernel Hawkes process to incident
 #'     times; report branching ratio + AIC/BIC.
-#'   \item \eqn{\link{morie_tps_sarima_forecast}}{link{morie_tps_sarima_forecast}}: seasonal ARIMA on
+#'   \item \code{\link{morie_tps_sarima_forecast}}: seasonal ARIMA on
 #'     monthly counts with train / hold-out MAPE.
-#'   \item \eqn{\link{morie_tps_langevin_simulate}}{link{morie_tps_langevin_simulate}}: Euler-Maruyama
+#'   \item \code{\link{morie_tps_langevin_simulate}}: Euler-Maruyama
 #'     OU SDE paths fitted to daily counts.
-#'   \item \eqn{\link{morie_tps_fokker_planck_grid}}{link{morie_tps_fokker_planck_grid}}: 1-D
+#'   \item \code{\link{morie_tps_fokker_planck_grid}}: 1-D
 #'     finite-difference density evolution under OU drift+diffusion.
 #' }
 #'

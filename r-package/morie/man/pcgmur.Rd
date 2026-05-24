@@ -26,7 +26,7 @@ Reference: Rangayyan, R.M. (2015) \emph{Biomedical Signal Analysis}, 2nd ed.,
 Wiley/IEEE Press, chapter on heart-sound analysis.
 }
 \examples{
-\\donttest{
+\donttest{
 if (requireNamespace("signal", quietly = TRUE)) {
   set.seed(1)
   pcg <- rnorm(4000)

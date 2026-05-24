@@ -47,7 +47,7 @@ head(df)
 }
 }
 \seealso{
-\eqn{\link{morie_ingest_chicago_socrata}}{link{morie_ingest_chicago_socrata}},
-\eqn{\link{morie_ingest_bigquery_table}}{link{morie_ingest_bigquery_table}} for the BigQuery
+\code{\link{morie_ingest_chicago_socrata}},
+\code{\link{morie_ingest_bigquery_table}} for the BigQuery
 public-data mirror (\code{bigquery-public-data.chicago_crime}).
 }

@@ -42,8 +42,8 @@ A base R \code{data.frame}.
 }
 \description{
 Convenience wrapper around
-\eqn{\link{morie_ingest_bigquery_build_sql}}{link{morie_ingest_bigquery_build_sql}} +
-\eqn{\link{morie_ingest_bigquery_query}}{link{morie_ingest_bigquery_query}}: builds a validated,
+\code{\link{morie_ingest_bigquery_build_sql}} +
+\code{\link{morie_ingest_bigquery_query}}: builds a validated,
 backtick-quoted \code{SELECT} against a fully-qualified table and
 downloads the result.
 }
@@ -62,5 +62,5 @@ head(df)
 }
 }
 \seealso{
-\eqn{\link{morie_ingest_bigquery_query}}{link{morie_ingest_bigquery_query}}
+\code{\link{morie_ingest_bigquery_query}}
 }

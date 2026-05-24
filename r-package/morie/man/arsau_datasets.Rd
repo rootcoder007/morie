@@ -19,24 +19,24 @@ those.  It adds the remaining surface from the Python source:
 }
 \details{
 \itemize{
-\item \eqn{\link{morie_arsau_registry_df}}{link{morie_arsau_registry_df}}: the registry as a
+\item \code{\link{morie_arsau_registry_df}}: the registry as a
 tidy \code{data.frame} (one row per published file), the
 canonical R equivalent of \code{ARSAU_REGISTRY} in Python.
-\item \eqn{\link{morie_arsau_sidecar_schema}}{link{morie_arsau_sidecar_schema}}: simplified
+\item \code{\link{morie_arsau_sidecar_schema}}: simplified
 \code{[name, type, notes]} extraction from a CKAN sidecar
 (mirrors \code{morie.arsau_datasets.sidecar_schema}).
-\item \eqn{\link{morie_arsau_sidecar_to_frame}}{link{morie_arsau_sidecar_to_frame}}: convert the
+\item \code{\link{morie_arsau_sidecar_to_frame}}: convert the
 array-of-arrays \code{records} body of a CKAN sidecar to a
 \code{data.frame} keyed by \code{fields[].id} (mirrors
 \code{morie.arsau_datasets.sidecar_to_frame}).
-\item \eqn{\link{morie_arsau_read_xlsx_dictionary}}{link{morie_arsau_read_xlsx_dictionary}}: read an
+\item \code{\link{morie_arsau_read_xlsx_dictionary}}: read an
 Ontario-Catalogue XLSX data-dictionary sidecar
 (requires \pkg{readxl}; gated with \code{requireNamespace}).
-\item \eqn{\link{morie_arsau_read_markdown_dictionary}}{link{morie_arsau_read_markdown_dictionary}}: read an
+\item \code{\link{morie_arsau_read_markdown_dictionary}}: read an
 Ontario-Catalogue Markdown data-dictionary sidecar with no
 extra dependencies.
-\item \eqn{\link{morie_arsau_ckan_url}}{link{morie_arsau_ckan_url}} +
-\eqn{\link{morie_arsau_fetch_sidecar}}{link{morie_arsau_fetch_sidecar}}: build the upstream
+\item \code{\link{morie_arsau_ckan_url}} +
+\code{\link{morie_arsau_fetch_sidecar}}: build the upstream
 CKAN \code{datastore_search} URL and (optionally) fetch
 the sidecar JSON via \pkg{httr2}.
 }

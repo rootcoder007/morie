@@ -26,7 +26,7 @@ Reference: Peng, C.-K., Havlin, S., Stanley, H.E. & Goldberger, A.L. (1995)
 nonstationary heartbeat time series", \emph{Chaos} 5(1):82--87.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 x <- cumsum(rnorm(2048))
 res <- dfa(x)

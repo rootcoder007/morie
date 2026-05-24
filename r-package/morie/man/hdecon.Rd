@@ -28,7 +28,7 @@ Reference: Oppenheim & Schafer (2009), \emph{Discrete-Time Signal Processing},
 3rd ed., on homomorphic systems for convolution.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 x <- sin(2 * pi * 5 * seq(0, 1, length.out = 512))
 res <- hdecon(x, cutoff = 20)

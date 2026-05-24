@@ -34,7 +34,7 @@ string with identifier validation and backtick-quoting.
 \code{where} is passed through unchanged; callers compose SQL
 fragments themselves and are responsible for not injecting hostile
 clauses (same contract as
-\eqn{\link{morie_ingest_bigquery_query}}{link{morie_ingest_bigquery_query}}).
+\code{\link{morie_ingest_bigquery_query}}).
 }
 \examples{
 morie_ingest_bigquery_build_sql(

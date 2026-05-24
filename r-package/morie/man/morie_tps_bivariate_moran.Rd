@@ -32,7 +32,7 @@ A named list with \code{I_xy}, \code{n}, \code{x_col},
 \code{y_col}.
 }
 \description{
-Generalises \eqn{\link{morie_tps_polygon_morans_i}}{link{morie_tps_polygon_morans_i}} to two
+Generalises \code{\link{morie_tps_polygon_morans_i}} to two
 attributes: measures the cross-correlation between attribute X at
 location i and attribute Y at neighbouring locations j.
 }
@@ -40,7 +40,7 @@ location i and attribute Y at neighbouring locations j.
 \deqn{I_{xy} = \frac{n}{S_0}\,\frac{\sum_i \sum_j w_{ij}\, z^x_i\, z^y_j}{\sqrt{\sum_i (z^x_i)^2 \cdot \sum_i (z^y_i)^2}}}{I_xy = (n)/(S_0) frac{sum_i sum_j w_ij z^x_i z^y_j}{sqrt(sum_i (z^x_i)^2 * sum_i (z^y_i)^2)}}
 
 Polygon centroids and k-NN weights are constructed exactly as in
-\eqn{\link{morie_tps_polygon_morans_i}}{link{morie_tps_polygon_morans_i}}; distances use the
+\code{\link{morie_tps_polygon_morans_i}}; distances use the
 haversine formula for parity with the Python source.
 }
 \examples{

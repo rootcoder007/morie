@@ -150,7 +150,7 @@
 #' Calls the CKAN \code{package_search} Action verb against a portal
 #' base URL and returns the raw result list (\code{count},
 #' \code{results}, etc.).  For a flattened metadata data.frame, use
-#' \eqn{\link{morie_ingest_ckan_search_packages}}{link{morie_ingest_ckan_search_packages}}.
+#' \code{\link{morie_ingest_ckan_search_packages}}.
 #'
 #' @param portal Base URL of the CKAN portal, e.g.
 #'   \code{"https://open.canada.ca/data"}.  Trailing slash optional.
@@ -256,7 +256,7 @@ morie_ingest_ckan_resource_show <- function(portal,
 #'
 #' \code{url_or_id} may be a direct download URL (as it appears in
 #' \code{resource$url}) or a CKAN resource id, in which case the URL
-#' is resolved via \eqn{\link{morie_ingest_ckan_resource_show}}{link{morie_ingest_ckan_resource_show}}.
+#' is resolved via \code{\link{morie_ingest_ckan_resource_show}}.
 #'
 #' Format detection: if \code{as_format} is given it wins.  Otherwise
 #' the extension is sniffed off the URL; unknown extensions fall back
@@ -417,7 +417,7 @@ morie_ingest_ckan_fetch_package_csvs <- function(
 #' Search a CKAN portal and return a flat metadata data.frame
 #'
 #' Convenience wrapper over
-#' \eqn{\link{morie_ingest_ckan_package_search}}{link{morie_ingest_ckan_package_search}} that flattens the
+#' \code{\link{morie_ingest_ckan_package_search}} that flattens the
 #' most-useful columns into a single data.frame: \code{id},
 #' \code{name}, \code{title}, \code{organization}, \code{license_id},
 #' \code{metadata_modified}, \code{num_resources}, \code{url} (the

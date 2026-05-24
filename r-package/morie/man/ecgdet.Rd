@@ -26,7 +26,7 @@ Reference: Pan, J. & Tompkins, W.J. (1985) "A real-time QRS detection
 algorithm", \emph{IEEE Trans. Biomed. Eng.} BME-32(3):230--236.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 fs <- 250
 t <- seq(0, 4, by = 1 / fs)

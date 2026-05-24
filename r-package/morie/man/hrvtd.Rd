@@ -22,7 +22,7 @@ SDNN, RMSSD, pNN50, mean RR, mean HR, and the HRV triangular index.
 Reference: Task Force (1996), \emph{Circulation} 93(5):1043--1065.
 }
 \examples{
-\\donttest{
+\donttest{
 set.seed(1)
 rr <- 800 + cumsum(rnorm(200, sd = 20))
 res <- hrvtd(rr)
