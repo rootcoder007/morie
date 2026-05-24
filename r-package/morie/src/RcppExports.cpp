@@ -11,6 +11,94 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// morie_crypto_liboqs_available
+bool morie_crypto_liboqs_available();
+RcppExport SEXP _morie_morie_crypto_liboqs_available() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_liboqs_available());
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_liboqs_version
+std::string morie_crypto_liboqs_version();
+RcppExport SEXP _morie_morie_crypto_liboqs_version() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_liboqs_version());
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_mlkem768_keygen
+Rcpp::List morie_crypto_mlkem768_keygen();
+RcppExport SEXP _morie_morie_crypto_mlkem768_keygen() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_mlkem768_keygen());
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_mlkem768_encaps
+Rcpp::List morie_crypto_mlkem768_encaps(SEXP pk_sxp);
+RcppExport SEXP _morie_morie_crypto_mlkem768_encaps(SEXP pk_sxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type pk_sxp(pk_sxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_mlkem768_encaps(pk_sxp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_mlkem768_decaps
+SEXP morie_crypto_mlkem768_decaps(SEXP sk_sxp, SEXP ct_sxp);
+RcppExport SEXP _morie_morie_crypto_mlkem768_decaps(SEXP sk_sxpSEXP, SEXP ct_sxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type sk_sxp(sk_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type ct_sxp(ct_sxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_mlkem768_decaps(sk_sxp, ct_sxp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_mldsa65_keygen
+Rcpp::List morie_crypto_mldsa65_keygen();
+RcppExport SEXP _morie_morie_crypto_mldsa65_keygen() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_mldsa65_keygen());
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_mldsa65_sign
+SEXP morie_crypto_mldsa65_sign(SEXP sk_sxp, SEXP message_sxp);
+RcppExport SEXP _morie_morie_crypto_mldsa65_sign(SEXP sk_sxpSEXP, SEXP message_sxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type sk_sxp(sk_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type message_sxp(message_sxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_mldsa65_sign(sk_sxp, message_sxp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_mldsa65_verify
+bool morie_crypto_mldsa65_verify(SEXP pk_sxp, SEXP message_sxp, SEXP signature_sxp);
+RcppExport SEXP _morie_morie_crypto_mldsa65_verify(SEXP pk_sxpSEXP, SEXP message_sxpSEXP, SEXP signature_sxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type pk_sxp(pk_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type message_sxp(message_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type signature_sxp(signature_sxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_mldsa65_verify(pk_sxp, message_sxp, signature_sxp));
+    return rcpp_result_gen;
+END_RCPP
+}
 // morie_crypto_sodium_available
 bool morie_crypto_sodium_available();
 RcppExport SEXP _morie_morie_crypto_sodium_available() {
@@ -621,6 +709,14 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_morie_morie_crypto_liboqs_available", (DL_FUNC) &_morie_morie_crypto_liboqs_available, 0},
+    {"_morie_morie_crypto_liboqs_version", (DL_FUNC) &_morie_morie_crypto_liboqs_version, 0},
+    {"_morie_morie_crypto_mlkem768_keygen", (DL_FUNC) &_morie_morie_crypto_mlkem768_keygen, 0},
+    {"_morie_morie_crypto_mlkem768_encaps", (DL_FUNC) &_morie_morie_crypto_mlkem768_encaps, 1},
+    {"_morie_morie_crypto_mlkem768_decaps", (DL_FUNC) &_morie_morie_crypto_mlkem768_decaps, 2},
+    {"_morie_morie_crypto_mldsa65_keygen", (DL_FUNC) &_morie_morie_crypto_mldsa65_keygen, 0},
+    {"_morie_morie_crypto_mldsa65_sign", (DL_FUNC) &_morie_morie_crypto_mldsa65_sign, 2},
+    {"_morie_morie_crypto_mldsa65_verify", (DL_FUNC) &_morie_morie_crypto_mldsa65_verify, 3},
     {"_morie_morie_crypto_sodium_available", (DL_FUNC) &_morie_morie_crypto_sodium_available, 0},
     {"_morie_morie_crypto_sodium_version", (DL_FUNC) &_morie_morie_crypto_sodium_version, 0},
     {"_morie_morie_crypto_chacha20poly1305_encrypt", (DL_FUNC) &_morie_morie_crypto_chacha20poly1305_encrypt, 4},

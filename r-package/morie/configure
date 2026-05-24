@@ -31,6 +31,33 @@ if [ -n "${SODIUM_LIBS}" ]; then
   SODIUM_CFLAGS="${SODIUM_CFLAGS} -DMORIE_HAVE_SODIUM"
 fi
 
+# liboqs for the post-quantum crypto port (3JJJ2). Mirrors the
+# libsodium detection pattern: try pkg-config, fall back to bare
+# -loqs probe, gate the C++ symbols on MORIE_HAVE_LIBOQS. liboqs
+# Requires.private: openssl, so when pkg-config is available we ask
+# for both. When the OpenSSL fallback is needed, the bare-link
+# probe links -loqs alone; without OpenSSL on PATH this will fail
+# silently and the PQC functions will surface a clean error.
+OQS_CFLAGS=`pkg-config --cflags liboqs 2>/dev/null`
+OQS_LIBS=`pkg-config --libs liboqs openssl 2>/dev/null`
+if [ -z "${OQS_LIBS}" ]; then
+  OQS_LIBS=`pkg-config --libs liboqs 2>/dev/null`
+fi
+if [ -z "${OQS_LIBS}" ]; then
+  PROBE_DIR=`mktemp -d 2>/dev/null || echo /tmp`
+  PROBE_SRC="${PROBE_DIR}/morie_oqs_probe.c"
+  PROBE_OUT="${PROBE_DIR}/morie_oqs_probe"
+  printf '#include <oqs/oqs.h>\nint main(void){OQS_init();OQS_destroy();return 0;}\n' > "${PROBE_SRC}"
+  if ${CC:-cc} -loqs -o "${PROBE_OUT}" "${PROBE_SRC}" >/dev/null 2>&1; then
+    OQS_CFLAGS=""
+    OQS_LIBS="-loqs"
+  fi
+  rm -f "${PROBE_SRC}" "${PROBE_OUT}" 2>/dev/null
+fi
+if [ -n "${OQS_LIBS}" ]; then
+  OQS_CFLAGS="${OQS_CFLAGS} -DMORIE_HAVE_LIBOQS"
+fi
+
 # Detect whether the linker accepts -Wl,--no-as-needed (GNU ld /
 # gold do; macOS ld64 and BSD ld do not). On Linux the default
 # --as-needed silently drops -llapack/-lblas because RcppArmadillo's
@@ -50,8 +77,8 @@ if ${CC:-cc} -Wl,--no-as-needed -o "${PROBE_OUT}" "${PROBE_SRC}" \
 fi
 rm -f "${PROBE_SRC}" "${PROBE_OUT}" 2>/dev/null
 
-sed -e "s|@cflags@|${CURL_CFLAGS} ${SODIUM_CFLAGS}|" \
-    -e "s|@libs@|${CURL_LIBS} ${SODIUM_LIBS}|" \
+sed -e "s|@cflags@|${CURL_CFLAGS} ${SODIUM_CFLAGS} ${OQS_CFLAGS}|" \
+    -e "s|@libs@|${CURL_LIBS} ${SODIUM_LIBS} ${OQS_LIBS}|" \
     -e "s|@as_needed_open@|${AS_NEEDED_OPEN}|" \
     -e "s|@as_needed_close@|${AS_NEEDED_CLOSE}|" \
   src/Makevars.in > src/Makevars
