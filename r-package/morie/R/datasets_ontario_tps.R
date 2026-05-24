@@ -64,11 +64,9 @@
   }
   url <- sprintf("%s/datastore/dump/%s?format=json",
                  .MORIE_ONTARIO_CKAN_BASE, resource_id)
-  req <- httr2::request(url)
-  req <- httr2::req_timeout(req, 120)
-  resp <- httr2::req_perform(req)
-  body <- jsonlite::fromJSON(httr2::resp_body_string(resp),
-                              simplifyVector = TRUE)
+  # 3XX: routes through the shared libcurl backend (with httr2
+  # fallback). 120-second timeout preserved.
+  body <- .morie_dataset_http_json(url, timeout_s = 120L)
   # CKAN datastore_dump returns either {"records":[...]} or a bare array
   # depending on portal version; handle both.
   if (is.data.frame(body)) return(body)

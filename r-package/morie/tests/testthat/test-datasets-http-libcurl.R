@@ -181,3 +181,57 @@ test_that(".siu_http_get still works (3VV preserved siu_parser's transport)", {
                        where = asNamespace("morie"),
                        mode = "function"))
 })
+
+# ====================================== 3XX: get_bytes binary-safe path
+
+test_that(".morie_http_get_bytes C++ symbol exists + returns a raw vector", {
+  expect_true(exists(".morie_http_get_bytes",
+                       where = asNamespace("morie"),
+                       mode = "function"))
+})
+
+test_that(".morie_dataset_http_bytes routes through .morie_http_get_bytes when available", {
+  seen <- list()
+  testthat::local_mocked_bindings(
+    .morie_http_get_bytes = function(url, timeout_s = 60L,
+                                       headers = character(),
+                                       user_agent = "",
+                                       follow_redirects = TRUE) {
+      seen <<- list(url = url, timeout_s = timeout_s,
+                    headers = headers)
+      # Return raw bytes representing the literal string "abc\0def"
+      # (with embedded NUL -- proves we preserve binary correctly).
+      as.raw(c(0x61, 0x62, 0x63, 0x00, 0x64, 0x65, 0x66))
+    },
+    .package = "morie")
+  out <- morie:::.morie_dataset_http_bytes(
+    "https://x.test/bin",
+    query = list(format = "shp"))
+  expect_type(out, "raw")
+  expect_equal(length(out), 7L)
+  # Critical: the embedded NUL survived (rawToChar would drop here;
+  # we deliberately check the raw vector length).
+  expect_equal(out[4L], as.raw(0x00))
+  expect_match(seen$url, "^https://x\\.test/bin\\?format=shp$")
+  expect_equal(seen$timeout_s, 60L)
+})
+
+test_that(".morie_dataset_http_bytes forwards custom headers", {
+  captured <- character()
+  testthat::local_mocked_bindings(
+    .morie_http_get_bytes = function(url, timeout_s = 60L,
+                                       headers = character(),
+                                       user_agent = "",
+                                       follow_redirects = TRUE) {
+      captured <<- headers
+      raw()
+    },
+    .package = "morie")
+  morie:::.morie_dataset_http_bytes(
+    "https://x.test/bin",
+    headers = c("X-App-Token: tok-xyz",
+                "Accept: application/zip"))
+  expect_equal(captured,
+                c("X-App-Token: tok-xyz",
+                  "Accept: application/zip"))
+})

@@ -264,13 +264,11 @@ morie_datasets_tps_arcgis_hub_by_id <- function(hub_id,
     suffix <- switch(format, shapefile = ".shp.zip", fgdb = ".fgdb.zip")
     dest <- tempfile(fileext = suffix)
   }
-  if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie TPS hub binary download requires the 'httr2' package.",
-         call. = FALSE)
-  }
-  req <- httr2::request(bin_url)
-  resp <- httr2::req_perform(req)
-  bytes <- httr2::resp_body_raw(resp)
+  # 3XX: routes through .morie_dataset_http_bytes (libcurl-backed
+  # via morie::http::get_bytes from 3VV, with httr2 fallback) so
+  # the binary payload survives without NUL truncation across the
+  # whole chain.
+  bytes <- .morie_dataset_http_bytes(bin_url)
   writeBin(bytes, dest)
   dest
 }
@@ -311,13 +309,8 @@ morie_datasets_tps_arcgis_hub_download <- function(hub_id,
     "downloads/data?format=%s"),
     hub_id, as.integer(layer_idx), fmt_token)
   if (is.null(dest)) dest <- tempfile(fileext = suffix)
-  if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie TPS hub download requires the 'httr2' package.",
-         call. = FALSE)
-  }
-  req <- httr2::request(url)
-  resp <- httr2::req_perform(req)
-  bytes <- httr2::resp_body_raw(resp)
+  # 3XX: libcurl-backed + httr2 fallback.
+  bytes <- .morie_dataset_http_bytes(url)
   writeBin(bytes, dest)
   dest
 }
@@ -445,13 +438,8 @@ morie_datasets_arcgis_item_by_id <- function(item_id,
     suffix <- switch(format, shapefile = ".shp.zip", fgdb = ".fgdb.zip")
     dest <- tempfile(fileext = suffix)
   }
-  if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie ArcGIS binary download requires the 'httr2' package.",
-         call. = FALSE)
-  }
-  req <- httr2::request(bin_url)
-  resp <- httr2::req_perform(req)
-  bytes <- httr2::resp_body_raw(resp)
+  # 3XX: libcurl-backed + httr2 fallback.
+  bytes <- .morie_dataset_http_bytes(bin_url)
   writeBin(bytes, dest)
   dest
 }

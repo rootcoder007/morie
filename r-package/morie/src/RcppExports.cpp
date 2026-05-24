@@ -259,6 +259,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// morie_http_get_bytes_
+Rcpp::RawVector morie_http_get_bytes_(std::string url, int timeout_s, Rcpp::CharacterVector headers, std::string user_agent, bool follow_redirects);
+RcppExport SEXP _morie_morie_http_get_bytes_(SEXP urlSEXP, SEXP timeout_sSEXP, SEXP headersSEXP, SEXP user_agentSEXP, SEXP follow_redirectsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
+    Rcpp::traits::input_parameter< int >::type timeout_s(timeout_sSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type headers(headersSEXP);
+    Rcpp::traits::input_parameter< std::string >::type user_agent(user_agentSEXP);
+    Rcpp::traits::input_parameter< bool >::type follow_redirects(follow_redirectsSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_http_get_bytes_(url, timeout_s, headers, user_agent, follow_redirects));
+    return rcpp_result_gen;
+END_RCPP
+}
 // morie_http_curl_version_
 std::string morie_http_curl_version_();
 RcppExport SEXP _morie_morie_http_curl_version_() {
@@ -502,6 +517,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_morie_morie_hawkes_pair_excitation_sum_cpp", (DL_FUNC) &_morie_morie_hawkes_pair_excitation_sum_cpp, 4},
     {"_morie_morie_hawkes_baseline_integral_cpp", (DL_FUNC) &_morie_morie_hawkes_baseline_integral_cpp, 3},
     {"_morie_morie_http_get_", (DL_FUNC) &_morie_morie_http_get_, 5},
+    {"_morie_morie_http_get_bytes_", (DL_FUNC) &_morie_morie_http_get_bytes_, 5},
     {"_morie_morie_http_curl_version_", (DL_FUNC) &_morie_morie_http_curl_version_, 0},
     {"_morie_morie_matching_mahalanobis_pairs_cpp", (DL_FUNC) &_morie_morie_matching_mahalanobis_pairs_cpp, 3},
     {"_morie_morie_matching_euclidean_pairs_cpp", (DL_FUNC) &_morie_morie_matching_euclidean_pairs_cpp, 2},

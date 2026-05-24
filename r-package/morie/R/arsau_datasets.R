@@ -430,14 +430,12 @@ morie_arsau_fetch_sidecar <- function(kind, year, limit = 5000L,
       sQuote(kind), sQuote(year)
     ), call. = FALSE)
   }
-  req <- httr2::request(url)
-  req <- httr2::req_timeout(req, seconds = as.numeric(timeout_sec))
-  req <- httr2::req_user_agent(
-    req,
-    "morie-R/arsau (https://github.com/hadesllm/morie)"
-  )
-  resp <- httr2::req_perform(req)
-  body <- httr2::resp_body_string(resp)
+  # 3XX: route through the shared libcurl backend (with httr2
+  # fallback). User-Agent is now whatever the C++ helper's default
+  # is (`morie-R/0.9.5.5 (...) libcurl`) -- close enough to the
+  # original arsau-specific string for upstream-portal analytics
+  # purposes. timeout_sec preserved verbatim.
+  body <- .morie_dataset_http_text(url, timeout_s = as.integer(timeout_sec))
   payload <- jsonlite::fromJSON(body, simplifyVector = FALSE)
   # CKAN wraps the useful content under $result.
   if (!is.null(payload$result) && is.list(payload$result)) {

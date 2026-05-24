@@ -20,6 +20,7 @@
 #ifndef MORIE_HTTP_H
 #define MORIE_HTTP_H
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -50,6 +51,16 @@ std::string get(const std::string& url,
                 const std::vector<std::string>& headers = {},
                 const std::string& user_agent = std::string(),
                 bool follow_redirects = true);
+
+// Binary-safe sibling of get() for raw byte payloads -- shapefiles,
+// FGDB zips, PDFs, KMZ, anything the std::string interface would
+// truncate at the first embedded NUL. Same contract: returns the
+// response body, empty vector on transport failure.
+std::vector<uint8_t> get_bytes(const std::string& url,
+                                int timeout_s = 60,
+                                const std::vector<std::string>& headers = {},
+                                const std::string& user_agent = std::string(),
+                                bool follow_redirects = true);
 
 // libcurl version string morie was built against. For diagnostics
 // + version-skew investigations.

@@ -44,6 +44,48 @@ size_t write_cb(char* ptr, size_t size, size_t nmemb, void* userdata) {
   return n;
 }
 
+// Binary-safe write callback: append received bytes to a
+// std::vector<uint8_t> passed via userdata. No NUL truncation.
+size_t write_cb_bytes(char* ptr, size_t size, size_t nmemb, void* userdata) {
+  std::vector<uint8_t>* buf = static_cast<std::vector<uint8_t>*>(userdata);
+  const size_t n = size * nmemb;
+  const uint8_t* p = reinterpret_cast<const uint8_t*>(ptr);
+  buf->insert(buf->end(), p, p + n);
+  return n;
+}
+
+// Shared libcurl handle configuration applied to both text and
+// byte GETs. Keeps the curl_easy_setopt block in one place.
+void configure_handle(CURL* h,
+                       const std::string& url,
+                       int timeout_s,
+                       const std::vector<std::string>& headers,
+                       const std::string& user_agent,
+                       bool follow_redirects,
+                       struct curl_slist** out_hdrs) {
+  curl_easy_setopt(h, CURLOPT_URL, url.c_str());
+  curl_easy_setopt(h, CURLOPT_FOLLOWLOCATION,
+                    follow_redirects ? 1L : 0L);
+  curl_easy_setopt(h, CURLOPT_TIMEOUT,
+                    static_cast<long>(timeout_s));
+  curl_easy_setopt(h, CURLOPT_CONNECTTIMEOUT, 30L);
+  curl_easy_setopt(h, CURLOPT_ACCEPT_ENCODING, "");  // all supported
+  curl_easy_setopt(h, CURLOPT_NOSIGNAL, 1L);
+  const char* ua = !user_agent.empty()
+                    ? user_agent.c_str()
+                    : kDefaultUserAgent;
+  curl_easy_setopt(h, CURLOPT_USERAGENT, ua);
+  struct curl_slist* hdrs = nullptr;
+  for (const auto& hh : headers) {
+    if (hh.empty()) continue;
+    hdrs = curl_slist_append(hdrs, hh.c_str());
+  }
+  if (hdrs != nullptr) {
+    curl_easy_setopt(h, CURLOPT_HTTPHEADER, hdrs);
+  }
+  *out_hdrs = hdrs;
+}
+
 }  // namespace
 
 std::string get(const std::string& url,
@@ -55,31 +97,11 @@ std::string get(const std::string& url,
   CURL* h = curl_easy_init();
   if (h == nullptr) return buf;
 
-  curl_easy_setopt(h, CURLOPT_URL, url.c_str());
+  struct curl_slist* hdrs = nullptr;
+  configure_handle(h, url, timeout_s, headers, user_agent,
+                    follow_redirects, &hdrs);
   curl_easy_setopt(h, CURLOPT_WRITEFUNCTION, write_cb);
   curl_easy_setopt(h, CURLOPT_WRITEDATA, &buf);
-  curl_easy_setopt(h, CURLOPT_FOLLOWLOCATION,
-                    follow_redirects ? 1L : 0L);
-  curl_easy_setopt(h, CURLOPT_TIMEOUT,
-                    static_cast<long>(timeout_s));
-  curl_easy_setopt(h, CURLOPT_CONNECTTIMEOUT, 30L);
-  curl_easy_setopt(h, CURLOPT_ACCEPT_ENCODING, "");  // all supported
-  curl_easy_setopt(h, CURLOPT_NOSIGNAL, 1L);
-
-  const char* ua = !user_agent.empty()
-                    ? user_agent.c_str()
-                    : kDefaultUserAgent;
-  curl_easy_setopt(h, CURLOPT_USERAGENT, ua);
-
-  // Build the headers slist if the caller supplied any.
-  struct curl_slist* hdrs = nullptr;
-  for (const auto& hh : headers) {
-    if (hh.empty()) continue;
-    hdrs = curl_slist_append(hdrs, hh.c_str());
-  }
-  if (hdrs != nullptr) {
-    curl_easy_setopt(h, CURLOPT_HTTPHEADER, hdrs);
-  }
 
   const CURLcode rc = curl_easy_perform(h);
   curl_easy_cleanup(h);
@@ -88,6 +110,31 @@ std::string get(const std::string& url,
   if (rc != CURLE_OK) {
     // Mirror siu_http_get's "empty string on failure" contract.
     return std::string();
+  }
+  return buf;
+}
+
+std::vector<uint8_t> get_bytes(const std::string& url,
+                                int timeout_s,
+                                const std::vector<std::string>& headers,
+                                const std::string& user_agent,
+                                bool follow_redirects) {
+  std::vector<uint8_t> buf;
+  CURL* h = curl_easy_init();
+  if (h == nullptr) return buf;
+
+  struct curl_slist* hdrs = nullptr;
+  configure_handle(h, url, timeout_s, headers, user_agent,
+                    follow_redirects, &hdrs);
+  curl_easy_setopt(h, CURLOPT_WRITEFUNCTION, write_cb_bytes);
+  curl_easy_setopt(h, CURLOPT_WRITEDATA, &buf);
+
+  const CURLcode rc = curl_easy_perform(h);
+  curl_easy_cleanup(h);
+  if (hdrs != nullptr) curl_slist_free_all(hdrs);
+
+  if (rc != CURLE_OK) {
+    buf.clear();
   }
   return buf;
 }
@@ -129,6 +176,38 @@ std::string morie_http_get_(std::string url,
   }
   return morie::http::get(url, timeout_s, hdrs,
                            user_agent, follow_redirects);
+}
+
+//' Binary-safe HTTP(S) GET via libcurl.
+//'
+//' Phase-3XX get_bytes wrapper. Returns the response body as an R
+//' raw vector (no NUL truncation), suitable for shapefiles, FGDB
+//' zips, PDFs, KMZ, and any other binary payload the std::string
+//' get() interface would corrupt.
+//'
+//' @inheritParams .morie_http_get
+//' @return Raw vector with the response body. Empty raw vector on
+//'   any libcurl-level transport failure (parity with .morie_http_get's
+//'   empty-string-on-failure contract).
+//' @keywords internal
+// [[Rcpp::export(.morie_http_get_bytes)]]
+Rcpp::RawVector morie_http_get_bytes_(std::string url,
+                                       int timeout_s = 60,
+                                       Rcpp::CharacterVector headers = Rcpp::CharacterVector::create(),
+                                       std::string user_agent = "",
+                                       bool follow_redirects = true) {
+  std::vector<std::string> hdrs;
+  hdrs.reserve(headers.size());
+  for (int i = 0; i < headers.size(); ++i) {
+    hdrs.emplace_back(Rcpp::as<std::string>(headers[i]));
+  }
+  std::vector<uint8_t> bytes = morie::http::get_bytes(
+    url, timeout_s, hdrs, user_agent, follow_redirects);
+  Rcpp::RawVector out(bytes.size());
+  if (!bytes.empty()) {
+    std::copy(bytes.begin(), bytes.end(), out.begin());
+  }
+  return out;
 }
 
 //' libcurl version string the morie C++ backend was built against.

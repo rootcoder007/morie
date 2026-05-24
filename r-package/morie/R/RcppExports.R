@@ -86,6 +86,22 @@ morie_hawkes_baseline_integral_cpp <- function(T_horizon, alpha, n_grid = 0L) {
     .Call(`_morie_morie_http_get_`, url, timeout_s, headers, user_agent, follow_redirects)
 }
 
+#' Binary-safe HTTP(S) GET via libcurl.
+#'
+#' Phase-3XX get_bytes wrapper. Returns the response body as an R
+#' raw vector (no NUL truncation), suitable for shapefiles, FGDB
+#' zips, PDFs, KMZ, and any other binary payload the std::string
+#' get() interface would corrupt.
+#'
+#' @inheritParams .morie_http_get
+#' @return Raw vector with the response body. Empty raw vector on
+#'   any libcurl-level transport failure (parity with .morie_http_get's
+#'   empty-string-on-failure contract).
+#' @keywords internal
+.morie_http_get_bytes <- function(url, timeout_s = 60L, headers = as.character( c()), user_agent = "", follow_redirects = TRUE) {
+    .Call(`_morie_morie_http_get_bytes_`, url, timeout_s, headers, user_agent, follow_redirects)
+}
+
 #' libcurl version string the morie C++ backend was built against.
 #' @return Length-1 character vector.
 #' @keywords internal

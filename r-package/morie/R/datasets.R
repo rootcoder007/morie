@@ -130,6 +130,43 @@
   httr2::resp_body_string(resp)
 }
 
+#' Binary-safe GET. 3XX: routes through morie's C++ libcurl
+#' .morie_http_get_bytes when available; falls back to httr2's
+#' resp_body_raw otherwise. Returns a raw vector (no NUL truncation).
+#' Used for shapefile zips, FGDB zips, PDFs, KMZ, and any other
+#' binary payload the text-returning helpers would corrupt.
+#' @keywords internal
+#' @noRd
+.morie_dataset_http_bytes <- function(url, query = NULL,
+                                        headers = character(),
+                                        timeout_s = 60L) {
+  full_url <- .morie_dataset_build_url(url, query)
+  if (exists(".morie_http_get_bytes",
+              where = asNamespace("morie"),
+              mode = "function")) {
+    return(.morie_http_get_bytes(full_url,
+                                  timeout_s = as.integer(timeout_s),
+                                  headers = as.character(headers)))
+  }
+  if (!requireNamespace("httr2", quietly = TRUE)) {
+    stop("morie datasets binary fetch needs either the libcurl-backed ",
+         "C++ backend (built into morie.so via src/morie_http.cpp) ",
+         "or the 'httr2' R package.")
+  }
+  req <- httr2::request(full_url)
+  if (length(headers) > 0L) {
+    kv <- strsplit(headers, ":\\s*", n = 2L)
+    kv <- Filter(function(x) length(x) == 2L, kv)
+    if (length(kv) > 0L) {
+      named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
+                                vapply(kv, `[[`, character(1L), 1L))
+      req <- do.call(httr2::req_headers, c(list(req), as.list(named)))
+    }
+  }
+  resp <- httr2::req_perform(req)
+  httr2::resp_body_raw(resp)
+}
+
 #' GET + parse JSON. 3VV: when the C++ backend is available the
 #' body is fetched via libcurl then parsed via jsonlite (avoids the
 #' httr2 dep entirely); falls back to httr2 + httr2::resp_body_json
@@ -413,13 +450,12 @@ morie_datasets_siu_report_text <- function(url = NULL, offline = FALSE) {
   if (!requireNamespace("pdftools", quietly = TRUE)) {
     stop("morie_datasets_siu_report_text: 'pdftools' is required to extract PDF text.")
   }
-  if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop("morie_datasets_siu_report_text: 'httr2' is required to fetch PDFs.")
-  }
   tmp <- tempfile(fileext = ".pdf")
   on.exit(unlink(tmp), add = TRUE)
-  resp <- httr2::req_perform(httr2::request(url))
-  writeBin(httr2::resp_body_raw(resp), tmp)
+  # 3XX: prefer the libcurl backend (.morie_dataset_http_bytes) +
+  # fall back to httr2 if the C++ symbol is unavailable. Both paths
+  # write raw bytes to a tempfile that pdftools then parses.
+  writeBin(.morie_dataset_http_bytes(url), tmp)
   paste(pdftools::pdf_text(tmp), collapse = "\
 ")
 }
