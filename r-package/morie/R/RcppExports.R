@@ -120,6 +120,35 @@ morie_hawkes_baseline_integral_cpp <- function(T_horizon, alpha, n_grid = 0L) {
     .Call(`_morie_morie_http_post_`, url, body, content_type, timeout_s, headers, user_agent, follow_redirects)
 }
 
+#' Status-aware HTTP(S) GET via the libcurl backend (C++).
+#'
+#' Phase-3ZZ helper for callers that need HTTP status-code
+#' inspection (401/403/4xx error handling). Returns a length-2
+#' list: `body` (character) + `status_code` (integer, 0 on
+#' transport failure).
+#'
+#' @inheritParams .morie_http_get
+#' @return Named list with elements `body` (length-1 character
+#'   vector with the response body, possibly empty on 4xx) and
+#'   `status_code` (length-1 integer HTTP status, 0 on libcurl-
+#'   level transport failure).
+#' @keywords internal
+.morie_http_get_with_status <- function(url, timeout_s = 60L, headers = as.character( c()), user_agent = "", follow_redirects = TRUE) {
+    .Call(`_morie_morie_http_get_with_status_`, url, timeout_s, headers, user_agent, follow_redirects)
+}
+
+#' Status-aware HTTP(S) POST via the libcurl backend (C++).
+#'
+#' Phase-3ZZ helper. Same status-code-return contract as
+#' .morie_http_get_with_status, but for POST bodies.
+#'
+#' @inheritParams .morie_http_post
+#' @return Named list with elements `body` + `status_code`.
+#' @keywords internal
+.morie_http_post_with_status <- function(url, body, content_type = "application/json", timeout_s = 60L, headers = as.character( c()), user_agent = "", follow_redirects = TRUE) {
+    .Call(`_morie_morie_http_post_with_status_`, url, body, content_type, timeout_s, headers, user_agent, follow_redirects)
+}
+
 #' libcurl version string the morie C++ backend was built against.
 #' @return Length-1 character vector.
 #' @keywords internal

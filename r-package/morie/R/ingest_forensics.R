@@ -28,7 +28,7 @@
 #   themselves (CSAFE, NSRL, ...) are multi-gigabyte and must be
 #   downloaded out-of-band; this client returns the catalog records.
 #
-# HTTP: `httr2`.  JSON: `httr2::resp_body_json()`.
+# HTTP: routes via .morie_dataset_http_text_with_status + .morie_dataset_http_post_json_with_status (3ZZ -> libcurl C++ backend with httr2 fallback). JSON: jsonlite::fromJSON(simplifyVector=FALSE). HTTP status codes inspected for NamUs 401/403 + 4xx custom error formatting.
 
 .MORIE_FORENSICS_DEFAULT_UA <- "morie/r (+https://hadesllm.com)"
 .MORIE_FORENSICS_DEFAULT_TIMEOUT <- 60
@@ -120,7 +120,10 @@
   out
 }
 
-# Internal: shared httr2 GET + JSON parse with explicit auth checks.
+# Internal: shared GET + JSON parse with explicit auth checks.
+# 3ZZ: routes through .morie_dataset_http_text_with_status (libcurl
+# backend with httr2 fallback), inspects HTTP status code for
+# 401/403 (auth) + 4xx (generic) custom error formatting.
 .morie_forensics_get_json <- function(url,
                                       params = list(),
                                       headers = list(),
@@ -130,22 +133,20 @@
                                         .MORIE_FORENSICS_DEFAULT_UA,
                                       auth_signup_url = NULL,
                                       label = "forensics") {
-  if (!requireNamespace("httr2", quietly = TRUE)) {
-    stop(
-      "Package 'httr2' is required for morie_ingest_forensics_*(). ",
-      "install.packages('httr2')",
-      call. = FALSE
-    )
+  # 3ZZ: route through .morie_dataset_http_text_with_status (libcurl
+  # + httr2 fallback). The status_code is needed for the 401/403
+  # API-key handling + general 4xx error formatting.
+  # `headers` arrives as a named list in the existing call sites;
+  # flatten to "Key: Value" strings for the helper's contract.
+  hdr_vec <- if (length(headers) > 0L) {
+    paste(names(headers), unlist(headers), sep = ": ")
+  } else {
+    character()
   }
-  req <- httr2::request(url)
-  req <- httr2::req_user_agent(req, user_agent)
-  req <- httr2::req_timeout(req, timeout)
-  req <- httr2::req_retry(req, max_tries = 3L)
-  if (length(headers)) req <- httr2::req_headers(req, !!!headers)
-  if (length(params)) req <- httr2::req_url_query(req, !!!params)
-  req <- httr2::req_error(req, is_error = function(resp) FALSE)
-  resp <- httr2::req_perform(req)
-  status <- httr2::resp_status(resp)
+  resp <- .morie_dataset_http_text_with_status(
+    url, query = params, headers = hdr_vec,
+    timeout_s = as.integer(timeout))
+  status <- resp$status_code
   if (status == 401L || status == 403L) {
     stop(
       label, ": API rejected the request (HTTP ", status, ")",
@@ -160,11 +161,11 @@
   if (status >= 400L) {
     stop(
       label, " -> HTTP ", status, ": ",
-      substr(httr2::resp_body_string(resp), 1L, 200L),
+      substr(resp$body, 1L, 200L),
       call. = FALSE
     )
   }
-  httr2::resp_body_json(resp, simplifyVector = FALSE)
+  jsonlite::fromJSON(resp$body, simplifyVector = FALSE)
 }
 
 # Internal: rbind a list of named-list rows into a data.frame,
@@ -414,26 +415,25 @@ morie_ingest_forensics_namus_missing <- function(
 
   rows <- list()
   repeat {
-    req <- httr2::request(.MORIE_NAMUS_MISSING_BASE)
-    req <- httr2::req_user_agent(req, user_agent)
-    req <- httr2::req_timeout(req, timeout)
-    req <- httr2::req_retry(req, max_tries = 3L)
-    req <- httr2::req_headers(req,
-      Accept = "application/json",
-      `Content-Type` = "application/json"
-    )
-    req <- httr2::req_body_json(req, body, auto_unbox = TRUE)
-    req <- httr2::req_error(req, is_error = function(resp) FALSE)
-    resp <- httr2::req_perform(req)
-    status <- httr2::resp_status(resp)
+    # 3ZZ: route through .morie_dataset_http_post_json_with_status
+    # (libcurl + httr2 fallback). NamUs requires Accept +
+    # Content-Type headers; Content-Type is added by the helper
+    # automatically so we only pass Accept.
+    resp <- .morie_dataset_http_post_json_with_status(
+      .MORIE_NAMUS_MISSING_BASE,
+      body = body,
+      headers = "Accept: application/json",
+      timeout_s = as.integer(timeout),
+      auto_unbox = TRUE)
+    status <- resp$status_code
     if (status >= 400L) {
       stop(
         "NamUs MissingPersons -> HTTP ", status, ": ",
-        substr(httr2::resp_body_string(resp), 1L, 200L),
+        substr(resp$body, 1L, 200L),
         call. = FALSE
       )
     }
-    payload <- httr2::resp_body_json(resp, simplifyVector = FALSE)
+    payload <- jsonlite::fromJSON(resp$body, simplifyVector = FALSE)
     batch <- payload$results
     if (is.null(batch)) batch <- payload$data
     if (is.null(batch) && is.list(payload) && is.null(names(payload))) {

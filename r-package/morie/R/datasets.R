@@ -130,6 +130,83 @@
   httr2::resp_body_string(resp)
 }
 
+#' Status-aware GET. 3ZZ: returns a list(body, status_code) so the
+#' caller can format custom error messages for 4xx (e.g. NamUs's
+#' 401/403 API-key handling). Routes through libcurl + httr2 fallback.
+#' @keywords internal
+#' @noRd
+.morie_dataset_http_text_with_status <- function(url, query = NULL,
+                                                    headers = character(),
+                                                    timeout_s = 60L) {
+  full_url <- .morie_dataset_build_url(url, query)
+  if (exists(".morie_http_get_with_status",
+              where = asNamespace("morie"),
+              mode = "function")) {
+    return(.morie_http_get_with_status(
+      full_url, timeout_s = as.integer(timeout_s),
+      headers = as.character(headers)))
+  }
+  if (!requireNamespace("httr2", quietly = TRUE)) {
+    stop("morie datasets HTTP fetch needs either the libcurl-backed ",
+         "C++ backend or the 'httr2' R package.")
+  }
+  req <- httr2::request(full_url)
+  if (length(headers) > 0L) {
+    kv <- strsplit(headers, ":\\s*", n = 2L)
+    kv <- Filter(function(x) length(x) == 2L, kv)
+    if (length(kv) > 0L) {
+      named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
+                                vapply(kv, `[[`, character(1L), 1L))
+      req <- do.call(httr2::req_headers, c(list(req), as.list(named)))
+    }
+  }
+  req <- httr2::req_error(req, is_error = function(resp) FALSE)
+  resp <- httr2::req_perform(req)
+  list(body = httr2::resp_body_string(resp),
+       status_code = as.integer(httr2::resp_status(resp)))
+}
+
+#' Status-aware POST + JSON body. 3ZZ.
+#' @keywords internal
+#' @noRd
+.morie_dataset_http_post_json_with_status <- function(url, body,
+                                                         query = NULL,
+                                                         headers = character(),
+                                                         timeout_s = 60L,
+                                                         auto_unbox = TRUE) {
+  full_url <- .morie_dataset_build_url(url, query)
+  body_str <- jsonlite::toJSON(body, auto_unbox = auto_unbox,
+                                 null = "null")
+  if (exists(".morie_http_post_with_status",
+              where = asNamespace("morie"),
+              mode = "function")) {
+    return(.morie_http_post_with_status(
+      full_url, body = as.character(body_str),
+      content_type = "application/json",
+      timeout_s = as.integer(timeout_s),
+      headers = as.character(headers)))
+  }
+  if (!requireNamespace("httr2", quietly = TRUE)) {
+    stop("morie datasets HTTP POST needs either the libcurl-backed ",
+         "C++ backend or the 'httr2' R package.")
+  }
+  req <- httr2::request(full_url)
+  req <- httr2::req_body_json(req, body, auto_unbox = auto_unbox)
+  if (length(headers) > 0L) {
+    kv <- strsplit(headers, ":\\s*", n = 2L)
+    kv <- Filter(function(x) length(x) == 2L, kv)
+    if (length(kv) > 0L) {
+      named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
+                                vapply(kv, `[[`, character(1L), 1L))
+      req <- do.call(httr2::req_headers, c(list(req), as.list(named)))
+    }
+  }
+  req <- httr2::req_error(req, is_error = function(resp) FALSE)
+  resp <- httr2::req_perform(req)
+  list(body = httr2::resp_body_string(resp),
+       status_code = as.integer(httr2::resp_status(resp)))
+}
+
 #' Synchronous POST + parse JSON. 3YY: routes through morie's C++
 #' libcurl .morie_http_post when available; falls back to httr2's
 #' req_body_json + req_perform + resp_body_json otherwise. Body

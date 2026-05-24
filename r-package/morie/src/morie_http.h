@@ -76,6 +76,31 @@ std::string post(const std::string& url,
                   const std::string& user_agent = std::string(),
                   bool follow_redirects = true);
 
+// Status-aware variants of get() + post() for callers that need
+// to inspect the HTTP status code (401/403/4xx handling).
+// status_code is the numeric HTTP status (200, 401, 404, etc.);
+// body is the response body (still populated on 4xx so the caller
+// can extract error details). status_code is 0 if libcurl itself
+// failed before getting a response.
+struct Response {
+  std::string body;
+  long status_code;
+};
+
+Response get_with_status(const std::string& url,
+                          int timeout_s = 60,
+                          const std::vector<std::string>& headers = {},
+                          const std::string& user_agent = std::string(),
+                          bool follow_redirects = true);
+
+Response post_with_status(const std::string& url,
+                           const std::string& body,
+                           const std::string& content_type = "application/json",
+                           int timeout_s = 60,
+                           const std::vector<std::string>& headers = {},
+                           const std::string& user_agent = std::string(),
+                           bool follow_redirects = true);
+
 // libcurl version string morie was built against. For diagnostics
 // + version-skew investigations.
 std::string curl_version();

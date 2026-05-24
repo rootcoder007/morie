@@ -175,6 +175,70 @@ std::string post(const std::string& url,
   return buf;
 }
 
+Response get_with_status(const std::string& url,
+                          int timeout_s,
+                          const std::vector<std::string>& headers,
+                          const std::string& user_agent,
+                          bool follow_redirects) {
+  Response out{std::string(), 0L};
+  CURL* h = curl_easy_init();
+  if (h == nullptr) return out;
+
+  struct curl_slist* hdrs = nullptr;
+  configure_handle(h, url, timeout_s, headers, user_agent,
+                    follow_redirects, &hdrs);
+  curl_easy_setopt(h, CURLOPT_WRITEFUNCTION, write_cb);
+  curl_easy_setopt(h, CURLOPT_WRITEDATA, &out.body);
+
+  const CURLcode rc = curl_easy_perform(h);
+  if (rc == CURLE_OK) {
+    curl_easy_getinfo(h, CURLINFO_RESPONSE_CODE, &out.status_code);
+  } else {
+    out.body.clear();
+    out.status_code = 0L;
+  }
+  curl_easy_cleanup(h);
+  if (hdrs != nullptr) curl_slist_free_all(hdrs);
+  return out;
+}
+
+Response post_with_status(const std::string& url,
+                           const std::string& body,
+                           const std::string& content_type,
+                           int timeout_s,
+                           const std::vector<std::string>& headers,
+                           const std::string& user_agent,
+                           bool follow_redirects) {
+  Response out{std::string(), 0L};
+  CURL* h = curl_easy_init();
+  if (h == nullptr) return out;
+
+  std::vector<std::string> all_headers = headers;
+  if (!content_type.empty()) {
+    all_headers.emplace_back("Content-Type: " + content_type);
+  }
+  struct curl_slist* hdrs = nullptr;
+  configure_handle(h, url, timeout_s, all_headers, user_agent,
+                    follow_redirects, &hdrs);
+  curl_easy_setopt(h, CURLOPT_WRITEFUNCTION, write_cb);
+  curl_easy_setopt(h, CURLOPT_WRITEDATA, &out.body);
+  curl_easy_setopt(h, CURLOPT_POST, 1L);
+  curl_easy_setopt(h, CURLOPT_POSTFIELDS, body.c_str());
+  curl_easy_setopt(h, CURLOPT_POSTFIELDSIZE_LARGE,
+                    static_cast<curl_off_t>(body.size()));
+
+  const CURLcode rc = curl_easy_perform(h);
+  if (rc == CURLE_OK) {
+    curl_easy_getinfo(h, CURLINFO_RESPONSE_CODE, &out.status_code);
+  } else {
+    out.body.clear();
+    out.status_code = 0L;
+  }
+  curl_easy_cleanup(h);
+  if (hdrs != nullptr) curl_slist_free_all(hdrs);
+  return out;
+}
+
 std::string curl_version() {
   return std::string(curl_version_info(CURLVERSION_NOW)->version);
 }
@@ -275,6 +339,65 @@ std::string morie_http_post_(std::string url,
   }
   return morie::http::post(url, body, content_type, timeout_s,
                             hdrs, user_agent, follow_redirects);
+}
+
+//' Status-aware HTTP(S) GET via the libcurl backend (C++).
+//'
+//' Phase-3ZZ helper for callers that need HTTP status-code
+//' inspection (401/403/4xx error handling). Returns a length-2
+//' list: `body` (character) + `status_code` (integer, 0 on
+//' transport failure).
+//'
+//' @inheritParams .morie_http_get
+//' @return Named list with elements `body` (length-1 character
+//'   vector with the response body, possibly empty on 4xx) and
+//'   `status_code` (length-1 integer HTTP status, 0 on libcurl-
+//'   level transport failure).
+//' @keywords internal
+// [[Rcpp::export(.morie_http_get_with_status)]]
+Rcpp::List morie_http_get_with_status_(std::string url,
+                                        int timeout_s = 60,
+                                        Rcpp::CharacterVector headers = Rcpp::CharacterVector::create(),
+                                        std::string user_agent = "",
+                                        bool follow_redirects = true) {
+  std::vector<std::string> hdrs;
+  hdrs.reserve(headers.size());
+  for (int i = 0; i < headers.size(); ++i) {
+    hdrs.emplace_back(Rcpp::as<std::string>(headers[i]));
+  }
+  morie::http::Response r = morie::http::get_with_status(
+    url, timeout_s, hdrs, user_agent, follow_redirects);
+  return Rcpp::List::create(
+    Rcpp::Named("body")        = r.body,
+    Rcpp::Named("status_code") = static_cast<int>(r.status_code));
+}
+
+//' Status-aware HTTP(S) POST via the libcurl backend (C++).
+//'
+//' Phase-3ZZ helper. Same status-code-return contract as
+//' .morie_http_get_with_status, but for POST bodies.
+//'
+//' @inheritParams .morie_http_post
+//' @return Named list with elements `body` + `status_code`.
+//' @keywords internal
+// [[Rcpp::export(.morie_http_post_with_status)]]
+Rcpp::List morie_http_post_with_status_(std::string url,
+                                         std::string body,
+                                         std::string content_type = "application/json",
+                                         int timeout_s = 60,
+                                         Rcpp::CharacterVector headers = Rcpp::CharacterVector::create(),
+                                         std::string user_agent = "",
+                                         bool follow_redirects = true) {
+  std::vector<std::string> hdrs;
+  hdrs.reserve(headers.size());
+  for (int i = 0; i < headers.size(); ++i) {
+    hdrs.emplace_back(Rcpp::as<std::string>(headers[i]));
+  }
+  morie::http::Response r = morie::http::post_with_status(
+    url, body, content_type, timeout_s, hdrs, user_agent, follow_redirects);
+  return Rcpp::List::create(
+    Rcpp::Named("body")        = r.body,
+    Rcpp::Named("status_code") = static_cast<int>(r.status_code));
 }
 
 //' libcurl version string the morie C++ backend was built against.

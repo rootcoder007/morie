@@ -235,3 +235,69 @@ test_that(".morie_dataset_http_bytes forwards custom headers", {
                 c("X-App-Token: tok-xyz",
                   "Accept: application/zip"))
 })
+
+# ====================================== 3ZZ: status-aware variants
+
+test_that(".morie_http_get_with_status + .morie_http_post_with_status exist", {
+  expect_true(exists(".morie_http_get_with_status",
+                       where = asNamespace("morie"),
+                       mode = "function"))
+  expect_true(exists(".morie_http_post_with_status",
+                       where = asNamespace("morie"),
+                       mode = "function"))
+})
+
+test_that(".morie_dataset_http_text_with_status returns list(body, status_code)", {
+  testthat::local_mocked_bindings(
+    .morie_http_get_with_status = function(url, timeout_s = 60L,
+                                             headers = character(),
+                                             user_agent = "",
+                                             follow_redirects = TRUE) {
+      list(body = "body-text", status_code = 200L)
+    },
+    .package = "morie")
+  out <- morie:::.morie_dataset_http_text_with_status(
+    "https://x.test/y", query = list(a = 1))
+  expect_type(out, "list")
+  expect_named(out, c("body", "status_code"))
+  expect_equal(out$body, "body-text")
+  expect_equal(out$status_code, 200L)
+})
+
+test_that(".morie_dataset_http_text_with_status surfaces 4xx without throwing", {
+  testthat::local_mocked_bindings(
+    .morie_http_get_with_status = function(url, timeout_s = 60L,
+                                             headers = character(),
+                                             user_agent = "",
+                                             follow_redirects = TRUE) {
+      list(body = '{"error":"unauthorised"}', status_code = 401L)
+    },
+    .package = "morie")
+  out <- morie:::.morie_dataset_http_text_with_status(
+    "https://x.test/y")
+  expect_equal(out$status_code, 401L)
+  expect_match(out$body, "unauthorised")
+})
+
+test_that(".morie_dataset_http_post_json_with_status serialises body + returns status", {
+  seen <- list()
+  testthat::local_mocked_bindings(
+    .morie_http_post_with_status = function(url, body,
+                                              content_type = "application/json",
+                                              timeout_s = 60L,
+                                              headers = character(),
+                                              user_agent = "",
+                                              follow_redirects = TRUE) {
+      seen <<- list(body = body, content_type = content_type)
+      list(body = '{"ok":true}', status_code = 200L)
+    },
+    .package = "morie")
+  out <- morie:::.morie_dataset_http_post_json_with_status(
+    "https://x.test/y",
+    body = list(x = 1L, y = "two"))
+  expect_equal(out$status_code, 200L)
+  # jsonlite::toJSON(auto_unbox=TRUE) renders the body deterministically.
+  expect_match(seen$body, '"x":1')
+  expect_match(seen$body, '"y":"two"')
+  expect_equal(seen$content_type, "application/json")
+})

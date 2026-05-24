@@ -291,6 +291,38 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// morie_http_get_with_status_
+Rcpp::List morie_http_get_with_status_(std::string url, int timeout_s, Rcpp::CharacterVector headers, std::string user_agent, bool follow_redirects);
+RcppExport SEXP _morie_morie_http_get_with_status_(SEXP urlSEXP, SEXP timeout_sSEXP, SEXP headersSEXP, SEXP user_agentSEXP, SEXP follow_redirectsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
+    Rcpp::traits::input_parameter< int >::type timeout_s(timeout_sSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type headers(headersSEXP);
+    Rcpp::traits::input_parameter< std::string >::type user_agent(user_agentSEXP);
+    Rcpp::traits::input_parameter< bool >::type follow_redirects(follow_redirectsSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_http_get_with_status_(url, timeout_s, headers, user_agent, follow_redirects));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_http_post_with_status_
+Rcpp::List morie_http_post_with_status_(std::string url, std::string body, std::string content_type, int timeout_s, Rcpp::CharacterVector headers, std::string user_agent, bool follow_redirects);
+RcppExport SEXP _morie_morie_http_post_with_status_(SEXP urlSEXP, SEXP bodySEXP, SEXP content_typeSEXP, SEXP timeout_sSEXP, SEXP headersSEXP, SEXP user_agentSEXP, SEXP follow_redirectsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
+    Rcpp::traits::input_parameter< std::string >::type body(bodySEXP);
+    Rcpp::traits::input_parameter< std::string >::type content_type(content_typeSEXP);
+    Rcpp::traits::input_parameter< int >::type timeout_s(timeout_sSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type headers(headersSEXP);
+    Rcpp::traits::input_parameter< std::string >::type user_agent(user_agentSEXP);
+    Rcpp::traits::input_parameter< bool >::type follow_redirects(follow_redirectsSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_http_post_with_status_(url, body, content_type, timeout_s, headers, user_agent, follow_redirects));
+    return rcpp_result_gen;
+END_RCPP
+}
 // morie_http_curl_version_
 std::string morie_http_curl_version_();
 RcppExport SEXP _morie_morie_http_curl_version_() {
@@ -536,6 +568,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_morie_morie_http_get_", (DL_FUNC) &_morie_morie_http_get_, 5},
     {"_morie_morie_http_get_bytes_", (DL_FUNC) &_morie_morie_http_get_bytes_, 5},
     {"_morie_morie_http_post_", (DL_FUNC) &_morie_morie_http_post_, 7},
+    {"_morie_morie_http_get_with_status_", (DL_FUNC) &_morie_morie_http_get_with_status_, 5},
+    {"_morie_morie_http_post_with_status_", (DL_FUNC) &_morie_morie_http_post_with_status_, 7},
     {"_morie_morie_http_curl_version_", (DL_FUNC) &_morie_morie_http_curl_version_, 0},
     {"_morie_morie_matching_mahalanobis_pairs_cpp", (DL_FUNC) &_morie_morie_matching_mahalanobis_pairs_cpp, 3},
     {"_morie_morie_matching_euclidean_pairs_cpp", (DL_FUNC) &_morie_morie_matching_euclidean_pairs_cpp, 2},
