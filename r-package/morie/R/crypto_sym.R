@@ -115,6 +115,9 @@ morie_crypto_chacha20_poly1305_decrypt <- function(key, nonce,
 #' @export
 morie_crypto_hkdf_sha256 <- function(ikm, length = 32L,
                                        salt = raw(0), info = raw(0)) {
+  if (is.character(ikm))  ikm  <- charToRaw(paste(ikm, collapse = ""))
+  if (is.character(salt)) salt <- charToRaw(paste(salt, collapse = ""))
+  if (is.character(info)) info <- charToRaw(paste(info, collapse = ""))
   stopifnot(is.raw(ikm), is.raw(salt), is.raw(info))
   .Call(`_morie_morie_crypto_hkdf_sha256`,
         ikm, as.integer(length), salt, info)
