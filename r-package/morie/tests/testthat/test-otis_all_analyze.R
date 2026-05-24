@@ -155,7 +155,20 @@ for (nm in ruhela_singleton_fns) {
       res <- tryCatch(do.call(fn_name, list(data = df)),
                       error = function(e) NULL,
                       warning = function(w) NULL)
-      skip_if(is.null(res), paste(fn_name, "needs OTIS data on disk"))
+      if (is.null(res)) {
+        # Synthetic panel doesn't fit this analyzer; fall back to the
+        # bundled a01 fixture from data.ontario.ca (real, open).
+        df2 <- suppressWarnings(tryCatch(
+          morie_datasets_otis_a01(offline = TRUE),
+          error = function(e) NULL))
+        if (!is.null(df2)) {
+          res <- tryCatch(do.call(fn_name, list(data = df2)),
+                          error = function(e) NULL,
+                          warning = function(w) NULL)
+        }
+      }
+      skip_if(is.null(res),
+              paste(fn_name, "needs OTIS columns the bundled a01 fixture lacks"))
       expect_true(is.list(res) || is.data.frame(res) ||
                   is.numeric(res) || is.character(res))
     })
@@ -199,11 +212,16 @@ test_that("morie_otis_analyze_c11_mandela_classification runs", {
 
 test_that("morie_otis_analyze_otis_mandela_provincial_vs_federal runs", {
   set.seed(42)
+  # The provincial-vs-federal cross-comparison delegates to the c11
+  # Mandela classifier; pass a c11-shaped synthetic frame (the helper
+  # ships with the test suite) rather than the empty no-arg call,
+  # which was the real reason this skip used to fire.
+  df <- make_synthetic_otis("c11", n = 150, seed = 42)
   res <- tryCatch(
-    morie_otis_analyze_otis_mandela_provincial_vs_federal(),
+    morie_otis_analyze_otis_mandela_provincial_vs_federal(df),
     error = function(e) NULL
   )
-  skip_if(is.null(res), "needs SIU + OTIS bulk data")
+  skip_if(is.null(res), "c11 synthetic still lacks the Mandela columns")
   expect_true(is.list(res) || is.data.frame(res))
 })
 

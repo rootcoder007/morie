@@ -95,7 +95,7 @@ test_that("cpads loader returns the synthetic frame when no cache", {
   expect_s3_class(out, "data.frame")
 })
 
-test_that("otis_a01 offline returns frame; offline=FALSE errors", {
+test_that("otis_a01 offline returns frame; offline=FALSE goes to live CKAN", {
   set.seed(1)
   out <- tryCatch(
     suppressWarnings(morie_datasets_otis_a01(offline = TRUE)),
@@ -103,7 +103,25 @@ test_that("otis_a01 offline returns frame; offline=FALSE errors", {
   )
   skip_if(is.null(out), "no otis fixture")
   expect_s3_class(out, "data.frame")
-  expect_error(morie_datasets_otis_a01(offline = FALSE), "FOI")
+  # offline = FALSE now resolves to the wired CKAN resource id
+  # 5a0c5804-a055-4031-9743-73f556e43bb4 on data.ontario.ca. The
+  # earlier stale "FOI-only" assertion was retracted in 3MMM.1 (see
+  # feedback_no_false_FOI_claims). With the live CKAN endpoint
+  # mocked out the call returns the mock frame.
+  testthat::with_mocked_bindings(
+    .morie_ontario_ckan_dump_csv = function(resource_id, limit = 200000L) {
+      expect_equal(resource_id,
+                    "5a0c5804-a055-4031-9743-73f556e43bb4")
+      data.frame(EndFiscalYear = 2024L,
+                 UniqueIndividual_ID = "mock-1",
+                 stringsAsFactors = FALSE)
+    },
+    .package = "morie",
+    code = {
+      live <- morie_datasets_otis_a01(offline = FALSE)
+      expect_s3_class(live, "data.frame")
+    }
+  )
 })
 
 test_that("siu_director_reports returns a data.frame (empty if no deps/network)", {

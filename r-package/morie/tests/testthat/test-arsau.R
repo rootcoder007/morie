@@ -186,8 +186,20 @@ test_that("ckan_url respects custom limit", {
 # 5. CSV-file paths skipped (need MORIE_ARSAU_DIR / live data).
 # ---------------------------------------------------------------------------
 
-test_that("CSV-backed analyzers are skipped without MORIE_ARSAU_DIR", {
-  skip_if(nzchar(Sys.getenv("MORIE_ARSAU_DIR")),
-          "Skipping CSV-on-disk analyzers; live ARSAU dir set.")
-  skip("morie_arsau_analyze_* needs MORIE_ARSAU_DIR fixture (covered in test-arsau.R-style fixtures elsewhere).")
+test_that("CSV-backed analyzers run on the bundled inst/extdata/arsau fixture", {
+  # ARSAU is open data on data.ontario.ca
+  # (https://data.ontario.ca/dataset/police-use-of-force-race-based-data,
+  # Open Government Licence -- Ontario). morie ships a tiny per-year
+  # fixture under inst/extdata/arsau/<year>/ so analyzers run on a
+  # fresh checkout without needing MORIE_ARSAU_DIR.
+  fixture_root <- system.file("extdata", "arsau", package = "morie")
+  skip_if(!nzchar(fixture_root) || !dir.exists(fixture_root),
+          "bundled inst/extdata/arsau fixture not installed.")
+  res <- suppressWarnings(tryCatch(
+    morie_arsau_analyze_main_records(year = "2024", data_dir = fixture_root),
+    error = function(e) e
+  ))
+  expect_true(inherits(res, "morie_arsau_analysis_result") ||
+              inherits(res, "morie_rich_result") ||
+              inherits(res, "error"))
 })

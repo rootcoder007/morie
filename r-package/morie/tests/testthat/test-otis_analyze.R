@@ -58,10 +58,17 @@ test_that("morie_otis_repeat_placement_concentration accepts k arg", {
 # Aggregator: morie_otis_churn_analyze_all
 # ---------------------------------------------------------------------------
 
-test_that("morie_otis_churn_analyze_all runs with NULL batches", {
-  res <- tryCatch(morie_otis_churn_analyze_all(),
-                  error = function(e) NULL)
-  skip_if(is.null(res), "needs OTIS batch payloads")
+test_that("morie_otis_churn_analyze_all runs on a bundled-style OTIS frame", {
+  # The aggregator needs at least one named batch (b01 = ...); the
+  # earlier no-arg call was the actual cause of the skip, not missing
+  # data. Pass the b01-shaped synthetic helper that the test suite
+  # already provides.
+  set.seed(2)
+  res <- tryCatch(
+    morie_otis_churn_analyze_all(b01 = make_synthetic_otis("b01", n = 80)),
+    error = function(e) NULL
+  )
+  skip_if(is.null(res), "b01 synthetic helper still lacks the churn columns")
   expect_true(is.list(res))
 })
 

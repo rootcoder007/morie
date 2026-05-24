@@ -183,21 +183,16 @@ morie_datasets_arsau_uof_main_records <- function(year = "2024",
 #' table(df$Region_AtTimeOfDeath)
 #' @export
 morie_datasets_otis_d01_deaths_in_custody <- function(offline = TRUE,
-                                                       resource_id = NULL) {
-  if (isTRUE(offline)) {
-    path <- system.file("extdata",
-                        "otis_d01_deaths_in_custody_sample.csv",
-                        package = "morie")
-    if (!nzchar(path)) {
-      stop("bundled OTIS d01 fixture missing", call. = FALSE)
-    }
-    return(utils::read.csv(path, stringsAsFactors = FALSE,
-                            check.names = FALSE))
-  }
-  if (is.null(resource_id)) {
-    resource_id <- .MORIE_OTIS_D01_RESOURCE_ID
-  }
-  .morie_ontario_ckan_dump_csv(resource_id)
+                                                       resource_id = NULL,
+                                                       source = NULL) {
+  .morie_otis_lookup_pending_dispatch(
+    "d01 Deaths in Custody",
+    "otis_d01_deaths_in_custody_sample.csv",
+    offline = offline,
+    resource_id = resource_id %||% .MORIE_OTIS_D01_RESOURCE_ID,
+    registry_key = "otis_d01_deaths_in_custody",
+    source = source
+  )
 }
 
 # ---------------------------------------------------------------------------
@@ -658,30 +653,50 @@ morie_datasets_ontario_ckan_layers <- function() {
 # is also missing or NA the function errors with a clear message.
 .morie_otis_lookup_pending_dispatch <- function(dataset_label, fixture,
                                                   offline, resource_id,
-                                                  registry_key = NULL) {
-  if (isTRUE(offline)) {
-    path <- system.file("extdata", fixture, package = "morie")
-    if (!nzchar(path)) {
-      stop(sprintf("bundled OTIS fixture %s missing", fixture),
-           call. = FALSE)
+                                                  registry_key = NULL,
+                                                  source = NULL) {
+  # Derive `source` from the older `offline` arg for back-compat:
+  # offline = TRUE  -> source = "bundled" (existing behaviour: read the
+  #                    inst/extdata/*_sample.csv; error if missing)
+  # offline = FALSE -> source = "live"    (existing behaviour: hit the
+  #                    live Ontario CKAN endpoint; error on miss)
+  # source = "auto"/"synthetic"/"empty" are new opt-in modes that
+  # require the caller to pass `source =` explicitly.
+  if (is.null(source) || identical(source, "")) {
+    source <- if (isTRUE(offline)) "bundled" else "live"
+  }
+  source <- match.arg(
+    source, c("auto", "live", "bundled", "synthetic", "empty"))
+  # Resolve the synth id from the fixture filename: strip the
+  # "otis_<id>_..._sample.csv" prefix down to just the <id>.
+  short_id <- sub("^otis_([a-z]\\d+)_.*", "\\1",
+                  sub("\\.csv$", "", fixture))
+  bundled_name <- sub("\\.csv$", "", fixture)
+  live_fn <- function() {
+    rid <- resource_id
+    if (is.null(rid) && !is.null(registry_key)) {
+      entry <- .MORIE_ONTARIO_CKAN_REGISTRY[[registry_key]]
+      if (!is.null(entry) && !is.na(entry$resource_id))
+        rid <- entry$resource_id
     }
-    return(utils::read.csv(path, stringsAsFactors = FALSE,
-                            check.names = FALSE))
+    if (is.null(rid) || is.na(rid)) {
+      stop(sprintf(paste0(
+        "Live mode for OTIS %s needs an explicit resource_id ",
+        "(canonical Ontario CKAN id lookup pending in the morie ",
+        "registry). Pass resource_id= or open a PR adding it to ",
+        ".MORIE_ONTARIO_CKAN_REGISTRY."), dataset_label),
+        call. = FALSE)
+    }
+    .morie_ontario_ckan_dump_csv(rid)
   }
-  if (is.null(resource_id) && !is.null(registry_key)) {
-    entry <- .MORIE_ONTARIO_CKAN_REGISTRY[[registry_key]]
-    if (!is.null(entry) && !is.na(entry$resource_id))
-      resource_id <- entry$resource_id
-  }
-  if (is.null(resource_id) || is.na(resource_id)) {
-    stop(sprintf(paste0(
-      "Live mode for OTIS %s needs an explicit resource_id ",
-      "(canonical Ontario CKAN id lookup pending in the morie ",
-      "registry). Pass resource_id= or open a PR adding it to ",
-      ".MORIE_ONTARIO_CKAN_REGISTRY."), dataset_label),
-      call. = FALSE)
-  }
-  .morie_ontario_ckan_dump_csv(resource_id)
+  synth_fn <- function() morie_synth_otis(short_id, n = 30L)
+  .morie_load_chain(
+    source = source,
+    live_fn = live_fn,
+    bundled_name = bundled_name,
+    synth_fn = synth_fn,
+    columns = NULL
+  )
 }
 
 #' OTIS a01 -- Restrictive Confinement (detailed per-individual)
@@ -696,77 +711,77 @@ morie_datasets_ontario_ckan_layers <- function() {
 #'   `Number_Of_Placements`).
 #' @export
 morie_datasets_otis_a01_restrictive_confinement <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "a01 Restrictive Confinement",
     "otis_a01_restrictive_confinement_sample.csv",
-    offline, resource_id, registry_key = "otis_a01_restrictive_confinement")
+    offline, resource_id, registry_key = "otis_a01_restrictive_confinement", source = source)
 }
 
 #' OTIS d02 -- Deaths in custody by gender
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_d02_deaths_by_gender <- function(offline = TRUE,
-                                                       resource_id = NULL) {
+                                                       resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "d02 Deaths-in-Custody by gender",
     "otis_d02_deaths_by_gender_sample.csv",
-    offline, resource_id, registry_key = "otis_d02_deaths_by_gender")
+    offline, resource_id, registry_key = "otis_d02_deaths_by_gender", source = source)
 }
 
 #' OTIS d03 -- Deaths in custody by race
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_d03_deaths_by_race <- function(offline = TRUE,
-                                                     resource_id = NULL) {
+                                                     resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "d03 Deaths-in-Custody by race",
     "otis_d03_deaths_by_race_sample.csv",
-    offline, resource_id, registry_key = "otis_d03_deaths_by_race")
+    offline, resource_id, registry_key = "otis_d03_deaths_by_race", source = source)
 }
 
 #' OTIS d04 -- Deaths in custody by religion
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_d04_deaths_by_religion <- function(offline = TRUE,
-                                                         resource_id = NULL) {
+                                                         resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "d04 Deaths-in-Custody by religion",
     "otis_d04_deaths_by_religion_sample.csv",
-    offline, resource_id, registry_key = "otis_d04_deaths_by_religion")
+    offline, resource_id, registry_key = "otis_d04_deaths_by_religion", source = source)
 }
 
 #' OTIS d05 -- Deaths in custody by age category
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_d05_deaths_by_age_category <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "d05 Deaths-in-Custody by age category",
     "otis_d05_deaths_by_age_category_sample.csv",
-    offline, resource_id, registry_key = "otis_d05_deaths_by_age_category")
+    offline, resource_id, registry_key = "otis_d05_deaths_by_age_category", source = source)
 }
 
 #' OTIS d06 -- Deaths in custody by alert type x institution
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_d06_cause_by_alert <- function(offline = TRUE,
-                                                     resource_id = NULL) {
+                                                     resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "d06 Deaths-in-Custody cause-by-alert",
     "otis_d06_cause_by_alert_sample.csv",
-    offline, resource_id, registry_key = "otis_d06_cause_by_alert")
+    offline, resource_id, registry_key = "otis_d06_cause_by_alert", source = source)
 }
 
 #' OTIS d07 -- Deaths in custody alerts x housing unit
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_d07_alerts_by_housing_unit <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "d07 Deaths-in-Custody alerts by housing unit",
     "otis_d07_alerts_by_housing_unit_sample.csv",
-    offline, resource_id, registry_key = "otis_d07_alerts_by_housing_unit")
+    offline, resource_id, registry_key = "otis_d07_alerts_by_housing_unit", source = source)
 }
 
 # ---------------------------------------------------------------------------
@@ -778,91 +793,91 @@ morie_datasets_otis_d07_alerts_by_housing_unit <- function(
 #' @return A `data.frame` with the canonical 18-col schema.
 #' @export
 morie_datasets_otis_b01_segregation_detailed <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b01 Segregation detailed",
-    "otis_b01_segregation_detailed_sample.csv", offline, resource_id, registry_key = "otis_b01_segregation_detailed")
+    "otis_b01_segregation_detailed_sample.csv", offline, resource_id, registry_key = "otis_b01_segregation_detailed", source = source)
 }
 
 #' OTIS b02 -- Segregation total days per individual
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_b02_segregation_total_days <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b02 Segregation total days",
-    "otis_b02_segregation_total_days_sample.csv", offline, resource_id, registry_key = "otis_b02_segregation_total_days")
+    "otis_b02_segregation_total_days_sample.csv", offline, resource_id, registry_key = "otis_b02_segregation_total_days", source = source)
 }
 
 #' OTIS b03 -- Segregation placements: alerts + hold by institution
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_b03_seg_alerts_by_institution <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b03 Segregation alerts by institution",
-    "otis_b03_seg_alerts_by_institution_sample.csv", offline, resource_id, registry_key = "otis_b03_seg_alerts_by_institution")
+    "otis_b03_seg_alerts_by_institution_sample.csv", offline, resource_id, registry_key = "otis_b03_seg_alerts_by_institution", source = source)
 }
 
 #' OTIS b04 -- Segregation consecutive durations by region
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_b04_seg_consecutive_by_region <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b04 Segregation consecutive durations by region",
-    "otis_b04_seg_consecutive_by_region_sample.csv", offline, resource_id, registry_key = "otis_b04_seg_consecutive_by_region")
+    "otis_b04_seg_consecutive_by_region_sample.csv", offline, resource_id, registry_key = "otis_b04_seg_consecutive_by_region", source = source)
 }
 
 #' OTIS b05 -- Segregation placements by consecutive-length bucket
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_b05_seg_consecutive_lengths <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b05 Segregation consecutive lengths",
-    "otis_b05_seg_consecutive_lengths_sample.csv", offline, resource_id, registry_key = "otis_b05_seg_consecutive_lengths")
+    "otis_b05_seg_consecutive_lengths_sample.csv", offline, resource_id, registry_key = "otis_b05_seg_consecutive_lengths", source = source)
 }
 
 #' OTIS b06 -- Segregation placements: reason for placement by institution
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_b06_seg_reason_by_institution <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b06 Segregation reason by institution",
-    "otis_b06_seg_reason_by_institution_sample.csv", offline, resource_id, registry_key = "otis_b06_seg_reason_by_institution")
+    "otis_b06_seg_reason_by_institution_sample.csv", offline, resource_id, registry_key = "otis_b06_seg_reason_by_institution", source = source)
 }
 
 #' OTIS b07 -- Segregation placements: alerts + hold by gender
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_b07_seg_alerts_by_gender <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b07 Segregation alerts by gender",
-    "otis_b07_seg_alerts_by_gender_sample.csv", offline, resource_id, registry_key = "otis_b07_seg_alerts_by_gender")
+    "otis_b07_seg_alerts_by_gender_sample.csv", offline, resource_id, registry_key = "otis_b07_seg_alerts_by_gender", source = source)
 }
 
 #' OTIS b08 -- Segregation consecutive durations by institution
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_b08_seg_consecutive_by_institution <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b08 Segregation consecutive durations by institution",
     "otis_b08_seg_consecutive_by_institution_sample.csv",
-    offline, resource_id, registry_key = "otis_b08_seg_consecutive_by_institution")
+    offline, resource_id, registry_key = "otis_b08_seg_consecutive_by_institution", source = source)
 }
 
 #' OTIS b09 -- Individuals in segregation by number of times placed
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_b09_seg_n_times <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "b09 Individuals by N times in segregation",
-    "otis_b09_seg_n_times_sample.csv", offline, resource_id, registry_key = "otis_b09_seg_n_times")
+    "otis_b09_seg_n_times_sample.csv", offline, resource_id, registry_key = "otis_b09_seg_n_times", source = source)
 }
 
 # ---------------------------------------------------------------------------
@@ -873,125 +888,125 @@ morie_datasets_otis_b09_seg_n_times <- function(
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_c01_individuals_total <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c01 Individuals total",
-    "otis_c01_individuals_total_sample.csv", offline, resource_id, registry_key = "otis_c01_individuals_total")
+    "otis_c01_individuals_total_sample.csv", offline, resource_id, registry_key = "otis_c01_individuals_total", source = source)
 }
 
 #' OTIS c02 -- Individuals by institution
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_c02_individuals_by_institution <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c02 Individuals by institution",
     "otis_c02_individuals_by_institution_sample.csv",
-    offline, resource_id, registry_key = "otis_c02_individuals_by_institution")
+    offline, resource_id, registry_key = "otis_c02_individuals_by_institution", source = source)
 }
 
 #' OTIS c03 -- Individuals by race x gender
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_c03_individuals_race_by_gender <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c03 Individuals race by gender",
-    "otis_c03_individuals_race_by_gender_sample.csv", offline, resource_id, registry_key = "otis_c03_individuals_race_by_gender")
+    "otis_c03_individuals_race_by_gender_sample.csv", offline, resource_id, registry_key = "otis_c03_individuals_race_by_gender", source = source)
 }
 
 #' OTIS c04 -- Individuals by race x region
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_c04_individuals_race_by_region <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c04 Individuals race by region",
-    "otis_c04_individuals_race_by_region_sample.csv", offline, resource_id, registry_key = "otis_c04_individuals_race_by_region")
+    "otis_c04_individuals_race_by_region_sample.csv", offline, resource_id, registry_key = "otis_c04_individuals_race_by_region", source = source)
 }
 
 #' OTIS c05 -- Individuals by religion x region
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_c05_individuals_religion_by_region <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c05 Individuals religion by region",
     "otis_c05_individuals_religion_by_region_sample.csv",
-    offline, resource_id, registry_key = "otis_c05_individuals_religion_by_region")
+    offline, resource_id, registry_key = "otis_c05_individuals_religion_by_region", source = source)
 }
 
 #' OTIS c06 -- Individuals by age category x region
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_c06_individuals_age_by_region <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c06 Individuals age by region",
-    "otis_c06_individuals_age_by_region_sample.csv", offline, resource_id, registry_key = "otis_c06_individuals_age_by_region")
+    "otis_c06_individuals_age_by_region_sample.csv", offline, resource_id, registry_key = "otis_c06_individuals_age_by_region", source = source)
 }
 
 #' OTIS c07 -- Individuals: alerts + hold flags
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_c07_individuals_alerts <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c07 Individuals alerts",
-    "otis_c07_individuals_alerts_sample.csv", offline, resource_id, registry_key = "otis_c07_individuals_alerts")
+    "otis_c07_individuals_alerts_sample.csv", offline, resource_id, registry_key = "otis_c07_individuals_alerts", source = source)
 }
 
 #' OTIS c08 -- Individuals by religion x gender
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_c08_individuals_religion_by_gender <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c08 Individuals religion by gender",
     "otis_c08_individuals_religion_by_gender_sample.csv",
-    offline, resource_id, registry_key = "otis_c08_individuals_religion_by_gender")
+    offline, resource_id, registry_key = "otis_c08_individuals_religion_by_gender", source = source)
 }
 
 #' OTIS c09 -- Individuals by age category x gender
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_c09_individuals_age_by_gender <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c09 Individuals age by gender",
-    "otis_c09_individuals_age_by_gender_sample.csv", offline, resource_id, registry_key = "otis_c09_individuals_age_by_gender")
+    "otis_c09_individuals_age_by_gender_sample.csv", offline, resource_id, registry_key = "otis_c09_individuals_age_by_gender", source = source)
 }
 
 #' OTIS c10 -- Aggregate durations by institution
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_c10_aggregate_durations_by_institution <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c10 Aggregate durations by institution",
     "otis_c10_aggregate_durations_by_institution_sample.csv",
-    offline, resource_id, registry_key = "otis_c10_aggregate_durations_by_institution")
+    offline, resource_id, registry_key = "otis_c10_aggregate_durations_by_institution", source = source)
 }
 
 #' OTIS c11 -- Aggregate lengths
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_c11_aggregate_lengths <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c11 Aggregate lengths",
-    "otis_c11_aggregate_lengths_sample.csv", offline, resource_id, registry_key = "otis_c11_aggregate_lengths")
+    "otis_c11_aggregate_lengths_sample.csv", offline, resource_id, registry_key = "otis_c11_aggregate_lengths", source = source)
 }
 
 #' OTIS c12 -- Aggregate durations by region
 #' @inheritParams morie_datasets_otis_a01_restrictive_confinement
 #' @export
 morie_datasets_otis_c12_aggregate_durations_by_region <- function(
-  offline = TRUE, resource_id = NULL) {
+  offline = TRUE, resource_id = NULL, source = NULL) {
   .morie_otis_lookup_pending_dispatch(
     "c12 Aggregate durations by region",
     "otis_c12_aggregate_durations_by_region_sample.csv",
-    offline, resource_id, registry_key = "otis_c12_aggregate_durations_by_region")
+    offline, resource_id, registry_key = "otis_c12_aggregate_durations_by_region", source = source)
 }
 
 #' Generic Ontario CKAN dataset loader (by registry key)

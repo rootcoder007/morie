@@ -19,10 +19,12 @@ make_otis_placements <- function(n = 60, seed = 1) {
 # morie_otis_load — external file required
 # ---------------------------------------------------------------------------
 
-test_that("morie_otis_load returns data.frame or errors cleanly without csv", {
-  res <- tryCatch(morie_otis_load(), error = function(e) NULL)
-  skip_if(is.null(res), "needs OTIS csv on disk")
+test_that("morie_otis_load returns the bundled a01 fixture on a clean checkout", {
+  # morie_otis_load() with no csv_path + no cached file falls back to
+  # the bundled OTIS A01 fixture from data.ontario.ca (real, open).
+  res <- suppressWarnings(morie_otis_load())
   expect_s3_class(res, "data.frame")
+  expect_gt(nrow(res), 0L)
 })
 
 test_that("morie_otis_load handles bogus path gracefully", {

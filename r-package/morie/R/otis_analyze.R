@@ -62,23 +62,32 @@ NULL
 #' }
 #' @export
 morie_otis_load <- function(csv_path = NULL, use_readr = FALSE) {
-  p <- if (!is.null(csv_path)) {
-    csv_path
-  } else {
-    file.path(morie_cache_dir("otis"), "otis_main.csv")
+  if (!is.null(csv_path)) {
+    if (!file.exists(csv_path)) {
+      stop(sprintf(paste0("OTIS dataset not found at %s. Pass an ",
+                          "existing csv_path or call morie_otis_load() ",
+                          "with csv_path = NULL to use the bundled ",
+                          "data.ontario.ca a01 fixture."), csv_path))
+    }
+    if (isTRUE(use_readr) && requireNamespace("readr", quietly = TRUE)) {
+      return(as.data.frame(readr::read_csv(csv_path, show_col_types = FALSE)))
+    }
+    return(utils::read.csv(csv_path, check.names = FALSE,
+                            stringsAsFactors = FALSE))
   }
-  if (!file.exists(p)) {
-    stop(sprintf(paste0("OTIS dataset not found at %s. Re-run ",
-                        "`Rscript scripts/export_otis_csv.R` or place ",
-                        "the CSV under morie_cache_dir(\"otis\")."), p))
+  cached <- file.path(morie_cache_dir("otis"), "otis_main.csv")
+  if (file.exists(cached)) {
+    if (isTRUE(use_readr) && requireNamespace("readr", quietly = TRUE)) {
+      return(as.data.frame(readr::read_csv(cached, show_col_types = FALSE)))
+    }
+    return(utils::read.csv(cached, check.names = FALSE,
+                            stringsAsFactors = FALSE))
   }
-  if (isTRUE(use_readr) && requireNamespace("readr", quietly = TRUE)) {
-    df <- as.data.frame(readr::read_csv(p, show_col_types = FALSE))
-  } else {
-    df <- utils::read.csv(p, check.names = FALSE,
-                           stringsAsFactors = FALSE)
-  }
-  df
+  # Fall back to the bundled OTIS A01 fixture (real CKAN slice from
+  # data.ontario.ca; Open Government Licence -- Ontario). morie ships
+  # this so morie_otis_load() works on a fresh checkout without
+  # requiring users to download the full OTIS first.
+  morie_datasets_otis_a01(offline = TRUE)
 }
 
 
