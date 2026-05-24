@@ -265,3 +265,245 @@ morie_datasets_tps_mha_apprehensions <- function(year = NULL,
                                   max_features = max_features,
                                   return_geometry = FALSE)
 }
+
+# ---------------------------------------------------------------------------
+# ARSAU UoF -- the four remaining year x record-type loaders
+# ---------------------------------------------------------------------------
+#
+# Canonical Ontario CKAN resource ids by year x kind (extracted from
+# the ARSAU sidecar JSONs the morie repo already ships). 2023|
+# weapon_records is INVALID per the ministry's technical report and
+# has no published resource; we leave the slot NA.
+
+.MORIE_ARSAU_UOF_RESOURCE_IDS <- list(
+  individual_records = list(
+    "2023" = "133c73fa-9d8e-435e-8c6d-7d1e14d1e88d",
+    "2024" = "690d4c5e-095e-49a0-bbab-b7fc680f3c6b"),
+  probe_cycle_records = list(
+    "2023" = "339b9e63-9521-44a6-8719-c2cb9aa39a8a",
+    "2024" = "76875b6a-4352-4722-a3f6-997cc220dc4f"),
+  weapon_records = list(
+    "2023" = NA_character_,
+    "2024" = "2c1ab494-d636-4c17-9699-3819112982a5"),
+  # 5-year aggregate (2020-2022) -- single resource per kind.
+  aggregate_summary  = list(
+    "2020-2022" = "7560d405-444c-4340-95c4-f73849015501"),
+  detailed_dataset   = list(
+    "2020-2022" = "2150ac23-4e55-474a-b61f-81baf6850851"))
+
+# Internal: shared offline+live dispatch for ARSAU UoF wrappers.
+.morie_arsau_uof_dispatch <- function(kind, year, offline,
+                                        resource_id, fixture_name) {
+  if (isTRUE(offline)) {
+    path <- system.file("extdata", fixture_name, package = "morie")
+    if (!nzchar(path)) {
+      stop(sprintf("bundled ARSAU UoF fixture %s missing",
+                   fixture_name), call. = FALSE)
+    }
+    return(utils::read.csv(path, stringsAsFactors = FALSE,
+                            check.names = FALSE))
+  }
+  if (is.null(resource_id)) {
+    rid <- .MORIE_ARSAU_UOF_RESOURCE_IDS[[kind]][[as.character(year)]]
+    if (is.null(rid) || is.na(rid)) {
+      stop(sprintf(paste0(
+        "no canonical Ontario CKAN resource_id for ARSAU UoF ",
+        "%s year %s (NULL or marked INVALID); pass resource_id= ",
+        "explicitly"), kind, year), call. = FALSE)
+    }
+    resource_id <- rid
+  }
+  .morie_ontario_ckan_dump_csv(resource_id)
+}
+
+#' Ontario Use-of-Force individual records (one row per
+#' individual-in-incident)
+#' @param year Reporting year (`"2023"` or `"2024"`).
+#' @inheritParams morie_datasets_arsau_uof_main_records
+#' @return A `data.frame`.
+#' @export
+morie_datasets_arsau_uof_individual_records <- function(year = "2024",
+                                                          offline = TRUE,
+                                                          resource_id = NULL) {
+  .morie_arsau_uof_dispatch("individual_records", year, offline,
+                              resource_id,
+                              "arsau_uof_individual_records_sample.csv")
+}
+
+#' Ontario Use-of-Force probe-cycle records (one row per CEW cartridge
+#' probe per individual-in-incident)
+#' @inheritParams morie_datasets_arsau_uof_individual_records
+#' @return A `data.frame`.
+#' @export
+morie_datasets_arsau_uof_probe_cycle_records <- function(year = "2024",
+                                                           offline = TRUE,
+                                                           resource_id = NULL) {
+  .morie_arsau_uof_dispatch("probe_cycle_records", year, offline,
+                              resource_id,
+                              "arsau_uof_probe_cycle_records_sample.csv")
+}
+
+#' Ontario Use-of-Force weapon records (one row per weapon per
+#' individual-in-incident)
+#'
+#' Year 2023 weapon_records is marked INVALID by the Ontario ministry's
+#' technical report and has no published CKAN resource; passing
+#' `year = "2023"` with `offline = FALSE` raises.
+#'
+#' @inheritParams morie_datasets_arsau_uof_individual_records
+#' @return A `data.frame`.
+#' @export
+morie_datasets_arsau_uof_weapon_records <- function(year = "2024",
+                                                      offline = TRUE,
+                                                      resource_id = NULL) {
+  .morie_arsau_uof_dispatch("weapon_records", year, offline,
+                              resource_id,
+                              "arsau_uof_weapon_records_sample.csv")
+}
+
+#' Ontario Use-of-Force aggregate summary (5-year 2020-2022, pre-RBDS
+#' rollup)
+#'
+#' @param offline If `TRUE` (default), read the bundled synthetic
+#'   fixture. If `FALSE`, hit Ontario CKAN.
+#' @param resource_id Optional override.
+#' @return A `data.frame`.
+#' @export
+morie_datasets_arsau_aggregate_summary <- function(offline = TRUE,
+                                                     resource_id = NULL) {
+  .morie_arsau_uof_dispatch(
+    "aggregate_summary", "2020-2022", offline, resource_id,
+    "arsau_uof_aggregate_summary_2020_2022_sample.csv")
+}
+
+#' Ontario Use-of-Force detailed dataset (5-year 2020-2022, pre-RBDS)
+#' @inheritParams morie_datasets_arsau_aggregate_summary
+#' @return A `data.frame`.
+#' @export
+morie_datasets_arsau_detailed_dataset <- function(offline = TRUE,
+                                                    resource_id = NULL) {
+  .morie_arsau_uof_dispatch(
+    "detailed_dataset", "2020-2022", offline, resource_id,
+    "arsau_uof_detailed_dataset_2020_2022_sample.csv")
+}
+
+# ---------------------------------------------------------------------------
+# Consolidated Ontario CKAN registry (discovery)
+# ---------------------------------------------------------------------------
+
+.MORIE_ONTARIO_CKAN_REGISTRY <- list(
+  arsau_uof_main_records_2023 = list(
+    resource_id = "94f303a2-963e-4fd1-958d-6681b310cb6d",
+    label = "ARSAU UoF main records (2023)",
+    fixture = "arsau_uof_main_records_sample.csv",
+    family = "arsau", year = "2023"),
+  arsau_uof_main_records_2024 = list(
+    resource_id = "ea9dc29c-b4f1-4426-b1f2-974ce995aca1",
+    label = "ARSAU UoF main records (2024)",
+    fixture = "arsau_uof_main_records_sample.csv",
+    family = "arsau", year = "2024"),
+  arsau_uof_individual_records_2023 = list(
+    resource_id = "133c73fa-9d8e-435e-8c6d-7d1e14d1e88d",
+    label = "ARSAU UoF individual records (2023)",
+    fixture = "arsau_uof_individual_records_sample.csv",
+    family = "arsau", year = "2023"),
+  arsau_uof_individual_records_2024 = list(
+    resource_id = "690d4c5e-095e-49a0-bbab-b7fc680f3c6b",
+    label = "ARSAU UoF individual records (2024)",
+    fixture = "arsau_uof_individual_records_sample.csv",
+    family = "arsau", year = "2024"),
+  arsau_uof_probe_cycle_records_2023 = list(
+    resource_id = "339b9e63-9521-44a6-8719-c2cb9aa39a8a",
+    label = "ARSAU UoF probe-cycle records (2023)",
+    fixture = "arsau_uof_probe_cycle_records_sample.csv",
+    family = "arsau", year = "2023"),
+  arsau_uof_probe_cycle_records_2024 = list(
+    resource_id = "76875b6a-4352-4722-a3f6-997cc220dc4f",
+    label = "ARSAU UoF probe-cycle records (2024)",
+    fixture = "arsau_uof_probe_cycle_records_sample.csv",
+    family = "arsau", year = "2024"),
+  arsau_uof_weapon_records_2024 = list(
+    resource_id = "2c1ab494-d636-4c17-9699-3819112982a5",
+    label = "ARSAU UoF weapon records (2024)",
+    fixture = "arsau_uof_weapon_records_sample.csv",
+    family = "arsau", year = "2024"),
+  arsau_uof_aggregate_summary_2020_2022 = list(
+    resource_id = "7560d405-444c-4340-95c4-f73849015501",
+    label = "ARSAU UoF aggregate summary 2020-2022",
+    fixture = "arsau_uof_aggregate_summary_2020_2022_sample.csv",
+    family = "arsau", year = "2020-2022"),
+  arsau_uof_detailed_dataset_2020_2022 = list(
+    resource_id = "2150ac23-4e55-474a-b61f-81baf6850851",
+    label = "ARSAU UoF detailed dataset 2020-2022",
+    fixture = "arsau_uof_detailed_dataset_2020_2022_sample.csv",
+    family = "arsau", year = "2020-2022"),
+  otis_d01_deaths_in_custody = list(
+    resource_id = "89e3b63f-5679-4fa4-b98a-fdd2dc486f29",
+    label = "OTIS d01 Deaths-in-Custody detailed",
+    fixture = "otis_d01_deaths_in_custody_sample.csv",
+    family = "otis", year = "all"))
+
+#' List the Ontario CKAN datasets wrapped by morie
+#'
+#' Returns the consolidated registry of every Ontario Open Data feed
+#' morie ships an offline-mode fixture + mocked live-mode dispatch for.
+#' Pair with [morie_datasets_ontario_ckan_by_key()] for generic factory
+#' access by `dataset_key`.
+#'
+#' Coverage as of this release:
+#'   * ARSAU UoF: 2 main + 2 individual + 2 probe_cycle + 1 weapon (2024)
+#'     + 2 5-year aggregates (aggregate_summary + detailed_dataset).
+#'   * OTIS: d01 Deaths-in-Custody.
+#'   * d02-d07 OTIS deaths variants + OTIS a01/b/c families: known but
+#'     resource_ids not yet wired in (PRs welcome).
+#'
+#' @return A `data.frame` with columns `dataset_key`, `label`,
+#'   `resource_id`, `family`, `year`, `fixture`.
+#' @export
+morie_datasets_ontario_ckan_layers <- function() {
+  rows <- lapply(names(.MORIE_ONTARIO_CKAN_REGISTRY), function(k) {
+    e <- .MORIE_ONTARIO_CKAN_REGISTRY[[k]]
+    data.frame(dataset_key = k, label = e$label,
+                resource_id = e$resource_id, family = e$family,
+                year = e$year, fixture = e$fixture,
+                stringsAsFactors = FALSE)
+  })
+  out <- do.call(rbind, rows)
+  rownames(out) <- NULL
+  out
+}
+
+#' Generic Ontario CKAN dataset loader (by registry key)
+#'
+#' @param dataset_key One of the keys in
+#'   [morie_datasets_ontario_ckan_layers()] (e.g.
+#'   `"arsau_uof_main_records_2024"`).
+#' @param offline If `TRUE` (default), read the bundled synthetic
+#'   fixture. If `FALSE`, hit the live Ontario CKAN datastore-dump
+#'   endpoint.
+#' @param resource_id Optional CKAN resource_id override.
+#' @return A `data.frame`.
+#' @export
+morie_datasets_ontario_ckan_by_key <- function(dataset_key,
+                                                  offline = TRUE,
+                                                  resource_id = NULL) {
+  if (!(dataset_key %in% names(.MORIE_ONTARIO_CKAN_REGISTRY))) {
+    stop(sprintf(paste0(
+      "unknown Ontario CKAN dataset_key '%s'. Available: %s"),
+      dataset_key,
+      paste(names(.MORIE_ONTARIO_CKAN_REGISTRY), collapse = ", ")),
+      call. = FALSE)
+  }
+  entry <- .MORIE_ONTARIO_CKAN_REGISTRY[[dataset_key]]
+  if (isTRUE(offline)) {
+    path <- system.file("extdata", entry$fixture, package = "morie")
+    if (!nzchar(path)) {
+      stop(sprintf("bundled Ontario CKAN fixture %s missing",
+                   entry$fixture), call. = FALSE)
+    }
+    return(utils::read.csv(path, stringsAsFactors = FALSE,
+                            check.names = FALSE))
+  }
+  if (is.null(resource_id)) resource_id <- entry$resource_id
+  .morie_ontario_ckan_dump_csv(resource_id)
+}
