@@ -441,6 +441,45 @@ morie_datasets_arsau_detailed_dataset <- function(offline = TRUE,
     resource_id = "89e3b63f-5679-4fa4-b98a-fdd2dc486f29",
     label = "OTIS d01 Deaths-in-Custody detailed",
     fixture = "otis_d01_deaths_in_custody_sample.csv",
+    family = "otis", year = "all"),
+  # OTIS a01 + d02-d07 ship in the same dataset package but the CKAN
+  # resource ids are not yet wired into this registry; offline mode
+  # works against bundled fixtures, live mode requires the user pass
+  # resource_id = ... explicitly. PRs welcome to fill these in.
+  otis_a01_restrictive_confinement = list(
+    resource_id = NA_character_,
+    label = "OTIS a01 Restrictive Confinement detailed",
+    fixture = "otis_a01_restrictive_confinement_sample.csv",
+    family = "otis", year = "all"),
+  otis_d02_deaths_by_gender = list(
+    resource_id = NA_character_,
+    label = "OTIS d02 Deaths-in-Custody by gender",
+    fixture = "otis_d02_deaths_by_gender_sample.csv",
+    family = "otis", year = "all"),
+  otis_d03_deaths_by_race = list(
+    resource_id = NA_character_,
+    label = "OTIS d03 Deaths-in-Custody by race",
+    fixture = "otis_d03_deaths_by_race_sample.csv",
+    family = "otis", year = "all"),
+  otis_d04_deaths_by_religion = list(
+    resource_id = NA_character_,
+    label = "OTIS d04 Deaths-in-Custody by religion",
+    fixture = "otis_d04_deaths_by_religion_sample.csv",
+    family = "otis", year = "all"),
+  otis_d05_deaths_by_age_category = list(
+    resource_id = NA_character_,
+    label = "OTIS d05 Deaths-in-Custody by age category",
+    fixture = "otis_d05_deaths_by_age_category_sample.csv",
+    family = "otis", year = "all"),
+  otis_d06_cause_by_alert = list(
+    resource_id = NA_character_,
+    label = "OTIS d06 Deaths-in-Custody cause-by-alert",
+    fixture = "otis_d06_cause_by_alert_sample.csv",
+    family = "otis", year = "all"),
+  otis_d07_alerts_by_housing_unit = list(
+    resource_id = NA_character_,
+    label = "OTIS d07 Deaths-in-Custody alerts by housing unit",
+    fixture = "otis_d07_alerts_by_housing_unit_sample.csv",
     family = "otis", year = "all"))
 
 #' List the Ontario CKAN datasets wrapped by morie
@@ -471,6 +510,125 @@ morie_datasets_ontario_ckan_layers <- function() {
   out <- do.call(rbind, rows)
   rownames(out) <- NULL
   out
+}
+
+# ---------------------------------------------------------------------------
+# OTIS family expansion: a01 restrictive confinement + d02-d07 deaths
+# ---------------------------------------------------------------------------
+#
+# These seven OTIS datasets ship in the Ontario "Data on Inmates in
+# Ontario" CKAN package but the canonical resource_ids for d02-d07 +
+# a01 are not yet wired into the morie registry. Offline mode (default)
+# works against bundled synthetic fixtures; live mode (offline = FALSE)
+# raises with a clear "lookup pending" message until the resource_id
+# is supplied via the registry or the resource_id= override.
+
+# Internal shared dispatch for the lookup-pending OTIS wrappers.
+.morie_otis_lookup_pending_dispatch <- function(dataset_label, fixture,
+                                                  offline, resource_id) {
+  if (isTRUE(offline)) {
+    path <- system.file("extdata", fixture, package = "morie")
+    if (!nzchar(path)) {
+      stop(sprintf("bundled OTIS fixture %s missing", fixture),
+           call. = FALSE)
+    }
+    return(utils::read.csv(path, stringsAsFactors = FALSE,
+                            check.names = FALSE))
+  }
+  if (is.null(resource_id)) {
+    stop(sprintf(paste0(
+      "Live mode for OTIS %s needs an explicit resource_id ",
+      "(canonical Ontario CKAN id lookup pending in the morie ",
+      "registry). Pass resource_id= or open a PR adding it to ",
+      ".MORIE_ONTARIO_CKAN_REGISTRY."), dataset_label),
+      call. = FALSE)
+  }
+  .morie_ontario_ckan_dump_csv(resource_id)
+}
+
+#' OTIS a01 -- Restrictive Confinement (detailed per-individual)
+#' @param offline If `TRUE` (default), read the bundled synthetic
+#'   fixture. If `FALSE`, hit Ontario CKAN (`resource_id` required).
+#' @param resource_id Optional CKAN resource id (required for live).
+#' @return A `data.frame` with the canonical 10-col schema
+#'   (`EndFiscalYear`, `UniqueIndividual_ID`,
+#'   `Region_AtTimeOfPlacement`, `Region_MostRecentPlacement`,
+#'   `Gender`, `Age_Category`, `MentalHealth_Alert`,
+#'   `SuicideRisk_Alert`, `SuicideWatch_Alert`,
+#'   `Number_Of_Placements`).
+#' @export
+morie_datasets_otis_a01_restrictive_confinement <- function(
+  offline = TRUE, resource_id = NULL) {
+  .morie_otis_lookup_pending_dispatch(
+    "a01 Restrictive Confinement",
+    "otis_a01_restrictive_confinement_sample.csv",
+    offline, resource_id)
+}
+
+#' OTIS d02 -- Deaths in custody by gender
+#' @inheritParams morie_datasets_otis_a01_restrictive_confinement
+#' @export
+morie_datasets_otis_d02_deaths_by_gender <- function(offline = TRUE,
+                                                       resource_id = NULL) {
+  .morie_otis_lookup_pending_dispatch(
+    "d02 Deaths-in-Custody by gender",
+    "otis_d02_deaths_by_gender_sample.csv",
+    offline, resource_id)
+}
+
+#' OTIS d03 -- Deaths in custody by race
+#' @inheritParams morie_datasets_otis_a01_restrictive_confinement
+#' @export
+morie_datasets_otis_d03_deaths_by_race <- function(offline = TRUE,
+                                                     resource_id = NULL) {
+  .morie_otis_lookup_pending_dispatch(
+    "d03 Deaths-in-Custody by race",
+    "otis_d03_deaths_by_race_sample.csv",
+    offline, resource_id)
+}
+
+#' OTIS d04 -- Deaths in custody by religion
+#' @inheritParams morie_datasets_otis_a01_restrictive_confinement
+#' @export
+morie_datasets_otis_d04_deaths_by_religion <- function(offline = TRUE,
+                                                         resource_id = NULL) {
+  .morie_otis_lookup_pending_dispatch(
+    "d04 Deaths-in-Custody by religion",
+    "otis_d04_deaths_by_religion_sample.csv",
+    offline, resource_id)
+}
+
+#' OTIS d05 -- Deaths in custody by age category
+#' @inheritParams morie_datasets_otis_a01_restrictive_confinement
+#' @export
+morie_datasets_otis_d05_deaths_by_age_category <- function(
+  offline = TRUE, resource_id = NULL) {
+  .morie_otis_lookup_pending_dispatch(
+    "d05 Deaths-in-Custody by age category",
+    "otis_d05_deaths_by_age_category_sample.csv",
+    offline, resource_id)
+}
+
+#' OTIS d06 -- Deaths in custody by alert type x institution
+#' @inheritParams morie_datasets_otis_a01_restrictive_confinement
+#' @export
+morie_datasets_otis_d06_cause_by_alert <- function(offline = TRUE,
+                                                     resource_id = NULL) {
+  .morie_otis_lookup_pending_dispatch(
+    "d06 Deaths-in-Custody cause-by-alert",
+    "otis_d06_cause_by_alert_sample.csv",
+    offline, resource_id)
+}
+
+#' OTIS d07 -- Deaths in custody alerts x housing unit
+#' @inheritParams morie_datasets_otis_a01_restrictive_confinement
+#' @export
+morie_datasets_otis_d07_alerts_by_housing_unit <- function(
+  offline = TRUE, resource_id = NULL) {
+  .morie_otis_lookup_pending_dispatch(
+    "d07 Deaths-in-Custody alerts by housing unit",
+    "otis_d07_alerts_by_housing_unit_sample.csv",
+    offline, resource_id)
 }
 
 #' Generic Ontario CKAN dataset loader (by registry key)
