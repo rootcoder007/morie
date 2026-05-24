@@ -81,16 +81,21 @@ test_that("unknown dataset_key raises clear error", {
     regexp = "unknown dataset_key")
 })
 
-test_that("MTL CKAN generic dispatch surfaces helpful unwired error", {
-  # communique-presse is in the MTL catalog but not a targeted fixture.
-  expect_error(
-    morie_datasets_load_by_key("communique-presse"),
-    regexp = "not yet wired")
+test_that("3FFF1: MTL CKAN generic dispatch auto-resolves first CSV resource", {
+  skip_on_cran()
+  skip_if_offline("donnees.montreal.ca")
+  df <- morie_datasets_load_by_key("communique-presse", max_features = 5L)
+  expect_s3_class(df, "data.frame")
+  expect_true(nrow(df) >= 1L)
+  expect_true(nrow(df) <= 5L)
 })
 
-test_that("TO CKAN generic dispatch surfaces helpful unwired error", {
-  # Use a TO package known to not have a bundled fixture.
-  expect_error(
-    morie_datasets_load_by_key("311-service-requests-customer-initiated"),
-    regexp = "not yet wired")
+test_that("3FFF1: TO CKAN generic dispatch auto-resolves first CSV resource", {
+  skip_on_cran()
+  skip_if_offline("ckan0.cf.opendata.inter.prod-toronto.ca")
+  df <- morie_datasets_load_by_key(
+    "police-annual-statistical-report-shooting-occurrences",
+    max_features = 5L)
+  expect_s3_class(df, "data.frame")
+  expect_true(nrow(df) >= 1L)
 })

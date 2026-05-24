@@ -107,22 +107,20 @@ morie_datasets_load_by_key <- function(dataset_key,
                                            offline = offline)
     },
     "montreal_opendata" = {
-      stop(sprintf(paste0(
-        "morie_datasets_load_by_key('%s'): MTL CKAN package_name -> ",
-        "resource lookup not yet wired. Use ",
-        "morie_datasets_montreal_ckan_resource(resource_id = ...) directly ",
-        "after looking up the resource UUID via the CKAN package_show endpoint."),
-        dataset_key),
-        call. = FALSE)
+      rid <- .morie_ckan_resolve_first_csv(
+        package_name = id, ckan_base = .MORIE_MONTREAL_CKAN_BASE)
+      morie_datasets_montreal_ckan_resource(
+        resource_id = rid,
+        limit = if (is.null(max_features)) 100L
+                else as.integer(max_features))
     },
     "toronto_opendata" = {
-      stop(sprintf(paste0(
-        "morie_datasets_load_by_key('%s'): TO CKAN package_name -> ",
-        "resource lookup not yet wired. Use ",
-        "morie_datasets_toronto_open_ckan_resource(resource_id = ...) directly ",
-        "after looking up the resource UUID."),
-        dataset_key),
-        call. = FALSE)
+      rid <- .morie_ckan_resolve_first_csv(
+        package_name = id, ckan_base = .MORIE_TORONTO_CKAN_BASE)
+      morie_datasets_toronto_open_ckan_resource(
+        resource_id = rid,
+        limit = if (is.null(max_features)) 100L
+                else as.integer(max_features))
     },
     "vancouver_opendata" = {
       morie_datasets_vancouver_opendata_by_id(id)
@@ -143,4 +141,44 @@ morie_datasets_load_by_key <- function(dataset_key,
       "morie_datasets_load_by_key('%s'): unhandled source '%s'.",
       dataset_key, src), call. = FALSE)
   )
+}
+
+# ---------------------------------------------------------------------------
+# CKAN package_name -> first-CSV resource_id resolver (3FFF1)
+# ---------------------------------------------------------------------------
+
+#' Resolve a CKAN `package_name` to its first-CSV resource UUID
+#'
+#' Phase 3FFF1. Internal helper used by
+#' [morie_datasets_load_by_key()] to look up an arbitrary CKAN
+#' package's primary CSV resource without requiring the caller to
+#' know the UUID. Hits `/action/package_show?id=<pkg>` then walks
+#' the `resources` list for the first row whose `format` (or
+#' `mimetype`) matches `"CSV"` (case-insensitive).
+#'
+#' Falls back to the bare first resource if no CSV is present and
+#' raises a clear error if the package has no resources at all.
+#'
+#' @param package_name CKAN package slug.
+#' @param ckan_base CKAN host base URL (e.g.,
+#'   `.MORIE_MONTREAL_CKAN_BASE` or `.MORIE_TORONTO_CKAN_BASE`).
+#' @return Character resource UUID.
+#' @keywords internal
+#' @noRd
+.morie_ckan_resolve_first_csv <- function(package_name, ckan_base) {
+  url <- sprintf("%s/action/package_show?id=%s", ckan_base, package_name)
+  r <- .morie_dataset_http_json(url)
+  if (!isTRUE(r$success))
+    stop(sprintf("CKAN package_show failed for '%s'", package_name),
+          call. = FALSE)
+  res <- r$result$resources
+  if (is.null(res) || (is.data.frame(res) && nrow(res) == 0L))
+    stop(sprintf("CKAN package '%s' has no resources", package_name),
+          call. = FALSE)
+  fmt <- if ("format" %in% names(res)) res$format else NULL
+  if (!is.null(fmt)) {
+    csv_idx <- which(toupper(fmt) == "CSV")
+    if (length(csv_idx) > 0L) return(res$id[csv_idx[1]])
+  }
+  res$id[1]
 }
