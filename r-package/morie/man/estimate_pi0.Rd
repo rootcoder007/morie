@@ -13,7 +13,7 @@ estimate_pi0(p_values, method = c("storey", "bootstrap", "two_step"))
 \code{"two_step"}.}
 }
 \value{
-A scalar pi0 estimate in \link{0, 1}.
+A scalar pi0 estimate in \verb{[0, 1]}.
 }
 \description{
 Estimate the proportion of true null hypotheses (pi0)

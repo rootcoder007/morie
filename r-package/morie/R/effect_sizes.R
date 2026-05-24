@@ -272,7 +272,7 @@ epsilon_squared <- function(ss_effect, ss_total, df_effect, ms_error) {
 # CONTINGENCY TABLE EFFECT SIZES
 # =====================================================================
 
-#' Odds ratio for a 2x2 table [[a, b], [c, d]]
+#' Odds ratio for a 2x2 table `[[a, b], [c, d]]`
 #'
 #' @param a,b,c,d Cell counts.
 #' @param confidence Confidence level. Default 0.95.

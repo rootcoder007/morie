@@ -39,12 +39,7 @@ NULL
 }
 
 .morie_matching_require <- function(pkg, fn) {
-  if (!.morie_matching_have(pkg)) {
-    stop(sprintf(
-      "Package '%s' is required for %s().  Install it with install.packages(\"%s\").",
-      pkg, fn, pkg
-    ), call. = FALSE)
-  }
+  morie_ensure_extras(pkg)
   invisible(TRUE)
 }
 

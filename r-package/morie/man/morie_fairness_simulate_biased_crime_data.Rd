@@ -23,9 +23,9 @@ morie_fairness_simulate_biased_crime_data(
 
 \item{n_areas}{Number of areas (>= number of groups).}
 
-\item{base_rate}{Reference-group favourable-outcome rate in \link{0, 1}.}
+\item{base_rate}{Reference-group favourable-outcome rate in \verb{[0, 1]}.}
 
-\item{bias}{Injected disparity in \link{-1, 1}.}
+\item{bias}{Injected disparity in \verb{[-1, 1]}.}
 
 \item{seed}{Reproducibility seed.}
 }

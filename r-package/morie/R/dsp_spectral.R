@@ -197,7 +197,7 @@ morie_dsp_spectral_ratio <- function(psd, freqs, band1, band2) {
 #' concentration.
 #'
 #' @param psd PSD vector.
-#' @return Scalar in [0, 1].
+#' @return Scalar in `[0, 1]`.
 #' @references Rangayyan & Krishnan (2015), Ch. 6, sec. 6.7.
 #' @export
 morie_dsp_spectral_flatness <- function(psd) {
@@ -214,7 +214,7 @@ morie_dsp_spectral_flatness <- function(psd) {
 #' Shannon entropy in bits.
 #'
 #' @param psd PSD vector.
-#' @return Scalar in [0, log2(length(psd))].
+#' @return Scalar in `[0, log2(length(psd))]`.
 #' @references Rangayyan & Krishnan (2015), Ch. 6, sec. 6.7;
 #'   Inouye et al. (1991).
 #' @export
@@ -278,7 +278,7 @@ morie_dsp_acf_from_psd <- function(psd) {
   Re(stats::fft(full, inverse = TRUE) / N)
 }
 
-#' Bandpower over [f_low, f_high]
+#' Bandpower over `[f_low, f_high]`
 #'
 #' Trapezoid-equivalent rectangular integration of PSD over a band.
 #'

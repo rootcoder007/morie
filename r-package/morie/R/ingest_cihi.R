@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 .morie_cihi_pick_data_sheet <- function(path, ...) {
-  if (!requireNamespace("readxl", quietly = TRUE)) {
-    stop("Package 'readxl' is required for morie_ingest_cihi_xlsx(). install.packages('readxl')", call. = FALSE)
-  }
+  morie_ensure_extras("readxl")
   sheets <- readxl::excel_sheets(path)
   best_df <- NULL; best_cells <- -1L; best_name <- sheets[1L]
   for (nm in sheets) {
@@ -31,11 +29,7 @@ morie_ingest_cihi_xlsx <- function(url, sheet = NULL, timeout = 120,
                                    user_agent = "morie/r (+https://hadesllm.com)", ...) {
   if (!is.character(url) || length(url) != 1L || !nzchar(url))
     stop("`url` must be a single non-empty string.", call. = FALSE)
-  if (!requireNamespace("httr2", quietly = TRUE))
-    stop("Package 'httr2' is required as fallback. install.packages('httr2')",
-         call. = FALSE)
-  if (!requireNamespace("readxl", quietly = TRUE))
-    stop("Package 'readxl' is required. install.packages('readxl')", call. = FALSE)
+  morie_ensure_extras(c("httr2", "readxl"))
   tmp <- tempfile(fileext = ".xlsx", tmpdir = tempdir())
   on.exit(if (file.exists(tmp)) unlink(tmp, force = TRUE), add = TRUE)
   # 3YY: libcurl-backed binary fetch with httr2 fallback.
