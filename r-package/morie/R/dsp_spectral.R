@@ -78,7 +78,7 @@ morie_dsp_psd_welch <- function(x, fs = 1, nperseg = 256L,
   if (is.null(noverlap)) noverlap <- nperseg %/% 2L
   if (requireNamespace("signal", quietly = TRUE) &&
       exists("pwelch", where = asNamespace("signal"))) {
-    out <- signal::pwelch(x, window = nperseg, overlap = noverlap,
+    out <- get("pwelch", envir = asNamespace("signal"))(x, window = nperseg, overlap = noverlap,
                           fs = fs, plot = FALSE)
     return(list(freqs = as.numeric(out$freq),
                 psd = as.numeric(out$spec)))
@@ -327,7 +327,7 @@ morie_dsp_fractal_dim_psd <- function(psd, freqs) {
 morie_dsp_coherence <- function(x, y, fs = 1, nperseg = 256L) {
   if (requireNamespace("signal", quietly = TRUE) &&
       exists("coherence", where = asNamespace("signal"))) {
-    out <- signal::coherence(x, y, fs = fs, nperseg = nperseg)
+    out <- get("coherence", envir = asNamespace("signal"))(x, y, fs = fs, nperseg = nperseg)
     return(list(freqs = as.numeric(out$freq),
                 coh = as.numeric(out$coh)))
   }

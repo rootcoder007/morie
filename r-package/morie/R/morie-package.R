@@ -91,8 +91,9 @@
 #'
 #' @keywords internal
 #' @aliases morie-package
-#' @importFrom stats aggregate ave deviance median na.omit plogis
-#'   setNames update weighted.mean
+#' @importFrom stats aggregate anova ave deviance median na.omit plogis
+#'   qf setNames update weighted.mean
+#' @importFrom utils str
 #' @importFrom Rcpp sourceCpp
 #' @useDynLib morie, .registration = TRUE
 "_PACKAGE"

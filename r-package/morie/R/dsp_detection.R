@@ -203,7 +203,7 @@ morie_dsp_teager_energy <- function(x) {
 morie_dsp_hilbert_envelope <- function(x) {
   if (requireNamespace("signal", quietly = TRUE) &&
       exists("hilbert", where = asNamespace("signal"))) {
-    return(Mod(signal::hilbert(x)))
+    return(Mod(get("hilbert", envir = asNamespace("signal"))(x)))
   }
   # Pure-R fallback: build analytic signal in the FFT domain.
   n <- length(x); X <- stats::fft(x)
@@ -272,7 +272,7 @@ morie_dsp_dicrotic_notch <- function(pulse, fs = 125) {
     stop("morie_dsp_dicrotic_notch requires signal::findpeaks")
   }
   d2 <- diff(pulse, differences = 2L)
-  pk <- signal::findpeaks(-d2, MinPeakDistance = as.integer(0.1 * fs))
+  pk <- get("findpeaks", envir = asNamespace("signal"))(-d2, MinPeakDistance = as.integer(0.1 * fs))
   if (is.null(pk) || length(pk) == 0L) return(integer(0))
   # signal::findpeaks returns a matrix with peak positions in column 2.
   positions <- if (is.matrix(pk)) pk[, 2L] else pk

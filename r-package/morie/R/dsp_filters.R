@@ -276,7 +276,7 @@ morie_dsp_notch <- function(x, freq, fs, q = 30) {
     a <- c(1, -2 * r * cosw0, r^2)
     return(as.numeric(signal::filtfilt(b, a, x)))
   }
-  ba <- signal::iirnotch(freq / (fs / 2), q)
+  ba <- get("iirnotch", envir = asNamespace("signal"))(freq / (fs / 2), q)
   as.numeric(signal::filtfilt(ba$b, ba$a, x))
 }
 
