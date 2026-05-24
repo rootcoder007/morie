@@ -6,9 +6,11 @@
 
 # ========================================================== Chicago Crime
 
-test_that("morie_datasets_chicago_crime(offline=TRUE) reads bundled 21-col fixture", {
+test_that("morie_datasets_chicago_crime(offline=TRUE) reads bundled 22-col fixture", {
   df <- suppressWarnings(morie_datasets_chicago_crime(offline = TRUE))
   expect_s3_class(df, "data.frame")
+  expect_equal(ncol(df), 22L)  # +location composite col in 3PP+
+  expect_true("location" %in% names(df))
   expect_true(nrow(df) > 0L)
   for (col in c("id", "case_number", "date", "primary_type",
                 "description", "arrest", "domestic", "year",
@@ -139,13 +141,15 @@ test_that("morie_datasets_nyc_stop_and_frisk(offline=FALSE) errors on unknown ye
 test_that("morie_datasets_external_socrata_layers returns the full 6-row registry (3PP)", {
   reg <- morie_datasets_external_socrata_layers()
   expect_s3_class(reg, "data.frame")
-  expect_equal(nrow(reg), 6L)  # +chicago_arrests in 3PP
+  expect_equal(nrow(reg), 8L)  # +chicago_arrests (3PP) + beats + districts (3PP+)
   expect_setequal(names(reg),
                   c("dataset_key", "label", "portal",
                     "resource_url", "fixture"))
   expect_setequal(reg$dataset_key,
                   c("chicago_crime", "chicago_arrests",
                     "chicago_neighborhoods",
+                    "chicago_police_beats",
+                    "chicago_police_districts",
                     "nyc_sqf_2024", "nyc_sqf_2023", "nyc_sqf_2022"))
   expect_setequal(unique(reg$portal),
                   c("data.cityofchicago.org",
@@ -257,7 +261,7 @@ test_that("morie_datasets_chicago_neighborhoods honours resource_id override", {
 
 test_that("morie_datasets_external_socrata_layers includes chicago_neighborhoods", {
   reg <- morie_datasets_external_socrata_layers()
-  expect_equal(nrow(reg), 6L)  # +chicago_arrests in 3PP
+  expect_equal(nrow(reg), 8L)  # +chicago_arrests (3PP) + beats + districts (3PP+)
   expect_true("chicago_neighborhoods" %in% reg$dataset_key)
   chi_nh <- reg[reg$dataset_key == "chicago_neighborhoods", ]
   expect_equal(chi_nh$resource_url,

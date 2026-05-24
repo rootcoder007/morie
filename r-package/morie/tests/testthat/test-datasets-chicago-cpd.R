@@ -198,3 +198,157 @@ test_that("both 3PP loaders default to offline = TRUE (safer, no accidental netw
   expect_s3_class(morie_datasets_chicago_arrests(), "data.frame")
   expect_s3_class(morie_datasets_cpd_public_arrests(), "data.frame")
 })
+
+# ====================================== Chicago Police Beats (3PP+, n9it-hstw)
+
+test_that("morie_datasets_chicago_police_beats(offline=TRUE) reads bundled 4-col attribute fixture", {
+  df <- morie_datasets_chicago_police_beats(offline = TRUE)
+  expect_s3_class(df, "data.frame")
+  expect_equal(ncol(df), 4L)
+  expect_setequal(names(df),
+                  c("beat_num", "beat", "sector", "district"))
+  # All-character (no numeric coercion losing leading zeros).
+  expect_type(df$beat_num, "character")
+  expect_type(df$district, "character")
+  # Spot-check a known beat from CPD's published listing.
+  expect_true("1713" %in% df$beat_num)
+  expect_true("3100" %in% df$beat_num)
+})
+
+test_that("morie_datasets_chicago_police_beats(offline=TRUE) honours max_features", {
+  df <- morie_datasets_chicago_police_beats(offline = TRUE,
+                                              max_features = 3L)
+  expect_equal(nrow(df), 3L)
+})
+
+test_that("morie_datasets_chicago_police_beats(offline=FALSE, geometry=FALSE) requests attribute subset via $select", {
+  testthat::local_mocked_bindings(
+    .morie_dataset_socrata_fetch = function(url, where = NULL,
+                                              max_features = NULL,
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
+      expect_match(url,
+                   "data\\.cityofchicago\\.org/resource/n9it-hstw\\.json\\?\\$select=beat_num,beat,sector,district$")
+      data.frame(beat_num = "1234", beat = "3",
+                  sector = "2", district = "12")
+    },
+    .package = "morie")
+  out <- morie_datasets_chicago_police_beats(offline = FALSE)
+  expect_equal(out$beat_num, "1234")
+})
+
+test_that("morie_datasets_chicago_police_beats(offline=FALSE, geometry=TRUE) drops the $select clause", {
+  testthat::local_mocked_bindings(
+    .morie_dataset_socrata_fetch = function(url, where = NULL,
+                                              max_features = NULL,
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
+      expect_match(url,
+                   "data\\.cityofchicago\\.org/resource/n9it-hstw\\.json$")
+      data.frame(the_geom = "GEOM-STUB", beat_num = "1234",
+                  beat = "3", sector = "2", district = "12",
+                  stringsAsFactors = FALSE)
+    },
+    .package = "morie")
+  out <- morie_datasets_chicago_police_beats(offline = FALSE,
+                                               geometry = TRUE)
+  expect_true("the_geom" %in% names(out))
+})
+
+test_that("morie_datasets_chicago_police_beats forwards paginate args", {
+  seen <- list()
+  testthat::local_mocked_bindings(
+    .morie_dataset_socrata_fetch = function(url, where = NULL,
+                                              max_features = NULL,
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
+      seen <<- list(paginate = paginate, page_size = page_size,
+                    max_pages = max_pages)
+      data.frame(beat_num = "STUB")
+    },
+    .package = "morie")
+  morie_datasets_chicago_police_beats(offline = FALSE,
+                                        paginate = TRUE,
+                                        page_size = 277L,
+                                        max_pages = 2L)
+  expect_true(isTRUE(seen$paginate))
+  expect_equal(seen$page_size, 277L)
+  expect_equal(seen$max_pages, 2L)
+})
+
+# ================================ Chicago Police Districts (3PP+, 24zt-jpfn)
+
+test_that("morie_datasets_chicago_police_districts(offline=TRUE) reads bundled 2-col attribute fixture", {
+  df <- morie_datasets_chicago_police_districts(offline = TRUE)
+  expect_s3_class(df, "data.frame")
+  expect_equal(ncol(df), 2L)
+  expect_setequal(names(df), c("dist_num", "dist_label"))
+  expect_type(df$dist_num, "character")
+  expect_type(df$dist_label, "character")
+  # The 22 active districts + the special "31" headquarters polygon.
+  for (d in c("1", "2", "12", "17", "22", "31"))
+    expect_true(d %in% df$dist_num)
+})
+
+test_that("morie_datasets_chicago_police_districts(offline=TRUE) honours max_features", {
+  df <- morie_datasets_chicago_police_districts(offline = TRUE,
+                                                  max_features = 5L)
+  expect_equal(nrow(df), 5L)
+})
+
+test_that("morie_datasets_chicago_police_districts(offline=FALSE, geometry=FALSE) requests $select=dist_num,dist_label", {
+  testthat::local_mocked_bindings(
+    .morie_dataset_socrata_fetch = function(url, where = NULL,
+                                              max_features = NULL,
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
+      expect_match(url,
+                   "data\\.cityofchicago\\.org/resource/24zt-jpfn\\.json\\?\\$select=dist_num,dist_label$")
+      data.frame(dist_num = "1", dist_label = "1ST")
+    },
+    .package = "morie")
+  out <- morie_datasets_chicago_police_districts(offline = FALSE)
+  expect_equal(out$dist_label, "1ST")
+})
+
+test_that("morie_datasets_chicago_police_districts honours resource_id override", {
+  testthat::local_mocked_bindings(
+    .morie_dataset_socrata_fetch = function(url, where = NULL,
+                                              max_features = NULL,
+                                              app_token = NULL,
+                                              paginate = FALSE,
+                                              page_size = 1000L,
+                                              max_pages = 200L) {
+      expect_match(url, "override-pd-xyz\\.json")
+      data.frame(dist_num = "0", dist_label = "OVERRIDE")
+    },
+    .package = "morie")
+  out <- morie_datasets_chicago_police_districts(
+    offline = FALSE,
+    resource_id = "override-pd-xyz")
+  expect_equal(out$dist_label, "OVERRIDE")
+})
+
+# ====================================== discovery helper extension
+
+test_that("morie_datasets_external_socrata_layers includes the 2 new 3PP+ boundary layers", {
+  reg <- morie_datasets_external_socrata_layers()
+  expect_true("chicago_police_beats" %in% reg$dataset_key)
+  expect_true("chicago_police_districts" %in% reg$dataset_key)
+  beats <- reg[reg$dataset_key == "chicago_police_beats", ]
+  expect_equal(beats$resource_url,
+               "https://data.cityofchicago.org/resource/n9it-hstw.json")
+  expect_equal(beats$fixture, "chicago_police_beats.csv")
+  dists <- reg[reg$dataset_key == "chicago_police_districts", ]
+  expect_equal(dists$resource_url,
+               "https://data.cityofchicago.org/resource/24zt-jpfn.json")
+  expect_equal(dists$fixture, "chicago_police_districts.csv")
+})

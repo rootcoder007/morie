@@ -399,7 +399,7 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
   "description", "location_description", "arrest", "domestic",
   "beat", "district", "ward", "community_area", "fbi_code",
   "x_coordinate", "y_coordinate", "year", "updated_on",
-  "latitude", "longitude"
+  "latitude", "longitude", "location"
 )
 
 #' Generic Socrata JSON fetch (handles `$where`, `$limit`, `$$app_token`).
@@ -462,7 +462,49 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
   do.call(rbind, chunks)
 }
 
-#' City of Chicago "Crimes -- 2001 to Present" feed.
+#' City of Chicago "Crimes -- 2001 to Present" feed (`ijzp-q8t2`)
+#'
+#' Wraps the City of Chicago "Crimes -- 2001 to Present" open dataset
+#' (Socrata resource id `ijzp-q8t2`; portal landing
+#' \url{https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-Present/ijzp-q8t2/about_data}).
+#' 22-column schema, one row per reported crime incident (except
+#' murders, where one row per victim). Data are extracted from the
+#' Chicago PD CLEAR system, refreshed daily with a seven-day lag,
+#' and addresses are block-only redacted.
+#'
+#' **Scale warning.** As of 2026-05 the live feed carries ~8,557,071
+#' rows (8.56M; last refreshed 2026-05-23) -- too large for
+#' spreadsheet programs and slow even for programmatic pulls without
+#' filtering. Always prefer narrowing the query first (`year = ...`
+#' server-side filter) or paginating with `paginate = TRUE` + a
+#' large `page_size` (and ideally an app_token). A full unfiltered
+#' pull at the default `page_size = 1000` would issue ~8,560
+#' requests; with `page_size = 50000` + an app_token it drops to
+#' ~172.
+#'
+#' Socrata accepts both the numeric id (`/resource/ijzp-q8t2.json`)
+#' and the publisher's `crimes` alias (`/resource/crimes.json`).
+#' SODA3 endpoints are also available
+#' (`/api/v3/views/crimes/query.json`), as are CSV variants
+#' (`/resource/crimes.csv`, `/api/v3/views/crimes/query.csv`).
+#' morie defaults to SODA2 JSON via the UUID for stability.
+#'
+#' **Cross-referenced datasets (Chicago Open Data).** The 22-col
+#' schema carries geographic and crime-classification foreign keys
+#' that other Chicago datasets resolve:
+#'
+#' \describe{
+#'   \item{beat}{morie wraps via
+#'     [morie_datasets_chicago_police_beats()] (`n9it-hstw`).}
+#'   \item{district}{morie wraps via
+#'     [morie_datasets_chicago_police_districts()] (`24zt-jpfn`).}
+#'   \item{ward}{City Council ward (50 wards) -- not yet wrapped;
+#'     lookup-pending at `sp34-6z76`.}
+#'   \item{community_area}{77 community areas -- not yet wrapped;
+#'     lookup-pending at `cauq-8yn6`.}
+#'   \item{iucr / fbi_code}{Illinois Uniform Crime Reporting codes
+#'     -- not yet wrapped; lookup-pending at `c7ck-438e`.}
+#' }
 #'
 #' @param year Integer or `NULL`; server-side year filter.
 #' @param max_features Integer or `NULL`; cap on returned rows. When
@@ -833,6 +875,168 @@ morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
 }
 
 # ---------------------------------------------------------------------------
+# Chicago Police Beats + Districts (Socrata boundary layers)
+# ---------------------------------------------------------------------------
+
+#' Chicago Police Beats (current) boundaries (`n9it-hstw`)
+#'
+#' Wraps the City of Chicago "Boundaries - Police Beats (current)"
+#' open dataset (Socrata resource id `n9it-hstw`; portal landing
+#' \url{https://data.cityofchicago.org/Public-Safety/Boundaries-Police-Beats-current-/aerh-rz74}).
+#' Returns 277 Chicago Police beats with their parent sector + district
+#' codes (verified live 2026-05). Attribute schema:
+#'
+#' \describe{
+#'   \item{beat_num}{4-digit beat id (district + 2-digit beat).}
+#'   \item{beat}{Within-sector beat sequence number (string).}
+#'   \item{sector}{Within-district sector number (string).}
+#'   \item{district}{Parent district number (string).}
+#' }
+#'
+#' Offline mode reads a bundled attribute-only fixture
+#' (`inst/extdata/chicago_police_beats.csv`) -- the `the_geom`
+#' MultiPolygon column is stripped to keep bundle size sane.
+#' Live mode hits the SODA2 JSON endpoint via
+#' `.morie_dataset_socrata_fetch()` (mockable); pass `geometry = TRUE`
+#' to include `the_geom`. Threads through the 3OO pagination args.
+#'
+#' @param offline If `TRUE` (default), read the bundled fixture.
+#' @param geometry If `TRUE` and `offline = FALSE`, include
+#'   `the_geom` (MultiPolygon).
+#' @param max_features Optional row cap.
+#' @param resource_id Optional Socrata resource id override (UUID
+#'   default; pass `"police-beats"` style alias if known).
+#' @param paginate Logical; 3OO opt-in pagination.
+#' @param page_size Per-page row count when paginating.
+#' @param max_pages Safety net on paginated walks.
+#' @return A `data.frame` with 4 attribute cols (offline) or 5
+#'   including `the_geom` (live, `geometry = TRUE`).
+#' @references City of Chicago Data Portal, "Boundaries - Police
+#'   Beats (current)" (`n9it-hstw`).
+#' @examples
+#' df <- morie_datasets_chicago_police_beats(offline = TRUE)
+#' head(df)
+#' @export
+morie_datasets_chicago_police_beats <- function(offline = TRUE,
+                                                  geometry = FALSE,
+                                                  max_features = NULL,
+                                                  resource_id = NULL,
+                                                  paginate = FALSE,
+                                                  page_size = 1000L,
+                                                  max_pages = 200L) {
+  if (isTRUE(offline)) {
+    path <- system.file("extdata", "chicago_police_beats.csv",
+                        package = "morie")
+    if (!nzchar(path)) {
+      stop("bundled Chicago Police Beats fixture missing",
+           call. = FALSE)
+    }
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE,
+                           colClasses = c(beat_num = "character",
+                                          beat = "character",
+                                          sector = "character",
+                                          district = "character"))
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  if (is.null(resource_id)) resource_id <- "n9it-hstw"
+  url <- sprintf("https://data.cityofchicago.org/resource/%s.json",
+                 resource_id)
+  if (!isTRUE(geometry)) {
+    url <- paste0(url,
+                  "?$select=beat_num,beat,sector,district")
+  }
+  .morie_dataset_socrata_fetch(url, max_features = max_features,
+                                paginate = paginate,
+                                page_size = page_size,
+                                max_pages = max_pages)
+}
+
+#' Chicago Police Districts (current) boundaries (`24zt-jpfn`)
+#'
+#' Wraps the City of Chicago "Boundaries - Police Districts (current)"
+#' open dataset (Socrata resource id `24zt-jpfn`; portal landing
+#' \url{https://data.cityofchicago.org/Public-Safety/Boundaries-Police-Districts-current-/fthy-xz3r}).
+#' Returns 22 active districts (1-12, 14-20, 22, 24, 25) plus the
+#' special "31" headquarters polygon. Attribute schema:
+#'
+#' \describe{
+#'   \item{dist_num}{District number (string, "1"-"31").}
+#'   \item{dist_label}{Display label (e.g. `"1ST"`, `"22ND"`).}
+#' }
+#'
+#' Offline mode reads a bundled attribute-only fixture
+#' (`inst/extdata/chicago_police_districts.csv`). Live mode hits
+#' SODA2 JSON; pass `geometry = TRUE` for `the_geom`.
+#'
+#' Socrata exposes this dataset in all four format permutations
+#' (SODA2 + SODA3, JSON + GeoJSON + CSV):
+#'   * SODA2 JSON: `/resource/24zt-jpfn.json`
+#'   * SODA2 GeoJSON: `/resource/24zt-jpfn.geojson`
+#'   * SODA2 CSV: `/resource/24zt-jpfn.csv`
+#'   * SODA3 JSON: `/api/v3/views/24zt-jpfn/query.json`
+#'   * SODA3 GeoJSON: `/api/v3/views/24zt-jpfn/query.geojson`
+#'
+#' morie defaults to SODA2 JSON; pass an explicit URL via
+#' `resource_id` to exercise the others (e.g. for direct sf reads
+#' you'd typically hit the GeoJSON variant via `sf::st_read()`
+#' yourself rather than going through this loader).
+#'
+#' @param offline If `TRUE` (default), read the bundled fixture.
+#' @param geometry If `TRUE` and `offline = FALSE`, include
+#'   `the_geom` (MultiPolygon).
+#' @param max_features Optional row cap.
+#' @param resource_id Optional Socrata resource id override.
+#' @param paginate Logical; 3OO opt-in pagination.
+#' @param page_size Per-page row count when paginating.
+#' @param max_pages Safety net on paginated walks.
+#' @return A `data.frame` with 2 attribute cols (offline) or 3
+#'   including `the_geom` (live, `geometry = TRUE`).
+#' @references City of Chicago Data Portal, "Boundaries - Police
+#'   Districts (current)" (`24zt-jpfn`).
+#' @examples
+#' df <- morie_datasets_chicago_police_districts(offline = TRUE)
+#' head(df)
+#' @export
+morie_datasets_chicago_police_districts <- function(offline = TRUE,
+                                                      geometry = FALSE,
+                                                      max_features = NULL,
+                                                      resource_id = NULL,
+                                                      paginate = FALSE,
+                                                      page_size = 1000L,
+                                                      max_pages = 200L) {
+  if (isTRUE(offline)) {
+    path <- system.file("extdata", "chicago_police_districts.csv",
+                        package = "morie")
+    if (!nzchar(path)) {
+      stop("bundled Chicago Police Districts fixture missing",
+           call. = FALSE)
+    }
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE,
+                           colClasses = c(dist_num = "character",
+                                          dist_label = "character"))
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  if (is.null(resource_id)) resource_id <- "24zt-jpfn"
+  url <- sprintf("https://data.cityofchicago.org/resource/%s.json",
+                 resource_id)
+  if (!isTRUE(geometry)) {
+    url <- paste0(url, "?$select=dist_num,dist_label")
+  }
+  .morie_dataset_socrata_fetch(url, max_features = max_features,
+                                paginate = paginate,
+                                page_size = page_size,
+                                max_pages = max_pages)
+}
+
+# ---------------------------------------------------------------------------
 # Chicago Open Data Arrests (Socrata, dpt3-jri9)
 # ---------------------------------------------------------------------------
 
@@ -1017,6 +1221,10 @@ morie_datasets_cpd_public_arrests <- function(url = NULL,
 #'   * City of Chicago "Crimes -- 2001 to Present" (`ijzp-q8t2`).
 #'   * City of Chicago "Arrests" (`dpt3-jri9`; 3PP).
 #'   * City of Chicago "Boundaries-Neighborhoods" (`y6yq-dbs2`).
+#'   * City of Chicago "Boundaries-Police-Beats (current)"
+#'     (`n9it-hstw`; 3PP+).
+#'   * City of Chicago "Boundaries-Police-Districts (current)"
+#'     (`24zt-jpfn`; 3PP+).
 #'   * NYC OpenData NYPD Stop, Question and Frisk (SQF) microdata --
 #'     three published years (2022 = `e4yi-bvqr`, 2023 = `rbed-zzin`,
 #'     2024 = `7v9w-k82r`).
@@ -1048,6 +1256,16 @@ morie_datasets_external_socrata_layers <- function() {
          portal = "data.cityofchicago.org",
          resource_url = "https://data.cityofchicago.org/resource/y6yq-dbs2.json",
          fixture = "chicago_neighborhoods.csv"),
+    list(dataset_key = "chicago_police_beats",
+         label = "City of Chicago -- Boundaries-Police-Beats (current)",
+         portal = "data.cityofchicago.org",
+         resource_url = "https://data.cityofchicago.org/resource/n9it-hstw.json",
+         fixture = "chicago_police_beats.csv"),
+    list(dataset_key = "chicago_police_districts",
+         label = "City of Chicago -- Boundaries-Police-Districts (current)",
+         portal = "data.cityofchicago.org",
+         resource_url = "https://data.cityofchicago.org/resource/24zt-jpfn.json",
+         fixture = "chicago_police_districts.csv"),
     list(dataset_key = "nyc_sqf_2024",
          label = "NYPD Stop, Question and Frisk -- 2024",
          portal = "data.cityofnewyork.us",

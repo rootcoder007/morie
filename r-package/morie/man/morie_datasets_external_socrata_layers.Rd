@@ -21,6 +21,10 @@ Coverage:
 \item City of Chicago "Crimes -- 2001 to Present" (\code{ijzp-q8t2}).
 \item City of Chicago "Arrests" (\code{dpt3-jri9}; 3PP).
 \item City of Chicago "Boundaries-Neighborhoods" (\code{y6yq-dbs2}).
+\item City of Chicago "Boundaries-Police-Beats (current)"
+(\code{n9it-hstw}; 3PP+).
+\item City of Chicago "Boundaries-Police-Districts (current)"
+(\verb{24zt-jpfn}; 3PP+).
 \item NYC OpenData NYPD Stop, Question and Frisk (SQF) microdata --
 three published years (2022 = \code{e4yi-bvqr}, 2023 = \code{rbed-zzin},
 2024 = \verb{7v9w-k82r}).

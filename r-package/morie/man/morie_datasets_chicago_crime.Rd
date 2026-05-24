@@ -2,7 +2,7 @@
 % Please edit documentation in R/datasets.R
 \name{morie_datasets_chicago_crime}
 \alias{morie_datasets_chicago_crime}
-\title{City of Chicago "Crimes -- 2001 to Present" feed.}
+\title{City of Chicago "Crimes -- 2001 to Present" feed (\code{ijzp-q8t2})}
 \usage{
 morie_datasets_chicago_crime(
   year = NULL,
@@ -37,5 +37,46 @@ Default 1,000 (the unauthenticated SODA2 ceiling).}
 A \code{data.frame} with the documented Socrata schema.
 }
 \description{
-City of Chicago "Crimes -- 2001 to Present" feed.
+Wraps the City of Chicago "Crimes -- 2001 to Present" open dataset
+(Socrata resource id \code{ijzp-q8t2}; portal landing
+\url{https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-Present/ijzp-q8t2/about_data}).
+22-column schema, one row per reported crime incident (except
+murders, where one row per victim). Data are extracted from the
+Chicago PD CLEAR system, refreshed daily with a seven-day lag,
+and addresses are block-only redacted.
+}
+\details{
+\strong{Scale warning.} As of 2026-05 the live feed carries ~8,557,071
+rows (8.56M; last refreshed 2026-05-23) -- too large for
+spreadsheet programs and slow even for programmatic pulls without
+filtering. Always prefer narrowing the query first (\code{year = ...}
+server-side filter) or paginating with \code{paginate = TRUE} + a
+large \code{page_size} (and ideally an app_token). A full unfiltered
+pull at the default \code{page_size = 1000} would issue ~8,560
+requests; with \code{page_size = 50000} + an app_token it drops to
+~172.
+
+Socrata accepts both the numeric id (\verb{/resource/ijzp-q8t2.json})
+and the publisher's \code{crimes} alias (\verb{/resource/crimes.json}).
+SODA3 endpoints are also available
+(\verb{/api/v3/views/crimes/query.json}), as are CSV variants
+(\verb{/resource/crimes.csv}, \verb{/api/v3/views/crimes/query.csv}).
+morie defaults to SODA2 JSON via the UUID for stability.
+
+\strong{Cross-referenced datasets (Chicago Open Data).} The 22-col
+schema carries geographic and crime-classification foreign keys
+that other Chicago datasets resolve:
+
+\describe{
+\item{beat}{morie wraps via
+\code{\link[=morie_datasets_chicago_police_beats]{morie_datasets_chicago_police_beats()}} (\code{n9it-hstw}).}
+\item{district}{morie wraps via
+\code{\link[=morie_datasets_chicago_police_districts]{morie_datasets_chicago_police_districts()}} (\verb{24zt-jpfn}).}
+\item{ward}{City Council ward (50 wards) -- not yet wrapped;
+lookup-pending at \verb{sp34-6z76}.}
+\item{community_area}{77 community areas -- not yet wrapped;
+lookup-pending at \verb{cauq-8yn6}.}
+\item{iucr / fbi_code}{Illinois Uniform Crime Reporting codes
+-- not yet wrapped; lookup-pending at \verb{c7ck-438e}.}
+}
 }
