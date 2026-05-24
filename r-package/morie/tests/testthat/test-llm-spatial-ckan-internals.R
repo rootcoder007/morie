@@ -81,13 +81,21 @@ test_that(".morie_llm_messages_to_prompt assembles roles into one string", {
   expect_match(out, "Assistant: A1")
 })
 
+test_that(".morie_llm_strip_think removes <think>...</think> + trims", {
+  out <- morie:::.morie_llm_strip_think(
+    "  <think>chain-of-thought</think>final answer  ")
+  expect_equal(out, "final answer")
+})
+
 test_that(".morie_llm_strip_think trims surrounding whitespace", {
-  # NOTE: the in-tree regex pattern is "<think>.*?</think>\\\\s*"
-  # which PCRE-decodes to a literal backslash before "s*", so the
-  # function does NOT currently strip <think> blocks. It does still
-  # trim whitespace, so we assert only that contract here.
   expect_equal(morie:::.morie_llm_strip_think("  final answer  "),
                "final answer")
+})
+
+test_that(".morie_llm_strip_think strips multi-line <think> block", {
+  out <- morie:::.morie_llm_strip_think(
+    "<think>line1\nline2</think>\n\nfinal")
+  expect_equal(out, "final")
 })
 
 test_that(".morie_llm_strip_think no-op on plain text", {

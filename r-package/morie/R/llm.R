@@ -359,7 +359,7 @@ morie_llm_detect_provider <- function() {
 }
 
 .morie_llm_strip_think <- function(text) {
-  trimws(gsub("<think>.*?</think>\\\\s*", "", text, perl = TRUE))
+  trimws(gsub("(?s)<think>.*?</think>\\s*", "", text, perl = TRUE))
 }
 
 # Non-streaming FreeAPI completion via the same OpenAI-compatible endpoint
