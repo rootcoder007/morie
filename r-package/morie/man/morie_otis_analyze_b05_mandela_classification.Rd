@@ -12,7 +12,7 @@ morie_otis_analyze_b05_mandela_classification(data, out_dir = NULL)
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 Applies the Sprott-Doob 15-day Mandela threshold to OTIS b05

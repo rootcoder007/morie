@@ -18,7 +18,7 @@ morie_otis_analyze_b01_mrm(data = NULL, out_dir = NULL)
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 OTIS b01 Ruhela formulations (full DLRM).

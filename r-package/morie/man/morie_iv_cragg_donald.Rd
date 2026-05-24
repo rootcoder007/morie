@@ -35,7 +35,7 @@ statistic is a function of the first-stage regression and is
 independent of the outcome variable; \code{outcome} only needs to
 name a numeric column in \code{data} so \pkg{ivreg} can compile
 a formula. When \code{outcome = NULL} (default), the first
-endogenous regressor is reused as the outcome \u2014 works because
+endogenous regressor is reused as the outcome -- works because
 \pkg{ivreg}'s weak-IV diagnostic comes from the first stage
 regardless of \code{y}.
 }

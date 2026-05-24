@@ -1317,7 +1317,7 @@ morie_spatial_voting_indscal <- function(dissimilarities,
           numer <- numer + w_s * d_kj * X[l, s]
           denom <- denom + w_s ^ 2 + 1e-12
         }
-        if (denom > 0) X[j, s] <- numer / denom
+        if (isTRUE(denom > 0) && is.finite(numer)) X[j, s] <- numer / denom
       }
     }
     change <- sqrt(sum((X - X_old) ^ 2)) /

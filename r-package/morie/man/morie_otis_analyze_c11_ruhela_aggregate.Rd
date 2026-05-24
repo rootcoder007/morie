@@ -15,7 +15,7 @@ morie_otis_analyze_c11_mrm_aggregate(data, out_dir = NULL)
 \item{out_dir}{Optional.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 c11 aggregate Ruhela: long-duration bin (>=16 days) -> RC.

@@ -182,7 +182,7 @@ morie_iv_liml <- function(data, outcome, endogenous, instruments,
                             alpha = alpha, dof = fit$df.residual,
                             details = list(fit = fit)))
   }
-  # TODO: native eigenvalue LIML \u2014 replicate iv.py:liml().  Falls back to 2SLS.
+  # TODO: native eigenvalue LIML -- replicate iv.py:liml().  Falls back to 2SLS.
   res <- morie_iv_tsls(data, outcome, endogenous, instruments, exogenous,
                        robust = robust, alpha = alpha)
   res$method <- "liml (2sls fallback \u2014 install ivreg)"
@@ -311,7 +311,7 @@ morie_iv_first_stage_diagnostics <- function(data, endogenous, instruments,
 #' independent of the outcome variable; \code{outcome} only needs to
 #' name a numeric column in \code{data} so \pkg{ivreg} can compile
 #' a formula. When \code{outcome = NULL} (default), the first
-#' endogenous regressor is reused as the outcome \u2014 works because
+#' endogenous regressor is reused as the outcome -- works because
 #' \pkg{ivreg}'s weak-IV diagnostic comes from the first stage
 #' regardless of \code{y}.
 #'
@@ -372,7 +372,7 @@ morie_iv_cragg_donald <- function(data, endogenous, instruments,
 #' Stock-Yogo critical values
 #' @export
 morie_iv_stock_yogo <- function(n_endogenous = 1, n_instruments = 1) {
-  # TODO: ship full Stock & Yogo (2005, Table 5.2) lookup table \u2014 currently
+  # TODO: ship full Stock & Yogo (2005, Table 5.2) lookup table -- currently
   # only the 10/15/20/25 percent maximal-bias thresholds for the leading
   # 1-endogenous case are reproduced.  Replicates iv.py:stock_yogo_critical_values.
   tab <- list("1_1" = c(`10pct` = 16.38, `15pct` = 8.96,

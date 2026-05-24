@@ -12,7 +12,7 @@ morie_otis_analyze_ruhela_grid(datasets, out_dir = NULL)
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 Runs every aggregate Ruhela formulation analyzer against the

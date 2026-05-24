@@ -11,9 +11,9 @@ Integer count of newly registered commands, invisibly.
 }
 \description{
 Walks \code{getNamespaceExports("morie")}, filters to the \verb{^morie_} family,
-and registers each as a \\code{morie_stat_command} unless one already
+and registers each as a \code{morie_stat_command} unless one already
 exists under that name.  The category is inferred from the function's
-source filename prefix via \\code{.MORIE_CATEGORY_PREFIX_MAP}.  Safe to
+source filename prefix via \code{.MORIE_CATEGORY_PREFIX_MAP}.  Safe to
 call repeatedly -- existing registrations are left untouched.
 }
 \keyword{internal}

@@ -12,7 +12,7 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal(data, out_dir = NULL)
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 Cross-references the c11 Mandela classification against the

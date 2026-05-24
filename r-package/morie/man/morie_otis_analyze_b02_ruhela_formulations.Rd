@@ -18,7 +18,7 @@ morie_otis_analyze_b02_mrm(data = NULL, out_dir = NULL)
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 OTIS b02 Ruhela formulations: T=Female -> seg-day count.

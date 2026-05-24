@@ -26,14 +26,14 @@ morie_otis_analyze_ruhela_per_year(
 
 \item{covariates}{Character vector of covariate column names.}
 
-\item{year_col}{Year column (default \\code{"EndFiscalYear"}).}
+\item{year_col}{Year column (default \code{"EndFiscalYear"}).}
 
-\item{cluster_col}{Cluster axis for SE, or \\code{NULL}.}
+\item{cluster_col}{Cluster axis for SE, or \code{NULL}.}
 
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 Runs the complete 10-estimator DLRM separately on each fiscal year.

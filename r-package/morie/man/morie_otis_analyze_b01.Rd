@@ -10,8 +10,8 @@ morie_otis_analyze_b01(data)
 \item{data}{b01 data.frame (76,934 rows in the public release).}
 }
 \value{
-A \\code{morie_otis_analysis_result} list with reason / alert /
-year-trend tables. Within-year only -- \\code{UniqueIndividual_ID}
+A \code{morie_otis_analysis_result} list with reason / alert /
+year-trend tables. Within-year only -- \code{UniqueIndividual_ID}
 is not cross-year-safe.
 }
 \description{

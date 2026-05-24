@@ -15,7 +15,7 @@ morie_otis_analyze_a01_mrm_per_year(data = NULL, out_dir = NULL)
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 Per-year full-DLRM on a01 canonical formulation.

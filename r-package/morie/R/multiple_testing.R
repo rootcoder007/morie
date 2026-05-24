@@ -721,20 +721,20 @@ print.morie_multiple_testing_result <- function(x, ...) {
 #' Local false discovery rate via empirical-Bayes two-component mixture
 #'
 #' Estimates the local FDR for each test as
-#' \\eqn{lfdr_i = \\pi_0 \\, f_0(z_i) / f(z_i)}{lfdr_i = pi_0 \ f_0(z_i) / f(z_i)}, where
-#' \\eqn{z_i = \\Phi^{-1}(1 - p_i/2)}{z_i = Phi^-1(1 - p_i/2)} are two-sided z-scores, \\code{f_0} is the
-#' standard-normal null density, \\eqn{f} is a kernel density estimate of the
-#' observed z-scores, and \\eqn{\\pi_0}{pi_0} is the proportion of null hypotheses
-#' estimated by the Storey-style cutoff at \\eqn{p > 0.5}.
+#' \eqn{lfdr_i = \\pi_0 \\, f_0(z_i) / f(z_i)}{lfdr_i = pi_0 \ f_0(z_i) / f(z_i)}, where
+#' \eqn{z_i = \Phi^{-1}(1 - p_i/2)}{z_i = Phi^-1(1 - p_i/2)} are two-sided z-scores, \code{f_0} is the
+#' standard-normal null density, \eqn{f} is a kernel density estimate of the
+#' observed z-scores, and \eqn{\\pi_0}{pi_0} is the proportion of null hypotheses
+#' estimated by the Storey-style cutoff at \eqn{p > 0.5}.
 #'
-#' @param p_values Numeric vector of raw p-values in \\eqn{`[0, 1]`}.
-#' @param pi0_method Pi-zero estimator. Accepted: \\code{"bootstrap"}
+#' @param p_values Numeric vector of raw p-values in \eqn{`[0, 1]`}.
+#' @param pi0_method Pi-zero estimator. Accepted: \code{"bootstrap"}
 #'   (alias for the Storey-style cutoff at 0.5; retained for API parity
 #'   with the Python sibling).
 #' @param labels Optional character vector of test labels.
-#' @return A data frame with columns \\code{p_value}, \\code{z_score},
-#'   \\code{local_fdr}, and (if supplied) \\code{label}. The data frame
-#'   additionally carries class \\code{morie_rich_result}.
+#' @return A data frame with columns \code{p_value}, \code{z_score},
+#'   \code{local_fdr}, and (if supplied) \code{label}. The data frame
+#'   additionally carries class \code{morie_rich_result}.
 #' @examples
 #' set.seed(1)
 #' p <- c(stats::runif(80), stats::pnorm(-abs(stats::rnorm(20, mean = 3))) * 2)
@@ -787,17 +787,17 @@ local_fdr <- function(p_values, pi0_method = "bootstrap", labels = NULL) {
 #' strongly control the family-wise error rate without requiring
 #' independence across tests.
 #'
-#' @param test_stats Numeric vector of length \\eqn{m} of observed test
+#' @param test_stats Numeric vector of length \eqn{m} of observed test
 #'   statistics.
-#' @param null_stats Numeric matrix with \\eqn{n_{perm}} rows and \\eqn{m}
+#' @param null_stats Numeric matrix with \eqn{n_{perm}} rows and \eqn{m}
 #'   columns containing test statistics computed on permuted data.
-#' @param alternative One of \\code{"two_sided"} (default), \\code{"greater"},
-#'   or \\code{"less"}.
+#' @param alternative One of \code{"two_sided"} (default), \code{"greater"},
+#'   or \code{"less"}.
 #' @param alpha Significance level for rejection (default 0.05).
 #' @param labels Optional character vector of test labels.
-#' @return A \\code{morie_rich_result} list with \\code{original},
-#'   \\code{adjusted}, \\code{rejected}, \\code{method}, \\code{alpha},
-#'   \\code{n_rejected}, \\code{n_tests}.
+#' @return A \code{morie_rich_result} list with \code{original},
+#'   \code{adjusted}, \code{rejected}, \code{method}, \code{alpha},
+#'   \code{n_rejected}, \code{n_tests}.
 #' @examples
 #' set.seed(1)
 #' m <- 10; nperm <- 200
@@ -857,19 +857,19 @@ permutation_fwer <- function(test_stats, null_stats,
 #'
 #' Estimates the false discovery rate at each candidate threshold using a
 #' matrix of p-values computed under the permutation null, and selects the
-#' largest threshold whose estimated FDR is at most \\code{alpha}. Q-values
+#' largest threshold whose estimated FDR is at most \code{alpha}. Q-values
 #' are assigned as the minimum estimated FDR across thresholds at least as
 #' large as each observed p-value.
 #'
 #' @param test_stats Numeric vector of observed p-values (named after the
 #'   Python sibling argument to keep cross-language parity).
 #' @param null_stats Numeric matrix of permutation-null p-values with
-#'   \\eqn{n_{perm}} rows and \\eqn{m} columns.
+#'   \eqn{n_{perm}} rows and \eqn{m} columns.
 #' @param alpha Target FDR level (default 0.05).
 #' @param labels Optional character vector of test labels.
-#' @return A \\code{morie_rich_result} list with \\code{original} (raw
-#'   p-values), \\code{adjusted} (q-values), \\code{rejected},
-#'   \\code{method}, \\code{alpha}, \\code{n_rejected}, \\code{n_tests}.
+#' @return A \code{morie_rich_result} list with \code{original} (raw
+#'   p-values), \code{adjusted} (q-values), \code{rejected},
+#'   \code{method}, \code{alpha}, \code{n_rejected}, \code{n_tests}.
 #' @examples
 #' set.seed(1)
 #' m <- 20; nperm <- 200

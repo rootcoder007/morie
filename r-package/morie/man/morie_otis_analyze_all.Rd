@@ -7,15 +7,15 @@
 morie_otis_analyze_all(datasets, out_dir = NULL)
 }
 \arguments{
-\item{datasets}{Named list \\code{list(b01 = <df>, c01 = <df>, ...)}.
+\item{datasets}{Named list \code{list(b01 = <df>, c01 = <df>, ...)}.
 IDs absent from the list are skipped silently.}
 
 \item{out_dir}{Optional directory to write per-dataset
-\\code{overlay_<id>.rds} files. \\code{NULL} means in-memory only.}
+\code{overlay_<id>.rds} files. \code{NULL} means in-memory only.}
 }
 \value{
-Named list of \\code{morie_otis_analysis_result}s.
+Named list of \code{morie_otis_analysis_result}s.
 }
 \description{
-Counterpart to Python \\code{analyze_all()}.
+Counterpart to Python \code{analyze_all()}.
 }

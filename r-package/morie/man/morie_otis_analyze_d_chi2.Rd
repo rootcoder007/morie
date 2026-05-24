@@ -7,13 +7,13 @@
 morie_otis_analyze_d_chi2(datasets, out_dir = NULL)
 }
 \arguments{
-\item{datasets}{Named list with \\code{d01}, \\code{d06}, \\code{d07}
+\item{datasets}{Named list with \code{d01}, \code{d06}, \code{d07}
 data.frames.}
 
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 Yearly trend (d01 Poisson CIs) + Alert x Cause / Housing

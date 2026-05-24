@@ -7,6 +7,6 @@
 morie_otis_analyzers()
 }
 \description{
-Mirrors \\code{_ANALYSES} in
-\\code{src/morie/otis_all_analyze.py}.
+Mirrors \code{_ANALYSES} in
+\code{src/morie/otis_all_analyze.py}.
 }

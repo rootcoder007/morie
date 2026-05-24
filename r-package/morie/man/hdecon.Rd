@@ -7,20 +7,20 @@
 hdecon(x, cutoff, n_fft = NULL)
 }
 \arguments{
-\item{x}{Numeric vector (assumed convolution \\eqn{h * e}).}
+\item{x}{Numeric vector (assumed convolution \eqn{h * e}).}
 
 \item{cutoff}{Liftering cutoff (quefrency index). Coefficients above
 are zeroed to isolate the slow-varying component.}
 
-\item{n_fft}{FFT length (default: next power of 2 \\eqn{\\geq}{\>=} \code{length(x)}).}
+\item{n_fft}{FFT length (default: next power of 2 \eqn{\geq}{\>=} \code{length(x)}).}
 }
 \value{
-List with \code{filtered} (minimum-phase component \\eqn{h}),
+List with \code{filtered} (minimum-phase component \eqn{h}),
 \code{name}, \code{fs}, \code{n_samples}, and \code{extra} (\code{excitation}, \code{cutoff}, \code{n_fft}).
 }
 \description{
-Separates a convolved signal \\eqn{x = h * e} into a minimum-phase
-impulse-response component \\eqn{h} and an excitation \\eqn{e} by
+Separates a convolved signal \eqn{x = h * e} into a minimum-phase
+impulse-response component \eqn{h} and an excitation \eqn{e} by
 low-time liftering of the complex cepstrum.
 }
 \details{

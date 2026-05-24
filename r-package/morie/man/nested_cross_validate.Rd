@@ -20,18 +20,18 @@ nested_cross_validate(
 )
 }
 \arguments{
-\item{fit_fn}{Function with signature \\code{(X, y, hyperparams) -> model}
+\item{fit_fn}{Function with signature \code{(X, y, hyperparams) -> model}
 accepting a single hyperparameter list (full form only).}
 
-\item{predict_fn}{Function with signature \\code{(model, X) -> y_pred}.}
+\item{predict_fn}{Function with signature \code{(model, X) -> y_pred}.}
 
 \item{X}{Numeric predictor matrix (or coercible).}
 
 \item{y}{Response vector.}
 
 \item{score_fn}{Optional custom scoring function
-\\code{(y_true, y_pred) -> numeric(1)}. Higher is better. If \\code{NULL},
-the named scoring rule via \\code{scoring} is used.}
+\code{(y_true, y_pred) -> numeric(1)}. Higher is better. If \code{NULL},
+the named scoring rule via \code{scoring} is used.}
 
 \item{hyperparam_grid}{Named list of candidate vectors (one per
 hyperparameter). The Cartesian product defines the search grid.}
@@ -41,19 +41,19 @@ hyperparameter). The Cartesian product defines the search grid.}
 \item{inner_k}{Number of inner folds (default 3).}
 
 \item{scoring}{Named scoring rule passed to the internal scorer
-(\\code{"roc_auc"}, \\code{"accuracy"}, \\code{"brier"}). Used only if
-\\code{score_fn} is \\code{NULL}.}
+(\code{"roc_auc"}, \code{"accuracy"}, \code{"brier"}). Used only if
+\code{score_fn} is \code{NULL}.}
 
 \item{random_state}{Integer seed for fold construction (default 42).}
 
 \item{tune_fn}{Deprecated legacy positional argument; see Description.}
 
-\item{outer_folds}{Deprecated alias for \\code{outer_k} (legacy stub form).}
+\item{outer_folds}{Deprecated alias for \code{outer_k} (legacy stub form).}
 }
 \value{
-Named list with \\code{outer_scores} (numeric vector, length
-\\code{outer_k}), \\code{best_hyperparams_per_fold} (list of named lists),
-\\code{mean_score}, \\code{se_score}, and \\code{n_configs}.
+Named list with \code{outer_scores} (numeric vector, length
+\code{outer_k}), \code{best_hyperparams_per_fold} (list of named lists),
+\code{mean_score}, \code{se_score}, and \code{n_configs}.
 }
 \description{
 Performs nested K-fold CV: the outer loop estimates generalisation
@@ -62,13 +62,13 @@ configuration on each outer training fold. Two calling conventions are
 supported for backward compatibility:
 }
 \details{
-\\itemize{
-\\item \\strong{Legacy stub form:} \\code{nested_cross_validate(tune_fn,
+\itemize{
+\item \strong{Legacy stub form:} \code{nested_cross_validate(tune_fn,
         predict_fn, X, y, outer_folds, scoring, random_state)} where
-\\code{tune_fn(X, y)} returns a fitted model (no grid argument).
+\code{tune_fn(X, y)} returns a fitted model (no grid argument).
 In this mode no inner search is run.
-\\item \\strong{Full form:} pass \\code{fit_fn}, \\code{predict_fn},
-\\code{score_fn}, and \\code{hyperparam_grid} (a named list of
+\item \strong{Full form:} pass \code{fit_fn}, \code{predict_fn},
+\code{score_fn}, and \code{hyperparam_grid} (a named list of
 candidate vectors). The function enumerates the Cartesian
 product, runs inner K-fold CV on each outer training fold,
 picks the best configuration, refits on the full outer-train

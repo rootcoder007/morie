@@ -36,8 +36,8 @@ morie_estimate_irm(
 \item{random_state}{Random seed (default 42).}
 }
 \value{
-Named list with \\code{ate}, \\code{se}, \\code{ci_lower},
-\\code{ci_upper}, \\code{n}, \\code{method}.
+Named list with \code{ate}, \code{se}, \code{ci_lower},
+\code{ci_upper}, \code{n}, \code{method}.
 
 A list with components: \code{ate}, \code{se}, \code{ci_lower}, \code{ci_upper},
 \code{n}, \code{method} (\code{"IRM (DoubleML)"}).
@@ -45,8 +45,8 @@ A list with components: \code{ate}, \code{se}, \code{ci_lower}, \code{ci_upper},
 \description{
 Implements the IRM variant of Chernozhukov et al. (2018) double machine
 learning, which allows treatment-effect heterogeneity by fitting separate
-outcome regressions for \\eqn{T=0} and \\eqn{T=1} alongside a propensity
-model. Uses \\code{DoubleML::DoubleMLIRM} when available; otherwise falls
+outcome regressions for \eqn{T=0} and \eqn{T=1} alongside a propensity
+model. Uses \code{DoubleML::DoubleMLIRM} when available; otherwise falls
 back to a hand-rolled cross-fit estimator using logistic regression for
 the propensity score and ridge regression for the conditional outcome
 regressions.
@@ -106,7 +106,7 @@ if (requireNamespace("DoubleML", quietly = TRUE) &&
 \references{
 Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C.,
 Newey, W., & Robins, J. (2018). Double/debiased machine learning for
-treatment and structural parameters. \\emph{The Econometrics Journal},
+treatment and structural parameters. \emph{The Econometrics Journal},
 21(1), C1--C68.
 
 Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C.,

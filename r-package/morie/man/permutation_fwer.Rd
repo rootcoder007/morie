@@ -13,23 +13,23 @@ permutation_fwer(
 )
 }
 \arguments{
-\item{test_stats}{Numeric vector of length \\eqn{m} of observed test
+\item{test_stats}{Numeric vector of length \eqn{m} of observed test
 statistics.}
 
-\item{null_stats}{Numeric matrix with \\eqn{n_{perm}} rows and \\eqn{m}
+\item{null_stats}{Numeric matrix with \eqn{n_{perm}} rows and \eqn{m}
 columns containing test statistics computed on permuted data.}
 
-\item{alternative}{One of \\code{"two_sided"} (default), \\code{"greater"},
-or \\code{"less"}.}
+\item{alternative}{One of \code{"two_sided"} (default), \code{"greater"},
+or \code{"less"}.}
 
 \item{alpha}{Significance level for rejection (default 0.05).}
 
 \item{labels}{Optional character vector of test labels.}
 }
 \value{
-A \\code{morie_rich_result} list with \\code{original},
-\\code{adjusted}, \\code{rejected}, \\code{method}, \\code{alpha},
-\\code{n_rejected}, \\code{n_tests}.
+A \code{morie_rich_result} list with \code{original},
+\code{adjusted}, \code{rejected}, \code{method}, \code{alpha},
+\code{n_rejected}, \code{n_tests}.
 }
 \description{
 Given observed test statistics and a matrix of test statistics under the

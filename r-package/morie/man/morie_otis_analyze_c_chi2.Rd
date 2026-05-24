@@ -12,15 +12,15 @@ morie_otis_analyze_c_chi2(
 }
 \arguments{
 \item{datasets}{Named list of c-series data.frames
-(e.g. \\code{list(c03 = otis_c03, c04 = otis_c04, ...)}).}
+(e.g. \code{list(c03 = otis_c03, c04 = otis_c04, ...)}).}
 
 \item{contingency_value}{Count column to pivot on
-(default \\code{"NumberIndividuals_RestrictiveConfinement"}).}
+(default \code{"NumberIndividuals_RestrictiveConfinement"}).}
 
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 Pearson chi-square + Cramer's V on every meaningful 2-way slice of

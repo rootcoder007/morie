@@ -1,24 +1,24 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #' Comprehensive per-dataset analyses for ALL 28 OTIS public-release files
 #'
-#' R port of \\code{morie.otis_all_analyze}. Pairs with the OTIS loaders
-#' (see \\code{?morie_otis} and the b01/c-series/d-series CSV files
-#' under \\code{data/datasets/OTIS/}) and chains the existing MRM-OTIS
-#' callables in \\code{mrm_otis.R} the same way
-#' \\code{morie_arsau_analyze_*} (in \\code{mrm_arsau.R}) chains the
+#' R port of \code{morie.otis_all_analyze}. Pairs with the OTIS loaders
+#' (see \code{?morie_otis} and the b01/c-series/d-series CSV files
+#' under \code{data/datasets/OTIS/}) and chains the existing MRM-OTIS
+#' callables in \code{mrm_otis.R} the same way
+#' \code{morie_arsau_analyze_*} (in \code{mrm_arsau.R}) chains the
 #' generic MRM-UoF callables.
 #'
-#' For every dataset id (\\code{b01}..\\code{d07}) this module exposes
-#' \\code{morie_otis_analyze_<id>(data)}. Each analyzer returns a named
-#' \\code{list} with class \\code{c("morie_otis_analysis_result",
+#' For every dataset id (\code{b01}..\code{d07}) this module exposes
+#' \code{morie_otis_analyze_<id>(data)}. Each analyzer returns a named
+#' \code{list} with class \code{c("morie_otis_analysis_result",
 #' "morie_rich_result", "list")} containing
-#' \\code{title} / \\code{summary_lines} / \\code{tables} /
-#' \\code{interpretation} / \\code{warnings} / \\code{payload}, mirroring
-#' the Python \\code{RichResult} shape used in
-#' \\code{src/morie/otis_all_analyze.py}.
+#' \code{title} / \code{summary_lines} / \code{tables} /
+#' \code{interpretation} / \code{warnings} / \code{payload}, mirroring
+#' the Python \code{RichResult} shape used in
+#' \code{src/morie/otis_all_analyze.py}.
 #'
-#' Cross-year invariant: \\code{UniqueIndividual_ID} is reassigned
-#' every fiscal year (see \\code{variable_taxonomy.R}). Every analyzer
+#' Cross-year invariant: \code{UniqueIndividual_ID} is reassigned
+#' every fiscal year (see \code{variable_taxonomy.R}). Every analyzer
 #' that touches that column is within-year only.
 #'
 #' @name morie_otis_all_analyze
@@ -169,8 +169,8 @@ NULL
 #' Person-level segregation-placement analysis (b01)
 #'
 #' @param data b01 data.frame (76,934 rows in the public release).
-#' @return A \\code{morie_otis_analysis_result} list with reason / alert /
-#'   year-trend tables. Within-year only -- \\code{UniqueIndividual_ID}
+#' @return A \code{morie_otis_analysis_result} list with reason / alert /
+#'   year-trend tables. Within-year only -- \code{UniqueIndividual_ID}
 #'   is not cross-year-safe.
 #' @export
 morie_otis_analyze_b01 <- function(data) {
@@ -689,8 +689,8 @@ morie_otis_analyze_d07 <- function(data) {
 
 #' Registry of dataset-id -> analyzer
 #'
-#' Mirrors \\code{_ANALYSES} in
-#' \\code{src/morie/otis_all_analyze.py}.
+#' Mirrors \code{_ANALYSES} in
+#' \code{src/morie/otis_all_analyze.py}.
 #' @export
 morie_otis_analyzers <- function() {
   list(
@@ -714,13 +714,13 @@ morie_otis_analyzers <- function() {
 
 #' Run every OTIS analyzer against a named list of datasets
 #'
-#' Counterpart to Python \\code{analyze_all()}.
+#' Counterpart to Python \code{analyze_all()}.
 #'
-#' @param datasets Named list \\code{list(b01 = <df>, c01 = <df>, ...)}.
+#' @param datasets Named list \code{list(b01 = <df>, c01 = <df>, ...)}.
 #'   IDs absent from the list are skipped silently.
 #' @param out_dir Optional directory to write per-dataset
-#'   \\code{overlay_<id>.rds} files. \\code{NULL} means in-memory only.
-#' @return Named list of \\code{morie_otis_analysis_result}s.
+#'   \code{overlay_<id>.rds} files. \code{NULL} means in-memory only.
+#' @return Named list of \code{morie_otis_analysis_result}s.
 #' @export
 morie_otis_analyze_all <- function(datasets, out_dir = NULL) {
   stopifnot(is.list(datasets))
@@ -815,12 +815,12 @@ print.morie_otis_analysis_result <- function(x, ...) {
 #' multi-way clustered SE.
 #'
 #' @param data a01 data.frame (loaded from
-#'   \\code{a01_restrictive_confinement_detailed_dataset.csv}). Pass
-#'   \\code{NULL} to indicate "use registered loader" -- the R port
+#'   \code{a01_restrictive_confinement_detailed_dataset.csv}). Pass
+#'   \code{NULL} to indicate "use registered loader" -- the R port
 #'   requires you supply the data because we don't ship the loader
 #'   side-effect from R.
 #' @param out_dir Optional output directory.
-#' @return A \\code{morie_otis_analysis_result}. If the morie causal
+#' @return A \code{morie_otis_analysis_result}. If the morie causal
 #'   helpers aren't loaded, returns a "not yet ported" stub.
 #' @export
 #' @examples
@@ -883,7 +883,7 @@ morie_otis_analyze_a01 <- function(data = NULL, out_dir = NULL) {
 #'
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{
@@ -900,7 +900,7 @@ morie_otis_analyze_a01_ruhela_formulations <- function(data = NULL,
 #'
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{
@@ -917,7 +917,7 @@ morie_otis_analyze_b01_ruhela_formulations <- function(data = NULL,
 #'
 #' @param data Optional b02 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{
@@ -942,10 +942,10 @@ morie_otis_analyze_b01_dlrm <- morie_otis_analyze_b01_ruhela_formulations
 morie_otis_analyze_b02_dlrm <- morie_otis_analyze_b02_ruhela_formulations
 
 # Deprecated dual-arm aliases
-#' Deprecated alias for \\code{morie_otis_analyze_a01_ruhela_formulations}.
+#' Deprecated alias for \code{morie_otis_analyze_a01_ruhela_formulations}.
 #' @param data Optional.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_a01_dual() }
@@ -955,10 +955,10 @@ morie_otis_analyze_a01_dual <- function(data = NULL, out_dir = NULL) {
   morie_otis_analyze_a01_ruhela_formulations(data, out_dir)
 }
 
-#' Deprecated alias for \\code{morie_otis_analyze_b01_ruhela_formulations}.
+#' Deprecated alias for \code{morie_otis_analyze_b01_ruhela_formulations}.
 #' @param data Optional.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b01_dual() }
@@ -983,10 +983,10 @@ morie_otis_analyze_b01_dual <- function(data = NULL, out_dir = NULL) {
 #' @param treatment Treatment column name.
 #' @param outcome Outcome column name.
 #' @param covariates Character vector of covariate column names.
-#' @param year_col Year column (default \\code{"EndFiscalYear"}).
-#' @param cluster_col Cluster axis for SE, or \\code{NULL}.
+#' @param year_col Year column (default \code{"EndFiscalYear"}).
+#' @param cluster_col Cluster axis for SE, or \code{NULL}.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{
@@ -1008,7 +1008,7 @@ morie_otis_analyze_ruhela_per_year <- function(data, ds_id,
 #'
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_a01_ruhela_per_year() }
@@ -1022,7 +1022,7 @@ morie_otis_analyze_a01_ruhela_per_year <- function(data = NULL,
 #'
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b01_ruhela_per_year() }
@@ -1250,7 +1250,7 @@ IRR > 1 ==> treatment increases the count rate; IRR < 1 ",
 #' b03 aggregate Ruhela: Alert presence -> seg placements.
 #' @param data b03 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b03_ruhela_aggregate(otis_b03) }
@@ -1283,7 +1283,7 @@ morie_otis_analyze_b03_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' b04 aggregate Ruhela: Female -> median seg duration.
 #' @param data b04 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b04_ruhela_aggregate(otis_b04) }
@@ -1318,7 +1318,7 @@ morie_otis_analyze_b04_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' b06 aggregate Ruhela: Disciplinary reason -> seg placements.
 #' @param data b06 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b06_ruhela_aggregate(otis_b06) }
@@ -1352,7 +1352,7 @@ morie_otis_analyze_b06_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' b07 aggregate Ruhela (pivot to long): With-alert -> seg placements.
 #' @param data b07 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b07_ruhela_aggregate(otis_b07) }
@@ -1400,7 +1400,7 @@ morie_otis_analyze_b07_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' b08 aggregate Ruhela: Female -> median seg duration (institution-clustered).
 #' @param data b08 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b08_ruhela_aggregate(otis_b08) }
@@ -1437,7 +1437,7 @@ morie_otis_analyze_b08_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' b09 aggregate Ruhela: Female -> individuals in segregation.
 #' @param data b09 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b09_ruhela_aggregate(otis_b09) }
@@ -1467,7 +1467,7 @@ morie_otis_analyze_b09_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' c01 aggregate Ruhela: Female -> RC count.
 #' @param data c01 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c01_ruhela_aggregate(otis_c01) }
@@ -1493,7 +1493,7 @@ morie_otis_analyze_c01_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' c01 region-cluster variant (year-clustered GEE).
 #' @param data c01 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{
@@ -1526,7 +1526,7 @@ morie_otis_analyze_c01_ruhela_aggregate_region_cluster <- function(data,
 #' c02 aggregate Ruhela: Female -> RC (institution GEE).
 #' @param data c02 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c02_ruhela_aggregate(otis_c02) }
@@ -1558,7 +1558,7 @@ morie_otis_analyze_c02_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' c03 aggregate Ruhela: Indigenous -> RC.
 #' @param data c03 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c03_ruhela_aggregate(otis_c03) }
@@ -1588,7 +1588,7 @@ morie_otis_analyze_c03_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' c04 aggregate Ruhela: Indigenous -> RC (by region).
 #' @param data c04 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c04_ruhela_aggregate(otis_c04) }
@@ -1618,7 +1618,7 @@ morie_otis_analyze_c04_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' c04 region-cluster variant.
 #' @param data c04 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{
@@ -1647,7 +1647,7 @@ morie_otis_analyze_c04_ruhela_aggregate_region_cluster <- function(data,
 #' c05 aggregate Ruhela: non-majority religion -> RC.
 #' @param data c05 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c05_ruhela_aggregate(otis_c05) }
@@ -1678,7 +1678,7 @@ morie_otis_analyze_c05_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' c06 aggregate Ruhela: Age 50+ -> RC.
 #' @param data c06 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c06_ruhela_aggregate(otis_c06) }
@@ -1705,7 +1705,7 @@ morie_otis_analyze_c06_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' c07 aggregate Ruhela: Alert presence x Gender -> RC.
 #' @param data c07 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c07_ruhela_aggregate(otis_c07) }
@@ -1744,7 +1744,7 @@ morie_otis_analyze_c07_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' c08 aggregate Ruhela: non-majority religion x gender -> RC.
 #' @param data c08 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c08_ruhela_aggregate(otis_c08) }
@@ -1772,7 +1772,7 @@ morie_otis_analyze_c08_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' c09 aggregate Ruhela: Age 50+ x gender -> RC.
 #' @param data c09 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c09_ruhela_aggregate(otis_c09) }
@@ -1799,7 +1799,7 @@ morie_otis_analyze_c09_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' c10 aggregate Ruhela: Female -> median RC days (institution GEE).
 #' @param data c10 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c10_ruhela_aggregate(otis_c10) }
@@ -1833,7 +1833,7 @@ morie_otis_analyze_c10_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' c11 aggregate Ruhela: long-duration bin (>=16 days) -> RC.
 #' @param data c11 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c11_ruhela_aggregate(otis_c11) }
@@ -1865,7 +1865,7 @@ morie_otis_analyze_c11_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' c12 aggregate Ruhela: Female -> median RC days (by region).
 #' @param data c12 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c12_ruhela_aggregate(otis_c12) }
@@ -1897,7 +1897,7 @@ morie_otis_analyze_c12_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' d02 aggregate Ruhela: Female -> custodial deaths.
 #' @param data d02 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_d02_ruhela_aggregate(otis_d02) }
@@ -1924,7 +1924,7 @@ morie_otis_analyze_d02_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' d03 aggregate Ruhela: Indigenous -> custodial deaths.
 #' @param data d03 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_d03_ruhela_aggregate(otis_d03) }
@@ -1951,7 +1951,7 @@ morie_otis_analyze_d03_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' d04 aggregate Ruhela: non-majority religion -> custodial deaths.
 #' @param data d04 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_d04_ruhela_aggregate(otis_d04) }
@@ -1976,7 +1976,7 @@ morie_otis_analyze_d04_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' d05 aggregate Ruhela: Age 50+ -> custodial deaths.
 #' @param data d05 data.frame.
 #' @param out_dir Optional.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_d05_ruhela_aggregate(otis_d05) }
@@ -2009,7 +2009,7 @@ morie_otis_analyze_d05_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' a01 alt-T Ruhela: Female -> vm count.
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_a01_ruhela_alt_gender() }
@@ -2022,7 +2022,7 @@ morie_otis_analyze_a01_ruhela_alt_gender <- function(data = NULL,
 #' a01 alt-T Ruhela: Age 50+ -> vm count.
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_a01_ruhela_alt_age() }
@@ -2035,7 +2035,7 @@ morie_otis_analyze_a01_ruhela_alt_age <- function(data = NULL,
 #' a01 alt-T Ruhela: Toronto region -> vm count.
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_a01_ruhela_alt_toronto() }
@@ -2048,7 +2048,7 @@ morie_otis_analyze_a01_ruhela_alt_toronto <- function(data = NULL,
 #' b01 alt-T Ruhela: Female -> vm count.
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b01_ruhela_alt_gender() }
@@ -2061,7 +2061,7 @@ morie_otis_analyze_b01_ruhela_alt_gender <- function(data = NULL,
 #' b01 alt-T Ruhela: Age 50+ -> vm count.
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b01_ruhela_alt_age() }
@@ -2074,7 +2074,7 @@ morie_otis_analyze_b01_ruhela_alt_age <- function(data = NULL,
 #' b01 alt-T Ruhela: Toronto region -> vm count.
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b01_ruhela_alt_toronto() }
@@ -2087,7 +2087,7 @@ morie_otis_analyze_b01_ruhela_alt_toronto <- function(data = NULL,
 #' b02 alt-T Ruhela: Toronto region -> total seg days.
 #' @param data Optional b02 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b02_ruhela_alt_region() }
@@ -2100,7 +2100,7 @@ morie_otis_analyze_b02_ruhela_alt_region <- function(data = NULL,
 #' b02 alt-T Ruhela: Age 50+ -> total seg days.
 #' @param data Optional b02 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b02_ruhela_alt_age() }
@@ -2118,7 +2118,7 @@ morie_otis_analyze_b02_ruhela_alt_age <- function(data = NULL,
 #' a01 subgroup Ruhela: Female-only cell frame.
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_a01_ruhela_subgroup_female() }
@@ -2132,7 +2132,7 @@ morie_otis_analyze_a01_ruhela_subgroup_female <- function(data = NULL,
 #' a01 subgroup Ruhela: Male-only cell frame.
 #' @param data Optional a01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_a01_ruhela_subgroup_male() }
@@ -2146,7 +2146,7 @@ morie_otis_analyze_a01_ruhela_subgroup_male <- function(data = NULL,
 #' b01 subgroup Ruhela: Female-only cell frame.
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b01_ruhela_subgroup_female() }
@@ -2160,7 +2160,7 @@ morie_otis_analyze_b01_ruhela_subgroup_female <- function(data = NULL,
 #' b01 subgroup Ruhela: Male-only cell frame.
 #' @param data Optional b01 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b01_ruhela_subgroup_male() }
@@ -2203,7 +2203,7 @@ morie_otis_analyze_b01_ruhela_subgroup_male <- function(data = NULL,
 #'
 #' @param data b05 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_b05_mandela_classification(otis_b05) }
@@ -2299,7 +2299,7 @@ morie_otis_analyze_b05_mandela_classification <- function(data,
 #'
 #' @param data c11 data.frame.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_c11_mandela_classification(otis_c11) }
@@ -2387,7 +2387,7 @@ morie_otis_analyze_c11_mandela_classification <- function(data,
 #'
 #' @param data c11 data.frame (used to derive the provincial figures).
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{ morie_otis_analyze_otis_mandela_provincial_vs_federal(otis_c11) }
@@ -2539,11 +2539,11 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
 #' in Canadian corrections research.
 #'
 #' @param datasets Named list of c-series data.frames
-#'   (e.g. \\code{list(c03 = otis_c03, c04 = otis_c04, ...)}).
+#'   (e.g. \code{list(c03 = otis_c03, c04 = otis_c04, ...)}).
 #' @param contingency_value Count column to pivot on
-#'   (default \\code{"NumberIndividuals_RestrictiveConfinement"}).
+#'   (default \code{"NumberIndividuals_RestrictiveConfinement"}).
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{
@@ -2622,10 +2622,10 @@ morie_otis_analyze_c_chi2 <- function(datasets,
 #' Yearly trend (d01 Poisson CIs) + Alert x Cause / Housing
 #' contingency chi^2 + Cramer's V on d06 / d07.
 #'
-#' @param datasets Named list with \\code{d01}, \\code{d06}, \\code{d07}
+#' @param datasets Named list with \code{d01}, \code{d06}, \code{d07}
 #'   data.frames.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{
@@ -2763,7 +2763,7 @@ morie_otis_analyze_d_chi2 <- function(datasets, out_dir = NULL) {
 #'
 #' @param datasets Named list keyed by dataset id (b03..d05).
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{
@@ -2898,18 +2898,18 @@ morie_otis_analyze_ruhela_grid <- function(datasets,
 #' Paper-ready master report -- every Ruhela formulation in one result.
 #'
 #' Sections:
-#' \\enumerate{
-#'   \\item Aggregate Ruhela formulations grid
-#'   \\item (Optional) per-row Ruhela formulations on a01/b01/b02
-#'   \\item MRM chi-square family on c-series + d-series
-#'   \\item Mandela-RF cross-comparison (provincial vs federal)
+#' \enumerate{
+#'   \item Aggregate Ruhela formulations grid
+#'   \item (Optional) per-row Ruhela formulations on a01/b01/b02
+#'   \item MRM chi-square family on c-series + d-series
+#'   \item Mandela-RF cross-comparison (provincial vs federal)
 #' }
 #'
 #' @param datasets Named list of OTIS data.frames.
-#' @param include_per_row Logical; if \\code{TRUE} also runs the slow
-#'   per-row RFs. Default \\code{FALSE}.
+#' @param include_per_row Logical; if \code{TRUE} also runs the slow
+#'   per-row RFs. Default \code{FALSE}.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{
@@ -3043,17 +3043,17 @@ morie_otis_analyze_ruhela_master <- function(datasets,
 
 #' OTIS a01 causal pipeline + Toronto Crime Severity Index context.
 #'
-#' Wires together \\code{morie_otis_analyze_a01} (causal IRM-DML) with
+#' Wires together \code{morie_otis_analyze_a01} (causal IRM-DML) with
 #' the Toronto Police Service / StatsCan CSI context. The R port
 #' requires the morie causal pipeline and TPS-CSI helpers to be loaded;
 #' otherwise returns a "not yet ported" stub.
 #'
 #' @param data Optional a01 data.frame.
-#' @param variant CSI variant: \\code{"total"} or \\code{"violent"}.
+#' @param variant CSI variant: \code{"total"} or \code{"violent"}.
 #' @param rebase_to_year Anchor year for the CSI index column
-#'   (default 2023). Use \\code{NULL} to skip rebasing.
+#'   (default 2023). Use \code{NULL} to skip rebasing.
 #' @param out_dir Optional output directory.
-#' @return \\code{morie_otis_analysis_result}.
+#' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
 #' \dontrun{

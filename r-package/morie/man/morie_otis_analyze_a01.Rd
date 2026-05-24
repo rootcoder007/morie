@@ -8,15 +8,15 @@ morie_otis_analyze_a01(data = NULL, out_dir = NULL)
 }
 \arguments{
 \item{data}{a01 data.frame (loaded from
-\\code{a01_restrictive_confinement_detailed_dataset.csv}). Pass
-\\code{NULL} to indicate "use registered loader" -- the R port
+\code{a01_restrictive_confinement_detailed_dataset.csv}). Pass
+\code{NULL} to indicate "use registered loader" -- the R port
 requires you supply the data because we don't ship the loader
 side-effect from R.}
 
 \item{out_dir}{Optional output directory.}
 }
 \value{
-A \\code{morie_otis_analysis_result}. If the morie causal
+A \code{morie_otis_analysis_result}. If the morie causal
 helpers aren't loaded, returns a "not yet ported" stub.
 }
 \description{

@@ -658,10 +658,10 @@ morie_estimate_g_computation <- function(data, treatment, outcome, covariates,
 #'
 #' Implements Chernozhukov et al. (2018) double/debiased machine learning
 #' for the partially linear regression model. When the
-#' \\pkg{DoubleML} R package is installed, delegates to
-#' \\code{DoubleML::DoubleMLPLR} with random-forest nuisance learners.
+#' \pkg{DoubleML} R package is installed, delegates to
+#' \code{DoubleML::DoubleMLPLR} with random-forest nuisance learners.
 #' Otherwise falls back to a hand-rolled cross-fit ridge implementation:
-#' residualise \\eqn{Y} and \\eqn{D} on \\eqn{X} via K-fold ridge, then
+#' residualise \eqn{Y} and \eqn{D} on \eqn{X} via K-fold ridge, then
 #' regress the outcome residual on the treatment residual.
 #'
 #' @param data A data frame with treatment, outcome, and covariate columns.
@@ -672,8 +672,8 @@ morie_estimate_g_computation <- function(data, treatment, outcome, covariates,
 #' @param n_rep Number of repeated cross-fitting repetitions (DoubleML only;
 #'   ignored by the ridge fallback). Default 1.
 #' @param random_state Integer seed for cross-fit folds and learners (default 42).
-#' @return Named list with elements \\code{ate}, \\code{se}, \\code{ci_lower},
-#'   \\code{ci_upper}, \\code{n}, \\code{method}.
+#' @return Named list with elements \code{ate}, \code{se}, \code{ci_lower},
+#'   \code{ci_upper}, \code{n}, \code{method}.
 #' @examples
 #' set.seed(1)
 #' n <- 200
@@ -685,7 +685,7 @@ morie_estimate_g_computation <- function(data, treatment, outcome, covariates,
 #' @references
 #' Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C.,
 #' Newey, W., & Robins, J. (2018). Double/debiased machine learning for
-#' treatment and structural parameters. \\emph{The Econometrics Journal},
+#' treatment and structural parameters. \emph{The Econometrics Journal},
 #' 21(1), C1--C68.
 #' @export
 morie_estimate_double_ml <- function(data, outcome, treatment, covariates,
@@ -747,8 +747,8 @@ morie_estimate_double_ml <- function(data, outcome, treatment, covariates,
 #'
 #' Implements the IRM variant of Chernozhukov et al. (2018) double machine
 #' learning, which allows treatment-effect heterogeneity by fitting separate
-#' outcome regressions for \\eqn{T=0} and \\eqn{T=1} alongside a propensity
-#' model. Uses \\code{DoubleML::DoubleMLIRM} when available; otherwise falls
+#' outcome regressions for \eqn{T=0} and \eqn{T=1} alongside a propensity
+#' model. Uses \code{DoubleML::DoubleMLIRM} when available; otherwise falls
 #' back to a hand-rolled cross-fit estimator using logistic regression for
 #' the propensity score and ridge regression for the conditional outcome
 #' regressions.
@@ -759,8 +759,8 @@ morie_estimate_double_ml <- function(data, outcome, treatment, covariates,
 #' @param covariates Character vector of covariate column names.
 #' @param n_folds Number of cross-fitting folds (default 5).
 #' @param random_state Integer seed (default 42).
-#' @return Named list with \\code{ate}, \\code{se}, \\code{ci_lower},
-#'   \\code{ci_upper}, \\code{n}, \\code{method}.
+#' @return Named list with \code{ate}, \code{se}, \code{ci_lower},
+#'   \code{ci_upper}, \code{n}, \code{method}.
 #' @examples
 #' set.seed(1)
 #' n <- 200
@@ -773,7 +773,7 @@ morie_estimate_double_ml <- function(data, outcome, treatment, covariates,
 #' @references
 #' Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C.,
 #' Newey, W., & Robins, J. (2018). Double/debiased machine learning for
-#' treatment and structural parameters. \\emph{The Econometrics Journal},
+#' treatment and structural parameters. \emph{The Econometrics Journal},
 #' 21(1), C1--C68.
 #' @export
 morie_estimate_irm <- function(data, treatment, outcome, covariates,

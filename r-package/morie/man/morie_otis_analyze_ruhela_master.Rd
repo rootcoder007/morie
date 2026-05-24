@@ -13,21 +13,21 @@ morie_otis_analyze_ruhela_master(
 \arguments{
 \item{datasets}{Named list of OTIS data.frames.}
 
-\item{include_per_row}{Logical; if \\code{TRUE} also runs the slow
-per-row RFs. Default \\code{FALSE}.}
+\item{include_per_row}{Logical; if \code{TRUE} also runs the slow
+per-row RFs. Default \code{FALSE}.}
 
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 Sections:
-\\enumerate{
-\\item Aggregate Ruhela formulations grid
-\\item (Optional) per-row Ruhela formulations on a01/b01/b02
-\\item MRM chi-square family on c-series + d-series
-\\item Mandela-RF cross-comparison (provincial vs federal)
+\enumerate{
+\item Aggregate Ruhela formulations grid
+\item (Optional) per-row Ruhela formulations on a01/b01/b02
+\item MRM chi-square family on c-series + d-series
+\item Mandela-RF cross-comparison (provincial vs federal)
 }
 }
 \examples{

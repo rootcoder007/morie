@@ -2,7 +2,7 @@
 % Please edit documentation in R/otis_all_analyze.R
 \name{morie_otis_analyze_b01_dual}
 \alias{morie_otis_analyze_b01_dual}
-\title{Deprecated alias for \\code{morie_otis_analyze_b01_ruhela_formulations}.}
+\title{Deprecated alias for \code{morie_otis_analyze_b01_ruhela_formulations}.}
 \usage{
 morie_otis_analyze_b01_dual(data = NULL, out_dir = NULL)
 }
@@ -12,10 +12,10 @@ morie_otis_analyze_b01_dual(data = NULL, out_dir = NULL)
 \item{out_dir}{Optional.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
-Deprecated alias for \\code{morie_otis_analyze_b01_ruhela_formulations}.
+Deprecated alias for \code{morie_otis_analyze_b01_ruhela_formulations}.
 }
 \examples{
 \dontrun{ morie_otis_analyze_b01_dual() }

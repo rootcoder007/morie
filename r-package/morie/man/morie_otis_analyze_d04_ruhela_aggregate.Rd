@@ -15,7 +15,7 @@ morie_otis_analyze_d04_mrm_aggregate(data, out_dir = NULL)
 \item{out_dir}{Optional.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 d04 aggregate Ruhela: non-majority religion -> custodial deaths.

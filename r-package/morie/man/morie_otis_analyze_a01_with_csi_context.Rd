@@ -14,18 +14,18 @@ morie_otis_analyze_a01_with_csi_context(
 \arguments{
 \item{data}{Optional a01 data.frame.}
 
-\item{variant}{CSI variant: \\code{"total"} or \\code{"violent"}.}
+\item{variant}{CSI variant: \code{"total"} or \code{"violent"}.}
 
 \item{rebase_to_year}{Anchor year for the CSI index column
-(default 2023). Use \\code{NULL} to skip rebasing.}
+(default 2023). Use \code{NULL} to skip rebasing.}
 
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
-Wires together \\code{morie_otis_analyze_a01} (causal IRM-DML) with
+Wires together \code{morie_otis_analyze_a01} (causal IRM-DML) with
 the Toronto Police Service / StatsCan CSI context. The R port
 requires the morie causal pipeline and TPS-CSI helpers to be loaded;
 otherwise returns a "not yet ported" stub.

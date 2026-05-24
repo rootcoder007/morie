@@ -7,7 +7,7 @@
 dfa(x, scales = NULL)
 }
 \arguments{
-\item{x}{Numeric vector (length \\eqn{\\geq}{\>=} 16).}
+\item{x}{Numeric vector (length \eqn{\geq}{\>=} 16).}
 
 \item{scales}{Integer vector of window sizes (auto-generated if \code{NULL}).}
 }
@@ -16,9 +16,9 @@ List with \code{value} (alpha), \code{name}, and \code{extra}
 (\code{scales}, \code{fluctuation}).
 }
 \description{
-Estimates the DFA scaling exponent \\eqn{\\alpha}{alpha}. White noise gives
-\\eqn{\\alpha \\approx 0.5}{alpha \~= 0.5}; pink (1/f) noise \\eqn{\\alpha \\approx 1.0}{alpha \~= 1.0};
-Brownian motion \\eqn{\\alpha \\approx 1.5}{alpha \~= 1.5}.
+Estimates the DFA scaling exponent \eqn{\alpha}{alpha}. White noise gives
+\eqn{\alpha \approx 0.5}{alpha \~= 0.5}; pink (1/f) noise \eqn{\alpha \approx 1.0}{alpha \~= 1.0};
+Brownian motion \eqn{\alpha \approx 1.5}{alpha \~= 1.5}.
 }
 \details{
 Reference: Peng, C.-K., Havlin, S., Stanley, H.E. & Goldberger, A.L. (1995)

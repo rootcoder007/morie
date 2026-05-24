@@ -12,7 +12,7 @@ morie_otis_analyze_c11_mandela_classification(data, out_dir = NULL)
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 Applies the 15-day threshold to OTIS c11 (Ontario provincial counts

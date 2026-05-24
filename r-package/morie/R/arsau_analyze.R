@@ -187,7 +187,7 @@ NULL
 #'         published CKAN sidecar (when present)
 #' }
 #'
-#' Region-locality is NOT meaningful for main_records \u2014 only the
+#' Region-locality is NOT meaningful for main_records -- only the
 #' \code{OPP_PoliceService_Region} column is published, and it pairs
 #' one column with itself.  See
 #' \code{\link{morie_arsau_analyze_detailed_dataset}} for the
@@ -461,7 +461,7 @@ morie_arsau_analyze_probe_cycle_records <- function(year, language = "en",
 #' @return A list classed
 #'   \code{c("morie_arsau_result", "morie_rich_result", "list")}.
 #' @references Ontario Ministry of the Solicitor General, ARSAU 2023
-#'   and 2024 weapon_records technical notes \u2014 the 2023 release
+#'   and 2024 weapon_records technical notes -- the 2023 release
 #'   accompanies an explicit invalidity flag.
 #' @export
 morie_arsau_analyze_weapon_records <- function(year, allow_invalid = FALSE,

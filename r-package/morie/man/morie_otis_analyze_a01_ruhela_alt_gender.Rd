@@ -15,7 +15,7 @@ morie_otis_analyze_a01_mrm_alt_gender(data = NULL, out_dir = NULL)
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 a01 alt-T Ruhela: Female -> vm count.

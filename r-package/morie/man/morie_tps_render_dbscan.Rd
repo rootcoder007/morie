@@ -29,6 +29,6 @@ ggplot object or invisible NULL.
 }
 \description{
 Runs DBSCAN on rotated-km coordinates and colours points by cluster
-label, with noise rendered grey.  Requires the suggested \\pkg{dbscan}
+label, with noise rendered grey.  Requires the suggested \pkg{dbscan}
 package; without it a base-graphics single-colour fallback is drawn.
 }

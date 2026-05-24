@@ -9,14 +9,14 @@ cepst(x, n_fft = NULL)
 \arguments{
 \item{x}{Numeric vector (1-D signal).}
 
-\item{n_fft}{FFT length (default: next power of 2 \\eqn{\\geq}{\>=} \code{length(x)}).}
+\item{n_fft}{FFT length (default: next power of 2 \eqn{\geq}{\>=} \code{length(x)}).}
 }
 \value{
 List with \code{filtered} (real cepstral coefficients),
 \code{name}, \code{fs}, \code{n_samples}, and \code{extra} (\code{quefrency}, \code{n_fft}).
 }
 \description{
-Real cepstrum \\eqn{c[n] = \\mathrm{IFFT}(\\log |\\mathrm{FFT}(x)|)}{c[n] = IFFT(log |FFT(x)|)}. Useful
+Real cepstrum \eqn{c[n] = \mathrm{IFFT}(\log |\mathrm{FFT}(x)|)}{c[n] = IFFT(log |FFT(x)|)}. Useful
 for pitch-period estimation and any analysis where the multiplicative
 magnitude structure of the spectrum is best handled additively in the
 quefrency domain.

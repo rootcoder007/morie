@@ -46,6 +46,6 @@ The 2023 file is the ministry-flagged-invalid release and requires
 }
 \references{
 Ontario Ministry of the Solicitor General, ARSAU 2023
-and 2024 weapon_records technical notes \u2014 the 2023 release
+and 2024 weapon_records technical notes -- the 2023 release
 accompanies an explicit invalidity flag.
 }

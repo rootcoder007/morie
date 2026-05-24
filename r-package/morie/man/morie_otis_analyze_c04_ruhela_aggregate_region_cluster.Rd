@@ -15,7 +15,7 @@ morie_otis_analyze_c04_mrm_aggregate_region_cluster(data, out_dir = NULL)
 \item{out_dir}{Optional.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 c04 region-cluster variant.

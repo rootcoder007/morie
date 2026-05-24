@@ -2,7 +2,7 @@
 % Please edit documentation in R/rdd.R
 \name{morie_rdd_kink}
 \alias{morie_rdd_kink}
-\title{Regression kink design \u2014 slope discontinuity at the cutoff}
+\title{Regression kink design -- slope discontinuity at the cutoff}
 \usage{
 morie_rdd_kink(
   data,
@@ -15,5 +15,5 @@ morie_rdd_kink(
 )
 }
 \description{
-Regression kink design \u2014 slope discontinuity at the cutoff
+Regression kink design -- slope discontinuity at the cutoff
 }

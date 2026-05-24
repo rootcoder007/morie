@@ -15,7 +15,7 @@ morie_otis_analyze_c12_mrm_aggregate(data, out_dir = NULL)
 \item{out_dir}{Optional.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 c12 aggregate Ruhela: Female -> median RC days (by region).

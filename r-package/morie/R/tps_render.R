@@ -658,7 +658,7 @@ morie_tps_render_yearly_grid <- function(polys,
 #'
 #' Lays out a 2x2 quad combining a choropleth, point pattern, yearly grid
 #' summary, and (when available) a DBSCAN cluster panel.  Falls back to
-#' base graphics with \\code{par(mfrow = c(2, 2))} when ggplot2 is absent.
+#' base graphics with \code{par(mfrow = c(2, 2))} when ggplot2 is absent.
 #'
 #' @param data Named list with elements: ``polys`` (polygons frame),
 #'   ``points`` (lat/lon points), ``count_col``, ``year_cols`` (character
@@ -713,7 +713,7 @@ morie_tps_render_quad <- function(data, outfile = NULL, ...) {
 #' DBSCAN cluster figure on TPS-projected points
 #'
 #' Runs DBSCAN on rotated-km coordinates and colours points by cluster
-#' label, with noise rendered grey.  Requires the suggested \\pkg{dbscan}
+#' label, with noise rendered grey.  Requires the suggested \pkg{dbscan}
 #' package; without it a base-graphics single-colour fallback is drawn.
 #'
 #' @param points_df data.frame with columns ``lat`` / ``lon`` (or ``LAT_WGS84``

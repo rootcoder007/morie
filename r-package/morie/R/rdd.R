@@ -156,7 +156,7 @@ morie_rdd_bandwidth_ik <- function(x, y, cutoff = 0,
   morie_rdd_bandwidth_rot(x, y, cutoff)
 }
 
-#' Rule-of-thumb (ROT) bandwidth \u2014 Silverman-style on running variable
+#' Rule-of-thumb (ROT) bandwidth -- Silverman-style on running variable
 #' @export
 morie_rdd_bandwidth_rot <- function(x, y, cutoff = 0) {
   sd_x  <- stats::sd(x)
@@ -470,7 +470,7 @@ morie_rdd_bandwidth_sensitivity <- function(data, outcome, running,
   do.call(rbind, rows)
 }
 
-#' Regression kink design \u2014 slope discontinuity at the cutoff
+#' Regression kink design -- slope discontinuity at the cutoff
 #' @export
 morie_rdd_kink <- function(data, outcome, running, cutoff = 0,
                            bandwidth = NULL, kernel = "triangular",

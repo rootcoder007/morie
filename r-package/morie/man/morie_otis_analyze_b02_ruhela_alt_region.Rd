@@ -15,7 +15,7 @@ morie_otis_analyze_b02_mrm_alt_region(data = NULL, out_dir = NULL)
 \item{out_dir}{Optional output directory.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 b02 alt-T Ruhela: Toronto region -> total seg days.

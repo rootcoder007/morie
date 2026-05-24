@@ -15,7 +15,7 @@ morie_otis_analyze_c01_mrm_aggregate(data, out_dir = NULL)
 \item{out_dir}{Optional.}
 }
 \value{
-\\code{morie_otis_analysis_result}.
+\code{morie_otis_analysis_result}.
 }
 \description{
 c01 aggregate Ruhela: Female -> RC count.

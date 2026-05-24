@@ -22,5 +22,5 @@ A patchwork-or-list object (ggplot2 path) or invisible NULL.
 \description{
 Lays out a 2x2 quad combining a choropleth, point pattern, yearly grid
 summary, and (when available) a DBSCAN cluster panel.  Falls back to
-base graphics with \\code{par(mfrow = c(2, 2))} when ggplot2 is absent.
+base graphics with \code{par(mfrow = c(2, 2))} when ggplot2 is absent.
 }

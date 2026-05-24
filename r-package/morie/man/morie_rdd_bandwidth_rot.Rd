@@ -2,10 +2,10 @@
 % Please edit documentation in R/rdd.R
 \name{morie_rdd_bandwidth_rot}
 \alias{morie_rdd_bandwidth_rot}
-\title{Rule-of-thumb (ROT) bandwidth \u2014 Silverman-style on running variable}
+\title{Rule-of-thumb (ROT) bandwidth -- Silverman-style on running variable}
 \usage{
 morie_rdd_bandwidth_rot(x, y, cutoff = 0)
 }
 \description{
-Rule-of-thumb (ROT) bandwidth \u2014 Silverman-style on running variable
+Rule-of-thumb (ROT) bandwidth -- Silverman-style on running variable
 }

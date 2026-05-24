@@ -283,7 +283,7 @@ morie_pcg_filter <- function(x, fs = 2000, low = 25, high = 400) {
 
 #' Real cepstrum
 #'
-#' Real cepstrum \\eqn{c[n] = \\mathrm{IFFT}(\\log |\\mathrm{FFT}(x)|)}{c[n] = IFFT(log |FFT(x)|)}. Useful
+#' Real cepstrum \eqn{c[n] = \mathrm{IFFT}(\log |\mathrm{FFT}(x)|)}{c[n] = IFFT(log |FFT(x)|)}. Useful
 #' for pitch-period estimation and any analysis where the multiplicative
 #' magnitude structure of the spectrum is best handled additively in the
 #' quefrency domain.
@@ -292,7 +292,7 @@ morie_pcg_filter <- function(x, fs = 2000, low = 25, high = 400) {
 #' Wiley/IEEE Press, chapter on cepstral analysis.
 #'
 #' @param x Numeric vector (1-D signal).
-#' @param n_fft FFT length (default: next power of 2 \\eqn{\\geq}{\>=} `length(x)`).
+#' @param n_fft FFT length (default: next power of 2 \eqn{\geq}{\>=} `length(x)`).
 #' @return List with `filtered` (real cepstral coefficients),
 #'   `name`, `fs`, `n_samples`, and `extra` (`quefrency`, `n_fft`).
 #' @export
@@ -321,7 +321,7 @@ cepst <- function(x, n_fft = NULL) {
 
 #' Complex cepstrum with phase unwrapping
 #'
-#' Complex cepstrum: inverse FFT of \\eqn{\\log X(\\omega)}{log X(omega)} using the unwrapped
+#' Complex cepstrum: inverse FFT of \eqn{\log X(\omega)}{log X(omega)} using the unwrapped
 #' phase. Unlike the real cepstrum, it preserves enough information to
 #' invert the operation, which is what enables homomorphic deconvolution.
 #'
@@ -329,7 +329,7 @@ cepst <- function(x, n_fft = NULL) {
 #' Processing*, 3rd ed., Pearson, chapter on cepstral analysis.
 #'
 #' @param x Numeric vector (1-D signal).
-#' @param n_fft FFT length (default: next power of 2 \\eqn{\\geq}{\>=} `length(x)`).
+#' @param n_fft FFT length (default: next power of 2 \eqn{\geq}{\>=} `length(x)`).
 #' @return List with `filtered` (complex cepstrum, real-valued),
 #'   `name`, `fs`, `n_samples`, and `extra` (`quefrency`, `n_fft`,
 #'   `original_length`).
@@ -365,18 +365,18 @@ hcepst <- function(x, n_fft = NULL) {
 
 #' Homomorphic deconvolution via cepstral liftering
 #'
-#' Separates a convolved signal \\eqn{x = h * e} into a minimum-phase
-#' impulse-response component \\eqn{h} and an excitation \\eqn{e} by
+#' Separates a convolved signal \eqn{x = h * e} into a minimum-phase
+#' impulse-response component \eqn{h} and an excitation \eqn{e} by
 #' low-time liftering of the complex cepstrum.
 #'
 #' Reference: Oppenheim & Schafer (2009), *Discrete-Time Signal Processing*,
 #' 3rd ed., on homomorphic systems for convolution.
 #'
-#' @param x Numeric vector (assumed convolution \\eqn{h * e}).
+#' @param x Numeric vector (assumed convolution \eqn{h * e}).
 #' @param cutoff Liftering cutoff (quefrency index). Coefficients above
 #'   are zeroed to isolate the slow-varying component.
-#' @param n_fft FFT length (default: next power of 2 \\eqn{\\geq}{\>=} `length(x)`).
-#' @return List with `filtered` (minimum-phase component \\eqn{h}),
+#' @param n_fft FFT length (default: next power of 2 \eqn{\geq}{\>=} `length(x)`).
+#' @return List with `filtered` (minimum-phase component \eqn{h}),
 #'   `name`, `fs`, `n_samples`, and `extra` (`excitation`, `cutoff`, `n_fft`).
 #' @export
 #' @examples
@@ -425,15 +425,15 @@ hdecon <- function(x, cutoff, n_fft = NULL) {
 
 #' Detrended fluctuation analysis (DFA)
 #'
-#' Estimates the DFA scaling exponent \\eqn{\\alpha}{alpha}. White noise gives
-#' \\eqn{\\alpha \\approx 0.5}{alpha \~= 0.5}; pink (1/f) noise \\eqn{\\alpha \\approx 1.0}{alpha \~= 1.0};
-#' Brownian motion \\eqn{\\alpha \\approx 1.5}{alpha \~= 1.5}.
+#' Estimates the DFA scaling exponent \eqn{\alpha}{alpha}. White noise gives
+#' \eqn{\alpha \approx 0.5}{alpha \~= 0.5}; pink (1/f) noise \eqn{\alpha \approx 1.0}{alpha \~= 1.0};
+#' Brownian motion \eqn{\alpha \approx 1.5}{alpha \~= 1.5}.
 #'
 #' Reference: Peng, C.-K., Havlin, S., Stanley, H.E. & Goldberger, A.L. (1995)
 #' "Quantification of scaling exponents and crossover phenomena in
 #' nonstationary heartbeat time series", *Chaos* 5(1):82--87.
 #'
-#' @param x Numeric vector (length \\eqn{\\geq}{\>=} 16).
+#' @param x Numeric vector (length \eqn{\geq}{\>=} 16).
 #' @param scales Integer vector of window sizes (auto-generated if `NULL`).
 #' @return List with `value` (alpha), `name`, and `extra`
 #'   (`scales`, `fluctuation`).
@@ -723,9 +723,9 @@ hrvnl <- function(rr) {
 
 #' Katz fractal dimension
 #'
-#' Katz fractal dimension \\eqn{D = \\log_{10}(n - 1) / (\\log_{10}(n - 1) +
-#' \\log_{10}(d / L))}{D = log_10(n - 1) / ( log_10(n - 1) + log_10(d / L))} of a 1-D signal. \\eqn{L} is total path length and
-#' \\eqn{d} is the diameter (max distance from the first sample).
+#' Katz fractal dimension \eqn{D = \\log_{10}(n - 1) / (\\log_{10}(n - 1) +
+#' \\log_{10}(d / L))}{D = log_10(n - 1) / ( log_10(n - 1) + log_10(d / L))} of a 1-D signal. \eqn{L} is total path length and
+#' \eqn{d} is the diameter (max distance from the first sample).
 #'
 #' Reference: Katz, M.J. (1988) "Fractals and the analysis of waveforms",
 #' *Comput. Biol. Med.* 18(3):145--156.
@@ -756,8 +756,8 @@ kfd <- function(x) {
 
 #' Petrosian fractal dimension
 #'
-#' Petrosian fractal dimension \\eqn{D = \\log_{10}(N) / (\\log_{10}(N) +
-#' \\log_{10}(N / (N + 0.4 N_\\delta)))}{D = log_10(N) / ( log_10(N) + log_10(N / (N + 0.4 N_delta)))}, where \\eqn{N_\\delta}{N_delta} counts sign
+#' Petrosian fractal dimension \eqn{D = \\log_{10}(N) / (\\log_{10}(N) +
+#' \\log_{10}(N / (N + 0.4 N_\delta)))}{D = log_10(N) / ( log_10(N) + log_10(N / (N + 0.4 N_delta)))}, where \eqn{N_\delta}{N_delta} counts sign
 #' changes of the first difference. A fast complexity proxy for EEG/ECG.
 #'
 #' Reference: Petrosian, A. (1995) "Kolmogorov complexity of finite
@@ -913,7 +913,7 @@ welch <- function(x, fs, nperseg = 256L) {
 #' PCG Shannon-energy envelope
 #'
 #' Shannon-energy envelope of a phonocardiogram (PCG): normalises the
-#' signal, computes \\eqn{-x^2 \\log x^2}{-x^2 log x^2}, then box-smooths over a 20 ms
+#' signal, computes \eqn{-x^2 \log x^2}{-x^2 log x^2}, then box-smooths over a 20 ms
 #' window. The standard envelope used for S1/S2 segmentation.
 #'
 #' Reference: Liang, H., Lukkarinen, S. & Hartimo, I. (1997) "Heart sound
@@ -1074,10 +1074,10 @@ pcgmur <- function(pcg, fs) {
 
 #' Sample entropy
 #'
-#' Sample entropy (SampEn) of a 1-D signal: \\eqn{-\\log(A / B)}{-log(A / B)}, where
-#' \\eqn{A} counts template-vector matches at embedding dimension
-#' \\eqn{m + 1} and \\eqn{B} at dimension \\eqn{m}, with Chebyshev distance
-#' tolerance \\eqn{r \\cdot \\mathrm{sd}(x)}{r \* sd(x)}.
+#' Sample entropy (SampEn) of a 1-D signal: \eqn{-\log(A / B)}{-log(A / B)}, where
+#' \eqn{A} counts template-vector matches at embedding dimension
+#' \eqn{m + 1} and \eqn{B} at dimension \eqn{m}, with Chebyshev distance
+#' tolerance \eqn{r \cdot \mathrm{sd}(x)}{r \* sd(x)}.
 #'
 #' Reference: Richman, J.S. & Moorman, J.R. (2000) "Physiological time-
 #' series analysis using approximate entropy and sample entropy",

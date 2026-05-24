@@ -210,15 +210,15 @@ morie_run_treatment_effects_analysis <- function(data, treatment, outcome,
 #'
 #' R port of ``investigation.run_treatment_effects_analysis``.  Returns a
 #' list with:
-#' \\itemize{
-#'   \\item ``treatment_effects_summary`` -- data.frame of ATE / ATT / ATC
+#' \itemize{
+#'   \item ``treatment_effects_summary`` -- data.frame of ATE / ATT / ATC
 #'     point estimates (SE / CI columns present but NA, matching Python).
-#'   \\item ``cate_subgroup_estimates`` -- data.frame of within-subgroup
+#'   \item ``cate_subgroup_estimates`` -- data.frame of within-subgroup
 #'     Hajek IPW CATEs with sandwich-style SEs and Wald 95\\% CIs.
-#'   \\item ``analysis_frame`` -- the trimmed data.frame with attached
+#'   \item ``analysis_frame`` -- the trimmed data.frame with attached
 #'     propensity score and IPW weight columns (``ps``, ``w_ate``, ``w_att``,
 #'     ``w_atc``).
-#'   \\item Convenience scalars ``ate`` / ``att`` / ``atc`` / ``se`` /
+#'   \item Convenience scalars ``ate`` / ``att`` / ``atc`` / ``se`` /
 #'     ``ci_lower`` / ``ci_upper`` / ``n`` / ``method`` preserved from the
 #'     previous R surface for backward compatibility.
 #' }

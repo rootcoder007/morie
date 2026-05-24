@@ -19,7 +19,7 @@ A named list with \code{chi2}, \code{pvalue}, \code{df},
 \code{interpretation} paragraph.
 }
 \description{
-Builds a weapon \u00d7 force contingency table, runs a chi-square test
+Builds a weapon x force contingency table, runs a chi-square test
 of independence, computes Cramer's V, and reports the top-3
 (weapon, force) cells by standardised Pearson residual.
 }
