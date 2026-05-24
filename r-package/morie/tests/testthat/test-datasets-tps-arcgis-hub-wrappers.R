@@ -91,7 +91,10 @@ test_that("morie_datasets_tps_police_divisions dispatches to the Police Division
       data.frame()
     },
     .package = "morie")
-  morie_datasets_tps_police_divisions()
+  # 3CCC3 added a bundled-fixture offline path; the hub_id dispatch
+  # is only exercised when offline = FALSE. Other wrappers in this
+  # suite don't have an offline mode and dispatch unconditionally.
+  morie_datasets_tps_police_divisions(offline = FALSE)
   expect_equal(seen$hub_id, "fda21b25213c4c07b08c5162cba5081f")
 })
 

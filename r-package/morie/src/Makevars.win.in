@@ -6,4 +6,4 @@ PKG_CPPFLAGS = @cflags@
 # Append R's BLAS/LAPACK/Fortran flags for RcppArmadillo symbols.
 # (Windows linker doesn't honour --no-as-needed so plain append is
 # fine; the flag is GNU-ld-specific and only matters on Linux.)
-PKG_LIBS = @libs@ $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+PKG_LIBS = @libs@ @as_needed_open@ $(LAPACK_LIBS) $(BLAS_LIBS) @as_needed_close@ $(FLIBS)

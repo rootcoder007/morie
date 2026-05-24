@@ -14,4 +14,4 @@ PKG_CPPFLAGS = @cflags@
 # header-only inline calls slip past that check and the symbols stay
 # unresolved). Restore --as-needed after for the Fortran runtime so we
 # don't carry libgfortran as a hard dep if it's not actually used.
-PKG_LIBS = @libs@ -Wl,--no-as-needed $(LAPACK_LIBS) $(BLAS_LIBS) -Wl,--as-needed $(FLIBS)
+PKG_LIBS = @libs@ @as_needed_open@ $(LAPACK_LIBS) $(BLAS_LIBS) @as_needed_close@ $(FLIBS)

@@ -9,7 +9,29 @@ if [ -z "${CURL_LIBS}" ]; then
   CURL_LIBS="-lcurl"
 fi
 
-sed -e "s|@cflags@|${CURL_CFLAGS}|" -e "s|@libs@|${CURL_LIBS}|" \
+# Detect whether the linker accepts -Wl,--no-as-needed (GNU ld /
+# gold do; macOS ld64 and BSD ld do not). On Linux the default
+# --as-needed silently drops -llapack/-lblas because RcppArmadillo's
+# header-only inlines don't produce explicit DT_NEEDED tags on the
+# .o side; forcing --no-as-needed restores the link. On macOS the
+# flag is a hard error so emit empty.
+AS_NEEDED_OPEN=""
+AS_NEEDED_CLOSE=""
+PROBE_DIR=`mktemp -d 2>/dev/null || echo /tmp`
+PROBE_SRC="${PROBE_DIR}/morie_as_needed_probe.c"
+PROBE_OUT="${PROBE_DIR}/morie_as_needed_probe"
+printf 'int main(void){return 0;}\n' > "${PROBE_SRC}"
+if ${CC:-cc} -Wl,--no-as-needed -o "${PROBE_OUT}" "${PROBE_SRC}" \
+    >/dev/null 2>&1; then
+  AS_NEEDED_OPEN="-Wl,--no-as-needed"
+  AS_NEEDED_CLOSE="-Wl,--as-needed"
+fi
+rm -f "${PROBE_SRC}" "${PROBE_OUT}" 2>/dev/null
+
+sed -e "s|@cflags@|${CURL_CFLAGS}|" \
+    -e "s|@libs@|${CURL_LIBS}|" \
+    -e "s|@as_needed_open@|${AS_NEEDED_OPEN}|" \
+    -e "s|@as_needed_close@|${AS_NEEDED_CLOSE}|" \
   src/Makevars.in > src/Makevars
 
 exit 0
