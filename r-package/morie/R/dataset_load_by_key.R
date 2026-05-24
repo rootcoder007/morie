@@ -61,6 +61,7 @@
 #'   is raised to pick the intended portal.
 #' @return A `data.frame` (or, for StatCan, the WDS metadata list).
 #' @examples
+#' \donttest{
 #' # VPD bundled sample
 #' df1 <- morie_datasets_load_by_key("vpd_crime")
 #' nrow(df1)
@@ -72,6 +73,7 @@
 #' # TPS PSDP layer
 #' df3 <- morie_datasets_load_by_key("assault")
 #' nrow(df3)
+#' }
 #' @export
 morie_datasets_load_by_key <- function(dataset_key,
                                          offline = TRUE,

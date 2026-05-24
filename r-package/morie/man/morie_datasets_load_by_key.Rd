@@ -79,6 +79,7 @@ For datasets where the catalog only knows a key + portal
 raises a clear error pointing at the right live-mode dispatcher.
 }
 \examples{
+\donttest{
 # VPD bundled sample
 df1 <- morie_datasets_load_by_key("vpd_crime")
 nrow(df1)
@@ -90,4 +91,5 @@ nrow(df2)
 # TPS PSDP layer
 df3 <- morie_datasets_load_by_key("assault")
 nrow(df3)
+}
 }

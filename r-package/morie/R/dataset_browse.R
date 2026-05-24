@@ -32,6 +32,7 @@
 #' @return A `data.frame` -- the filtered subset of the catalog
 #'   with the same 7-column schema.
 #' @examples
+#' \donttest{
 #' # All TPS datasets, alphabetical:
 #' morie_datasets_browse(portal = "tps_arcgis_hub")
 #'
@@ -43,6 +44,7 @@
 #'
 #' # Multi-portal NYC + Chicago:
 #' morie_datasets_browse(portal = c("nyc_nypd", "chicago"))
+#' }
 #' @export
 morie_datasets_browse <- function(keyword = NULL,
                                     portal = NULL,

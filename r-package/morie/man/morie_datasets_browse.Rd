@@ -50,6 +50,7 @@ Filters compose with AND semantics. A \code{keyword} matches against
 anywhere including the dict URL, pass \code{keyword_includes_url = TRUE}.
 }
 \examples{
+\donttest{
 # All TPS datasets, alphabetical:
 morie_datasets_browse(portal = "tps_arcgis_hub")
 
@@ -61,4 +62,5 @@ morie_datasets_browse(api_mode = "soda3")
 
 # Multi-portal NYC + Chicago:
 morie_datasets_browse(portal = c("nyc_nypd", "chicago"))
+}
 }
