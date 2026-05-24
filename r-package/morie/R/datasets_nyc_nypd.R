@@ -636,6 +636,71 @@ morie_datasets_nyc_nypd_boro_crosswalk <- function() {
 }
 
 # ---------------------------------------------------------------------------
+# NYPD Offense Code dictionary (3BBB)
+# ---------------------------------------------------------------------------
+
+#' NYPD offense-code dictionary (`ky_cd` + `pd_cd` + descriptions)
+#'
+#' NYC OpenData does NOT publish a standalone NYPD-offense-code
+#' table; the canonical mapping is implicit in the
+#' (`ky_cd`, `ofns_desc`, `pd_cd`, `pd_desc`, `law_cat_cd`) tuples
+#' carried by every Arrests / Complaints record. This bundled
+#' fixture was derived by running a `$group` query on the NYPD
+#' Arrests YTD feed (`uip8-fykc`) at fixture-creation time, giving
+#' the 246 distinct offense tuples currently in active use.
+#' Mirrors the chicago_iucr_codes pattern (3UU).
+#'
+#' Schema (all character):
+#' \describe{
+#'   \item{ky_cd}{3-digit Key Code (top-level offense category).}
+#'   \item{ofns_desc}{Description for `ky_cd` (NYPD-truncated to
+#'     30 chars; e.g. "MURDER & NON-NEGL. MANSLAUGHTE").}
+#'   \item{pd_cd}{3-digit Penal-Detailed code (subcategory).}
+#'   \item{pd_desc}{Description for `pd_cd` (same truncation).}
+#'   \item{law_cat_cd}{Penal classification: "F" felony / "M"
+#'     misdemeanor / "V" violation / "I" infraction / (blank).}
+#' }
+#'
+#' The string descriptions ARE truncated at 30 chars in the
+#' upstream NYPD feeds; this is NOT a morie processing bug -- it's
+#' how NYPD's NYS DCJS warehouse stores them. PRs welcome to add a
+#' parallel `pd_desc_full` column once a canonical un-truncated
+#' source is identified.
+#'
+#' Refreshing the fixture:
+#' ```r
+#' # Re-derive when the YTD feed adds new offense tuples (rare):
+#' #   curl "https://data.cityofnewyork.us/resource/uip8-fykc.json
+#' #         ?$select=ky_cd,ofns_desc,pd_cd,pd_desc,law_cat_cd
+#' #         &$group=ky_cd,ofns_desc,pd_cd,pd_desc,law_cat_cd
+#' #         &$order=ky_cd,pd_cd&$limit=10000"
+#' # then write to inst/extdata/nyc_nypd_offense_codes.csv.
+#' ```
+#'
+#' @param max_features Optional row cap.
+#' @return A `data.frame` with 246 rows x 5 cols.
+#' @examples
+#' codes <- morie_datasets_nyc_nypd_offense_codes()
+#' subset(codes, ky_cd == "104")  # all RAPE subcategories
+#' @export
+morie_datasets_nyc_nypd_offense_codes <- function(max_features = NULL) {
+  path <- system.file("extdata", "nyc_nypd_offense_codes.csv",
+                      package = "morie")
+  if (!nzchar(path)) {
+    stop("bundled NYPD offense codes fixture missing", call. = FALSE)
+  }
+  df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                         check.names = FALSE,
+                         colClasses = c(ky_cd = "character",
+                                        pd_cd = "character",
+                                        law_cat_cd = "character"))
+  if (!is.null(max_features)) {
+    df <- utils::head(df, as.integer(max_features))
+  }
+  df
+}
+
+# ---------------------------------------------------------------------------
 # NYC NYPD resolved-joins analyzer (3AAA)
 # ---------------------------------------------------------------------------
 
@@ -683,10 +748,10 @@ morie_datasets_nyc_nypd_resolved <- function(
     page_size = 1000L,
     max_pages = 200L,
     app_token = NULL,
-    resolvers = c("boro", "precinct")) {
+    resolvers = c("boro", "precinct", "offense")) {
   mode <- match.arg(mode)
   resolvers <- match.arg(resolvers,
-                          choices = c("boro", "precinct"),
+                          choices = c("boro", "precinct", "offense"),
                           several.ok = TRUE)
   out <- morie_datasets_nyc_nypd_by_key(
     dataset_key,
@@ -755,6 +820,32 @@ morie_datasets_nyc_nypd_resolved <- function(
       out <- merge(out, p, by = pct_col,
                     all.x = TRUE, sort = FALSE)
     }
+  }
+
+  # Offense join (3BBB). Available only on Arrests + Complaints
+  # datasets that carry both ky_cd + pd_cd; other NYPD datasets
+  # (hate_crimes / uof / vehicle_stops) silently fall through.
+  if ("offense" %in% resolvers &&
+      "ky_cd" %in% names(out) && "pd_cd" %in% names(out)) {
+    odc <- morie_datasets_nyc_nypd_offense_codes()
+    # The NYPD source data carries ofns_desc + pd_desc + law_cat_cd
+    # on the row itself. Keep both: rename the dictionary's copies
+    # with the `offense_` prefix so the row's own values + the
+    # canonical lookup land side-by-side (rows may carry NA or local
+    # variations; the dictionary is the canonical join target).
+    rename_map <- c(ofns_desc  = "offense_ofns_desc",
+                     pd_desc    = "offense_pd_desc",
+                     law_cat_cd = "offense_law_cat_cd")
+    for (old in names(rename_map)) {
+      if (old %in% names(odc))
+        names(odc)[names(odc) == old] <- rename_map[[old]]
+    }
+    out$ky_cd <- as.character(out$ky_cd)
+    out$pd_cd <- as.character(out$pd_cd)
+    odc$ky_cd <- as.character(odc$ky_cd)
+    odc$pd_cd <- as.character(odc$pd_cd)
+    out <- merge(out, odc, by = c("ky_cd", "pd_cd"),
+                  all.x = TRUE, sort = FALSE)
   }
 
   rownames(out) <- NULL

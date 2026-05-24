@@ -246,3 +246,81 @@ test_that("morie_datasets_nyc_nypd_resolved rejects unknown resolver names", {
                                        offline = TRUE,
                                        resolvers = "alien"))
 })
+
+# =================================================== offense codes wrapper
+
+test_that("morie_datasets_nyc_nypd_offense_codes returns 246-row 5-col dict", {
+  od <- morie_datasets_nyc_nypd_offense_codes()
+  expect_s3_class(od, "data.frame")
+  expect_equal(nrow(od), 246L)
+  expect_setequal(names(od),
+                  c("ky_cd", "ofns_desc", "pd_cd",
+                    "pd_desc", "law_cat_cd"))
+  expect_type(od$ky_cd, "character")
+  expect_type(od$pd_cd, "character")
+  # Spot-check well-known codes.
+  rape <- subset(od, ky_cd == "104")
+  expect_true(nrow(rape) >= 1L)
+  expect_true(all(rape$ofns_desc == "RAPE"))
+  # max_features cap is honoured.
+  capped <- morie_datasets_nyc_nypd_offense_codes(max_features = 10L)
+  expect_equal(nrow(capped), 10L)
+})
+
+test_that("morie_datasets_nyc_nypd_offense_codes hits known (ky_cd, pd_cd) pairs", {
+  od <- morie_datasets_nyc_nypd_offense_codes()
+  # (105, 397) -> ROBBERY OPEN AREA UNCLASSIFIED, felony.
+  hit <- subset(od, ky_cd == "105" & pd_cd == "397")
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$ofns_desc, "ROBBERY")
+  expect_equal(hit$law_cat_cd, "F")
+})
+
+# =================================================== offense resolver
+
+test_that("morie_datasets_nyc_nypd_resolved(resolvers='offense') joins on (ky_cd, pd_cd)", {
+  df <- morie_datasets_nyc_nypd_resolved("nypd_arrests_ytd",
+                                            offline = TRUE,
+                                            resolvers = "offense")
+  expect_true("offense_ofns_desc" %in% names(df))
+  expect_true("offense_pd_desc" %in% names(df))
+  expect_true("offense_law_cat_cd" %in% names(df))
+  # All 5 fixture rows resolve (fixture was aligned with real
+  # NYPD (ky_cd, pd_cd) pairs).
+  expect_true(all(!is.na(df$offense_ofns_desc)))
+  expect_true(all(!is.na(df$offense_pd_desc)))
+  expect_true(all(!is.na(df$offense_law_cat_cd)))
+  # Spot-check: (105, 397) -> "ROBBERY".
+  row <- df[df$ky_cd == "105" & df$pd_cd == "397", ]
+  expect_equal(row$offense_ofns_desc, "ROBBERY")
+  expect_equal(row$offense_law_cat_cd, "F")
+})
+
+test_that("morie_datasets_nyc_nypd_resolved offense join also fires for default 3-resolver call", {
+  df <- morie_datasets_nyc_nypd_resolved("nypd_arrests_ytd",
+                                            offline = TRUE)
+  for (col in c("offense_ofns_desc", "offense_pd_desc",
+                "offense_law_cat_cd"))
+    expect_true(col %in% names(df),
+                info = sprintf("missing %s", col))
+})
+
+test_that("morie_datasets_nyc_nypd_resolved offense join no-ops for datasets without ky_cd/pd_cd", {
+  # UoF subjects + vehicle stops don't carry ky_cd/pd_cd; the
+  # offense resolver must silently fall through, not error.
+  for (key in c("nypd_uof_subjects", "nypd_vehicle_stops")) {
+    df <- morie_datasets_nyc_nypd_resolved(key,
+                                              offline = TRUE,
+                                              resolvers = "offense")
+    expect_false("offense_ofns_desc" %in% names(df),
+                  info = sprintf("dataset=%s", key))
+  }
+})
+
+test_that("morie_datasets_nyc_nypd_resolved offense resolver name is accepted", {
+  expect_error(
+    morie_datasets_nyc_nypd_resolved("nypd_arrests_ytd",
+                                        offline = TRUE,
+                                        resolvers = "offense"),
+    regexp = NA)
+})
