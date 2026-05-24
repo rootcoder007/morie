@@ -798,23 +798,36 @@ morie_datasets_siu_report_fields <- function(text_or_url) {
 #' @param max_features Integer or `NULL`; cap on returned rows. When
 #'   `paginate = TRUE` this is the total cap across all walked pages.
 #' @param offline Logical; if `TRUE`, return the bundled synthetic frame.
+#' @param mode One of `"soda2"` (default) or `"soda3"`. Selects the
+#'   API path for live mode:
+#'   * `"soda2"` -> `/resource/<id>.json?$where=...` via
+#'     [.morie_dataset_socrata_fetch()] (URL-param SoQL grammar).
+#'   * `"soda3"` -> `/api/v3/views/<id>/query.json?query=SELECT ...`
+#'     via [.morie_dataset_soda3_query()] (full SoQL passthrough).
+#'   Both modes return the same 22-column schema; SODA3 is required
+#'   when a derived/map view is involved (none here, but available
+#'   for parity with [morie_datasets_chicago_crime_map()]) and for
+#'   the canonical "single SoQL string" experience.
 #' @param paginate Logical; if `TRUE` and `offline = FALSE`, walk
-#'   SODA2 `$offset` in `page_size` chunks until the server returns a
-#'   short page (exhausted) or `max_features` is reached. Default
-#'   `FALSE` preserves the historical single-request behaviour (server
-#'   default cap, 1,000 rows on the open Chicago portal).
+#'   pagination in `page_size` chunks. SODA2 uses `$offset`; SODA3
+#'   uses `LIMIT page_size OFFSET m` baked into the SoQL.
 #' @param page_size Integer; per-page row count when `paginate = TRUE`.
 #'   Default 1,000 (the unauthenticated SODA2 ceiling).
 #' @param max_pages Integer; safety net on `paginate = TRUE` walks
 #'   (default 200 -> up to 200,000 rows without an app_token).
+#' @param app_token Optional Socrata app token (SODA3 only -- sent
+#'   as the `X-App-Token` header; ignored under `mode = "soda2"`).
 #' @return A `data.frame` with the documented Socrata schema.
 #' @export
 morie_datasets_chicago_crime <- function(year = NULL,
                                          max_features = NULL,
                                          offline = TRUE,
+                                         mode = c("soda2", "soda3"),
                                          paginate = FALSE,
                                          page_size = 1000L,
-                                         max_pages = 200L) {
+                                         max_pages = 200L,
+                                         app_token = NULL) {
+  mode <- match.arg(mode)
   if (isTRUE(offline)) {
     df <- .morie_dataset_read_synthetic(
       "chicago_crime_synthetic", "chicago_crime",
@@ -829,15 +842,29 @@ morie_datasets_chicago_crime <- function(year = NULL,
     }
     return(df)
   }
-  where <- if (is.null(year)) NULL else sprintf("year=%d", as.integer(year))
-  .morie_dataset_socrata_fetch(
-    "https://data.cityofchicago.org/resource/ijzp-q8t2.json",
-    where = where,
-    max_features = max_features,
+  if (mode == "soda2") {
+    where <- if (is.null(year)) NULL else sprintf("year=%d", as.integer(year))
+    return(.morie_dataset_socrata_fetch(
+      "https://data.cityofchicago.org/resource/ijzp-q8t2.json",
+      where = where,
+      max_features = max_features,
+      paginate = paginate,
+      page_size = page_size,
+      max_pages = max_pages))
+  }
+  # mode == "soda3": route via SoQL passthrough.
+  soql <- if (is.null(year)) {
+    "SELECT *"
+  } else {
+    sprintf("SELECT * WHERE year=%d", as.integer(year))
+  }
+  .morie_dataset_soda3_query(
+    "ijzp-q8t2", soql = soql,
+    app_token = app_token,
     paginate = paginate,
     page_size = page_size,
-    max_pages = max_pages
-  )
+    max_pages = max_pages,
+    max_features = max_features)
 }
 
 #' NYC OpenData SQF resource map (verified 2026-05).
@@ -1574,6 +1601,151 @@ morie_datasets_chicago_police_districts <- function(offline = TRUE,
                                 paginate = paginate,
                                 page_size = page_size,
                                 max_pages = max_pages)
+}
+
+# ---------------------------------------------------------------------------
+# Chicago Crime "resolved" analyzer -- 3VV+ join across all 5 cross-refs
+# ---------------------------------------------------------------------------
+
+#' One-call Chicago crime + boundary + dictionary join
+#'
+#' Phase 3VV+. Pulls a slice of [morie_datasets_chicago_crime()]
+#' and left-joins each of its five canonical foreign keys against
+#' the matching resolver dataset shipped in morie:
+#'
+#' \tabular{lll}{
+#'   \strong{crime field}     \tab \strong{resolver}                       \tab \strong{join key}        \cr
+#'   `beat`                   \tab [morie_datasets_chicago_police_beats()] \tab `beat == beat_num`       \cr
+#'   `district`               \tab [morie_datasets_chicago_police_districts()] \tab `district == dist_num` \cr
+#'   `ward`                   \tab [morie_datasets_chicago_wards()]        \tab `ward == ward`           \cr
+#'   `community_area`         \tab [morie_datasets_chicago_community_areas()] \tab `community_area == area_numbe` \cr
+#'   `iucr`                   \tab [morie_datasets_chicago_iucr_codes()]   \tab `iucr == iucr`           \cr
+#' }
+#'
+#' The resolvers are loaded in offline mode (they're all bundled +
+#' small), so this analyzer only touches the network for the crime
+#' pull itself. Resolver columns are prefixed with the source name
+#' (`ward_*`, `community_*`, `beat_*`, `district_*`, `iucr_*`) to
+#' avoid collisions with the crime schema.
+#'
+#' Both `mode = "soda2"` and `mode = "soda3"` are honoured for the
+#' crime fetch, matching the dual-API design from 3VV+.
+#'
+#' @inheritParams morie_datasets_chicago_crime
+#' @param resolvers Character subset of the 5 resolver names to
+#'   join. Default joins all 5. Pass a shorter vector to skip
+#'   specific joins (e.g. `"iucr"` only).
+#' @return A wide `data.frame`: crime columns first, then the
+#'   joined resolver columns with their canonical prefixes.
+#' @examples
+#' df <- morie_datasets_chicago_crime_resolved(
+#'   offline = TRUE,
+#'   max_features = 5L,
+#'   resolvers = c("ward", "iucr"))
+#' names(df)
+#' @export
+morie_datasets_chicago_crime_resolved <- function(
+    year = NULL,
+    max_features = NULL,
+    offline = TRUE,
+    mode = c("soda2", "soda3"),
+    paginate = FALSE,
+    page_size = 1000L,
+    max_pages = 200L,
+    app_token = NULL,
+    resolvers = c("ward", "community_area", "beat",
+                  "district", "iucr")) {
+  mode <- match.arg(mode)
+  resolvers <- match.arg(resolvers,
+                          choices = c("ward", "community_area",
+                                       "beat", "district", "iucr"),
+                          several.ok = TRUE)
+  crime <- morie_datasets_chicago_crime(
+    year = year,
+    max_features = max_features,
+    offline = offline,
+    mode = mode,
+    paginate = paginate,
+    page_size = page_size,
+    max_pages = max_pages,
+    app_token = app_token)
+  out <- crime
+
+  # Helper: prefix a resolver's non-join columns to avoid collisions.
+  prefix_cols <- function(df, drop, prefix) {
+    keep <- setdiff(names(df), drop)
+    names(df)[match(keep, names(df))] <- paste0(prefix, "_", keep)
+    df
+  }
+
+  # ward (crime$ward -- character "1".."50" -- vs wards$ward)
+  if ("ward" %in% resolvers && "ward" %in% names(out)) {
+    w <- morie_datasets_chicago_wards(offline = TRUE)
+    w <- prefix_cols(w, drop = "ward", prefix = "ward")
+    out$ward <- as.character(out$ward)
+    out <- merge(out, w, by = "ward",
+                  all.x = TRUE, sort = FALSE)
+  }
+
+  # community_area (crime$community_area vs areas$area_numbe)
+  if ("community_area" %in% resolvers &&
+      "community_area" %in% names(out)) {
+    ca <- morie_datasets_chicago_community_areas(offline = TRUE)
+    names(ca)[names(ca) == "area_numbe"] <- "community_area"
+    ca <- prefix_cols(ca, drop = "community_area",
+                       prefix = "community")
+    out$community_area <- as.character(out$community_area)
+    out <- merge(out, ca, by = "community_area",
+                  all.x = TRUE, sort = FALSE)
+  }
+
+  # beat (crime$beat matches beats$beat_num -- the 4-digit form).
+  # The beats fixture also carries a `beat` column (within-sector
+  # 1-digit form) which would collide with the join key after the
+  # rename below; drop it first.
+  if ("beat" %in% resolvers && "beat" %in% names(out)) {
+    b <- morie_datasets_chicago_police_beats(offline = TRUE)
+    b$beat <- NULL  # the within-sector beat int; not the join key
+    names(b)[names(b) == "beat_num"] <- "beat"
+    b <- prefix_cols(b, drop = "beat", prefix = "beat")
+    out$beat <- as.character(out$beat)
+    out <- merge(out, b, by = "beat",
+                  all.x = TRUE, sort = FALSE)
+  }
+
+  # district (crime$district vs districts$dist_num)
+  if ("district" %in% resolvers && "district" %in% names(out)) {
+    d <- morie_datasets_chicago_police_districts(offline = TRUE)
+    names(d)[names(d) == "dist_num"] <- "district"
+    d <- prefix_cols(d, drop = "district", prefix = "district")
+    out$district <- as.character(out$district)
+    out <- merge(out, d, by = "district",
+                  all.x = TRUE, sort = FALSE)
+  }
+
+  # iucr (crime$iucr vs codes$iucr). The upstream Chicago Crime feed
+  # carries iucr as 4-char codes with leading zeros ("0820"); the
+  # IUCR dictionary stores numeric codes without leading zeros
+  # ("820"). Normalise both sides to 4-char zero-padded so the join
+  # actually resolves -- alphanumeric codes ("031A") are already
+  # 4-char and pass through unchanged.
+  if ("iucr" %in% resolvers && "iucr" %in% names(out)) {
+    i <- morie_datasets_chicago_iucr_codes(offline = TRUE)
+    pad4 <- function(x) {
+      x <- as.character(x)
+      ifelse(nchar(x) < 4L,
+              paste0(strrep("0", pmax(0L, 4L - nchar(x))), x),
+              x)
+    }
+    i$iucr <- pad4(i$iucr)
+    i <- prefix_cols(i, drop = "iucr", prefix = "iucr")
+    out$iucr <- pad4(out$iucr)
+    out <- merge(out, i, by = "iucr",
+                  all.x = TRUE, sort = FALSE)
+  }
+
+  rownames(out) <- NULL
+  out
 }
 
 # ---------------------------------------------------------------------------

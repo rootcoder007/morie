@@ -8,9 +8,11 @@ morie_datasets_chicago_crime(
   year = NULL,
   max_features = NULL,
   offline = TRUE,
+  mode = c("soda2", "soda3"),
   paginate = FALSE,
   page_size = 1000L,
-  max_pages = 200L
+  max_pages = 200L,
+  app_token = NULL
 )
 }
 \arguments{
@@ -21,17 +23,31 @@ morie_datasets_chicago_crime(
 
 \item{offline}{Logical; if \code{TRUE}, return the bundled synthetic frame.}
 
+\item{mode}{One of \code{"soda2"} (default) or \code{"soda3"}. Selects the
+API path for live mode:
+\itemize{
+\item \code{"soda2"} -> \verb{/resource/<id>.json?$where=...} via
+\code{\link[=.morie_dataset_socrata_fetch]{.morie_dataset_socrata_fetch()}} (URL-param SoQL grammar).
+\item \code{"soda3"} -> \verb{/api/v3/views/<id>/query.json?query=SELECT ...}
+via \code{\link[=.morie_dataset_soda3_query]{.morie_dataset_soda3_query()}} (full SoQL passthrough).
+Both modes return the same 22-column schema; SODA3 is required
+when a derived/map view is involved (none here, but available
+for parity with \code{\link[=morie_datasets_chicago_crime_map]{morie_datasets_chicago_crime_map()}}) and for
+the canonical "single SoQL string" experience.
+}}
+
 \item{paginate}{Logical; if \code{TRUE} and \code{offline = FALSE}, walk
-SODA2 \verb{$offset} in \code{page_size} chunks until the server returns a
-short page (exhausted) or \code{max_features} is reached. Default
-\code{FALSE} preserves the historical single-request behaviour (server
-default cap, 1,000 rows on the open Chicago portal).}
+pagination in \code{page_size} chunks. SODA2 uses \verb{$offset}; SODA3
+uses \verb{LIMIT page_size OFFSET m} baked into the SoQL.}
 
 \item{page_size}{Integer; per-page row count when \code{paginate = TRUE}.
 Default 1,000 (the unauthenticated SODA2 ceiling).}
 
 \item{max_pages}{Integer; safety net on \code{paginate = TRUE} walks
 (default 200 -> up to 200,000 rows without an app_token).}
+
+\item{app_token}{Optional Socrata app token (SODA3 only -- sent
+as the \code{X-App-Token} header; ignored under \code{mode = "soda2"}).}
 }
 \value{
 A \code{data.frame} with the documented Socrata schema.
