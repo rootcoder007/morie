@@ -636,6 +636,216 @@ morie_datasets_nyc_nypd_boro_crosswalk <- function() {
 }
 
 # ---------------------------------------------------------------------------
+# NYC multi-boundary loaders (3CCC2)
+# ---------------------------------------------------------------------------
+
+.morie_nyc_boundary_fixture <- function(fname, expected_rows = NULL) {
+  path <- system.file("extdata", fname, package = "morie")
+  if (!nzchar(path)) {
+    stop(sprintf("bundled NYC boundary fixture missing: %s", fname),
+         call. = FALSE)
+  }
+  df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                         check.names = FALSE)
+  if (!is.null(expected_rows) && nrow(df) != expected_rows) {
+    warning(sprintf("fixture %s row count drift: have %d, expected %d",
+                     fname, nrow(df), expected_rows), call. = FALSE)
+  }
+  df
+}
+
+#' NYC public school district boundaries (NYS K-12)
+#'
+#' Phase 3CCC2. Bundled snapshot of NYC OpenData
+#' `8ugf-3d8u` (33 districts).
+#'
+#' @param offline If `TRUE` (default), reads the bundled CSV; if
+#'   `FALSE`, fetches via SODA2.
+#' @param max_features Optional row cap.
+#' @return A `data.frame` with `schooldist`, `shape_leng`, `shape_area`.
+#' @examples
+#' df <- morie_datasets_nyc_school_districts(offline = TRUE)
+#' nrow(df)  # 33
+#' @export
+morie_datasets_nyc_school_districts <- function(offline = TRUE,
+                                                  max_features = NULL) {
+  if (offline) {
+    df <- .morie_nyc_boundary_fixture("nyc_school_districts.csv", 33L)
+  } else {
+    url <- "https://data.cityofnewyork.us/resource/8ugf-3d8u.json"
+    df <- .morie_dataset_socrata_fetch(url,
+                                         select = "schooldist,shape_leng,shape_area")
+  }
+  if (!is.null(max_features)) df <- utils::head(df, as.integer(max_features))
+  df$schooldist <- as.character(df$schooldist)
+  df
+}
+
+#' NYC City Council district boundaries
+#'
+#' Phase 3CCC2. Bundled snapshot of NYC OpenData
+#' `872g-cjhh` (51 districts).
+#'
+#' @param offline If `TRUE` (default), reads the bundled CSV.
+#' @param max_features Optional row cap.
+#' @return A `data.frame` with `coundist`, `shape_leng`, `shape_area`.
+#' @export
+morie_datasets_nyc_council_districts <- function(offline = TRUE,
+                                                   max_features = NULL) {
+  if (offline) {
+    df <- .morie_nyc_boundary_fixture("nyc_council_districts.csv", 51L)
+  } else {
+    url <- "https://data.cityofnewyork.us/resource/872g-cjhh.json"
+    df <- .morie_dataset_socrata_fetch(url,
+                                         select = "coundist,shape_leng,shape_area")
+  }
+  if (!is.null(max_features)) df <- utils::head(df, as.integer(max_features))
+  df$coundist <- as.character(df$coundist)
+  df
+}
+
+#' NYC community district boundaries
+#'
+#' Phase 3CCC2. Bundled snapshot of NYC OpenData
+#' `5crt-au7u` (71 districts).
+#'
+#' @param offline If `TRUE` (default), reads the bundled CSV.
+#' @param max_features Optional row cap.
+#' @return A `data.frame` with `boro_cd`, `shape_leng`, `shape_area`.
+#' @export
+morie_datasets_nyc_community_districts <- function(offline = TRUE,
+                                                     max_features = NULL) {
+  if (offline) {
+    df <- .morie_nyc_boundary_fixture("nyc_community_districts.csv", 71L)
+  } else {
+    url <- "https://data.cityofnewyork.us/resource/5crt-au7u.json"
+    df <- .morie_dataset_socrata_fetch(url,
+                                         select = "boro_cd,shape_leng,shape_area")
+  }
+  if (!is.null(max_features)) df <- utils::head(df, as.integer(max_features))
+  df$boro_cd <- as.character(df$boro_cd)
+  df
+}
+
+#' NYC Neighborhood Tabulation Areas (2020)
+#'
+#' Phase 3CCC2. Bundled snapshot of NYC OpenData
+#' `9nt8-h7nd` (262 NTAs from the 2020 census revision).
+#' Carries boro + county FIPS + parent CDTA so it can be aggregated
+#' upward without spatial intersection.
+#'
+#' @param offline If `TRUE` (default), reads the bundled CSV.
+#' @param max_features Optional row cap.
+#' @return A `data.frame` with 11 cols including `nta2020`, `ntaname`,
+#'   `borocode`, `boroname`, `countyfips`, `cdta2020`, `cdtaname`.
+#' @export
+morie_datasets_nyc_ntas_2020 <- function(offline = TRUE,
+                                           max_features = NULL) {
+  if (offline) {
+    df <- .morie_nyc_boundary_fixture("nyc_ntas_2020.csv", 262L)
+  } else {
+    url <- "https://data.cityofnewyork.us/resource/9nt8-h7nd.json"
+    cols <- paste(c("borocode", "boroname", "countyfips",
+                     "nta2020", "ntaname", "ntaabbrev", "ntatype",
+                     "cdta2020", "cdtaname",
+                     "shape_leng", "shape_area"), collapse = ",")
+    df <- .morie_dataset_socrata_fetch(url, select = cols)
+  }
+  if (!is.null(max_features)) df <- utils::head(df, as.integer(max_features))
+  df$borocode <- as.character(df$borocode)
+  df$nta2020  <- as.character(df$nta2020)
+  df$cdta2020 <- as.character(df$cdta2020)
+  df
+}
+
+.morie_nyc_zcta_fixture <- function(fname, expected_rows = 221L) {
+  path <- system.file("extdata", fname, package = "morie")
+  if (!nzchar(path))
+    stop(sprintf("bundled NYC boundary fixture missing: %s", fname),
+         call. = FALSE)
+  # zcta5 MUST be character to preserve NJ-area leading zeros
+  # ("07305" otherwise becomes integer 7305).
+  df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                         check.names = FALSE,
+                         colClasses = c(zcta5 = "character"))
+  if (nrow(df) != expected_rows)
+    warning(sprintf("fixture %s row count drift: have %d, expected %d",
+                     fname, nrow(df), expected_rows), call. = FALSE)
+  df
+}
+
+#' NYC ZIP Code Tabulation Areas (ZCTAs)
+#'
+#' Phase 3CCC2. Bundled snapshot of NYC OpenData
+#' `35j5-n34v` (221 ZCTAs intersecting NYC). ZCTAs are the Census
+#' Bureau's geographic approximation of USPS ZIP code service areas
+#' -- pair with NYPD address-bearing data via ZIP code lookups for
+#' a coarser-than-precinct, finer-than-borough geography.
+#'
+#' @param offline If `TRUE` (default), reads the bundled CSV.
+#' @param max_features Optional row cap.
+#' @return A `data.frame` with `zcta5`, `arealand`, `areawater`,
+#'   `centlat`, `centlon`, `intptlat`, `intptlon`.
+#' @export
+morie_datasets_nyc_zctas <- function(offline = TRUE,
+                                       max_features = NULL) {
+  if (offline) {
+    df <- .morie_nyc_zcta_fixture("nyc_zctas.csv", 221L)
+  } else {
+    url <- "https://data.cityofnewyork.us/resource/35j5-n34v.json"
+    df <- .morie_dataset_socrata_fetch(url,
+                                         select = "zcta5,arealand,areawater,centlat,centlon,intptlat,intptlon")
+  }
+  if (!is.null(max_features)) df <- utils::head(df, as.integer(max_features))
+  df$zcta5 <- as.character(df$zcta5)
+  df
+}
+
+#' Unified catalog of NYC OpenData boundary loaders
+#'
+#' Phase 3CCC2. One-stop index of every NYC boundary fixture
+#' morie ships, with its loader, SODA id, expected row count, and a
+#' note on its join key.
+#'
+#' NOTE: school/council/community/NTA boundaries are NOT directly
+#' row-key joinable to NYPD CJ data -- the CJ rows carry lat/long
+#' (or just precinct/borough), not a district ID. Use these loaders
+#' standalone for geographic context, or pair with a spatial join
+#' via the `sf` package on `the_geom` (not bundled to keep morie
+#' lightweight).
+#'
+#' @return A `data.frame` with one row per boundary fixture.
+#' @examples
+#' morie_datasets_nyc_boundaries_catalog()
+#' @export
+morie_datasets_nyc_boundaries_catalog <- function() {
+  data.frame(
+    boundary = c("borough", "police_precinct",
+                  "school_district", "council_district",
+                  "community_district", "nta_2020", "zcta"),
+    loader = c("morie_datasets_nyc_boroughs",
+                "morie_datasets_nyc_police_precincts",
+                "morie_datasets_nyc_school_districts",
+                "morie_datasets_nyc_council_districts",
+                "morie_datasets_nyc_community_districts",
+                "morie_datasets_nyc_ntas_2020",
+                "morie_datasets_nyc_zctas"),
+    soda_id = c("gthc-hcne", "78dh-3ptz",
+                 "8ugf-3d8u", "872g-cjhh",
+                 "5crt-au7u", "9nt8-h7nd",
+                 "35j5-n34v"),
+    n_rows = c(5L, 78L, 33L, 51L, 71L, 262L, 221L),
+    join_key = c("borocode", "precinct",
+                  "schooldist", "coundist",
+                  "boro_cd", "nta2020", "zcta5"),
+    row_key_joinable_to_nypd = c(TRUE, TRUE,
+                                   FALSE, FALSE,
+                                   FALSE, FALSE,
+                                   FALSE),
+    stringsAsFactors = FALSE)
+}
+
+# ---------------------------------------------------------------------------
 # NYPD Offense Code dictionary (3BBB)
 # ---------------------------------------------------------------------------
 
