@@ -167,9 +167,12 @@ NULL
 
 .morie_nyc_nypd_dispatch <- function(dataset_key, year, max_features,
                                        offline, resource_id,
+                                       mode = c("soda2", "soda3"),
                                        paginate = FALSE,
                                        page_size = 1000L,
-                                       max_pages = 200L) {
+                                       max_pages = 200L,
+                                       app_token = NULL) {
+  mode <- match.arg(mode)
   if (!(dataset_key %in% names(.MORIE_NYC_NYPD_REGISTRY))) {
     stop(sprintf(paste0(
       "unknown NYC NYPD dataset_key '%s'. Available: %s"),
@@ -192,12 +195,10 @@ NULL
     return(df)
   }
   if (is.null(resource_id)) resource_id <- entry$resource_id
-  url <- sprintf("https://data.cityofnewyork.us/resource/%s.json",
-                 resource_id)
-  # Honour an OCC-year-style filter via SoQL $where when supplied.
-  where <- NULL
+  # Build the year-filter clause using the right date column per
+  # dataset_key. Same logic across SODA2 + SODA3 paths.
+  year_clause <- NULL
   if (!is.null(year)) {
-    # Use the first year-like column we know about per dataset_key.
     year_col <- switch(dataset_key,
       "nypd_arrests_historic"   = "arrest_date",
       "nypd_arrests_ytd"        = "arrest_date",
@@ -209,19 +210,36 @@ NULL
       "nypd_vehicle_stops"      = "occur_dt",
       NULL)
     if (!is.null(year_col)) {
-      if (year_col == "complaint_year_number") {
-        where <- sprintf("%s = %d", year_col, as.integer(year))
+      year_clause <- if (year_col == "complaint_year_number") {
+        sprintf("%s = %d", year_col, as.integer(year))
       } else {
-        where <- sprintf("date_extract_y(%s) = %d",
-                          year_col, as.integer(year))
+        sprintf("date_extract_y(%s) = %d", year_col, as.integer(year))
       }
     }
   }
-  .morie_dataset_socrata_fetch(url, where = where,
-                                max_features = max_features,
-                                paginate = paginate,
-                                page_size = page_size,
-                                max_pages = max_pages)
+  if (mode == "soda2") {
+    url <- sprintf("https://data.cityofnewyork.us/resource/%s.json",
+                   resource_id)
+    return(.morie_dataset_socrata_fetch(
+      url, where = year_clause,
+      max_features = max_features,
+      paginate = paginate, page_size = page_size,
+      max_pages = max_pages))
+  }
+  # mode == "soda3"
+  soql <- if (is.null(year_clause)) {
+    "SELECT *"
+  } else {
+    sprintf("SELECT * WHERE %s", year_clause)
+  }
+  .morie_dataset_soda3_query(
+    resource_id, soql = soql,
+    app_token = app_token,
+    paginate = paginate,
+    page_size = page_size,
+    max_pages = max_pages,
+    max_features = max_features,
+    base_url = "https://data.cityofnewyork.us")
 }
 
 #' Generic NYC NYPD dataset loader by registry key
@@ -250,12 +268,16 @@ morie_datasets_nyc_nypd_by_key <- function(dataset_key,
                                              resource_id = NULL,
                                              paginate = FALSE,
                                              page_size = 1000L,
-                                             max_pages = 200L) {
+                                             max_pages = 200L,
+                                                       mode = c("soda2", "soda3"),
+                                                       app_token = NULL) {
   .morie_nyc_nypd_dispatch(dataset_key, year, max_features,
                              offline, resource_id,
                              paginate = paginate,
                              page_size = page_size,
-                             max_pages = max_pages)
+                             max_pages = max_pages,
+                             mode = mode,
+                             app_token = app_token)
 }
 
 # ---------------------------------------------------------------------------
@@ -276,12 +298,16 @@ morie_datasets_nyc_nypd_arrests_historic <- function(year = NULL,
                                                        resource_id = NULL,
                                                        paginate = FALSE,
                                                        page_size = 1000L,
-                                                       max_pages = 200L) {
+                                                       max_pages = 200L,
+                                                       mode = c("soda2", "soda3"),
+                                                       app_token = NULL) {
   .morie_nyc_nypd_dispatch("nypd_arrests_historic", year,
                              max_features, offline, resource_id,
                              paginate = paginate,
                              page_size = page_size,
-                             max_pages = max_pages)
+                             max_pages = max_pages,
+                             mode = mode,
+                             app_token = app_token)
 }
 
 #' NYPD Arrest Data (Year to Date)
@@ -293,12 +319,16 @@ morie_datasets_nyc_nypd_arrests_ytd <- function(year = NULL,
                                                   resource_id = NULL,
                                                   paginate = FALSE,
                                                   page_size = 1000L,
-                                                  max_pages = 200L) {
+                                                  max_pages = 200L,
+                                                       mode = c("soda2", "soda3"),
+                                                       app_token = NULL) {
   .morie_nyc_nypd_dispatch("nypd_arrests_ytd", year, max_features,
                              offline, resource_id,
                              paginate = paginate,
                              page_size = page_size,
-                             max_pages = max_pages)
+                             max_pages = max_pages,
+                             mode = mode,
+                             app_token = app_token)
 }
 
 #' NYPD Complaint Data Historic
@@ -310,12 +340,16 @@ morie_datasets_nyc_nypd_complaint_historic <- function(year = NULL,
                                                          resource_id = NULL,
                                                          paginate = FALSE,
                                                          page_size = 1000L,
-                                                         max_pages = 200L) {
+                                                         max_pages = 200L,
+                                                       mode = c("soda2", "soda3"),
+                                                       app_token = NULL) {
   .morie_nyc_nypd_dispatch("nypd_complaint_historic", year,
                              max_features, offline, resource_id,
                              paginate = paginate,
                              page_size = page_size,
-                             max_pages = max_pages)
+                             max_pages = max_pages,
+                             mode = mode,
+                             app_token = app_token)
 }
 
 #' NYPD Complaint Data Current (Year To Date)
@@ -327,12 +361,16 @@ morie_datasets_nyc_nypd_complaint_ytd <- function(year = NULL,
                                                     resource_id = NULL,
                                                     paginate = FALSE,
                                                     page_size = 1000L,
-                                                    max_pages = 200L) {
+                                                    max_pages = 200L,
+                                                       mode = c("soda2", "soda3"),
+                                                       app_token = NULL) {
   .morie_nyc_nypd_dispatch("nypd_complaint_ytd", year,
                              max_features, offline, resource_id,
                              paginate = paginate,
                              page_size = page_size,
-                             max_pages = max_pages)
+                             max_pages = max_pages,
+                             mode = mode,
+                             app_token = app_token)
 }
 
 #' NYPD Hate Crimes
@@ -344,12 +382,16 @@ morie_datasets_nyc_nypd_hate_crimes <- function(year = NULL,
                                                   resource_id = NULL,
                                                   paginate = FALSE,
                                                   page_size = 1000L,
-                                                  max_pages = 200L) {
+                                                  max_pages = 200L,
+                                                       mode = c("soda2", "soda3"),
+                                                       app_token = NULL) {
   .morie_nyc_nypd_dispatch("nypd_hate_crimes", year, max_features,
                              offline, resource_id,
                              paginate = paginate,
                              page_size = page_size,
-                             max_pages = max_pages)
+                             max_pages = max_pages,
+                             mode = mode,
+                             app_token = app_token)
 }
 
 #' NYPD Use of Force Incidents
@@ -361,12 +403,16 @@ morie_datasets_nyc_nypd_uof_incidents <- function(year = NULL,
                                                     resource_id = NULL,
                                                     paginate = FALSE,
                                                     page_size = 1000L,
-                                                    max_pages = 200L) {
+                                                    max_pages = 200L,
+                                                       mode = c("soda2", "soda3"),
+                                                       app_token = NULL) {
   .morie_nyc_nypd_dispatch("nypd_uof_incidents", year, max_features,
                              offline, resource_id,
                              paginate = paginate,
                              page_size = page_size,
-                             max_pages = max_pages)
+                             max_pages = max_pages,
+                             mode = mode,
+                             app_token = app_token)
 }
 
 #' NYPD Use of Force: Subjects
@@ -378,12 +424,16 @@ morie_datasets_nyc_nypd_uof_subjects <- function(year = NULL,
                                                    resource_id = NULL,
                                                    paginate = FALSE,
                                                    page_size = 1000L,
-                                                   max_pages = 200L) {
+                                                   max_pages = 200L,
+                                                       mode = c("soda2", "soda3"),
+                                                       app_token = NULL) {
   .morie_nyc_nypd_dispatch("nypd_uof_subjects", year, max_features,
                              offline, resource_id,
                              paginate = paginate,
                              page_size = page_size,
-                             max_pages = max_pages)
+                             max_pages = max_pages,
+                             mode = mode,
+                             app_token = app_token)
 }
 
 #' NYPD Vehicle Stop Reports
@@ -395,10 +445,318 @@ morie_datasets_nyc_nypd_vehicle_stops <- function(year = NULL,
                                                     resource_id = NULL,
                                                     paginate = FALSE,
                                                     page_size = 1000L,
-                                                    max_pages = 200L) {
+                                                    max_pages = 200L,
+                                                       mode = c("soda2", "soda3"),
+                                                       app_token = NULL) {
   .morie_nyc_nypd_dispatch("nypd_vehicle_stops", year, max_features,
                              offline, resource_id,
                              paginate = paginate,
                              page_size = page_size,
-                             max_pages = max_pages)
+                             max_pages = max_pages,
+                             mode = mode,
+                             app_token = app_token)
+}
+
+# ---------------------------------------------------------------------------
+# NYC NYPD foreign-key resolvers (3AAA)
+# ---------------------------------------------------------------------------
+
+#' NYC Police Precincts boundary layer (`y76i-bdw7`)
+#'
+#' Wraps the NYC OpenData "Police Precincts" feed (77 precincts +
+#' the special precinct 22 / Central Park alias = 78 rows in this
+#' fixture). Used as the resolver for the `arrest_precinct` /
+#' `addr_pct_cd` / `complaint_precinct_code` foreign keys on every
+#' NYPD CJ dataset (3NN).
+#'
+#' Attribute schema: `precinct` (string, "1"-"123"), `shape_leng`,
+#' `shape_area`. Live mode also returns `the_geom` MultiPolygon
+#' when `geometry = TRUE`.
+#'
+#' @inheritParams morie_datasets_chicago_wards
+#' @return A `data.frame`.
+#' @export
+morie_datasets_nyc_police_precincts <- function(offline = TRUE,
+                                                  geometry = FALSE,
+                                                  max_features = NULL,
+                                                  resource_id = NULL,
+                                                  mode = c("soda2", "soda3"),
+                                                  paginate = FALSE,
+                                                  page_size = 1000L,
+                                                  max_pages = 200L,
+                                                  app_token = NULL) {
+  mode <- match.arg(mode)
+  if (isTRUE(offline)) {
+    path <- system.file("extdata", "nyc_police_precincts.csv",
+                        package = "morie")
+    if (!nzchar(path)) {
+      stop("bundled NYC police precincts fixture missing",
+           call. = FALSE)
+    }
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE,
+                           colClasses = c(precinct = "character"))
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  if (is.null(resource_id)) resource_id <- "y76i-bdw7"
+  if (mode == "soda2") {
+    url <- sprintf("https://data.cityofnewyork.us/resource/%s.json",
+                   resource_id)
+    if (!isTRUE(geometry)) {
+      url <- paste0(url, "?$select=precinct,shape_leng,shape_area")
+    }
+    return(.morie_dataset_socrata_fetch(
+      url, max_features = max_features,
+      paginate = paginate, page_size = page_size,
+      max_pages = max_pages))
+  }
+  select_clause <- if (isTRUE(geometry)) "*" else "precinct, shape_leng, shape_area"
+  .morie_dataset_soda3_query(
+    resource_id,
+    soql = sprintf("SELECT %s", select_clause),
+    app_token = app_token,
+    paginate = paginate,
+    page_size = page_size,
+    max_pages = max_pages,
+    max_features = max_features,
+    base_url = "https://data.cityofnewyork.us")
+}
+
+#' NYC Borough Boundaries (`gthc-hcne`)
+#'
+#' Wraps the NYC OpenData "Borough Boundaries" feed (5 NYC
+#' boroughs: Manhattan, Bronx, Brooklyn, Queens, Staten Island).
+#' Used as the resolver for the `arrest_boro` (1-letter codes) /
+#' `boro_nm` (full names) / `patrol_borough_name` foreign keys on
+#' NYPD CJ datasets (3NN).
+#'
+#' Attribute schema: `borocode` (string, "1"-"5"), `boroname`
+#' (capitalised name), `shape_area`, `shape_leng`. Live mode also
+#' returns `the_geom` MultiPolygon when `geometry = TRUE`.
+#'
+#' @inheritParams morie_datasets_nyc_police_precincts
+#' @return A `data.frame`.
+#' @export
+morie_datasets_nyc_boroughs <- function(offline = TRUE,
+                                          geometry = FALSE,
+                                          max_features = NULL,
+                                          resource_id = NULL,
+                                          mode = c("soda2", "soda3"),
+                                          paginate = FALSE,
+                                          page_size = 1000L,
+                                          max_pages = 200L,
+                                          app_token = NULL) {
+  mode <- match.arg(mode)
+  if (isTRUE(offline)) {
+    path <- system.file("extdata", "nyc_borough_boundaries.csv",
+                        package = "morie")
+    if (!nzchar(path)) {
+      stop("bundled NYC borough boundaries fixture missing",
+           call. = FALSE)
+    }
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE,
+                           colClasses = c(borocode = "character",
+                                          boroname = "character"))
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  if (is.null(resource_id)) resource_id <- "gthc-hcne"
+  if (mode == "soda2") {
+    url <- sprintf("https://data.cityofnewyork.us/resource/%s.json",
+                   resource_id)
+    if (!isTRUE(geometry)) {
+      url <- paste0(url, "?$select=borocode,boroname,shape_area,shape_leng")
+    }
+    return(.morie_dataset_socrata_fetch(
+      url, max_features = max_features,
+      paginate = paginate, page_size = page_size,
+      max_pages = max_pages))
+  }
+  select_clause <- if (isTRUE(geometry)) {
+    "*"
+  } else {
+    "borocode, boroname, shape_area, shape_leng"
+  }
+  .morie_dataset_soda3_query(
+    resource_id,
+    soql = sprintf("SELECT %s", select_clause),
+    app_token = app_token,
+    paginate = paginate,
+    page_size = page_size,
+    max_pages = max_pages,
+    max_features = max_features,
+    base_url = "https://data.cityofnewyork.us")
+}
+
+# ---------------------------------------------------------------------------
+# NYPD borough-code cross-reference. arrest_boro carries 1-letter
+# codes (M/B/K/Q/S); boro_nm carries the full UPPER name; borough
+# boundaries (gthc-hcne) carries borocode "1"-"5" + boroname
+# Title-Case. This table makes all three forms join-able.
+# ---------------------------------------------------------------------------
+
+.MORIE_NYPD_BORO_MAP <- data.frame(
+  arrest_boro = c("M", "B", "K", "Q", "S"),
+  boro_nm     = c("MANHATTAN", "BRONX", "BROOKLYN", "QUEENS",
+                   "STATEN ISLAND"),
+  borocode    = c("1", "2", "3", "4", "5"),
+  boroname    = c("Manhattan", "Bronx", "Brooklyn", "Queens",
+                   "Staten Island"),
+  stringsAsFactors = FALSE)
+
+#' NYPD borough-code cross-reference (1-letter / UPPER / numeric)
+#'
+#' NYPD CJ datasets reference boroughs through three different
+#' encodings depending on the table:
+#'
+#' \describe{
+#'   \item{`arrest_boro`}{1-letter code "B/Q/M/S/K" (Arrests).}
+#'   \item{`boro_nm`}{UPPER full name "MANHATTAN" etc. (Complaints).}
+#'   \item{`borocode` / `boroname`}{numeric "1"-"5" + Title-Case
+#'     (Borough Boundaries gthc-hcne).}
+#' }
+#'
+#' This helper returns a 5-row crosswalk between all four forms so
+#' callers can left-join NYPD data against the
+#' [morie_datasets_nyc_boroughs()] boundary table regardless of
+#' which encoding their source uses. Used internally by
+#' [morie_datasets_nyc_nypd_resolved()].
+#'
+#' @return A `data.frame` with 4 columns: `arrest_boro`, `boro_nm`,
+#'   `borocode`, `boroname`.
+#' @export
+morie_datasets_nyc_nypd_boro_crosswalk <- function() {
+  .MORIE_NYPD_BORO_MAP
+}
+
+# ---------------------------------------------------------------------------
+# NYC NYPD resolved-joins analyzer (3AAA)
+# ---------------------------------------------------------------------------
+
+#' One-call NYPD data + borough + precinct join
+#'
+#' Phase 3AAA. Pulls a slice of any
+#' [morie_datasets_nyc_nypd_by_key()]-resolvable dataset and
+#' left-joins its borough + precinct foreign keys against the
+#' bundled resolvers ([morie_datasets_nyc_boroughs()] +
+#' [morie_datasets_nyc_police_precincts()]).
+#'
+#' Auto-detects the borough + precinct columns per dataset:
+#'
+#' \tabular{lll}{
+#'   \strong{NYPD dataset}      \tab \strong{boro column}        \tab \strong{precinct column} \cr
+#'   nypd_arrests_historic     \tab `arrest_boro` (M/B/K/Q/S)    \tab `arrest_precinct`     \cr
+#'   nypd_arrests_ytd          \tab `arrest_boro`                \tab `arrest_precinct`     \cr
+#'   nypd_complaint_historic   \tab `boro_nm` (UPPER)            \tab `addr_pct_cd`         \cr
+#'   nypd_complaint_ytd        \tab `boro_nm` (UPPER)            \tab `addr_pct_cd`         \cr
+#'   nypd_hate_crimes          \tab `patrol_borough_name`        \tab `complaint_precinct_code` \cr
+#'   nypd_uof_incidents        \tab (none directly; precinct only)\tab `precinct`            \cr
+#' }
+#'
+#' Resolver columns prefixed `boro_*` + `precinct_*` to avoid
+#' collisions. Left-join semantics (row count preserved).
+#'
+#' @inheritParams morie_datasets_nyc_nypd_by_key
+#' @param resolvers Character subset of `c("boro", "precinct")` to
+#'   join. Default joins both.
+#' @return A wide `data.frame`: NYPD columns first, then prefixed
+#'   resolver columns.
+#' @examples
+#' df <- morie_datasets_nyc_nypd_resolved("nypd_arrests_ytd",
+#'                                          offline = TRUE)
+#' names(df)
+#' @export
+morie_datasets_nyc_nypd_resolved <- function(
+    dataset_key,
+    year = NULL,
+    max_features = NULL,
+    offline = TRUE,
+    resource_id = NULL,
+    mode = c("soda2", "soda3"),
+    paginate = FALSE,
+    page_size = 1000L,
+    max_pages = 200L,
+    app_token = NULL,
+    resolvers = c("boro", "precinct")) {
+  mode <- match.arg(mode)
+  resolvers <- match.arg(resolvers,
+                          choices = c("boro", "precinct"),
+                          several.ok = TRUE)
+  out <- morie_datasets_nyc_nypd_by_key(
+    dataset_key,
+    year = year,
+    max_features = max_features,
+    offline = offline,
+    resource_id = resource_id,
+    mode = mode,
+    paginate = paginate,
+    page_size = page_size,
+    max_pages = max_pages,
+    app_token = app_token)
+  if (nrow(out) == 0L) return(out)
+
+  prefix_cols <- function(df, drop, prefix) {
+    keep <- setdiff(names(df), drop)
+    names(df)[match(keep, names(df))] <- paste0(prefix, "_", keep)
+    df
+  }
+
+  # Borough join. Detect which encoding the NYPD dataset uses:
+  if ("boro" %in% resolvers) {
+    boro_col <- intersect(c("arrest_boro", "boro_nm",
+                              "patrol_borough_name"),
+                            names(out))[1L]
+    if (!is.na(boro_col)) {
+      cw <- .MORIE_NYPD_BORO_MAP
+      bb <- morie_datasets_nyc_boroughs(offline = TRUE)
+      cw <- merge(cw, bb, by = c("borocode", "boroname"),
+                   all.x = TRUE, sort = FALSE)
+      # Pick the crosswalk column matching the NYPD encoding.
+      cw_join_col <- switch(boro_col,
+        "arrest_boro"         = "arrest_boro",
+        "boro_nm"             = "boro_nm",
+        "patrol_borough_name" = "boro_nm")
+      if (boro_col == "patrol_borough_name") {
+        # Normalise patrol_borough_name -> boro_nm (UPPER) before join.
+        out$.__patrol_upper <- toupper(out$patrol_borough_name)
+        cw$.__join <- cw$boro_nm
+        out <- merge(out,
+                      prefix_cols(cw[, c(".__join", setdiff(names(cw), c(".__join")))],
+                                    drop = ".__join", prefix = "boro"),
+                      by.x = ".__patrol_upper", by.y = ".__join",
+                      all.x = TRUE, sort = FALSE)
+        out$.__patrol_upper <- NULL
+      } else {
+        out_join <- cw_join_col
+        cwp <- prefix_cols(cw, drop = out_join, prefix = "boro")
+        out <- merge(out, cwp, by = out_join,
+                      all.x = TRUE, sort = FALSE)
+      }
+    }
+  }
+
+  # Precinct join.
+  if ("precinct" %in% resolvers) {
+    pct_col <- intersect(c("arrest_precinct", "addr_pct_cd",
+                             "complaint_precinct_code", "precinct"),
+                           names(out))[1L]
+    if (!is.na(pct_col)) {
+      p <- morie_datasets_nyc_police_precincts(offline = TRUE)
+      names(p)[names(p) == "precinct"] <- pct_col
+      p <- prefix_cols(p, drop = pct_col, prefix = "precinct")
+      out[[pct_col]] <- as.character(out[[pct_col]])
+      p[[pct_col]] <- as.character(p[[pct_col]])
+      out <- merge(out, p, by = pct_col,
+                    all.x = TRUE, sort = FALSE)
+    }
+  }
+
+  rownames(out) <- NULL
+  out
 }

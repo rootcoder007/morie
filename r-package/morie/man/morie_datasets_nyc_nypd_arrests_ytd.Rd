@@ -11,7 +11,9 @@ morie_datasets_nyc_nypd_arrests_ytd(
   resource_id = NULL,
   paginate = FALSE,
   page_size = 1000L,
-  max_pages = 200L
+  max_pages = 200L,
+  mode = c("soda2", "soda3"),
+  app_token = NULL
 )
 }
 \arguments{
