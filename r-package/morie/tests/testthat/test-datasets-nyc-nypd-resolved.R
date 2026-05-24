@@ -324,3 +324,63 @@ test_that("morie_datasets_nyc_nypd_resolved offense resolver name is accepted", 
                                         resolvers = "offense"),
     regexp = NA)
 })
+
+# =================================================== law_code resolver (3CCC1)
+
+test_that("morie_datasets_nyc_nypd_law_books returns the statute book dict", {
+  b <- morie_datasets_nyc_nypd_law_books()
+  expect_s3_class(b, "data.frame")
+  expect_setequal(names(b), c("book", "name", "jurisdiction"))
+  expect_true(nrow(b) >= 22L)
+  pl <- subset(b, book == "PL")
+  expect_equal(pl$name, "Penal Law")
+  expect_equal(pl$jurisdiction, "NYS")
+  vtl <- subset(b, book == "VTL")
+  expect_equal(vtl$name, "Vehicle and Traffic Law")
+  ac <- subset(b, book == "AC")
+  expect_equal(ac$jurisdiction, "NYC")
+})
+
+test_that("morie_parse_nypd_law_code splits prefix + section", {
+  p <- morie_parse_nypd_law_code(c("PL 1601005", "VTL0511000",
+                                     "AC 0019190", "ABC0064A00",
+                                     NA, "", "garbage"))
+  expect_equal(p$book,
+                c("PL", "VTL", "AC", "ABC", NA, NA, NA))
+  expect_equal(p$section,
+                c("1601005", "0511000", "0019190", "0064A00",
+                  NA, NA, NA))
+})
+
+test_that("law_code resolver adds 4 cols + joins book name", {
+  df <- morie_datasets_nyc_nypd_resolved("nypd_arrests_ytd",
+                                            offline = TRUE,
+                                            resolvers = "law_code")
+  for (col in c("law_book", "law_section",
+                "law_book_name", "law_jurisdiction"))
+    expect_true(col %in% names(df),
+                info = sprintf("missing %s", col))
+  expect_true(all(df$law_book == "PL"))
+  expect_true(all(df$law_book_name == "Penal Law"))
+  expect_true(all(df$law_jurisdiction == "NYS"))
+})
+
+test_that("default 4-resolver call adds all law_code cols", {
+  df <- morie_datasets_nyc_nypd_resolved("nypd_arrests_ytd",
+                                            offline = TRUE)
+  for (col in c("law_book", "law_section",
+                "law_book_name", "law_jurisdiction"))
+    expect_true(col %in% names(df),
+                info = sprintf("missing %s", col))
+})
+
+test_that("law_code resolver silently no-ops when law_code absent", {
+  # UoF subjects + vehicle stops don't carry law_code at all.
+  for (key in c("nypd_uof_subjects", "nypd_vehicle_stops")) {
+    df <- morie_datasets_nyc_nypd_resolved(key,
+                                              offline = TRUE,
+                                              resolvers = "law_code")
+    expect_false("law_book_name" %in% names(df),
+                  info = sprintf("dataset=%s", key))
+  }
+})

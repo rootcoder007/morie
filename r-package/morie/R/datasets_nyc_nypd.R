@@ -701,6 +701,81 @@ morie_datasets_nyc_nypd_offense_codes <- function(max_features = NULL) {
 }
 
 # ---------------------------------------------------------------------------
+# NYC NYPD statute book dictionary (3CCC1)
+# ---------------------------------------------------------------------------
+
+#' NYS / NYC statute book code dictionary
+#'
+#' Phase 3CCC1. Maps the leading alpha prefix of an NYPD `law_code`
+#' (e.g., `"PL"` in `"PL 1601005"`) to its human-readable statute
+#' book name + jurisdiction (NYS vs NYC). Covers all 22 distinct
+#' prefixes observed in the YTD arrests feed + 24 additional canonical
+#' NYS / NYC codes that appear in complaint, summons, and historical
+#' arrest data.
+#'
+#' @return A `data.frame` with columns `book`, `name`, `jurisdiction`.
+#' @examples
+#' books <- morie_datasets_nyc_nypd_law_books()
+#' subset(books, book == "PL")
+#' @export
+morie_datasets_nyc_nypd_law_books <- function() {
+  path <- system.file("extdata", "nyc_nypd_law_books.csv",
+                      package = "morie")
+  if (!nzchar(path)) {
+    stop("bundled NYPD law books fixture missing", call. = FALSE)
+  }
+  utils::read.csv(path, stringsAsFactors = FALSE,
+                  check.names = FALSE)
+}
+
+#' Parse an NYPD `law_code` string into its structural fields
+#'
+#' Phase 3CCC1. NYPD law codes are space-or-zero-padded composites of
+#' a 1-4 char statute book prefix and a numeric/alpha section
+#' identifier. Examples:
+#'
+#' \itemize{
+#'   \item `"PL 1601005"`  -> book=PL, section=1601005 (Penal Law)
+#'   \item `"VTL0511000"`  -> book=VTL, section=0511000
+#'   \item `"AC 0019190"`  -> book=AC, section=0019190 (NYC Admin Code)
+#'   \item `"ABC0064A00"`  -> book=ABC, section=0064A00
+#' }
+#'
+#' The book prefix is extracted as the leading run of uppercase
+#' ASCII letters; the section is everything after the prefix with
+#' leading whitespace stripped. NA / empty inputs return NA fields.
+#'
+#' @param law_code Character vector of NYPD `law_code` strings.
+#' @return A `data.frame` with `book`, `section` columns aligned to
+#'   `law_code`. Length-preserving.
+#' @examples
+#' morie_parse_nypd_law_code(c("PL 1601005", "AC 0019190", "ABC0064A00"))
+#' @export
+morie_parse_nypd_law_code <- function(law_code) {
+  law_code <- as.character(law_code)
+  out <- data.frame(book = rep(NA_character_, length(law_code)),
+                     section = rep(NA_character_, length(law_code)),
+                     stringsAsFactors = FALSE)
+  ok <- !is.na(law_code) & nzchar(law_code)
+  if (!any(ok)) return(out)
+  # Leading uppercase-alpha run is the book.
+  m <- regmatches(law_code[ok], regexpr("^[A-Z]+", law_code[ok]))
+  # regmatches drops positions with no match -- align by re-running.
+  has_book <- grepl("^[A-Z]+", law_code[ok])
+  books <- rep(NA_character_, sum(ok))
+  books[has_book] <- m
+  # Section = post-prefix, stripped of leading whitespace.
+  secs <- sub("^[A-Z]+\\s*", "", law_code[ok])
+  secs[!nzchar(secs)] <- NA_character_
+  out$book[ok] <- books
+  out$section[ok] <- secs
+  # Section without a recognised book prefix is meaningless --
+  # drop it to NA so the resolver join behaves consistently.
+  out$section[is.na(out$book)] <- NA_character_
+  out
+}
+
+# ---------------------------------------------------------------------------
 # NYC NYPD resolved-joins analyzer (3AAA)
 # ---------------------------------------------------------------------------
 
@@ -748,10 +823,11 @@ morie_datasets_nyc_nypd_resolved <- function(
     page_size = 1000L,
     max_pages = 200L,
     app_token = NULL,
-    resolvers = c("boro", "precinct", "offense")) {
+    resolvers = c("boro", "precinct", "offense", "law_code")) {
   mode <- match.arg(mode)
   resolvers <- match.arg(resolvers,
-                          choices = c("boro", "precinct", "offense"),
+                          choices = c("boro", "precinct", "offense",
+                                       "law_code"),
                           several.ok = TRUE)
   out <- morie_datasets_nyc_nypd_by_key(
     dataset_key,
@@ -845,6 +921,22 @@ morie_datasets_nyc_nypd_resolved <- function(
     odc$ky_cd <- as.character(odc$ky_cd)
     odc$pd_cd <- as.character(odc$pd_cd)
     out <- merge(out, odc, by = c("ky_cd", "pd_cd"),
+                  all.x = TRUE, sort = FALSE)
+  }
+
+  # Law code parse + book-name join (3CCC1). Splits each row's
+  # `law_code` into `law_book` + `law_section`, then left-joins
+  # against the bundled statute book dictionary for `law_book_name`
+  # + `law_jurisdiction`. Silently no-ops if law_code is absent.
+  if ("law_code" %in% resolvers && "law_code" %in% names(out)) {
+    parsed <- morie_parse_nypd_law_code(out$law_code)
+    out$law_book <- parsed$book
+    out$law_section <- parsed$section
+    books <- morie_datasets_nyc_nypd_law_books()
+    names(books)[names(books) == "name"] <- "law_book_name"
+    names(books)[names(books) == "jurisdiction"] <- "law_jurisdiction"
+    names(books)[names(books) == "book"] <- "law_book"
+    out <- merge(out, books, by = "law_book",
                   all.x = TRUE, sort = FALSE)
   }
 

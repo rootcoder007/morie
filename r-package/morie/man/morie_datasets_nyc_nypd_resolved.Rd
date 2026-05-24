@@ -15,7 +15,7 @@ morie_datasets_nyc_nypd_resolved(
   page_size = 1000L,
   max_pages = 200L,
   app_token = NULL,
-  resolvers = c("boro", "precinct", "offense")
+  resolvers = c("boro", "precinct", "offense", "law_code")
 )
 }
 \arguments{
