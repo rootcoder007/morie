@@ -63,14 +63,7 @@
 #' }
 morie_estimate_irm <- function(data, treatment, outcome, covariates,
                          n_folds = 5, random_state = 42) {
-  for (pkg in c("DoubleML", "mlr3", "mlr3learners")) {
-    if (!requireNamespace(pkg, quietly = TRUE)) {
-      stop(sprintf(
-        "Package %s is required for morie_estimate_irm(). Install with: install.packages(%s)",
-        sQuote(pkg), sQuote(pkg)
-      ), call. = FALSE)
-    }
-  }
+  morie_ensure_extras(c("DoubleML", "mlr3", "mlr3learners", "data.table"))
 
   cols <- c(treatment, outcome, covariates)
   frame <- stats::na.omit(data[, cols, drop = FALSE])

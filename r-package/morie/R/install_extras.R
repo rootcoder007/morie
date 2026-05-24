@@ -201,6 +201,108 @@ morie_install_extras <- function(which = "missing",
 }
 
 
+#' Ensure optional packages are installed (interactive helper)
+#'
+#' Function-body helper for morie endpoints that require optional
+#' `Suggests:` packages. If every package in `pkgs` is already
+#' installed, returns silently. Otherwise:
+#'
+#' \itemize{
+#'   \item In an \strong{interactive} session, prompts the user once,
+#'     and on consent installs the missing packages via
+#'     [utils::install.packages()].
+#'   \item In a \strong{non-interactive} session (R CMD check, CI,
+#'     Rscript), throws an informative error with the morie command
+#'     the user should run to fix things:
+#'     \code{morie_install_extras(c("X", "Y"))}.
+#' }
+#'
+#' Why not auto-install silently? CRAN policy forbids packages from
+#' writing to the user's library or making network calls at function
+#' call time without explicit consent. The interactive prompt is the
+#' CRAN-blessed escape: the user IS the one consenting, and during
+#' R CMD check or any non-interactive run, the function refuses to
+#' touch the library.
+#'
+#' Typical use inside a morie function body that needs DoubleML and
+#' ranger:
+#'
+#' \preformatted{
+#' morie_estimate_irm <- function(...) {
+#'   morie_ensure_extras(c("DoubleML", "ranger"))
+#'   ...
+#' }
+#' }
+#'
+#' @param pkgs Character vector of required package names.
+#' @param ask Logical. If `TRUE` (default), prompt in interactive
+#'   sessions. Pass `FALSE` to skip the prompt and behave like
+#'   non-interactive: error out with the install-hint message.
+#' @param repos Optional CRAN repo URL(s). Default uses
+#'   `getOption("repos")`, falling back to RStudio CRAN.
+#'
+#' @return Invisibly `TRUE` if all `pkgs` are (now) installed; throws
+#'   otherwise.
+#'
+#' @examples
+#' \dontrun{
+#'   # Interactive (RStudio / R console): prompts to install if needed
+#'   morie_ensure_extras(c("DoubleML", "ranger"))
+#'
+#'   # CI / Rscript: errors with install-hint instead of installing
+#'   morie_ensure_extras(c("DoubleML"), ask = FALSE)
+#' }
+#'
+#' @seealso [morie_install_extras()] for the user-facing bulk installer.
+#' @export
+morie_ensure_extras <- function(pkgs, ask = interactive(), repos = NULL) {
+  stopifnot(is.character(pkgs), length(pkgs) >= 1L)
+  miss <- pkgs[!vapply(pkgs, .morie_pkg_installed, logical(1L))]
+  if (length(miss) == 0L) {
+    return(invisible(TRUE))
+  }
+
+  if (!isTRUE(ask) || !interactive()) {
+    stop(sprintf(
+      "morie requires package%s %s. Install with:\n  morie_install_extras(c(%s))",
+      if (length(miss) == 1L) "" else "s",
+      paste(sQuote(miss), collapse = ", "),
+      paste0("\"", miss, "\"", collapse = ", ")
+    ), call. = FALSE)
+  }
+
+  msg <- sprintf(
+    "morie needs %d package%s: %s\nInstall now? [y/N] ",
+    length(miss),
+    if (length(miss) == 1L) "" else "s",
+    paste(miss, collapse = ", ")
+  )
+  ans <- readline(msg)
+  if (!tolower(substr(ans, 1L, 1L)) %in% c("y")) {
+    stop("morie cannot proceed without the requested package(s). ",
+         "Run morie_install_extras() when ready.", call. = FALSE)
+  }
+
+  if (is.null(repos)) {
+    repos <- getOption("repos", default = c(CRAN = "https://cloud.r-project.org"))
+    if (any(repos == "@CRAN@")) {
+      repos[repos == "@CRAN@"] <- "https://cloud.r-project.org"
+    }
+  }
+
+  utils::install.packages(miss, repos = repos)
+
+  # Verify install actually succeeded.
+  still_miss <- miss[!vapply(miss, .morie_pkg_installed, logical(1L))]
+  if (length(still_miss)) {
+    stop(sprintf("Install failed for: %s",
+                 paste(sQuote(still_miss), collapse = ", ")),
+         call. = FALSE)
+  }
+  invisible(TRUE)
+}
+
+
 # Internal: probe whether the C system libraries are available.
 # Uses configure-time flags written into DESCRIPTION at install
 # (Phase 3JJJ1/2: MORIE_HAVE_SODIUM / MORIE_HAVE_LIBOQS), with

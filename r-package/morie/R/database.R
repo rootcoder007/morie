@@ -196,11 +196,7 @@ morie_builtin_db <- function() {
 #' }
 #' @export
 morie_db_connect <- function(db_path = NULL) {
-  if (!requireNamespace("DBI", quietly = TRUE)) {
-    stop("Package 'DBI' is required. install.packages('DBI')",
-      call. = FALSE
-    )
-  }
+  morie_ensure_extras("DBI")
   # CRAN Policy: by default never write under user HOME. When the
   # caller doesn't supply a path and the MORIE_CACHE_DB env var is
   # unset, default to a session-scoped subdirectory of tempdir(). R

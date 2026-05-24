@@ -8,10 +8,7 @@
 # installed still get correct point estimates with Taylor SEs.
 
 .req_survey <- function() {
-  if (!requireNamespace("survey", quietly = TRUE)) {
-    stop("Package 'survey' is required. Install with: install.packages('survey')",
-         call. = FALSE)
-  }
+  morie_ensure_extras("survey")
 }
 
 #' Construct a survey design object.

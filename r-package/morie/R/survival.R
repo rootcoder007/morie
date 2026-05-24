@@ -13,17 +13,11 @@
 #   Kalbfleisch & Prentice (2002). The Statistical Analysis of Failure Time Data.
 
 .req_survival <- function() {
-  if (!requireNamespace("survival", quietly = TRUE)) {
-    stop("Package 'survival' is required. Install with: install.packages('survival')",
-         call. = FALSE)
-  }
+  morie_ensure_extras("survival")
 }
 
 .req_cmprsk <- function() {
-  if (!requireNamespace("cmprsk", quietly = TRUE)) {
-    stop("Package 'cmprsk' is required for Fine-Gray competing risks. ",
-         "Install with: install.packages('cmprsk')", call. = FALSE)
-  }
+  morie_ensure_extras("cmprsk")
 }
 
 .validate_te <- function(time, event) {
