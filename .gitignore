@@ -39,6 +39,21 @@ docs/build/
 data/cache/
 data/manifest/outputs/
 
+# Restricted-access datasets — never commit.
+#   data/datasets/vsr/  — UofT Map & Data Library restricted holdings
+#                          (toneighe00.zip, toneighmapinfo.zip,
+#                          toneighshape.zip, etc.). Student-only
+#                          licence; redistribution forbidden.
+#   data/datasets/OT/   — City of Toronto Open Data bulk download
+#                          (Neighbourhoods 158/140 + NIA + crime rates
+#                          in GeoJSON / GeoPackage / Shapefile / CSV).
+#                          Licensed under Open Government Licence -
+#                          Toronto but ~30 MB; bundle the small
+#                          synthetic fixtures in r-package/morie/
+#                          inst/extdata/ instead.
+data/datasets/vsr/
+data/datasets/OT/
+
 # Secrets / local config
 .env
 .env.local
