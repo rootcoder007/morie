@@ -51,6 +51,8 @@
 #'     T&C acceptance via a publisher web UI; no automation API.
 #'     Caller downloads manually and passes the local path to the
 #'     morie loader. Used by VPD GeoDASH.
+#'   \item \strong{statcan_wds} -- Statistics Canada Web Data Service
+#'     REST API (open; POST endpoints for metadata + vector data).
 #' }
 #'
 #' @note SODA3 (`/api/v3/views/<id>/query.{json,csv}`) requires
@@ -61,8 +63,8 @@
 #'
 #' @param portal Optional character filter: `"chicago"`, `"nyc_nypd"`,
 #'   `"nyc_opendata"`, `"tps_arcgis_hub"`, `"tps_psdp"`,
-#'   `"ontario_ckan"`, `"vancouver_opendata"`, `"vpd_geodash"`.
-#'   `NULL` (default) returns all portals.
+#'   `"ontario_ckan"`, `"vancouver_opendata"`, `"vpd_geodash"`,
+#'   `"statcan_ccjs"`. `NULL` (default) returns all portals.
 #' @return A `data.frame` with one row per dataset. Columns:
 #'   `dataset_key`, `source`, `id`, `api_modes`, `loader`,
 #'   `dict_url`, `n_rows_bundled`.
@@ -186,6 +188,21 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
       stringsAsFactors = FALSE))
   }
 
+  # --- StatCan CCJS WDS REST cubes (10 curated) ----------------
+  sc <- morie_datasets_statcan_ccjs_cubes()
+  for (i in seq_len(nrow(sc))) {
+    push(data.frame(
+      dataset_key = sprintf("statcan_%d", sc$product_id[i]),
+      source = "statcan_ccjs",
+      id = as.character(sc$product_id[i]),
+      api_modes = "statcan_wds",
+      loader = "morie_datasets_statcan_cube_metadata",
+      dict_url = sprintf("https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=%d",
+                          sc$product_id[i]),
+      n_rows_bundled = NA_integer_,
+      stringsAsFactors = FALSE))
+  }
+
   # --- VPD GeoDASH (manual download, sample bundled) -----------
   push(data.frame(
     dataset_key = "vpd_crime",
@@ -207,7 +224,8 @@ morie_dataset_portal_catalog <- function(portal = NULL) {
                                       "tps_arcgis_hub", "tps_psdp",
                                       "ontario_ckan",
                                       "vancouver_opendata",
-                                      "vpd_geodash"))
+                                      "vpd_geodash",
+                                      "statcan_ccjs"))
     out <- out[out$source == portal, , drop = FALSE]
     rownames(out) <- NULL
   }

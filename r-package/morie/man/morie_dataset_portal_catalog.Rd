@@ -9,8 +9,8 @@ morie_dataset_portal_catalog(portal = NULL)
 \arguments{
 \item{portal}{Optional character filter: \code{"chicago"}, \code{"nyc_nypd"},
 \code{"nyc_opendata"}, \code{"tps_arcgis_hub"}, \code{"tps_psdp"},
-\code{"ontario_ckan"}, \code{"vancouver_opendata"}, \code{"vpd_geodash"}.
-\code{NULL} (default) returns all portals.}
+\code{"ontario_ckan"}, \code{"vancouver_opendata"}, \code{"vpd_geodash"},
+\code{"statcan_ccjs"}. \code{NULL} (default) returns all portals.}
 }
 \value{
 A \code{data.frame} with one row per dataset. Columns:
@@ -46,6 +46,8 @@ endpoint (open).
 T&C acceptance via a publisher web UI; no automation API.
 Caller downloads manually and passes the local path to the
 morie loader. Used by VPD GeoDASH.
+\item \strong{statcan_wds} -- Statistics Canada Web Data Service
+REST API (open; POST endpoints for metadata + vector data).
 }
 }
 \note{

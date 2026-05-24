@@ -17,13 +17,13 @@ test_that("morie_dataset_portal_catalog() returns unified schema", {
   expect_true(all(!is.na(d$loader) & nzchar(d$loader)))
 })
 
-test_that("catalog covers all 8 expected portals", {
+test_that("catalog covers all 9 expected portals", {
   d <- morie_dataset_portal_catalog()
   expect_setequal(unique(d$source),
                   c("chicago", "nyc_nypd", "nyc_opendata",
                     "tps_arcgis_hub", "tps_psdp",
                     "ontario_ckan", "vancouver_opendata",
-                    "vpd_geodash"))
+                    "vpd_geodash", "statcan_ccjs"))
 })
 
 test_that("per-source row counts match expected", {
@@ -58,6 +58,9 @@ test_that("api_modes column reflects portal protocol", {
   # VPD GeoDASH = manual download.
   expect_true(all(d$api_modes[d$source == "vpd_geodash"] ==
                      "manual_download"))
+  # StatCan = statcan_wds.
+  expect_true(all(d$api_modes[d$source == "statcan_ccjs"] ==
+                     "statcan_wds"))
 })
 
 test_that("portal= filter returns subset", {
