@@ -124,16 +124,16 @@ test_that("morie_datasets_nyc_stop_and_frisk(offline=FALSE) errors on unknown ye
 
 # ========================================================== discovery helper
 
-test_that("morie_datasets_external_socrata_layers returns the full 4-row registry", {
+test_that("morie_datasets_external_socrata_layers returns the full 5-row registry", {
   reg <- morie_datasets_external_socrata_layers()
   expect_s3_class(reg, "data.frame")
-  expect_equal(nrow(reg), 4L)
+  expect_equal(nrow(reg), 5L)
   expect_setequal(names(reg),
                   c("dataset_key", "label", "portal",
                     "resource_url", "fixture"))
   expect_setequal(reg$dataset_key,
-                  c("chicago_crime", "nyc_sqf_2024",
-                    "nyc_sqf_2023", "nyc_sqf_2022"))
+                  c("chicago_crime", "chicago_neighborhoods",
+                    "nyc_sqf_2024", "nyc_sqf_2023", "nyc_sqf_2022"))
   expect_setequal(unique(reg$portal),
                   c("data.cityofchicago.org",
                     "data.cityofnewyork.us"))
@@ -148,11 +148,97 @@ test_that("morie_datasets_external_socrata_layers Chicago entry points at the ca
 
 # ========================================================== integration
 
-test_that("offline-mode is the default for both wrappers (no accidental network)", {
+test_that("offline-mode is the default for all three wrappers (no accidental network)", {
   # Offline default means a bare call returns the fixture, not an
   # httr2 error. This is the safer default established post-3EE.
   expect_s3_class(suppressWarnings(morie_datasets_chicago_crime()),
                   "data.frame")
   expect_s3_class(suppressWarnings(morie_datasets_nyc_stop_and_frisk()),
                   "data.frame")
+  expect_s3_class(morie_datasets_chicago_neighborhoods(),
+                  "data.frame")
+})
+
+# ========================================================== Chicago Neighborhoods (3MM)
+
+test_that("morie_datasets_chicago_neighborhoods(offline=TRUE) reads the bundled 98-row attribute layer", {
+  df <- morie_datasets_chicago_neighborhoods(offline = TRUE)
+  expect_s3_class(df, "data.frame")
+  expect_equal(nrow(df), 98L)
+  expect_setequal(names(df),
+                  c("pri_neigh", "sec_neigh", "shape_area",
+                    "shape_len"))
+  # Real Chicago neighbourhood names (canonical 98 Office-of-Tourism
+  # primary-name list).
+  for (nm in c("Albany Park", "Andersonville", "Beverly",
+                "Loop", "Lincoln Park", "Hyde Park",
+                "Bridgeport", "Bucktown"))
+    expect_true(nm %in% df$pri_neigh)
+})
+
+test_that("morie_datasets_chicago_neighborhoods(offline=TRUE) honours max_features", {
+  df <- morie_datasets_chicago_neighborhoods(offline = TRUE,
+                                               max_features = 5L)
+  expect_equal(nrow(df), 5L)
+})
+
+test_that("morie_datasets_chicago_neighborhoods(offline=FALSE) dispatches via mocked Socrata fetch (attributes only)", {
+  testthat::local_mocked_bindings(
+    .morie_dataset_socrata_fetch = function(url, where = NULL,
+                                              max_features = NULL,
+                                              app_token = NULL) {
+      # Default geometry = FALSE -> URL carries $select query string.
+      expect_match(url,
+                   "data\\.cityofchicago\\.org/resource/y6yq-dbs2\\.json\\?\\$select=pri_neigh,sec_neigh,shape_area,shape_len$")
+      data.frame(pri_neigh = "MOCK", sec_neigh = "MOCK",
+                  shape_area = 1.0, shape_len = 1.0)
+    },
+    .package = "morie")
+  out <- morie_datasets_chicago_neighborhoods(offline = FALSE)
+  expect_equal(out$pri_neigh, "MOCK")
+})
+
+test_that("morie_datasets_chicago_neighborhoods(offline=FALSE, geometry=TRUE) requests the_geom too", {
+  testthat::local_mocked_bindings(
+    .morie_dataset_socrata_fetch = function(url, where = NULL,
+                                              max_features = NULL,
+                                              app_token = NULL) {
+      # geometry = TRUE -> no $select, server returns full schema
+      # including the_geom MultiPolygon.
+      expect_match(url,
+                   "data\\.cityofchicago\\.org/resource/y6yq-dbs2\\.json$")
+      data.frame(the_geom = "GEOM-STUB", pri_neigh = "MOCK",
+                  sec_neigh = "MOCK", shape_area = 1.0,
+                  shape_len = 1.0,
+                  stringsAsFactors = FALSE)
+    },
+    .package = "morie")
+  out <- morie_datasets_chicago_neighborhoods(offline = FALSE,
+                                                geometry = TRUE)
+  expect_true("the_geom" %in% names(out))
+})
+
+test_that("morie_datasets_chicago_neighborhoods honours resource_id override", {
+  testthat::local_mocked_bindings(
+    .morie_dataset_socrata_fetch = function(url, where = NULL,
+                                              max_features = NULL,
+                                              app_token = NULL) {
+      expect_match(url, "override-res-id\\.json")
+      data.frame(pri_neigh = "OVERRIDE")
+    },
+    .package = "morie")
+  out <- morie_datasets_chicago_neighborhoods(
+    offline = FALSE,
+    resource_id = "override-res-id")
+  expect_equal(out$pri_neigh, "OVERRIDE")
+})
+
+test_that("morie_datasets_external_socrata_layers includes chicago_neighborhoods", {
+  reg <- morie_datasets_external_socrata_layers()
+  expect_equal(nrow(reg), 5L)
+  expect_true("chicago_neighborhoods" %in% reg$dataset_key)
+  chi_nh <- reg[reg$dataset_key == "chicago_neighborhoods", ]
+  expect_equal(chi_nh$resource_url,
+               "https://data.cityofchicago.org/resource/y6yq-dbs2.json")
+  expect_equal(chi_nh$fixture, "chicago_neighborhoods.csv")
 })

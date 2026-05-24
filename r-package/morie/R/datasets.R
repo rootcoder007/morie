@@ -666,6 +666,75 @@ morie_datasets_nist_rds <- function(dataset_id = NULL, query = NULL,
 }
 
 # ---------------------------------------------------------------------------
+# Chicago neighbourhoods (Office of Tourism boundary)
+# ---------------------------------------------------------------------------
+
+#' Chicago Neighborhoods boundary (Office of Tourism)
+#'
+#' Wraps the City of Chicago "Boundaries - Neighborhoods" open dataset
+#' (Socrata resource id `y6yq-dbs2`; portal landing
+#' \url{https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Neighborhoods/bbvz-uum9}).
+#' 98 neighbourhoods, originally derived from Neighborhoods_2012b
+#' (updated 2025-02-20). The City notes these boundaries are
+#' approximate and the names are not official.
+#'
+#' Offline mode reads a bundled 98-row attribute-only fixture
+#' (`pri_neigh`, `sec_neigh`, `shape_area`, `shape_len`) -- the
+#' `the_geom` MultiPolygon column is stripped to keep the bundled
+#' size sane (full GeoJSON is ~800 KB). Live mode hits the SODA2
+#' endpoint via `.morie_dataset_socrata_fetch()` (mockable).
+#'
+#' To get the polygons, pass `geometry = TRUE` in live mode, which
+#' includes the SODA2 `the_geom` column.
+#'
+#' @param offline If `TRUE` (default), read the bundled attribute-only
+#'   fixture from `inst/extdata/chicago_neighborhoods.csv`.
+#' @param geometry If `TRUE` and `offline = FALSE`, include the
+#'   `the_geom` MultiPolygon column in the live-mode result.
+#' @param max_features Optional cap on returned rows.
+#' @param resource_id Optional Socrata resource id override.
+#' @return A `data.frame` with 4 attribute columns (offline mode) or
+#'   5 cols including `the_geom` (live mode with `geometry = TRUE`).
+#' @references City of Chicago Data Portal, "Boundaries -
+#'   Neighborhoods"; based on Neighborhoods_2012b.
+#' @examples
+#' df <- morie_datasets_chicago_neighborhoods(offline = TRUE)
+#' head(df[, c("pri_neigh", "sec_neigh")])
+#' @export
+morie_datasets_chicago_neighborhoods <- function(offline = TRUE,
+                                                  geometry = FALSE,
+                                                  max_features = NULL,
+                                                  resource_id = NULL) {
+  if (isTRUE(offline)) {
+    path <- system.file("extdata", "chicago_neighborhoods.csv",
+                        package = "morie")
+    if (!nzchar(path)) {
+      stop("bundled Chicago neighborhoods fixture missing",
+           call. = FALSE)
+    }
+    df <- utils::read.csv(path, stringsAsFactors = FALSE,
+                           check.names = FALSE)
+    if (!is.null(max_features)) {
+      df <- utils::head(df, as.integer(max_features))
+    }
+    return(df)
+  }
+  if (is.null(resource_id)) resource_id <- "y6yq-dbs2"
+  url <- sprintf("https://data.cityofchicago.org/resource/%s.json",
+                 resource_id)
+  # When the caller doesn't want geometry, ask the server for the
+  # attribute subset via $select; this saves the bandwidth + parsing
+  # of the (large) MultiPolygon column.
+  where <- NULL
+  if (!isTRUE(geometry)) {
+    url <- paste0(url,
+                  "?$select=pri_neigh,sec_neigh,shape_area,shape_len")
+  }
+  .morie_dataset_socrata_fetch(url, where = where,
+                                max_features = max_features)
+}
+
+# ---------------------------------------------------------------------------
 # Discovery: external (non-Ontario) Socrata feeds morie wraps
 # ---------------------------------------------------------------------------
 
@@ -691,6 +760,11 @@ morie_datasets_external_socrata_layers <- function() {
          portal = "data.cityofchicago.org",
          resource_url = "https://data.cityofchicago.org/resource/ijzp-q8t2.json",
          fixture = "chicago_crime_synthetic.csv"),
+    list(dataset_key = "chicago_neighborhoods",
+         label = "City of Chicago -- Boundaries-Neighborhoods (Office of Tourism)",
+         portal = "data.cityofchicago.org",
+         resource_url = "https://data.cityofchicago.org/resource/y6yq-dbs2.json",
+         fixture = "chicago_neighborhoods.csv"),
     list(dataset_key = "nyc_sqf_2024",
          label = "NYPD Stop, Question and Frisk -- 2024",
          portal = "data.cityofnewyork.us",
