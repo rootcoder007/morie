@@ -63,7 +63,7 @@
 #' }
 morie_estimate_irm <- function(data, treatment, outcome, covariates,
                          n_folds = 5, random_state = 42) {
-  morie_ensure_extras(c("DoubleML", "mlr3", "mlr3learners", "data.table"))
+  morie_ensure_extras(c("DoubleML", "mlr3", "mlr3learners", "ranger", "data.table"))
 
   cols <- c(treatment, outcome, covariates)
   frame <- stats::na.omit(data[, cols, drop = FALSE])
