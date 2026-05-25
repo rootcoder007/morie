@@ -169,7 +169,9 @@ kernel_eval <- function(u, kernel_type = KERNEL_GAUSSIAN) {
 #'   \emph{Theory of Probability and Its Applications}, 9(1), 141-142.
 #' @export
 nw_regression <- function(x, y, x_eval, bandwidth) {
-  x <- as.numeric(x); y <- as.numeric(y); x_eval <- as.numeric(x_eval)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  x_eval <- as.numeric(x_eval)
   if (length(x) != length(y)) stop("x and y must have equal length")
   if (!is.finite(bandwidth) || bandwidth <= 0) stop("bandwidth must be > 0")
   inv_h <- 1.0 / bandwidth
@@ -204,7 +206,9 @@ nw_regression <- function(x, y, x_eval, bandwidth) {
 #'   Modelling and Its Applications. Chapman and Hall.
 #' @export
 local_linear <- function(x, y, x_eval, bandwidth, return_slope = FALSE) {
-  x <- as.numeric(x); y <- as.numeric(y); x_eval <- as.numeric(x_eval)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  x_eval <- as.numeric(x_eval)
   if (length(x) != length(y)) stop("x and y must have equal length")
   if (!is.finite(bandwidth) || bandwidth <= 0) stop("bandwidth must be > 0")
   inv_h <- 1.0 / bandwidth
@@ -254,7 +258,8 @@ local_linear <- function(x, y, x_eval, bandwidth, return_slope = FALSE) {
 #'   Statistics and Data Analysis. Chapman and Hall.
 #' @export
 kde <- function(x, x_eval, bandwidth, kernel_type = KERNEL_GAUSSIAN) {
-  x <- as.numeric(x); x_eval <- as.numeric(x_eval)
+  x <- as.numeric(x)
+  x_eval <- as.numeric(x_eval)
   if (!is.finite(bandwidth) || bandwidth <= 0) stop("bandwidth must be > 0")
   k <- .resolve_kernel(kernel_type)
   fn <- .kernel_fn(k)
@@ -315,7 +320,8 @@ silverman_bandwidth <- function(x) {
 #' @export
 loocv_bandwidth <- function(x, y, bw_min = NULL, bw_max = NULL,
                              n_grid = 30L) {
-  x <- as.numeric(x); y <- as.numeric(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
   if (length(x) != length(y)) stop("x and y must have equal length")
   n <- length(x)
   h_rot <- silverman_bandwidth(x)
@@ -367,7 +373,9 @@ loocv_bandwidth <- function(x, y, bw_min = NULL, bw_max = NULL,
 #' @export
 kernel_cond_moments <- function(x, y, x_eval, bandwidth,
                                  return_variance = TRUE) {
-  x <- as.numeric(x); y <- as.numeric(y); x_eval <- as.numeric(x_eval)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  x_eval <- as.numeric(x_eval)
   if (length(x) != length(y)) stop("x and y must have equal length")
   if (!is.finite(bandwidth) || bandwidth <= 0) stop("bandwidth must be > 0")
   inv_h <- 1.0 / bandwidth
@@ -418,7 +426,8 @@ gam_smoother <- function(x, y, x_eval = NULL, k = 10, family = stats::gaussian()
   if (!requireNamespace("mgcv", quietly = TRUE)) {
     stop("gam_smoother requires the mgcv package")
   }
-  x <- as.numeric(x); y <- as.numeric(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
   if (length(x) != length(y)) stop("x and y must have equal length")
   if (is.null(x_eval)) x_eval <- x
   x_eval <- as.numeric(x_eval)

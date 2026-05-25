@@ -189,7 +189,8 @@ morie_tps_project_xy <- function(lat, lon,
   x <- (lon - lon_c) * km_lon
   y <- (lat - lat_c) * .MORIE_TPS_KM_PER_DEG_LAT
   a <- rot_deg_cw * pi / 180
-  cs <- cos(a); sn <- sin(a)
+  cs <- cos(a)
+  sn <- sin(a)
   list(
     x = x * cs + y * sn,
     y = -x * sn + y * cs
@@ -301,7 +302,8 @@ morie_tps_render_choropleth <- function(polys,
       ring <- rings[[ri]]
       m <- do.call(rbind, lapply(ring, function(p) c(p[[1]], p[[2]])))
       if (is.null(m) || nrow(m) < 3L) next
-      lons <- m[, 1]; lats <- m[, 2]
+      lons <- m[, 1]
+      lats <- m[, 2]
       if (min(lats) < 43.55 || max(lats) > 43.90 ||
           min(lons) < -79.65 || max(lons) > -79.10) next
       pp <- morie_tps_project_xy(lats, lons)
@@ -382,7 +384,8 @@ morie_tps_render_choropleth <- function(polys,
   graphics::title(main = title,
                   xlab = "east of centre (km)",
                   ylab = "north of centre (km)")
-  graphics::axis(1); graphics::axis(2)
+  graphics::axis(1)
+  graphics::axis(2)
   rec <- grDevices::recordPlot()
   if (!is.null(outfile)) {
     .tps_save_plot(rec, outfile, fig_w, fig_h, use_gg = FALSE)
@@ -432,12 +435,14 @@ morie_tps_render_points <- function(df,
   keep <- is.finite(lat) & is.finite(lon) &
           lat >= 43.55 & lat <= 43.90 &
           lon >= -79.65 & lon <= -79.10
-  lat <- lat[keep]; lon <- lon[keep]
+  lat <- lat[keep]
+  lon <- lon[keep]
   if (length(lat) == 0L) {
     stop(sprintf("%s: no in-bbox LAT/LONG rows", category))
   }
   pp <- morie_tps_project_xy(lat, lon)
-  xk <- pp$x; yk <- pp$y
+  xk <- pp$x
+  yk <- pp$y
 
   labels <- rep(-1L, length(xk))
   n_clusters <- 0L
@@ -498,7 +503,8 @@ morie_tps_render_points <- function(df,
   graphics::title(main = title,
                   xlab = "east of centre (km)",
                   ylab = "north of centre (km)")
-  graphics::axis(1); graphics::axis(2)
+  graphics::axis(1)
+  graphics::axis(2)
   rec <- grDevices::recordPlot()
   if (!is.null(outfile)) {
     .tps_save_plot(rec, outfile, fig_w, fig_h, use_gg = FALSE)
@@ -553,7 +559,8 @@ morie_tps_render_yearly_grid <- function(polys,
       ring <- rings[[ri]]
       m <- do.call(rbind, lapply(ring, function(p) c(p[[1]], p[[2]])))
       if (is.null(m) || nrow(m) < 3L) next
-      lons <- m[, 1]; lats <- m[, 2]
+      lons <- m[, 1]
+      lats <- m[, 2]
       pp <- morie_tps_project_xy(lats, lons)
       ring_id <- paste0(i, "_", ri)
       for (col in cols) {

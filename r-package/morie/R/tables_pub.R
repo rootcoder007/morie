@@ -177,26 +177,32 @@ table1 <- function(data, group_col = NULL,
   group_label <- function(g) if (is.null(g)) "Overall" else as.character(g)
   group_subset <- function(g) if (is.null(g)) df else df[df[[group_col]] %in% g, ]
 
-  rows <- list(); row_labels <- character(0)
+  rows <- list()
+  row_labels <- character(0)
 
   # N row
   n_row <- vapply(groups, function(g) as.character(nrow(group_subset(g))), "")
   names(n_row) <- vapply(groups, group_label, "")
-  rows[[length(rows) + 1L]] <- as.list(n_row); row_labels <- c(row_labels, "N")
+  rows[[length(rows) + 1L]] <- as.list(n_row)
+  row_labels <- c(row_labels, "N")
 
   weighted_mean_sd <- function(v, w) {
-    keep <- !is.na(v); v <- v[keep]
-    if (!is.null(w)) { w <- w[keep]; m <- stats::weighted.mean(v, w)
+    keep <- !is.na(v)
+    v <- v[keep]
+    if (!is.null(w)) { w <- w[keep]
+    m <- stats::weighted.mean(v, w)
       s <- sqrt(stats::weighted.mean((v - m)^2, w))
       return(c(m, s)) }
     c(mean(v), stats::sd(v))
   }
 
   for (var in continuous_vars) {
-    row <- list(); group_stats <- list()
+    row <- list()
+    group_stats <- list()
     for (g in groups) {
       sub <- group_subset(g)
-      vals <- sub[[var]]; vals <- vals[!is.na(vals)]
+      vals <- sub[[var]]
+      vals <- vals[!is.na(vals)]
       w_vals <- if (!is.null(weights)) sub[[weights]] else NULL
       if (continuous_summary == "mean_sd") {
         ms <- weighted_mean_sd(sub[[var]], w_vals)
@@ -210,7 +216,8 @@ table1 <- function(data, group_col = NULL,
         ms <- c(mean(vals), stats::sd(vals))
       } else {
         ms <- weighted_mean_sd(sub[[var]], w_vals)
-        n <- length(vals); se <- if (n > 0) ms[2] / sqrt(n) else 0
+        n <- length(vals)
+        se <- if (n > 0) ms[2] / sqrt(n) else 0
         cell <- sprintf("%s (%s, %s)",
           .tbl_fmt_num(ms[1], digits),
           .tbl_fmt_num(ms[1] - 1.96 * se, digits),
@@ -221,13 +228,15 @@ table1 <- function(data, group_col = NULL,
     }
     if (show_p && length(groups) >= 2L && !is.null(group_col)) {
       gv <- lapply(groups, function(g) {
-        v <- group_subset(g)[[var]]; v[!is.na(v)]
+        v <- group_subset(g)[[var]]
+        v[!is.na(v)]
       })
       if (length(groups) == 2L) {
         wt <- suppressWarnings(stats::wilcox.test(gv[[1]], gv[[2]]))
         p <- wt$p.value
       } else {
-        vals <- unlist(gv); grp <- rep(seq_along(gv), lengths(gv))
+        vals <- unlist(gv)
+        grp <- rep(seq_along(gv), lengths(gv))
         p <- stats::kruskal.test(vals, grp)$p.value
       }
       row[["p-value"]] <- .tbl_fmt_pval(p, 3L, apa)
@@ -239,7 +248,8 @@ table1 <- function(data, group_col = NULL,
       row[["SMD"]] <- .tbl_fmt_num(abs(smd), 3L)
     }
     if (show_missing) {
-      nm <- sum(is.na(df[[var]])); pct <- 100 * nm / nrow(df)
+      nm <- sum(is.na(df[[var]]))
+      pct <- 100 * nm / nrow(df)
       row[["Missing"]] <- sprintf("%d (%s%%)", nm, .tbl_fmt_num(pct, 1L))
     }
     rows[[length(rows) + 1L]] <- row
@@ -278,7 +288,8 @@ table1 <- function(data, group_col = NULL,
       rows[[header_idx]][[" "]] <- .tbl_stars(p)
     }
     if (show_missing) {
-      nm <- sum(is.na(df[[var]])); pct <- 100 * nm / nrow(df)
+      nm <- sum(is.na(df[[var]]))
+      pct <- 100 * nm / nrow(df)
       rows[[header_idx]][["Missing"]] <-
         sprintf("%d (%s%%)", nm, .tbl_fmt_num(pct, 1L))
     }
@@ -357,18 +368,25 @@ regression_table <- function(models, exponentiate = FALSE,
   reg <- .tbl_footnotes_new()
   meta <- lapply(models, .tbl_extract_model)
   all_params <- unique(unlist(lapply(meta, function(m) names(m$params))))
-  rows <- list(); row_labels <- character(0)
+  rows <- list()
+  row_labels <- character(0)
 
   for (param in all_params) {
-    coef_row <- list(); se_row <- list(); ci_row <- list()
+    coef_row <- list()
+    se_row <- list()
+    ci_row <- list()
     for (mname in names(models)) {
       mi <- meta[[mname]]
       if (param %in% names(mi$params)) {
-        b <- mi$params[[param]]; se <- mi$se[[param]]
+        b <- mi$params[[param]]
+        se <- mi$se[[param]]
         p <- mi$pvalues[[param]]
-        ci_lo <- mi$ci[param, 1]; ci_hi <- mi$ci[param, 2]
+        ci_lo <- mi$ci[param, 1]
+        ci_hi <- mi$ci[param, 2]
         if (exponentiate) {
-          b <- exp(b); ci_lo <- exp(ci_lo); ci_hi <- exp(ci_hi)
+          b <- exp(b)
+          ci_lo <- exp(ci_lo)
+          ci_hi <- exp(ci_hi)
         }
         coef_row[[mname]] <- paste0(.tbl_fmt_num(b, digits, apa),
                                      if (show_stars) .tbl_stars(p) else "")
@@ -376,12 +394,15 @@ regression_table <- function(models, exponentiate = FALSE,
         if (show_ci) ci_row[[mname]] <- sprintf("[%s, %s]",
           .tbl_fmt_num(ci_lo, digits), .tbl_fmt_num(ci_hi, digits))
       } else {
-        coef_row[[mname]] <- ""; se_row[[mname]] <- ""
+        coef_row[[mname]] <- ""
+        se_row[[mname]] <- ""
         if (show_ci) ci_row[[mname]] <- ""
       }
     }
-    rows <- c(rows, list(coef_row, se_row)); row_labels <- c(row_labels, param, "")
-    if (show_ci) { rows <- c(rows, list(ci_row)); row_labels <- c(row_labels, "") }
+    rows <- c(rows, list(coef_row, se_row))
+    row_labels <- c(row_labels, param, "")
+    if (show_ci) { rows <- c(rows, list(ci_row))
+    row_labels <- c(row_labels, "") }
   }
 
   stat_label <- c(nobs = "N", rsquared = "R-squared",
@@ -450,7 +471,9 @@ odds_ratio_table <- function(model, confidence = 0.95, digits = 3L,
   b <- stats::coef(model)
   pv <- summary(model)$coefficients[, 4]
   recs <- lapply(names(b), function(p) {
-    or <- exp(b[[p]]); lo <- exp(ci[p, 1]); hi <- exp(ci[p, 2])
+    or <- exp(b[[p]])
+    lo <- exp(ci[p, 1])
+    hi <- exp(ci[p, 2])
     pp <- pv[[p]]
     list(Variable = p,
          OR = .tbl_fmt_num(or, digits, apa),
@@ -495,8 +518,11 @@ hazard_ratio_table <- function(params, se, pvalues, confidence = 0.95,
                                 title = "Hazard Ratios") {
   z <- stats::qnorm(1 - (1 - confidence) / 2)
   recs <- lapply(names(params), function(v) {
-    b <- params[[v]]; s <- se[[v]]
-    hr <- exp(b); lo <- exp(b - z * s); hi <- exp(b + z * s)
+    b <- params[[v]]
+    s <- se[[v]]
+    hr <- exp(b)
+    lo <- exp(b - z * s)
+    hi <- exp(b + z * s)
     pp <- pvalues[[v]]
     list(Variable = v,
          HR = .tbl_fmt_num(hr, digits, apa),
@@ -539,7 +565,8 @@ correlation_table <- function(data, method = "pearson", show_stars = TRUE,
                                 output_format = "dataframe",
                                 title = "Correlation Matrix") {
   numeric_df <- data[, vapply(data, is.numeric, logical(1)), drop = FALSE]
-  cols <- names(numeric_df); n_v <- length(cols)
+  cols <- names(numeric_df)
+  n_v <- length(cols)
   corr <- stats::cor(numeric_df, method = method, use = "pairwise.complete.obs")
   result <- matrix("", n_v, n_v, dimnames = list(cols, cols))
   for (i in seq_len(n_v)) for (j in seq_len(n_v)) {
@@ -582,7 +609,8 @@ correlation_table <- function(data, method = "pearson", show_stars = TRUE,
 model_comparison_table <- function(models, nested = FALSE, digits = 3L,
                                      output_format = "dataframe",
                                      title = "Model Comparison") {
-  prev_llf <- NA_real_; prev_df <- NA_real_
+  prev_llf <- NA_real_
+  prev_df <- NA_real_
   recs <- list()
   for (mname in names(models)) {
     m <- models[[mname]]
@@ -606,11 +634,14 @@ model_comparison_table <- function(models, nested = FALSE, digits = 3L,
       if (is.finite(lr) && is.finite(ddf) && lr > 0 && ddf > 0) {
         rec[["LR stat"]] <- .tbl_fmt_num(lr, digits)
         rec[["LR p"]] <- .tbl_fmt_pval(stats::pchisq(lr, ddf, lower.tail = FALSE), 3L)
-      } else { rec[["LR stat"]] <- ""; rec[["LR p"]] <- "" }
+      } else { rec[["LR stat"]] <- ""
+      rec[["LR p"]] <- "" }
     } else if (nested) {
-      rec[["LR stat"]] <- ""; rec[["LR p"]] <- ""
+      rec[["LR stat"]] <- ""
+      rec[["LR p"]] <- ""
     }
-    prev_llf <- llf; prev_df <- df_m
+    prev_llf <- llf
+    prev_df <- df_m
     recs[[length(recs) + 1L]] <- rec
   }
   all_cols <- unique(unlist(lapply(recs, names)))
@@ -765,22 +796,27 @@ summary_statistics_table <- function(data, variables = NULL,
     min        = function(s) min(s, na.rm = TRUE),
     max        = function(s) max(s, na.rm = TRUE),
     missing    = function(s) sum(is.na(s)),
-    pct_missing= function(s) 100 * mean(is.na(s)),
+    pct_missing = function(s) 100 * mean(is.na(s)),
     q25        = function(s) stats::quantile(s, 0.25, na.rm = TRUE, names = FALSE),
     q75        = function(s) stats::quantile(s, 0.75, na.rm = TRUE, names = FALSE),
     iqr        = function(s) stats::IQR(s, na.rm = TRUE),
-    skewness   = function(s) { m <- mean(s, na.rm = TRUE);
-                                sd_ <- stats::sd(s, na.rm = TRUE)
-                                if (sd_ == 0) 0 else mean((s - m)^3, na.rm = TRUE) / sd_^3 },
-    kurtosis   = function(s) { m <- mean(s, na.rm = TRUE);
-                                sd_ <- stats::sd(s, na.rm = TRUE)
-                                if (sd_ == 0) 0 else mean((s - m)^4, na.rm = TRUE) / sd_^4 - 3 })
+    skewness   = function(s) {
+      m <- mean(s, na.rm = TRUE)
+      sd_ <- stats::sd(s, na.rm = TRUE)
+      if (sd_ == 0) 0 else mean((s - m)^3, na.rm = TRUE) / sd_^3
+    },
+    kurtosis   = function(s) {
+      m <- mean(s, na.rm = TRUE)
+      sd_ <- stats::sd(s, na.rm = TRUE)
+      if (sd_ == 0) 0 else mean((s - m)^4, na.rm = TRUE) / sd_^4 - 3
+    })
 
   recs <- lapply(variables, function(v) {
     out <- list(Variable = v)
     for (st in stats) {
       fn <- stat_fn[[st]]
-      if (is.null(fn)) { out[[st]] <- ""; next }
+      if (is.null(fn)) { out[[st]] <- ""
+      next }
       val <- fn(data[[v]])
       out[[st]] <- if (st %in% c("n", "missing"))
         as.character(as.integer(val)) else .tbl_fmt_num(val, digits)
@@ -815,8 +851,10 @@ treatment_effect_table <- function(estimators, digits = 3L,
                                       title = "Treatment Effect Estimates") {
   recs <- lapply(names(estimators), function(nm) {
     v <- estimators[[nm]]
-    est <- v$estimate %||% NA_real_; se <- v$se %||% NA_real_
-    lo <- v$ci_lower %||% NA_real_; hi <- v$ci_upper %||% NA_real_
+    est <- v$estimate %||% NA_real_
+    se <- v$se %||% NA_real_
+    lo <- v$ci_lower %||% NA_real_
+    hi <- v$ci_upper %||% NA_real_
     pp <- v$p_value %||% NA_real_
     list(Estimator = nm,
          Estimate = .tbl_fmt_num(est, digits),

@@ -88,7 +88,8 @@ NULL
   beta  <- as.numeric(solve(XtPzX, XtPzy))
   names(beta) <- colnames(X)
   resid <- as.numeric(y - X %*% beta)
-  n <- length(y); k <- length(beta)
+  n <- length(y)
+  k <- length(beta)
   if (robust) {
     meat <- crossprod(X, resid^2 * X)
     bread <- solve(XtPzX)
@@ -152,7 +153,8 @@ morie_iv_tsls <- function(data, outcome, endogenous, instruments,
   if (.morie_iv_have_AER()) {
     f   <- .morie_iv_build_formula(outcome, endogenous, instruments, exogenous)
     fit <- AER::ivreg(f, data = data)
-    cf  <- stats::coef(fit); se <- sqrt(diag(stats::vcov(fit)))
+    cf  <- stats::coef(fit)
+    se <- sqrt(diag(stats::vcov(fit)))
     return(.morie_iv_result(cf, se, length(fit$residuals),
                             method = "2sls (AER)", alpha = alpha,
                             dof = fit$df.residual,
@@ -176,7 +178,9 @@ morie_iv_liml <- function(data, outcome, endogenous, instruments,
       ivreg::ivreg(f, data = data, method = "M"),  # M = LIML in ivreg >=0.6
       error = function(e) ivreg::ivreg(f, data = data)
     )
-    cf <- stats::coef(fit); vc <- stats::vcov(fit); se <- sqrt(diag(vc))
+    cf <- stats::coef(fit)
+    vc <- stats::vcov(fit)
+    se <- sqrt(diag(vc))
     return(.morie_iv_result(cf, se, length(fit$residuals),
                             method = "liml (ivreg)",
                             alpha = alpha, dof = fit$df.residual,
@@ -206,7 +210,9 @@ morie_iv_gmm <- function(data, outcome, endogenous, instruments,
     g <- stats::as.formula(paste("~", paste(inst, collapse = " + ")))
     type <- if (identical(weight_matrix, "optimal")) "twoStep" else "iterative"
     fit  <- gmm::gmm(f, x = g, data = data, type = type, vcov = "HAC")
-    cf <- stats::coef(fit); vc <- stats::vcov(fit); se <- sqrt(diag(vc))
+    cf <- stats::coef(fit)
+    vc <- stats::vcov(fit)
+    se <- sqrt(diag(vc))
     return(.morie_iv_result(cf, se, fit$n,
                             method = paste0("gmm (", weight_matrix, ")"),
                             alpha = alpha, dof = NA,
@@ -227,12 +233,15 @@ morie_iv_cue_gmm <- function(data, outcome, endogenous, instruments,
                              exogenous = NULL, max_iter = 100, tol = 1e-8,
                              alpha = 0.05) {
   if (requireNamespace("gmm", quietly = TRUE)) {
-    rhs_x <- c(endogenous, exogenous); inst <- c(instruments, exogenous)
+    rhs_x <- c(endogenous, exogenous)
+    inst <- c(instruments, exogenous)
     f <- stats::as.formula(paste(outcome, "~", paste(rhs_x, collapse = " + ")))
     g <- stats::as.formula(paste("~", paste(inst, collapse = " + ")))
     fit <- gmm::gmm(f, x = g, data = data, type = "cue", vcov = "HAC",
                     control = list(maxit = max_iter, reltol = tol))
-    cf <- stats::coef(fit); vc <- stats::vcov(fit); se <- sqrt(diag(vc))
+    cf <- stats::coef(fit)
+    vc <- stats::vcov(fit)
+    se <- sqrt(diag(vc))
     return(.morie_iv_result(cf, se, fit$n, method = "cue-gmm",
                             alpha = alpha, dof = NA,
                             details = list(fit = fit)))
@@ -254,14 +263,17 @@ morie_iv_cue_gmm <- function(data, outcome, endogenous, instruments,
 #' @param alpha Significance level.
 #' @export
 morie_iv_wald <- function(data, outcome, treatment, instrument, alpha = 0.05) {
-  y <- data[[outcome]]; d <- data[[treatment]]; z <- data[[instrument]]
+  y <- data[[outcome]]
+  d <- data[[treatment]]
+  z <- data[[instrument]]
   num <- mean(y[z == 1]) - mean(y[z == 0])
   den <- mean(d[z == 1]) - mean(d[z == 0])
   beta <- num / den
   # Delta-method SE for beta = num/den, with the often-omitted
   # Cov(num, den) term that previous morie (and most textbooks) drop.
   # Per-z-stratum: cov(mean(y), mean(d)) = cov(y, d) / n.
-  n1 <- sum(z == 1); n0 <- sum(z == 0)
+  n1 <- sum(z == 1)
+  n0 <- sum(z == 0)
   v_y <- stats::var(y[z == 1]) / n1 + stats::var(y[z == 0]) / n0
   v_d <- stats::var(d[z == 1]) / n1 + stats::var(d[z == 0]) / n0
   c_yd <- stats::cov(y[z == 1], d[z == 1]) / n1 +
@@ -480,7 +492,8 @@ morie_iv_sargan <- function(data, outcome, endogenous, instruments,
 morie_iv_hansen_j <- function(data, outcome, endogenous, instruments,
                               exogenous = NULL) {
   if (requireNamespace("gmm", quietly = TRUE)) {
-    rhs_x <- c(endogenous, exogenous); inst <- c(instruments, exogenous)
+    rhs_x <- c(endogenous, exogenous)
+    inst <- c(instruments, exogenous)
     f <- stats::as.formula(paste(outcome, "~", paste(rhs_x, collapse = " + ")))
     g <- stats::as.formula(paste("~", paste(inst, collapse = " + ")))
     fit <- gmm::gmm(f, x = g, data = data, vcov = "HAC")
@@ -561,7 +574,8 @@ morie_iv_jive <- function(data, outcome, endogenous, instruments,
   # form `Xhat <- (H %*% X - hd * X) / (1 - hd)` projected every column,
   # including the intercept + exogenous controls, which biases the IV
   # estimator. Matches src/morie/iv.py:1604-1613.
-  D <- as.matrix(df[, endogenous, drop = FALSE]); storage.mode(D) <- "double"
+  D <- as.matrix(df[, endogenous, drop = FALSE])
+  storage.mode(D) <- "double"
   D_hat_full <- H %*% D
   D_hat_jive <- (D_hat_full - hd * D) / (1 - hd)
   Xhat <- X
@@ -569,7 +583,8 @@ morie_iv_jive <- function(data, outcome, endogenous, instruments,
   beta <- as.numeric(solve(crossprod(Xhat, X), crossprod(Xhat, y)))
   names(beta) <- colnames(X)
   resid <- as.numeric(y - X %*% beta)
-  n <- length(y); k <- length(beta)
+  n <- length(y)
+  k <- length(beta)
   bread <- solve(crossprod(Xhat, X))
   meat  <- crossprod(Xhat, resid^2 * Xhat)
   vcov_ <- bread %*% meat %*% t(bread)
@@ -588,8 +603,10 @@ morie_iv_split_sample <- function(data, outcome, endogenous, instruments,
                                   exogenous = NULL, split_fraction = 0.5,
                                   seed = 42, alpha = 0.05) {
   set.seed(seed)
-  n  <- nrow(data); idx1 <- sample.int(n, floor(n * split_fraction))
-  d1 <- data[idx1, , drop = FALSE]; d2 <- data[-idx1, , drop = FALSE]
+  n  <- nrow(data)
+  idx1 <- sample.int(n, floor(n * split_fraction))
+  d1 <- data[idx1, , drop = FALSE]
+  d2 <- data[-idx1, , drop = FALSE]
   # First stage on split 1
   pred_list <- lapply(endogenous, function(e) {
     rhs <- paste(c(instruments, exogenous), collapse = " + ")
@@ -602,7 +619,8 @@ morie_iv_split_sample <- function(data, outcome, endogenous, instruments,
   rhs2 <- paste(c(paste0("hatcol_", endogenous), exogenous), collapse = " + ")
   fit2 <- stats::lm(stats::as.formula(paste(outcome, "~", rhs2)),
                     data = d2_aug)
-  cf <- stats::coef(fit2); se <- sqrt(diag(stats::vcov(fit2)))
+  cf <- stats::coef(fit2)
+  se <- sqrt(diag(stats::vcov(fit2)))
   .morie_iv_result(cf, se, length(fit2$residuals),
                    method = "split-sample IV",
                    alpha = alpha, dof = fit2$df.residual,
@@ -623,7 +641,8 @@ morie_iv_control_function <- function(data, outcome, endogenous, instruments,
   data$.cf_resid_ <- stats::residuals(fs)
   rhs2 <- paste(c(endogenous, exogenous, ".cf_resid_"), collapse = " + ")
   ss <- stats::lm(stats::as.formula(paste(outcome, "~", rhs2)), data = data)
-  cf <- stats::coef(ss); se <- sqrt(diag(stats::vcov(ss)))
+  cf <- stats::coef(ss)
+  se <- sqrt(diag(stats::vcov(ss)))
   .morie_iv_result(cf, se, length(ss$residuals),
                    method = "control function",
                    alpha = alpha, dof = ss$df.residual,
@@ -645,7 +664,8 @@ morie_iv_probit <- function(data, outcome, endogenous, instruments,
   ss   <- stats::glm(stats::as.formula(paste(outcome, "~", rhs2)),
                      data = data,
                      family = stats::binomial(link = "probit"))
-  cf <- stats::coef(ss); se <- sqrt(diag(stats::vcov(ss)))
+  cf <- stats::coef(ss)
+  se <- sqrt(diag(stats::vcov(ss)))
   .morie_iv_result(cf, se, length(ss$residuals),
                    method = "IV probit (Rivers-Vuong CF)",
                    alpha = alpha, dof = ss$df.residual,
@@ -669,7 +689,9 @@ morie_iv_panel <- function(data, outcome, endogenous, instruments, unit,
     fit <- plm::plm(f, data = data, index = idx, model = "within",
                     effect = if (is.null(time_fe)) "individual" else "twoways",
                     inst.method = "baltagi")
-    cf <- stats::coef(fit); vc <- stats::vcov(fit); se <- sqrt(diag(vc))
+    cf <- stats::coef(fit)
+    vc <- stats::vcov(fit)
+    se <- sqrt(diag(vc))
     return(.morie_iv_result(cf, se, length(fit$residuals),
                             method = "panel IV (plm within)",
                             alpha = alpha, dof = NA,

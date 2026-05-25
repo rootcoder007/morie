@@ -814,8 +814,10 @@ pburg <- function(x, fs, order = 16L, nfft = 256L) {
   x <- as.numeric(x)
   n <- length(x)
   if (order >= n) order <- n - 1L
-  ef <- x; eb <- x
-  a <- numeric(order + 1L); a[1] <- 1
+  ef <- x
+  eb <- x
+  a <- numeric(order + 1L)
+  a[1] <- 1
   pe <- sum(x * x) / n
   for (m in seq_len(order)) {
     efm <- ef[(m + 1L):n]
@@ -824,10 +826,12 @@ pburg <- function(x, fs, order = 16L, nfft = 256L) {
     den <- sum(efm * efm) + sum(ebm * ebm)
     if (den == 0) break
     km <- num / den
-    a_new <- numeric(m + 1L); a_new[1] <- 1
+    a_new <- numeric(m + 1L)
+    a_new[1] <- 1
     if (m > 1L) for (j in seq_len(m - 1L)) a_new[j + 1L] <- a[j + 1L] + km * a[m - j + 1L]
     a_new[m + 1L] <- km
-    a <- numeric(order + 1L); a[seq_len(m + 1L)] <- a_new
+    a <- numeric(order + 1L)
+    a[seq_len(m + 1L)] <- a_new
     pe <- pe * (1 - km * km)
     ef_old <- ef
     ef[(m + 1L):n] <- ef_old[(m + 1L):n] + km * eb[m:(n - 1L)]
@@ -990,7 +994,8 @@ pcgseg <- function(envelope, fs = 2000, min_gap_ms = 100) {
                 extra = list(s1_indices = integer(0), s2_indices = integer(0),
                              n_cycles = 0L)))
   }
-  starts <- starts[seq_len(n_seg)]; stops <- stops[seq_len(n_seg)]
+  starts <- starts[seq_len(n_seg)]
+  stops <- stops[seq_len(n_seg)]
   peaks <- as.integer((starts + stops) %/% 2L)
   min_gap <- as.integer(min_gap_ms * fs / 1000)
   merged <- peaks[1]

@@ -39,7 +39,8 @@ morie_weights_design <- function(selection_probs) {
 #' \eqn{w_i^{ps} = w_i \cdot N_h / \hat{N}_h}{w_i^ps = w_i * N_h / N_hat_h}.
 #' @export
 morie_weights_poststratify <- function(weights, strata, population_totals) {
-  w <- as.numeric(weights); s <- as.character(strata)
+  w <- as.numeric(weights)
+  s <- as.character(strata)
   for (h in unique(s)) {
     if (!h %in% as.character(names(population_totals))) {
       warning(sprintf("Stratum '%s' missing from population_totals.", h))
@@ -80,7 +81,8 @@ morie_weights_rake <- function(weights, df, margins,
   max_adj <- 0
   it <- 0
   for (i in seq_len(max_iter)) {
-    it <- i; max_adj <- 0
+    it <- i
+    max_adj <- 0
     for (var_name in names(margins)) {
       if (!var_name %in% names(df))
         stop(sprintf("Column '%s' not in df.", var_name), call. = FALSE)
@@ -97,7 +99,8 @@ morie_weights_rake <- function(weights, df, margins,
         max_adj <- max(max_adj, abs(f - 1))
       }
     }
-    if (max_adj < tol) { converged <- TRUE; break }
+    if (max_adj < tol) { converged <- TRUE
+    break }
   }
   if (!converged)
     warning(sprintf("Raking did not converge in %d iters (max_adj=%.6f).",
@@ -120,7 +123,8 @@ morie_weights_rake <- function(weights, df, margins,
 morie_weights_greg <- function(weights, X, population_totals,
                                max_iter = 50, tol = 1e-8) {
   w <- as.numeric(weights)
-  Xm <- as.matrix(X); storage.mode(Xm) <- "double"
+  Xm <- as.matrix(X)
+  storage.mode(Xm) <- "double"
   if (is.null(dim(Xm))) Xm <- matrix(Xm, ncol = 1)
   T_x <- as.numeric(population_totals)
   if (length(T_x) != ncol(Xm))
@@ -187,7 +191,8 @@ morie_weights_trim <- function(weights, lower_percentile = 1,
   if (method == "percentile") {
     w <- pmin(pmax(w, lo), hi)
   } else {
-    w[w < lo] <- lo; w[w > hi] <- hi
+    w[w < lo] <- lo
+    w[w > hi] <- hi
   }
   w
 }
@@ -198,7 +203,8 @@ morie_weights_smooth <- function(weights,
                                  method = c("linear_shrinkage", "log_transform"),
                                  shrinkage_factor = 0.5) {
   method <- match.arg(method)
-  w <- as.numeric(weights); mw <- mean(w)
+  w <- as.numeric(weights)
+  mw <- mean(w)
   if (method == "linear_shrinkage") {
     if (shrinkage_factor < 0 || shrinkage_factor > 1)
       stop("shrinkage_factor must be in [0,1].", call. = FALSE)
@@ -223,16 +229,19 @@ morie_weights_smooth <- function(weights,
 #' @export
 morie_weights_nonresponse <- function(weights, responded,
                                       adjustment_cells = NULL) {
-  w <- as.numeric(weights); r <- as.logical(responded)
+  w <- as.numeric(weights)
+  r <- as.logical(responded)
   cells <- if (is.null(adjustment_cells)) rep(0L, length(w))
            else adjustment_cells
   for (c in unique(cells)) {
     mc <- cells == c
     mr <- mc & r
-    tw <- sum(w[mc]); rw <- sum(w[mr])
+    tw <- sum(w[mc])
+    rw <- sum(w[mr])
     if (rw == 0) {
       warning(sprintf("Cell '%s' has no respondents; setting weights to 0.", c))
-      w[mc] <- 0; next
+      w[mc] <- 0
+      next
     }
     w[mr] <- w[mr] * (tw / rw)
   }
@@ -243,7 +252,8 @@ morie_weights_nonresponse <- function(weights, responded,
 #' Propensity-score non-response weights (logistic).
 #' @export
 morie_weights_propensity_nonresponse <- function(weights, responded, X) {
-  w <- as.numeric(weights); r <- as.integer(responded)
+  w <- as.numeric(weights)
+  r <- as.integer(responded)
   Xdf <- as.data.frame(X)
   Xdf$.r <- r
   fit <- stats::glm(.r ~ ., data = Xdf, family = stats::binomial())
@@ -276,8 +286,10 @@ morie_weights_normalize <- function(weights,
                                     target = c("sample_size", "population"),
                                     population_size = NULL) {
   target <- match.arg(target)
-  w <- as.numeric(weights); s <- sum(w)
-  if (s == 0) { warning("sum(weights) is zero."); return(w) }
+  w <- as.numeric(weights)
+  s <- sum(w)
+  if (s == 0) { warning("sum(weights) is zero.")
+  return(w) }
   if (target == "sample_size") return(w * (length(w) / s))
   if (is.null(population_size))
     stop("population_size required for target='population'.", call. = FALSE)
@@ -294,10 +306,12 @@ morie_weights_normalize <- function(weights,
 #' weight-range ratio, and percentile vector.
 #' @export
 morie_weights_diagnostics <- function(weights) {
-  w <- as.numeric(weights); n <- length(w)
+  w <- as.numeric(weights)
+  n <- length(w)
   if (n == 0) return(list(n = 0))
   ess <- morie_weights_ess(w)
-  sum_w <- sum(w); mean_w <- mean(w)
+  sum_w <- sum(w)
+  mean_w <- mean(w)
   std_w <- if (n > 1) stats::sd(w) else 0
   cv <- if (mean_w != 0) std_w / mean_w else 0
   list(
@@ -324,7 +338,8 @@ morie_weights_diagnostics <- function(weights) {
 #' Kish effective sample size: \eqn{(\sum w_i)^2 / \sum w_i^2}{(sum w_i)^2 / sum w_i^2}.
 #' @export
 morie_weights_ess <- function(weights) {
-  w <- as.numeric(weights); s <- sum(w)
+  w <- as.numeric(weights)
+  s <- sum(w)
   if (s == 0) return(0)
   s^2 / sum(w^2)
 }
@@ -332,7 +347,8 @@ morie_weights_ess <- function(weights) {
 #' Kish design effect (n / ESS).
 #' @export
 morie_weights_deff <- function(weights) {
-  w <- as.numeric(weights); n <- length(w)
+  w <- as.numeric(weights)
+  n <- length(w)
   ess <- morie_weights_ess(w)
   if (ess > 0) n / ess else Inf
 }
@@ -343,7 +359,8 @@ morie_weights_detect_extreme <- function(weights, k = 3) {
   w <- as.numeric(weights)
   q <- stats::quantile(w, c(0.25, 0.75), names = FALSE)
   iqr <- q[2] - q[1]
-  lo <- q[1] - k * iqr; hi <- q[2] + k * iqr
+  lo <- q[1] - k * iqr
+  hi <- q[2] + k * iqr
   idx <- which(w < lo | w > hi)
   list(n_extreme = length(idx),
        threshold_lower = lo,
@@ -365,12 +382,14 @@ morie_weights_detect_extreme <- function(weights, k = 3) {
 morie_weights_jackknife <- function(weights, strata = NULL,
                                     jk_type = c("JK1", "JKn")) {
   jk_type <- match.arg(jk_type)
-  w <- as.numeric(weights); n <- length(w)
+  w <- as.numeric(weights)
+  n <- length(w)
   if (jk_type == "JK1") {
     rep <- matrix(w, nrow = n, ncol = n)
     for (i in seq_len(n)) {
       rep[i, i] <- 0
-      rem <- w; rem[i] <- 0
+      rem <- w
+      rem[i] <- 0
       tot <- sum(rem)
       if (tot > 0) rep[, i] <- rem * (sum(w) / tot)
     }
@@ -407,8 +426,11 @@ morie_weights_jackknife <- function(weights, strata = NULL,
 #' @export
 morie_weights_brr <- function(weights, strata, n_replicates = NULL,
                               seed = 42) {
-  w <- as.numeric(weights); n <- length(w)
-  s <- as.character(strata); us <- unique(s); H <- length(us)
+  w <- as.numeric(weights)
+  n <- length(w)
+  s <- as.character(strata)
+  us <- unique(s)
+  H <- length(us)
   if (is.null(n_replicates)) {
     n_replicates <- 1
     while (n_replicates < H) n_replicates <- n_replicates * 2
@@ -428,12 +450,15 @@ morie_weights_brr <- function(weights, strata, n_replicates = NULL,
               call. = FALSE)
     }
     mid <- length(idx) %/% 2
-    a <- idx[seq_len(mid)]; b <- idx[seq.int(mid + 1, length(idx))]
+    a <- idx[seq_len(mid)]
+    b <- idx[seq.int(mid + 1, length(idx))]
     for (r in seq_len(n_replicates)) {
       if (signs[h, r] > 0) {
-        rep[a, r] <- rep[a, r] * 2; rep[b, r] <- 0
+        rep[a, r] <- rep[a, r] * 2
+        rep[b, r] <- 0
       } else {
-        rep[a, r] <- 0; rep[b, r] <- rep[b, r] * 2
+        rep[a, r] <- 0
+        rep[b, r] <- rep[b, r] * 2
       }
     }
   }
@@ -446,8 +471,11 @@ morie_weights_fay_brr <- function(weights, strata, fay_coefficient = 0.5,
                                   n_replicates = NULL, seed = 42) {
   if (fay_coefficient < 0 || fay_coefficient >= 1)
     stop("fay_coefficient must be in [0, 1).", call. = FALSE)
-  w <- as.numeric(weights); n <- length(w)
-  s <- as.character(strata); us <- unique(s); H <- length(us)
+  w <- as.numeric(weights)
+  n <- length(w)
+  s <- as.character(strata)
+  us <- unique(s)
+  H <- length(us)
   if (is.null(n_replicates)) {
     n_replicates <- 1
     while (n_replicates < H) n_replicates <- n_replicates * 2
@@ -460,7 +488,8 @@ morie_weights_fay_brr <- function(weights, strata, fay_coefficient = 0.5,
     idx <- which(s == us[h])
     if (length(idx) < 2) next
     mid <- length(idx) %/% 2
-    a <- idx[seq_len(mid)]; b <- idx[seq.int(mid + 1, length(idx))]
+    a <- idx[seq_len(mid)]
+    b <- idx[seq.int(mid + 1, length(idx))]
     for (r in seq_len(n_replicates)) {
       if (signs[h, r] > 0) {
         rep[a, r] <- rep[a, r] * (2 - fay_coefficient)
@@ -478,7 +507,8 @@ morie_weights_fay_brr <- function(weights, strata, fay_coefficient = 0.5,
 #' @export
 morie_weights_bootstrap <- function(weights, n_replicates = 200,
                                     strata = NULL, seed = 42) {
-  w <- as.numeric(weights); n <- length(w)
+  w <- as.numeric(weights)
+  n <- length(w)
   set.seed(seed)
   rep <- matrix(0, nrow = n, ncol = n_replicates)
   if (is.null(strata)) {
@@ -489,11 +519,13 @@ morie_weights_bootstrap <- function(weights, n_replicates = 200,
     }
     return(rep)
   }
-  s <- as.character(strata); us <- unique(s)
+  s <- as.character(strata)
+  us <- unique(s)
   for (r in seq_len(n_replicates)) {
     counts <- numeric(n)
     for (st in us) {
-      ix <- which(s == st); nh <- length(ix)
+      ix <- which(s == st)
+      nh <- length(ix)
       if (nh < 2) next
       bs <- sample(ix, nh - 1, replace = TRUE)
       counts[ix] <- tabulate(match(bs, ix), nbins = nh) * (nh / (nh - 1))
@@ -506,7 +538,8 @@ morie_weights_bootstrap <- function(weights, n_replicates = 200,
 #' Successive Difference Replication (SDR) weights.
 #' @export
 morie_weights_sdr <- function(weights, n_replicates = 100, seed = 42) {
-  w <- as.numeric(weights); n <- length(w)
+  w <- as.numeric(weights)
+  n <- length(w)
   set.seed(seed)
   rep <- matrix(w, nrow = n, ncol = n_replicates)
   for (r in seq_len(n_replicates)) {
@@ -532,7 +565,8 @@ morie_weights_replicate_variance <- function(full_estimate, replicate_estimates,
                                              fay_coefficient = 0,
                                              strata = NULL) {
   method <- match.arg(method)
-  reps <- as.numeric(replicate_estimates); R <- length(reps)
+  reps <- as.numeric(replicate_estimates)
+  R <- length(reps)
   if (R == 0)
     return(list(variance = 0, se = 0,
                 ci_lower = full_estimate, ci_upper = full_estimate))
@@ -590,8 +624,10 @@ morie_weights_multiframe <- function(weights_a, weights_b,
     stop("NotYetPorted: optimal variance-minimizing multiframe weights ",
          "require auxiliary variance estimates and are not yet implemented.",
          call. = FALSE)
-  wa <- as.numeric(weights_a); wb <- as.numeric(weights_b)
-  oa <- as.logical(overlap_a); ob <- as.logical(overlap_b)
+  wa <- as.numeric(weights_a)
+  wb <- as.numeric(weights_b)
+  oa <- as.logical(overlap_a)
+  ob <- as.logical(overlap_b)
   wa_adj <- ifelse(oa, theta * wa, wa)
   wb_adj <- ifelse(ob, (1 - theta) * wb, wb)
   list(weights_a = wa_adj, weights_b = wb_adj)

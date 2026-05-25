@@ -116,20 +116,23 @@ NULL
       beta * exp(-beta * u)
     },
     gamma = {
-      alpha <- psi[1]; beta <- psi[2]
+      alpha <- psi[1]
+      beta <- psi[2]
       log_d <- alpha * log(beta) +
                (alpha - 1) * log(pmax(u, 1e-300)) -
                beta * u - lgamma(alpha)
       exp(log_d)
     },
     weibull = {
-      alpha <- psi[1]; lam <- psi[2]
+      alpha <- psi[1]
+      lam <- psi[2]
       x <- u / lam
       (alpha / lam) * pmax(x, 1e-300) ^ (alpha - 1) *
         exp(-x ^ alpha)
     },
     lomax = {
-      alpha <- psi[1]; c_ <- psi[2]
+      alpha <- psi[1]
+      c_ <- psi[2]
       # v0.9.5.6+: scipy.stats.lomax convention.
       # log-space: alpha * c^alpha * (u + c)^{-(alpha+1)}
       log_d <- log(alpha) + alpha * log(c_) -
@@ -370,15 +373,19 @@ NULL
 
   nb <- .tps_hwka_n_baseline_params(baseline_kind)
   lower <- c(-15, rep(-5, nb - 1L), 1e-3)
-  upper <- c( 15, rep( 5, nb - 1L), 0.99)
+  upper <- c(15, rep(5, nb - 1L), 0.99)
   if (identical(kernel_kind, "exponential")) {
-    lower <- c(lower, 0.1);   upper <- c(upper, 25)
+    lower <- c(lower, 0.1)
+    upper <- c(upper, 25)
   } else if (identical(kernel_kind, "weibull")) {
-    lower <- c(lower, 0.1, 1e-3); upper <- c(upper, 15, 100)
+    lower <- c(lower, 0.1, 1e-3)
+    upper <- c(upper, 15, 100)
   } else if (identical(kernel_kind, "gamma")) {
-    lower <- c(lower, 0.1, 0.05); upper <- c(upper, 15, 25)
+    lower <- c(lower, 0.1, 0.05)
+    upper <- c(upper, 15, 25)
   } else if (identical(kernel_kind, "lomax")) {
-    lower <- c(lower, 1.05, 1e-3); upper <- c(upper, 30, 100)
+    lower <- c(lower, 1.05, 1e-3)
+    upper <- c(upper, 30, 100)
   }
   res <- stats::optim(par = x0,
                        fn  = .tps_hwka_neg_loglik_general,
@@ -513,7 +520,8 @@ morie_tps_hawkes_advanced_fit <- function(df,
       warnings = "no OCC_DATE or REPORT_DATE column"))
   }
   td <- .tps_hwka_events_to_days(df, max_n)
-  t  <- td$t; T_ <- td$T_
+  t  <- td$t
+  T_ <- td$T_
   if (length(t) < 100L) {
     return(.tps_hwka_result(
       title = sprintf("Hawkes-%s/%s -- %s", kernel, baseline, ds_name),
@@ -612,7 +620,8 @@ morie_tps_compare_hawkes_kernels <- function(df,
       warnings = "no OCC_DATE or REPORT_DATE column"))
   }
   td <- .tps_hwka_events_to_days(df, max_n)
-  t  <- td$t; T_ <- td$T_
+  t  <- td$t
+  T_ <- td$T_
   if (length(t) < 100L) {
     return(.tps_hwka_result(
       title = sprintf("Hawkes comparison -- %s", ds_name),

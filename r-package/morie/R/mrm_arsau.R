@@ -431,7 +431,8 @@ morie_arsau_analyze_detailed_dataset <- function(year_range = "2020-2022",
 print.morie_arsau_analysis_result <- function(x, ...) {
   cat(x$title, "\n", strrep("=", nchar(x$title)), "\n", sep = "")
   if (length(x$summary_lines) > 0L) {
-    nms <- names(x$summary_lines); label_w <- max(nchar(nms))
+    nms <- names(x$summary_lines)
+    label_w <- max(nchar(nms))
     for (i in seq_along(x$summary_lines)) {
       cat(sprintf("  %-*s  %s\n", label_w, nms[i], format(x$summary_lines[[i]])))
     }

@@ -161,7 +161,7 @@ morie_rdd_bandwidth_ik <- function(x, y, cutoff = 0,
 morie_rdd_bandwidth_rot <- function(x, y, cutoff = 0) {
   sd_x  <- stats::sd(x)
   n     <- length(x)
-  h     <- 1.84 * sd_x * n^(-1/5)
+  h     <- 1.84 * sd_x * n^(-1 / 5)
   .morie_rdd_bw_result(h, "Rule of thumb (Silverman)")
 }
 
@@ -240,7 +240,8 @@ morie_rdd_sharp <- function(data, outcome, running, cutoff = 0,
   if (is.null(bandwidth))
     bandwidth <- morie_rdd_bandwidth_rot(data[[running]],
                                          data[[outcome]], cutoff)$bandwidth
-  x <- data[[running]]; y <- data[[outcome]]
+  x <- data[[running]]
+  y <- data[[outcome]]
   fL <- .morie_rdd_local_poly_fit(x[x <  cutoff], y[x <  cutoff],
                                   cutoff, bandwidth, p, kernel)
   fR <- .morie_rdd_local_poly_fit(x[x >= cutoff], y[x >= cutoff],
@@ -434,7 +435,8 @@ morie_rdd_plot_data <- function(data, outcome, running, cutoff = 0,
     return(list(bins = plot$vars_bins, poly = plot$vars_poly,
                 fit = plot))
   }
-  x <- data[[running]]; y <- data[[outcome]]
+  x <- data[[running]]
+  y <- data[[outcome]]
   breaks <- stats::quantile(x, probs = seq(0, 1, length.out = n_bins + 1),
                             na.rm = TRUE)
   bin <- cut(x, breaks = unique(breaks), include.lowest = TRUE)
@@ -542,7 +544,7 @@ morie_rdd_geographic <- function(data, outcome, distance_to_boundary, side,
 morie_rdd_power <- function(n, tau, sigma, cutoff_density = 1,
                             bandwidth = NULL, kernel = "triangular",
                             alpha = 0.05) {
-  if (is.null(bandwidth)) bandwidth <- n^(-1/5)
+  if (is.null(bandwidth)) bandwidth <- n^(-1 / 5)
   K <- .morie_rdd_get_kernel(kernel)
   k2 <- stats::integrate(function(u) K(u)^2, -1, 1)$value
   ne <- n * bandwidth * cutoff_density

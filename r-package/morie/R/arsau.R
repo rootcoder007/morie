@@ -535,7 +535,8 @@ morie_arsau_available_years <- function(data_dir = NULL, language = "en") {
     error = function(e) NA_character_
   )
 
-  present <- character(0); missing <- character(0)
+  present <- character(0)
+  missing <- character(0)
   if (!is.na(root) && dir.exists(root)) {
     for (y in years) {
       if (dir.exists(file.path(root, y))) {
@@ -653,7 +654,9 @@ morie_arsau_describe <- function(kind, year, language = "en", data_dir = NULL,
     .morie_resolve_arsau_dir(data_dir = data_dir, require_exists = FALSE),
     error = function(e) NA_character_
   )
-  csv_present <- FALSE; preview <- NULL; sidecar <- NULL
+  csv_present <- FALSE
+  preview <- NULL
+  sidecar <- NULL
   if (!is.na(root)) {
     csv_path <- file.path(root, entry$year_or_range, entry$csv_filename)
     if (file.exists(csv_path)) {

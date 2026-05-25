@@ -254,7 +254,8 @@ morie_tps_sdb_reaction_diffusion <- function(category = "Assault",
 
   prj <- .tps_sp_project_xy(df$LAT_WGS84, df$LONG_WGS84)
   grid <- .tps_sp_toronto_grid(nx, ny)
-  gx <- grid$gx; gy <- grid$gy
+  gx <- grid$gx
+  gy <- grid$gy
   dx <- gx[2] - gx[1]
   dy <- gy[2] - gy[1]
 
@@ -394,7 +395,8 @@ morie_tps_levy_flight_alpha <- function(category = "Assault",
     ))
   }
   prj <- .tps_sp_project_xy(df$LAT_WGS84, df$LONG_WGS84)
-  dxk <- diff(prj$x); dyk <- diff(prj$y)
+  dxk <- diff(prj$x)
+  dyk <- diff(prj$y)
   steps <- sqrt(dxk ^ 2 + dyk ^ 2)
   steps <- steps[steps >= lmin_km]
   if (length(steps) < 50L) {
@@ -524,7 +526,8 @@ morie_tps_urban_scaling_beta <- function(category = "Assault",
   lx <- log(as.numeric(sub[[pop_col]]))
   ly <- log(as.numeric(sub[[crime_col]]))
   n <- length(lx)
-  sx <- mean(lx); sy <- mean(ly)
+  sx <- mean(lx)
+  sy <- mean(ly)
   beta <- sum((lx - sx) * (ly - sy)) / sum((lx - sx) ^ 2)
   Y0 <- exp(sy - beta * sx)
   resid <- ly - (log(Y0) + beta * lx)
@@ -616,7 +619,8 @@ morie_tps_lotka_volterra_police_crime <- function(category = "Assault",
   counts <- as.numeric(table(df$OCC_YEAR))
   years  <- sort(unique(df$OCC_YEAR))
   keep   <- years >= 2014L
-  counts <- counts[keep]; years <- years[keep]
+  counts <- counts[keep]
+  years <- years[keep]
   if (length(counts) < 5L) {
     return(.tps_sp_result(
       title = sprintf("Lotka-Volterra -- %s", category),
@@ -804,9 +808,11 @@ morie_tps_inspection_game_phase <- function(n_temptations = 20L,
   set.seed(3L)
   for (i in seq_along(Ts)) {
     for (j in seq_along(gs)) {
-      Tv <- Ts[i]; gv <- gs[j]
+      Tv <- Ts[i]
+      gv <- gs[j]
       x <- c(0.34, 0.33, 0.33) + 0.01 * stats::rnorm(3L)
-      x <- pmax(x, 0); x <- x / sum(x)
+      x <- pmax(x, 0)
+      x <- x / sum(x)
       # Rows = strategy played by self (C, P, O); columns = opponent
       # strategy. Matches src/morie/tps_statphysics.py:587-591 verbatim:
       #   C: [1,     0,       1]
@@ -822,7 +828,8 @@ morie_tps_inspection_game_phase <- function(n_temptations = 20L,
         fit <- as.numeric(P %*% x)
         phi <- sum(x * fit)
         x <- x + 0.05 * x * (fit - phi)
-        x <- pmax(x, 0); ssum <- sum(x)
+        x <- pmax(x, 0)
+        ssum <- sum(x)
         x <- if (ssum > 0) x / ssum else c(0.34, 0.33, 0.33)
       }
       crime[i, j] <- x[2]

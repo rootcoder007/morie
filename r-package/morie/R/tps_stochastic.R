@@ -102,7 +102,9 @@ NULL
 #   lambda(t) = mu + kappa*omega * sum_{t_i<t} exp(-omega*(t - t_i))
 # Closed-form integral: mu*T + kappa * sum_i (1 - exp(-omega*(T - t_i)))
 .tps_stoch_neg_loglik_hawkes <- function(params, t, T_window) {
-  mu <- params[1L]; kappa <- params[2L]; omega <- params[3L]
+  mu <- params[1L]
+  kappa <- params[2L]
+  omega <- params[3L]
   if (mu <= 0 || kappa < 0 || omega <= 0) return(1e12)
   n <- length(t)
   lam <- numeric(n)
@@ -216,7 +218,9 @@ morie_tps_hawkes_temporal_fit <- function(df, ds_name = "?",
       interpretation = "No analysis: Hawkes optimisation failed."
     ))
   }
-  mu <- fit$par[1L]; kappa <- fit$par[2L]; omega <- fit$par[3L]
+  mu <- fit$par[1L]
+  kappa <- fit$par[2L]
+  omega <- fit$par[3L]
   nll <- fit$value
   aic <- 2 * 3 + 2 * nll
   bic <- 3 * log(n) + 2 * nll
@@ -452,7 +456,8 @@ morie_tps_langevin_simulate <- function(df, ds_name = "?",
   x_lag <- x[-length(x)]
   fit_ols <- stats::lm(dx ~ x_lag)
   ab <- stats::coef(fit_ols)
-  a <- as.numeric(ab[1]); b <- as.numeric(ab[2])
+  a <- as.numeric(ab[1])
+  b <- as.numeric(ab[2])
   theta <- max(1e-6, -b)
   mu <- if (b != 0) -a / b else mean(x)
   resid <- dx - (a + b * x_lag)
@@ -558,7 +563,8 @@ morie_tps_fokker_planck_grid <- function(df, ds_name = "?",
   x_lag <- x[-length(x)]
   fit_ols <- stats::lm(dx_obs ~ x_lag)
   ab <- stats::coef(fit_ols)
-  a <- as.numeric(ab[1]); b <- as.numeric(ab[2])
+  a <- as.numeric(ab[1])
+  b <- as.numeric(ab[2])
   theta <- max(1e-6, -b)
   mu <- if (b != 0) -a / b else mean(x)
   resid <- dx_obs - (a + b * x_lag)

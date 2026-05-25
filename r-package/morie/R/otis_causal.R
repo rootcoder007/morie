@@ -99,7 +99,8 @@ NULL
 
 # Newton-Raphson logistic with ridge penalty.
 .otis_logit_fit <- function(X, d, ridge = 1e-3, max_iter = 50L, tol = 1e-6) {
-  n <- nrow(X); p <- ncol(X)
+  n <- nrow(X)
+  p <- ncol(X)
   beta <- numeric(p)
   for (iter in seq_len(max_iter)) {
     eta <- as.numeric(X %*% beta)
@@ -154,7 +155,8 @@ NULL
     return(.otis_cluster_se(scores, clusters[[1]]))
   }
   if (length(clusters) == 2L) {
-    a <- clusters[[1]]; b <- clusters[[2]]
+    a <- clusters[[1]]
+    b <- clusters[[2]]
     inter <- paste(a, b, sep = "|")
     v_a <- .otis_cluster_se(scores, a)^2
     v_b <- .otis_cluster_se(scores, b)^2
@@ -310,7 +312,8 @@ morie_otis_aipw_ate <- function(df, treatment, outcome, covariates,
   d <- .otis_binarise(data[[treatment]])
   y <- as.numeric(data[[outcome]])
   X <- .otis_design_matrix(data, covariates)
-  n <- length(y); p <- ncol(X)
+  n <- length(y)
+  p <- ncol(X)
   n_treated <- sum(d)
   p_treat <- mean(d)
 
@@ -504,7 +507,8 @@ morie_otis_irm_dml <- function(df, treatment, outcome, covariates,
   d <- .otis_binarise(data[[treatment]])
   y <- as.numeric(data[[outcome]])
   X <- .otis_design_matrix(data, covariates)
-  n <- length(y); p <- ncol(X)
+  n <- length(y)
+  p <- ncol(X)
   n_treated <- sum(d)
   p_treat <- mean(d)
 
@@ -1046,7 +1050,10 @@ morie_otis_causal_grid <- function(df = NULL, seed = 123L) {
   rows <- list()
   for (label in names(pairs)) {
     pr <- pairs[[label]]
-    data <- pr$data; Tn <- pr$T; Yn <- pr$Y; covs <- pr$covariates
+    data <- pr$data
+    Tn <- pr$T
+    Yn <- pr$Y
+    covs <- pr$covariates
     if (sum(data[[Tn]]) == 0L || sum(data[[Tn]]) == nrow(data)) {
       warning(sprintf("%s: degenerate treatment, skipping", label))
       next

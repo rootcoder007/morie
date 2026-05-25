@@ -44,12 +44,14 @@ morie_dsp_psd_periodogram <- function(x, fs = 1) {
 morie_dsp_psd_bartlett <- function(x, fs = 1, n_segments = 8L) {
   x <- as.numeric(x)
   seg_len <- length(x) %/% n_segments
-  psd_sum <- NULL; freqs <- NULL
+  psd_sum <- NULL
+  freqs <- NULL
   for (i in seq_len(n_segments)) {
     seg <- x[((i - 1L) * seg_len + 1L):(i * seg_len)]
     out <- morie_dsp_psd_periodogram(seg, fs)
     if (is.null(psd_sum)) {
-      psd_sum <- out$psd; freqs <- out$freqs
+      psd_sum <- out$psd
+      freqs <- out$freqs
     } else {
       psd_sum <- psd_sum + out$psd
     }
@@ -221,7 +223,8 @@ morie_dsp_spectral_flatness <- function(psd) {
 morie_dsp_spectral_entropy <- function(psd) {
   total <- sum(psd)
   if (total == 0) return(0)
-  p <- psd / total; p <- p[p > 0]
+  p <- psd / total
+  p <- p[p > 0]
   -sum(p * log2(p))
 }
 
@@ -339,7 +342,8 @@ morie_dsp_coherence <- function(x, y, fs = 1, nperseg = 256L) {
   if (length(starts) == 0L) starts <- 1L
   win <- morie_dsp_window(nperseg, "hamming")
   half <- nperseg %/% 2L + 1L
-  Pxx <- numeric(half); Pyy <- numeric(half)
+  Pxx <- numeric(half)
+  Pyy <- numeric(half)
   Pxy <- complex(half)
   for (s in starts) {
     sx <- x[s:(s + nperseg - 1L)] * win
@@ -404,7 +408,8 @@ morie_dsp_fbm_synthesis <- function(N, H = 0.5) {
   half <- N %/% 2L + 1L
   freqs <- seq.int(0, half - 1L) / N
   freqs[1] <- 1
-  pf <- freqs^(-(H + 0.5)); pf[1] <- 0
+  pf <- freqs^(-(H + 0.5))
+  pf[1] <- 0
   X <- stats::fft(white)[seq_len(half)] * pf
   # Reconstitute Hermitian.
   if (N %% 2L == 0L) {

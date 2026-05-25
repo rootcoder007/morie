@@ -376,8 +376,10 @@ morie_risk_difference_ci <- function(table_2x2, alpha = 0.05) {
   # The simple Wald form (rd +- z*sqrt(p1q1/n1 + p2q2/n2)) does not
   # have the correct coverage near 0/1; was the pre-2026-05-22 form.
   m <- as.matrix(table_2x2)
-  a <- m[1, 1]; b <- m[1, 2]
-  cc <- m[2, 1]; d <- m[2, 2]  # 'c' shadows base c()
+  a <- m[1, 1]
+  b <- m[1, 2]
+  cc <- m[2, 1]
+  d <- m[2, 2]  # 'c' shadows base c()
   n1 <- a + b
   n2 <- cc + d
   p1 <- a / n1
@@ -394,8 +396,10 @@ morie_risk_difference_ci <- function(table_2x2, alpha = 0.05) {
   }
   ci1 <- wilson(a,  n1, z)
   ci2 <- wilson(cc, n2, z)
-  l1 <- ci1[1]; u1 <- ci1[2]
-  l2 <- ci2[1]; u2 <- ci2[2]
+  l1 <- ci1[1]
+  u1 <- ci1[2]
+  l2 <- ci2[1]
+  u2 <- ci2[2]
   delta_lo <- sqrt((p1 - l1)^2 + (u2 - p2)^2)
   delta_hi <- sqrt((u1 - p1)^2 + (p2 - l2)^2)
   list(

@@ -1051,7 +1051,8 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
                                      paste(parts, collapse = " + ")))
 
   rows <- list()
-  aic_pois <- NA_real_; aic_nb <- NA_real_
+  aic_pois <- NA_real_
+  aic_nb <- NA_real_
   estimands <- list()
 
   # Poisson + Negative Binomial (NB requires MASS).
@@ -2684,7 +2685,8 @@ morie_otis_analyze_d_chi2 <- function(datasets, out_dir = NULL) {
         yearly_payload[[as.character(yrs[i])]] <- n_i
       }
       if (length(yrs) >= 2L) {
-        first_y <- min(yrs); last_y <- max(yrs)
+        first_y <- min(yrs)
+        last_y <- max(yrs)
         n_first <- as.integer(tab[as.character(first_y)])
         n_last  <- as.integer(tab[as.character(last_y)])
         if (n_first > 0L) {
@@ -2869,7 +2871,9 @@ morie_otis_analyze_ruhela_grid <- function(datasets,
       for (row in tab_rows) {
         if (identical(as.character(row[1]), "NB") &&
             !identical(row[3], "fit failed")) {
-          primary <- row; primary_type <- "NB GLM"; break
+          primary <- row
+          primary_type <- "NB GLM"
+          break
         }
       }
     }
@@ -2877,7 +2881,9 @@ morie_otis_analyze_ruhela_grid <- function(datasets,
       for (row in tab_rows) {
         if (identical(as.character(row[1]), "Poisson") &&
             !identical(row[3], "fit failed")) {
-          primary <- row; primary_type <- "Poisson GLM"; break
+          primary <- row
+          primary_type <- "Poisson GLM"
+          break
         }
       }
     }

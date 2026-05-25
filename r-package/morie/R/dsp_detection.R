@@ -100,7 +100,8 @@ morie_dsp_zero_crossing <- function(x, frame_length = NULL) {
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.4.
 #' @export
 morie_dsp_template_match <- function(x, template, threshold = 0.7) {
-  x <- as.numeric(x); template <- as.numeric(template)
+  x <- as.numeric(x)
+  template <- as.numeric(template)
   n <- length(template)
   if (length(x) < n) return(list(indices = integer(0),
                                  correlations = numeric(0)))
@@ -145,9 +146,11 @@ morie_dsp_onset_detect <- function(x, fs, energy_window_ms = 20,
                                    names = FALSE),
                    .Machine$double.eps)
   thr <- baseline * threshold_factor
-  onsets <- integer(0); above <- FALSE
+  onsets <- integer(0)
+  above <- FALSE
   for (i in seq_along(energy)) {
-    if (!above && energy[i] > thr) { onsets <- c(onsets, i); above <- TRUE }
+    if (!above && energy[i] > thr) { onsets <- c(onsets, i)
+    above <- TRUE }
     else if (above && energy[i] < baseline) above <- FALSE
   }
   onsets
@@ -206,10 +209,12 @@ morie_dsp_hilbert_envelope <- function(x) {
     return(Mod(get("hilbert", envir = asNamespace("signal"))(x)))
   }
   # Pure-R fallback: build analytic signal in the FFT domain.
-  n <- length(x); X <- stats::fft(x)
+  n <- length(x)
+  X <- stats::fft(x)
   h <- numeric(n)
   if (n %% 2L == 0L) {
-    h[1L] <- 1; h[n / 2L + 1L] <- 1
+    h[1L] <- 1
+    h[n / 2L + 1L] <- 1
     h[2L:(n / 2L)] <- 2
   } else {
     h[1L] <- 1
@@ -324,7 +329,8 @@ morie_dsp_homomorphic <- function(x, cutoff = 0.1, fs = 1) {
   X <- stats::fft(log_x)
   half <- n %/% 2L + 1L
   freqs <- seq.int(0, half - 1L) * fs / n
-  H <- rep(1, half); H[freqs < cutoff] <- 0
+  H <- rep(1, half)
+  H[freqs < cutoff] <- 0
   Y_half <- X[seq_len(half)] * H
   if (n %% 2L == 0L) {
     full <- c(Y_half, Conj(rev(Y_half[2:(half - 1L)])))

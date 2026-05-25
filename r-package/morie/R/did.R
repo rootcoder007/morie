@@ -44,7 +44,8 @@ NULL
 .morie_did_ols_robust_se <- function(X, y, cluster_ids = NULL) {
   # OLS with heteroskedasticity- or cluster-robust (CR1) variance.
   # Returns list(beta, se).
-  n <- nrow(X); k <- ncol(X)
+  n <- nrow(X)
+  k <- ncol(X)
   XtX_inv <- tryCatch(solve(crossprod(X)),
                       error = function(e) MASS::ginv(crossprod(X)))
   beta <- as.numeric(XtX_inv %*% crossprod(X, y))
@@ -213,7 +214,8 @@ morie_did_repeated_cross_section <- function(data, outcome, treatment, post,
   y <- as.numeric(df[[outcome]])
   interaction <- d * p
   if (length(covariates)) {
-    Xc <- as.matrix(df[, covariates, drop = FALSE]); storage.mode(Xc) <- "double"
+    Xc <- as.matrix(df[, covariates, drop = FALSE])
+    storage.mode(Xc) <- "double"
     X <- .morie_did_add_intercept(cbind(d, p, interaction, Xc))
   } else {
     X <- .morie_did_add_intercept(cbind(d, p, interaction))
@@ -226,7 +228,8 @@ morie_did_repeated_cross_section <- function(data, outcome, treatment, post,
   cluster_ids <- if (!is.null(cluster)) df[[cluster]] else NULL
   fit <- .morie_did_ols_robust_se(X, y, cluster_ids = cluster_ids)
   tau_idx <- 4
-  est <- fit$beta[tau_idx]; se_est <- fit$se[tau_idx]
+  est <- fit$beta[tau_idx]
+  se_est <- fit$se[tau_idx]
   .morie_did_result(
     est, se_est,
     n_treated = sum(as.numeric(df[[treatment]]) == 1),
@@ -291,7 +294,8 @@ morie_did_panel_fe <- function(data, outcome, treatment, unit, time,
   colnames(X) <- c(treatment, covariates)
   cluster_ids <- if (!is.null(cluster)) df[[cluster]] else df[[unit]]
   fit <- .morie_did_ols_robust_se(X, y_dm, cluster_ids = cluster_ids)
-  est <- fit$beta[1]; se_est <- fit$se[1]
+  est <- fit$beta[1]
+  se_est <- fit$se[1]
   .morie_did_result(
     est, se_est,
     n_treated = sum(as.numeric(df[[treatment]]) == 1),
@@ -352,9 +356,11 @@ morie_did_event_study <- function(data, outcome, unit, time, treatment_time,
                  numeric(nrow(df)))
   cluster_ids <- if (!is.null(cluster)) df[[cluster]] else df[[unit]]
   fit <- .morie_did_ols_robust_se(X_dm, y_dm, cluster_ids = cluster_ids)
-  beta <- fit$beta; se <- fit$se
+  beta <- fit$beta
+  se <- fit$se
   coefs <- lapply(seq_along(periods), function(i) {
-    est_k <- beta[i]; se_k <- se[i]
+    est_k <- beta[i]
+    se_k <- se[i]
     ci <- if (is.finite(se_k)) .morie_did_make_ci(est_k, se_k, alpha) else c(NA, NA)
     p_k <- if (se_k > 0) .morie_did_pvalue(est_k / se_k) else NA_real_
     data.frame(relative_time = periods[i], estimate = est_k,
@@ -378,7 +384,8 @@ morie_did_event_study <- function(data, outcome, unit, time, treatment_time,
     f_stat <- chi2 / length(pre_idx)
     f_p    <- stats::pchisq(chi2, df = length(pre_idx), lower.tail = FALSE)
   } else {
-    f_stat <- NA_real_; f_p <- NA_real_
+    f_stat <- NA_real_
+    f_p <- NA_real_
   }
   list(
     coefficients      = coef_df,
@@ -445,7 +452,8 @@ morie_did_test_parallel_trends <- function(data, outcome, treatment, time,
   start_idx <- 1L + 1L + length(test_periods)
   coefs <- lapply(seq_along(test_periods), function(i) {
     idx <- start_idx + i
-    est_k <- fit$beta[idx]; se_k <- fit$se[idx]
+    est_k <- fit$beta[idx]
+    se_k <- fit$se[idx]
     t_k <- if (se_k > 0) est_k / se_k else 0
     data.frame(period = test_periods[i], estimate = est_k,
                std_error = se_k, t_stat = t_k,
@@ -643,7 +651,8 @@ morie_did_group_time_att <- function(data, outcome, unit, time, treatment_time,
     }
     fit_o <- stats::lm.fit(cbind(1, X_cov[treat_ind == 0, , drop = FALSE]),
                            y_d[treat_ind == 0])
-    b <- fit_o$coefficients; b[is.na(b)] <- 0
+    b <- fit_o$coefficients
+    b[is.na(b)] <- 0
     mu0 <- as.numeric(cbind(1, X_cov) %*% b)
     if (sum(treat_ind == 1) == 0) return(0)
     mean(y_d[treat_ind == 1] - mu0[treat_ind == 1])
@@ -828,7 +837,8 @@ morie_did_doubly_robust <- function(data, outcome, treatment, post,
   d <- as.numeric(df[[treatment]])
   p <- as.numeric(df[[post]])
   y <- as.numeric(df[[outcome]])
-  Xc <- as.matrix(df[, covariates, drop = FALSE]); storage.mode(Xc) <- "double"
+  Xc <- as.matrix(df[, covariates, drop = FALSE])
+  storage.mode(Xc) <- "double"
 
   dr_estimate <- function(d_v, p_v, y_v, X_v) {
     ps_vals <- if (identical(ps_model, "gbm")) {
@@ -867,7 +877,8 @@ morie_did_doubly_robust <- function(data, outcome, treatment, post,
                          n.trees = 50)
       } else {
         fit <- stats::lm.fit(cbind(1, X_v[mask, , drop = FALSE]), y_v[mask])
-        b <- fit$coefficients; b[is.na(b)] <- 0
+        b <- fit$coefficients
+        b[is.na(b)] <- 0
         as.numeric(cbind(1, X_v) %*% b)
       }
     }
@@ -882,7 +893,8 @@ morie_did_doubly_robust <- function(data, outcome, treatment, post,
       m_post <- d_v == 0 & p_v == 1
       m_pre  <- d_v == 0 & p_v == 0
       if (sum(m_post) && sum(m_pre)) {
-        w_post <- w[m_post]; w_pre <- w[m_pre]
+        w_post <- w[m_post]
+        w_pre <- w[m_pre]
         rp <- y_v[m_post] - mu0_post[m_post]
         rq <- y_v[m_pre]  - mu0_pre[m_pre]
         ipw_correction <- sum(w_post * rp) / max(sum(w_post), 1e-10) -
@@ -933,16 +945,18 @@ morie_did_triple_difference <- function(data, outcome, treatment, post,
   p <- as.numeric(df[[post]])
   s <- as.numeric(df[[third_diff]])
   y <- as.numeric(df[[outcome]])
-  parts <- cbind(d, p, s, d*p, d*s, p*s, d*p*s)
+  parts <- cbind(d, p, s, d * p, d * s, p * s, d * p * s)
   if (length(covariates)) {
-    Xc <- as.matrix(df[, covariates, drop = FALSE]); storage.mode(Xc) <- "double"
+    Xc <- as.matrix(df[, covariates, drop = FALSE])
+    storage.mode(Xc) <- "double"
     parts <- cbind(parts, Xc)
   }
   X <- .morie_did_add_intercept(parts)
   cluster_ids <- if (!is.null(cluster)) df[[cluster]] else NULL
   fit <- .morie_did_ols_robust_se(X, y, cluster_ids = cluster_ids)
   tau_idx <- 8L   # intercept(1) + 6 main/interaction terms + DDD(8)
-  est <- fit$beta[tau_idx]; se_est <- fit$se[tau_idx]
+  est <- fit$beta[tau_idx]
+  se_est <- fit$se[tau_idx]
   .morie_did_result(
     est, se_est,
     n_treated = sum(d == 1), n_control = sum(d == 0),
@@ -1007,8 +1021,10 @@ morie_did_bacon_decomposition <- function(data, outcome, treatment,
   simple_2x2 <- function(units_t, units_c, pre_p, post_p) {
     f <- function(units, pds)
       df[df[[unit]] %in% units & df[[time]] %in% pds, outcome, drop = TRUE]
-    t_pre  <- f(units_t, pre_p);  t_post <- f(units_t, post_p)
-    c_pre  <- f(units_c, pre_p);  c_post <- f(units_c, post_p)
+    t_pre  <- f(units_t, pre_p)
+    t_post <- f(units_t, post_p)
+    c_pre  <- f(units_c, pre_p)
+    c_post <- f(units_c, post_p)
     if (!length(t_pre) || !length(t_post) ||
         !length(c_pre) || !length(c_post)) return(NULL)
     (mean(t_post) - mean(t_pre)) - (mean(c_post) - mean(c_pre))
@@ -1017,7 +1033,8 @@ morie_did_bacon_decomposition <- function(data, outcome, treatment,
   if (length(group_keys) >= 2) {
     pairs <- utils::combn(group_keys, 2)
     for (idx in seq_len(ncol(pairs))) {
-      g_e <- pairs[1, idx]; g_l <- pairs[2, idx]
+      g_e <- pairs[1, idx]
+      g_l <- pairs[2, idx]
       pre_pds <- periods[periods < g_e]
       mid_pds <- periods[periods >= g_e & periods < g_l]
       if (length(pre_pds) && length(mid_pds)) {
@@ -1236,13 +1253,15 @@ morie_did_wild_cluster_bootstrap <- function(data, outcome, treatment, post,
   y <- as.numeric(df[[outcome]])
   interaction <- d * p
   if (length(covariates)) {
-    Xc <- as.matrix(df[, covariates, drop = FALSE]); storage.mode(Xc) <- "double"
+    Xc <- as.matrix(df[, covariates, drop = FALSE])
+    storage.mode(Xc) <- "double"
     X <- .morie_did_add_intercept(cbind(d, p, interaction, Xc))
   } else {
     X <- .morie_did_add_intercept(cbind(d, p, interaction))
   }
   cluster_ids <- df[[cluster]]
-  uc <- unique(cluster_ids); G <- length(uc)
+  uc <- unique(cluster_ids)
+  G <- length(uc)
   full <- .morie_did_ols_robust_se(X, y, cluster_ids = cluster_ids)
   tau_idx <- 4L
   t_full <- if (full$se[tau_idx] > 0) full$beta[tau_idx] / full$se[tau_idx] else 0
@@ -1265,7 +1284,8 @@ morie_did_wild_cluster_bootstrap <- function(data, outcome, treatment, post,
     boot_t[i] <- if (bfit$se[tau_idx] > 0) bfit$beta[tau_idx] / bfit$se[tau_idx] else 0
   }
   boot_p <- mean(abs(boot_t) >= abs(t_full))
-  est <- full$beta[tau_idx]; se_est <- full$se[tau_idx]
+  est <- full$beta[tau_idx]
+  se_est <- full$se[tau_idx]
   ci <- .morie_did_make_ci(est, se_est, alpha)
   list(
     estimate = est, std_error = se_est,
@@ -1301,14 +1321,16 @@ morie_did_continuous_treatment <- function(data, outcome, dose, post,
   y <- as.numeric(df[[outcome]])
   parts <- cbind(d, p, d * p)
   if (length(covariates)) {
-    Xc <- as.matrix(df[, covariates, drop = FALSE]); storage.mode(Xc) <- "double"
+    Xc <- as.matrix(df[, covariates, drop = FALSE])
+    storage.mode(Xc) <- "double"
     parts <- cbind(parts, Xc)
   }
   X <- .morie_did_add_intercept(parts)
   cluster_ids <- if (!is.null(cluster)) df[[cluster]] else NULL
   fit <- .morie_did_ols_robust_se(X, y, cluster_ids = cluster_ids)
   tau_idx <- 4L
-  est <- fit$beta[tau_idx]; se_est <- fit$se[tau_idx]
+  est <- fit$beta[tau_idx]
+  se_est <- fit$se[tau_idx]
   .morie_did_result(
     est, se_est,
     n_treated = sum(d > 0), n_control = sum(d == 0),
@@ -1336,12 +1358,16 @@ morie_did_fuzzy <- function(data, outcome, assignment, takeup, post,
                             covariates = NULL,
                             cluster = NULL, alpha = 0.05) {
   df <- .morie_did_drop_na(data, c(outcome, assignment, takeup, post))
-  z <- as.numeric(df[[assignment]]); d <- as.numeric(df[[takeup]])
-  p <- as.numeric(df[[post]]);       y <- as.numeric(df[[outcome]])
-  zp <- z * p; dp <- d * p
+  z <- as.numeric(df[[assignment]])
+  d <- as.numeric(df[[takeup]])
+  p <- as.numeric(df[[post]])
+  y <- as.numeric(df[[outcome]])
+  zp <- z * p
+  dp <- d * p
   exog <- cbind(z, p, d)
   if (length(covariates)) {
-    Xc <- as.matrix(df[, covariates, drop = FALSE]); storage.mode(Xc) <- "double"
+    Xc <- as.matrix(df[, covariates, drop = FALSE])
+    storage.mode(Xc) <- "double"
     exog <- cbind(exog, Xc)
   }
   X_exog <- .morie_did_add_intercept(exog)
@@ -1353,14 +1379,17 @@ morie_did_fuzzy <- function(data, outcome, assignment, takeup, post,
   cluster_ids <- if (!is.null(cluster)) df[[cluster]] else NULL
   fit <- .morie_did_ols_robust_se(X_second, y, cluster_ids = cluster_ids)
   tau_idx <- ncol(X_second)
-  est <- fit$beta[tau_idx]; se_est <- fit$se[tau_idx]
+  est <- fit$beta[tau_idx]
+  se_est <- fit$se[tau_idx]
   # First-stage F
   beta_red <- as.numeric(qr.coef(qr(X_exog), dp))
   beta_red[is.na(beta_red)] <- 0
   resid_r <- dp - as.numeric(X_exog %*% beta_red)
   resid_u <- dp - dp_hat
-  ssr_r <- sum(resid_r^2); ssr_u <- sum(resid_u^2)
-  n <- length(y); k <- ncol(X_first)
+  ssr_r <- sum(resid_r^2)
+  ssr_u <- sum(resid_u^2)
+  n <- length(y)
+  k <- ncol(X_first)
   f_stat <- if (ssr_u > 0)
     ((ssr_r - ssr_u) / 1) / (ssr_u / (n - k)) else 0
   res <- .morie_did_result(
@@ -1563,11 +1592,15 @@ morie_did_chaisemartin_dhaultfoeuille <- function(data, outcome, treatment,
                                                   seed = 42L, alpha = 0.05) {
   df <- data[order(data[[unit]], data[[time]]), , drop = FALSE]
   periods <- sort(unique(df[[time]]))
-  estimates <- c(); weights <- c()
+  estimates <- c()
+  weights <- c()
   for (t_idx in seq.int(2, length(periods))) {
-    t_cur <- periods[t_idx]; t_prev <- periods[t_idx - 1]
-    df_cur  <- df[df[[time]] == t_cur, ];  rownames(df_cur)  <- df_cur[[unit]]
-    df_prev <- df[df[[time]] == t_prev, ]; rownames(df_prev) <- df_prev[[unit]]
+    t_cur <- periods[t_idx]
+    t_prev <- periods[t_idx - 1]
+    df_cur  <- df[df[[time]] == t_cur, ]
+    rownames(df_cur)  <- df_cur[[unit]]
+    df_prev <- df[df[[time]] == t_prev, ]
+    rownames(df_prev) <- df_prev[[unit]]
     common <- intersect(df_cur[[unit]], df_prev[[unit]])
     if (!length(common)) next
     d_cur  <- as.numeric(df_cur[as.character(common), treatment])
@@ -1576,7 +1609,8 @@ morie_did_chaisemartin_dhaultfoeuille <- function(data, outcome, treatment,
     y_prev <- as.numeric(df_prev[as.character(common), outcome])
     switchers <- d_cur == 1 & d_prev == 0
     controls  <- d_cur == 0 & d_prev == 0
-    n_sw <- sum(switchers); n_ct <- sum(controls)
+    n_sw <- sum(switchers)
+    n_ct <- sum(controls)
     if (!n_sw || !n_ct) next
     delta_sw <- mean(y_cur[switchers] - y_prev[switchers])
     delta_ct <- mean(y_cur[controls]  - y_prev[controls])

@@ -52,7 +52,8 @@ morie_fairness_noisy_or_detection <- function(crime_xy, officer_xy,
   }
   if (radius <= 0) stop("radius must be positive")
 
-  n <- nrow(crime); m <- nrow(officer)
+  n <- nrow(crime)
+  m <- nrow(officer)
   if (m == 0L) {
     k <- integer(n)
   } else {

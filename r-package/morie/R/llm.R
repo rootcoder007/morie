@@ -30,10 +30,14 @@ GEMINI_BASE_URL <- "https://generativelanguage.googleapis.com/v1beta/openai"
 .morie_llm_ollama_base <- function() {
   sub("/+$", "", .morie_llm_env("OLLAMA_BASE_URL", DEFAULT_OLLAMA_BASE_URL))
 }
-.morie_llm_gemini_key  <- function() { v <- .morie_llm_env("GEMINI_API_KEY"); if (nzchar(v)) v else NULL }
-.morie_llm_openai_key  <- function() { v <- .morie_llm_env("OPENAI_API_KEY"); if (nzchar(v)) v else NULL }
-.morie_llm_api_base    <- function() { v <- .morie_llm_env("LLM_API_BASE_URL"); if (nzchar(v)) sub("/+$", "", v) else NULL }
-.morie_llm_api_key     <- function() { v <- .morie_llm_env("LLM_API_KEY"); if (nzchar(v)) v else NULL }
+.morie_llm_gemini_key  <- function() { v <- .morie_llm_env("GEMINI_API_KEY")
+if (nzchar(v)) v else NULL }
+.morie_llm_openai_key  <- function() { v <- .morie_llm_env("OPENAI_API_KEY")
+if (nzchar(v)) v else NULL }
+.morie_llm_api_base    <- function() { v <- .morie_llm_env("LLM_API_BASE_URL")
+if (nzchar(v)) sub("/+$", "", v) else NULL }
+.morie_llm_api_key     <- function() { v <- .morie_llm_env("LLM_API_KEY")
+if (nzchar(v)) v else NULL }
 .morie_llm_gemini_model <- function() .morie_llm_env("GEMINI_MODEL", DEFAULT_GEMINI_MODEL)
 
 #' Probe a local Ollama instance

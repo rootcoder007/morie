@@ -136,7 +136,8 @@ estimate_plr <- function(data, treatment, outcome, covariates,
       fit <- glmnet::cv.glmnet(X_train, z_train, alpha = 0)
       as.numeric(stats::predict(fit, newx = X_test, s = "lambda.min"))
     } else {
-      df_tr <- as.data.frame(X_train); df_tr$.z <- z_train
+      df_tr <- as.data.frame(X_train)
+      df_tr$.z <- z_train
       fit <- stats::lm(.z ~ ., data = df_tr)
       as.numeric(stats::predict(fit, newdata = as.data.frame(X_test)))
     }
@@ -312,8 +313,10 @@ estimate_ate_gcomputation <- function(data, treatment, outcome,
       mod <- stats::glm(stats::as.formula(paste0(outcome, " ~ .")),
                           data = df_fit, family = stats::binomial())
     }
-    X_t1 <- boot_df[, feature_cols, drop = FALSE]; X_t1[[treatment]] <- 1
-    X_t0 <- boot_df[, feature_cols, drop = FALSE]; X_t0[[treatment]] <- 0
+    X_t1 <- boot_df[, feature_cols, drop = FALSE]
+    X_t1[[treatment]] <- 1
+    X_t0 <- boot_df[, feature_cols, drop = FALSE]
+    X_t0[[treatment]] <- 0
     X_t1_s <- as.data.frame(sweep(sweep(X_t1, 2, means, "-"),
                                     2, sds, "/"))
     X_t0_s <- as.data.frame(sweep(sweep(X_t0, 2, means, "-"),

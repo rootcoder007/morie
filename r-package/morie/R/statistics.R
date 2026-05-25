@@ -95,18 +95,23 @@ print.morie_test_result <- function(x, ...) {
 }
 
 .cohens_d_ind <- function(x, y) {
-  nx <- length(x); ny <- length(y)
+  nx <- length(x)
+  ny <- length(y)
   sp <- sqrt(((nx - 1) * var(x) + (ny - 1) * var(y)) / (nx + ny - 2))
   if (sp == 0) return(0)
   (mean(x) - mean(y)) / sp
 }
 
 .cohens_d_one <- function(x, mu0) {
-  s <- sd(x); if (s == 0) return(0); (mean(x) - mu0) / s
+  s <- sd(x)
+  if (s == 0) return(0)
+  (mean(x) - mu0) / s
 }
 
 .cohens_d_paired <- function(d) {
-  s <- sd(d); if (s == 0) return(0); mean(d) / s
+  s <- sd(d)
+  if (s == 0) return(0)
+  mean(d) / s
 }
 
 .mean_ci <- function(x, confidence = 0.95) {
@@ -117,14 +122,16 @@ print.morie_test_result <- function(x, ...) {
 }
 
 .diff_ci <- function(x, y, confidence = 0.95, equal_var = TRUE) {
-  nx <- length(x); ny <- length(y)
+  nx <- length(x)
+  ny <- length(y)
   diff <- mean(x) - mean(y)
   if (equal_var) {
     sp2 <- ((nx - 1) * var(x) + (ny - 1) * var(y)) / (nx + ny - 2)
     se <- sqrt(sp2 * (1 / nx + 1 / ny))
     df_val <- nx + ny - 2
   } else {
-    s1 <- var(x); s2 <- var(y)
+    s1 <- var(x)
+    s2 <- var(y)
     se <- sqrt(s1 / nx + s2 / ny)
     num <- (s1 / nx + s2 / ny)^2
     denom <- (s1 / nx)^2 / (nx - 1) + (s2 / ny)^2 / (ny - 1)
@@ -146,7 +153,8 @@ print.morie_test_result <- function(x, ...) {
 #' @return A \code{morie_test_result}.
 #' @export
 one_sample_ttest <- function(x, mu0 = 0, confidence = 0.95) {
-  x <- .stat_validate(x); n <- length(x)
+  x <- .stat_validate(x)
+  n <- length(x)
   if (n < 2L) stop("Need at least 2 observations for a t-test.")
   tt <- stats::t.test(x, mu = mu0, conf.level = confidence)
   ci <- .mean_ci(x, confidence)
@@ -166,15 +174,18 @@ one_sample_ttest <- function(x, mu0 = 0, confidence = 0.95) {
 #' @param confidence Confidence level.
 #' @export
 two_sample_ttest <- function(x, y, equal_var = TRUE, confidence = 0.95) {
-  x <- .stat_validate(x); y <- .stat_validate(y)
+  x <- .stat_validate(x)
+  y <- .stat_validate(y)
   tt <- stats::t.test(x, y, var.equal = equal_var, conf.level = confidence)
   ci <- .diff_ci(x, y, confidence, equal_var)
-  nx <- length(x); ny <- length(y)
+  nx <- length(x)
+  ny <- length(y)
   if (equal_var) {
     df_val <- nx + ny - 2
     label <- "Two-sample t-test (equal var)"
   } else {
-    s1 <- var(x); s2 <- var(y)
+    s1 <- var(x)
+    s2 <- var(y)
     num <- (s1 / nx + s2 / ny)^2
     denom <- (s1 / nx)^2 / (nx - 1) + (s2 / ny)^2 / (ny - 1)
     df_val <- if (denom > 0) num / denom else 1
@@ -203,9 +214,11 @@ welch_ttest <- function(x, y, confidence = 0.95) {
 #' @param confidence Confidence level.
 #' @export
 paired_ttest <- function(x, y, confidence = 0.95) {
-  x <- .stat_validate(x); y <- .stat_validate(y)
+  x <- .stat_validate(x)
+  y <- .stat_validate(y)
   if (length(x) != length(y)) stop("Paired t-test requires equal-length vectors.")
-  d <- x - y; n <- length(d)
+  d <- x - y
+  n <- length(d)
   tt <- stats::t.test(x, y, paired = TRUE, conf.level = confidence)
   ci <- .mean_ci(d, confidence)
   .stat_result(
@@ -241,7 +254,8 @@ one_way_anova <- function(...) {
   ss_b <- sum(lengths(cleaned) * (vapply(cleaned, mean, 0) - grand)^2)
   ss_t <- sum((vals - grand)^2)
   eta2 <- if (ss_t > 0) ss_b / ss_t else 0
-  k <- length(cleaned); n_total <- length(vals)
+  k <- length(cleaned)
+  n_total <- length(vals)
   .stat_result(
     method = "One-way ANOVA",
     test_statistic = f_stat, p_value = p_val,
@@ -330,7 +344,8 @@ kruskal_wallis <- function(...) {
   vals <- unlist(cleaned)
   grp <- factor(rep(seq_along(cleaned), lengths(cleaned)))
   kt <- stats::kruskal.test(vals, grp)
-  k <- length(cleaned); n_total <- length(vals)
+  k <- length(cleaned)
+  n_total <- length(vals)
   h_stat <- unname(kt$statistic)
   eta2_h <- if ((n_total - k) > 0) (h_stat - k + 1) / (n_total - k) else 0
   .stat_result(
@@ -351,7 +366,8 @@ friedman_test <- function(...) {
     stop("Friedman test requires equal-length groups.")
   mat <- do.call(cbind, cleaned)
   fr <- stats::friedman.test(mat)
-  k <- length(cleaned); n <- ln[1]
+  k <- length(cleaned)
+  n <- ln[1]
   chi2 <- unname(fr$statistic)
   w <- if (n * (k - 1) > 0) chi2 / (n * (k - 1)) else 0
   .stat_result(
@@ -396,7 +412,8 @@ chi2_goodness_of_fit <- function(observed, expected = NULL) {
 chi2_independence <- function(contingency_table, correction = TRUE) {
   tab <- as.matrix(contingency_table)
   ct <- suppressWarnings(stats::chisq.test(tab, correct = correction))
-  n <- sum(tab); k <- min(dim(tab)) - 1
+  n <- sum(tab)
+  k <- min(dim(tab)) - 1
   v <- if (n * k > 0) sqrt(unname(ct$statistic) / (n * k)) else 0
   .stat_result(
     method = "Chi-squared test of independence",
@@ -414,12 +431,15 @@ chi2_independence <- function(contingency_table, correction = TRUE) {
 mcnemar_test <- function(contingency_table, exact = FALSE) {
   tab <- as.matrix(contingency_table)
   if (!all(dim(tab) == c(2, 2))) stop("McNemar test requires a 2x2 table.")
-  b <- tab[1, 2]; c <- tab[2, 1]; n <- sum(tab)
+  b <- tab[1, 2]
+  c <- tab[2, 1]
+  n <- sum(tab)
   if (exact) {
     if ((b + c) > 0) {
       p <- stats::binom.test(min(b, c), b + c, 0.5)$p.value
       chi2 <- b + c
-    } else { p <- 1; chi2 <- 0 }
+    } else { p <- 1
+    chi2 <- 0 }
   } else {
     chi2 <- if ((b + c) > 0) (abs(b - c) - 1)^2 / (b + c) else 0
     p <- if ((b + c) > 0) 1 - stats::pchisq(chi2, 1) else 1
@@ -435,11 +455,14 @@ mcnemar_test <- function(contingency_table, exact = FALSE) {
 #' @export
 cochrans_q <- function(...) {
   groups <- lapply(list(...), as.numeric)
-  n <- length(groups[[1]]); k <- length(groups)
+  n <- length(groups[[1]])
+  k <- length(groups)
   if (any(vapply(groups, length, 0L) != n))
     stop("All groups must have the same length.")
   mat <- do.call(cbind, groups)
-  rs <- rowSums(mat); cs <- colSums(mat); T_tot <- sum(mat)
+  rs <- rowSums(mat)
+  cs <- colSums(mat)
+  T_tot <- sum(mat)
   num <- (k - 1) * (k * sum(cs^2) - T_tot^2)
   denom <- k * T_tot - sum(rs^2)
   q <- if (denom > 0) num / denom else 0
@@ -467,9 +490,11 @@ cochrans_q <- function(...) {
 #' @param confidence Confidence level.
 #' @export
 pearson_correlation <- function(x, y, confidence = 0.95) {
-  x <- .stat_validate(x); y <- .stat_validate(y)
+  x <- .stat_validate(x)
+  y <- .stat_validate(y)
   n <- min(length(x), length(y))
-  x <- x[seq_len(n)]; y <- y[seq_len(n)]
+  x <- x[seq_len(n)]
+  y <- y[seq_len(n)]
   ct <- stats::cor.test(x, y, method = "pearson", conf.level = confidence)
   r <- unname(ct$estimate)
   ci <- .fisher_z_ci(r, n, confidence)
@@ -485,9 +510,11 @@ pearson_correlation <- function(x, y, confidence = 0.95) {
 #' @inheritParams pearson_correlation
 #' @export
 spearman_correlation <- function(x, y, confidence = 0.95) {
-  x <- .stat_validate(x); y <- .stat_validate(y)
+  x <- .stat_validate(x)
+  y <- .stat_validate(y)
   n <- min(length(x), length(y))
-  x <- x[seq_len(n)]; y <- y[seq_len(n)]
+  x <- x[seq_len(n)]
+  y <- y[seq_len(n)]
   ct <- suppressWarnings(stats::cor.test(x, y, method = "spearman"))
   rho <- unname(ct$estimate)
   ci <- .fisher_z_ci(rho, n, confidence)
@@ -503,9 +530,11 @@ spearman_correlation <- function(x, y, confidence = 0.95) {
 #' @inheritParams pearson_correlation
 #' @export
 kendall_correlation <- function(x, y) {
-  x <- .stat_validate(x); y <- .stat_validate(y)
+  x <- .stat_validate(x)
+  y <- .stat_validate(y)
   n <- min(length(x), length(y))
-  x <- x[seq_len(n)]; y <- y[seq_len(n)]
+  x <- x[seq_len(n)]
+  y <- y[seq_len(n)]
   ct <- suppressWarnings(stats::cor.test(x, y, method = "kendall"))
   tau <- unname(ct$estimate)
   .stat_result(
@@ -521,9 +550,11 @@ kendall_correlation <- function(x, y) {
 #' @param confidence Confidence level.
 #' @export
 point_biserial_correlation <- function(binary, continuous, confidence = 0.95) {
-  b <- .stat_validate(binary); c <- .stat_validate(continuous)
+  b <- .stat_validate(binary)
+  c <- .stat_validate(continuous)
   n <- min(length(b), length(c))
-  b <- b[seq_len(n)]; c <- c[seq_len(n)]
+  b <- b[seq_len(n)]
+  c <- c[seq_len(n)]
   if (length(unique(b)) != 2L)
     stop("Binary variable must have exactly 2 unique values.")
   ct <- stats::cor.test(b, c)
@@ -543,17 +574,21 @@ point_biserial_correlation <- function(binary, continuous, confidence = 0.95) {
 #' @param confidence Confidence level.
 #' @export
 partial_correlation <- function(x, y, covariates, confidence = 0.95) {
-  x <- .stat_validate(x); y <- .stat_validate(y)
+  x <- .stat_validate(x)
+  y <- .stat_validate(y)
   Z <- as.matrix(covariates)
   if (is.null(dim(Z))) Z <- matrix(Z, ncol = 1)
   n <- min(length(x), length(y), nrow(Z))
-  x <- x[seq_len(n)]; y <- y[seq_len(n)]; Z <- Z[seq_len(n), , drop = FALSE]
+  x <- x[seq_len(n)]
+  y <- y[seq_len(n)]
+  Z <- Z[seq_len(n), , drop = FALSE]
   res_x <- stats::residuals(stats::lm.fit(cbind(1, Z), x))
   res_y <- stats::residuals(stats::lm.fit(cbind(1, Z), y))
   ct <- stats::cor.test(res_x, res_y)
   r <- unname(ct$estimate)
   df_val <- n - 2 - ncol(Z)
-  z <- atanh(r); se <- if (df_val > 0) 1 / sqrt(df_val) else Inf
+  z <- atanh(r)
+  se <- if (df_val > 0) 1 / sqrt(df_val) else Inf
   zcrit <- stats::qnorm((1 + confidence) / 2)
   .stat_result(
     method = "Partial correlation",
@@ -568,11 +603,14 @@ partial_correlation <- function(x, y, covariates, confidence = 0.95) {
 #' @inheritParams partial_correlation
 #' @export
 semi_partial_correlation <- function(x, y, covariates) {
-  x <- .stat_validate(x); y <- .stat_validate(y)
+  x <- .stat_validate(x)
+  y <- .stat_validate(y)
   Z <- as.matrix(covariates)
   if (is.null(dim(Z))) Z <- matrix(Z, ncol = 1)
   n <- min(length(x), length(y), nrow(Z))
-  x <- x[seq_len(n)]; y <- y[seq_len(n)]; Z <- Z[seq_len(n), , drop = FALSE]
+  x <- x[seq_len(n)]
+  y <- y[seq_len(n)]
+  Z <- Z[seq_len(n), , drop = FALSE]
   res_x <- stats::residuals(stats::lm.fit(cbind(1, Z), x))
   ct <- stats::cor.test(res_x, y)
   r <- unname(ct$estimate)
@@ -594,9 +632,12 @@ semi_partial_correlation <- function(x, y, covariates) {
 #' @export
 mann_whitney_u <- function(x, y, alternative = "two.sided") {
   alternative <- sub("-", ".", alternative, fixed = TRUE)
-  x <- .stat_validate(x); y <- .stat_validate(y)
+  x <- .stat_validate(x)
+  y <- .stat_validate(y)
   wt <- suppressWarnings(stats::wilcox.test(x, y, alternative = alternative))
-  u <- unname(wt$statistic); nx <- length(x); ny <- length(y)
+  u <- unname(wt$statistic)
+  nx <- length(x)
+  ny <- length(y)
   r_rb <- if (nx * ny > 0) 1 - 2 * u / (nx * ny) else 0
   .stat_result(
     method = "Mann-Whitney U test",
@@ -651,7 +692,8 @@ ks_test_one_sample <- function(x, cdf = "pnorm", args = list()) {
 #' @inheritParams pearson_correlation
 #' @export
 ks_test_two_sample <- function(x, y) {
-  x <- .stat_validate(x); y <- .stat_validate(y)
+  x <- .stat_validate(x)
+  y <- .stat_validate(y)
   kt <- suppressWarnings(stats::ks.test(x, y))
   .stat_result(
     method = "KS test (2-sample)",
@@ -672,10 +714,12 @@ ks_test_two_sample <- function(x, y) {
 #' @export
 anderson_darling <- function(x, dist = "norm") {
   x <- .stat_validate(x)
-  stat <- NA_real_; p <- NA_real_
+  stat <- NA_real_
+  p <- NA_real_
   if (dist == "norm" && requireNamespace("nortest", quietly = TRUE)) {
     res <- nortest::ad.test(x)
-    stat <- unname(res$statistic); p <- res$p.value
+    stat <- unname(res$statistic)
+    p <- res$p.value
   } else {
     # Compute statistic manually for normal; p approximate
     n <- length(x)
@@ -708,7 +752,8 @@ levene_test <- function(..., center = "median") {
   z <- abs(vals - centres[as.integer(grp)])
   fit <- stats::aov(z ~ grp)
   s <- summary(fit)[[1L]]
-  k <- length(cleaned); n_total <- length(vals)
+  k <- length(cleaned)
+  n_total <- length(vals)
   .stat_result(
     method = sprintf("Levene's test (center=%s)", center),
     test_statistic = s[["F value"]][1],
@@ -739,10 +784,12 @@ bartlett_test <- function(...) {
 #' @param cutoff Cut-off (median by default).
 #' @export
 runs_test <- function(x, cutoff = NULL) {
-  x <- .stat_validate(x); n <- length(x)
+  x <- .stat_validate(x)
+  n <- length(x)
   if (is.null(cutoff)) cutoff <- stats::median(x)
   binary <- as.integer(x >= cutoff)
-  n1 <- sum(binary); n0 <- n - n1
+  n1 <- sum(binary)
+  n0 <- n - n1
   if (n1 == 0 || n0 == 0)
     return(.stat_result("Runs test", 0, 1, n = n))
   runs <- 1L + sum(diff(binary) != 0L)
@@ -784,7 +831,8 @@ shapiro_wilk <- function(x) {
 #' @param x Numeric vector.
 #' @export
 dagostino_pearson <- function(x) {
-  x <- .stat_validate(x); n <- length(x)
+  x <- .stat_validate(x)
+  n <- length(x)
   if (n < 8L)
     return(.stat_result("D'Agostino-Pearson test", NA, NA, df = 2, n = n))
   # Skewness Z (D'Agostino 1970)
@@ -820,8 +868,10 @@ dagostino_pearson <- function(x) {
 #' @param x Numeric vector.
 #' @export
 jarque_bera <- function(x) {
-  x <- .stat_validate(x); n <- length(x)
-  m <- mean(x); s <- sd(x)
+  x <- .stat_validate(x)
+  n <- length(x)
+  m <- mean(x)
+  s <- sd(x)
   if (s == 0)
     return(.stat_result("Jarque-Bera test", 0, 1, df = 2, n = n))
   skew <- mean((x - m)^3) / s^3
@@ -845,10 +895,12 @@ lilliefors_test <- function(x) {
   x <- .stat_validate(x)
   if (requireNamespace("nortest", quietly = TRUE)) {
     res <- nortest::lillie.test(x)
-    stat <- unname(res$statistic); p <- res$p.value
+    stat <- unname(res$statistic)
+    p <- res$p.value
   } else {
     kt <- suppressWarnings(stats::ks.test(x, "pnorm", mean(x), sd(x)))
-    stat <- unname(kt$statistic); p <- kt$p.value
+    stat <- unname(kt$statistic)
+    p <- kt$p.value
     warning("nortest not available; Lilliefors p-value approximate (plain KS).")
   }
   .stat_result(
@@ -942,7 +994,8 @@ fisher_exact_test <- function(contingency_table, alternative = "two.sided") {
 #' @param confidence Confidence level.
 #' @export
 cohens_kappa <- function(rater1, rater2, confidence = 0.95) {
-  r1 <- as.vector(rater1); r2 <- as.vector(rater2)
+  r1 <- as.vector(rater1)
+  r2 <- as.vector(rater2)
   if (length(r1) != length(r2))
     stop("Raters must have the same number of observations.")
   n <- length(r1)
@@ -953,7 +1006,8 @@ cohens_kappa <- function(rater1, rater2, confidence = 0.95) {
   for (i in seq_along(r1)) mat[idx(r1[i]), idx(r2[i])] <-
     mat[idx(r1[i]), idx(r2[i])] + 1
   p_o <- sum(diag(mat)) / n
-  rs <- rowSums(mat) / n; cs <- colSums(mat) / n
+  rs <- rowSums(mat) / n
+  cs <- colSums(mat) / n
   p_e <- sum(rs * cs)
   kap <- if ((1 - p_e) > 0) (p_o - p_e) / (1 - p_e) else 0
   se <- if ((1 - p_e) > 0 && n > 0) sqrt(p_e / (n * (1 - p_e)^2)) else 0
@@ -975,7 +1029,8 @@ cohens_kappa <- function(rater1, rater2, confidence = 0.95) {
 #' @export
 fleiss_kappa <- function(ratings_matrix) {
   tab <- as.matrix(ratings_matrix)
-  n <- nrow(tab); k <- ncol(tab)
+  n <- nrow(tab)
+  k <- ncol(tab)
   N_raters <- sum(tab[1, ])
   p_j <- colSums(tab) / (n * N_raters)
   P_i <- (rowSums(tab^2) - N_raters) / (N_raters * (N_raters - 1))
@@ -1010,8 +1065,11 @@ intraclass_correlation <- function(data, targets, raters, ratings,
                          direction = "wide", v.names = ratings)
   wide <- stats::na.omit(wide)
   Y <- as.matrix(wide[, grep(paste0("^", ratings, "\\."), names(wide))])
-  n <- nrow(Y); k <- ncol(Y)
-  gm <- mean(Y); rm_ <- rowMeans(Y); cm <- colMeans(Y)
+  n <- nrow(Y)
+  k <- ncol(Y)
+  gm <- mean(Y)
+  rm_ <- rowMeans(Y)
+  cm <- colMeans(Y)
   ss_total <- sum((Y - gm)^2)
   ss_rows <- k * sum((rm_ - gm)^2)
   ss_cols <- n * sum((cm - gm)^2)
@@ -1033,7 +1091,8 @@ intraclass_correlation <- function(data, targets, raters, ratings,
     "ICC3k" = if (ms_rows > 0) (ms_rows - ms_error) / ms_rows else 0,
     stop(sprintf("Unknown ICC type: %s", icc_type)))
   f_stat <- if (ms_error > 0) ms_rows / ms_error else 0
-  df1 <- n - 1; df2 <- (n - 1) * (k - 1)
+  df1 <- n - 1
+  df2 <- (n - 1) * (k - 1)
   p_val <- 1 - stats::pf(f_stat, df1, df2)
   .stat_result(
     method = sprintf("Intraclass correlation (%s)", icc_type),
@@ -1054,7 +1113,8 @@ intraclass_correlation <- function(data, targets, raters, ratings,
 #' @return A list of \code{morie_test_result}.
 #' @export
 normality_suite <- function(x) {
-  x <- .stat_validate(x); out <- list()
+  x <- .stat_validate(x)
+  out <- list()
   if (length(x) >= 3L && length(x) <= 5000L)
     out <- c(out, list(shapiro_wilk(x)))
   if (length(x) >= 20L) out <- c(out, list(dagostino_pearson(x)))
@@ -1078,11 +1138,14 @@ variance_equality_suite <- function(...) {
 #' @export
 correlation_matrix <- function(data, method = "pearson") {
   num <- data[, vapply(data, is.numeric, logical(1)), drop = FALSE]
-  cols <- names(num); n <- length(cols)
+  cols <- names(num)
+  n <- length(cols)
   r_mat <- matrix(0, n, n, dimnames = list(cols, cols))
   p_mat <- matrix(0, n, n, dimnames = list(cols, cols))
   for (i in seq_len(n)) for (j in seq(i, n)) {
-    if (i == j) { r_mat[i, j] <- 1; p_mat[i, j] <- 0; next }
+    if (i == j) { r_mat[i, j] <- 1
+    p_mat[i, j] <- 0
+    next }
     valid <- stats::complete.cases(num[, c(i, j)])
     ct <- suppressWarnings(stats::cor.test(
       num[valid, i], num[valid, j], method = method))

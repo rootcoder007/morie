@@ -772,22 +772,26 @@ morie_matching_optimal_pair <- function(data, treatment, covariates,
     }
   }
 
-  n_t <- length(treated_idx); n_c <- length(control_idx)
+  n_t <- length(treated_idx)
+  n_c <- length(control_idx)
   n_pairs <- min(n_t, n_c)
   # Greedy sort
   flat <- expand.grid(i = seq_len(n_t), j = seq_len(n_c), KEEP.OUT.ATTRS = FALSE)
   flat$d <- as.numeric(dist_matrix[cbind(flat$i, flat$j)])
   flat <- flat[order(flat$d), , drop = FALSE]
-  used_t <- integer(0); used_c <- integer(0)
+  used_t <- integer(0)
+  used_c <- integer(0)
   recs <- list()
   for (k in seq_len(nrow(flat))) {
-    i <- flat$i[k]; j <- flat$j[k]
+    i <- flat$i[k]
+    j <- flat$j[k]
     if (i %in% used_t || j %in% used_c) next
     recs[[length(recs) + 1L]] <- data.frame(
       treated_idx = treated_idx[i], control_idx = control_idx[j],
       distance = flat$d[k], stringsAsFactors = FALSE
     )
-    used_t <- c(used_t, i); used_c <- c(used_c, j)
+    used_t <- c(used_t, i)
+    used_c <- c(used_c, j)
     if (length(recs) >= n_pairs) break
   }
   match_df <- if (length(recs)) do.call(rbind, recs) else .morie_matching_empty_pairs()
@@ -1036,7 +1040,8 @@ morie_matching_entropy_balance <- function(data, treatment, covariates,
   c_mask <- df[[treatment]] == 0
   X_t <- as.matrix(df[t_mask, covariates, drop = FALSE])
   X_c <- as.matrix(df[c_mask, covariates, drop = FALSE])
-  storage.mode(X_t) <- "double"; storage.mode(X_c) <- "double"
+  storage.mode(X_t) <- "double"
+  storage.mode(X_c) <- "double"
   n_c <- nrow(X_c)
 
   targets <- numeric(0)
@@ -1440,7 +1445,8 @@ morie_matching_balance <- function(data, treatment, covariates,
       var_t <- stats::weighted.mean((t_vals - mean_t)^2, w_t)
       var_c <- stats::weighted.mean((c_vals - mean_c)^2, w_c)
     } else {
-      mean_t <- mean(t_vals); mean_c <- mean(c_vals)
+      mean_t <- mean(t_vals)
+      mean_c <- mean(c_vals)
       var_t <- if (length(t_vals) > 1L) stats::var(t_vals) else 0
       var_c <- if (length(c_vals) > 1L) stats::var(c_vals) else 0
     }
@@ -1655,7 +1661,8 @@ morie_matching_ate_matched <- function(data, outcome, treatment, covariates,
     n_eff_c <- sum(w_c)^2 / sum(w_c^2)
     se <- sqrt(var_t / n_eff_t + var_c / n_eff_c)
   } else {
-    mean_t <- mean(y_t); mean_c <- mean(y_c)
+    mean_t <- mean(y_t)
+    mean_c <- mean(y_c)
     se <- sqrt(stats::var(y_t) / length(y_t) + stats::var(y_c) / length(y_c))
   }
   ate <- mean_t - mean_c
@@ -1735,7 +1742,8 @@ morie_matching_abadie_imbens_se <- function(data, outcome, treatment,
     t_id <- match_pairs$treated_idx[k]
     c_id <- match_pairs$control_idx[k]
     if (t_id %in% names(idx_to_pos) && c_id %in% names(idx_to_pos)) {
-      tp <- idx_to_pos[[t_id]]; cp <- idx_to_pos[[c_id]]
+      tp <- idx_to_pos[[t_id]]
+      cp <- idx_to_pos[[c_id]]
       diff2 <- (y[tp] - y[cp])^2 / 2
       sigma2[tp] <- diff2
       sigma2[cp] <- diff2
@@ -2100,7 +2108,8 @@ morie_matching_quality <- function(unmatched_data, matched_data,
                          bal_after$balance_table$covariate)
   bias_reduction <- setNames(rep(NA_real_, length(covariates)), covariates)
   for (c in covariates) {
-    b <- as.numeric(smd_before[c]); a <- as.numeric(smd_after[c])
+    b <- as.numeric(smd_before[c])
+    a <- as.numeric(smd_after[c])
     if (!is.na(b) && b > 0 && !is.na(a)) {
       bias_reduction[c] <- (1 - a / b) * 100
     }

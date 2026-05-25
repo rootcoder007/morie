@@ -97,8 +97,10 @@ effect_size_result <- function(measure, estimate,
 #' @return A `morie_effect_size`.
 #' @export
 cohens_d <- function(x, y, confidence = 0.95) {
-  x <- .arr(x); y <- .arr(y)
-  nx <- length(x); ny <- length(y)
+  x <- .arr(x)
+  y <- .arr(y)
+  nx <- length(x)
+  ny <- length(y)
   if (nx < 2L || ny < 2L) {
     stop("cohens_d: need at least 2 finite observations per group; ",
          "got nx=", nx, ", ny=", ny, call. = FALSE)
@@ -119,7 +121,8 @@ cohens_d <- function(x, y, confidence = 0.95) {
 #' @return A `morie_effect_size`.
 #' @export
 hedges_g <- function(x, y, confidence = 0.95) {
-  x <- .arr(x); y <- .arr(y)
+  x <- .arr(x)
+  y <- .arr(y)
   d_res <- cohens_d(x, y, confidence)
   df_val <- length(x) + length(y) - 2
   J <- if (df_val > 1) 1 - 3 / (4 * df_val - 1) else 1
@@ -138,7 +141,8 @@ hedges_g <- function(x, y, confidence = 0.95) {
 #' @return A `morie_effect_size`.
 #' @export
 glass_delta <- function(x, y, control = "y", confidence = 0.95) {
-  x <- .arr(x); y <- .arr(y)
+  x <- .arr(x)
+  y <- .arr(y)
   ctrl <- if (control == "y") y else x
   sd_ctrl <- sd(ctrl)
   delta <- if (sd_ctrl > 0) (mean(x) - mean(y)) / sd_ctrl else 0
@@ -162,8 +166,10 @@ glass_delta <- function(x, y, control = "y", confidence = 0.95) {
 #' @return A `morie_effect_size`.
 #' @export
 cles <- function(x, y, confidence = 0.95) {
-  x <- .arr(x); y <- .arr(y)
-  nx <- length(x); ny <- length(y)
+  x <- .arr(x)
+  y <- .arr(y)
+  nx <- length(x)
+  ny <- length(y)
   diff_mat <- outer(x, y, "-")
   count <- sum(diff_mat > 0)
   ties  <- sum(diff_mat == 0)
@@ -187,9 +193,11 @@ cles <- function(x, y, confidence = 0.95) {
 #' @return A `morie_effect_size`.
 #' @export
 r_effect_size <- function(x, y, confidence = 0.95) {
-  x <- .arr(x); y <- .arr(y)
+  x <- .arr(x)
+  y <- .arr(y)
   n <- min(length(x), length(y))
-  x <- x[seq_len(n)]; y <- y[seq_len(n)]
+  x <- x[seq_len(n)]
+  y <- y[seq_len(n)]
   r <- cor(x, y)
   z_r <- atanh(r)
   se_z <- if (n > 3) 1 / sqrt(n - 3) else Inf
@@ -318,7 +326,8 @@ risk_ratio <- function(a, b, c, d, confidence = 0.95) {
 #' @return A `morie_effect_size`.
 #' @export
 risk_difference <- function(a, b, c, d, confidence = 0.95) {
-  n1 <- a + b; n2 <- c + d
+  n1 <- a + b
+  n2 <- c + d
   p1 <- if (n1 > 0) a / n1 else 0
   p2 <- if (n2 > 0) c / n2 else 0
   rd <- p1 - p2
@@ -484,11 +493,13 @@ phi_coefficient <- function(contingency_table) {
 #' @return A `morie_effect_size`.
 #' @export
 rank_biserial_correlation <- function(x, y, confidence = 0.95) {
-  x <- .arr(x); y <- .arr(y)
+  x <- .arr(x)
+  y <- .arr(y)
   u <- suppressWarnings(
     wilcox.test(x, y, alternative = "two.sided", exact = FALSE)$statistic
   )
-  nx <- length(x); ny <- length(y)
+  nx <- length(x)
+  ny <- length(y)
   r <- if (nx * ny > 0) 1 - 2 * u / (nx * ny) else 0
   boot <- .bootstrap_ci(
     function(a, b) {
@@ -509,8 +520,10 @@ rank_biserial_correlation <- function(x, y, confidence = 0.95) {
 #' @return A `morie_effect_size`.
 #' @export
 cliffs_delta <- function(x, y, confidence = 0.95) {
-  x <- .arr(x); y <- .arr(y)
-  nx <- length(x); ny <- length(y)
+  x <- .arr(x)
+  y <- .arr(y)
+  nx <- length(x)
+  ny <- length(y)
   diff_mat <- outer(x, y, "-")
   greater <- sum(diff_mat > 0)
   less    <- sum(diff_mat < 0)
@@ -531,10 +544,12 @@ cliffs_delta <- function(x, y, confidence = 0.95) {
 #' @return A `morie_effect_size`.
 #' @export
 vargha_delaney_a <- function(x, y, confidence = 0.95) {
-  x <- .arr(x); y <- .arr(y)
+  x <- .arr(x)
+  y <- .arr(y)
   u <- as.numeric(suppressWarnings(
     wilcox.test(x, y, alternative = "two.sided", exact = FALSE)$statistic))
-  nx <- length(x); ny <- length(y)
+  nx <- length(x)
+  ny <- length(y)
   a_val <- if (nx * ny > 0) u / (nx * ny) else 0.5
   boot <- .bootstrap_ci(
     function(a, b) {
@@ -599,7 +614,8 @@ standardized_coefficients <- function(X, y) {
 #' @export
 coefficient_of_variation <- function(x) {
   x <- .arr(x)
-  m <- mean(x); s <- sd(x)
+  m <- mean(x)
+  s <- sd(x)
   cv <- if (abs(m) > 0) s / abs(m) else Inf
   effect_size_result("Coefficient of variation", cv, n = length(x))
 }
@@ -611,10 +627,13 @@ coefficient_of_variation <- function(x) {
 #' @return A `morie_effect_size`.
 #' @export
 variance_ratio <- function(x, y, confidence = 0.95) {
-  x <- .arr(x); y <- .arr(y)
-  v1 <- var(x); v2 <- var(y)
+  x <- .arr(x)
+  y <- .arr(y)
+  v1 <- var(x)
+  v2 <- var(y)
   f_val <- if (v2 > 0) v1 / v2 else Inf
-  df1 <- length(x) - 1; df2 <- length(y) - 1
+  df1 <- length(x) - 1
+  df2 <- length(y) - 1
   alpha <- (1 - confidence) / 2
   ci_lo <- f_val / qf(1 - alpha, df1, df2)
   ci_hi <- f_val / qf(alpha, df1, df2)

@@ -2,14 +2,18 @@
 .morie_cihi_pick_data_sheet <- function(path, ...) {
   morie_ensure_extras("readxl")
   sheets <- readxl::excel_sheets(path)
-  best_df <- NULL; best_cells <- -1L; best_name <- sheets[1L]
+  best_df <- NULL
+  best_cells <- -1L
+  best_name <- sheets[1L]
   for (nm in sheets) {
     df <- tryCatch(as.data.frame(readxl::read_excel(path, sheet = nm, ...)),
                     error = function(e) NULL)
     if (is.null(df)) next
     cells <- as.integer(nrow(df)) * as.integer(ncol(df))
     if (!is.na(cells) && cells > best_cells) {
-      best_name <- nm; best_df <- df; best_cells <- cells
+      best_name <- nm
+      best_df <- df
+      best_cells <- cells
     }
   }
   if (is.null(best_df)) stop("No readable sheets found in CIHI workbook: ", path, call. = FALSE)

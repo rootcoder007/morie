@@ -106,7 +106,8 @@
       i <- i + 1L
     }
   }
-  out <- numeric(n); pos <- 1L
+  out <- numeric(n)
+  pos <- 1L
   for (k in seq_along(blk_val)) {
     sz <- blk_sz[[k]]
     out[pos:(pos + sz - 1L)] <- blk_val[[k]]
@@ -158,7 +159,8 @@ morie_spatial_voting_aldrich_mckelvey <- function(Z,
                                                   max_iter = 100L,
                                                   tol      = 1e-6) {
   Z <- .sv_as_matrix(Z)
-  n_resp <- nrow(Z); n_stim <- ncol(Z)
+  n_resp <- nrow(Z)
+  n_stim <- ncol(Z)
 
   if (requireNamespace("basicspace", quietly = TRUE)) {
     out <- try(basicspace::aldmck(Z,
@@ -186,14 +188,16 @@ morie_spatial_voting_aldrich_mckelvey <- function(Z,
     zhat <- (zhat - mean(zhat, na.rm = TRUE)) /
             stats::sd(zhat, na.rm = TRUE)
   }
-  alpha <- numeric(n_resp); beta <- numeric(n_resp)
+  alpha <- numeric(n_resp)
+  beta <- numeric(n_resp)
   iter <- 0L
   for (iter in seq_len(max_iter)) {
     zhat_old <- zhat
     for (i in seq_len(n_resp)) {
       valid <- mask[i, ]
       if (sum(valid) < 2L) {
-        alpha[i] <- 0; beta[i] <- 1
+        alpha[i] <- 0
+        beta[i] <- 1
         next
       }
       zi <- Z[i, valid]
@@ -253,7 +257,8 @@ morie_spatial_voting_aldrich_mckelvey <- function(Z,
 #' @export
 morie_spatial_voting_blackbox <- function(X, n_dims = 2L) {
   X <- .sv_as_matrix(X)
-  n <- nrow(X); p <- ncol(X)
+  n <- nrow(X)
+  p <- ncol(X)
 
   if (requireNamespace("basicspace", quietly = TRUE)) {
     out <- try(basicspace::blackbox(X, missing = NA, dims = n_dims,
@@ -324,7 +329,8 @@ morie_spatial_voting_optimal_classification <- function(votes,
                                                         n_restarts = 10L,
                                                         seed       = 42L) {
   votes <- .sv_as_matrix(votes)
-  n_leg <- nrow(votes); n_vote <- ncol(votes)
+  n_leg <- nrow(votes)
+  n_vote <- ncol(votes)
   set.seed(seed)
   best_errors <- Inf
   best_result <- NULL
@@ -336,7 +342,8 @@ morie_spatial_voting_optimal_classification <- function(votes,
       for (j in seq_len(n_vote)) {
         v_j <- votes[, j]
         valid <- !is.na(v_j)
-        yea <- v_j == 1 & valid; nay <- v_j == 0 & valid
+        yea <- v_j == 1 & valid
+        nay <- v_j == 0 & valid
         if (sum(yea, na.rm = TRUE) == 0L || sum(nay, na.rm = TRUE) == 0L) next
         yea_mean <- colMeans(x[which(yea), , drop = FALSE])
         nay_mean <- colMeans(x[which(nay), , drop = FALSE])
@@ -358,7 +365,8 @@ morie_spatial_voting_optimal_classification <- function(votes,
       }
       x <- x_new
     }
-    total_errors <- 0L; null_errors <- 0L
+    total_errors <- 0L
+    null_errors <- 0L
     for (j in seq_len(n_vote)) {
       v_j <- votes[, j]
       valid <- !is.na(v_j)
@@ -517,9 +525,12 @@ morie_spatial_voting_smacof <- function(D,
       stress_new <- sum(W * (D - d_X) ^ 2) / 2
     }
     if (abs(stress - stress_new) < tol) {
-      X <- X_new; stress <- stress_new; break
+      X <- X_new
+      stress <- stress_new
+      break
     }
-    X <- X_new; stress <- stress_new
+    X <- X_new
+    stress <- stress_new
   }
   list(coordinates = X, stress = stress,
        iterations = it, converged = it < max_iter)
@@ -569,7 +580,8 @@ morie_spatial_voting_nonmetric_mds <- function(D,
     X_new <- sm$coordinates
     denom <- sum(d_current ^ 2)
     stress <- if (denom > 0) sqrt(sum((d_current - d_hat) ^ 2) / denom) else 0
-    if (max(abs(X_new - X)) < tol) { X <- X_new; break }
+    if (max(abs(X_new - X)) < tol) { X <- X_new
+    break }
     X <- X_new
   }
   list(coordinates = X, stress = stress,
@@ -614,8 +626,11 @@ morie_spatial_voting_mds_fit_stats <- function(eigenvalues) {
 #' @export
 morie_spatial_voting_unfolding_stress <- function(X_r, X_s, D,
                                                   weights = NULL) {
-  X_r <- as.matrix(X_r); X_s <- as.matrix(X_s); D <- as.matrix(D)
-  n_r <- nrow(X_r); n_s <- nrow(X_s)
+  X_r <- as.matrix(X_r)
+  X_s <- as.matrix(X_s)
+  D <- as.matrix(D)
+  n_r <- nrow(X_r)
+  n_s <- nrow(X_s)
   d_model <- matrix(0, n_r, n_s)
   for (i in seq_len(n_r)) for (j in seq_len(n_s)) {
     d_model[i, j] <- sqrt(sum((X_r[i, ] - X_s[j, ]) ^ 2))
@@ -652,7 +667,8 @@ morie_spatial_voting_mlsmu6 <- function(D,
                                         tol       = 1e-6,
                                         n_restarts = 5L) {
   D <- as.matrix(D)
-  n_r <- nrow(D); n_s <- ncol(D)
+  n_r <- nrow(D)
+  n_s <- ncol(D)
   set.seed(42L)
   best_stress <- Inf
   best <- NULL
@@ -732,7 +748,9 @@ morie_spatial_voting_smacof_unfolding <- function(D,
                                                   max_iter = 300L,
                                                   tol      = 1e-6) {
   D <- as.matrix(D)
-  n_r <- nrow(D); n_s <- ncol(D); n <- n_r + n_s
+  n_r <- nrow(D)
+  n_s <- ncol(D)
+  n <- n_r + n_s
   set.seed(42L)
   X_r <- matrix(stats::rnorm(n_r * n_dims), n_r, n_dims)
   X_s <- matrix(stats::rnorm(n_s * n_dims), n_s, n_dims)
@@ -758,8 +776,11 @@ morie_spatial_voting_smacof_unfolding <- function(D,
     X_new <- V_inv %*% B %*% X
     d_X <- .sv_pairwise_dist(X_new)
     stress_new <- sum(W * (D_full - d_X) ^ 2) / 2
-    if (abs(stress - stress_new) < tol) { X <- X_new; stress <- stress_new; break }
-    X <- X_new; stress <- stress_new
+    if (abs(stress - stress_new) < tol) { X <- X_new
+    stress <- stress_new
+    break }
+    X <- X_new
+    stress <- stress_new
   }
   list(respondent_coords = X[seq_len(n_r), , drop = FALSE],
        stimulus_coords   = X[(n_r + 1L):n, , drop = FALSE],
@@ -801,10 +822,15 @@ morie_spatial_voting_ideal_point_recovery <- function(X_r, X_s = NULL) {
 #' @export
 morie_spatial_voting_nominate_utility <- function(x, z_yea, z_nay,
                                                   beta = 15.0, w = NULL) {
-  x <- as.matrix(x); z_yea <- as.matrix(z_yea); z_nay <- as.matrix(z_nay)
-  n_leg <- nrow(x); n_votes <- nrow(z_yea); n_dims <- ncol(x)
+  x <- as.matrix(x)
+  z_yea <- as.matrix(z_yea)
+  z_nay <- as.matrix(z_nay)
+  n_leg <- nrow(x)
+  n_votes <- nrow(z_yea)
+  n_dims <- ncol(x)
   if (is.null(w)) w <- rep(1, n_dims) else w <- as.numeric(w)
-  U_yea <- matrix(0, n_leg, n_votes); U_nay <- matrix(0, n_leg, n_votes)
+  U_yea <- matrix(0, n_leg, n_votes)
+  U_nay <- matrix(0, n_leg, n_votes)
   for (i in seq_len(n_leg)) for (j in seq_len(n_votes)) {
     d_yea <- sum(w ^ 2 * (x[i, ] - z_yea[j, ]) ^ 2)
     d_nay <- sum(w ^ 2 * (x[i, ] - z_nay[j, ]) ^ 2)
@@ -828,7 +854,8 @@ morie_spatial_voting_nominate_utility <- function(x, z_yea, z_nay,
 #' @export
 morie_spatial_voting_nominate_vote_prob <- function(x_i, z_yea_j, z_nay_j,
                                                     beta = 15.0, w = NULL) {
-  x_i <- as.numeric(x_i); z_yea_j <- as.numeric(z_yea_j)
+  x_i <- as.numeric(x_i)
+  z_yea_j <- as.numeric(z_yea_j)
   z_nay_j <- as.numeric(z_nay_j)
   if (is.null(w)) w <- rep(1, length(x_i)) else w <- as.numeric(w)
   d_yea <- sum(w ^ 2 * (x_i - z_yea_j) ^ 2)
@@ -858,7 +885,9 @@ morie_spatial_voting_nominate_loglik <- function(votes, x, z_yea, z_nay,
   P <- res$vote_probs
   votes <- as.matrix(votes)
   mask <- !is.na(votes)
-  ll <- 0; n_correct <- 0L; n_total <- 0L
+  ll <- 0
+  n_correct <- 0L
+  n_total <- 0L
   for (i in seq_len(nrow(votes))) for (j in seq_len(ncol(votes))) {
     if (!mask[i, j]) next
     p <- pmin(pmax(P[i, j], 1e-10), 1 - 1e-10)
@@ -894,7 +923,8 @@ morie_spatial_voting_nominate_loglik <- function(votes, x, z_yea, z_nay,
 #' morie_spatial_voting_procrustes(A, B)
 #' @export
 morie_spatial_voting_procrustes <- function(X, X_target) {
-  X <- as.matrix(X); X_target <- as.matrix(X_target)
+  X <- as.matrix(X)
+  X_target <- as.matrix(X_target)
   X_c <- sweep(X, 2, colMeans(X))
   X_t <- sweep(X_target, 2, colMeans(X_target))
   M <- crossprod(X_c, X_t)
@@ -945,7 +975,8 @@ morie_spatial_voting_bayesian_am <- function(Z, n_samples = 1000L,
     # basicspace::aldmck rejects `missing = NA` (it expects integer
     # sentinels). Letting it default + casting to numeric is the
     # safe path for arbitrary floating-point input matrices.
-    Z <- as.matrix(Z); mode(Z) <- "numeric"
+    Z <- as.matrix(Z)
+    mode(Z) <- "numeric"
     out <- try(basicspace::aldmck(Z, respondent = 0, polarity = 1),
                silent = TRUE)
     if (!inherits(out, "try-error")) {
@@ -1057,11 +1088,16 @@ morie_spatial_voting_cjr_irt <- function(votes, n_dims = 1L,
 #' @export
 morie_spatial_voting_bayesian_irt_likelihood <- function(votes, x, alpha, beta) {
   votes <- as.matrix(votes)
-  x <- as.matrix(x); beta <- as.matrix(beta); alpha <- as.numeric(alpha)
+  x <- as.matrix(x)
+  beta <- as.matrix(beta)
+  alpha <- as.numeric(alpha)
   mask <- !is.na(votes)
-  n_leg <- nrow(votes); n_vote <- ncol(votes)
+  n_leg <- nrow(votes)
+  n_vote <- ncol(votes)
   P <- matrix(0, n_leg, n_vote)
-  ll <- 0; n_correct <- 0L; n_total <- 0L
+  ll <- 0
+  n_correct <- 0L
+  n_total <- 0L
   for (i in seq_len(n_leg)) for (j in seq_len(n_vote)) {
     if (!mask[i, j]) next
     z <- as.numeric(beta[j, ] %*% x[i, ] - alpha[j])
@@ -1099,7 +1135,8 @@ morie_spatial_voting_bayesian_irt_posterior <- function(chain,
     for (t in seq_len(n_samples)) {
       M <- ch[t, , , drop = TRUE]
       if (is.null(dim(M))) M <- matrix(M, ncol = 1L)
-      m <- colMeans(M); s <- apply(M, 2, stats::sd)
+      m <- colMeans(M)
+      s <- apply(M, 2, stats::sd)
       s <- ifelse(s > 0, s, 1)
       ch[t, , ] <- sweep(sweep(M, 2, m, "-"), 2, s, "/")
     }
@@ -1137,7 +1174,8 @@ morie_spatial_voting_ordered_oc <- function(Y,
                                             max_iter = 500L,
                                             tol      = 1e-6) {
   Y <- as.matrix(Y)
-  n <- nrow(Y); m <- ncol(Y)
+  n <- nrow(Y)
+  m <- ncol(Y)
   mask <- !is.na(Y)
   set.seed(42L)
   X <- matrix(stats::rnorm(n * n_dims), n, n_dims)
@@ -1152,11 +1190,14 @@ morie_spatial_voting_ordered_oc <- function(Y,
   normals <- matrix(stats::rnorm(m * n_dims), m, n_dims)
   for (j in seq_len(m)) normals[j, ] <- normals[j, ] /
                                         (sqrt(sum(normals[j, ] ^ 2)) + 1e-12)
-  correct <- 0L; total <- 0L; old_correct <- -1L
+  correct <- 0L
+  total <- 0L
+  old_correct <- -1L
   iter <- 0L
   for (iter in seq_len(max_iter)) {
     old_correct <- correct
-    correct <- 0L; total <- 0L
+    correct <- 0L
+    total <- 0L
     for (j in seq_len(m)) {
       cats <- cats_list[[j]]
       valid <- mask[, j]
@@ -1223,13 +1264,16 @@ morie_spatial_voting_ordered_oc <- function(Y,
 #' @export
 morie_spatial_voting_anchoring_vignettes <- function(Y, V,
                                                      n_categories = 5L) {
-  Y <- as.numeric(Y); V <- as.matrix(V)
-  n_resp <- length(Y); n_vign <- ncol(V)
+  Y <- as.numeric(Y)
+  V <- as.matrix(V)
+  n_resp <- length(Y)
+  n_vign <- ncol(V)
   vign_means <- .sv_nanmean_col(V)
   vign_order <- order(vign_means)
   thresholds <- matrix(0, n_resp, n_categories - 1L)
   for (i in seq_len(n_resp)) {
-    vi <- V[i, ]; valid <- !is.na(vi)
+    vi <- V[i, ]
+    valid <- !is.na(vi)
     if (sum(valid) >= 2L) {
       sv <- sort(vi[valid])
       nv <- length(sv)
@@ -1283,7 +1327,8 @@ morie_spatial_voting_indscal <- function(dissimilarities,
                                          max_iter = 300L,
                                          tol      = 1e-6) {
   D_list <- lapply(dissimilarities, as.matrix)
-  n_indiv <- length(D_list); n_stim <- nrow(D_list[[1L]])
+  n_indiv <- length(D_list)
+  n_stim <- nrow(D_list[[1L]])
   D_avg <- Reduce("+", D_list) / n_indiv
   n <- nrow(D_avg)
   H <- diag(n) - matrix(1, n, n) / n
@@ -1309,7 +1354,8 @@ morie_spatial_voting_indscal <- function(dissimilarities,
     }
     for (j in seq_len(n_stim)) {
       for (s in seq_len(n_dims)) {
-        numer <- 0; denom <- 0
+        numer <- 0
+        denom <- 0
         for (k in seq_len(n_indiv)) for (l in seq_len(n_stim)) {
           if (l == j) next
           d_kj <- D_list[[k]][j, l]
@@ -1349,9 +1395,11 @@ morie_spatial_voting_indscal <- function(dissimilarities,
 #' @export
 morie_spatial_voting_normal_vectors <- function(ideal_points,
                                                 external_measure) {
-  X <- as.matrix(ideal_points); y <- as.numeric(external_measure)
+  X <- as.matrix(ideal_points)
+  y <- as.numeric(external_measure)
   mask <- !is.na(y)
-  Xv <- X[mask, , drop = FALSE]; yv <- y[mask]
+  Xv <- X[mask, , drop = FALSE]
+  yv <- y[mask]
   X_aug <- cbind(1, Xv)
   fit <- qr.solve(X_aug, yv)
   beta <- fit
@@ -1379,15 +1427,18 @@ morie_spatial_voting_normal_vectors <- function(ideal_points,
 #' @export
 morie_spatial_voting_cutting_lines <- function(normals, cutpoints,
                                                xlim = c(-1, 1)) {
-  normals <- as.matrix(normals); cutpoints <- as.numeric(cutpoints)
+  normals <- as.matrix(normals)
+  cutpoints <- as.numeric(cutpoints)
   n_votes <- nrow(normals)
   endpoints <- vector("list", n_votes)
   angles <- numeric(n_votes)
   midpoints <- vector("list", n_votes)
   for (k in seq_len(n_votes)) {
-    nv <- normals[k, ]; cp <- cutpoints[k]
+    nv <- normals[k, ]
+    cp <- cutpoints[k]
     if (abs(nv[2L]) > 1e-10) {
-      x1 <- xlim[1L]; x2 <- xlim[2L]
+      x1 <- xlim[1L]
+      x2 <- xlim[2L]
       y1 <- (cp - nv[1L] * x1) / nv[2L]
       y2 <- (cp - nv[1L] * x2) / nv[2L]
       endpoints[[k]] <- list(c(x1, y1), c(x2, y2))
@@ -1397,7 +1448,8 @@ morie_spatial_voting_cutting_lines <- function(normals, cutpoints,
       endpoints[[k]] <- list(c(xc, -10), c(xc, 10))
       midpoints[[k]] <- c(xc, 0)
     } else {
-      endpoints[[k]] <- list(c(0, 0), c(0, 0)); midpoints[[k]] <- c(0, 0)
+      endpoints[[k]] <- list(c(0, 0), c(0, 0))
+      midpoints[[k]] <- c(0, 0)
     }
     angles[k] <- atan2(nv[2L], nv[1L]) * 180 / pi
   }
@@ -1431,11 +1483,13 @@ morie_spatial_voting_cutting_lines <- function(normals, cutpoints,
 morie_spatial_voting_dw_nominate <- function(votes, n_dims = 2L,
                                              max_iter = 100L, tol = 1e-6) {
   votes <- as.matrix(votes)
-  n_leg <- nrow(votes); n_votes <- ncol(votes)
+  n_leg <- nrow(votes)
+  n_votes <- ncol(votes)
   mask <- !is.na(votes)
   set.seed(42L)
   X <- matrix(stats::rnorm(n_leg * n_dims) * 0.5, n_leg, n_dims)
-  w <- rep(1 / n_dims, n_dims); beta <- 15.0
+  w <- rep(1 / n_dims, n_dims)
+  beta <- 15.0
   nv <- matrix(stats::rnorm(n_votes * n_dims), n_votes, n_dims)
   for (j in seq_len(n_votes)) nv[j, ] <- nv[j, ] /
                                          (sqrt(sum(nv[j, ] ^ 2)) + 1e-12)
@@ -1454,9 +1508,12 @@ morie_spatial_voting_dw_nominate <- function(votes, n_dims = 2L,
   }
   for (iter in seq_len(max_iter)) {
     for (j in seq_len(n_votes)) {
-      valid <- mask[, j]; if (sum(valid) < 2L) next
-      Xv <- X[valid, , drop = FALSE]; yv <- votes[valid, j]
-      yea_idx <- which(yv == 1); nay_idx <- which(yv == 0)
+      valid <- mask[, j]
+      if (sum(valid) < 2L) next
+      Xv <- X[valid, , drop = FALSE]
+      yv <- votes[valid, j]
+      yea_idx <- which(yv == 1)
+      nay_idx <- which(yv == 0)
       yea_center <- if (length(yea_idx) > 0L)
                       colMeans(Xv[yea_idx, , drop = FALSE]) else mid[j, ]
       nay_center <- if (length(nay_idx) > 0L)
@@ -1467,9 +1524,11 @@ morie_spatial_voting_dw_nominate <- function(votes, n_dims = 2L,
       mid[j, ] <- (yea_center + nay_center) / 2
     }
     for (i in seq_len(n_leg)) {
-      valid <- mask[i, ]; if (sum(valid) < 2L) next
+      valid <- mask[i, ]
+      if (sum(valid) < 2L) next
       y_i <- votes[i, valid]
-      nv_i <- nv[valid, , drop = FALSE]; mid_i <- mid[valid, , drop = FALSE]
+      nv_i <- nv[valid, , drop = FALSE]
+      mid_i <- mid[valid, , drop = FALSE]
       yea_pos <- mid_i + 0.5 * nv_i
       nay_pos <- mid_i - 0.5 * nv_i
       target <- yea_pos
@@ -1479,10 +1538,14 @@ morie_spatial_voting_dw_nominate <- function(votes, n_dims = 2L,
     norm_x <- sqrt(rowSums(X ^ 2))
     if (max(norm_x) > 1) X <- X / max(norm_x)
   }
-  ll_final <- 0; total <- 0L; correct <- 0L
+  ll_final <- 0
+  total <- 0L
+  correct <- 0L
   for (j in seq_len(n_votes)) {
-    valid <- mask[, j]; if (sum(valid) == 0L) next
-    Xv <- X[valid, , drop = FALSE]; yv <- votes[valid, j]
+    valid <- mask[, j]
+    if (sum(valid) == 0L) next
+    Xv <- X[valid, , drop = FALSE]
+    yv <- votes[valid, j]
     d_yea <- rowSums(sweep(Xv, 2, mid[j, ] + 0.5 * nv[j, ], "-") ^ 2 *
                      matrix(w, nrow = sum(valid), ncol = n_dims, byrow = TRUE))
     d_nay <- rowSums(sweep(Xv, 2, mid[j, ] - 0.5 * nv[j, ], "-") ^ 2 *
@@ -1535,9 +1598,12 @@ morie_spatial_voting_nominate_bootstrap <- function(votes,
                                                     n_boot = 100L,
                                                     seed   = 42L) {
   votes <- as.matrix(votes)
-  X <- as.matrix(ideal_points); nv <- as.matrix(normal_vectors_arr)
+  X <- as.matrix(ideal_points)
+  nv <- as.matrix(normal_vectors_arr)
   cp <- as.numeric(cutpoints)
-  n_leg <- nrow(votes); n_votes <- ncol(votes); n_dims <- ncol(X)
+  n_leg <- nrow(votes)
+  n_votes <- ncol(votes)
+  n_dims <- ncol(X)
   mask <- !is.na(votes)
   set.seed(seed)
   beta <- 15.0
@@ -1558,7 +1624,8 @@ morie_spatial_voting_nominate_bootstrap <- function(votes,
         valid <- !is.na(sim_votes[i, ])
         if (sum(valid) < 2L) next
         y_i <- sim_votes[i, valid]
-        nv_i <- nv[valid, , drop = FALSE]; cp_i <- cp[valid]
+        nv_i <- nv[valid, , drop = FALSE]
+        cp_i <- cp[valid]
         proj <- as.numeric(X_b[i, ] %*% t(nv_i))
         residual <- y_i - 1 / (1 + exp(-beta * (proj - cp_i)))
         grad <- as.numeric(t(nv_i) %*% residual)
@@ -1753,7 +1820,8 @@ morie_spatial_voting_em_irt <- function(votes,
                                         max_iter = 100L,
                                         tol      = 1e-6) {
   votes <- as.matrix(votes)
-  n_leg <- nrow(votes); n_votes <- ncol(votes)
+  n_leg <- nrow(votes)
+  n_votes <- ncol(votes)
   mask <- !is.na(votes)
   set.seed(42L)
   theta <- matrix(stats::rnorm(n_leg * n_dims) * 0.5, n_leg, n_dims)
@@ -1767,9 +1835,11 @@ morie_spatial_voting_em_irt <- function(votes,
       theta <- morie_spatial_emirt_theta_update_cpp(theta, a, d, votes)
     } else {
       for (i in seq_len(n_leg)) {
-        valid <- mask[i, ]; if (sum(valid) == 0L) next
+        valid <- mask[i, ]
+        if (sum(valid) == 0L) next
         y_i <- votes[i, valid]
-        a_i <- a[valid, , drop = FALSE]; d_i <- d[valid]
+        a_i <- a[valid, , drop = FALSE]
+        d_i <- d[valid]
         eta <- pmin(pmax(as.numeric(a_i %*% theta[i, ]) + d_i, -20), 20)
         p <- 1 / (1 + exp(-eta))
         residual <- y_i - p
@@ -1780,8 +1850,10 @@ morie_spatial_voting_em_irt <- function(votes,
       }
     }
     for (j in seq_len(n_votes)) {
-      valid <- mask[, j]; if (sum(valid) == 0L) next
-      y_j <- votes[valid, j]; theta_j <- theta[valid, , drop = FALSE]
+      valid <- mask[, j]
+      if (sum(valid) == 0L) next
+      y_j <- votes[valid, j]
+      theta_j <- theta[valid, , drop = FALSE]
       eta <- pmin(pmax(as.numeric(theta_j %*% a[j, ]) + d[j], -20), 20)
       p <- 1 / (1 + exp(-eta))
       residual <- y_j - p
@@ -1799,7 +1871,8 @@ morie_spatial_voting_em_irt <- function(votes,
   }
   ll <- 0
   for (j in seq_len(n_votes)) {
-    valid <- mask[, j]; if (sum(valid) == 0L) next
+    valid <- mask[, j]
+    if (sum(valid) == 0L) next
     eta <- pmin(pmax(as.numeric(theta[valid, , drop = FALSE] %*% a[j, ]) +
                      d[j], -20), 20)
     p <- pmin(pmax(1 / (1 + exp(-eta)), 1e-10), 1 - 1e-10)
@@ -1888,8 +1961,10 @@ morie_spatial_voting_nonparametric_bootstrap <- function(Z,
 morie_spatial_voting_wordfish <- function(dtm,
                                           max_iter = 100L,
                                           tol      = 1e-6) {
-  dtm <- as.matrix(dtm); storage.mode(dtm) <- "double"
-  n_docs <- nrow(dtm); n_words <- ncol(dtm)
+  dtm <- as.matrix(dtm)
+  storage.mode(dtm) <- "double"
+  n_docs <- nrow(dtm)
+  n_words <- ncol(dtm)
   set.seed(42L)
   omega <- stats::rnorm(n_docs) * 0.5
   psi   <- log(rowSums(dtm) + 1)
@@ -1903,7 +1978,8 @@ morie_spatial_voting_wordfish <- function(dtm,
       # rescaling beta. Apply the beta/alpha correction here so the
       # parameterisation eta = psi + alpha + beta*omega is invariant
       # across iterations (v0.9.5.6+ strict-identifiability fix).
-      m_om <- mean(omega); s_om <- stats::sd(omega) + 1e-12
+      m_om <- mean(omega)
+      s_om <- stats::sd(omega) + 1e-12
       omega <- as.numeric(morie_spatial_wordfish_omega_update_cpp(
         dtm, psi, alpha, beta, omega))
       alpha <- alpha + beta * m_om   # absorb mean shift into alpha
@@ -1929,7 +2005,8 @@ morie_spatial_voting_wordfish <- function(dtm,
     for (j in seq_len(n_words)) {
       eta <- psi + alpha[j] + beta[j] * omega
       mu <- exp(pmin(pmax(eta, -20), 20))
-      ga <- sum(dtm[, j] - mu);  ha <- -sum(mu) - 0.01
+      ga <- sum(dtm[, j] - mu)
+      ha <- -sum(mu) - 0.01
       alpha[j] <- alpha[j] - ga / ha
       gb <- sum(omega * (dtm[, j] - mu))
       hb <- -sum(omega ^ 2 * mu) - 0.01

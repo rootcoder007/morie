@@ -475,7 +475,9 @@ specification_curve <- function(data, outcome, treatment,
          call. = FALSE)
   })
 
-  estimates <- numeric(0); ses <- numeric(0); p_values <- numeric(0)
+  estimates <- numeric(0)
+  ses <- numeric(0)
+  p_values <- numeric(0)
   specifications <- list()
 
   for (sf in sample_filters) {
@@ -566,9 +568,12 @@ manski_bounds <- function(outcome_treated, outcome_control,
   y1 <- as.numeric(outcome_treated)
   y0 <- as.numeric(outcome_control)
   if (is.null(outcome_range)) outcome_range <- c(0, 1)
-  y_min <- outcome_range[1]; y_max <- outcome_range[2]
-  e1 <- mean(y1); e0 <- mean(y0)
-  p1 <- p_treated;  p0 <- 1 - p_treated
+  y_min <- outcome_range[1]
+  y_max <- outcome_range[2]
+  e1 <- mean(y1)
+  e0 <- mean(y0)
+  p1 <- p_treated
+  p0 <- 1 - p_treated
   lower <- e1 * p1 + y_min * p0 - (e0 * p0 + y_max * p1)
   upper <- e1 * p1 + y_max * p0 - (e0 * p0 + y_min * p1)
   lower_s <- e1 - e0 - (y_max - y_min) * (1 - p1)

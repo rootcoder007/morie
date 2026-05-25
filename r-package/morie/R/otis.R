@@ -575,7 +575,9 @@ morie_otis_otdml <- function(df,
     att_z <- att / att_se
     att_p <- 2 * stats::pnorm(-abs(att_z))
   } else {
-    att <- ate; att_se <- se; att_p <- 1
+    att <- ate
+    att_se <- se
+    att_p <- 1
   }
 
   .otis_result(

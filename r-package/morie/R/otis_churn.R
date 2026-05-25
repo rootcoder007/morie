@@ -486,7 +486,8 @@ morie_otis_embedding_distribution <- function(df) {
   # Lognormal MLE (no MASS dep -- closed form)
   lx <- log(x)
   ln_aic <- {
-    mu <- mean(lx); sd_ <- stats::sd(lx)
+    mu <- mean(lx)
+    sd_ <- stats::sd(lx)
     ll <- sum(stats::dlnorm(x, meanlog = mu, sdlog = sd_, log = TRUE))
     2 * 2 - 2 * ll
   }

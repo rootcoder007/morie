@@ -109,7 +109,8 @@ NULL
   for (i in seq_along(groups)) {
     g <- groups[[i]]
     m <- group == g
-    gt <- y_true[m]; gp <- y_pred[m]
+    gt <- y_true[m]
+    gp <- y_pred[m]
     pos <- gt == favorable
     neg <- !pos
     tpr <- if (any(pos)) mean(gp[pos] == favorable) else NA_real_
@@ -191,7 +192,8 @@ morie_fairness_disparate_impact <- function(y_pred, group,
     stop("need at least two groups to measure disparity", call. = FALSE)
   }
 
-  we <- new.env(parent = emptyenv()); we$w <- character(0)
+  we <- new.env(parent = emptyenv())
+  we$w <- character(0)
   priv <- .morie_fairness_resolve_privileged(privileged, rates, we)
   base <- rates[[priv]]$rate
   if (isTRUE(base == 0)) {
@@ -297,7 +299,8 @@ morie_fairness_demographic_parity <- function(y_pred, group,
   if (length(rates) < 2L) {
     stop("need at least two groups to measure disparity", call. = FALSE)
   }
-  we <- new.env(parent = emptyenv()); we$w <- character(0)
+  we <- new.env(parent = emptyenv())
+  we$w <- character(0)
   priv <- .morie_fairness_resolve_privileged(privileged, rates, we)
   base <- rates[[priv]]$rate
 
@@ -391,7 +394,8 @@ morie_fairness_equalized_odds <- function(y_true, y_pred, group,
     stop("need at least two groups to measure disparity", call. = FALSE)
   }
 
-  we <- new.env(parent = emptyenv()); we$w <- character(0)
+  we <- new.env(parent = emptyenv())
+  we$w <- character(0)
   rate_view <- lapply(per, function(d) list(g = d$g, n = d$n, rate = d$tpr))
   names(rate_view) <- names(per)
   priv <- .morie_fairness_resolve_privileged(privileged, rate_view, we)
@@ -399,12 +403,14 @@ morie_fairness_equalized_odds <- function(y_true, y_pred, group,
   base_fpr <- per[[priv]]$fpr
 
   table_rows <- list()
-  tpr_gaps <- numeric(0); fpr_gaps <- numeric(0)
+  tpr_gaps <- numeric(0)
+  fpr_gaps <- numeric(0)
   for (key in names(per)) {
     d <- per[[key]]
     tg <- d$tpr - base_tpr
     fg <- d$fpr - base_fpr
-    tpr_gaps[key] <- tg; fpr_gaps[key] <- fg
+    tpr_gaps[key] <- tg
+    fpr_gaps[key] <- fg
     if (is.na(d$tpr) || is.na(d$fpr)) {
       we$w <- c(we$w, sprintf(
         "group '%s' has no positive or no negative ground-truth cases; its TPR/FPR (and gaps) are partly undefined.",
@@ -491,11 +497,13 @@ morie_fairness_average_odds_difference <- function(y_true, y_pred, group,
   if (length(per) < 2L) {
     stop("need at least two groups to measure disparity", call. = FALSE)
   }
-  we <- new.env(parent = emptyenv()); we$w <- character(0)
+  we <- new.env(parent = emptyenv())
+  we$w <- character(0)
   rate_view <- lapply(per, function(d) list(g = d$g, n = d$n, rate = d$tpr))
   names(rate_view) <- names(per)
   priv <- .morie_fairness_resolve_privileged(privileged, rate_view, we)
-  base_tpr <- per[[priv]]$tpr; base_fpr <- per[[priv]]$fpr
+  base_tpr <- per[[priv]]$tpr
+  base_fpr <- per[[priv]]$fpr
 
   table_rows <- list()
   aod <- numeric(0)
@@ -648,7 +656,8 @@ morie_fairness_bias_amplification <- function(y_pred, group,
   if (length(rates) < 2L) {
     stop("need at least two groups to measure disparity", call. = FALSE)
   }
-  we <- new.env(parent = emptyenv()); we$w <- character(0)
+  we <- new.env(parent = emptyenv())
+  we$w <- character(0)
   priv <- .morie_fairness_resolve_privileged(privileged, rates, we)
   base <- rates[[priv]]$rate
 

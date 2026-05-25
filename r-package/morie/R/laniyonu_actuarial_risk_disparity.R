@@ -178,7 +178,9 @@ NULL
       )),
       error = function(e) NULL
     )
-    lr_stat <- NA_real_; lr_df <- NA_integer_; lr_p <- NA_real_
+    lr_stat <- NA_real_
+    lr_df <- NA_integer_
+    lr_p <- NA_real_
     if (!is.null(pofit) && !is.null(tsfit)) {
       lr_stat <- 2 * (as.numeric(stats::logLik(tsfit))
                        - as.numeric(stats::logLik(pofit)))
@@ -218,7 +220,9 @@ NULL
         }
       }
       if (is.finite(r$lr_p) && (is.na(worst_p) || r$lr_p < worst_p)) {
-        worst_p <- r$lr_p; worst_stat <- r$lr_stat; worst_df_v <- r$lr_df
+        worst_p <- r$lr_p
+        worst_stat <- r$lr_stat
+        worst_df_v <- r$lr_df
       }
     }
   } else {
@@ -244,7 +248,9 @@ NULL
                            sep = "::")]] <- r2$coef[k, rc]
       }
     }
-    worst_p <- r2$lr_p; worst_stat <- r2$lr_stat; worst_df_v <- r2$lr_df
+    worst_p <- r2$lr_p
+    worst_stat <- r2$lr_stat
+    worst_df_v <- r2$lr_df
   }
 
   # Build interpretation
@@ -252,7 +258,8 @@ NULL
   for (s in names(results)) {
     r <- results[[s]]
     for (rc in race_cols) {
-      b1 <- r$coef[1, rc]; b2 <- r$coef[2, rc]
+      b1 <- r$coef[1, rc]
+      b2 <- r$coef[2, rc]
       if (is.finite(b1) && is.finite(b2) && abs(b2) > 1e-6) {
         ratio <- abs(b1) / abs(b2)
         if (ratio >= 1.5) {
@@ -362,8 +369,10 @@ NULL
                                race_cols, gender_col, control_cols,
                                split_by_gender, bootstrap_replicates,
                                random_state) {
-  combined_coef <- list(); combined_se <- list()
-  score_coefs <- numeric(0); n_total <- 0L
+  combined_coef <- list()
+  combined_se <- list()
+  score_coefs <- numeric(0)
+  n_total <- 0L
 
   if (split_by_gender) {
     strata <- sort(unique(stats::na.omit(df[[gender_col]])))

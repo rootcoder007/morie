@@ -231,7 +231,8 @@ morie_tps_seasonal_pattern <- function(df, ds_name = "?") {
     tab <- tab[ord]
     obs <- as.numeric(tab)
     exp <- rep(sum(obs) / length(obs), length(obs))
-    chi2 <- NA_real_; pval <- NA_real_
+    chi2 <- NA_real_
+    pval <- NA_real_
     if (length(obs) >= 2L && all(exp > 0)) {
       ct <- tryCatch(
         suppressWarnings(stats::chisq.test(obs, p = exp / sum(exp))),

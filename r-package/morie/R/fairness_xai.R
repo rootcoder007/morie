@@ -99,7 +99,8 @@ morie_fairness_xai_permutation_importance <- function(predict_fn, X,
                                                        protected = NULL,
                                                        seed = 0L) {
   X <- .xai_as_2d(X)
-  n <- nrow(X); d <- ncol(X)
+  n <- nrow(X)
+  d <- ncol(X)
   nm <- .xai_names(feature_names, d)
   set.seed(as.integer(seed))
   base <- .xai_predict(predict_fn, X)
@@ -181,11 +182,13 @@ morie_fairness_xai_partial_dependence <- function(predict_fn, X, feature,
   X <- .xai_as_2d(X)
   nm <- .xai_names(feature_names, ncol(X))
   j <- .xai_resolve(feature, nm)
-  lo <- min(X[, j]); hi <- max(X[, j])
+  lo <- min(X[, j])
+  hi <- max(X[, j])
   grid <- seq(lo, hi, length.out = as.integer(grid_size))
   pd_vals <- numeric(length(grid))
   for (i in seq_along(grid)) {
-    Xv <- X; Xv[, j] <- grid[i]
+    Xv <- X
+    Xv[, j] <- grid[i]
     pd_vals[i] <- mean(.xai_predict(predict_fn, Xv))
   }
   rng_val <- max(pd_vals) - min(pd_vals)
@@ -243,8 +246,10 @@ morie_fairness_xai_ale <- function(predict_fn, X, feature,
   for (b in seq_len(k)) {
     rows <- X[bin_idx == b, , drop = FALSE]
     if (nrow(rows) == 0L) next
-    lo_rows <- rows; lo_rows[, j] <- edges[b]
-    hi_rows <- rows; hi_rows[, j] <- edges[b + 1L]
+    lo_rows <- rows
+    lo_rows[, j] <- edges[b]
+    hi_rows <- rows
+    hi_rows[, j] <- edges[b + 1L]
     diff <- .xai_predict(predict_fn, hi_rows) -
             .xai_predict(predict_fn, lo_rows)
     local_eff[b] <- mean(diff)
@@ -305,7 +310,8 @@ morie_fairness_xai_ceteris_paribus <- function(predict_fn, x, feature,
   if (length(x) != ncol(X_ref)) {
     stop("x must have one value per feature of X_ref")
   }
-  lo <- min(X_ref[, j]); hi <- max(X_ref[, j])
+  lo <- min(X_ref[, j])
+  hi <- max(X_ref[, j])
   grid <- seq(lo, hi, length.out = as.integer(grid_size))
   rows <- matrix(rep(x, each = length(grid)),
                  nrow = length(grid), ncol = length(x), byrow = FALSE)

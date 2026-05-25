@@ -598,7 +598,8 @@ mrm_uof_region_locality <- function(df, region_at_col, region_now_col) {
   n <- sum(obs)
   diag_share <- if (n > 0L) sum(diag(obs)) / n else NA_real_
 
-  r <- nrow(obs); c <- ncol(obs)
+  r <- nrow(obs)
+  c <- ncol(obs)
   if (r >= 2L && c >= 2L) {
     ct <- suppressWarnings(stats::chisq.test(obs))
     chi2 <- as.numeric(ct$statistic)
@@ -609,7 +610,10 @@ mrm_uof_region_locality <- function(df, region_at_col, region_now_col) {
       warnings <- c(warnings, "Expected cell counts below 5; chi-square may be unreliable.")
     }
   } else {
-    chi2 <- NA_real_; pvalue <- NA_real_; dof <- 0L; v <- NA_real_
+    chi2 <- NA_real_
+    pvalue <- NA_real_
+    dof <- 0L
+    v <- NA_real_
     warnings <- c(warnings, "Contingency table too small for chi-square test.")
   }
 
@@ -773,7 +777,8 @@ mrm_uof_demographic_disparity <- function(df, demo_col, outcome_col,
     row <- per[i, ]
     wci <- .uof_wilson_ci(row$k, row$n)
     rr <- if (baseline_rate > 0) row$rate / baseline_rate else NA_real_
-    rr_lo <- NA_real_; rr_hi <- NA_real_
+    rr_lo <- NA_real_
+    rr_hi <- NA_real_
     if (row$n < 30L) {
       warnings <- c(warnings, sprintf("Group '%s' has n=%d < 30; wide CI.", row$category, row$n))
     }

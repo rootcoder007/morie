@@ -784,7 +784,8 @@ morie_tps_bivariate_moran <- function(polygons,
   keep <- is.finite(cents[, 1L]) & is.finite(cents[, 2L]) &
     is.finite(x_arr) & is.finite(y_arr)
   cents <- cents[keep, , drop = FALSE]
-  x_arr <- x_arr[keep]; y_arr <- y_arr[keep]
+  x_arr <- x_arr[keep]
+  y_arr <- y_arr[keep]
   n <- nrow(cents)
   if (n < 5L) {
     return(.tps_adv_result(
@@ -807,7 +808,8 @@ morie_tps_bivariate_moran <- function(polygons,
     nn <- order(d)[seq_len(k)]
     W[i, nn] <- 1
   }
-  rs <- rowSums(W); rs[rs == 0] <- 1
+  rs <- rowSums(W)
+  rs[rs == 0] <- 1
   Wn <- W / rs
   S0 <- sum(Wn)
   cross <- sum(Wn * outer(zx, zy))

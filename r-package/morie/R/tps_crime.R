@@ -342,7 +342,8 @@ morie_tps_bivariate_morans_i <- function(dfs, cat_a, cat_b,
   }
   a <- as.numeric(a[common])
   b <- as.numeric(b[common])
-  names(a) <- common; names(b) <- common
+  names(a) <- common
+  names(b) <- common
 
   need_cols <- c("HOOD_158", "LAT_WGS84", "LONG_WGS84")
   if (!all(need_cols %in% names(df_a))) {

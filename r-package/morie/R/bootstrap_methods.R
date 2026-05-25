@@ -166,7 +166,9 @@ bootstrap <- function(data, statistic, n_boot = 2000L, ci_level = 0.95,
     ci_hi <- 2 * original - p_hi
   } else if (ci_method == "bca") {
     bca <- .bca_interval(data, statistic, boot_stats, original, ci_level)
-    ci_lo <- bca$ci_lo; ci_hi <- bca$ci_hi; acc <- bca$acc
+    ci_lo <- bca$ci_lo
+    ci_hi <- bca$ci_hi
+    acc <- bca$acc
   } else if (ci_method == "studentized") {
     boot_ses <- numeric(n_boot)
     for (b in seq_len(n_boot)) {
@@ -271,9 +273,11 @@ parametric_bootstrap <- function(data, statistic, distribution = "normal",
     for (b in seq_len(n_boot))
       boot_stats[b] <- as.numeric(statistic(stats::rexp(n, rate = 1 / scale)))
   } else if (distribution == "gamma") {
-    shape <- dp$shape; scale <- dp$scale
+    shape <- dp$shape
+    scale <- dp$scale
     if (is.null(shape) || is.null(scale)) {
-      mu <- mean(data); va <- stats::var(data)
+      mu <- mean(data)
+      va <- stats::var(data)
       shape <- mu ^ 2 / max(va, 1e-10)
       scale <- max(va, 1e-10) / mu
     }
@@ -536,9 +540,11 @@ permutation_test <- function(group1, group2, statistic = "mean_diff",
                              n_permutations = 9999L,
                              alternative = "two-sided", seed = 42L) {
   set.seed(seed)
-  g1 <- as.numeric(group1); g2 <- as.numeric(group2)
+  g1 <- as.numeric(group1)
+  g2 <- as.numeric(group2)
   combined <- c(g1, g2)
-  n1 <- length(g1); n <- length(combined)
+  n1 <- length(g1)
+  n <- length(combined)
 
   if (is.function(statistic)) {
     stat_fn <- statistic
@@ -548,7 +554,8 @@ permutation_test <- function(group1, group2, statistic = "mean_diff",
     stat_fn <- function(a, b) stats::median(a) - stats::median(b)
   } else if (identical(statistic, "t_stat")) {
     stat_fn <- function(a, b) {
-      s1 <- stats::var(a); s2 <- stats::var(b)
+      s1 <- stats::var(a)
+      s2 <- stats::var(b)
       se <- sqrt(s1 / length(a) + s2 / length(b))
       (mean(a) - mean(b)) / max(se, 1e-10)
     }
@@ -686,7 +693,9 @@ subsampling <- function(data, statistic, subsample_size = NULL,
 bootstrap_632 <- function(X, y, model_fn, score_fn,
                           n_boot = 200L, seed = 42L) {
   set.seed(seed)
-  X <- as.matrix(X); y <- as.numeric(y); n <- length(y)
+  X <- as.matrix(X)
+  y <- as.numeric(y)
+  n <- length(y)
 
   model_full <- model_fn(X, y)
   y_pred_full <- stats::predict(model_full, X)
@@ -760,7 +769,9 @@ bootstrap_632 <- function(X, y, model_fn, score_fn,
                                  n_folds = 10L, stratify = NULL,
                                  groups = NULL, seed = 42L) {
   set.seed(seed)
-  X <- as.matrix(X); y <- as.numeric(y); n <- length(y)
+  X <- as.matrix(X)
+  y <- as.numeric(y)
+  n <- length(y)
 
   if (!is.null(groups)) {
     groups <- as.vector(groups)

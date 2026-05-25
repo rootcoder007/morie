@@ -235,7 +235,8 @@ morie_recommended_summary <- function(tax) {
 #' @return Character scalar — recommended test name.
 #' @export
 morie_recommended_pair_test <- function(tax_a, tax_b) {
-  a <- tax_a$level; b <- tax_b$level
+  a <- tax_a$level
+  b <- tax_b$level
   if (a == "identifier" || b == "identifier") {
     return("(identifier - use for grouping, not for tests)")
   }

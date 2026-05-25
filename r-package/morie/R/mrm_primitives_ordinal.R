@@ -50,7 +50,8 @@ NULL
   # Fallback proportional-odds fit (no MASS): stack the K-1 cutpoint
   # binary problems and constrain beta to be shared while letting
   # cutpoint intercepts differ.  Mirrors _logit_fit_no_intercept().
-  n <- nrow(X); p <- ncol(X)
+  n <- nrow(X)
+  p <- ncol(X)
   X_stack <- do.call(rbind, replicate(K - 1L, X, simplify = FALSE))
   y_stack <- unlist(lapply(seq_len(K - 1L) - 1L,
                            function(k) as.integer(y <= k)))
@@ -149,7 +150,8 @@ mrm_threshold_specific_ordinal <- function(
 
   X <- as.matrix(data[, covariate_cols, drop = FALSE])
   storage.mode(X) <- "double"
-  n <- nrow(X); p <- ncol(X)
+  n <- nrow(X)
+  p <- ncol(X)
 
   threshold_labels <- vapply(
     seq_len(K - 1L) - 1L,

@@ -41,7 +41,8 @@
 #' @export
 morie_psymet_alpha <- function(data, ci = 0.95) {
   X <- .as_item_matrix(data)
-  n <- nrow(X); k <- ncol(X)
+  n <- nrow(X)
+  k <- ncol(X)
   if (k < 2L) {
     return(list(raw = NA_real_, std = NA_real_, avgr = NA_real_,
                 k = k, n = n, ci_lo = NA_real_, ci_hi = NA_real_))
@@ -59,7 +60,8 @@ morie_psymet_alpha <- function(data, ci = 0.95) {
   if (is.na(avgr)) avgr <- 0
   std <- (k * avgr) / (1 + (k - 1) * avgr)
 
-  df1 <- n - 1; df2 <- (n - 1) * (k - 1)
+  df1 <- n - 1
+  df2 <- (n - 1) * (k - 1)
   f_lo <- qf(1 - (1 - ci) / 2, df1, df2)
   f_hi <- qf((1 - ci) / 2, df1, df2)
   list(
@@ -99,7 +101,8 @@ morie_psymet_omega <- function(data, nf = 1) {
   # Fallback: PCA-style approximation matching the Python module.
   R <- cor(X)
   eig <- eigen(R, symmetric = TRUE)
-  evals <- eig$values; evecs <- eig$vectors
+  evals <- eig$values
+  evecs <- eig$vectors
   loads <- evecs[, seq_len(nf), drop = FALSE] *
     matrix(sqrt(pmax(evals[seq_len(nf)], 0)), nrow = nrow(evecs),
            ncol = nf, byrow = TRUE)
@@ -156,7 +159,8 @@ morie_psymet_alphadel <- function(data) {
 #' @export
 morie_psymet_cr <- function(loads) {
   lam <- as.numeric(loads)
-  sl <- sum(lam); se <- sum(1 - lam^2)
+  sl <- sum(lam)
+  se <- sum(1 - lam^2)
   sl^2 / (sl^2 + se)
 }
 
@@ -181,17 +185,20 @@ morie_psymet_kmo <- function(data) {
                   items = setNames(as.numeric(res$MSAi), colnames(X))))
     }
   }
-  R <- cor(X); k <- ncol(R)
+  R <- cor(X)
+  k <- ncol(R)
   Ri <- tryCatch(solve(R), error = function(e) MASS::ginv(R))
   D <- diag(1 / sqrt(diag(Ri)))
   Q <- -D %*% Ri %*% D
   diag(Q) <- 1
   off <- row(R) != col(R)
-  sr2 <- sum(R[off]^2); sq2 <- sum(Q[off]^2)
+  sr2 <- sum(R[off]^2)
+  sq2 <- sum(Q[off]^2)
   overall <- sr2 / (sr2 + sq2)
   items <- vapply(seq_len(k), function(j) {
     mj <- off[j, ]
-    r2 <- sum(R[j, mj]^2); q2 <- sum(Q[j, mj]^2)
+    r2 <- sum(R[j, mj]^2)
+    q2 <- sum(Q[j, mj]^2)
     if ((r2 + q2) > 0) r2 / (r2 + q2) else 0
   }, numeric(1))
   names(items) <- colnames(X)
@@ -203,7 +210,8 @@ morie_psymet_kmo <- function(data) {
 #' @export
 morie_psymet_bartlett <- function(data) {
   X <- .as_item_matrix(data)
-  n <- nrow(X); k <- ncol(X)
+  n <- nrow(X)
+  k <- ncol(X)
   R <- cor(X)
   det_R <- max(det(R), 1e-15)
   chisq <- -(n - 1 - (2 * k + 5) / 6) * log(det_R)
@@ -230,7 +238,8 @@ morie_psymet_parallel <- function(data, nsim = 100, seed = 42) {
     }
   }
   set.seed(seed)
-  n <- nrow(X); k <- ncol(X)
+  n <- nrow(X)
+  k <- ncol(X)
   obs <- sort(eigen(cor(X), symmetric = TRUE, only.values = TRUE)$values,
               decreasing = TRUE)
   sim <- matrix(0, nrow = nsim, ncol = k)
@@ -248,12 +257,15 @@ morie_psymet_parallel <- function(data, nsim = 100, seed = 42) {
 #' @export
 morie_psymet_splithalf <- function(data, method = c("first_last", "odd_even")) {
   method <- match.arg(method)
-  X <- .as_item_matrix(data); k <- ncol(X)
+  X <- .as_item_matrix(data)
+  k <- ncol(X)
   if (method == "odd_even") {
-    idx_a <- seq(1, k, by = 2); idx_b <- seq(2, k, by = 2)
+    idx_a <- seq(1, k, by = 2)
+    idx_b <- seq(2, k, by = 2)
   } else {
     mid <- k %/% 2
-    idx_a <- seq_len(mid); idx_b <- seq.int(mid + 1, k)
+    idx_a <- seq_len(mid)
+    idx_b <- seq.int(mid + 1, k)
   }
   h1 <- rowSums(X[, idx_a, drop = FALSE])
   h2 <- rowSums(X[, idx_b, drop = FALSE])
@@ -268,10 +280,12 @@ morie_psymet_splithalf <- function(data, method = c("first_last", "odd_even")) {
 #' @export
 morie_psymet_discrimination <- function(data, pct = 0.27) {
   X <- .as_item_matrix(data)
-  n <- nrow(X); total <- rowSums(X)
+  n <- nrow(X)
+  total <- rowSums(X)
   cut <- max(as.integer(n * pct), 1L)
   si <- order(total)
-  lo <- si[seq_len(cut)]; hi <- si[seq.int(length(si) - cut + 1, length(si))]
+  lo <- si[seq_len(cut)]
+  hi <- si[seq.int(length(si) - cut + 1, length(si))]
   d <- vapply(seq_len(ncol(X)), function(j) {
     mx <- max(X[, j])
     if (mx <= 0) return(0)

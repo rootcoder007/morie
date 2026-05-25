@@ -125,8 +125,11 @@
 #' @return A \code{morie_residual_diagnostics} list.
 #' @export
 compute_residuals <- function(y, y_hat, X, model_type = "linear") {
-  y <- as.numeric(y); y_hat <- as.numeric(y_hat)
-  X <- as.matrix(X); n <- nrow(X); p <- ncol(X)
+  y <- as.numeric(y)
+  y_hat <- as.numeric(y_hat)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  p <- ncol(X)
 
   raw <- y - y_hat
   XtX <- crossprod(X)
@@ -142,7 +145,8 @@ compute_residuals <- function(y, y_hat, X, model_type = "linear") {
     student_res[i] <- raw[i] / sqrt(max(mse_i * (1 - h[i]), 1e-10))
   }
 
-  deviance_res <- NULL; pearson_res <- NULL
+  deviance_res <- NULL
+  pearson_res <- NULL
   if (identical(model_type, "logistic")) {
     yh <- pmin(pmax(y_hat, 1e-10), 1 - 1e-10)
     deviance_res <- ifelse(y == 1,
@@ -218,8 +222,10 @@ compute_residuals <- function(y, y_hat, X, model_type = "linear") {
 #' @return A \code{morie_influence_diagnostics} list.
 #' @export
 compute_influence <- function(y, X, y_hat = NULL) {
-  y <- as.numeric(y); X <- as.matrix(X)
-  n <- nrow(X); p <- ncol(X)
+  y <- as.numeric(y)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  p <- ncol(X)
 
   beta <- drop(.safe_solve(crossprod(X)) %*% crossprod(X, y))
   if (is.null(y_hat)) y_hat <- drop(X %*% beta)
@@ -281,7 +287,9 @@ compute_influence <- function(y, X, y_hat = NULL) {
 #' @return Named numeric vector of VIFs.
 #' @export
 compute_vif <- function(X, column_names = NULL) {
-  X <- as.matrix(X); n <- nrow(X); p <- ncol(X)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  p <- ncol(X)
   if (is.null(column_names))
     column_names <- if (!is.null(colnames(X))) colnames(X)
                     else paste0("X", seq_len(p) - 1L)
@@ -310,7 +318,9 @@ compute_vif <- function(X, column_names = NULL) {
 #' @return A \code{morie_collinearity_diagnostics} list.
 #' @export
 collinearity_diagnostics <- function(X, column_names = NULL) {
-  X <- as.matrix(X); n <- nrow(X); p <- ncol(X)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  p <- ncol(X)
   if (is.null(column_names))
     column_names <- if (!is.null(colnames(X))) colnames(X)
                     else paste0("X", seq_len(p) - 1L)
@@ -376,8 +386,10 @@ collinearity_diagnostics <- function(X, column_names = NULL) {
 #' @return A \code{morie_specification_test}.
 #' @export
 ramsey_reset_test <- function(y, X, powers = c(2, 3)) {
-  y <- as.numeric(y); X <- as.matrix(X)
-  n <- nrow(X); p <- ncol(X)
+  y <- as.numeric(y)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  p <- ncol(X)
 
   beta_r <- drop(.safe_solve(crossprod(X)) %*% crossprod(X, y))
   y_hat <- drop(X %*% beta_r)
@@ -413,7 +425,9 @@ ramsey_reset_test <- function(y, X, powers = c(2, 3)) {
 #' @return A \code{morie_specification_test}.
 #' @export
 link_test <- function(y, X, model_type = "linear") {
-  y <- as.numeric(y); X <- as.matrix(X); n <- length(y)
+  y <- as.numeric(y)
+  X <- as.matrix(X)
+  n <- length(y)
 
   beta <- drop(.safe_solve(crossprod(X)) %*% crossprod(X, y))
   y_hat <- drop(X %*% beta)
@@ -450,7 +464,9 @@ link_test <- function(y, X, model_type = "linear") {
 #' @return A \code{morie_specification_test}.
 #' @export
 hosmer_lemeshow_test <- function(y, y_prob, n_groups = 10L) {
-  y <- as.numeric(y); y_prob <- as.numeric(y_prob); n <- length(y)
+  y <- as.numeric(y)
+  y_prob <- as.numeric(y_prob)
+  n <- length(y)
   order_idx <- order(y_prob)
   groups <- split(order_idx, cut(seq_along(order_idx),
                                  n_groups, labels = FALSE))
@@ -498,8 +514,11 @@ hosmer_lemeshow_test <- function(y, y_prob, n_groups = 10L) {
 compute_goodness_of_fit <- function(y, y_hat, X,
                                     model_type = "linear",
                                     log_likelihood = NULL) {
-  y <- as.numeric(y); y_hat <- as.numeric(y_hat)
-  X <- as.matrix(X); n <- nrow(X); p <- ncol(X)
+  y <- as.numeric(y)
+  y_hat <- as.numeric(y_hat)
+  X <- as.matrix(X)
+  n <- nrow(X)
+  p <- ncol(X)
 
   residuals <- y - y_hat
   ss_res <- sum(residuals ^ 2)
@@ -507,8 +526,13 @@ compute_goodness_of_fit <- function(y, y_hat, X,
   df_model <- p - 1L
   df_residual <- n - p
 
-  r_squared <- NULL; adj_r_squared <- NULL; pseudo_r_squared <- NULL
-  f_stat <- NULL; f_p <- NULL; deviance <- NULL; pearson_chi2 <- NULL
+  r_squared <- NULL
+  adj_r_squared <- NULL
+  pseudo_r_squared <- NULL
+  f_stat <- NULL
+  f_p <- NULL
+  deviance <- NULL
+  pearson_chi2 <- NULL
 
   if (identical(model_type, "linear")) {
     r_squared <- 1 - ss_res / max(ss_tot, 1e-10)
@@ -695,7 +719,8 @@ score_test <- function(score_vector, information_matrix) {
 full_diagnostics <- function(y, X, y_hat = NULL,
                              model_type = "linear",
                              column_names = NULL) {
-  y <- as.numeric(y); X <- as.matrix(X)
+  y <- as.numeric(y)
+  X <- as.matrix(X)
   if (is.null(y_hat)) {
     beta <- drop(.safe_solve(crossprod(X)) %*% crossprod(X, y))
     y_hat <- drop(X %*% beta)

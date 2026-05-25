@@ -210,7 +210,8 @@ mrm_tps_polygon_moran_per_year <- function(
       lat <- as.numeric(data[[lat_col]])
       lon <- as.numeric(data[[lon_col]])
       keep <- !is.na(lat) & !is.na(lon)
-      lat <- lat[keep]; lon <- lon[keep]
+      lat <- lat[keep]
+      lon <- lon[keep]
       W <- .knn_weights_lisa(lat, lon, k)
       I_obs <- res$global_moran_I
       gt <- 0L

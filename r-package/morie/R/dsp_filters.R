@@ -162,7 +162,8 @@ morie_dsp_wiener_filter <- function(x, noise_psd = NULL,
 #'   Widrow & Stearns (1985).
 #' @export
 morie_dsp_lms <- function(x, d, order = 16L, mu = 0.01) {
-  x <- as.numeric(x); d <- as.numeric(d)
+  x <- as.numeric(x)
+  d <- as.numeric(d)
   if (length(x) != length(d)) stop("x and d must be the same length")
   order <- as.integer(order)
   if (.morie_dsp_cpp_ok("morie_dsp_lms_cpp")) {
@@ -170,7 +171,8 @@ morie_dsp_lms <- function(x, d, order = 16L, mu = 0.01) {
   }
   n <- length(x)
   w <- numeric(order)
-  y <- numeric(n); e <- numeric(n)
+  y <- numeric(n)
+  e <- numeric(n)
   for (i in seq.int(order + 1L, n)) {
     seg <- rev(x[(i - order):(i - 1L)])
     y[i] <- sum(w * seg)
@@ -193,7 +195,8 @@ morie_dsp_lms <- function(x, d, order = 16L, mu = 0.01) {
 #' @references Rangayyan & Krishnan (2015), Ch. 3, sec. 3.6.
 #' @export
 morie_dsp_nlms <- function(x, d, order = 16L, mu = 0.5, eps = 1e-8) {
-  x <- as.numeric(x); d <- as.numeric(d)
+  x <- as.numeric(x)
+  d <- as.numeric(d)
   if (length(x) != length(d)) stop("x and d must be the same length")
   order <- as.integer(order)
   if (.morie_dsp_cpp_ok("morie_dsp_nlms_cpp")) {
@@ -201,7 +204,8 @@ morie_dsp_nlms <- function(x, d, order = 16L, mu = 0.5, eps = 1e-8) {
   }
   n <- length(x)
   w <- numeric(order)
-  y <- numeric(n); e <- numeric(n)
+  y <- numeric(n)
+  e <- numeric(n)
   for (i in seq.int(order + 1L, n)) {
     seg <- rev(x[(i - order):(i - 1L)])
     nrm <- sum(seg * seg) + eps
@@ -226,7 +230,8 @@ morie_dsp_nlms <- function(x, d, order = 16L, mu = 0.5, eps = 1e-8) {
 #'   Haykin (2002).
 #' @export
 morie_dsp_rls <- function(x, d, order = 16L, lam = 0.99, delta = 100) {
-  x <- as.numeric(x); d <- as.numeric(d)
+  x <- as.numeric(x)
+  d <- as.numeric(d)
   if (length(x) != length(d)) stop("x and d must be the same length")
   order <- as.integer(order)
   if (.morie_dsp_cpp_ok("morie_dsp_rls_cpp")) {
@@ -235,7 +240,8 @@ morie_dsp_rls <- function(x, d, order = 16L, lam = 0.99, delta = 100) {
   n <- length(x)
   w <- numeric(order)
   P <- delta * diag(order)
-  y <- numeric(n); e <- numeric(n)
+  y <- numeric(n)
+  e <- numeric(n)
   for (i in seq.int(order + 1L, n)) {
     seg <- rev(x[(i - order):(i - 1L)])
     y[i] <- sum(w * seg)
@@ -315,7 +321,8 @@ morie_dsp_comb <- function(x, fundamental, fs, n_harmonics = 5L, q = 30) {
 #' @references Rangayyan & Krishnan (2015), Ch. 3, sec. 3.5.
 #' @export
 morie_dsp_matched <- function(x, template) {
-  x <- as.numeric(x); template <- as.numeric(template)
+  x <- as.numeric(x)
+  template <- as.numeric(template)
   nrm <- sqrt(sum(template^2))
   if (nrm == 0) stop("template has zero norm")
   # correlate(x, template, "same") = convolve(x, rev(template), "same")
@@ -376,7 +383,8 @@ morie_dsp_synchronized_average <- function(x, trigger_indices,
 #' @references Rangayyan & Krishnan (2015), Ch. 3, sec. 3.2.
 #' @export
 morie_dsp_snr <- function(signal, noise) {
-  ps <- mean(signal^2); pn <- mean(noise^2)
+  ps <- mean(signal^2)
+  pn <- mean(noise^2)
   if (pn == 0) return(Inf)
   10 * log10(ps / pn)
 }
@@ -461,7 +469,8 @@ morie_dsp_wiener_hopf <- function(Rxx, rxd) {
 #' @references Rangayyan & Krishnan (2015), Ch. 3, sec. 3.4.
 #' @export
 morie_dsp_cross_correlation <- function(x, y, max_lag = NULL) {
-  x <- as.numeric(x); y <- as.numeric(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
   if (length(x) != length(y)) stop("x and y must be the same length")
   n <- length(x)
   if (is.null(max_lag)) max_lag <- n - 1L
@@ -469,7 +478,8 @@ morie_dsp_cross_correlation <- function(x, y, max_lag = NULL) {
   if (.morie_dsp_cpp_ok("morie_dsp_cross_correlation_cpp")) {
     return(morie_dsp_cross_correlation_cpp(x, y, max_lag))
   }
-  xc <- x - mean(x); yc <- y - mean(y)
+  xc <- x - mean(x)
+  yc <- y - mean(y)
   nrm <- sqrt(sum(xc^2) * sum(yc^2))
   # r(tau) = sum_t xc(t) * yc(t + tau) over valid overlap;
   # returns 2*max_lag + 1 values, lag 0 sits at the centre index.
@@ -507,7 +517,8 @@ morie_dsp_even_odd <- function(x) {
 
 # "same"-mode convolution matching numpy.convolve(x, k, "same").
 .same_convolve <- function(x, k) {
-  n <- length(x); m <- length(k)
+  n <- length(x)
+  m <- length(k)
   full <- stats::convolve(x, rev(k), type = "open")  # numpy "full"
   out_len <- n
   start <- (length(full) - out_len) %/% 2L + 1L

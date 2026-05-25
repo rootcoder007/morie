@@ -620,7 +620,8 @@ morie_estimate_g_computation <- function(data, treatment, outcome, covariates,
   folds <- sample(rep(seq_len(n_folds), length.out = n))
   pred <- numeric(n)
   Xs <- scale(X)
-  center <- attr(Xs, "scaled:center"); scl <- attr(Xs, "scaled:scale")
+  center <- attr(Xs, "scaled:center")
+  scl <- attr(Xs, "scaled:scale")
   scl[scl == 0] <- 1
   Xs[, ] <- sweep(sweep(X, 2, center, "-"), 2, scl, "/")
   for (k in seq_len(n_folds)) {
@@ -816,7 +817,9 @@ morie_estimate_irm <- function(data, treatment, outcome, covariates,
   X <- prep$X
   set.seed(random_state)
   folds <- sample(rep(seq_len(n_folds), length.out = n))
-  mu1 <- numeric(n); mu0 <- numeric(n); ps <- numeric(n)
+  mu1 <- numeric(n)
+  mu0 <- numeric(n)
+  ps <- numeric(n)
   for (k in seq_len(n_folds)) {
     te <- which(folds == k)
     tr <- setdiff(seq_len(n), te)
@@ -860,7 +863,8 @@ morie_estimate_irm <- function(data, treatment, outcome, covariates,
 .dml_xfit_ridge_predict <- function(X_tr, y_tr, X_te, lambda = 1.0) {
   p <- ncol(X_tr)
   ctr <- colMeans(X_tr)
-  scl <- apply(X_tr, 2, stats::sd); scl[scl == 0 | !is.finite(scl)] <- 1
+  scl <- apply(X_tr, 2, stats::sd)
+  scl[scl == 0 | !is.finite(scl)] <- 1
   Xs_tr <- sweep(sweep(X_tr, 2, ctr, "-"), 2, scl, "/")
   Xs_te <- sweep(sweep(X_te, 2, ctr, "-"), 2, scl, "/")
   yc <- mean(y_tr)

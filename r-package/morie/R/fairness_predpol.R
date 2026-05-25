@@ -154,8 +154,10 @@ morie_fairness_predpol_calibration_audit <- function(areas, mean_risk,
       "%d area(s) had a non-finite risk or outcome value and were dropped.",
       sum(!finite)
     ))
-    areas <- areas[finite]; mean_risk <- mean_risk[finite]
-    outcome_rate <- outcome_rate[finite]; group <- group[finite]
+    areas <- areas[finite]
+    mean_risk <- mean_risk[finite]
+    outcome_rate <- outcome_rate[finite]
+    group <- group[finite]
     n <- length(areas)
     if (n < 2L) stop("fewer than two areas remain after dropping non-finite rows")
   }
@@ -165,7 +167,8 @@ morie_fairness_predpol_calibration_audit <- function(areas, mean_risk,
   outcome_rank <- rank(-outcome_rate, ties.method = "average")
   rank_gap <- outcome_rank - risk_rank
 
-  rho <- NA_real_; pval <- NA_real_
+  rho <- NA_real_
+  pval <- NA_real_
   if (diff(range(mean_risk)) == 0 || diff(range(outcome_rate)) == 0) {
     warnings <- c(warnings,
       "Spearman calibration correlation is undefined \u2014 predicted risk or realised outcome is constant across all areas.")
@@ -272,7 +275,8 @@ morie_fairness_predpol_score_disparity <- function(score, group,
     warnings <- c(warnings, sprintf(
       "%d non-finite score value(s) dropped.", sum(!finite)
     ))
-    score <- score[finite]; group <- group[finite]
+    score <- score[finite]
+    group <- group[finite]
   }
   groups <- .predpol_ordered_unique(group)
   if (length(groups) < 2L) {
@@ -301,12 +305,15 @@ morie_fairness_predpol_score_disparity <- function(score, group,
                                       var.equal = TRUE),
                    error = function(e) NULL)
     if (!is.null(av)) {
-      fstat <- as.numeric(av$statistic); pval <- as.numeric(av$p.value)
+      fstat <- as.numeric(av$statistic)
+      pval <- as.numeric(av$p.value)
     } else {
-      fstat <- NA_real_; pval <- NA_real_
+      fstat <- NA_real_
+      pval <- NA_real_
     }
   } else {
-    fstat <- NA_real_; pval <- NA_real_
+    fstat <- NA_real_
+    pval <- NA_real_
     warnings <- c(warnings, "ANOVA skipped: fewer than two groups with n >= 2.")
   }
 

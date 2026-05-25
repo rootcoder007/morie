@@ -32,7 +32,8 @@ NULL
 .val_auc <- function(y_true, y_pred) {
   # Mann-Whitney-based AUC; ties contribute 0.5
   y_true <- as.integer(y_true)
-  pos <- y_pred[y_true == 1L]; neg <- y_pred[y_true == 0L]
+  pos <- y_pred[y_true == 1L]
+  neg <- y_pred[y_true == 0L]
   if (length(pos) == 0L || length(neg) == 0L) return(NA_real_)
   r <- rank(c(pos, neg))
   (sum(r[seq_along(pos)]) - length(pos) * (length(pos) + 1) / 2) /
@@ -92,13 +93,16 @@ column_rule <- function(name, dtype = NULL, required = TRUE,
 #' @param raise_on_error If TRUE, throw on first error.
 #' @export
 validate_schema <- function(data, rules, raise_on_error = FALSE) {
-  errors <- character(0); warnings_ <- character(0); passed <- TRUE
+  errors <- character(0)
+  warnings_ <- character(0)
+  passed <- TRUE
 
   for (rule in rules) {
     if (!(rule$name %in% names(data))) {
       if (isTRUE(rule$required)) {
         msg <- sprintf("Missing required column: '%s'", rule$name)
-        errors <- c(errors, msg); passed <- FALSE
+        errors <- c(errors, msg)
+        passed <- FALSE
         if (raise_on_error) stop(msg)
       }
       next
@@ -109,7 +113,8 @@ validate_schema <- function(data, rules, raise_on_error = FALSE) {
     if (!is.null(rule$dtype)) {
       if (rule$dtype == "numeric" && !is.numeric(col)) {
         errors <- c(errors, sprintf("Column '%s' expected numeric, got %s",
-                                    rule$name, class(col)[1])); passed <- FALSE
+                                    rule$name, class(col)[1]))
+                                    passed <- FALSE
       } else if (rule$dtype %in% c("character", "object") &&
                  !is.character(col) && !is.factor(col)) {
         warnings_ <- c(warnings_,
@@ -118,7 +123,8 @@ validate_schema <- function(data, rules, raise_on_error = FALSE) {
       } else if (rule$dtype == "datetime" &&
                  !inherits(col, c("POSIXct", "POSIXlt", "Date"))) {
         errors <- c(errors, sprintf("Column '%s' expected datetime, got %s",
-                                    rule$name, class(col)[1])); passed <- FALSE
+                                    rule$name, class(col)[1]))
+                                    passed <- FALSE
       }
     }
     # null checks
@@ -126,12 +132,14 @@ validate_schema <- function(data, rules, raise_on_error = FALSE) {
     if (!isTRUE(rule$nullable) && nfrac > 0) {
       errors <- c(errors,
         sprintf("Column '%s' has %d NA but nullable=FALSE",
-                rule$name, sum(is.na(col)))); passed <- FALSE
+                rule$name, sum(is.na(col))))
+                passed <- FALSE
     }
     if (nfrac > rule$null_threshold) {
       errors <- c(errors,
         sprintf("Column '%s' null fraction %.3f exceeds threshold %.3f",
-                rule$name, nfrac, rule$null_threshold)); passed <- FALSE
+                rule$name, nfrac, rule$null_threshold))
+                passed <- FALSE
     }
     # range
     if (!is.null(rule$min_val) && is.numeric(col)) {
@@ -167,7 +175,8 @@ validate_schema <- function(data, rules, raise_on_error = FALSE) {
       if (nd > 0) {
         errors <- c(errors, sprintf(
           "Column '%s' has %d duplicate values (unique=TRUE)",
-          rule$name, nd)); passed <- FALSE
+          rule$name, nd))
+          passed <- FALSE
       }
     }
     # regex
@@ -176,7 +185,8 @@ validate_schema <- function(data, rules, raise_on_error = FALSE) {
       if (any(!m)) {
         errors <- c(errors, sprintf(
           "Column '%s': %d values don't match regex '%s'",
-          rule$name, sum(!m), rule$regex)); passed <- FALSE
+          rule$name, sum(!m), rule$regex))
+          passed <- FALSE
       }
     }
     # custom
@@ -185,8 +195,9 @@ validate_schema <- function(data, rules, raise_on_error = FALSE) {
                      error = function(e) {
                        errors <<- c(errors, sprintf(
                          "Column '%s': custom validation raised %s",
-                         rule$name, conditionMessage(e)));
-                       passed <<- FALSE; FALSE
+                         rule$name, conditionMessage(e)))
+                       passed <<- FALSE
+                       FALSE
                      })
       if (!ok && length(errors) == 0L) {
         errors <- c(errors,
@@ -207,8 +218,10 @@ validate_schema <- function(data, rules, raise_on_error = FALSE) {
 #' @param child_key,parent_key Column names.
 #' @export
 check_referential_integrity <- function(child, parent, child_key, parent_key) {
-  pv <- unique(parent[[parent_key]]); pv <- pv[!is.na(pv)]
-  cv <- child[[child_key]]; cv <- cv[!is.na(cv)]
+  pv <- unique(parent[[parent_key]])
+  pv <- pv[!is.na(pv)]
+  cv <- child[[child_key]]
+  cv <- cv[!is.na(cv)]
   orphans <- cv[!(cv %in% pv)]
   if (length(orphans) > 0) {
     return(.val_result("morie_schema_result", passed = FALSE,
@@ -249,7 +262,8 @@ score_data_quality <- function(data, date_cols = NULL, freshness_days = 365L,
     details$consistency_checks <- length(consistency_rules)
     details$consistency_passed <- n_pass
   } else {
-    consistency <- 1.0; details$consistency_checks <- 0L
+    consistency <- 1.0
+    details$consistency_checks <- 0L
   }
 
   if (!is.null(date_cols) && length(date_cols) > 0L) {
@@ -304,7 +318,8 @@ score_data_quality <- function(data, date_cols = NULL, freshness_days = 365L,
     "stratified_kfold" = {
       out <- vector("list", n_folds)
       for (lvl in unique(y)) {
-        idx <- which(y == lvl); idx <- sample(idx)
+        idx <- which(y == lvl)
+        idx <- sample(idx)
         f <- cut(seq_along(idx), n_folds, labels = FALSE)
         for (k in seq_len(n_folds)) out[[k]] <- c(out[[k]], idx[f == k])
       }
@@ -312,7 +327,8 @@ score_data_quality <- function(data, date_cols = NULL, freshness_days = 365L,
     },
     "grouped_kfold" = {
       if (is.null(groups)) stop("groups required for grouped_kfold")
-      g <- unique(groups); g <- sample(g)
+      g <- unique(groups)
+      g <- sample(g)
       f <- cut(seq_along(g), n_folds, labels = FALSE)
       lapply(seq_len(n_folds), function(k) which(groups %in% g[f == k]))
     },
@@ -325,7 +341,8 @@ score_data_quality <- function(data, date_cols = NULL, freshness_days = 365L,
     "time_series" = {
       step <- floor(n / (n_folds + 1L))
       lapply(seq_len(n_folds), function(k) {
-        train_end <- step * k; test_end <- min(n, train_end + step)
+        train_end <- step * k
+        test_end <- min(n, train_end + step)
         seq.int(train_end + 1L, test_end)
       })
     },
@@ -352,7 +369,8 @@ cross_validate <- function(fit_fn, predict_fn, X, y,
                             n_folds = 5L, n_repeats = 10L,
                             scoring = "roc_auc", groups = NULL,
                             confidence = 0.95, random_state = 42L) {
-  X <- as.matrix(X); y <- as.vector(y)
+  X <- as.matrix(X)
+  y <- as.vector(y)
   n <- length(y)
   test_idx <- .val_cv_indices(n, n_folds, method, y = y, groups = groups,
                               n_repeats = n_repeats, random_state = random_state)
@@ -453,7 +471,8 @@ nested_cross_validate <- function(fit_fn = NULL, predict_fn = NULL,
          "and hyperparam_grid are all required in the full form.")
   }
 
-  X <- as.matrix(X); y <- as.vector(y)
+  X <- as.matrix(X)
+  y <- as.vector(y)
   n <- length(y)
   if (n < outer_k || outer_k < 2L) {
     stop("nested_cross_validate: outer_k must be >= 2 and <= n.")
@@ -536,7 +555,9 @@ bootstrap_validate <- function(fit_fn, predict_fn, X, y,
                                 scoring = "roc_auc",
                                 method = "632plus",
                                 random_state = 42L) {
-  X <- as.matrix(X); y <- as.vector(y); n <- length(y)
+  X <- as.matrix(X)
+  y <- as.vector(y)
+  n <- length(y)
   set.seed(random_state)
   apparent <- .val_score(scoring, y, predict_fn(fit_fn(X, y), X))
   oob <- numeric(0)
@@ -588,8 +609,10 @@ assess_calibration <- function(y_true, y_pred, n_groups = 10L) {
   groups <- split(ord, cut(seq_along(ord), n_groups, labels = FALSE))
   hl <- 0
   for (g in groups) {
-    obs <- sum(y_true[g]); exp_ <- sum(y_pred[g])
-    n_g <- length(g); avg_p <- mean(y_pred[g])
+    obs <- sum(y_true[g])
+    exp_ <- sum(y_pred[g])
+    n_g <- length(g)
+    avg_p <- mean(y_pred[g])
     if (avg_p > 0 && avg_p < 1)
       hl <- hl + (obs - exp_)^2 / (n_g * avg_p * (1 - avg_p))
   }
@@ -600,7 +623,8 @@ assess_calibration <- function(y_true, y_pred, n_groups = 10L) {
   cal_slope <- unname(stats::coef(fit)[2])
   cal_intercept <- unname(stats::coef(fit)[1])
   brier <- .val_brier(y_true, y_pred)
-  prev <- mean(y_true); brier_max <- prev * (1 - prev)
+  prev <- mean(y_true)
+  brier_max <- prev * (1 - prev)
   scaled <- if (brier_max > 0) 1 - brier / brier_max else 0
   citl <- mean(y_pred) - mean(y_true)
   .val_result("morie_calibration_result",
@@ -627,7 +651,8 @@ assess_discrimination <- function(y_true, y_pred, y_pred_ref = NULL,
                                    n_bootstrap = 1000L,
                                    confidence = 0.95,
                                    random_state = 42L) {
-  y_true <- as.integer(y_true); y_pred <- as.numeric(y_pred)
+  y_true <- as.integer(y_true)
+  y_pred <- as.numeric(y_pred)
   auroc <- .val_auc(y_true, y_pred)
   set.seed(random_state)
   boots <- numeric(0)
@@ -643,7 +668,8 @@ assess_discrimination <- function(y_true, y_pred, y_pred_ref = NULL,
   ev <- y_true == 1L
   disc_slope <- mean(y_pred[ev]) - mean(y_pred[!ev])
 
-  nri_val <- NA_real_; idi_val <- NA_real_
+  nri_val <- NA_real_
+  idi_val <- NA_real_
   if (!is.null(y_pred_ref)) {
     y_pred_ref <- as.numeric(y_pred_ref)
     up_e <- sum(y_pred[ev] > y_pred_ref[ev]) -
@@ -674,15 +700,18 @@ assess_discrimination <- function(y_true, y_pred, y_pred_ref = NULL,
 #'   \code{seq(0.01, 0.99, 0.01)}).
 #' @export
 decision_curve_analysis <- function(y_true, y_pred, thresholds = NULL) {
-  y_true <- as.integer(y_true); y_pred <- as.numeric(y_pred)
+  y_true <- as.integer(y_true)
+  y_pred <- as.numeric(y_pred)
   n <- length(y_true)
   if (is.null(thresholds)) thresholds <- seq(0.01, 0.98, by = 0.01)
   prev <- mean(y_true)
   nb <- numeric(length(thresholds))
   nb_all <- numeric(length(thresholds))
   for (i in seq_along(thresholds)) {
-    t <- thresholds[i]; pp <- y_pred >= t
-    tp <- sum(pp & y_true == 1L); fp <- sum(pp & y_true == 0L)
+    t <- thresholds[i]
+    pp <- y_pred >= t
+    tp <- sum(pp & y_true == 1L)
+    fp <- sum(pp & y_true == 0L)
     nb[i] <- tp / n - fp / n * (t / (1 - t))
     nb_all[i] <- prev - (1 - prev) * (t / (1 - t))
   }
@@ -704,7 +733,9 @@ detect_overfitting <- function(fit_fn, predict_fn, X, y,
                                 scoring = "roc_auc",
                                 n_bootstrap = 200L,
                                 random_state = 42L) {
-  X <- as.matrix(X); y <- as.vector(y); n <- length(y)
+  X <- as.matrix(X)
+  y <- as.vector(y)
+  n <- length(y)
   set.seed(random_state)
   apparent <- .val_score(scoring, y, predict_fn(fit_fn(X, y), X))
   opt <- numeric(0)
@@ -758,11 +789,13 @@ temporal_validate <- function(fit_fn, predict_fn, X, y, date_col,
                                   split_quantile, names = FALSE)
     split_date <- as.POSIXct(split_date, origin = "1970-01-01")
   } else split_date <- as.POSIXct(split_date)
-  tr <- dates <= split_date; te <- dates > split_date
+  tr <- dates <= split_date
+  te <- dates > split_date
   feat_cols <- setdiff(names(X), date_col)
   X_tr <- as.matrix(X[tr, feat_cols, drop = FALSE])
   X_te <- as.matrix(X[te, feat_cols, drop = FALSE])
-  y_tr <- y[tr]; y_te <- y[te]
+  y_tr <- y[tr]
+  y_te <- y[te]
   if (length(unique(y_tr)) < 2L || length(unique(y_te)) < 2L)
     stop("Both train and test must have at least 2 classes.")
   mdl <- fit_fn(X_tr, y_tr)
@@ -790,7 +823,8 @@ temporal_validate <- function(fit_fn, predict_fn, X, y, date_col,
 #' @export
 external_validate <- function(predict_fn, X_external, y_external,
                                X_development = NULL) {
-  X_ext <- as.matrix(X_external); y_ext <- as.integer(y_external)
+  X_ext <- as.matrix(X_external)
+  y_ext <- as.integer(y_external)
   y_pred <- predict_fn(X_ext)
   disc <- assess_discrimination(y_ext, y_pred)
   cal <- assess_calibration(y_ext, y_pred)

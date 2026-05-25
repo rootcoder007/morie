@@ -272,7 +272,8 @@ morie_entheo_spectral_band_power <- function(signal,
     b <- bands[[i]]
     mask <- f >= b$lo & f <= b$hi
     if (sum(mask) < 2L) {
-      absp <- NA_real_; rel <- NA_real_
+      absp <- NA_real_
+      rel <- NA_real_
     } else {
       absp <- .morie_entheo_trapz(psd[mask], f[mask])
       rel <- if (!is.na(total) && total > 0) absp / total else NA_real_
@@ -341,7 +342,8 @@ morie_entheo_dynamic_functional_connectivity <- function(bold,
       payload = list()
     ))
   }
-  nr <- nrow(bold); nt <- ncol(bold)
+  nr <- nrow(bold)
+  nt <- ncol(bold)
   # Upper-triangular index pairs (k=1, excluding diagonal).
   iu <- which(upper.tri(matrix(0, nr, nr), diag = FALSE), arr.ind = TRUE)
   starts <- seq.int(1L, nt - window + 1L, by = step)
@@ -389,7 +391,11 @@ morie_entheo_dynamic_functional_connectivity <- function(bold,
 .morie_entheo_lz76 <- function(b) {
   n <- length(b)
   if (n == 0L) return(0L)
-  i <- 1L; c <- 1L; l <- 1L; k <- 1L; kmax <- 1L
+  i <- 1L
+  c <- 1L
+  l <- 1L
+  k <- 1L
+  kmax <- 1L
   while (TRUE) {
     if (b[i + k - 1L] != b[l + k - 1L]) {
       if (k > kmax) kmax <- k

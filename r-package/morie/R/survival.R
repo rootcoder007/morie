@@ -21,7 +21,8 @@
 }
 
 .validate_te <- function(time, event) {
-  t <- as.numeric(time); e <- as.numeric(event)
+  t <- as.numeric(time)
+  e <- as.numeric(event)
   if (length(t) != length(e))
     stop("time and event must have equal length.", call. = FALSE)
   ok <- is.finite(t) & is.finite(e) & t >= 0
@@ -486,7 +487,8 @@ morie_survival_turnbull <- function(left, right, max_iter = 200, tol = 1e-6) {
     stop("NotYetPorted: hand-rolled Turnbull EM not implemented; install 'survival'.",
          call. = FALSE)
   }
-  L <- as.numeric(left); R <- as.numeric(right)
+  L <- as.numeric(left)
+  R <- as.numeric(right)
   fit <- survival::survfit(survival::Surv(L, R, type = "interval2") ~ 1)
   list(times = fit$time, survival = fit$surv, method = "Turnbull NPMLE")
 }

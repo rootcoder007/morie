@@ -1802,4 +1802,3 @@ morie_datasets_tps_victims_of_crime <- function(format = "json",
                                        offline = offline,
                                        dest = dest)
 }
-

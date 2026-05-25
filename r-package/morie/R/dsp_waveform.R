@@ -101,7 +101,8 @@ morie_dsp_waveform_length_norm <- function(x) {
 morie_dsp_turns_count <- function(x, threshold = 0) {
   d <- diff(x)
   if (length(d) < 2L) return(0L)
-  prev <- d[-length(d)]; nxt <- d[-1L]
+  prev <- d[-length(d)]
+  nxt <- d[-1L]
   as.integer(sum(prev * nxt < 0 & abs(prev - nxt) > threshold))
 }
 
@@ -118,7 +119,8 @@ morie_dsp_turns_count <- function(x, threshold = 0) {
 morie_dsp_slope_sign_changes <- function(x, threshold = 0) {
   d <- diff(x)
   if (length(d) < 2L) return(0L)
-  prev <- d[-length(d)]; nxt <- d[-1L]
+  prev <- d[-length(d)]
+  nxt <- d[-1L]
   as.integer(sum(prev * nxt < 0 & abs(nxt) > threshold))
 }
 
@@ -266,7 +268,8 @@ morie_dsp_arc_length <- function(x) {
 #' @export
 morie_dsp_centroidal_time <- function(x, fs = 1) {
   t <- (seq_along(x) - 1L) / fs
-  e <- x^2; total <- sum(e)
+  e <- x^2
+  total <- sum(e)
   if (total == 0) return(0)
   sum(t * e) / total
 }
@@ -320,7 +323,8 @@ morie_dsp_entropy_histogram <- function(x, n_bins = 50L) {
 #'   Higuchi (1988).
 #' @export
 morie_dsp_higuchi_fd <- function(x, kmax = 10L) {
-  x <- as.numeric(x); n <- length(x)
+  x <- as.numeric(x)
+  n <- length(x)
   lk <- numeric(kmax)
   for (k in seq_len(kmax)) {
     lm_sum <- 0
@@ -367,7 +371,8 @@ morie_dsp_katz_fd <- function(x, n_scales = 10L) {
     1L), n))
   counts <- integer(length(scales))
   for (j in seq_along(scales)) {
-    s <- scales[j]; n_boxes <- 0L
+    s <- scales[j]
+    n_boxes <- 0L
     starts <- seq.int(1L, n, by = s)
     for (i in starts) {
       seg <- x_norm[i:min(i + s - 1L, n)]
@@ -399,7 +404,8 @@ morie_dsp_ruler_fd <- function(x, n_rulers = 10L) {
   lengths <- numeric(length(rulers))
   for (j in seq_along(rulers)) {
     r <- rulers[j]
-    total <- 0; pos <- 1L
+    total <- 0
+    pos <- 1L
     while (pos + r <= n) {
       total <- total + sqrt(r^2 + (x[pos + r] - x[pos])^2)
       pos <- pos + r
@@ -524,7 +530,8 @@ morie_dsp_qrs_features <- function(beat) {
 #' @references Rangayyan & Krishnan (2015), Ch. 5.
 #' @export
 morie_dsp_baseline_correlation <- function(x, y) {
-  xc <- x - mean(x); yc <- y - mean(y)
+  xc <- x - mean(x)
+  yc <- y - mean(y)
   den <- sqrt(sum(xc^2) * sum(yc^2))
   if (den == 0) return(0)
   sum(xc * yc) / den

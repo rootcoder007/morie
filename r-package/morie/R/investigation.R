@@ -255,12 +255,14 @@ morie_run_treatment_effects_analysis <- function(data, treatment, outcome,
   y1_mean <- if (any(treated)) mean(y[treated]) else NA_real_
   y0_mean <- if (any(control)) mean(y[control]) else NA_real_
 
-  ps_c <- ps[control]; y_c <- y[control]
+  ps_c <- ps[control]
+  y_c <- y[control]
   att_w <- ps_c / (1 - ps_c)
   y0_att <- if (sum(att_w) > 0) sum(y_c * att_w) / sum(att_w) else NA_real_
   att <- y1_mean - y0_att
 
-  ps_t <- ps[treated]; y_t <- y[treated]
+  ps_t <- ps[treated]
+  y_t <- y[treated]
   atc_w <- (1 - ps_t) / ps_t
   y1_atc <- if (sum(atc_w) > 0) sum(y_t * atc_w) / sum(atc_w) else NA_real_
   atc <- y1_atc - y0_mean
@@ -284,13 +286,18 @@ morie_run_treatment_effects_analysis <- function(data, treatment, outcome,
       st <- as.numeric(sub[[treatment]])
       sy <- as.numeric(sub[[outcome]])
       sps <- sub$ps
-      n_t <- sum(st == 1); n_c <- sum(st == 0)
+      n_t <- sum(st == 1)
+      n_c <- sum(st == 0)
       if (n_t < 2 || n_c < 2) next
       h <- .morie_hajek_ate(sps, st, sy)
-      ps_tt <- sps[st == 1]; ps_cc <- sps[st == 0]
-      y_tt  <- sy[st == 1];  y_cc  <- sy[st == 0]
-      w_t <- 1 / ps_tt;       w_c <- 1 / (1 - ps_cc)
-      r_t <- y_tt - h$y1;     r_c <- y_cc - h$y0
+      ps_tt <- sps[st == 1]
+      ps_cc <- sps[st == 0]
+      y_tt  <- sy[st == 1]
+      y_cc  <- sy[st == 0]
+      w_t <- 1 / ps_tt
+      w_c <- 1 / (1 - ps_cc)
+      r_t <- y_tt - h$y1
+      r_c <- y_cc - h$y0
       var_y1 <- if (sum(w_t) > 0) sum(w_t^2 * r_t^2) / (sum(w_t)^2) else 0
       var_y0 <- if (sum(w_c) > 0) sum(w_c^2 * r_c^2) / (sum(w_c)^2) else 0
       se <- sqrt(var_y1 + var_y0)
