@@ -146,5 +146,14 @@ VignetteBuilder: knitr
 URL: https://github.com/rootcoder007/morie
 BugReports: https://github.com/rootcoder007/morie/issues
 Config/testthat/edition: 3
+biocViews:
+  Software,
+  StatisticalMethod,
+  Survival,
+  Spatial,
+  TimeSeries,
+  Bayesian,
+  MultipleComparison,
+  Visualization
 Remotes:
   synth-inference/synthdid
