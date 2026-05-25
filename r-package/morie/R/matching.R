@@ -1355,11 +1355,24 @@ morie_matching_cardinality <- function(data, treatment, covariates,
                                        ps = NULL) {
   best_result <- NULL
   calipers <- list(NULL, 0.5, 0.3, 0.2, 0.15, 0.1, 0.05)
-  for (cal in calipers) {
-    res <- morie_matching_nearest_neighbor(
-      data, treatment, covariates,
-      caliper = cal, replace = FALSE, ps = ps
+  # Track repeated MatchIt warnings across calipers; collapse to a
+  # single summary at the end so we don't emit one per caliper.
+  n_few_ctrl_warn <- 0L
+  ctrl_warn_pattern <- "Fewer control units than treated"
+  call_nn <- function(...) {
+    withCallingHandlers(
+      morie_matching_nearest_neighbor(...),
+      warning = function(w) {
+        if (grepl(ctrl_warn_pattern, conditionMessage(w))) {
+          n_few_ctrl_warn <<- n_few_ctrl_warn + 1L
+          invokeRestart("muffleWarning")
+        }
+      }
     )
+  }
+  for (cal in calipers) {
+    res <- call_nn(data, treatment, covariates,
+                    caliper = cal, replace = FALSE, ps = ps)
     if (!nrow(res$matched_data)) next
     bal <- morie_matching_balance(res$matched_data, treatment, covariates)
     if (bal$max_smd <= balance_threshold) {
@@ -1374,11 +1387,14 @@ morie_matching_cardinality <- function(data, treatment, covariates,
     }
   }
   if (is.null(best_result)) {
-    best_result <- morie_matching_nearest_neighbor(
-      data, treatment, covariates, ps = ps
-    )
+    best_result <- call_nn(data, treatment, covariates, ps = ps)
     best_result$method <- "cardinality"
     best_result$details$warning <- "Balance threshold not achieved."
+  }
+  if (n_few_ctrl_warn > 0L) {
+    warning(sprintf(
+      "%d of %d caliper passes had fewer control units than treated; not all treated units in those passes got a match.",
+      n_few_ctrl_warn, length(calipers)), call. = FALSE)
   }
   best_result
 }
@@ -1883,25 +1899,43 @@ morie_matching_doubly_robust <- function(data, outcome, treatment, covariates,
 
   n <- nrow(df)
   boot_ests <- numeric(0)
+  # Track the "Fewer control units than treated" warning that MatchIt
+  # emits per-resample inside the bootstrap loop; we collapse N
+  # individual warnings into a single summary at the end so the user
+  # still gets the signal without 20+ duplicate messages.
+  n_few_ctrl_warn <- 0L
+  ctrl_warn_pattern <- "Fewer control units than treated"
   for (b in seq_len(n_bootstrap)) {
     idx <- sample.int(n, n, replace = TRUE)
     df_b <- df[idx, , drop = FALSE]
     rownames(df_b) <- as.character(seq_len(n))
-    out_b <- tryCatch({
-      mr_b <- morie_matching_nearest_neighbor(df_b, treatment, covariates,
-                                              n_neighbors = 1L)
-      md_b <- mr_b$matched_data
-      cm <- md_b[[treatment]] == 0
-      tm <- md_b[[treatment]] == 1
-      if (sum(cm) < 2 || sum(tm) < 2) return(NA_real_)
-      Xc_b <- as.data.frame(md_b[cm, covariates, drop = FALSE])
-      yc_b <- as.numeric(md_b[cm, outcome])
-      lr <- stats::lm(yc_b ~ ., data = cbind(yc_b = yc_b, Xc_b))
-      Xt_b <- as.data.frame(md_b[tm, covariates, drop = FALSE])
-      y0h <- stats::predict(lr, newdata = Xt_b)
-      mean(as.numeric(md_b[tm, outcome]) - y0h)
-    }, error = function(e) NA_real_)
+    out_b <- tryCatch(
+      withCallingHandlers({
+        mr_b <- morie_matching_nearest_neighbor(df_b, treatment, covariates,
+                                                n_neighbors = 1L)
+        md_b <- mr_b$matched_data
+        cm <- md_b[[treatment]] == 0
+        tm <- md_b[[treatment]] == 1
+        if (sum(cm) < 2 || sum(tm) < 2) return(NA_real_)
+        Xc_b <- as.data.frame(md_b[cm, covariates, drop = FALSE])
+        yc_b <- as.numeric(md_b[cm, outcome])
+        lr <- stats::lm(yc_b ~ ., data = cbind(yc_b = yc_b, Xc_b))
+        Xt_b <- as.data.frame(md_b[tm, covariates, drop = FALSE])
+        y0h <- stats::predict(lr, newdata = Xt_b)
+        mean(as.numeric(md_b[tm, outcome]) - y0h)
+      }, warning = function(w) {
+        if (grepl(ctrl_warn_pattern, conditionMessage(w))) {
+          n_few_ctrl_warn <<- n_few_ctrl_warn + 1L
+          invokeRestart("muffleWarning")
+        }
+      }),
+      error = function(e) NA_real_)
     if (!is.na(out_b)) boot_ests <- c(boot_ests, out_b)
+  }
+  if (n_few_ctrl_warn > 0L) {
+    warning(sprintf(
+      "%d of %d bootstrap resamples had fewer control units than treated; not all treated units in those resamples got a match.",
+      n_few_ctrl_warn, n_bootstrap), call. = FALSE)
   }
   se <- if (length(boot_ests) > 1L) stats::sd(boot_ests) else NA_real_
 

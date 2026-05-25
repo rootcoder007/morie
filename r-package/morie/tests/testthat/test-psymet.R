@@ -64,9 +64,15 @@ test_that("morie_psymet_alpha handles zero total variance", {
 # morie_psymet_omega
 # ---------------------------------------------------------------------------
 
-test_that("morie_psymet_omega runs and is bounded in [0,1]", {
+test_that("morie_psymet_omega(nf=1) returns bounded values + warns omega_h is meaningless", {
   X <- .make_items(n = 80, k = 6, rho = 0.5)
-  res <- morie_psymet_omega(X, nf = 1)
+  # psych::omega(nf=1) correctly warns that omega_h and omega_asymptotic
+  # are not meaningful with one factor -- this is real signal users
+  # need, so we assert the warning rather than muffle it.
+  expect_warning(
+    res <- morie_psymet_omega(X, nf = 1),
+    "Omega_h and Omega_asymptotic are not meaningful with one factor"
+  )
   expect_type(res, "list")
   expect_true(res$total >= 0 && res$total <= 1)
   expect_true(res$hier  >= 0 && res$hier  <= 1)
@@ -75,7 +81,10 @@ test_that("morie_psymet_omega runs and is bounded in [0,1]", {
 
 test_that("morie_psymet_omega delegates when psych is installed", {
   X <- .make_items(n = 60, k = 5, rho = 0.55)
-  res <- morie_psymet_omega(X, nf = 1)
+  expect_warning(
+    res <- morie_psymet_omega(X, nf = 1),
+    "Omega_h and Omega_asymptotic are not meaningful with one factor"
+  )
   expect_true(is.numeric(res$total))
   expect_true(is.numeric(res$alpha))
 })
