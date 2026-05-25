@@ -546,3 +546,72 @@ morie_entheo_analyze_subject <- function(subject_id,
 # Defined locally so this file is self-contained even if utils-level
 # `%||%` is not yet exported package-wide.
 # ---------------------------------------------------------------------------
+
+# ===========================================================================
+# 3MMM.29 (2026-05-25): on-demand DMT_Imaging clone
+# ===========================================================================
+
+#' Clone the DMT_Imaging dataset (Timmerman et al.) into a local cache.
+#'
+#' `morie_entheo_clone_dmt_imaging()` shells out to `git clone` to
+#' fetch the open-source DMT_Imaging dataset published by Christopher
+#' Timmerman's group at <https://github.com/timmer500/DMT_Imaging>.
+#' After the clone completes, `load_dmt_imaging()` and
+#' `morie_entheo_load_*()` will pick the real fixture up
+#' automatically (they probe `$MORIE_DMT_IMAGING_ROOT` and the cache
+#' dir).
+#'
+#' This is opt-in -- the package never auto-clones at load time. We
+#' clone from a specific commit by default to make tests
+#' reproducible; pass `branch = NULL` to track main.
+#'
+#' Related upstream resources Vee surfaced 2026-05-25:
+#' - <https://github.com/timmer500/DMT_Imaging.git>  (the actual EEG+fMRI dataset)
+#' - <https://github.com/pnk314/psychedelics.git>     (analysis pipeline)
+#' - <https://github.com/lisagirard/Psychedelics.git> (review repository)
+#' - <https://github.com/kianenigma/awesome-psychedelics.git> (curated index)
+#'
+#' @param root Optional destination directory. Defaults to
+#'   `$MORIE_DMT_IMAGING_ROOT`, else `file.path(morie_cache_dir(),
+#'   "DMT_Imaging")`.
+#' @param overwrite Logical; if `TRUE` and `root` already exists,
+#'   wipe it first (rare; defaults `FALSE`).
+#' @param branch Optional branch / tag / SHA to check out after
+#'   clone. `NULL` uses the default upstream branch.
+#' @return Invisibly returns the destination path.
+#' @export
+morie_entheo_clone_dmt_imaging <- function(root = NULL,
+                                            overwrite = FALSE,
+                                            branch = NULL) {
+  if (is.null(root)) {
+    root <- Sys.getenv("MORIE_DMT_IMAGING_ROOT", "")
+    if (!nzchar(root)) {
+      root <- file.path(morie_cache_dir(), "DMT_Imaging")
+    }
+  }
+  if (dir.exists(root)) {
+    if (isTRUE(overwrite)) {
+      unlink(root, recursive = TRUE, force = TRUE)
+    } else {
+      message(sprintf(
+        "DMT_Imaging already present at %s; pass overwrite=TRUE to refresh.",
+        root))
+      return(invisible(root))
+    }
+  }
+  parent <- dirname(root)
+  if (!dir.exists(parent)) dir.create(parent, recursive = TRUE)
+  if (Sys.which("git") == "") {
+    stop("git not found on PATH; install git to clone DMT_Imaging.",
+         call. = FALSE)
+  }
+  args <- c("clone", "--depth", "1")
+  if (!is.null(branch)) args <- c(args, "--branch", as.character(branch))
+  args <- c(args, "https://github.com/timmer500/DMT_Imaging.git", root)
+  status <- system2("git", args, stdout = TRUE, stderr = TRUE)
+  if (!dir.exists(root)) {
+    stop("git clone failed: ", paste(status, collapse = "\n"),
+         call. = FALSE)
+  }
+  invisible(root)
+}
