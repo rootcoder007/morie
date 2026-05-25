@@ -30,7 +30,7 @@ test_that("mrm_tps_levy_scaling returns a Levy scaling estimate", {
 test_that("mrm_tps_moran_clustering computes spatial Moran's I", {
   df <- .make_synthetic_tps_for_mrm(n = 200L, seed = 2L)
   out <- tryCatch(
-    mrm_tps_moran_clustering(df, n_permutations = 30L),
+    mrm_tps_moran_clustering(df),
     error = function(e) e
   )
   if (inherits(out, "error")) {
