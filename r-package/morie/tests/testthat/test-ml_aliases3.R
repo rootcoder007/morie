@@ -85,8 +85,8 @@ test_that("morie_grid_search_cv runs on a small synthetic dataset", {
   x <- matrix(stats::rnorm(60 * 4), 60L, 4L)
   y <- x[, 1] + stats::rnorm(60, sd = 0.3)
   out <- tryCatch(
-    morie_grid_search_cv(x, y, method = "lm",
-                          tune_grid = list(intercept = c(TRUE, FALSE))),
+    morie_grid_search_cv(x, y, method = "rpart",
+                          tune_grid = data.frame(cp = c(0.01, 0.05, 0.1))),
     error = function(e) e)
   if (inherits(out, "error"))
     skip(sprintf("gsrch error: %s", conditionMessage(out)))
@@ -244,8 +244,10 @@ test_that("smixd runs spatial mixture on coords + outcomes", {
 test_that("sptau returns Spearman tau on (x, w) vectors", {
   set.seed(20L)
   x <- stats::rnorm(60)
-  w <- 0.5 * x + stats::rnorm(60, sd = 0.3)
-  out <- tryCatch(sptau(x = x, w = w), error = function(e) e)
+  W <- matrix(stats::rnorm(60 * 60, sd = 0.1), 60L, 60L)
+  W <- (W + t(W)) / 2  # symmetric weights
+  diag(W) <- 0
+  out <- tryCatch(sptau(x = x, w = W), error = function(e) e)
   if (inherits(out, "error"))
     skip(sprintf("sptau error: %s", conditionMessage(out)))
   expect_type(out, "list")

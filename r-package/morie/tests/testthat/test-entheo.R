@@ -61,10 +61,12 @@ test_that("san_score runs on synthetic EEG", {
 # ---------------------------------------------------- entheo_preprocess
 
 test_that("preprocess_eeg returns a preprocessed record", {
-  record <- list(eeg = .make_synthetic_eeg(n_channels = 8L,
-                                            n_samples = 256L,
-                                            fs = 256L),
-                 fs = 256L)
+  record <- list(eeg = list(
+    data_dmt = .make_synthetic_eeg(n_channels = 8L,
+                                    n_samples = 256L, fs = 256L),
+    data_pcb = .make_synthetic_eeg(n_channels = 8L,
+                                    n_samples = 256L, fs = 256L, seed = 2L),
+    sfreq = 256))
   out <- tryCatch(preprocess_eeg(record), error = function(e) e)
   if (inherits(out, "error")) {
     skip(sprintf("preprocess_eeg error: %s", conditionMessage(out)))
@@ -73,8 +75,10 @@ test_that("preprocess_eeg returns a preprocessed record", {
 })
 
 test_that("preprocess_fmri returns a preprocessed record", {
-  record <- list(fmri = .make_synthetic_fmri(n_voxels = 50L,
-                                              n_volumes = 100L),
+  record <- list(fmri = list(
+    data_dmt = .make_synthetic_fmri(n_voxels = 50L, n_volumes = 100L),
+    data_pcb = .make_synthetic_fmri(n_voxels = 50L, n_volumes = 100L, seed = 3L),
+    motion_fd_mm = runif(100L, 0, 0.4)),
                  tr = 2)
   out <- tryCatch(preprocess_fmri(record), error = function(e) e)
   if (inherits(out, "error")) {
