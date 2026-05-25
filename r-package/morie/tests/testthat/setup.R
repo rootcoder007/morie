@@ -12,3 +12,12 @@
 # morie cache, db, and download under a fresh tempfile path that R
 # auto-cleans at session exit.
 Sys.setenv(MORIE_CACHE_DIR = tempfile("morie-test-cache-"))
+
+# NOT_CRAN=true tells testthat we're not running under R CMD check
+# --as-cran, so testthat::skip_on_cran() becomes a no-op and the 17
+# CRAN-defensive tests actually execute locally and in CI. Under
+# real CRAN check the variable is unset, so the skips fire as
+# designed. `devtools::test()` sets this automatically; this line
+# covers the bare `testthat::test_dir()` invocation our covr
+# scripts use.
+Sys.setenv(NOT_CRAN = "true")
