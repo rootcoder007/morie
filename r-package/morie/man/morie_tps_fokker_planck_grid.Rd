@@ -25,6 +25,6 @@ Fits the OU parameters (theta, mu, sigma) on daily counts (same
 OLS-on-first-differences as \code{morie_tps_langevin_simulate}),
 then evolves an initial gaussian density centred on the last
 observation by an explicit advection-diffusion finite-difference
-scheme with reflective boundaries on a grid spanning
-\link{0, 1.5 * max(counts) + 1}.
+scheme with reflective boundaries on a grid spanning the
+interval \code{[0, 1.5 * max(counts) + 1]}.
 }

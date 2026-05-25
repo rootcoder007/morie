@@ -115,6 +115,7 @@ Suggests:
   reticulate,
   rmarkdown,
   rmgarch,
+  rmoriedata,
   rpart,
   RPostgres,
   RSQLite,
@@ -156,4 +157,5 @@ biocViews:
   MultipleComparison,
   Visualization
 Remotes:
+  rootcoder007/rmoriedata,
   synth-inference/synthdid

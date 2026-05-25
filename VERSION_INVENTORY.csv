@@ -300,7 +300,7 @@ File,Line,Status,Version,Context
 ./r-package/morie/DESCRIPTION,42,STALE_OR_DEP,4.3.0,"Note: Tested on R 4.3.0; 4.4.x; 4.5.2; 4.5.3 (CRAN). Use CRAN R on Apple"
 ./r-package/morie/DESCRIPTION,42,STALE_OR_DEP,4.3.0,"Note: Tested on R 4.3.0; 4.4.x; 4.5.2; 4.5.3 (CRAN). Use CRAN R on Apple"
 ./r-package/morie/DESCRIPTION,42,STALE_OR_DEP,4.3.0,"Note: Tested on R 4.3.0; 4.4.x; 4.5.2; 4.5.3 (CRAN). Use CRAN R on Apple"
-./r-package/morie/DESCRIPTION,135,STALE_OR_DEP,3.0.0,"testthat (>= 3.0.0);"
+./r-package/morie/DESCRIPTION,136,STALE_OR_DEP,3.0.0,"testthat (>= 3.0.0);"
 ./r-package/morie/NEWS.md,1,CURRENT,0.9.5.12,"# morie 0.9.5.12 - 2026-05-25"
 ./r-package/morie/NEWS.md,22,STALE_OR_DEP,0.9.5.11,"# morie 0.9.5.11 - 2026-05-25"
 ./r-package/morie/NEWS.md,35,STALE_OR_DEP,0.9.5.10,"# morie 0.9.5.10 - 2026-05-25"
