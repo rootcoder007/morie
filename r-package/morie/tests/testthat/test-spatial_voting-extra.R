@@ -193,15 +193,13 @@ test_that("morie_spatial_voting_ordinal_irt runs on ordinal vote-like data", {
 
 test_that("morie_spatial_voting_dynamic_irt accepts per-period vote matrices", {
   V <- make_synthetic_vote_matrix(20L, 12L, 1L, seed = 91L)
-  periods <- rep(1:3, length.out = nrow(V))
-  out <- tryCatch(
-    morie_spatial_voting_dynamic_irt(V, time_periods = periods),
-    error = function(e) e
-  )
-  if (inherits(out, "error")) {
-    skip(sprintf("dynamic_irt error: %s", conditionMessage(out)))
-  }
-  expect_true(is.list(out) || is.matrix(out))
+  # time_periods is one-period-per-VOTE (length == ncol(V)), NOT
+  # per-legislator -- the 3MMM.27 port iterates votes within each
+  # period and runs EM-IRT per period.
+  periods <- rep(1:3, length.out = ncol(V))
+  out <- morie_spatial_voting_dynamic_irt(V, time_periods = periods)
+  expect_true(is.list(out))
+  expect_equal(out$n_periods, 3L)
 })
 
 # ----------------------------------------------------------------------- EM-IRT

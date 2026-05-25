@@ -105,9 +105,15 @@ for (nm in ruhela_aggregate_fns) {
       skip_if_not(exists(fn_name), paste(fn_name, "not exported"))
       df <- make_synthetic_otis(id, n = 200L,
                                 seed = nchar(fn_name) + 7L)
-      res <- tryCatch(do.call(fn_name, list(df)),
-                      error = function(e) e,
-                      warning = function(w) NULL)
+      # suppressWarnings so per-fit warnings (glm convergence,
+      # MatchIt "Fewer control" summaries, etc.) don't get coerced
+      # to NULL via `warning = function(w) NULL` -- that pattern
+      # masked real RichResult payloads and caused 5 false-failures
+      # in CI on b03/b06/b08/c02/c10 (3MMM.36 fix, same shape as
+      # 3MMM.25's earlier fix at L156).
+      res <- suppressWarnings(tryCatch(
+        do.call(fn_name, list(df)),
+        error = function(e) e))
       if (inherits(res, "error")) {
         skip(sprintf("%s errored on synthetic %s panel: %s",
                      fn_name, id, conditionMessage(res)))
