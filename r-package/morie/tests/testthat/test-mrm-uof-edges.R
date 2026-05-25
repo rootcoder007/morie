@@ -27,15 +27,23 @@ test_that(".morie_env returns NULL on unset, empty, and whitespace", {
 # ── path resolver: bundled-fixture + MORIE_DATA_DIR cascade ────────
 
 test_that("path resolver errors with remediation when no candidates exist", {
-  # No bundled fixture under inst/extdata/arsau in the source tree,
-  # so with all env vars unset and no data_dir argument the resolver
-  # has no candidates that exist on disk and must error.  The error
-  # message must include the remediation paragraph.
+  # 3MMM.5 bundled inst/extdata/arsau/<year>/ so the bundled fixture
+  # always satisfies the cascade and the resolver no longer errors
+  # with all env vars unset. The remediation-error branch is now
+  # unreachable from the public API; this test is superseded by the
+  # success-path test below.
+  skip(paste("superseded by 3MMM.5: inst/extdata/arsau bundled fixture",
+             "satisfies the resolver cascade so the remediation-error",
+             "branch is no longer reachable from the public API."))
+})
+
+test_that("path resolver succeeds via the bundled inst/extdata/arsau fixture", {
+  # When env vars are unset, the resolver now finds the bundled
+  # per-year layout that 3MMM.5 added.
   withr::with_envvar(list(MORIE_ARSAU_DIR = NA, MORIE_DATA_DIR = NA), {
-    expect_error(
-      morie:::.morie_resolve_arsau_dir(data_dir = NULL),
-      "could not find ARSAU data directory"
-    )
+    p <- morie:::.morie_resolve_arsau_dir(data_dir = NULL)
+    expect_true(dir.exists(p))
+    expect_match(p, "extdata/arsau$")
   })
 })
 
@@ -53,15 +61,13 @@ test_that("path resolver: MORIE_DATA_DIR /ARSAU upper-case path tried", {
 })
 
 test_that("path resolver: error message includes all attempted candidates", {
-  withr::with_envvar(list(MORIE_ARSAU_DIR = "/nonexistent/a",
-                            MORIE_DATA_DIR = "/nonexistent/b"), {
-    err <- tryCatch(
-      morie:::.morie_resolve_arsau_dir(),
-      error = function(e) conditionMessage(e)
-    )
-    expect_match(err, "MORIE_ARSAU_DIR env var")
-    expect_match(err, "MORIE_DATA_DIR")
-  })
+  # 3MMM.5: superseded -- with the bundled fixture present, the
+  # resolver succeeds via the bundled candidate even when env vars
+  # point at nonexistent paths. Remediation-paragraph branch is no
+  # longer reachable from the public API.
+  skip(paste("superseded by 3MMM.5: inst/extdata/arsau bundled fixture",
+             "satisfies the resolver cascade so the multi-candidate",
+             "remediation-error message is no longer emitted."))
 })
 
 test_that("path resolver: require_exists=FALSE with no candidates returns NA", {
