@@ -1,7 +1,7 @@
 Package: morie
 Type: Package
 Title: Multi-Domain Open Research and Inferential Estimation
-Version: 0.9.5.11
+Version: 0.9.5.12
 Authors@R: c(
   person(
     given = "Vansh Singh",
@@ -73,7 +73,6 @@ Suggests:
   EValue,
   fixest,
   FNN,
-  fwildclusterboot,
   gbm,
   geepack,
   ggplot2,
@@ -148,6 +147,4 @@ URL: https://github.com/hadesllm/morie
 BugReports: https://github.com/hadesllm/morie/issues
 Config/testthat/edition: 3
 Remotes:
-  s3alfisc/fwildclusterboot,
-  s3alfisc/summclust,
   synth-inference/synthdid

@@ -31,7 +31,6 @@ NULL
 .morie_did_have_did            <- function() requireNamespace("did",            quietly = TRUE)
 .morie_did_have_bacondecomp    <- function() requireNamespace("bacondecomp",    quietly = TRUE)
 .morie_did_have_synthdid       <- function() requireNamespace("synthdid",       quietly = TRUE)
-.morie_did_have_fwildboot      <- function() requireNamespace("fwildclusterboot", quietly = TRUE)
 .morie_did_have_sandwich       <- function() requireNamespace("sandwich",       quietly = TRUE)
 
 #' @keywords internal
@@ -1191,10 +1190,13 @@ morie_did_synthetic <- function(data, outcome, unit, time, treatment_time,
 
 #' DiD with wild cluster bootstrap p-values (Cameron-Gelbach-Miller, 2008)
 #'
-#' Recommended when the number of clusters is small (< 50).  Prefers
-#' \code{fwildclusterboot::boottest} when available; falls back to a
-#' Rademacher / Webb implementation that mirrors the Python module
-#' otherwise.
+#' Recommended when the number of clusters is small (< 50). Uses a
+#' base-R Rademacher / Webb wild-cluster-bootstrap implementation
+#' that mirrors the Python module. Earlier morie versions also
+#' delegated to \code{fwildclusterboot::boottest} when installed; we
+#' dropped that branch because fwildclusterboot is GitHub-only and
+#' transitively requires summclust, also GitHub-only, which made the
+#' CI dependency resolver unreliable.
 #'
 #' @inheritParams morie_did_2x2
 #' @param n_bootstrap Number of bootstrap replications.
@@ -1210,43 +1212,8 @@ morie_did_wild_cluster_bootstrap <- function(data, outcome, treatment, post,
                                              weight_type = "rademacher",
                                              seed = 42L, alpha = 0.05) {
   df <- .morie_did_drop_na(data, c(outcome, treatment, post, cluster))
-  # Renamed underscore-prefixed column to `dp_interact` — R formula
-  # parsing rejects bare `_interaction` without backticks, killing the
-  # CRAN-delegated fwildclusterboot path. (audit a2a39fe4)
   df[["dp_interact"]] <- as.numeric(df[[treatment]]) * as.numeric(df[[post]])
-  if (.morie_did_have_fwildboot()) {
-    rhs <- if (length(covariates))
-      paste(c(treatment, post, "dp_interact", covariates), collapse = " + ")
-    else paste(c(treatment, post, "dp_interact"), collapse = " + ")
-    f <- stats::as.formula(paste(outcome, "~", rhs))
-    fit <- stats::lm(f, data = df)
-    wt <- if (identical(weight_type, "webb")) "webb" else "rademacher"
-    bt <- tryCatch(
-      fwildclusterboot::boottest(fit, param = "dp_interact",
-                                 clustid = cluster, B = n_bootstrap,
-                                 type = wt, sign_level = alpha,
-                                 seed = seed),
-      error = function(e) NULL
-    )
-    if (!is.null(bt)) {
-      est    <- stats::coef(fit)[["dp_interact"]]
-      se_est <- sqrt(stats::vcov(fit)["dp_interact", "dp_interact"])
-      ci <- if (!is.null(bt$conf_int)) as.numeric(bt$conf_int)
-            else .morie_did_make_ci(est, se_est, alpha)
-      return(list(
-        estimate = est, std_error = se_est,
-        t_stat   = bt$t_stat %||% (est / se_est),
-        p_value  = bt$p_val %||% NA_real_,
-        ci_lower = ci[1], ci_upper = ci[2],
-        n_treated = sum(as.numeric(df[[treatment]]) == 1),
-        n_control = sum(as.numeric(df[[treatment]]) == 0),
-        method = "wild_cluster_bootstrap (fwildclusterboot)",
-        details = list(boot = bt, n_clusters = length(unique(df[[cluster]])),
-                       n_bootstrap = n_bootstrap, weight_type = weight_type)
-      ))
-    }
-  }
-  # Base-R fallback ------------------------------------------------------------
+  # Base-R Rademacher / Webb wild-cluster bootstrap ---------------------------
   set.seed(seed)
   d <- as.numeric(df[[treatment]])
   p <- as.numeric(df[[post]])

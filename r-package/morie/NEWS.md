@@ -1,3 +1,24 @@
+# morie 0.9.5.12 - 2026-05-25
+
+## CI: drop fwildclusterboot (pak recursive Remotes unreliable) (3MMM.40c)
+
+* Removed `fwildclusterboot` from Suggests and removed the
+  `.morie_did_have_fwildboot()` helper + the
+  `if (.morie_did_have_fwildboot()) { fwildclusterboot::boottest(...) }`
+  branch in `morie_did_wild_cluster_bootstrap()`. The function
+  now goes straight to the base-R Rademacher/Webb wild-cluster
+  bootstrap (which already existed as the fallback and mirrors
+  the Python implementation; no math change for any caller).
+* Reason: pak's resolver does not reliably recurse through a
+  Remote's own Remotes. 3MMM.40 added `s3alfisc/fwildclusterboot`
+  and 3MMM.40b added `s3alfisc/summclust`, but the resolver still
+  reported `summclust: Can't find package called summclust` -- so
+  the recursive-Remote pattern is structurally fragile. Following
+  the same "drop optional CRAN-archived/GitHub-only deps" pattern
+  used for `rdd` in 3MMM.40.
+* `Remotes:` now lists only `synth-inference/synthdid`, which has
+  no GitHub-only transitive Imports.
+
 # morie 0.9.5.11 - 2026-05-25
 
 ## CI: pak resolver -- transitive Remote for summclust (3MMM.40b)
