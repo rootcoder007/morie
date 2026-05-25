@@ -260,8 +260,18 @@ test_that("nist_rds offline returns frame", {
 })
 
 test_that("http_json errors cleanly with httr2 absent", {
-  skip_if_not_installed("httr2")
-  set.seed(1)
-  skip_if(requireNamespace("httr2", quietly = TRUE))
-  expect_error(morie:::.morie_dataset_http_json("http://invalid"), "httr2")
+  # 3MMM.11 attempted to mock requireNamespace("httr2") -> FALSE so
+  # the no-dep error path runs even when httr2 is installed. But
+  # this test was already structurally obsolete: 3VV promoted the
+  # libcurl C++ backend (.morie_http_get / morie_http.cpp) ahead of
+  # the httr2 fallback, so `.morie_dataset_http_json` now goes via
+  # libcurl first regardless of httr2 availability and the "httr2"
+  # error path is unreachable in any environment that has libcurl
+  # (which is every supported one). The skip below documents that;
+  # it is by-design, not a remediation target.
+  skip(paste(
+    "Superseded by 3VV libcurl backend:",
+    ".morie_dataset_http_json no longer reaches the httr2 fallback",
+    "in any supported build (libcurl is a hard configure-time dep)."
+  ))
 })
