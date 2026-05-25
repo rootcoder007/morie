@@ -138,7 +138,7 @@ morie_describe_by_name <- function(name) {
                     sQuote(name), key))
     message(sprintf("The describe corpus contains %d entries.",
                     length(corpus)))
-    message("To browse: head(names(rmorie:::.morie_load_describe_corpus()), 20).")
+    message("To browse: head(names(morie:::.morie_load_describe_corpus()), 20).")
     return(invisible(NULL))
   }
   body <- corpus[[key]]

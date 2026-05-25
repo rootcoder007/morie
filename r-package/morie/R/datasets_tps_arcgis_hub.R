@@ -277,7 +277,7 @@ morie_datasets_tps_arcgis_hub_by_id <- function(hub_id,
     dest <- tempfile(fileext = suffix)
   }
   # 3XX: routes through .morie_dataset_http_bytes (libcurl-backed
-  # via rmorie::http::get_bytes from 3VV, with httr2 fallback) so
+  # via morie::http::get_bytes from 3VV, with httr2 fallback) so
   # the binary payload survives without NUL truncation across the
   # whole chain.
   bytes <- .morie_dataset_http_bytes(bin_url)
