@@ -12,16 +12,16 @@
 
 test_that("morie_matching_rosenbaum_bounds returns multiple Gamma rows", {
   # rosenbaum_bounds takes match_pairs (a data.frame with treated_idx /
-  # control_idx), NOT raw covariates. Build the pairs first via PSM,
-  # then pass them through.
+  # control_idx), NOT raw covariates. Build the pairs first via
+  # nearest-neighbour matching (PSM equivalent in morie's API), then
+  # pass them through.
   df <- make_match_df_balanced(n = 200L, tau = 0.4, seed = 1L)
   rownames(df) <- as.character(seq_len(nrow(df)))
-  pairs <- tryCatch(
-    morie_matching_psm(df, "d", c("x1", "x2"))$matched,
-    error = function(e) NULL
-  )
-  skip_if(is.null(pairs) || nrow(pairs) == 0L,
-          "PSM produced no match_pairs in this synthetic seed")
+  nn <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"),
+                                          replace = FALSE)
+  pairs <- nn$match_pairs
+  expect_true(is.data.frame(pairs))
+  expect_gt(nrow(pairs), 0L)
   out <- morie_matching_rosenbaum_bounds(df, "y", "d", pairs,
                                           gamma_range = c(1.0, 1.5, 2.0, 3.0))
   expect_true(is.list(out) || is.data.frame(out))

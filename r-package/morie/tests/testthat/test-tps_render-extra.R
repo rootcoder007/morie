@@ -131,19 +131,18 @@ test_that("morie_tps_render_district_proportional errors on missing count_col", 
 # --------------------------------------------------- render_satscan_panel
 
 test_that("morie_tps_render_satscan_panel runs on a clusters data.frame", {
+  # The full Kulldorff Monte-Carlo windowing engine isn't ported in
+  # R; the renderer expects callers to supply the llr (log-likelihood
+  # ratio) shading variable. Stage realistic LLR values so the
+  # renderer exercises its primary path.
   clusters <- data.frame(
     lat = c(43.7, 43.75, 43.65),
     lon = c(-79.4, -79.35, -79.5),
     radius_km = c(1.0, 0.5, 1.5),
+    llr = c(5.2, 3.8, 7.1),
     stringsAsFactors = FALSE
   )
-  out <- tryCatch(
-    morie_tps_render_satscan_panel(clusters, outfile = NULL),
-    error = function(e) e
-  )
-  if (inherits(out, "error")) {
-    skip(sprintf("satscan_panel error: %s", conditionMessage(out)))
-  }
+  out <- morie_tps_render_satscan_panel(clusters, outfile = NULL)
   expect_true(!is.null(out) || is.null(out))
 })
 

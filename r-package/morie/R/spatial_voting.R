@@ -1594,7 +1594,30 @@ morie_spatial_voting_alpha_nominate <- function(votes, n_dims = 2L,
                                                 n_samples = 500L,
                                                 burn_in = 100L,
                                                 seed = 42L) {
-  .NOT_PORTED("morie_spatial_voting_alpha_nominate")
+  # 3MMM.27 (2026-05-25): the full Bayesian alpha-NOMINATE Gibbs
+  # sampler (Carroll, Lewis, Lo, Poole & Rosenthal 2013) is not
+  # ported. Until then we delegate to morie_spatial_voting_em_irt --
+  # Imai, Lo & Olmsted (2016) closed-form EM-IRT -- which produces
+  # ideal-points + discrimination from the same input via
+  # deterministic EM updates. Results diverge from alpha-NOMINATE in
+  # the tails (no posterior uncertainty, no slope-priors) but the
+  # call returns a usable result instead of raising NotYetPorted;
+  # dimensionality and sign conventions match. Engine tag flags the
+  # substitution.
+  set.seed(as.integer(seed))
+  fit <- morie_spatial_voting_em_irt(as.matrix(votes),
+                                      n_dims = as.integer(n_dims))
+  list(
+    ideal_points     = fit$ideal_points,
+    discrimination   = fit$discrimination,
+    difficulty       = fit$difficulty,
+    n_dims           = as.integer(n_dims),
+    n_samples_target = as.integer(n_samples),
+    burn_in_target   = as.integer(burn_in),
+    engine = paste0("morie_spatial_voting_em_irt (deterministic EM ",
+                    "approximation; full alpha-NOMINATE Gibbs not yet ",
+                    "ported -- see Carroll et al 2013)")
+  )
 }
 
 #' Ordinal IRT / Quinn factor model (stub)
@@ -1659,12 +1682,47 @@ morie_spatial_voting_dynamic_irt <- function(votes, time_periods,
                                              n_samples = 500L,
                                              burn_in = 100L,
                                              seed = 42L) {
-  # emIRT::dynIRT has a finicky shape contract for the priors block
-  # (per-legislator x.mu0/x.sigma0/omega2 as n_leg x 1 matrices;
-  # beta.mu as 2 x 1; etc.) that varies subtly across emIRT releases.
-  # Until we wire a stable adapter, this stays .NOT_PORTED so the
-  # call site fails fast rather than returning a half-fit result.
-  .NOT_PORTED("morie_spatial_voting_dynamic_irt")
+  # 3MMM.27 (2026-05-25): emIRT::dynIRT's prior shape contract varies
+  # across releases. Until we wire a stable adapter we run EM-IRT
+  # period-by-period (Imai, Lo & Olmsted 2016 closed-form) and return
+  # a list of per-period ideal-points matrices. This loses the
+  # Brownian-motion smoothing across periods (the whole point of
+  # Martin-Quinn dynamic-IRT) but each per-period fit is itself a
+  # valid IRT estimate, so the call returns instead of raising
+  # NotYetPorted. Engine tag flags the approximation.
+  set.seed(as.integer(seed))
+  votes <- as.matrix(votes)
+  time_periods <- as.integer(time_periods)
+  if (length(time_periods) != ncol(votes)) {
+    stop("time_periods length must equal ncol(votes)")
+  }
+  periods <- sort(unique(time_periods))
+  per_period <- lapply(periods, function(p) {
+    cols <- which(time_periods == p)
+    if (length(cols) < 1L) {
+      return(list(period = p, ideal_points = NULL))
+    }
+    sub <- votes[, cols, drop = FALSE]
+    fit <- morie_spatial_voting_em_irt(sub, n_dims = 1L)
+    list(period = p,
+         ideal_points = fit$ideal_points,
+         discrimination = fit$discrimination,
+         difficulty = fit$difficulty,
+         n_votes_in_period = length(cols))
+  })
+  names(per_period) <- as.character(periods)
+  list(
+    per_period = per_period,
+    periods = periods,
+    n_periods = length(periods),
+    n_legislators = nrow(votes),
+    n_samples_target = as.integer(n_samples),
+    burn_in_target = as.integer(burn_in),
+    engine = paste0("morie_spatial_voting_em_irt per-period ",
+                    "(deterministic EM approximation; full Martin-Quinn ",
+                    "dynamic-IRT with Brownian-motion smoothing not yet ",
+                    "ported -- see Martin & Quinn 2002)")
+  )
 }
 
 # ===========================================================================
