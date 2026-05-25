@@ -247,7 +247,7 @@ morie_tps_project_xy <- function(lat, lon,
 #' carrying one row per neighbourhood with a list-column of WGS84
 #' (lon, lat) rings (\code{geometry}) and a numeric \code{rate_col}.
 #' This signature deliberately matches what
-#' \code{morie::morie_fetch("https://.../NeighbourhoodCrimeRates...",
+#' \code{rmorie::morie_fetch("https://.../NeighbourhoodCrimeRates...",
 #' format = "geojson")} returns once unrolled.
 #'
 #' When \pkg{ggplot2} is available the render uses
@@ -682,7 +682,7 @@ morie_tps_render_quad <- function(data, outfile = NULL, ...) {
   panels <- list()
   if (!is.null(data$polys) && !is.null(data$count_col)) {
     panels$choropleth <- tryCatch(
-      morie_tps_render_choropleth(data$polys, value_col = data$count_col, ...),
+      morie_tps_render_choropleth(data$polys, rate_col = data$count_col, ...),
       error = function(e) NULL)
   }
   if (!is.null(data$points)) {
