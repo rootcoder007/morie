@@ -42,8 +42,15 @@ on:
     branches: ["main", "release/**"]
   workflow_dispatch:
 
+# Permissions union of every child workflow's needs.  Reusable
+# workflows inherit the caller's permission scope, so the parent
+# must declare the WIDEST set any child needs.  codeql needs
+# security-events: write + actions: read; everything else only
+# needs contents: read.
 permissions:
   contents: read
+  security-events: write
+  actions: read
 
 concurrency:
   group: build-${{ github.workflow }}-${{ github.ref }}
@@ -71,34 +78,34 @@ jobs:
           echo "sha:           ${{ github.sha }}"
 
   version-drift:
-    name: version-drift
     needs: setup
     uses: ./.github/workflows/version-drift.yml
+    secrets: inherit
 
   python-test:
-    name: python-test
     needs: setup
     uses: ./.github/workflows/ci.yml
+    secrets: inherit
 
   r-cmd-check:
-    name: r-cmd-check
     needs: setup
     uses: ./.github/workflows/r-cmd-check.yml
+    secrets: inherit
 
   r-coverage-and-lint:
-    name: r-coverage-and-lint
     needs: r-cmd-check
     uses: ./.github/workflows/r-coverage-and-lint.yml
+    secrets: inherit
 
   wheels:
-    name: wheels
     needs: python-test
     uses: ./.github/workflows/wheels.yml
+    secrets: inherit
 
   codeql:
-    name: codeql
     needs: setup
     uses: ./.github/workflows/codeql.yml
+    secrets: inherit
 
   # Fan-in: this is the single required status check for
   # branch-protection on `main`.  Mathematically: it's `success`
