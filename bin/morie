@@ -28,7 +28,7 @@
 
 set -euo pipefail
 
-readonly ESML_SCRIPT_VERSION="0.9.5.6"
+readonly ESML_SCRIPT_VERSION="0.9.5.9"
 
 # ---------------------------------------------------------------------------
 # XDG / Home directory

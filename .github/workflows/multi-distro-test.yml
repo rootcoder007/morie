@@ -39,7 +39,16 @@ env:
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "release/**"]
+    paths:
+      - "src/morie/**"
+      - "libmorie/**"
+      - "r-package/**"
+      - "pyproject.toml"
+      - "CMakeLists.txt"
+      - ".github/workflows/multi-distro-test.yml"
+  pull_request:
+    branches: ["main", "release/**"]
     paths:
       - "src/morie/**"
       - "libmorie/**"

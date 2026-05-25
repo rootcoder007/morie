@@ -8,12 +8,12 @@ name: R coverage + lint + goodpractice
 
 on:
   push:
-    branches: [main]
+    branches: [main, "release/**"]
     paths:
       - 'r-package/morie/**'
       - '.github/workflows/r-coverage-and-lint.yml'
   pull_request:
-    branches: [main]
+    branches: [main, "release/**"]
     paths:
       - 'r-package/morie/**'
   workflow_dispatch:
