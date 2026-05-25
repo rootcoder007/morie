@@ -22,8 +22,10 @@ test_that("morie_matching_rosenbaum_bounds returns multiple Gamma rows", {
   expect_true(is.list(out) || is.data.frame(out))
 })
 
-test_that("morie_matching_doubly_robust returns a finite ATT_DR with overlap", {
-  df <- make_match_df(n = 300L, tau = 0.5, seed = 2L)
+test_that("morie_matching_doubly_robust returns a finite ATT_DR with overlap (balanced)", {
+  # Balanced data so the MatchIt "Fewer control" warning doesn't fire
+  # in most bootstrap resamples; sanity-check the happy path.
+  df <- make_match_df_balanced(n = 300L, tau = 0.5, seed = 2L)
   out <- tryCatch(
     morie_matching_doubly_robust(df, "y", "d", c("x1", "x2")),
     error = function(e) e)

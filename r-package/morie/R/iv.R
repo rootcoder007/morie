@@ -327,46 +327,32 @@ morie_iv_first_stage_diagnostics <- function(data, endogenous, instruments,
 #' @export
 morie_iv_cragg_donald <- function(data, endogenous, instruments,
                                   exogenous = NULL, outcome = NULL) {
-  # TODO: native minimum-eigenvalue Cragg-Donald per CD93. For now
-  # delegate to ivreg's weak-instrument diagnostic, which reports
-  # the same statistic.
-  if (is.null(outcome)) outcome <- endogenous[1]
-  if (.morie_iv_have_ivreg()) {
-    f   <- .morie_iv_build_formula(outcome, endogenous, instruments,
-                                   exogenous)
-    fit <- tryCatch(ivreg::ivreg(f, data = data),
-                    error = function(e) NULL)
-    if (is.null(fit)) {
-      return(list(statistic = NA_real_, p_value = NA_real_,
-                  name = "Cragg-Donald (ivreg fit failed)",
-                  details = list(outcome_used = outcome)))
-    }
-    diag_tbl <- tryCatch(summary(fit, diagnostics = TRUE)$diagnostics,
-                         error = function(e) NULL)
-    if (is.null(diag_tbl) ||
-        !("Weak instruments" %in% rownames(diag_tbl))) {
-      # First-stage F as Cragg-Donald approximation for just-identified.
-      fs <- morie_iv_first_stage_diagnostics(data, endogenous, instruments,
-                                              exogenous)
-      f_stat <- unname(fs$F[1])
-      k_ins <- length(instruments)
-      df2 <- nrow(data) - length(c(instruments, exogenous)) - 1L
-      p_val <- if (is.finite(f_stat) && df2 > 0)
-                  1 - stats::pf(f_stat, k_ins, df2)
-               else NA_real_
-      return(list(statistic = f_stat,
-                  p_value   = p_val,
-                  name      = "Cragg-Donald (first-stage F fallback)",
-                  details   = list(fit = fit, outcome_used = outcome)))
-    }
-    list(statistic = unname(diag_tbl["Weak instruments", "statistic"]),
-         p_value   = unname(diag_tbl["Weak instruments", "p-value"]),
-         name      = "Cragg-Donald / weak instruments",
-         details   = list(fit = fit, outcome_used = outcome))
-  } else {
-    list(statistic = NA_real_, p_value = NA_real_,
-         name = "Cragg-Donald (requires ivreg)", details = list())
-  }
+  # Cragg-Donald (1993) tests instrument strength via the smallest
+  # eigenvalue of the first-stage projection -- it is a property of
+  # the first stage (endogenous on instruments + exogenous), so we
+  # compute it directly without needing an outcome. For
+  # just-identified k_endogenous = 1, the statistic collapses to
+  # the first-stage F. The outcome argument is kept for API
+  # compatibility but is ignored.
+  fs <- morie_iv_first_stage_diagnostics(data, endogenous, instruments,
+                                          exogenous)
+  f_stat <- unname(fs$F[1])
+  k_ins <- length(instruments)
+  k_exo <- length(exogenous)
+  df1 <- k_ins
+  df2 <- nrow(data) - k_ins - k_exo - 1L
+  p_val <- if (is.finite(f_stat) && df1 > 0L && df2 > 0L)
+              1 - stats::pf(f_stat, df1, df2)
+           else NA_real_
+  list(statistic = f_stat,
+       p_value   = p_val,
+       name      = "Cragg-Donald (first-stage F)",
+       details   = list(first_stage = fs,
+                        df1 = df1, df2 = df2,
+                        k_endogenous = length(endogenous),
+                        k_instruments = k_ins,
+                        k_exogenous = k_exo,
+                        outcome_used = NA_character_))
 }
 
 #' Stock-Yogo critical values

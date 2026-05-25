@@ -34,8 +34,10 @@ test_that("morie_matching_variable_ratio matches multiple controls per treated",
   expect_true(is.list(out))
 })
 
-test_that("morie_matching_cardinality runs on synthetic data", {
-  df <- make_match_df(n = 100, tau = 0.4, seed = 4L)
+test_that("morie_matching_cardinality runs on balanced synthetic data", {
+  # Balanced data so the per-caliper "Fewer control" warning doesn't
+  # fire; covers the happy path mathematically.
+  df <- make_match_df_balanced(n = 200L, tau = 0.4, seed = 4L)
   out <- tryCatch(
     morie_matching_cardinality(df, "d", c("x1", "x2")),
     error = function(e) e
@@ -45,6 +47,17 @@ test_that("morie_matching_cardinality runs on synthetic data", {
                  conditionMessage(out)))
   }
   expect_true(is.list(out))
+})
+
+test_that("morie_matching_cardinality emits a single summary warning on skewed data", {
+  # Skewed treatment so MatchIt fires "Fewer control" on every
+  # caliper pass; verify morie collapses into one summary.
+  df <- make_match_df_skewed(n = 200L, tau = 0.4, seed = 14L)
+  expect_warning(
+    out <- morie_matching_cardinality(df, "d", c("x1", "x2")),
+    "caliper passes had fewer control units than treated"
+  )
+  expect_true(is.list(out) || inherits(out, "morie_match_result"))
 })
 
 test_that("morie_matching_multi_treatment handles 3-arm treatment", {

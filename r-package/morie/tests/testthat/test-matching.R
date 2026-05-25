@@ -7,16 +7,8 @@ library(testthat)
 
 set.seed(1)
 
-make_match_df <- function(n = 300, tau = 0.4, seed = 1) {
-  set.seed(seed)
-  x1 <- rnorm(n)
-  x2 <- rnorm(n)
-  d <- rbinom(n, 1, plogis(0.4 * x1 + 0.3 * x2))
-  y <- tau * d + 0.5 * x1 + 0.3 * x2 + rnorm(n, sd = 0.5)
-  data.frame(d = d, y = y, x1 = x1, x2 = x2,
-             region = sample(c("A", "B", "C"), n, replace = TRUE),
-             year = sample(2018:2020, n, replace = TRUE))
-}
+# make_match_df / make_match_df_balanced / make_match_df_skewed live
+# in helper-matching.R so other matching test files can re-use them.
 
 
 # ---------------------------------------------------------------------------
@@ -299,13 +291,29 @@ test_that("morie_matching_rosenbaum_bounds returns one row per gamma", {
 # morie_matching_doubly_robust
 # ---------------------------------------------------------------------------
 
-test_that("morie_matching_doubly_robust returns te_result with finite ATT_DR", {
-  df <- make_match_df(n = 200)
+test_that("morie_matching_doubly_robust returns te_result with finite ATT_DR on balanced data", {
+  # Balanced 50/50 treatment so MatchIt's "Fewer control units"
+  # warning shouldn't fire on the happy path; covers the
+  # mathematically-correct case.
+  df <- make_match_df_balanced(n = 300L, tau = 0.4, seed = 11)
   res <- morie_matching_doubly_robust(df, "y", "d", c("x1", "x2"),
                                        n_bootstrap = 20L, seed = 11)
   expect_s3_class(res, "morie_te_result")
   expect_equal(res$estimand, "ATT_DR")
   expect_true(is.finite(res$estimate))
+})
+
+test_that("morie_matching_doubly_robust emits a single summary warning on skewed data", {
+  # Skewed ~80/20 treatment so MatchIt fires "Fewer control" in
+  # most bootstrap resamples; verify morie collapses the per-
+  # resample noise into one summary warning.
+  df <- make_match_df_skewed(n = 200L, tau = 0.4, seed = 21)
+  expect_warning(
+    res <- morie_matching_doubly_robust(df, "y", "d", c("x1", "x2"),
+                                         n_bootstrap = 20L, seed = 21),
+    "bootstrap resamples had fewer control units than treated"
+  )
+  expect_s3_class(res, "morie_te_result")
 })
 
 

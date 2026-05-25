@@ -64,29 +64,35 @@ test_that("morie_psymet_alpha handles zero total variance", {
 # morie_psymet_omega
 # ---------------------------------------------------------------------------
 
-test_that("morie_psymet_omega(nf=1) returns bounded values + warns omega_h is meaningless", {
-  X <- .make_items(n = 80, k = 6, rho = 0.5)
-  # psych::omega(nf=1) correctly warns that omega_h and omega_asymptotic
-  # are not meaningful with one factor -- this is real signal users
-  # need, so we assert the warning rather than muffle it.
-  expect_warning(
-    res <- morie_psymet_omega(X, nf = 1),
-    "Omega_h and Omega_asymptotic are not meaningful with one factor"
-  )
+test_that("morie_psymet_omega(nf=4) returns bounded total + hierarchical values", {
+  # nf=4 to give omega_h enough hierarchical structure to be
+  # meaningful (psych::omega correctly warns at nf=1 that omega_h
+  # and omega_asymptotic are not meaningful for a single-factor
+  # model; that is informative signal users should see, not noise).
+  # Need at least 3 items per factor, so bump k to 12 with rho=0.5.
+  X <- .make_items(n = 120, k = 12, rho = 0.5)
+  res <- morie_psymet_omega(X, nf = 4)
   expect_type(res, "list")
   expect_true(res$total >= 0 && res$total <= 1)
   expect_true(res$hier  >= 0 && res$hier  <= 1)
-  expect_equal(res$nf, 1)
+  expect_equal(res$nf, 4)
 })
 
-test_that("morie_psymet_omega delegates when psych is installed", {
-  X <- .make_items(n = 60, k = 5, rho = 0.55)
-  expect_warning(
-    res <- morie_psymet_omega(X, nf = 1),
-    "Omega_h and Omega_asymptotic are not meaningful with one factor"
-  )
+test_that("morie_psymet_omega(nf=4) delegates when psych is installed", {
+  X <- .make_items(n = 100, k = 12, rho = 0.55)
+  res <- morie_psymet_omega(X, nf = 4)
   expect_true(is.numeric(res$total))
   expect_true(is.numeric(res$alpha))
+})
+
+test_that("morie_psymet_omega(nf=1) warns omega_h is not meaningful", {
+  # Single-factor case: warning IS the signal users need to interpret
+  # the result correctly. Assert it fires.
+  X <- .make_items(n = 60, k = 5, rho = 0.55)
+  expect_warning(
+    morie_psymet_omega(X, nf = 1),
+    "Omega_h and Omega_asymptotic are not meaningful with one factor"
+  )
 })
 
 # ---------------------------------------------------------------------------
