@@ -325,14 +325,12 @@ morie_rdd_mccrary <- function(x, cutoff = 0, n_bins = 50,
                 p_value   = fit$test$p_jk,
                 name = "McCrary (rddensity)", details = list(fit = fit)))
   }
-  if (requireNamespace("rdd", quietly = TRUE)) {
-    out <- rdd::DCdensity(x, cutpoint = cutoff, plot = FALSE)
-    return(list(statistic = NA, p_value = out,
-                name = "McCrary (rdd::DCdensity)"))
-  }
-  # TODO: native McCrary local-linear histogram density test
+  # The `rdd` package was a documented fallback but CRAN archived
+  # it in 2024 and pak can no longer resolve it. rddensity is the
+  # primary backend and is on CRAN (declared in Suggests). The
+  # native McCrary histogram density test is still TODO.
   list(statistic = NA, p_value = NA,
-       name = "McCrary (requires rddensity or rdd)")
+       name = "McCrary (requires rddensity)")
 }
 
 #' Cattaneo-Jansson-Ma (2020) local-polynomial density test

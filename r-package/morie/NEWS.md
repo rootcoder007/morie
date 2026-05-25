@@ -1,3 +1,47 @@
+# morie 0.9.5.10 - 2026-05-25
+
+## R CMD check ERROR fixes (3MMM.39)
+
+* `R/datasets.R` (6 sites): dropped the invalid `n = 2L` argument
+  from `strsplit()`. Base R's `strsplit()` has no `n=`; the call
+  silently ignored it on most R versions but errors on R-devel.
+* `R/dataset_load_by_key.R`: removed the spurious
+  `max_features = max_features` argument from the
+  `morie_datasets_ontario_ckan_by_key()` dispatch. That function's
+  formals are only `(dataset_key, offline, resource_id)` -- passing
+  the unused formal caused a hard error in the dispatcher example.
+* `R/ingest_statcan.R`: replaced the non-existent
+  `cansim::set_cansim_api_key(api_key)` call with the documented
+  mechanism. `cansim` has no such helper in any current CRAN
+  release; it reads `CANSIM_API_KEY` from the environment.
+  `morie_ingest_statcan_cansim()` now mirrors a user-supplied
+  `STATCAN_API_KEY` into `CANSIM_API_KEY` when only the morie alias
+  is set.
+* `R/spatial_voting.R::mlsmu6`: added `is.finite(prev_stress)` guard
+  for the convergence check. `prev_stress` starts as `Inf`, so
+  iter 1's `abs(Inf - stress) / max(Inf, 1e-12) = NaN` triggered
+  `"missing value where TRUE/FALSE needed"` and broke the
+  `\examples{}` block. The first iteration now skips the
+  convergence check cleanly; iter 2+ uses real values.
+* Added a proper roxygen block for `morie_dataset_portal_catalog()`
+  (only the `@export` tag was present; the docstring upstream was
+  attached to the sibling `_clear_cache` helper).
+* `man/morie_dataset_portal_catalog.Rd` and
+  `man/morie_entheo_clone_dmt_imaging.Rd` regenerated.
+
+## CI: `setup-r-dependencies` pak resolver unblocked (3MMM.40)
+
+* Dropped `rdd` from Suggests. CRAN archived it in 2024 and pak
+  could no longer resolve it. The only morie callsite
+  (`morie_rdd_mccrary()`) used it as a fallback when `rddensity`
+  wasn't installed; `rddensity` itself is on CRAN and in Suggests,
+  so the `rdd` branch was effectively dead code in any realistic
+  configuration.
+* Added `Remotes: s3alfisc/fwildclusterboot, synth-inference/synthdid`
+  so pak can fetch the two remaining GitHub-only Suggests when
+  building the lockfile. Both upstream repositories are verified
+  live (HTTP 200 from `api.github.com/repos/...`).
+
 # morie 0.9.5.9 - 2026-05-24
 
 ## Correctness recovery: math typesetting restored
