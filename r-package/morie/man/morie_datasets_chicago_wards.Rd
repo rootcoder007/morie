@@ -35,6 +35,9 @@ morie_datasets_chicago_wards(
 
 \item{app_token}{Optional Socrata app token (sent as
 \code{X-App-Token}).}
+
+\item{mode}{One of \code{"soda2"} (default JSON resource endpoint) or
+\code{"soda3"} (SoQL \code{query} endpoint). 3VV+ dual-mode dispatch.}
 }
 \value{
 A \code{data.frame} with 3 attribute cols (offline) or 4
@@ -53,7 +56,7 @@ Wraps the City of Chicago "Boundaries - Wards (2023-)" open dataset
 returns empty objects -- this is a filtered/derived view on
 Socrata. Live mode uses SODA3
 (\verb{/api/v3/views/sp34-6z76/query.json}) via
-\code{\link[=.morie_dataset_soda3_query]{.morie_dataset_soda3_query()}}.
+\code{.morie_dataset_soda3_query()}.
 
 Offline mode reads a bundled 50-row attribute-only fixture
 (\code{inst/extdata/chicago_wards.csv}: \code{ward} / \code{shape_leng} /

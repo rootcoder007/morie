@@ -24,7 +24,7 @@
 # permutation tests, subsampling, the .632/.632+ estimator, and k-fold CV.
 # All functions take a vector or matrix `data` and a `statistic` function
 # (statistic(data) -> numeric scalar).  Results are returned as plain
-# `list`s with a class attribute so morie::print methods can dispatch.
+# `list`s with a class attribute so rmorie::print methods can dispatch.
 
 # ---- Result container constructors ----------------------------------------
 
@@ -821,7 +821,13 @@ bootstrap_632 <- function(X, y, model_fn, score_fn,
 #' Repeated K-fold cross-validation
 #'
 #' @inheritParams .boot_cross_validate
+#' @param X Numeric matrix or data.frame of predictors.
+#' @param y Numeric or factor outcome vector aligned with rows of `X`.
+#' @param model_fn Function `(X, y) -> fitted-model` used on each training fold.
+#' @param score_fn Function `(y_true, y_pred) -> numeric` returning a single performance metric.
+#' @param n_folds Integer; number of folds per repeat (default 10).
 #' @param n_repeats Number of repetitions.
+#' @param seed Integer RNG seed for reproducibility.
 #' @return A \code{morie_cv_result} pooling scores across repeats.
 #' @export
 repeated_cv <- function(X, y, model_fn, score_fn,
@@ -849,6 +855,10 @@ repeated_cv <- function(X, y, model_fn, score_fn,
 #' Leave-one-out cross-validation
 #'
 #' @inheritParams .boot_cross_validate
+#' @param X Numeric matrix or data.frame of predictors.
+#' @param y Numeric or factor outcome vector aligned with rows of `X`.
+#' @param model_fn Function `(X, y) -> fitted-model` used on each training fold.
+#' @param score_fn Function `(y_true, y_pred) -> numeric` returning a single performance metric.
 #' @return A \code{morie_cv_result}.
 #' @export
 leave_one_out_cv <- function(X, y, model_fn, score_fn) {
