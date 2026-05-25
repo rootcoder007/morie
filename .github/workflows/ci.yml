@@ -128,7 +128,7 @@ jobs:
         with:
           lfs: false
 
-      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           r-version: "release"
           use-public-rspm: true
@@ -136,7 +136,7 @@ jobs:
       # setup-r-dependencies@v2 installs DESCRIPTION's Imports/Suggests
       # AND any extra-packages list, into the right user library so
       # later library() / Rscript calls find them.
-      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
           extra-packages: any::testthat any::survey any::DBI any::RSQLite any::jsonlite
