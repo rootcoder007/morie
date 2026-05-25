@@ -5,7 +5,10 @@
 
 ok <- function(label, expr) {
   invisible(tryCatch(expr, error = function(e) {
-    message("WAVE29-ERR [", label, "]: ", conditionMessage(e))
+    # Silent by default; set MORIE_WAVE_DEBUG=1 to surface diagnostics.
+    if (nzchar(Sys.getenv("MORIE_WAVE_DEBUG"))) {
+      message("WAVE29-ERR [", label, "]: ", conditionMessage(e))
+    }
   }))
 }
 
