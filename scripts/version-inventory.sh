@@ -52,8 +52,14 @@ echo "File,Line,Status,Version,Context" > "$INVENTORY_FILE"
 
 # 4. ripgrep pipeline.
 #    --vimgrep gives standard 'file:line:column:context'
+#    --sort path forces a deterministic file-walk order. Without it
+#    ripgrep's parallel scanner produces different orderings on each
+#    run, breaking the version-drift CI diff (regenerated output
+#    would differ from any committed snapshot purely by row order).
+#    Fixed 2026-05-25 -- the CI had been red since the workflow
+#    landed for exactly this reason.
 #    -g flags handle exclusions and prevent self-scanning.
-rg --vimgrep --color=never -e "$REGEX" \
+rg --vimgrep --sort path --color=never -e "$REGEX" \
   -g '!src/morie/fn/describe_*.md' \
   -g '!VERSION_INVENTORY.csv' \
   -g '!scripts/' \
