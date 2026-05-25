@@ -44,13 +44,19 @@ on:
 
 # Permissions union of every child workflow's needs.  Reusable
 # workflows inherit the caller's permission scope, so the parent
-# must declare the WIDEST set any child needs.  codeql needs
-# security-events: write + actions: read; everything else only
-# needs contents: read.
+# must declare the WIDEST set any child requests at any job level
+# -- otherwise GitHub's pre-flight validator rejects the run with
+# "is requesting 'X: read', but is only allowed 'X: none'".
+#
+# codeql.yml::analyze (R/codeql.yml:37-41) requests
+#   security-events: write + actions: read + packages: read
+#   + contents: read.
+# Every other child requests only contents: read.
 permissions:
   contents: read
   security-events: write
   actions: read
+  packages: read
 
 concurrency:
   group: build-${{ github.workflow }}-${{ github.ref }}
