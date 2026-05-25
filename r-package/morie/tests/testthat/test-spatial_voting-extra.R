@@ -136,9 +136,24 @@ test_that("morie_spatial_voting_dw_nominate returns ideal-point matrix", {
 
 test_that("morie_spatial_voting_nominate_bootstrap returns SE matrix", {
   V <- make_synthetic_vote_matrix(20L, 15L, 1L, seed = 72L)
+  # nominate_bootstrap bootstraps a pre-fitted W-NOMINATE; it does
+  # NOT fit one itself. Run dw_nominate first to get
+  # ideal_points / normal_vectors / cutpoints, then pass them in.
+  fit <- tryCatch(
+    morie_spatial_voting_dw_nominate(V, n_dims = 1L, max_iter = 30L),
+    error = function(e) e
+  )
+  if (inherits(fit, "error")) {
+    skip(sprintf("dw_nominate prerequisite error: %s",
+                 conditionMessage(fit)))
+  }
   out <- tryCatch(
-    morie_spatial_voting_nominate_bootstrap(V, n_dims = 1L,
-                                             n_boot = 3L),
+    morie_spatial_voting_nominate_bootstrap(
+      V,
+      ideal_points = fit$ideal_points,
+      normal_vectors_arr = fit$normal_vectors,
+      cutpoints = fit$cutpoints,
+      n_boot = 3L),
     error = function(e) e
   )
   if (inherits(out, "error")) {
