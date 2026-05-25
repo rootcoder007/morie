@@ -143,8 +143,8 @@ Suggests:
   xgboost,
   xml2
 VignetteBuilder: knitr
-URL: https://github.com/hadesllm/morie
-BugReports: https://github.com/hadesllm/morie/issues
+URL: https://github.com/rootcoder007/morie
+BugReports: https://github.com/rootcoder007/morie/issues
 Config/testthat/edition: 3
 Remotes:
   synth-inference/synthdid

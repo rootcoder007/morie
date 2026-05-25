@@ -25,9 +25,9 @@ Zenodo DOIs.
 
 | Package | Language | Purpose | License |
 | --- | --- | --- | --- |
-| [`morie`](https://github.com/hadesllm/morie) | Python + R + Linux | Multi-domain Open Research and Inferential Estimation | AGPL-3.0-or-later (kernel adjuncts: GPL-2.0-only) |
+| [`morie`](https://github.com/rootcoder007/morie) | Python + R + Linux | Multi-domain Open Research and Inferential Estimation | AGPL-3.0-or-later (kernel adjuncts: GPL-2.0-only) |
 | [`clew`](https://github.com/hadesllm/clew) | Rust (Zig planned) | Git plumbing with packfile + SSH remotes | AGPL-3.0-or-later |
-| [`MOIRAIS`](https://github.com/hadesllm/morie) | R + Python alias | Deprecated alias for `morie` (v0.1.x compatibility) | matches `morie` |
+| [`MOIRAIS`](https://github.com/rootcoder007/morie) | R + Python alias | Deprecated alias for `morie` (v0.1.x compatibility) | matches `morie` |
 | [`keyserver`](https://github.com/hadesllm/keyserver) | Python (private) | Per-user API key issuance + audit | All Rights Reserved |
 
 ## Licensing

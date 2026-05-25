@@ -24,7 +24,7 @@ The release that makes the toolkit usable by a non-programmer:
 - **Open-data ingestors** — `morie ingest ckan` (open.canada.ca and any CKAN portal), `morie ingest tps` (ArcGIS layers), `morie ingest siu` (Director's-report PDFs).
 - **Schema-agnostic loader** — datasets with non-canonical column names flow through morie modules without renaming; `morie.schema.infer_mapping(your_df, canonical=...)` does the mapping.
 - **Nine-language CLI** — EN / FR / ES / DE / ZH / PT / JA / AR / HI via `MORIE_LOCALE=<code>`.
-- **Five install channels verified** end-to-end on Mac + Raspberry Pi: curl one-liner, `pip install morie`, `brew tap hadesllm/morie && brew install morie`, `docker run ghcr.io/hadesllm/morie:0.5.0`, R via r-universe.
+- **Five install channels verified** end-to-end on Mac + Raspberry Pi: curl one-liner, `pip install morie`, `brew tap hadesllm/morie && brew install morie`, `docker run ghcr.io/rootcoder007/morie:0.5.0`, R via r-universe.
 - **First-paper template** — `morie generate-template --module <name> --out my-paper.md` writes a JSS-style methods + results scaffold pre-filled with BibTeX entries for the four companion papers.
 - **Accessibility** — `NO_COLOR=1` and pipe-detection auto-degrade to plain text for screen readers.
 
@@ -104,4 +104,4 @@ No timeline commitment on v1.0.0 — it ships when those bars are met, not on a 
 
 ## How to suggest changes
 
-Open an issue at <https://github.com/hadesllm/morie/issues> with the tag `roadmap:` followed by the version (e.g. `roadmap: v0.6.1`). The maintainer triages monthly.
+Open an issue at <https://github.com/rootcoder007/morie/issues> with the tag `roadmap:` followed by the version (e.g. `roadmap: v0.6.1`). The maintainer triages monthly.

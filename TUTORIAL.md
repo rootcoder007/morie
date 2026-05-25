@@ -158,7 +158,7 @@ If `python -c "..."` looks intimidating, the same is doable from a Python REPL (
 | `Segmentation fault` after `import morie` | The system Python on Raspberry Pi OS 13 has a known bug that crashes when loading scientific libraries. | Same fix: curl one-liner — it installs a working Python 3.12 alongside the broken system one. |
 | `FileNotFoundError ... cpads-2021-2022-pumf2.csv` | (Pre-v0.5.0 only) — should not happen on v0.5.0+ which falls back to synthetic data | `python -c "import morie; print(morie.__version__)"` should show `0.8.0` or later; upgrade via `pip install -U morie` or re-run the curl installer |
 | `UserWarning: using the SHIPPED SYNTHETIC CPADS frame` | Expected on first run; outputs are toy | Get real PUMF (Step 5) when ready |
-| Some other error | We want to hear about it | File an issue at <https://github.com/hadesllm/morie/issues> — paste the full error message |
+| Some other error | We want to hear about it | File an issue at <https://github.com/rootcoder007/morie/issues> — paste the full error message |
 
 ## What to do next
 

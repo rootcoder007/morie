@@ -14,7 +14,7 @@ bibentry(
   year    = "2026",
   note    = paste("R package version", meta$Version),
   doi     = "10.5281/zenodo.20111233",
-  url     = "https://github.com/hadesllm/morie"
+  url     = "https://github.com/rootcoder007/morie"
 )
 
 # (2) morie Python software paper -- Python implementation, same toolkit.

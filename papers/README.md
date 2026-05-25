@@ -31,4 +31,4 @@ All five papers carry a `morie version stamp` comment block (right after `\Plain
 
 ## Citing
 
-If you use morie or its findings, cite both software papers (R and Python) plus the framework paper. Where applicable, also cite the Hawkes methodology paper and the empirical applications paper. See the main repo's [`CITATION.cff`](https://github.com/hadesllm/morie/blob/main/CITATION.cff) for machine-readable metadata covering all five DOIs.
+If you use morie or its findings, cite both software papers (R and Python) plus the framework paper. Where applicable, also cite the Hawkes methodology paper and the empirical applications paper. See the main repo's [`CITATION.cff`](https://github.com/rootcoder007/morie/blob/main/CITATION.cff) for machine-readable metadata covering all five DOIs.

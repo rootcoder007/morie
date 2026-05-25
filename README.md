@@ -6,10 +6,10 @@
 
 A multi-domain scientific computing toolkit (Python and R) for observational inference, with sociolegal, signal-processing, cryptographic, spatial-statistics, statistical-physics, and psychometrics modules. Hosts the MRM framework as a primary application for Canadian carceral, police, and oversight data analysis.
 
-[![R CMD check](https://github.com/hadesllm/morie/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/hadesllm/morie/actions/workflows/r-cmd-check.yml)
-[![CI](https://github.com/hadesllm/morie/actions/workflows/ci.yml/badge.svg)](https://github.com/hadesllm/morie/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/hadesllm/morie/actions/workflows/codeql.yml/badge.svg)](https://github.com/hadesllm/morie/actions/workflows/codeql.yml)
-[![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg)](https://github.com/hadesllm/morie/blob/main/LICENSE)
+[![R CMD check](https://github.com/rootcoder007/morie/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/r-cmd-check.yml)
+[![CI](https://github.com/rootcoder007/morie/actions/workflows/ci.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/rootcoder007/morie/actions/workflows/codeql.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/codeql.yml)
+[![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg)](https://github.com/rootcoder007/morie/blob/main/LICENSE)
 [![PyPI version](https://img.shields.io/pypi/v/morie.svg)](https://pypi.org/project/morie/)
 [![r-universe](https://img.shields.io/badge/r--universe-hadesllm-276DC3)](https://hadesllm.r-universe.dev/morie)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -19,13 +19,13 @@ A multi-domain scientific computing toolkit (Python and R) for observational inf
 [![Hawkes paper](https://img.shields.io/badge/Hawkes_paper-10.5281%2Fzenodo.20102198-be123c?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.20102198)
 [![Empirical paper](https://img.shields.io/badge/Empirical_paper-10.5281%2Fzenodo.20175689-1a73e8?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.20175689)
 
-> ⚠️ **Pre-alpha (v0.x).** MORIE is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift, datasets may move, and findings may be refined between minor versions. Paper sources are at [`papers/`](https://github.com/hadesllm/morie/tree/main/papers) (LaTeX); compiled PDFs are on Zenodo via the DOI badges above.
+> ⚠️ **Pre-alpha (v0.x).** MORIE is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift, datasets may move, and findings may be refined between minor versions. Paper sources are at [`papers/`](https://github.com/rootcoder007/morie/tree/main/papers) (LaTeX); compiled PDFs are on Zenodo via the DOI badges above.
 
 ## Installation
 
-> Full step-by-step install guide with platform-specific notes (PEP 668 on Debian, python 3.13 segfault on Raspberry Pi OS, etc.) is at **[INSTALLATION.md](https://github.com/hadesllm/morie/blob/main/INSTALLATION.md)**.
+> Full step-by-step install guide with platform-specific notes (PEP 668 on Debian, python 3.13 segfault on Raspberry Pi OS, etc.) is at **[INSTALLATION.md](https://github.com/rootcoder007/morie/blob/main/INSTALLATION.md)**.
 
-morie is a Python (and R) package — once Python is present it is `pip install morie`. If you are starting with **nothing installed**, INSTALLATION.md opens with **[Step 1 — install the prerequisites](https://github.com/hadesllm/morie/blob/main/INSTALLATION.md#step-1--install-the-prerequisites)**: every tool you might need (Python, `curl`, `bash`/WSL, Git Bash, `winget`, Homebrew, Docker, R) with its official download. The short version:
+morie is a Python (and R) package — once Python is present it is `pip install morie`. If you are starting with **nothing installed**, INSTALLATION.md opens with **[Step 1 — install the prerequisites](https://github.com/rootcoder007/morie/blob/main/INSTALLATION.md#step-1--install-the-prerequisites)**: every tool you might need (Python, `curl`, `bash`/WSL, Git Bash, `winget`, Homebrew, Docker, R) with its official download. The short version:
 
 - **Windows** — install Python from [python.org](https://www.python.org/downloads/) (on the first screen tick **Add python.exe to PATH**), then `pip install morie`. Full walkthrough: [Windows](#recommended--windows) below. Windows has no `curl`/`bash`, so the one-liner does not apply there.
 - **macOS / Linux** — the one-liner below sets up everything. It needs `curl` and `bash`, which macOS has built in and most Linux ships.
@@ -65,7 +65,7 @@ python -c "import morie; print(morie.__version__)"
 
 For the R package: `Rscript -e "install.packages('morie', repos=c('https://hadesllm.r-universe.dev','https://cloud.r-project.org'))"`
 
-Prefer a package manager? If `winget --version` works on your machine, `winget install -e --id Python.Python.3.12` (and `RProject.R`) installs the prerequisites in one line each — but `winget` is absent from many Windows installs, so the installer steps above are the reliable default. The full Windows walkthrough, including fixes for common errors (`python` opening the Microsoft Store, PowerShell execution policy, long-path), is in **[INSTALLATION.md](https://github.com/hadesllm/morie/blob/main/INSTALLATION.md)**.
+Prefer a package manager? If `winget --version` works on your machine, `winget install -e --id Python.Python.3.12` (and `RProject.R`) installs the prerequisites in one line each — but `winget` is absent from many Windows installs, so the installer steps above are the reliable default. The full Windows walkthrough, including fixes for common errors (`python` opening the Microsoft Store, PowerShell execution policy, long-path), is in **[INSTALLATION.md](https://github.com/rootcoder007/morie/blob/main/INSTALLATION.md)**.
 
 ### Python — Homebrew (macOS / Linuxbrew)
 
@@ -96,10 +96,10 @@ pip install morie
 
 ```bash
 # Latest stable
-docker run --rm ghcr.io/hadesllm/morie:latest morie --help
+docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/hadesllm/morie:0.9.5.4 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:0.9.5.4 morie --help
 ```
 
 Multi-arch image published on every release with both versioned and `:latest` tags. Requires only Docker — no Python, no pip.
@@ -177,7 +177,7 @@ Institutional Churn: Empirical Applications of MRM to Canadian Carceral
 and Police Data (v1). Zenodo. https://doi.org/10.5281/zenodo.20175689
 ```
 
-See [`CITATION.cff`](https://github.com/hadesllm/morie/blob/main/CITATION.cff) for machine-readable citation metadata.
+See [`CITATION.cff`](https://github.com/rootcoder007/morie/blob/main/CITATION.cff) for machine-readable citation metadata.
 
 
 ## Acknowledgments
@@ -249,13 +249,13 @@ under the same standard disclaimer.
 
 morie is licensed under the **GNU Affero General Public License, version 3.0 or later (`AGPL-3.0-or-later`)**, on both the Python and R sides. The AGPL is a strong copyleft license: anyone who distributes a modified morie — or offers a modified morie to users over a network — must publish their source. Modifications and improvements cannot be kept secret or taken closed-source.
 
-- **Python and R packages** (`src/morie/`, `r-package/morie/`) — `AGPL-3.0-or-later`. See [`LICENSE`](https://github.com/hadesllm/morie/blob/main/LICENSE).
-- **Optional Linux kernel adjuncts** (`kernel-module/morie.c`, `daemon/morie_lsm.py`) — `GPL-2.0-only` (the Linux kernel ABI requires GPL for loaded modules). These are NOT part of the R / Python distribution; they are separately-licensed, independently-distributed adjuncts. See [`kernel-module/LICENSE-GPL2`](https://github.com/hadesllm/morie/blob/main/kernel-module/LICENSE-GPL2).
+- **Python and R packages** (`src/morie/`, `r-package/morie/`) — `AGPL-3.0-or-later`. See [`LICENSE`](https://github.com/rootcoder007/morie/blob/main/LICENSE).
+- **Optional Linux kernel adjuncts** (`kernel-module/morie.c`, `daemon/morie_lsm.py`) — `GPL-2.0-only` (the Linux kernel ABI requires GPL for loaded modules). These are NOT part of the R / Python distribution; they are separately-licensed, independently-distributed adjuncts. See [`kernel-module/LICENSE-GPL2`](https://github.com/rootcoder007/morie/blob/main/kernel-module/LICENSE-GPL2).
 - **Papers, data and documentation** — `CC BY-NC-SA 4.0` (Creative Commons Attribution-NonCommercial-ShareAlike) unless explicitly marked otherwise.
 
-Full detail in [`LICENSING.md`](https://github.com/hadesllm/morie/blob/main/LICENSING.md).
+Full detail in [`LICENSING.md`](https://github.com/rootcoder007/morie/blob/main/LICENSING.md).
 
 ## Reporting issues / security
 
-- General issues: [GitHub Issues](https://github.com/hadesllm/morie/issues)
-- Security vulnerabilities: see [`SECURITY.md`](https://github.com/hadesllm/morie/blob/main/.github/SECURITY.md)
+- General issues: [GitHub Issues](https://github.com/rootcoder007/morie/issues)
+- Security vulnerabilities: see [`SECURITY.md`](https://github.com/rootcoder007/morie/blob/main/.github/SECURITY.md)

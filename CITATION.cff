@@ -10,8 +10,8 @@ authors:
     # IPA: /ʋənʃ sɪŋ ɾʊˈɦeːlɑː/
 version: "0.9.5.12"
 date-released: "2026-05-22"
-url: "https://github.com/hadesllm/morie"
-repository-code: "https://github.com/hadesllm/morie"
+url: "https://github.com/rootcoder007/morie"
+repository-code: "https://github.com/rootcoder007/morie"
 license: "AGPL-3.0-or-later"
 identifiers:
   - type: doi

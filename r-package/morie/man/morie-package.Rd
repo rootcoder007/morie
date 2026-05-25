@@ -107,8 +107,8 @@ the R and Python sides. The optional Linux-kernel adjuncts under
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/hadesllm/morie}
-  \item Report bugs at \url{https://github.com/hadesllm/morie/issues}
+  \item \url{https://github.com/rootcoder007/morie}
+  \item Report bugs at \url{https://github.com/rootcoder007/morie/issues}
 }
 
 }

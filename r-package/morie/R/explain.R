@@ -266,7 +266,7 @@ explain_file <- function(filename) {
     "\
 \
 If you think this file should be explained, file an issue at ",
-    "https://github.com/hadesllm/morie/issues."
+    "https://github.com/rootcoder007/morie/issues."
   )
 }
 
@@ -292,7 +292,7 @@ cheatsheet <- function() {
     "  brew tap hadesllm/morie && brew install morie",
     "  pip install morie",
     "  install.packages('morie', repos = 'https://hadesllm.r-universe.dev')",
-    "  docker run --rm ghcr.io/hadesllm/morie:latest morie --help",
+    "  docker run --rm ghcr.io/rootcoder007/morie:latest morie --help",
     "",
     "Learn",
     "  morie tutorial                  Interactive walkthrough",
@@ -328,7 +328,7 @@ cheatsheet <- function() {
     "",
     "Refs",
     "  Docs:     https://hadesllm.github.io/morie/",
-    "  Issues:   https://github.com/hadesllm/morie/issues",
+    "  Issues:   https://github.com/rootcoder007/morie/issues",
     "  PyPI:     https://pypi.org/project/morie/",
     "  R:        https://hadesllm.r-universe.dev/morie",
     sep = "\

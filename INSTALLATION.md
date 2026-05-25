@@ -325,10 +325,10 @@ Segmentation fault (core dumped)
 
 ```bash
 # Latest stable
-docker run --rm ghcr.io/hadesllm/morie:latest morie --help
+docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a version for reproducibility
-docker run --rm ghcr.io/hadesllm/morie:0.8.0 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:0.8.0 morie --help
 ```
 
 The image is published on every release with both `:latest` and `:<version>` tags. Multi-arch (linux/amd64). Includes morie + the full SciPy + R stack + R 4.5.
@@ -499,7 +499,7 @@ Each adapter is also importable as `morie.ingest.{ckan,tps,siu}` for use inside 
 | curl one-liner | Re-run the curl command (installs the latest) |
 | Homebrew | `brew update && brew upgrade morie` |
 | pip | `pip install --upgrade morie` |
-| Docker | `docker pull ghcr.io/hadesllm/morie:latest` |
+| Docker | `docker pull ghcr.io/rootcoder007/morie:latest` |
 | R | Re-run the `install.packages(...)` above |
 
 ## Removing morie
@@ -522,7 +522,7 @@ remove.packages("morie")
 ## Getting help
 
 - Documentation: <https://hadesllm.github.io/morie/>
-- Source / issues: <https://github.com/hadesllm/morie>
+- Source / issues: <https://github.com/rootcoder007/morie>
 - PyPI: <https://pypi.org/project/morie/>
 - r-universe: <https://hadesllm.r-universe.dev/morie>
 - Homebrew tap: <https://github.com/hadesllm/homebrew-morie>
