@@ -75,7 +75,10 @@ test_that(".morie_did_have_* helpers return a logical", {
   expect_type(morie:::.morie_did_have_did(),    "logical")
   expect_type(morie:::.morie_did_have_bacondecomp(), "logical")
   expect_type(morie:::.morie_did_have_synthdid(), "logical")
-  expect_type(morie:::.morie_did_have_fwildboot(), "logical")
+  # .morie_did_have_fwildboot was removed in 3MMM.40c -- fwildclusterboot
+  # is GitHub-only with a transitive GitHub-only dep (summclust) that
+  # broke the pak resolver; the base-R wild-cluster bootstrap is now the
+  # sole path. See R/did.R.
   expect_type(morie:::.morie_did_have_sandwich(), "logical")
 })
 
