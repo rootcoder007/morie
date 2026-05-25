@@ -4,7 +4,11 @@
 \alias{morie_datasets_otis_c11_aggregate_lengths}
 \title{OTIS c11 -- Aggregate lengths}
 \usage{
-morie_datasets_otis_c11_aggregate_lengths(offline = TRUE, resource_id = NULL)
+morie_datasets_otis_c11_aggregate_lengths(
+  offline = TRUE,
+  resource_id = NULL,
+  source = NULL
+)
 }
 \arguments{
 \item{offline}{If \code{TRUE} (default), read the bundled synthetic

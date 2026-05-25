@@ -47,17 +47,19 @@ test_that("mrm_tps_lisa errors on missing count_col", {
 })
 
 test_that("mrm_tps_polygon_moran_per_year returns one row per year", {
+  # The fn signature (R/mrm_lisa.R:182-186) takes `year_cols` (a
+  # character vector of per-year column names), NOT a single count_col
+  # + year_col pair. Stage a multi-year-wide synthetic frame.
   df <- .make_synthetic_polygons(n = 60L, seed = 4L)
-  out <- tryCatch(
-    mrm_tps_polygon_moran_per_year(df, count_col = "count",
-                                     lat_col = "lat", lon_col = "lon",
-                                     year_col = "year",
-                                     k = 4L, n_permutations = 50L),
-    error = function(e) e
-  )
-  if (inherits(out, "error")) {
-    skip(sprintf("polygon_moran_per_year error: %s",
-                 conditionMessage(out)))
-  }
+  set.seed(4L)
+  df$count_2020 <- as.integer(stats::rpois(nrow(df), lambda = 5))
+  df$count_2021 <- as.integer(stats::rpois(nrow(df), lambda = 6))
+  df$count_2022 <- as.integer(stats::rpois(nrow(df), lambda = 7))
+  out <- mrm_tps_polygon_moran_per_year(df,
+                                          year_cols = c("count_2020",
+                                                        "count_2021",
+                                                        "count_2022"),
+                                          lat_col = "lat", lon_col = "lon",
+                                          k = 4L, n_permutations = 50L)
   expect_true(is.list(out) || is.data.frame(out))
 })

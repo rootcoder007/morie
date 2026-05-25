@@ -27,9 +27,20 @@ test_that("rows_to_df binds list-of-named-lists", {
 })
 
 test_that("socrata_get errors without httr2", {
-  skip_if_not_installed("httr2")
+  testthat::local_mocked_bindings(
+
+    requireNamespace = function(package, ...) {
+
+      if (identical(package, "httr2")) FALSE
+
+      else TRUE
+
+    },
+
+    .package = "base"
+
+  )
   set.seed(1)
-  skip_if(requireNamespace("httr2", quietly = TRUE))
   expect_error(morie:::.morie_chicago_socrata_get("http://x"), "httr2")
 })
 
@@ -70,9 +81,20 @@ test_that("ingest_chicago_crime routes through socrata helper (mocked)", {
 })
 
 test_that("ingest_chicago_crime_bigquery requires bigrquery", {
-  skip_if_not_installed("bigrquery")
+  testthat::local_mocked_bindings(
+
+    requireNamespace = function(package, ...) {
+
+      if (identical(package, "bigrquery")) FALSE
+
+      else TRUE
+
+    },
+
+    .package = "base"
+
+  )
   set.seed(1)
-  skip_if(requireNamespace("bigrquery", quietly = TRUE))
   expect_error(morie_ingest_chicago_crime_bigquery(), "bigrquery")
 })
 

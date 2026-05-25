@@ -127,8 +127,8 @@ ruhela_singleton_fns <- c(
   "morie_otis_analyze_a01_ruhela_formulations",
   "morie_otis_analyze_b01_ruhela_formulations",
   "morie_otis_analyze_b02_ruhela_formulations",
-  "morie_otis_analyze_a01_dual",
-  "morie_otis_analyze_b01_dual",
+  # 3MMM.26: morie_otis_analyze_{a01,b01}_dual removed -- they were
+  # deprecated aliases of *_ruhela_formulations (already listed above).
   "morie_otis_analyze_a01_ruhela_per_year",
   "morie_otis_analyze_b01_ruhela_per_year",
   "morie_otis_analyze_a01_ruhela_alt_gender",
@@ -152,9 +152,13 @@ for (nm in ruhela_singleton_fns) {
     test_that(paste(fn_name, "runs with NULL data or skips"), {
       skip_if_not(exists(fn_name), paste(fn_name, "not exported"))
       df <- make_otis_panel(80, seed = nchar(fn_name) + 9)
-      res <- tryCatch(do.call(fn_name, list(data = df)),
-                      error = function(e) NULL,
-                      warning = function(w) NULL)
+      # suppressWarnings so deprecation messages on the *_dual aliases
+      # don't get coerced to NULL (the old `warning = function(w) NULL`
+      # branch was eating real RichResult payloads and forcing skips
+      # for analyzers that work fine on the synthetic panel).
+      res <- suppressWarnings(tryCatch(
+        do.call(fn_name, list(data = df)),
+        error = function(e) NULL))
       if (is.null(res)) {
         # Synthetic panel doesn't fit this analyzer; fall back to the
         # bundled a01 fixture from data.ontario.ca (real, open).
@@ -162,9 +166,9 @@ for (nm in ruhela_singleton_fns) {
           morie_datasets_otis_a01(offline = TRUE),
           error = function(e) NULL))
         if (!is.null(df2)) {
-          res <- tryCatch(do.call(fn_name, list(data = df2)),
-                          error = function(e) NULL,
-                          warning = function(w) NULL)
+          res <- suppressWarnings(tryCatch(
+            do.call(fn_name, list(data = df2)),
+            error = function(e) NULL))
         }
       }
       skip_if(is.null(res),

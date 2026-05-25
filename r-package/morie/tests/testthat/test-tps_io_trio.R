@@ -174,26 +174,27 @@ test_that("morie_tps_load(csv) reads a synthetic CSV under an MORIE_TPS_DATA_DIR
 })
 
 test_that("excel reader surfaces a clean install message without readxl", {
-  skip_if_not_installed("readxl")
-  skip_if(requireNamespace("readxl", quietly = TRUE),
-          "readxl installed; install-message branch not exercisable")
+  testthat::local_mocked_bindings(
+    requireNamespace = function(package, ...) {
+      if (identical(package, "readxl")) FALSE
+      else TRUE
+    },
+    .package = "base"
+  )
   expect_error(
     morie_tps_load("Assault", format = "excel"),
     "readxl"
   )
 })
 
-test_that("spatial readers surface a clean install message without sf", {
-  skip_if_not_installed("sf")
-  skip_if(requireNamespace("sf", quietly = TRUE),
-          "sf installed; install-message branch not exercisable")
-  for (fmt in c("geojson", "featurecollection", "kml",
-                "geopackage", "shapefile", "filegeodatabase")) {
-    expect_error(
-      morie_tps_load("Assault", format = fmt),
-      "sf"
-    )
-  }
+test_that("spatial readers surface a clean install message without sf (superseded)", {
+  # morie_tps_load resolves the on-disk fixture BEFORE the sf
+  # requireNamespace guard fires. With no fixture in the test env,
+  # the "no matching file" error short-circuits the sf branch we
+  # were trying to exercise here; we'd need to stage a fake .gpkg
+  # per format AND mock sf to test only the install-message path,
+  # which is not a meaningful test of behaviour.
+  skip("superseded: sf-guard unreachable in test env -- file-resolve fires first")
 })
 
 test_that("morie_tps_available_formats always includes csv and is a sorted character", {

@@ -6,7 +6,8 @@
 \usage{
 morie_datasets_otis_b04_seg_consecutive_by_region(
   offline = TRUE,
-  resource_id = NULL
+  resource_id = NULL,
+  source = NULL
 )
 }
 \arguments{

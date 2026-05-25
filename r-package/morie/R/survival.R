@@ -345,7 +345,11 @@ morie_survival_cif <- function(time, event, event_of_interest = 1L,
                           ifelse(event == event_of_interest,
                                  "event", "competing")),
                    levels = c("censor", "event", "competing"))
-  fit <- survival::survfit(survival::Surv(t, status, type = "mstate") ~ 1,
+  # 3MMM.26 (2026-05-25): type='mstate' is deprecated in survival
+  # >=3.5. Modern API: pass status as a factor whose first level is
+  # the censoring code and survival auto-detects multi-state. We
+  # already build `status` as a factor with "censor" first (L344-347).
+  fit <- survival::survfit(survival::Surv(t, status) ~ 1,
                            conf.int = confidence)
   ev_idx <- which(colnames(fit$pstate) == "event")
   list(times = fit$time,

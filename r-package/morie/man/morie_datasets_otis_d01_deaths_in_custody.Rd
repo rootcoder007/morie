@@ -4,7 +4,11 @@
 \alias{morie_datasets_otis_d01_deaths_in_custody}
 \title{OTIS Deaths-in-Custody detailed dataset (d01)}
 \usage{
-morie_datasets_otis_d01_deaths_in_custody(offline = TRUE, resource_id = NULL)
+morie_datasets_otis_d01_deaths_in_custody(
+  offline = TRUE,
+  resource_id = NULL,
+  source = NULL
+)
 }
 \arguments{
 \item{offline}{If \code{TRUE} (default), read the bundled synthetic

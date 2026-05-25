@@ -10,16 +10,38 @@ test_that("ingest_cihi_xlsx validates url", {
 })
 
 test_that("ingest_cihi_xlsx errors without httr2", {
-  skip_if_not_installed("httr2")
+  testthat::local_mocked_bindings(
+
+    requireNamespace = function(package, ...) {
+
+      if (identical(package, "httr2")) FALSE
+
+      else TRUE
+
+    },
+
+    .package = "base"
+
+  )
   set.seed(1)
-  skip_if(requireNamespace("httr2", quietly = TRUE))
   expect_error(morie_ingest_cihi_xlsx("http://x/a.xlsx"), "httr2")
 })
 
 test_that("ingest_cihi_xlsx errors without readxl", {
-  skip_if_not_installed("readxl")
+  testthat::local_mocked_bindings(
+
+    requireNamespace = function(package, ...) {
+
+      if (identical(package, "readxl")) FALSE
+
+      else TRUE
+
+    },
+
+    .package = "base"
+
+  )
   set.seed(1)
-  skip_if(requireNamespace("readxl", quietly = TRUE))
   expect_error(morie_ingest_cihi_xlsx("http://x/a.xlsx"), "readxl")
 })
 
@@ -33,9 +55,20 @@ test_that("ingest_cihi_xlsx fails clean off-network", {
 })
 
 test_that("pick_data_sheet errors without readxl", {
-  skip_if_not_installed("readxl")
+  testthat::local_mocked_bindings(
+
+    requireNamespace = function(package, ...) {
+
+      if (identical(package, "readxl")) FALSE
+
+      else TRUE
+
+    },
+
+    .package = "base"
+
+  )
   set.seed(1)
-  skip_if(requireNamespace("readxl", quietly = TRUE))
   expect_error(morie:::.morie_cihi_pick_data_sheet("foo.xlsx"), "readxl")
 })
 

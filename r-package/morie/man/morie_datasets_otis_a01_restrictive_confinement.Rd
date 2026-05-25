@@ -6,7 +6,8 @@
 \usage{
 morie_datasets_otis_a01_restrictive_confinement(
   offline = TRUE,
-  resource_id = NULL
+  resource_id = NULL,
+  source = NULL
 )
 }
 \arguments{

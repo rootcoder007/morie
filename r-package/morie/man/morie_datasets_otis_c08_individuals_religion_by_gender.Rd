@@ -6,7 +6,8 @@
 \usage{
 morie_datasets_otis_c08_individuals_religion_by_gender(
   offline = TRUE,
-  resource_id = NULL
+  resource_id = NULL,
+  source = NULL
 )
 }
 \arguments{

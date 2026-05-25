@@ -24,8 +24,19 @@ test_that("morie_ml_eval_robustness returns classification report", {
 })
 
 test_that("morie_ml_eval_robustness errors without randomForest", {
-  skip_if_not_installed("randomForest")
-  skip_if(requireNamespace("randomForest", quietly = TRUE))
+  testthat::local_mocked_bindings(
+
+    requireNamespace = function(package, ...) {
+
+      if (identical(package, "randomForest")) FALSE
+
+      else TRUE
+
+    },
+
+    .package = "base"
+
+  )
   s <- make_ml_split()
   expect_error(
     morie_ml_eval_robustness(s$X, s$y, s$test_X, s$test_y),

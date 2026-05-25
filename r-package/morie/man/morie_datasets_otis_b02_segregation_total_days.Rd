@@ -6,7 +6,8 @@
 \usage{
 morie_datasets_otis_b02_segregation_total_days(
   offline = TRUE,
-  resource_id = NULL
+  resource_id = NULL,
+  source = NULL
 )
 }
 \arguments{

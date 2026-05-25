@@ -78,9 +78,11 @@ test_that("morie_tps_inspection_game_phase returns a 3-strategy steady state", {
 # 3. Stop-stub guard for the data-seeded routines
 # ---------------------------------------------------------------------------
 
-test_that("data-seeded routines stop with NotYetPorted when no loader", {
-  skip_if(.tps_loader_present(),
-          "dataset bridge present; stop-stub path not exercisable")
+test_that("data-seeded routines stop with NotYetPorted when no loader (superseded)", {
+  # 3MMM.5/3MMM.6 shipped bundled TPS fixtures (inst/extdata/) that
+  # satisfy .tps_loader_present() unconditionally. The NotYetPorted
+  # stop-stub branch is no longer reachable from the public API.
+  skip("superseded: bundled TPS fixtures make the no-loader branch unreachable")
 
   expect_error(
     morie_tps_sdb_reaction_diffusion("Assault", save_fig = FALSE),

@@ -4,7 +4,11 @@
 \alias{morie_datasets_otis_c01_individuals_total}
 \title{OTIS c01 -- Total individuals (in custody / restrictive confinement / segregation)}
 \usage{
-morie_datasets_otis_c01_individuals_total(offline = TRUE, resource_id = NULL)
+morie_datasets_otis_c01_individuals_total(
+  offline = TRUE,
+  resource_id = NULL,
+  source = NULL
+)
 }
 \arguments{
 \item{offline}{If \code{TRUE} (default), read the bundled synthetic

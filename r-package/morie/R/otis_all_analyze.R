@@ -941,32 +941,10 @@ morie_otis_analyze_b01_dlrm <- morie_otis_analyze_b01_ruhela_formulations
 #' @export
 morie_otis_analyze_b02_dlrm <- morie_otis_analyze_b02_ruhela_formulations
 
-# Deprecated dual-arm aliases
-#' Deprecated alias for \code{morie_otis_analyze_a01_ruhela_formulations}.
-#' @param data Optional.
-#' @param out_dir Optional.
-#' @return \code{morie_otis_analysis_result}.
-#' @export
-#' @examples
-#' \dontrun{ morie_otis_analyze_a01_dual() }
-morie_otis_analyze_a01_dual <- function(data = NULL, out_dir = NULL) {
-  warning("morie_otis_analyze_a01_dual is deprecated; ",
-          "use morie_otis_analyze_a01_ruhela_formulations")
-  morie_otis_analyze_a01_ruhela_formulations(data, out_dir)
-}
-
-#' Deprecated alias for \code{morie_otis_analyze_b01_ruhela_formulations}.
-#' @param data Optional.
-#' @param out_dir Optional.
-#' @return \code{morie_otis_analysis_result}.
-#' @export
-#' @examples
-#' \dontrun{ morie_otis_analyze_b01_dual() }
-morie_otis_analyze_b01_dual <- function(data = NULL, out_dir = NULL) {
-  warning("morie_otis_analyze_b01_dual is deprecated; ",
-          "use morie_otis_analyze_b01_ruhela_formulations")
-  morie_otis_analyze_b01_ruhela_formulations(data, out_dir)
-}
+# 3MMM.26 (2026-05-25): morie_otis_analyze_{a01,b01}_dual were
+# deprecated aliases of *_ruhela_formulations. Removed outright --
+# no CRAN release shipped them and we are pre-v1.0 alpha, so no
+# back-compat obligation. Callers must use *_ruhela_formulations.
 
 
 # ---------------------------------------------------------------------------

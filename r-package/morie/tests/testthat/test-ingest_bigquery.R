@@ -29,9 +29,20 @@ test_that("billing_project resolves explicit > env > NULL", {
 })
 
 test_that("bq_require errors when bigrquery missing", {
-  skip_if_not_installed("bigrquery")
+  testthat::local_mocked_bindings(
+
+    requireNamespace = function(package, ...) {
+
+      if (identical(package, "bigrquery")) FALSE
+
+      else TRUE
+
+    },
+
+    .package = "base"
+
+  )
   set.seed(1)
-  skip_if(requireNamespace("bigrquery", quietly = TRUE))
   expect_error(morie:::.morie_bq_require(), "bigrquery")
 })
 
@@ -79,15 +90,37 @@ test_that("ingest_bigquery_query validates sql string", {
 })
 
 test_that("ingest_bigquery_query errors without bigrquery", {
-  skip_if_not_installed("bigrquery")
+  testthat::local_mocked_bindings(
+
+    requireNamespace = function(package, ...) {
+
+      if (identical(package, "bigrquery")) FALSE
+
+      else TRUE
+
+    },
+
+    .package = "base"
+
+  )
   set.seed(1)
-  skip_if(requireNamespace("bigrquery", quietly = TRUE))
   expect_error(morie_ingest_bigquery_query("SELECT 1"), "bigrquery")
 })
 
 test_that("ingest_bigquery_table errors without bigrquery", {
-  skip_if_not_installed("bigrquery")
+  testthat::local_mocked_bindings(
+
+    requireNamespace = function(package, ...) {
+
+      if (identical(package, "bigrquery")) FALSE
+
+      else TRUE
+
+    },
+
+    .package = "base"
+
+  )
   set.seed(1)
-  skip_if(requireNamespace("bigrquery", quietly = TRUE))
   expect_error(morie_ingest_bigquery_table("p", "d", "t"), "bigrquery")
 })

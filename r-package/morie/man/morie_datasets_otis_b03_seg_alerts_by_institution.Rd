@@ -6,7 +6,8 @@
 \usage{
 morie_datasets_otis_b03_seg_alerts_by_institution(
   offline = TRUE,
-  resource_id = NULL
+  resource_id = NULL,
+  source = NULL
 )
 }
 \arguments{

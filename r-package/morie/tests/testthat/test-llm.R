@@ -146,11 +146,13 @@ test_that("probe_freeapi cached FALSE returns FALSE", {
 })
 
 test_that("request_completion errors without httr2/jsonlite", {
-  skip_if_not_installed("httr2")
-  skip_if_not_installed("jsonlite")
-  set.seed(1)
-  skip_if(requireNamespace("httr2", quietly = TRUE) &&
-          requireNamespace("jsonlite", quietly = TRUE))
+  testthat::local_mocked_bindings(
+    requireNamespace = function(package, ...) {
+      if (identical(package, "httr2") || identical(package, "jsonlite")) FALSE
+      else TRUE
+    },
+    .package = "base"
+  )
   expect_error(
     morie_llm_request_completion("http://x", "m",
                                  list(list(role = "user", content = "x"))),

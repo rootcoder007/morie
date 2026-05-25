@@ -102,11 +102,13 @@ test_that("flatten_nist does not crash on minimal record", {
   expect_type(out, "list")
 })
 
-test_that("get_json requires httr2", {
-  skip_if_not_installed("httr2")
-  set.seed(1)
-  skip_if(requireNamespace("httr2", quietly = TRUE))
-  expect_error(morie:::.morie_forensics_get_json("http://x"), "httr2")
+test_that("get_json requires httr2 (superseded)", {
+  # 3VV migrated .morie_forensics_get_json onto the libcurl-backed
+  # morie_http_get_text + jsonlite::fromJSON, bypassing the httr2
+  # requireNamespace guard. The "requires httr2" error branch is no
+  # longer reachable; the off-network path is exercised by the test
+  # immediately below.
+  skip("superseded: forensics get_json migrated off httr2 in phase 3VV")
 })
 
 test_that("get_json with httr2 fails clean off-network", {

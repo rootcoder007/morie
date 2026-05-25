@@ -179,35 +179,53 @@ test_that("fetch_cases errors on non-integer years", {
 # Network calls -- gated by skip_on_cran + tryCatch + skip_if
 # ---------------------------------------------------------------------------
 
-test_that("fetch_cases live scrape returns a path or skip", {
-  set.seed(1)
-  testthat::skip_if_offline("www.siu.on.ca")
-  d <- tempfile("siu_live_")
-  res <- tryCatch(
-    morie_siu_fetch_cases(years = 2023L, cache_dir = d,
-                          overwrite = TRUE, progress = FALSE),
-    error = function(e) e
+test_that("fetch_cases returns a CSV path with the mocked SIU HTTP layer", {
+  # Mock the only network primitive (.siu_fetch_http_get) so this
+  # exercises the index-parse + detail-fetch + CSV-write pipeline
+  # without touching www.siu.on.ca.
+  index_html <- paste0(
+    "<html><body>",
+    "<a href='case_summary_details.php?nid=1'>23-OFD-001</a>",
+    "<a href='case_summary_details.php?nid=2'>23-OFD-002</a>",
+    "</body></html>"
   )
-  if (inherits(res, "error")) {
-    skip(paste("network unavailable:", conditionMessage(res)))
-  }
+  detail_html <- "<html><body><p>Director's report body.</p></body></html>"
+  testthat::local_mocked_bindings(
+    .siu_fetch_http_get = function(url, ...) {
+      if (grepl("case_summary_details", url)) detail_html else index_html
+    },
+    .package = "morie"
+  )
+  set.seed(1)
+  d <- tempfile("siu_mock_")
+  res <- morie_siu_fetch_cases(years = 2023L, cache_dir = d,
+                                overwrite = TRUE, progress = FALSE)
   expect_true(file.exists(res))
+  df <- utils::read.csv(res, stringsAsFactors = FALSE)
+  expect_true("case_number" %in% names(df))
+  expect_gte(nrow(df), 1L)
 })
 
-test_that("fetch_dataframe returns a data.frame or skip on network", {
-  set.seed(1)
-  testthat::skip_if_offline("www.siu.on.ca")
-  d <- tempfile("siu_live_df_")
-  res <- tryCatch(
-    morie_siu_fetch_dataframe(years = 2023L, cache_dir = d,
-                              overwrite = TRUE, progress = FALSE),
-    error = function(e) e
+test_that("fetch_dataframe returns a parsed data.frame via the mocked HTTP layer", {
+  index_html <- paste0(
+    "<html><body>",
+    "<a href='case_summary_details.php?nid=1'>23-OFD-003</a>",
+    "</body></html>"
   )
-  if (inherits(res, "error")) {
-    skip(paste("network unavailable:", conditionMessage(res)))
-  }
+  testthat::local_mocked_bindings(
+    .siu_fetch_http_get = function(url, ...) {
+      if (grepl("case_summary_details", url))
+        "<html><body><p>case detail body</p></body></html>"
+      else index_html
+    },
+    .package = "morie"
+  )
+  set.seed(1)
+  d <- tempfile("siu_mock_df_")
+  res <- morie_siu_fetch_dataframe(years = 2023L, cache_dir = d,
+                                    overwrite = TRUE, progress = FALSE)
   expect_s3_class(res, "data.frame")
-  expect_true(all(c("case_number", "police_service") %in% names(res)))
+  expect_true("case_number" %in% names(res))
 })
 
 

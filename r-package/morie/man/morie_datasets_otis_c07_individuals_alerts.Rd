@@ -4,7 +4,11 @@
 \alias{morie_datasets_otis_c07_individuals_alerts}
 \title{OTIS c07 -- Individuals: alerts + hold flags}
 \usage{
-morie_datasets_otis_c07_individuals_alerts(offline = TRUE, resource_id = NULL)
+morie_datasets_otis_c07_individuals_alerts(
+  offline = TRUE,
+  resource_id = NULL,
+  source = NULL
+)
 }
 \arguments{
 \item{offline}{If \code{TRUE} (default), read the bundled synthetic

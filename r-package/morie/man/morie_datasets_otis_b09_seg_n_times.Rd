@@ -4,7 +4,11 @@
 \alias{morie_datasets_otis_b09_seg_n_times}
 \title{OTIS b09 -- Individuals in segregation by number of times placed}
 \usage{
-morie_datasets_otis_b09_seg_n_times(offline = TRUE, resource_id = NULL)
+morie_datasets_otis_b09_seg_n_times(
+  offline = TRUE,
+  resource_id = NULL,
+  source = NULL
+)
 }
 \arguments{
 \item{offline}{If \code{TRUE} (default), read the bundled synthetic

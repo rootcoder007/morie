@@ -19,7 +19,23 @@
   for (yr in 2014:2024) {
     cols[[paste0(prefix, "_", yr)]] <- stats::runif(n_hoods, 0, 500)
   }
-  as.data.frame(cols, stringsAsFactors = FALSE)
+  out <- as.data.frame(cols, stringsAsFactors = FALSE)
+  # tps_render_yearly_grid + render_quad expect polys$geometry as a
+  # list-column of rings, each ring a list of [lon, lat] pairs (the
+  # parsed-GeoJSON shape).  Stage a small square around each centroid
+  # so the renderers find >=3 points per polygon.
+  delta <- 0.01
+  out$geometry <- lapply(seq_len(n_hoods), function(i) {
+    lat <- out$centroid_lat[i]; lon <- out$centroid_lon[i]
+    list(list(
+      list(lon - delta, lat - delta),
+      list(lon + delta, lat - delta),
+      list(lon + delta, lat + delta),
+      list(lon - delta, lat + delta),
+      list(lon - delta, lat - delta)
+    ))
+  })
+  out
 }
 
 .make_synthetic_points <- function(n = 200L, seed = 2L) {

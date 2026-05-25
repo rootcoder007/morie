@@ -212,9 +212,20 @@ test_that("nyc_stop_and_frisk rejects unknown years", {
 })
 
 test_that("bigquery loader errors without bigrquery installed", {
-  skip_if_not_installed("bigrquery")
+  testthat::local_mocked_bindings(
+
+    requireNamespace = function(package, ...) {
+
+      if (identical(package, "bigrquery")) FALSE
+
+      else TRUE
+
+    },
+
+    .package = "base"
+
+  )
   set.seed(1)
-  skip_if(requireNamespace("bigrquery", quietly = TRUE))
   expect_error(morie_datasets_bigquery("a", "b", "c"), "bigrquery")
 })
 

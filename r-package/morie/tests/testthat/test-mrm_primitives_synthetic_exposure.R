@@ -155,7 +155,26 @@ test_that("mrm_synthetic_area_exposure constant trait returns null-analysis", {
   expect_equal(res$n, 0L)
 })
 
-test_that("mrm_synthetic_area_exposure too few survey rows returns null", {
+test_that("mrm_synthetic_area_exposure happy path on realistic survey size", {
+  # Vee 2026-05-25: realistic survey panels for area-exposure
+  # estimation are O(hundreds-to-thousands); n_survey=200 sits well
+  # above the function's minimum sample-size guard and exercises the
+  # primary estimation path.
+  d <- mk_synth_data(n_survey = 200L)
+  res <- mrm_synthetic_area_exposure(
+    survey_df = d$survey,
+    survey_trait_col = "trait",
+    survey_covariate_cols = c("x1", "x2"),
+    area_df = d$area,
+    area_population_col = "pop"
+  )
+  expect_gt(res$n, 0L)
+})
+
+test_that("mrm_synthetic_area_exposure too-few-survey-rows guard returns n=0", {
+  # Edge-case: n=2 deliberately undershoots the survey-rows guard.
+  # Paired with the realistic happy-path test above; this is the ONE
+  # place we under-size on purpose.
   d <- mk_synth_data(n_survey = 2L)
   d$survey$trait <- c(0L, 1L)
   res <- mrm_synthetic_area_exposure(

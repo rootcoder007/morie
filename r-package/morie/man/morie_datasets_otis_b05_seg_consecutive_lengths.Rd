@@ -6,7 +6,8 @@
 \usage{
 morie_datasets_otis_b05_seg_consecutive_lengths(
   offline = TRUE,
-  resource_id = NULL
+  resource_id = NULL,
+  source = NULL
 )
 }
 \arguments{

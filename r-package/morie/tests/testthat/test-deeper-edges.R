@@ -11,15 +11,21 @@
 # ============================================================== matching.R
 
 test_that("morie_matching_rosenbaum_bounds returns multiple Gamma rows", {
-  df <- make_match_df(n = 200L, tau = 0.4, seed = 1L)
-  out <- tryCatch(
-    morie_matching_rosenbaum_bounds(df, "y", "d", c("x1", "x2"),
-                                     gamma_range = c(1.0, 1.5, 2.0, 3.0)),
-    error = function(e) e)
-  if (inherits(out, "error")) {
-    skip(sprintf("rosenbaum_bounds error: %s", conditionMessage(out)))
-  }
+  # rosenbaum_bounds takes match_pairs (a data.frame with treated_idx /
+  # control_idx), NOT raw covariates. Build the pairs first via PSM,
+  # then pass them through.
+  df <- make_match_df_balanced(n = 200L, tau = 0.4, seed = 1L)
+  rownames(df) <- as.character(seq_len(nrow(df)))
+  pairs <- tryCatch(
+    morie_matching_psm(df, "d", c("x1", "x2"))$matched,
+    error = function(e) NULL
+  )
+  skip_if(is.null(pairs) || nrow(pairs) == 0L,
+          "PSM produced no match_pairs in this synthetic seed")
+  out <- morie_matching_rosenbaum_bounds(df, "y", "d", pairs,
+                                          gamma_range = c(1.0, 1.5, 2.0, 3.0))
   expect_true(is.list(out) || is.data.frame(out))
+  expect_equal(nrow(out), 4L)
 })
 
 test_that("morie_matching_doubly_robust returns a finite ATT_DR with overlap (balanced)", {
@@ -79,18 +85,16 @@ test_that("morie_did_2x2 with cluster arg returns clustered SE", {
   expect_true(is.list(out))
 })
 
-test_that("morie_did_panel_fe with weights runs without erroring", {
+test_that("morie_did_panel_fe with covariates + cluster runs without erroring", {
+  # morie_did_panel_fe does not take a weights= arg (R/did.R:256-258).
+  # Exercise the covariate + custom-cluster branch instead, which IS
+  # in the signature and was previously uncovered.
   df <- make_did_panel(n_units = 30L, n_periods = 6L,
                         tau = 0.5, seed = 7L)
-  df$w <- stats::runif(nrow(df), 0.5, 1.5)
-  out <- tryCatch(
-    morie_did_panel_fe(df, "y", "d", "unit", "time",
-                        weights = "w"),
-    error = function(e) e)
-  if (inherits(out, "error")) {
-    skip(sprintf("did_panel_fe weights error: %s",
-                 conditionMessage(out)))
-  }
+  df$x_cov <- stats::runif(nrow(df), 0.5, 1.5)
+  out <- morie_did_panel_fe(df, "y", "d", "unit", "time",
+                            covariates = "x_cov",
+                            cluster = "unit")
   expect_true(is.list(out))
 })
 

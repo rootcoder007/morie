@@ -166,22 +166,22 @@ test_that("morie_siu_anomaly_check returns per-field verdicts on staged cache", 
   skip_if_not_installed("jsonlite")
   cache <- .stage_siu_cache(case_number = "24-OFD-001", drid = 4001L)
   on.exit(unlink(cache, recursive = TRUE), add = TRUE)
+  # morie_siu_anomaly_check parses the LLM response as a JSON ARRAY of
+  # {field, verdict, reason} objects (R/siu.R:1620-1651 — that's also
+  # what its prompt asks the LLM to emit).  The earlier name-keyed
+  # object shape lost the "field" column under
+  # jsonlite::fromJSON(simplifyVector = TRUE).
   mock_text <- jsonlite::toJSON(list(
-    case_number = list(verdict = "agree", reason = "matches header"),
-    police_service = list(verdict = "agree",
-                           reason = "matches body"),
-    sex_gender_affected = list(verdict = "agree",
-                                reason = "matches body")
+    list(field = "case_number",
+         verdict = "agree", reason = "matches header"),
+    list(field = "police_service",
+         verdict = "agree", reason = "matches body"),
+    list(field = "sex_gender_affected",
+         verdict = "agree", reason = "matches body")
   ), auto_unbox = TRUE)
-  out <- tryCatch(
-    morie_siu_anomaly_check("24-OFD-001",
-                              cache_dir = cache,
-                              mock_response_text = as.character(mock_text)),
-    error = function(e) e
-  )
-  if (inherits(out, "error")) {
-    skip(sprintf("anomaly_check error: %s", conditionMessage(out)))
-  }
+  out <- morie_siu_anomaly_check("24-OFD-001",
+                                  cache_dir = cache,
+                                  mock_response_text = as.character(mock_text))
   expect_true(is.data.frame(out) || is.list(out))
 })
 

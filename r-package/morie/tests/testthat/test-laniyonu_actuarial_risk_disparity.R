@@ -194,9 +194,30 @@ test_that("print.morie_laniyonu_ard_result emits header lines", {
   expect_true(any(grepl("CAVEAT|caveat", out, ignore.case = TRUE)))
 })
 
-test_that("small gender stratum warns and skips", {
+test_that("realistic gender distribution exercises both M and F strata cleanly", {
+  # Vee 2026-05-25: synth data must reflect realistic gender
+  # distribution -- in the carceral system there are far more than
+  # 5 women involved with police, so a happy-path test should NOT
+  # under-represent F. mk_ord_data(300L) yields ~30% F (~90 rows),
+  # comfortably above the n>=30 stability threshold, so BOTH strata
+  # get fit and the function runs warning-free.
+  df <- mk_ord_data(300L)
+  res <- morie_laniyonu_actuarial_risk_disparity(
+    df, outcome = "static",
+    race_cols = c("black"),
+    gender_col = "gender",
+    split_by_gender = TRUE
+  )
+  out <- capture.output(print(res))
+  expect_true(any(grepl("Laniyonu", out)))
+})
+
+test_that("n<30 stratum guard fires for genuinely tiny groups", {
+  # Edge-case test for the n>=30 stability threshold. We deliberately
+  # construct a tiny F group (n=5) here to assert the function's
+  # defensive warning behaviour -- this is the ONE place we under-
+  # represent F on purpose; the realistic happy path lives above.
   df <- mk_ord_data(40L)
-  # Make F very rare (< 30 rows)
   df$gender <- "M"
   df$gender[1:5] <- "F"
   expect_warning(
@@ -205,6 +226,7 @@ test_that("small gender stratum warns and skips", {
       race_cols = c("black"),
       gender_col = "gender",
       split_by_gender = TRUE
-    )
+    ),
+    regexp = "stratum 'F' has only 5 rows"
   )
 })

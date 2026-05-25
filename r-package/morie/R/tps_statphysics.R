@@ -291,8 +291,13 @@ morie_tps_sdb_reaction_diffusion <- function(category = "Assault",
                                           min_samples = 20L),
               silent = TRUE)
     if (!inherits(db, "try-error")) {
-      n_dbscan <- suppressWarnings(as.integer(db$payload$n_clusters))
-      if (is.na(n_dbscan)) n_dbscan <- 0L
+      raw_nc <- db$payload$n_clusters
+      if (is.null(raw_nc) || length(raw_nc) != 1L) {
+        n_dbscan <- 0L
+      } else {
+        n_dbscan <- suppressWarnings(as.integer(raw_nc))
+        if (is.na(n_dbscan)) n_dbscan <- 0L
+      }
     }
   }
 

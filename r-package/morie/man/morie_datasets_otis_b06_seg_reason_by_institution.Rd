@@ -6,7 +6,8 @@
 \usage{
 morie_datasets_otis_b06_seg_reason_by_institution(
   offline = TRUE,
-  resource_id = NULL
+  resource_id = NULL,
+  source = NULL
 )
 }
 \arguments{

@@ -4,7 +4,11 @@
 \alias{morie_datasets_otis_d06_cause_by_alert}
 \title{OTIS d06 -- Deaths in custody by alert type x institution}
 \usage{
-morie_datasets_otis_d06_cause_by_alert(offline = TRUE, resource_id = NULL)
+morie_datasets_otis_d06_cause_by_alert(
+  offline = TRUE,
+  resource_id = NULL,
+  source = NULL
+)
 }
 \arguments{
 \item{offline}{If \code{TRUE} (default), read the bundled synthetic

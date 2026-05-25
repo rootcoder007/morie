@@ -6,7 +6,8 @@
 \usage{
 morie_datasets_otis_b07_seg_alerts_by_gender(
   offline = TRUE,
-  resource_id = NULL
+  resource_id = NULL,
+  source = NULL
 )
 }
 \arguments{
