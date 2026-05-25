@@ -1,0 +1,49 @@
+morie -- Multi-domain Open Research and Inferential Estimation
+Copyright (C) 2026 Vansh Singh Ruhela <hadesllm@proton.me>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+The full AGPL-3.0-or-later text is in the LICENSE file at the parent
+repository root (../../LICENSE relative to this R package, or LICENSE
+at the top of the rootcoder007/morie GitHub repository).
+
+================================================================================
+Contact
+================================================================================
+
+Author:       Vansh Singh Ruhela
+Email:        hadesllm@proton.me
+ORCID:        https://orcid.org/0009-0004-1750-3592
+GitHub:       https://github.com/rootcoder007/morie
+Issues:       https://github.com/rootcoder007/morie/issues
+Security:     SECURITY.md
+
+================================================================================
+AGPL section 13 -- network use disclosure
+================================================================================
+
+If you offer a modified version of morie to users over a network (a web
+service, remote API, SaaS deployment), section 13 of the AGPL requires
+you to make the complete corresponding source code available. Canonical
+upstream:
+
+    https://github.com/rootcoder007/morie
+
+================================================================================
+SPDX identifier
+================================================================================
+
+Source files carry `# SPDX-License-Identifier: AGPL-3.0-or-later`
+(or `//` for C/C++). Removing or modifying this identifier does not
+change the license -- see LICENSE for the binding text.
