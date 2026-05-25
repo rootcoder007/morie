@@ -72,7 +72,7 @@ test_that("modules.R CPADS-data callables are exercised offline-safe", {
   expect_true(TRUE)
 })
 
-test_that("mixture_of_experts() runs with default gating/experts", {
+test_that("morie:::mixture_of_experts() runs with default gating/experts", {
   set.seed(16)
   x <- matrix(rnorm(12L), nrow = 4L, ncol = 3L)
   res <- morie:::mixture_of_experts(x)
@@ -86,7 +86,7 @@ test_that("mixture_of_experts() runs with default gating/experts", {
   expect_true(all(is.finite(res$load)))
 })
 
-test_that("mixture_of_experts() honours a custom W_gate and top_k", {
+test_that("morie:::mixture_of_experts() honours a custom W_gate and top_k", {
   set.seed(17)
   x <- matrix(rnorm(15L), nrow = 5L, ncol = 3L)
   W_gate <- matrix(rnorm(12L), nrow = 3L, ncol = 4L)
@@ -97,7 +97,7 @@ test_that("mixture_of_experts() honours a custom W_gate and top_k", {
   expect_true(all(res$topk_idx >= 0L & res$topk_idx <= 3L))
 })
 
-test_that("mixture_of_experts() clamps top_k to the number of experts", {
+test_that("morie:::mixture_of_experts() clamps top_k to the number of experts", {
   set.seed(18)
   x <- matrix(rnorm(8L), nrow = 4L, ncol = 2L)
   res <- morie:::mixture_of_experts(x, top_k = 99L)

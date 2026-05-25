@@ -16,7 +16,7 @@ test_that("midranks computes mid-ranks for a numeric vector", {
 
 test_that("cosine_lr_schedule returns a decayed learning rate", {
   out <- tryCatch(
-    cosine_lr_schedule(x = 50L, lr_max = 1e-3, lr_min = 0,
+    morie:::cosine_lr_schedule(x = 50L, lr_max = 1e-3, lr_min = 0,
                        total_steps = 100L),
     error = function(e) e)
   if (inherits(out, "error"))
@@ -27,7 +27,7 @@ test_that("cosine_lr_schedule returns a decayed learning rate", {
 test_that("word_embedding returns an embedding matrix", {
   set.seed(1L)
   out <- tryCatch(
-    word_embedding(x = sample.int(50L, 20L, replace = TRUE),
+    morie:::word_embedding(x = sample.int(50L, 20L, replace = TRUE),
                    vocab_size = 50L, d_model = 4L),
     error = function(e) e)
   if (inherits(out, "error"))
@@ -41,7 +41,7 @@ test_that("flash_attention runs on small Q/K/V matrices", {
   K <- matrix(stats::rnorm(16 * 4), 16L, 4L)
   V <- matrix(stats::rnorm(16 * 4), 16L, 4L)
   out <- tryCatch(
-    flash_attention(Q, K, V, block_size = 8L),
+    morie:::flash_attention(Q, K, V, block_size = 8L),
     error = function(e) e)
   if (inherits(out, "error"))
     skip(sprintf("flsha error: %s", conditionMessage(out)))
@@ -51,7 +51,7 @@ test_that("flash_attention runs on small Q/K/V matrices", {
 test_that("bpe_tokenizer learns BPE merges from a short corpus", {
   set.seed(3L)
   out <- tryCatch(
-    bpe_tokenizer(x = c("hello world", "world of morie",
+    morie:::bpe_tokenizer(x = c("hello world", "world of morie",
                          "hello morie"), num_merges = 5L),
     error = function(e) e)
   if (inherits(out, "error"))

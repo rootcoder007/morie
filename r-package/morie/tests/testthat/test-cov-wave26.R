@@ -352,7 +352,7 @@ test_that("long-tail degenerate-input guard branches execute", {
   call(sptau(v, matrix(runif(1600), 40)))
   call(morie_svm_genomic(m, v, markers = 1:2))
   call(morie_threshold_autoregression(v))
-  call(bpe_tokenizer("a b c a b c a b"))
+  call(morie:::bpe_tokenizer("a b c a b c a b"))
   call(morie_universal_kriging(v, coords, trend_order = 3))
   call(morie_vecm(matrix(rnorm(80), 40, 2)))
   call(vines(m))
