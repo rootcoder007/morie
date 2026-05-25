@@ -289,7 +289,7 @@ cheatsheet <- function() {
     "",
     "Install",
     "  curl -fsSL https://hadesllm.github.io/morie/install.sh | bash",
-    "  brew tap hadesllm/morie && brew install morie",
+    "  brew tap rootcoder007/morie && brew install morie",
     "  pip install morie",
     "  install.packages('morie', repos = 'https://hadesllm.r-universe.dev')",
     "  docker run --rm ghcr.io/rootcoder007/morie:latest morie --help",
