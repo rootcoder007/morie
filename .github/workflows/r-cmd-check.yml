@@ -46,10 +46,6 @@ jobs:
     env:
       _R_CHECK_FORCE_SUGGESTS_: false
       R_KEEP_PKG_SOURCE: yes
-      # Whether this cell runs the post-check quality steps (lintr,
-      # covr, goodpractice). Only the primary ubuntu-release cell
-      # pays that cost; mac/win/devel/oldrel skip them.
-      MORIE_RUN_QA: ${{ matrix.config.os == 'ubuntu-latest' && matrix.config.r == 'release' }}
 
     defaults:
       run:
@@ -66,34 +62,14 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      # cache-version: 1 -- pak's binary cache persists across runs +
-      # leaves IF this key matches. Bump to invalidate (eg on Rcpp
-      # toolchain change). Use YAML literal-block (|) for extra-packages
-      # so each name is its own line; folded-scalar (>-) collapses to
-      # one space-separated string which pak mis-resolves.
+      # cache-version: 1 -- pak's binary cache persists across runs.
+      # Bump to invalidate on toolchain change.
       - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
           cache-version: 1
-          extra-packages: |
-            any::rcmdcheck
-            any::lintr
-            any::covr
-            any::xml2
-            any::goodpractice
-            any::cyclocomp
+          extra-packages: any::rcmdcheck
           needs: check
-
-      # On Windows runners, actions/checkout sometimes drops the
-      # 100755 index bit when materialising the tree to disk. R CMD
-      # build then emits "file '...' did not have execute permissions:
-      # corrected" warnings. Re-apply +x explicitly so the warning
-      # never fires; no-op on Linux/Mac (already 0755 from checkout).
-      - name: Ensure configure scripts are executable (Windows fix)
-        if: matrix.config.os == 'windows-2025'
-        shell: bash
-        run: |
-          chmod +x configure cleanup configure.win 2>/dev/null || true
 
       - uses: r-lib/actions/check-r-package@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
@@ -105,37 +81,14 @@ jobs:
           args: 'c("--no-manual")'
           error-on: '"error"'
 
-      # --- POST-CHECK QA steps (ubuntu-release only) -----------------
-      # These previously ran as separate jobs in r-coverage-and-lint.yml,
-      # each spinning up its own VM and re-installing R + every Suggests
-      # from scratch. Folded in here so they reuse the just-installed R
-      # library and built package state. continue-on-error so a single
-      # QA hiccup doesn't fail the whole r-cmd-check leaf.
-
-      - name: Run lintr
-        if: env.MORIE_RUN_QA == 'true'
-        continue-on-error: true
-        run: Rscript -e 'lintr::lint_package()'
-
-      - name: Run covr + cobertura
-        if: env.MORIE_RUN_QA == 'true'
-        continue-on-error: true
-        run: |
-          Rscript -e 'cov <- covr::package_coverage(type = "tests", quiet = TRUE); covr::to_cobertura(cov, filename = "coverage.xml"); cat(sprintf("Coverage: %.2f%%\n", covr::percent_coverage(cov)))'
-
-      - name: Upload coverage to Codecov
-        if: env.MORIE_RUN_QA == 'true'
-        continue-on-error: true
-        uses: codecov/codecov-action@v5
-        with:
-          files: r-package/morie/coverage.xml
-          flags: r-tests
-          fail_ci_if_error: false
-
-      - name: Run goodpractice
-        if: env.MORIE_RUN_QA == 'true'
-        continue-on-error: true
-        run: Rscript -e 'g <- goodpractice::gp("."); print(g)'
+      # Post-check QA (lintr / covr / goodpractice) was folded INTO this
+      # cell in 3MMM.65 to "share R library state" -- the actual effect
+      # was +40 min of sequential duplicate work (covr re-runs all tests
+      # instrumented; goodpractice re-runs R CMD check internally).
+      # Reverted in 3MMM.72: lintr + covr now run as separate parallel
+      # jobs in r-coverage-and-lint.yml. goodpractice + pkgcheck dropped
+      # from regular CI -- only workflow_dispatch (manually run before
+      # rOpenSci submission).
 
   # Separate Linux-only job that spins up a live PostgreSQL service and
   # exercises the PG branch of the DBI cache layer. The PG testthat
