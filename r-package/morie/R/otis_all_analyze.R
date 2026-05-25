@@ -1315,6 +1315,48 @@ morie_otis_analyze_b04_ruhela_aggregate <- function(data, out_dir = NULL) {
     ))
 }
 
+#' b05 aggregate Ruhela: schema-no-demographic guard.
+#'
+#' OTIS b05 (segregation placements by consecutive duration) does
+#' not carry a demographic treatment variable -- the published
+#' schema is just \code{EndFiscalYear, Consecutive_Duration,
+#' Number_SegregationPlacements}. The "Ruhela formulation" presumes
+#' a binary treatment column (typically Gender, Race, or alert
+#' status) for the aggregate RF test, so b05 has no meaningful
+#' aggregate Ruhela analysis on its own. Returns a structured
+#' "not applicable" wrapper rather than erroring so dispatcher
+#' loops over the b03..b09 family stay green.
+#'
+#' @param data b05 data.frame.
+#' @param out_dir Optional output directory (unused, accepted for
+#'   parity with sibling aggregators).
+#' @return \code{morie_otis_analysis_result} carrying a "not
+#'   applicable" note in \code{warnings}.
+#' @export
+#' @examples
+#' \dontrun{ morie_otis_analyze_b05_ruhela_aggregate(otis_b05) }
+morie_otis_analyze_b05_ruhela_aggregate <- function(data, out_dir = NULL) {
+  need <- c("EndFiscalYear", "Consecutive_Duration",
+            "Number_SegregationPlacements")
+  if (!all(need %in% names(data)))
+    return(.otis_not_yet_ported("b05_ruhela_aggregate",
+                                "missing required columns"))
+  .otis_wrap(
+    "b05 aggregate Ruhela", list(),
+    warnings = paste(
+      "b05 has no demographic treatment column (Gender / Race /",
+      "Alert) in the published schema, so the Ruhela aggregate RF",
+      "formulation is not applicable here. Use the b05 panel for",
+      "consecutive-duration histograms instead."
+    ),
+    interpretation = paste(
+      "OTIS b05 -- aggregate Ruhela formulation: not applicable.",
+      "b05 publishes Consecutive_Duration counts only, with no",
+      "demographic treatment column to contrast against."
+    )
+  )
+}
+
 #' b06 aggregate Ruhela: Disciplinary reason -> seg placements.
 #' @param data b06 data.frame.
 #' @param out_dir Optional.
