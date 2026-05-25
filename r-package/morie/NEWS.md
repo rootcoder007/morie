@@ -1,3 +1,16 @@
+# morie 0.9.5.11 - 2026-05-25
+
+## CI: pak resolver -- transitive Remote for summclust (3MMM.40b)
+
+* Added `s3alfisc/summclust` to DESCRIPTION `Remotes:`.
+  `fwildclusterboot` Imports `summclust`, which is also
+  GitHub-only (never on CRAN). 3MMM.40 added the
+  fwildclusterboot Remote but pak's recursive resolver still
+  failed one level deeper because it does not auto-recurse
+  through a Remote's own DESCRIPTION. summclust's Imports
+  (utils, dreamerr, MASS, collapse, generics, cli, rlang) are
+  all on CRAN, so the chain terminates here.
+
 # morie 0.9.5.10 - 2026-05-25
 
 ## R CMD check ERROR fixes (3MMM.39)

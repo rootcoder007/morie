@@ -1,7 +1,7 @@
 Package: morie
 Type: Package
 Title: Multi-Domain Open Research and Inferential Estimation
-Version: 0.9.5.10
+Version: 0.9.5.11
 Authors@R: c(
   person(
     given = "Vansh Singh",
@@ -149,4 +149,5 @@ BugReports: https://github.com/hadesllm/morie/issues
 Config/testthat/edition: 3
 Remotes:
   s3alfisc/fwildclusterboot,
+  s3alfisc/summclust,
   synth-inference/synthdid
