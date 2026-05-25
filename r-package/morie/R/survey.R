@@ -50,7 +50,8 @@ morie_survey_design <- function(data, weights_col, strata_col = NULL,
 #' @return list with `total`, `se`, `ci_lower`, `ci_upper`.
 #' @export
 morie_survey_ht_total <- function(y, inclusion_probs) {
-  y <- as.numeric(y); pi <- as.numeric(inclusion_probs)
+  y <- as.numeric(y)
+  pi <- as.numeric(inclusion_probs)
   if (length(y) != length(pi))
     stop("y and inclusion_probs must have the same length.", call. = FALSE)
   if (any(pi <= 0) || any(pi > 1))
@@ -67,12 +68,14 @@ morie_survey_ht_total <- function(y, inclusion_probs) {
 #' Hajek (ratio) estimator of a population mean.
 #' @export
 morie_survey_hajek_mean <- function(y, weights) {
-  y <- as.numeric(y); w <- as.numeric(weights)
+  y <- as.numeric(y)
+  w <- as.numeric(weights)
   if (length(y) != length(w))
     stop("y and weights must have the same length.", call. = FALSE)
   if (any(w <= 0)) stop("weights must be > 0.", call. = FALSE)
   if (length(y) < 2) stop("Need >= 2 observations.", call. = FALSE)
-  sw <- sum(w); m <- sum(w * y) / sw
+  sw <- sum(w)
+  m <- sum(w * y) / sw
   res <- y - m
   var_h <- sum(w^2 * res^2) / sw^2
   se <- sqrt(max(0, var_h))
@@ -99,13 +102,16 @@ morie_survey_mean <- function(design, variable) {
 #' Ratio estimator of a population total using known X_pop.
 #' @export
 morie_survey_ratio <- function(y, x, weights, X_population_total) {
-  y <- as.numeric(y); x <- as.numeric(x); w <- as.numeric(weights)
+  y <- as.numeric(y)
+  x <- as.numeric(x)
+  w <- as.numeric(weights)
   if (length(unique(c(length(y), length(x), length(w)))) != 1)
     stop("y, x, weights must be same length.", call. = FALSE)
   if (any(w <= 0)) stop("weights must be > 0.", call. = FALSE)
   if (X_population_total <= 0)
     stop("X_population_total must be > 0.", call. = FALSE)
-  y_ht <- sum(w * y); x_ht <- sum(w * x)
+  y_ht <- sum(w * y)
+  x_ht <- sum(w * x)
   if (x_ht == 0) stop("Weighted sum of x is zero.", call. = FALSE)
   r <- y_ht / x_ht
   total <- r * X_population_total
@@ -166,17 +172,22 @@ morie_survey_calibrate <- function(df, aux_vars, population_totals,
     max_dev <- 0
     for (v in aux_vars) {
       x <- as.numeric(df[[v]])
-      T <- as.numeric(population_totals[[v]])
+      # `target` was originally written `T` (legacy TRUE alias).
+      # 3MMM.32's T_and_F_symbol_linter auto-fix rewrote it to
+      # literal TRUE, which is illegal as an LHS; renamed to a
+      # descriptive identifier on 2026-05-25.
+      target <- as.numeric(population_totals[[v]])
       cur <- sum(w * x)
       if (cur == 0) {
         warning(sprintf("Weighted total of '%s' is zero at iter %d.", v, i))
         next
       }
-      f <- T / cur
+      f <- target / cur
       w <- w * f
       max_dev <- max(max_dev, abs(f - 1))
     }
-    if (max_dev < tol) { converged <- TRUE; break }
+    if (max_dev < tol) { converged <- TRUE
+    break }
   }
   if (!converged)
     warning(sprintf("Raking did not converge in %d iters (max_dev=%.2e).",

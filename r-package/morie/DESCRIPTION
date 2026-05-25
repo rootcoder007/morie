@@ -73,7 +73,6 @@ Suggests:
   EValue,
   fixest,
   FNN,
-  fwildclusterboot,
   gbm,
   geepack,
   ggplot2,
