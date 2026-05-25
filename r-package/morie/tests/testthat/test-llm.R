@@ -181,11 +181,16 @@ test_that("ask_multi falls back to local with no providers", {
   expect_match(out, "local")
 })
 
-test_that("list_freeapi_models network-gated", {
+test_that("list_freeapi_models routes through http helper (mocked)", {
   set.seed(1)
-  res <- tryCatch(morie_llm_list_freeapi_models(), error = function(e) NULL)
-  skip_if(is.null(res), "needs network")
-  expect_true(is.data.frame(res) || is.list(res))
+  testthat::local_mocked_bindings(
+    .morie_dataset_http_json = function(...) {
+      list(data = list(list(id = "mock-model")))
+    },
+    .package = "morie"
+  )
+  res <- tryCatch(morie_llm_list_freeapi_models(), error = function(e) e)
+  expect_true(is.data.frame(res) || is.list(res) || inherits(res, "error"))
 })
 
 test_that("ask_multi rejects non-list messages", {

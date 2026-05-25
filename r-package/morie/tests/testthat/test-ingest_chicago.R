@@ -44,24 +44,28 @@ test_that("socrata_get fails clean off-network", {
 
 test_that("ingest_chicago_socrata network-gated", {
   set.seed(1)
-  res <- tryCatch(
-    morie_ingest_chicago_socrata(
-      "https://data.cityofchicago.org/resource/ijzp-q8t2.json",
-      limit = 1L
-    ),
-    error = function(e) NULL
+  testthat::local_mocked_bindings(
+    .morie_chicago_socrata_get = function(...) {
+      data.frame(case_number = "MOCK1", year = "2024",
+                  stringsAsFactors = FALSE)
+    },
+    .package = "morie"
   )
-  skip_if(is.null(res), "needs network")
+  res <- morie_ingest_chicago_socrata(
+    "https://data.cityofchicago.org/resource/ijzp-q8t2.json")
   expect_s3_class(res, "data.frame")
 })
 
-test_that("ingest_chicago_crime network-gated", {
+test_that("ingest_chicago_crime routes through socrata helper (mocked)", {
   set.seed(1)
-  res <- tryCatch(
-    morie_ingest_chicago_crime(year = 2024, max_features = 1L),
-    error = function(e) NULL
+  testthat::local_mocked_bindings(
+    .morie_chicago_socrata_get = function(...) {
+      data.frame(case_number = "MOCK-C", year = "2024",
+                  stringsAsFactors = FALSE)
+    },
+    .package = "morie"
   )
-  skip_if(is.null(res), "needs network")
+  res <- morie_ingest_chicago_crime(year = 2024, max_features = 1L)
   expect_s3_class(res, "data.frame")
 })
 

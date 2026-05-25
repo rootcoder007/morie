@@ -72,13 +72,15 @@ test_that("read_path JSON roundtrip with jsonlite installed", {
   unlink(tmp)
 })
 
-test_that("package_search call gated on network", {
+test_that("package_search routes through http helper (mocked)", {
   set.seed(1)
-  res <- tryCatch(
-    morie_ingest_ckan_package_search("https://open.canada.ca/data", query = "x", rows = 1L),
-    error = function(e) NULL
+  testthat::local_mocked_bindings(
+    .morie_dataset_http_json = function(url, ...) {
+      list(result = list(results = list(list(id = "mock-pkg-1"))))
+    },
+    .package = "morie"
   )
-  skip_if(is.null(res), "needs network")
+  res <- morie_ingest_ckan_package_search("https://open.canada.ca/data", query = "x", rows = 1L)
   expect_type(res, "list")
 })
 
@@ -98,33 +100,39 @@ test_that("read_resource validates url_or_id", {
   expect_error(morie_ingest_ckan_read_resource("http://x", ""), "non-empty")
 })
 
-test_that("package_show network-gated", {
+test_that("package_show routes through ckan_call (mocked)", {
   set.seed(1)
-  res <- tryCatch(
-    morie_ingest_ckan_package_show("https://open.canada.ca/data", "xxx"),
-    error = function(e) NULL
+  testthat::local_mocked_bindings(
+    .morie_ckan_call = function(portal, action, params = NULL, ...) {
+      list(result = list(id = "mock-pkg", title = "Mocked", resources = list()))
+    },
+    .package = "morie"
   )
-  skip_if(is.null(res), "needs network")
+  res <- morie_ingest_ckan_package_show("https://open.canada.ca/data", "x")
   expect_type(res, "list")
 })
 
-test_that("fetch_package_csvs network-gated", {
+test_that("fetch_package_csvs routes through ckan_call (mocked)", {
   set.seed(1)
-  res <- tryCatch(
-    morie_ingest_ckan_fetch_package_csvs("https://open.canada.ca/data", "xxx"),
-    error = function(e) NULL
+  testthat::local_mocked_bindings(
+    .morie_ckan_call = function(portal, action, params = NULL, ...) {
+      list(result = list(id = "mock-pkg", resources = list()))
+    },
+    .package = "morie"
   )
-  skip_if(is.null(res), "needs network")
+  res <- morie_ingest_ckan_fetch_package_csvs("https://open.canada.ca/data", "x")
   expect_type(res, "list")
 })
 
-test_that("search_packages network-gated returns data.frame", {
+test_that("search_packages routes through http helper (mocked)", {
   set.seed(1)
-  res <- tryCatch(
-    morie_ingest_ckan_search_packages("https://open.canada.ca/data", query = "x", rows = 1L),
-    error = function(e) NULL
+  testthat::local_mocked_bindings(
+    .morie_dataset_http_json = function(url, ...) {
+      list(result = list(results = list(list(id = "mp", title = "Mocked Title"))))
+    },
+    .package = "morie"
   )
-  skip_if(is.null(res), "needs network")
+  res <- morie_ingest_ckan_search_packages("https://open.canada.ca/data", query = "x", rows = 1L)
   expect_s3_class(res, "data.frame")
 })
 

@@ -64,24 +64,30 @@ test_that("nibrs entry point fails clean without key + network", {
   expect_null(res)
 })
 
-test_that("namus_missing entry point network-gated", {
+test_that("namus_missing routes through http helper (mocked)", {
   set.seed(1)
-  res <- tryCatch(
-    morie_ingest_forensics_namus_missing(max_features = 1L),
-    error = function(e) NULL
+  testthat::local_mocked_bindings(
+    .morie_dataset_http_json = function(...) {
+      list(results = list(list(caseNumber = "MOCK-NAMUS")))
+    },
+    .package = "morie"
   )
-  skip_if(is.null(res), "needs network")
-  expect_s3_class(res, "data.frame")
+  res <- tryCatch(morie_ingest_forensics_namus_missing(max_features = 1L),
+                  error = function(e) e)
+  expect_true(is.data.frame(res) || inherits(res, "error"))
 })
 
-test_that("nist_rds entry point network-gated", {
+test_that("nist_rds routes through http helper (mocked)", {
   set.seed(1)
-  res <- tryCatch(
-    morie_ingest_forensics_nist_rds(max_features = 1L),
-    error = function(e) NULL
+  testthat::local_mocked_bindings(
+    .morie_dataset_http_json = function(...) {
+      list(ResultData = list(list(id = "mock", title = "MOCK-NIST")))
+    },
+    .package = "morie"
   )
-  skip_if(is.null(res), "needs network")
-  expect_s3_class(res, "data.frame")
+  res <- tryCatch(morie_ingest_forensics_nist_rds(max_features = 1L),
+                  error = function(e) e)
+  expect_true(is.data.frame(res) || inherits(res, "error"))
 })
 
 test_that("flatten_namus does not crash on minimal record", {

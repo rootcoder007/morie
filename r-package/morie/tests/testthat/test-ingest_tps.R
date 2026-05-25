@@ -47,24 +47,30 @@ test_that("arcgis_query fails clean off-network", {
   expect_null(res)
 })
 
-test_that("ingest_tps_feature_layer network-gated", {
+test_that("ingest_tps_feature_layer routes through TPS helper (mocked)", {
   set.seed(1)
-  url <- morie_ingest_tps_layers()$url[1]
-  res <- tryCatch(
-    morie_ingest_tps_feature_layer(url, max_features = 1L),
-    error = function(e) NULL
+  testthat::local_mocked_bindings(
+    .morie_dataset_tps_fetch = function(...) {
+      data.frame(EVENT_UNIQUE_ID = "MOCK", OCC_YEAR = 2024L,
+                  stringsAsFactors = FALSE)
+    },
+    .package = "morie"
   )
-  skip_if(is.null(res), "needs network")
+  url <- morie_ingest_tps_layers()$url[1]
+  res <- morie_ingest_tps_feature_layer(url, max_features = 1L)
   expect_s3_class(res, "data.frame")
 })
 
-test_that("ingest_tps_fetch by short name network-gated", {
+test_that("ingest_tps_fetch routes through TPS helper (mocked)", {
   set.seed(1)
-  res <- tryCatch(
-    morie_ingest_tps_fetch("major-crime", max_features = 1L),
-    error = function(e) NULL
+  testthat::local_mocked_bindings(
+    .morie_dataset_tps_fetch = function(...) {
+      data.frame(EVENT_UNIQUE_ID = "MOCK", OCC_YEAR = 2024L,
+                  stringsAsFactors = FALSE)
+    },
+    .package = "morie"
   )
-  skip_if(is.null(res), "needs network")
+  res <- morie_ingest_tps_fetch("major-crime", max_features = 1L)
   expect_s3_class(res, "data.frame")
 })
 
