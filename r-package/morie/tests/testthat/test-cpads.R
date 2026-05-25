@@ -10,7 +10,9 @@ test_that("contract returns canonical metadata", {
   expect_true(all(c("source_kind", "expected_wrangled_path",
                     "required_variables", "raw_column_map", "note") %in% names(c0)))
   expect_true(length(c0$required_variables) > 0)
-  expect_match(c0$source_kind, "local")
+  # 3MMM.2: CPADS PUMF is open data on open.canada.ca CKAN, not
+  # local-private. source_kind reflects that.
+  expect_equal(c0$source_kind, "open_data_pumf")
 })
 
 test_that("missing_variables detects gaps", {

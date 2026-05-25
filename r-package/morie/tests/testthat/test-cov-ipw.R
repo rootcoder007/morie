@@ -3,11 +3,13 @@
 # propensity / eBAC selection-adjusted IPW workflows. Uses the shared
 # make_canonical_cpads() fixture (helper-cpads.R).
 
-test_that("morie_cpads_contract describes the 11-variable local contract", {
+test_that("morie_cpads_contract describes the 11-variable open-data contract", {
   ct <- morie_cpads_contract()
   expect_type(ct, "list")
   expect_length(ct$required_variables, 11L)
-  expect_equal(ct$source_kind, "local_private_file")
+  # 3MMM.2: CPADS PUMF is open data on open.canada.ca CKAN, not
+  # local-private. source_kind reflects that.
+  expect_equal(ct$source_kind, "open_data_pumf")
   expect_true(nzchar(ct$note))
 })
 
