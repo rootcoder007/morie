@@ -118,7 +118,7 @@
   req <- httr2::request(full_url)
   if (length(headers) > 0L) {
     # Convert "Key: Value" strings into a named list for req_headers.
-    kv <- strsplit(headers, ":\\s*", n = 2L)
+    kv <- strsplit(headers, ":\\s*")
     kv <- Filter(function(x) length(x) == 2L, kv)
     if (length(kv) > 0L) {
       named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
@@ -152,7 +152,7 @@
   }
   req <- httr2::request(full_url)
   if (length(headers) > 0L) {
-    kv <- strsplit(headers, ":\\s*", n = 2L)
+    kv <- strsplit(headers, ":\\s*")
     kv <- Filter(function(x) length(x) == 2L, kv)
     if (length(kv) > 0L) {
       named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
@@ -193,7 +193,7 @@
   req <- httr2::request(full_url)
   req <- httr2::req_body_json(req, body, auto_unbox = auto_unbox)
   if (length(headers) > 0L) {
-    kv <- strsplit(headers, ":\\s*", n = 2L)
+    kv <- strsplit(headers, ":\\s*")
     kv <- Filter(function(x) length(x) == 2L, kv)
     if (length(kv) > 0L) {
       named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
@@ -241,7 +241,7 @@
   req <- httr2::request(full_url)
   req <- httr2::req_body_json(req, body, auto_unbox = auto_unbox)
   if (length(headers) > 0L) {
-    kv <- strsplit(headers, ":\\s*", n = 2L)
+    kv <- strsplit(headers, ":\\s*")
     kv <- Filter(function(x) length(x) == 2L, kv)
     if (length(kv) > 0L) {
       named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
@@ -278,7 +278,7 @@
   }
   req <- httr2::request(full_url)
   if (length(headers) > 0L) {
-    kv <- strsplit(headers, ":\\s*", n = 2L)
+    kv <- strsplit(headers, ":\\s*")
     kv <- Filter(function(x) length(x) == 2L, kv)
     if (length(kv) > 0L) {
       named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),
@@ -317,7 +317,7 @@
   }
   req <- httr2::request(full_url)
   if (length(headers) > 0L) {
-    kv <- strsplit(headers, ":\\s*", n = 2L)
+    kv <- strsplit(headers, ":\\s*")
     kv <- Filter(function(x) length(x) == 2L, kv)
     if (length(kv) > 0L) {
       named <- stats::setNames(vapply(kv, `[[`, character(1L), 2L),

@@ -712,7 +712,12 @@ morie_spatial_voting_mlsmu6 <- function(D,
       X_s <- X_s - gamma_s * grad_s
       X_s <- sweep(X_s, 2, colMeans(X_s))
       stress <- morie_spatial_voting_unfolding_stress(X_r, X_s, D)
-      if (abs(prev_stress - stress) / max(prev_stress, 1e-12) < tol) break
+      # prev_stress starts as Inf -> abs(Inf - stress) / max(Inf, ...)
+      # = NaN -> `if (NaN < tol)` is NA -> "missing value where
+      # TRUE/FALSE needed".  Guard with is.finite so iter 1 simply
+      # skips the convergence check.
+      if (is.finite(prev_stress) &&
+          abs(prev_stress - stress) / max(prev_stress, 1e-12) < tol) break
       prev_stress <- stress
     }
     if (stress < best_stress) {

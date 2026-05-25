@@ -142,7 +142,6 @@ morie_datasets_load_by_key <- function(dataset_key,
     },
     "ontario_ckan" = {
       morie_datasets_ontario_ckan_by_key(id,
-                                           max_features = max_features,
                                            offline = offline)
     },
     "montreal_opendata" = {

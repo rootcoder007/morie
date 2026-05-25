@@ -192,16 +192,13 @@ morie_ingest_statcan_cansim <- function(table_id,
     )
   }
 
+  # cansim has no set_cansim_api_key() helper in current CRAN
+  # releases (the function does not exist).  Authenticated calls
+  # are configured via the CANSIM_API_KEY env var, which cansim
+  # reads internally; STATCAN_API_KEY is morie's alias.
   api_key <- Sys.getenv("STATCAN_API_KEY", "")
-  if (nzchar(api_key) &&
-    exists("set_cansim_api_key", where = asNamespace("cansim"))) {
-    tryCatch(
-      cansim::set_cansim_api_key(api_key),
-      error = function(e) {
-        message("STATCAN_API_KEY set but cansim refused it: ",
-          conditionMessage(e))
-      }
-    )
+  if (nzchar(api_key) && !nzchar(Sys.getenv("CANSIM_API_KEY", ""))) {
+    Sys.setenv(CANSIM_API_KEY = api_key)
   }
 
   tryCatch(

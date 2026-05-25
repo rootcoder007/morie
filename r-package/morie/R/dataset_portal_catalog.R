@@ -98,6 +98,28 @@ morie_dataset_portal_catalog_clear_cache <- function() {
   invisible(NULL)
 }
 
+#' Build the cross-portal dataset catalog
+#'
+#' Aggregates every per-portal registry (Chicago, NYC NYPD, NYC
+#' OpenData, TPS ArcGIS Hub, TPS PSDP, Ontario CKAN, Vancouver,
+#' VPD GeoDASH, Statistics Canada CCJS, Montreal, Toronto, Calgary,
+#' Edmonton, Ottawa) into a single tidy `data.frame` for cross-portal
+#' discovery and tooling. Caches the result in a session-local
+#' environment so repeated calls are O(1); call
+#' [morie_dataset_portal_catalog_clear_cache()] to force a rebuild
+#' after editing a registry in an interactive session.
+#'
+#' @param portal Optional character filter restricting output to a
+#'   single portal. `NULL` (default) returns every dataset across all
+#'   registries.
+#' @return A `data.frame` with columns `dataset_key`, `source`,
+#'   `id`, `api_modes`, `loader`, `dict_url`, `n_rows_bundled`.
+#' @examples
+#' cat_df <- morie_dataset_portal_catalog()
+#' nrow(cat_df)
+#' table(cat_df$source)
+#' @seealso [morie_dataset_portal_catalog_clear_cache()],
+#'   [morie_datasets_load_by_key()], [morie_datasets_browse()]
 #' @export
 morie_dataset_portal_catalog <- function(portal = NULL) {
   cached <- .morie_portal_catalog_env$full
