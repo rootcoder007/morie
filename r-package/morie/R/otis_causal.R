@@ -443,11 +443,14 @@ morie_otis_irm_dml <- function(df, treatment, outcome, covariates,
     d_all <- .otis_binarise(data[[treatment]])
     X_all <- .otis_design_matrix(data, covariates)
     if (requireNamespace("MatchIt", quietly = TRUE)) {
-      # Use MatchIt for canonical PSM-NN with caliper-on-logit-PS
+      # Use MatchIt for canonical PSM-NN with caliper-on-logit-PS.
+      # The treatment column name uses a unique syntactic name that
+      # cannot collide with any covariate (leading dot is allowed in
+      # R syntactic names, leading underscore is not).
       tmp <- data
-      tmp[["__T__"]] <- as.integer(d_all)
+      tmp[[".morie_T"]] <- as.integer(d_all)
       rhs <- paste(covariates, collapse = " + ")
-      form <- stats::as.formula(paste("__T__ ~", rhs))
+      form <- stats::as.formula(paste(".morie_T ~", rhs))
       m <- try(MatchIt::matchit(form, data = tmp, method = "nearest",
                                 distance = "glm", link = "logit",
                                 caliper = match_caliper_sd,
