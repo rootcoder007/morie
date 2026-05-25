@@ -6,16 +6,11 @@ name: R coverage + lint + goodpractice
 # the full rOpenSci pkgcheck surface (rcmdcheck + covr + cyclocomp +
 # lintr + goodpractice).
 
+# Triggered only via the build.yml orchestrator (workflow_call).
+# Kept workflow_dispatch so this can still be run manually for
+# debugging.
 on:
-  push:
-    branches: [main, "release/**"]
-    paths:
-      - 'r-package/morie/**'
-      - '.github/workflows/r-coverage-and-lint.yml'
-  pull_request:
-    branches: [main, "release/**"]
-    paths:
-      - 'r-package/morie/**'
+  workflow_call:
   workflow_dispatch:
 
 env:

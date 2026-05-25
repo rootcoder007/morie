@@ -8,21 +8,11 @@ env:
 # Path-restricted to the C++ / packaging surface -- pure-Python changes
 # are covered by ci.yml, so they do not trigger a 12-wheel matrix.
 
+# Triggered only via the build.yml orchestrator (workflow_call).
+# Kept workflow_dispatch so this can still be run manually for
+# debugging.
 on:
-  push:
-    branches: ["main", "release/**"]
-    paths:
-      - "libmorie/**"
-      - "CMakeLists.txt"
-      - "pyproject.toml"
-      - ".github/workflows/wheels.yml"
-  pull_request:
-    branches: ["main", "release/**"]
-    paths:
-      - "libmorie/**"
-      - "CMakeLists.txt"
-      - "pyproject.toml"
-      - ".github/workflows/wheels.yml"
+  workflow_call:
   workflow_dispatch:
 
 permissions:

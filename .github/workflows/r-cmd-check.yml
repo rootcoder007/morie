@@ -15,17 +15,11 @@ env:
 # Python src/ tree at the repo root); the matrix sets the
 # working-directory accordingly.
 
+# Triggered only via the build.yml orchestrator (workflow_call).
+# Kept workflow_dispatch so this can still be run manually for
+# debugging.
 on:
-  push:
-    branches: [main, "release/**"]
-    paths:
-      - 'r-package/morie/**'
-      - '.github/workflows/r-cmd-check.yml'
-  pull_request:
-    branches: [main, "release/**"]
-    paths:
-      - 'r-package/morie/**'
-      - '.github/workflows/r-cmd-check.yml'
+  workflow_call:
   workflow_dispatch:
 
 permissions:

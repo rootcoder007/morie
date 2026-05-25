@@ -19,24 +19,11 @@
 
 name: version-drift
 
+# Triggered only via the build.yml orchestrator (workflow_call).
+# Kept workflow_dispatch so this can still be run manually for
+# debugging.
 on:
-  pull_request:
-    paths:
-      - "VERSION"
-      - "VERSION_INVENTORY.csv"
-      - "scripts/version-inventory.sh"
-      - "scripts/version-bump.sh"
-      - "Dockerfile"
-      - "pyproject.toml"
-      - "CITATION.cff"
-      - "r-package/morie/DESCRIPTION"
-      - "r-package/morie/NEWS.md"
-      - "papers/**/*.tex"
-      - "papers/**/*.bib"
-  push:
-    branches:
-      - main
-      - "release/**"
+  workflow_call:
   workflow_dispatch:
 
 jobs:

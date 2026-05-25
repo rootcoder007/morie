@@ -8,23 +8,11 @@ env:
 # Path-restricted so docs-only / paper-only / sibling-workflow-only commits
 # don't fire a 5-10 min Python+R test cycle.
 
+# Triggered only via the build.yml orchestrator (workflow_call).
+# Kept workflow_dispatch so this can still be run manually for
+# debugging.
 on:
-  push:
-    branches: ["main", "release/**"]
-    paths:
-      - "src/morie/**"
-      - "tests/**"
-      - "r-package/**"
-      - "pyproject.toml"
-      - ".github/workflows/ci.yml"
-  pull_request:
-    branches: ["main", "release/**"]
-    paths:
-      - "src/morie/**"
-      - "tests/**"
-      - "r-package/**"
-      - "pyproject.toml"
-      - ".github/workflows/ci.yml"
+  workflow_call:
   workflow_dispatch:
 
 # Least-privilege: every job here only checks out the repo and runs
