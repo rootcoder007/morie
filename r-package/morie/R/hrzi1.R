@@ -44,11 +44,18 @@ hrzi1 <- function(x, y, bandwidth = NULL) {
   if (beta0[1] < 0) beta0 <- -beta0
   h0 <- if (is.null(bandwidth)) .hrz_silverman(X %*% beta0) else as.numeric(bandwidth)
 
+  # 3MMM.28: Brent for p=1 (1-D); Nelder-Mead for p>=2. stats::optim
+  # warns "one-dimensional optimization by Nelder-Mead is unreliable"
+  # when p=1 and method is NM. Brent is the documented replacement.
   obj <- function(b) .hrzi1_obj(b, X, y, h0)
-  res <- stats::optim(beta0, obj,
-    method = "Nelder-Mead",
-    control = list(maxit = 200, reltol = 1e-5)
-  )
+  res <- if (p == 1L) {
+    stats::optim(beta0, obj, method = "Brent",
+                  lower = -1, upper = 1,
+                  control = list(maxit = 200, reltol = 1e-5))
+  } else {
+    stats::optim(beta0, obj, method = "Nelder-Mead",
+                  control = list(maxit = 200, reltol = 1e-5))
+  }
   bh <- res$par
   bh <- bh / max(sqrt(sum(bh^2)), 1e-12)
   if (bh[1] < 0) bh <- -bh

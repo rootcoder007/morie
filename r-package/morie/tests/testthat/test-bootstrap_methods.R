@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Coverage tests for R/bootstrap_methods.R
-context("bootstrap_methods")
+# 3MMM.28: testthat::context() was deprecated in the 3rd edition;
+# the file path already provides the context. Removed.
 
 set.seed(123L)
 x_vec <- rnorm(40)

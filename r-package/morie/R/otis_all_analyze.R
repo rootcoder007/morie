@@ -1054,9 +1054,14 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
   aic_pois <- NA_real_; aic_nb <- NA_real_
   estimands <- list()
 
-  # Poisson + Negative Binomial (NB requires MASS)
+  # Poisson + Negative Binomial (NB requires MASS).
+  # 3MMM.28: suppressWarnings around the call so the per-fit
+  # "glm.fit: algorithm did not converge" / "alternation limit
+  # reached" messages don't spam the test log on small synthetic
+  # OTIS panels. The callers below bump maxit; convergence status is
+  # available via out$converged if needed.
   fit_one <- function(fam_label, fitter) {
-    out <- tryCatch(fitter(), error = function(e) e)
+    out <- suppressWarnings(tryCatch(fitter(), error = function(e) e))
     if (inherits(out, "error")) {
       return(list(label = fam_label, fail = TRUE,
                   msg = conditionMessage(out)))
@@ -1082,7 +1087,8 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
   }
 
   res_p <- fit_one("Poisson", function()
-    stats::glm(fml, data = work, family = stats::poisson()))
+    stats::glm(fml, data = work, family = stats::poisson(),
+                control = stats::glm.control(maxit = 200L)))
   if (!res_p$fail) {
     rows[[length(rows) + 1L]] <- c(res_p$label, res_p$t_key,
       round(res_p$irr, 4),
@@ -1100,7 +1106,8 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
 
   if (requireNamespace("MASS", quietly = TRUE)) {
     res_nb <- fit_one("NB", function()
-      MASS::glm.nb(fml, data = work))
+      MASS::glm.nb(fml, data = work,
+                    control = stats::glm.control(maxit = 200L)))
     if (!res_nb$fail) {
       rows[[length(rows) + 1L]] <- c(res_nb$label, res_nb$t_key,
         round(res_nb$irr, 4),

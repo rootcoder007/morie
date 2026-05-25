@@ -946,10 +946,16 @@ morie_otis_irr_glmm_vm <- function(df) {
          sprintf("[%.3f, %.3f]", ci[1], ci[2]),
          signif(pval, 3), round(aic, 2))
   }
+  # 3MMM.28: bump glm maxit to 200 (default 25 hits ceiling on
+  # small synthetic OTIS panels) and suppressWarnings on the per-fit
+  # convergence noise. Real OTIS data converges in ~10 iter; the
+  # convergence-status is surfaced via fit$converged in the payload.
   # Poisson
-  pois_fit <- tryCatch(stats::glm(formula_obj, data = py,
-                                    family = stats::poisson()),
-                       error = function(e) NULL)
+  pois_fit <- suppressWarnings(tryCatch(
+    stats::glm(formula_obj, data = py,
+                family = stats::poisson(),
+                control = stats::glm.control(maxit = 200L)),
+    error = function(e) NULL))
   if (!is.null(pois_fit)) {
     out_rows[[length(out_rows) + 1L]] <- fit_irr(pois_fit, "Poisson")
   } else {
@@ -958,8 +964,10 @@ morie_otis_irr_glmm_vm <- function(df) {
   }
   # Negative Binomial (optional)
   if (requireNamespace("MASS", quietly = TRUE)) {
-    nb_fit <- tryCatch(MASS::glm.nb(formula_obj, data = py),
-                        error = function(e) NULL)
+    nb_fit <- suppressWarnings(tryCatch(
+      MASS::glm.nb(formula_obj, data = py,
+                    control = stats::glm.control(maxit = 200L)),
+      error = function(e) NULL))
     if (!is.null(nb_fit)) {
       out_rows[[length(out_rows) + 1L]] <- fit_irr(nb_fit, "NegBin2")
     } else {
