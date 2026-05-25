@@ -27,6 +27,13 @@ variable in \code{data}.}
 \item{dist}{Distribution name for parametric/AFT fits (e.g.
 \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"}).}
 }
+\value{
+A named list with the fitted \code{distribution} (prefixed
+\code{"AFT-"}), \code{coefficients}, \code{scale},
+\code{log_likelihood}, \code{aic}, \code{bic},
+\code{n_observations}, \code{n_events}, and the underlying
+\code{survreg} fit in \code{.survreg}.
+}
 \description{
 Wraps \code{survival::survreg()}. Supported \code{dist}: "weibull", "lognormal",
 "loglogistic", "exponential", "gaussian".

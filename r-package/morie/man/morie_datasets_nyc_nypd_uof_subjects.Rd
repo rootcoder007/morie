@@ -43,6 +43,14 @@ up to 200,000 rows without an app_token).}
 \item{app_token}{Optional Socrata API app token for higher rate
 limits; passed as the \code{X-App-Token} header.}
 }
+\value{
+A \code{data.frame} of NYPD Use-of-Force subject-level
+records (one row per civilian subject), either the bundled
+\code{nypd_uof_subjects_sample.csv} fixture when \code{offline = TRUE}
+or the live Socrata pull (SODA2 / SODA3) when
+\code{offline = FALSE}. Columns mirror NYC OpenData resource
+\code{dufe-vxb7}.
+}
 \description{
 NYPD Use of Force: Subjects
 }

@@ -22,6 +22,13 @@ real CKAN sample at
 \code{"synthetic"}, \code{"empty"}; takes precedence over
 \code{offline} when supplied.}
 }
+\value{
+A \code{data.frame} of staff-to-incident bridging rows from the
+Ontario Corrections Use-of-Force CKAN resource (or the bundled
+sample / synthetic fallback per \code{source}). Columns mirror the
+upstream schema described in
+\code{inst/extdata/corrections_uof_dictionary.json}.
+}
 \description{
 Staff-to-incidents bridging table
 }

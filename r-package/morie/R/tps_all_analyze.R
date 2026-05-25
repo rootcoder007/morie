@@ -633,6 +633,10 @@ morie_tps_analyze_all <- function(dfs, out_dir = NULL) {
 # Print method
 # ---------------------------------------------------------------------------
 
+#' Print method for TPS analysis results
+#' @param x A \code{morie_tps_result}.
+#' @param ... Unused.
+#' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_tps_result <- function(x, ...) {
   cat(x$title, "\

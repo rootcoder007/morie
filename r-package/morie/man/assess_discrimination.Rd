@@ -26,6 +26,13 @@ assess_discrimination(
 
 \item{random_state}{Seed.}
 }
+\value{
+A \code{morie_discrimination_result} (subclass of
+\code{morie_validation_result} / \code{morie_rich_result}) with
+\code{auroc}, bootstrap \code{auroc_ci_lower}/\code{auroc_ci_upper},
+\code{c_statistic}, \code{somers_d}, \code{discrimination_slope}, and
+(when \code{y_pred_ref} is provided) \code{nri} and \code{idi}.
+}
 \description{
 Discrimination assessment for binary classifier
 }

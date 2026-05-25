@@ -39,6 +39,13 @@ linear). 2 picks up quadratic curvature for bias correction.}
 
 \item{alpha}{Significance level (default \code{0.05}).}
 }
+\value{
+A named list with the same layout as
+\code{\link{morie_rdd_sharp}} (\code{estimate}, \code{std_error},
+\code{t_stat}, \code{p_value}, \code{ci_lower}, \code{ci_upper},
+\code{n_obs}, \code{method}, \code{details}) using the signed
+distance to the boundary as the running variable.
+}
 \description{
 Geographic / boundary RDD on a signed distance
 }

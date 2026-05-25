@@ -15,6 +15,11 @@ storey_q(p_values, alpha = 0.05, lambda_param = 0.5, labels = NULL)
 
 \item{labels}{Optional character vector of test labels.}
 }
+\value{
+A \code{morie_rich_result} list with adjusted q-values plus the
+estimated \code{pi0} and \code{lambda_param} (see
+\code{morie_multiple_testing}).
+}
 \description{
 Estimates the proportion of true null hypotheses (pi0) and
 tightens the BH thresholds by that factor.

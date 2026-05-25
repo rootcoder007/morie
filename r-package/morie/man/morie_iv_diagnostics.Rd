@@ -22,6 +22,11 @@ instrumental variables.}
 regressors included in both the structural equation and the
 first stage. \code{NULL} (default) for a just-identified design.}
 }
+\value{
+A named list with elements \code{first_stage} (data.frame),
+\code{cragg_donald} (list), \code{sargan} (list), \code{hausman}
+(list), and \code{n_obs} (integer sample size).
+}
 \description{
 Composite IV diagnostics
 }

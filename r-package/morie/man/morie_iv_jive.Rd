@@ -26,6 +26,12 @@ morie_iv_jive(
 
 \item{alpha}{Significance level for confidence intervals.}
 }
+\value{
+A list (same layout as \code{\link{morie_iv_tsls}}) with
+coefficients, standard errors, t-statistics, p-values, confidence
+interval bounds, variable names, sample size, \code{method =
+  "JIVE"}, and \code{details} (residuals + vcov).
+}
 \description{
 Jackknife IV (JIVE; Angrist, Imbens & Krueger 1999)
 }

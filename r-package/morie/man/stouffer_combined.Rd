@@ -11,6 +11,10 @@ stouffer_combined(p_values, weights = NULL)
 
 \item{weights}{Optional non-negative weights (any scale).}
 }
+\value{
+A \code{morie_rich_result} list with elements \code{method},
+\code{statistic} (combined Z), and \code{p_value} (combined p).
+}
 \description{
 Stouffer's z-score method
 }

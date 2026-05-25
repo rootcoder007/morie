@@ -9,6 +9,11 @@ morie_otis_analyze_b05(data)
 \arguments{
 \item{data}{b05 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and a duration-bin x
+fiscal-year crosstab of placement counts.
+}
 \description{
 Distribution of placements by binned duration (b05)
 }

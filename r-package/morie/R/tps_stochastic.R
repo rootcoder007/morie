@@ -639,6 +639,10 @@ morie_tps_fokker_planck_grid <- function(df, ds_name = "?",
 # Print method
 # ---------------------------------------------------------------------------
 
+#' Print method for TPS stochastic-analysis results
+#' @param x A \code{morie_tps_stochastic_result}.
+#' @param ... Unused.
+#' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_tps_stochastic_result <- function(x, ...) {
   cat(x$title, "\

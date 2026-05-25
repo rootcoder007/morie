@@ -43,6 +43,13 @@ up to 200,000 rows without an app_token).}
 \item{app_token}{Optional Socrata API app token for higher rate
 limits; passed as the \code{X-App-Token} header.}
 }
+\value{
+A \code{data.frame} of NYPD year-to-date complaint records,
+either the bundled \code{nypd_complaint_ytd_sample.csv} fixture
+when \code{offline = TRUE} or the live Socrata pull (SODA2 / SODA3)
+when \code{offline = FALSE}. Columns mirror NYC OpenData resource
+\verb{5uac-w243}.
+}
 \description{
 NYPD Complaint Data Current (Year To Date)
 }

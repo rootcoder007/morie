@@ -9,6 +9,11 @@ morie_otis_analyze_c12(data)
 \arguments{
 \item{data}{c12 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and a region x measure
+crosstab of restrictive-confinement aggregate durations.
+}
 \description{
 RC/seg aggregate durations by region & gender (c12)
 }

@@ -44,6 +44,11 @@ grid search over candidate \code{beta0} values.}
 \item{alpha}{Significance level (default \code{0.05}); controls the
 confidence-set / acceptance-region cut-off.}
 }
+\value{
+A numeric length-2 vector \code{c(lower, upper)} giving
+the AR confidence interval, or \code{c(NA, NA)} if no grid point
+is accepted.
+}
 \description{
 Grid-based Anderson-Rubin confidence interval for a single endogenous
 variable.

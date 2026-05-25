@@ -14,6 +14,11 @@ morie_weights_propensity_nonresponse(weights, responded, X)
 \item{X}{A numeric matrix or \code{data.frame} of auxiliary variables
 (one row per unit) used by GREG / nonresponse propensity models.}
 }
+\value{
+Numeric vector of propensity-adjusted weights, same length
+as \code{weights}; respondent weights are divided by the fitted
+response probability and non-respondents receive weight 0.
+}
 \description{
 Propensity-score non-response weights (logistic).
 }

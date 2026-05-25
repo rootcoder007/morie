@@ -70,6 +70,7 @@ NULL
   out
 }
 
+#' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_test_result <- function(x, ...) {
   cat(x$method, "\
@@ -172,6 +173,9 @@ one_sample_ttest <- function(x, mu0 = 0, confidence = 0.95) {
 #' @param x,y Numeric vectors.
 #' @param equal_var If FALSE, use Welch's correction.
 #' @param confidence Confidence level.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the t statistic, p-value, degrees of freedom, mean-difference CI,
+#'   Cohen's d effect size, and combined sample size.
 #' @export
 two_sample_ttest <- function(x, y, equal_var = TRUE, confidence = 0.95) {
   x <- .stat_validate(x)
@@ -204,6 +208,9 @@ two_sample_ttest <- function(x, y, equal_var = TRUE, confidence = 0.95) {
 
 #' Welch's t-test (convenience wrapper)
 #' @inheritParams two_sample_ttest
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with Welch's t statistic, p-value, Satterthwaite df, mean-difference CI,
+#'   Cohen's d, and combined sample size.
 #' @export
 welch_ttest <- function(x, y, confidence = 0.95) {
   two_sample_ttest(x, y, equal_var = FALSE, confidence = confidence)
@@ -212,6 +219,9 @@ welch_ttest <- function(x, y, confidence = 0.95) {
 #' Paired-sample t-test
 #' @param x,y Equal-length numeric vectors.
 #' @param confidence Confidence level.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the paired t statistic, p-value, df, mean-difference CI,
+#'   Cohen's d on the differences, and n (number of pairs).
 #' @export
 paired_ttest <- function(x, y, confidence = 0.95) {
   x <- .stat_validate(x)
@@ -272,6 +282,9 @@ one_way_anova <- function(...) {
 #' @param data A data frame.
 #' @param outcome Name of dependent-variable column.
 #' @param factor_a,factor_b Names of factor columns.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the interaction F statistic and p-value, the \code{factor_a} partial
+#'   eta-squared, and the full ANOVA table in \code{extra$anova_table}.
 #' @export
 two_way_anova <- function(data, outcome, factor_a, factor_b) {
   data <- stats::na.omit(data[, c(outcome, factor_a, factor_b)])
@@ -302,6 +315,10 @@ two_way_anova <- function(data, outcome, factor_a, factor_b) {
 #'
 #' @param data Long-format data frame.
 #' @param outcome,subject,within Column names.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the within-subjects F statistic, p-value, df, partial eta-squared,
+#'   and \code{extra} list carrying \code{df_error}, \code{ss_cond} and
+#'   \code{ss_error}.
 #' @export
 repeated_measures_anova <- function(data, outcome, subject, within) {
   df <- stats::na.omit(data[, c(outcome, subject, within)])
@@ -337,6 +354,8 @@ repeated_measures_anova <- function(data, outcome, subject, within) {
 
 #' Kruskal-Wallis H-test
 #' @param ... Two or more numeric vectors.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the H statistic, p-value, df, and eta-squared effect size.
 #' @export
 kruskal_wallis <- function(...) {
   groups <- list(...)
@@ -357,6 +376,9 @@ kruskal_wallis <- function(...) {
 
 #' Friedman test (repeated-measures rank ANOVA)
 #' @param ... Three or more equal-length numeric vectors.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the chi-square statistic, p-value, df, and Kendall's W effect
+#'   size (also under \code{extra$kendall_w}).
 #' @export
 friedman_test <- function(...) {
   groups <- list(...)
@@ -386,6 +408,9 @@ friedman_test <- function(...) {
 #' Chi-squared goodness-of-fit test
 #' @param observed Observed counts.
 #' @param expected Expected counts or NULL for uniform.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the chi-square statistic, p-value, df, Cohen's w effect size,
+#'   and total count n.
 #' @export
 chi2_goodness_of_fit <- function(observed, expected = NULL) {
   obs <- as.numeric(observed)
@@ -408,6 +433,9 @@ chi2_goodness_of_fit <- function(observed, expected = NULL) {
 #' Chi-squared test of independence
 #' @param contingency_table A matrix or table of counts.
 #' @param correction Yates's continuity correction (2x2).
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the chi-square statistic, p-value, df, Cramer's V effect size, and
+#'   \code{extra} list carrying the \code{expected} table and \code{cramers_v}.
 #' @export
 chi2_independence <- function(contingency_table, correction = TRUE) {
   tab <- as.matrix(contingency_table)
@@ -427,6 +455,9 @@ chi2_independence <- function(contingency_table, correction = TRUE) {
 #' McNemar's test (paired nominal data)
 #' @param contingency_table 2x2 table.
 #' @param exact Use exact binomial.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the chi-square (or discordant-pair) statistic, p-value, df = 1,
+#'   and n (the table total).
 #' @export
 mcnemar_test <- function(contingency_table, exact = FALSE) {
   tab <- as.matrix(contingency_table)
@@ -452,6 +483,8 @@ mcnemar_test <- function(contingency_table, exact = FALSE) {
 
 #' Cochran's Q test
 #' @param ... Three or more matched binary 0/1 vectors.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with Cochran's Q statistic, p-value, df, and per-subject n.
 #' @export
 cochrans_q <- function(...) {
   groups <- lapply(list(...), as.numeric)
@@ -488,6 +521,9 @@ cochrans_q <- function(...) {
 #' Pearson product-moment correlation
 #' @param x,y Numeric vectors.
 #' @param confidence Confidence level.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the Pearson correlation r as the test statistic and estimate,
+#'   p-value, df, Fisher-z confidence interval, and r-squared effect size.
 #' @export
 pearson_correlation <- function(x, y, confidence = 0.95) {
   x <- .stat_validate(x)
@@ -508,6 +544,9 @@ pearson_correlation <- function(x, y, confidence = 0.95) {
 
 #' Spearman rank correlation
 #' @inheritParams pearson_correlation
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with Spearman's rho as the test statistic and estimate, p-value, df,
+#'   Fisher-z CI, and rho-squared effect size.
 #' @export
 spearman_correlation <- function(x, y, confidence = 0.95) {
   x <- .stat_validate(x)
@@ -528,6 +567,9 @@ spearman_correlation <- function(x, y, confidence = 0.95) {
 
 #' Kendall's tau-b correlation
 #' @inheritParams pearson_correlation
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with Kendall's tau-b as the test statistic and estimate, p-value,
+#'   and sample size n.
 #' @export
 kendall_correlation <- function(x, y) {
   x <- .stat_validate(x)
@@ -548,6 +590,9 @@ kendall_correlation <- function(x, y) {
 #' @param binary 0/1 vector.
 #' @param continuous Numeric vector.
 #' @param confidence Confidence level.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the point-biserial r as the test statistic and estimate, p-value,
+#'   df, Fisher-z CI, and r-squared effect size.
 #' @export
 point_biserial_correlation <- function(binary, continuous, confidence = 0.95) {
   b <- .stat_validate(binary)
@@ -572,6 +617,9 @@ point_biserial_correlation <- function(binary, continuous, confidence = 0.95) {
 #' @param x,y Numeric vectors of interest.
 #' @param covariates Matrix or data frame of covariates.
 #' @param confidence Confidence level.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the partial correlation r as the test statistic and estimate,
+#'   p-value, residual df, Fisher-z CI, and r-squared effect size.
 #' @export
 partial_correlation <- function(x, y, covariates, confidence = 0.95) {
   x <- .stat_validate(x)
@@ -601,6 +649,9 @@ partial_correlation <- function(x, y, covariates, confidence = 0.95) {
 
 #' Semi-partial (part) correlation
 #' @inheritParams partial_correlation
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the semi-partial correlation r as the test statistic and estimate,
+#'   p-value, and r-squared effect size.
 #' @export
 semi_partial_correlation <- function(x, y, covariates) {
   x <- .stat_validate(x)
@@ -629,6 +680,9 @@ semi_partial_correlation <- function(x, y, covariates) {
 #' Mann-Whitney U / Wilcoxon rank-sum test
 #' @param x,y Numeric vectors.
 #' @param alternative One of "two.sided", "less", "greater".
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the U statistic, p-value, rank-biserial effect size (also under
+#'   \code{extra$rank_biserial}), and total n.
 #' @export
 mann_whitney_u <- function(x, y, alternative = "two.sided") {
   alternative <- sub("-", ".", alternative, fixed = TRUE)
@@ -651,6 +705,9 @@ mann_whitney_u <- function(x, y, alternative = "two.sided") {
 #' @param x Numeric vector.
 #' @param y Optional paired vector.
 #' @param alternative One of "two.sided", "less", "greater".
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the signed-rank V statistic, p-value, an r effect size derived
+#'   from the normal approximation, and n.
 #' @export
 wilcoxon_signed_rank <- function(x, y = NULL, alternative = "two.sided") {
   alternative <- sub("-", ".", alternative, fixed = TRUE)
@@ -676,6 +733,8 @@ wilcoxon_signed_rank <- function(x, y = NULL, alternative = "two.sided") {
 #' @param cdf Name of a CDF function (e.g. "pnorm", "pexp"). Defaults to
 #'   "pnorm". A bare distribution name like "norm" is auto-prefixed.
 #' @param args List of extra arguments to pass to \code{cdf}.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the KS D statistic, p-value, and sample size n.
 #' @export
 ks_test_one_sample <- function(x, cdf = "pnorm", args = list()) {
   x <- .stat_validate(x)
@@ -690,6 +749,8 @@ ks_test_one_sample <- function(x, cdf = "pnorm", args = list()) {
 
 #' Two-sample Kolmogorov-Smirnov test
 #' @inheritParams pearson_correlation
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the two-sample KS D statistic, p-value, and combined sample size.
 #' @export
 ks_test_two_sample <- function(x, y) {
   x <- .stat_validate(x)
@@ -711,6 +772,9 @@ ks_test_two_sample <- function(x, y) {
 #'
 #' @param x Numeric vector.
 #' @param dist Distribution name.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the Anderson-Darling A^2 statistic, a p-value (NA when no
+#'   distribution-specific table is available), and sample size n.
 #' @export
 anderson_darling <- function(x, dist = "norm") {
   x <- .stat_validate(x)
@@ -738,6 +802,8 @@ anderson_darling <- function(x, dist = "norm") {
 #' Levene's test for equality of variances
 #' @param ... Two or more numeric vectors.
 #' @param center One of "median" (Brown-Forsythe), "mean", "trimmed".
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with Levene's F statistic, p-value, df, and total sample size n.
 #' @export
 levene_test <- function(..., center = "median") {
   groups <- list(...)
@@ -764,6 +830,8 @@ levene_test <- function(..., center = "median") {
 
 #' Bartlett's test for equality of variances
 #' @param ... Two or more numeric vectors.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with Bartlett's K-squared statistic, p-value, df, and total n.
 #' @export
 bartlett_test <- function(...) {
   groups <- list(...)
@@ -782,6 +850,10 @@ bartlett_test <- function(...) {
 #' Wald-Wolfowitz runs test for randomness
 #' @param x Numeric sequence.
 #' @param cutoff Cut-off (median by default).
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the normal-approximation z statistic, two-sided p-value, sample
+#'   size n, and \code{extra} list carrying \code{n_runs} and
+#'   \code{expected_runs}.
 #' @export
 runs_test <- function(x, cutoff = NULL) {
   x <- .stat_validate(x)
@@ -812,6 +884,8 @@ runs_test <- function(x, cutoff = NULL) {
 
 #' Shapiro-Wilk test for normality
 #' @param x Numeric vector (n <= 5000).
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the Shapiro-Wilk W statistic, p-value, and sample size n.
 #' @export
 shapiro_wilk <- function(x) {
   x <- .stat_validate(x)
@@ -829,6 +903,8 @@ shapiro_wilk <- function(x) {
 #' (D'Agostino & Pearson 1973). Recommended n >= 20.
 #'
 #' @param x Numeric vector.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the K^2 omnibus statistic, p-value, df = 2, and sample size n.
 #' @export
 dagostino_pearson <- function(x) {
   x <- .stat_validate(x)
@@ -866,6 +942,8 @@ dagostino_pearson <- function(x) {
 
 #' Jarque-Bera test for normality
 #' @param x Numeric vector.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the Jarque-Bera JB statistic, p-value, df = 2, and sample size n.
 #' @export
 jarque_bera <- function(x) {
   x <- .stat_validate(x)
@@ -890,6 +968,9 @@ jarque_bera <- function(x) {
 #' to a plain KS test with estimated parameters (p-value approximate).
 #'
 #' @param x Numeric vector.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the Lilliefors D statistic, p-value (approximate when
+#'   \pkg{nortest} is missing), and sample size n.
 #' @export
 lilliefors_test <- function(x) {
   x <- .stat_validate(x)
@@ -919,6 +1000,9 @@ lilliefors_test <- function(x) {
 #' @param nobs Total observations.
 #' @param value Hypothesised proportion.
 #' @param confidence Confidence level (Wilson CI).
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the z statistic, two-sided p-value, Wilson CI for the proportion,
+#'   the sample proportion as \code{estimate}, and sample size n.
 #' @export
 one_proportion_ztest <- function(count, nobs, value = 0.5, confidence = 0.95) {
   p_hat <- if (nobs > 0) count / nobs else 0
@@ -942,6 +1026,9 @@ one_proportion_ztest <- function(count, nobs, value = 0.5, confidence = 0.95) {
 #' @param count1,nobs1 First sample.
 #' @param count2,nobs2 Second sample.
 #' @param confidence Confidence level.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the z statistic, two-sided p-value, Wald CI for the difference,
+#'   the proportion difference as \code{estimate}, and combined n.
 #' @export
 two_proportion_ztest <- function(count1, nobs1, count2, nobs2,
                                   confidence = 0.95) {
@@ -969,6 +1056,9 @@ two_proportion_ztest <- function(count1, nobs1, count2, nobs2,
 #' Fisher's exact test for a 2x2 table
 #' @param contingency_table 2x2 matrix.
 #' @param alternative One of "two.sided", "less", "greater".
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the odds ratio as the test statistic and \code{estimate}, the
+#'   exact p-value, and the table total as n.
 #' @export
 fisher_exact_test <- function(contingency_table, alternative = "two.sided") {
   alternative <- sub("-", ".", alternative, fixed = TRUE)
@@ -992,6 +1082,9 @@ fisher_exact_test <- function(contingency_table, alternative = "two.sided") {
 #' Cohen's kappa for two raters
 #' @param rater1,rater2 Equal-length categorical vectors.
 #' @param confidence Confidence level.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with kappa/SE z as the test statistic, two-sided p-value, Wald CI for
+#'   kappa, kappa as both \code{effect_size} and \code{estimate}, and n.
 #' @export
 cohens_kappa <- function(rater1, rater2, confidence = 0.95) {
   r1 <- as.vector(rater1)
@@ -1026,6 +1119,10 @@ cohens_kappa <- function(rater1, rater2, confidence = 0.95) {
 #' Fleiss' kappa for multiple raters
 #' @param ratings_matrix Matrix; rows = subjects, cols = categories,
 #'   cells = number of raters assigning subject i to category j.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the z statistic, two-sided p-value, kappa as both
+#'   \code{effect_size} and \code{estimate}, n (number of subjects), and
+#'   \code{extra} list carrying \code{n_raters} and \code{n_categories}.
 #' @export
 fleiss_kappa <- function(ratings_matrix) {
   tab <- as.matrix(ratings_matrix)
@@ -1057,6 +1154,11 @@ fleiss_kappa <- function(ratings_matrix) {
 #' @param raters Rater ID column.
 #' @param ratings Numeric rating column.
 #' @param icc_type One of "ICC1", "ICC1k", "ICC2", "ICC2k", "ICC3", "ICC3k".
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   with the between-subjects F statistic, p-value, df, the chosen ICC as
+#'   both \code{effect_size} and \code{estimate}, n (subjects), and
+#'   \code{extra} list with \code{icc_type}, \code{n_raters}, \code{ms_rows}
+#'   and \code{ms_error}.
 #' @export
 intraclass_correlation <- function(data, targets, raters, ratings,
                                     icc_type = "ICC3k") {
@@ -1124,6 +1226,8 @@ normality_suite <- function(x) {
 
 #' Run a suite of homogeneity-of-variance tests
 #' @param ... Two or more numeric vectors.
+#' @return A length-2 list of \code{morie_test_result} objects:
+#'   the Levene (Brown-Forsythe) test followed by Bartlett's test.
 #' @export
 variance_equality_suite <- function(...) {
   list(levene_test(..., center = "median"),
@@ -1171,6 +1275,9 @@ correlation_matrix <- function(data, method = "pearson") {
 #' @param y Optional second sample.
 #' @param paired Whether samples are paired.
 #' @param confidence Confidence level.
+#' @return A \code{morie_test_result} (subclass of \code{morie_rich_result})
+#'   from the dispatched test (one-sample t, paired t, Wilcoxon signed-rank,
+#'   two-sample t, Welch's t, or Mann-Whitney U).
 #' @export
 auto_test <- function(x, y = NULL, paired = FALSE, confidence = 0.95) {
   x <- .stat_validate(x)

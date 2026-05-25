@@ -28,6 +28,11 @@ instrumental variables.}
 regressors included in both the structural equation and the
 first stage. \code{NULL} (default) for a just-identified design.}
 }
+\value{
+A named list with the same fields as
+\code{\link{morie_iv_hausman}} (\code{statistic}, \code{p_value},
+\code{name}) with \code{name = "Durbin-Wu-Hausman"}.
+}
 \description{
 Durbin-Wu-Hausman test of endogeneity
 }

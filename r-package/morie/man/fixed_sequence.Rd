@@ -13,6 +13,10 @@ fixed_sequence(p_values, alpha = 0.05, labels = NULL)
 
 \item{labels}{Optional character vector of test labels.}
 }
+\value{
+A \code{morie_rich_result} list with a logical \code{rejected}
+vector and an integer \code{n_rejected}; see \code{morie_multiple_testing}.
+}
 \description{
 Tests are evaluated in the given order and the procedure stops at
 the first non-rejection; reached hypotheses need no multiplicity

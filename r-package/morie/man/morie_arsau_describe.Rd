@@ -23,6 +23,14 @@ morie_arsau_describe(
 
 \item{n_preview_rows}{Number of rows from the CSV head to include.}
 }
+\value{
+A \code{morie_arsau_result} object (subclass of
+\code{morie_rich_result}) with the matched registry \code{entry},
+a logical \code{csv_present}, a small \code{preview} data.frame
+(or \code{NULL}), the parsed \code{sidecar} (or \code{NULL}), plus
+the standard \code{title}, \code{summary_lines}, \code{warnings},
+and \code{interpretation}.
+}
 \description{
 Describe a single ARSAU dataset entry.
 }

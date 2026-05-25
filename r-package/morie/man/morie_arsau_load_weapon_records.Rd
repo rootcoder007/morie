@@ -20,6 +20,14 @@ morie_arsau_load_weapon_records(
 
 \item{data_dir}{Optional explicit ARSAU root.}
 }
+\value{
+A \code{morie_arsau_result} object (subclass of
+\code{morie_rich_result}) carrying the per-weapon weapon_records
+data.frame plus sidecar and the standard rich-result metadata
+fields. When \code{allow_invalid = TRUE} is used for the 2023
+release the returned object has \code{is_valid = FALSE} and
+\code{warnings} opens with the ministry-flagged-invalid caveat.
+}
 \description{
 2023 requires \code{allow_invalid = TRUE} (ministry-flagged invalid).
 }

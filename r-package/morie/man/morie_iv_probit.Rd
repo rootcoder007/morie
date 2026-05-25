@@ -26,6 +26,13 @@ morie_iv_probit(
 
 \item{alpha}{Significance level for confidence intervals.}
 }
+\value{
+A list (same layout as \code{\link{morie_iv_tsls}}) with
+probit coefficients, standard errors, t-statistics, p-values,
+confidence interval bounds, variable names, sample size,
+\code{method = "IV probit (Rivers-Vuong CF)"}, and \code{details}
+(first stage + probit fit).
+}
 \description{
 IV Probit (Rivers-Vuong control function)
 }

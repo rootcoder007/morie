@@ -15,6 +15,11 @@ morie_weights_poststratify(weights, strata, population_totals)
 \item{population_totals}{Named numeric vector of target totals to
 calibrate to.}
 }
+\value{
+Numeric vector of post-stratified weights, same length as
+\code{weights}, scaled within each stratum so the weighted sum
+matches \code{population_totals}.
+}
 \description{
 \eqn{w_i^{ps} = w_i \cdot N_h / \hat{N}_h}{w_i^ps = w_i * N_h / N_hat_h}.
 }

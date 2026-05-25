@@ -9,6 +9,10 @@ tippett_combined(p_values)
 \arguments{
 \item{p_values}{Numeric vector of raw p-values.}
 }
+\value{
+A \code{morie_rich_result} list with elements \code{method},
+\code{statistic} (minimum p), and \code{p_value} (combined p).
+}
 \description{
 Tippett's minimum-p method
 }

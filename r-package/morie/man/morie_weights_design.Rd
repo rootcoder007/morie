@@ -10,6 +10,10 @@ morie_weights_design(selection_probs)
 \item{selection_probs}{Numeric vector of selection probabilities
 for \code{design}.}
 }
+\value{
+Numeric vector of design weights, same length as
+\code{selection_probs}.
+}
 \description{
 \eqn{w_i = 1 / \pi_i}{w_i = 1 / pi_i}.
 }

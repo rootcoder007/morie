@@ -9,6 +9,11 @@ morie_otis_analyze_d01(data)
 \arguments{
 \item{data}{d01 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and tables of deaths by
+region, housing-unit type, medical cause, and means of death.
+}
 \description{
 Person-level custodial deaths (d01)
 }

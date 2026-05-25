@@ -14,6 +14,12 @@ decision_curve_analysis(y_true, y_pred, thresholds = NULL)
 \item{thresholds}{Numeric vector of thresholds (defaults to
 \code{seq(0.01, 0.99, 0.01)}).}
 }
+\value{
+A \code{morie_decision_curve_result} (subclass of
+\code{morie_validation_result} / \code{morie_rich_result}) with the
+\code{thresholds}, model \code{net_benefit}, treat-all
+\code{net_benefit_all}, and treat-none \code{net_benefit_none} curves.
+}
 \description{
 Decision curve analysis
 }

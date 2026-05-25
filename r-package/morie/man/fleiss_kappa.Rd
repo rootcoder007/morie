@@ -10,6 +10,12 @@ fleiss_kappa(ratings_matrix)
 \item{ratings_matrix}{Matrix; rows = subjects, cols = categories,
 cells = number of raters assigning subject i to category j.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the z statistic, two-sided p-value, kappa as both
+\code{effect_size} and \code{estimate}, n (number of subjects), and
+\code{extra} list carrying \code{n_raters} and \code{n_categories}.
+}
 \description{
 Fleiss' kappa for multiple raters
 }

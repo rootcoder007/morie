@@ -43,6 +43,13 @@ up to 200,000 rows without an app_token).}
 \item{app_token}{Optional Socrata API app token for higher rate
 limits; passed as the \code{X-App-Token} header.}
 }
+\value{
+A \code{data.frame} of NYPD historic arrest records, either
+the bundled \code{nypd_arrests_historic_sample.csv} fixture when
+\code{offline = TRUE} or the live Socrata pull (SODA2 / SODA3)
+when \code{offline = FALSE}. Columns mirror the upstream NYC
+OpenData resource \verb{8h9b-rp9u}.
+}
 \description{
 NYPD Arrests Data (Historic)
 }

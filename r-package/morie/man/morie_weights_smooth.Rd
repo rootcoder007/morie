@@ -19,6 +19,11 @@ Allowed values depend on the caller.}
 \item{shrinkage_factor}{Numeric in \verb{[0, 1]}; smoothing pull-toward-
 mean factor.}
 }
+\value{
+Numeric vector of smoothed weights, same length as
+\code{weights}; under \code{"log_transform"} the result is
+rescaled to preserve the original weight sum.
+}
 \description{
 Smooth survey weights via shrinkage toward the mean (or log-mean).
 }

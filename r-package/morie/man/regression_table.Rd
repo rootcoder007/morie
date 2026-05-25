@@ -39,6 +39,16 @@ regression_table(
 
 \item{title}{Title.}
 }
+\value{
+When \code{output_format = "dataframe"}, a \code{data.frame}
+with one column per model and rows for each coefficient (estimate
+\itemize{
+\item parenthesised SE + optional CI), plus a leading \code{term}
+column and trailing rows holding requested model statistics.
+Otherwise a character string holding the rendered table in the
+requested format.
+}
+}
 \description{
 Side-by-side regression table for multiple model fits
 }

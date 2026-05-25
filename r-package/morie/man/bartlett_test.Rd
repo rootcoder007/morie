@@ -9,6 +9,10 @@ bartlett_test(...)
 \arguments{
 \item{...}{Two or more numeric vectors.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with Bartlett's K-squared statistic, p-value, df, and total n.
+}
 \description{
 Bartlett's test for equality of variances
 }

@@ -16,6 +16,10 @@ morie_weights_bootstrap(weights, n_replicates = 200, strata = NULL, seed = 42)
 
 \item{seed}{Integer RNG seed.}
 }
+\value{
+A numeric matrix of bootstrap replicate weights with
+\code{length(weights)} rows and \code{n_replicates} columns.
+}
 \description{
 Bootstrap replicate weights (Rao-Wu rescaling within strata).
 }

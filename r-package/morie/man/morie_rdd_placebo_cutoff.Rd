@@ -42,6 +42,12 @@ linear). 2 picks up quadratic curvature for bias correction.}
 
 \item{alpha}{Significance level (default \code{0.05}).}
 }
+\value{
+A \code{data.frame} with one row per placebo cutoff and
+columns \code{placebo_cutoff}, \code{estimate}, \code{std_error},
+\code{p_value}, and \code{significant} (logical;
+\code{p_value < alpha}).
+}
 \description{
 Placebo cutoff falsification test
 }

@@ -9,6 +9,11 @@ morie_otis_analyze_b02(data)
 \arguments{
 \item{data}{b02 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines, year-trend table and
+gender x region crosstab of total segregation days.
+}
 \description{
 Aggregate segregation days per person per year (b02)
 }

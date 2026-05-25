@@ -13,6 +13,13 @@ create_reproducibility_manifest(data, parameters = NULL, seeds = NULL)
 
 \item{seeds}{Optional named list of random seeds.}
 }
+\value{
+A \code{morie_reproducibility_manifest} (subclass of
+\code{morie_validation_result} / \code{morie_rich_result}) with
+\code{r_version}, \code{package_versions}, \code{random_seeds},
+a SHA-256 \code{data_checksum} (NA when \pkg{digest} is absent),
+\code{parameters}, and an ISO-8601 \code{timestamp}.
+}
 \description{
 Create a manifest of the environment for reproducibility
 }

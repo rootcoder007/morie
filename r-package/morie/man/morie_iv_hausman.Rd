@@ -22,6 +22,11 @@ instrumental variables.}
 regressors included in both the structural equation and the
 first stage. \code{NULL} (default) for a just-identified design.}
 }
+\value{
+A named list with elements \code{statistic} (Hausman
+chi-square), \code{p_value}, and \code{name}
+(\code{"Wu-Hausman / Hausman"} or \code{"Hausman"}).
+}
 \description{
 Hausman test: OLS vs 2SLS
 }

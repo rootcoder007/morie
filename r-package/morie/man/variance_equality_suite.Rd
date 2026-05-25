@@ -9,6 +9,10 @@ variance_equality_suite(...)
 \arguments{
 \item{...}{Two or more numeric vectors.}
 }
+\value{
+A length-2 list of \code{morie_test_result} objects:
+the Levene (Brown-Forsythe) test followed by Bartlett's test.
+}
 \description{
 Run a suite of homogeneity-of-variance tests
 }

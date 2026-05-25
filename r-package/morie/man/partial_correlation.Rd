@@ -13,6 +13,11 @@ partial_correlation(x, y, covariates, confidence = 0.95)
 
 \item{confidence}{Confidence level.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the partial correlation r as the test statistic and estimate,
+p-value, residual df, Fisher-z CI, and r-squared effect size.
+}
 \description{
 Partial Pearson correlation controlling for covariates
 }

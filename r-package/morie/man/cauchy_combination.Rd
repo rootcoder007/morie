@@ -11,6 +11,11 @@ cauchy_combination(p_values, weights = NULL)
 
 \item{weights}{Optional non-negative weights summing to 1.}
 }
+\value{
+A \code{morie_rich_result} list with elements \code{method},
+\code{statistic} (Cauchy combination statistic), and \code{p_value}
+(combined p).
+}
 \description{
 Robust to arbitrary correlation structure.
 }

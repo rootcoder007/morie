@@ -11,6 +11,11 @@ spearman_correlation(x, y, confidence = 0.95)
 
 \item{confidence}{Confidence level.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with Spearman's rho as the test statistic and estimate, p-value, df,
+Fisher-z CI, and rho-squared effect size.
+}
 \description{
 Spearman rank correlation
 }

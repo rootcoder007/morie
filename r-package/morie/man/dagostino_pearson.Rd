@@ -9,6 +9,10 @@ dagostino_pearson(x)
 \arguments{
 \item{x}{Numeric vector.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the K^2 omnibus statistic, p-value, df = 2, and sample size n.
+}
 \description{
 API stub: implemented via the K2 statistic = Z(skew)^2 + Z(kurt)^2
 (D'Agostino & Pearson 1973). Recommended n >= 20.

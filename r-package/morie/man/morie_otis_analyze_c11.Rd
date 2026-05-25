@@ -9,6 +9,12 @@ morie_otis_analyze_c11(data)
 \arguments{
 \item{data}{c11 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and an
+aggregate-duration x year crosstab of restrictive-confinement
+individual counts.
+}
 \description{
 Individuals by aggregate-duration bin (c11)
 }

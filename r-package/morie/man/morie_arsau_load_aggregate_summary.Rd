@@ -17,6 +17,13 @@ morie_arsau_load_aggregate_summary(
 
 \item{data_dir}{Optional explicit ARSAU root.}
 }
+\value{
+A \code{morie_arsau_result} object (subclass of
+\code{morie_rich_result}) carrying the aggregate-summary
+data.frame (one row per service-year) plus sidecar and the
+standard rich-result metadata fields described in
+\code{\link{morie_arsau_load_main_records}}.
+}
 \description{
 Load ARSAU aggregate-summary-by-year CSV (2020-2022 only).
 }

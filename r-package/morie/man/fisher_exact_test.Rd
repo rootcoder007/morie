@@ -11,6 +11,11 @@ fisher_exact_test(contingency_table, alternative = "two.sided")
 
 \item{alternative}{One of "two.sided", "less", "greater".}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the odds ratio as the test statistic and \code{estimate}, the
+exact p-value, and the table total as n.
+}
 \description{
 Fisher's exact test for a 2x2 table
 }

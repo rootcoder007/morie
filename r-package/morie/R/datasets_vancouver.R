@@ -116,6 +116,10 @@ NULL
 #' Vancouver graffiti incident records (sample)
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @return A `data.frame` of City-of-Vancouver graffiti incident
+#'   records (Opendatasoft slug `graffiti`); the bundled 100-row
+#'   sample under `inst/extdata/` when `offline = TRUE`, otherwise
+#'   the live `/records` pull (geometry flattened to `lon`/`lat`).
 #' @export
 morie_datasets_vancouver_graffiti <- function(offline = TRUE,
                                                 max_features = NULL) {
@@ -140,6 +144,10 @@ morie_datasets_vancouver_graffiti <- function(offline = TRUE,
 #' Vancouver noise control areas (bylaw zones)
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @return A `data.frame` of City-of-Vancouver noise-control-area
+#'   bylaw zone rows (Opendatasoft slug `noise-control-areas`);
+#'   the bundled fixture under `inst/extdata/` when
+#'   `offline = TRUE`, otherwise the live `/records` pull.
 #' @export
 morie_datasets_vancouver_noise_control_areas <- function(offline = TRUE,
                                                             max_features = NULL) {
@@ -155,6 +163,11 @@ morie_datasets_vancouver_noise_control_areas <- function(offline = TRUE,
 #' Vancouver homeless shelter locations
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @return A `data.frame` of City-of-Vancouver homeless-shelter
+#'   location records (Opendatasoft slug
+#'   `homeless-shelter-locations`); the bundled fixture under
+#'   `inst/extdata/` when `offline = TRUE`, otherwise the live
+#'   `/records` pull.
 #' @export
 morie_datasets_vancouver_homeless_shelters <- function(offline = TRUE,
                                                          max_features = NULL) {
@@ -170,6 +183,11 @@ morie_datasets_vancouver_homeless_shelters <- function(offline = TRUE,
 #' Vancouver property use inspection districts
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @return A `data.frame` of City-of-Vancouver property-use
+#'   inspection district rows (Opendatasoft slug
+#'   `property-use-inspection-districts`); the bundled fixture
+#'   under `inst/extdata/` when `offline = TRUE`, otherwise the
+#'   live `/records` pull.
 #' @export
 morie_datasets_vancouver_property_use_inspection_districts <- function(
     offline = TRUE, max_features = NULL) {
@@ -186,6 +204,10 @@ morie_datasets_vancouver_property_use_inspection_districts <- function(
 #' Vancouver fire hall locations
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @return A `data.frame` of City-of-Vancouver fire-hall location
+#'   records (Opendatasoft slug `fire-halls`); the bundled fixture
+#'   under `inst/extdata/` when `offline = TRUE`, otherwise the
+#'   live `/records` pull.
 #' @export
 morie_datasets_vancouver_fire_halls <- function(offline = TRUE,
                                                   max_features = NULL) {
@@ -210,6 +232,10 @@ morie_datasets_vancouver_fire_halls <- function(offline = TRUE,
 #'
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @return A `data.frame` of City-of-Vancouver community-centre
+#'   location records (Opendatasoft slug `community-centres`); the
+#'   bundled 27-row fixture under `inst/extdata/` when
+#'   `offline = TRUE`, otherwise the live `/records` pull.
 #' @export
 morie_datasets_vancouver_community_centres <- function(offline = TRUE,
                                                          max_features = NULL) {
@@ -230,6 +256,11 @@ morie_datasets_vancouver_community_centres <- function(offline = TRUE,
 #'
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @return A `data.frame` of City-of-Vancouver community + farmers
+#'   market location records (Opendatasoft slug
+#'   `community-food-markets-and-farmers-markets`); the bundled
+#'   91-row fixture under `inst/extdata/` when `offline = TRUE`,
+#'   otherwise the live `/records` pull.
 #' @export
 morie_datasets_vancouver_community_food_markets <- function(offline = TRUE,
                                                               max_features = NULL) {
@@ -249,6 +280,11 @@ morie_datasets_vancouver_community_food_markets <- function(offline = TRUE,
 #'
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @return A `data.frame` of City-of-Vancouver designated
+#'   disability-parking-space records (Opendatasoft slug
+#'   `disability-parking`); the bundled 100-row fixture under
+#'   `inst/extdata/` when `offline = TRUE`, otherwise the live
+#'   `/records` pull.
 #' @export
 morie_datasets_vancouver_disability_parking <- function(offline = TRUE,
                                                           max_features = NULL) {
@@ -270,6 +306,11 @@ morie_datasets_vancouver_disability_parking <- function(offline = TRUE,
 #'
 #' @rdname vancouver_crime_adjacent
 #' @inheritParams morie_datasets_vancouver_opendata_layers
+#' @return A `data.frame` of City-of-Vancouver public-art registry
+#'   records (Opendatasoft slug `public-art`); the bundled 100-row
+#'   fixture under `inst/extdata/` when `offline = TRUE`,
+#'   otherwise the live `/records` pull. Columns include artist,
+#'   install year, neighbourhood, and primary material.
 #' @export
 morie_datasets_vancouver_public_art <- function(offline = TRUE,
                                                   max_features = NULL) {

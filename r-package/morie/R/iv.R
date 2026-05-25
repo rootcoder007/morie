@@ -209,6 +209,11 @@ morie_iv_tsls <- function(data, outcome, endogenous, instruments,
 #' Solves the LIML eigenvalue problem; falls back to \code{ivreg::ivreg(...,
 #' method = "M")} if available.
 #' @inheritParams morie_iv_tsls
+#' @return A list (same layout as \code{\link{morie_iv_tsls}}) with
+#'   coefficients, standard errors, t-statistics, p-values, confidence
+#'   interval bounds, variable names, sample size, a \code{method}
+#'   label (\code{"liml (ivreg)"} or a fallback label), and
+#'   \code{details}.
 #' @export
 morie_iv_liml <- function(data, outcome, endogenous, instruments,
                           exogenous = NULL, robust = TRUE, alpha = 0.05) {
@@ -239,6 +244,10 @@ morie_iv_liml <- function(data, outcome, endogenous, instruments,
 #' @inheritParams morie_iv_tsls
 #' @param weight_matrix One of \code{"optimal"} (default, two-step) or
 #'   \code{"identity"} (one-step / 2SLS-equivalent).
+#' @return A list (same layout as \code{\link{morie_iv_tsls}}) with
+#'   coefficients, standard errors, t-statistics, p-values, confidence
+#'   interval bounds, variable names, sample size, a \code{method}
+#'   label (e.g. \code{"gmm (optimal)"}), and \code{details}.
 #' @export
 morie_iv_gmm <- function(data, outcome, endogenous, instruments,
                          exogenous = NULL, weight_matrix = "optimal",
@@ -268,6 +277,10 @@ morie_iv_gmm <- function(data, outcome, endogenous, instruments,
 #' @inheritParams morie_iv_gmm
 #' @param max_iter Outer iteration cap (default 100).
 #' @param tol Convergence tolerance on the objective.
+#' @return A list (same layout as \code{\link{morie_iv_tsls}}) with
+#'   coefficients, standard errors, t-statistics, p-values, confidence
+#'   interval bounds, variable names, sample size, the \code{method}
+#'   label \code{"cue-gmm"} (or a fallback label), and \code{details}.
 #' @export
 morie_iv_cue_gmm <- function(data, outcome, endogenous, instruments,
                              exogenous = NULL, max_iter = 100, tol = 1e-8,
@@ -301,6 +314,10 @@ morie_iv_cue_gmm <- function(data, outcome, endogenous, instruments,
 #' @param treatment Endogenous treatment column.
 #' @param instrument Binary instrument column.
 #' @param alpha Significance level.
+#' @return A list (same layout as \code{\link{morie_iv_tsls}}) with a
+#'   single \code{LATE} coefficient and its standard error,
+#'   t-statistic, p-value, confidence interval bounds, sample size,
+#'   and \code{method = "wald (LATE)"}.
 #' @export
 morie_iv_wald <- function(data, outcome, treatment, instrument, alpha = 0.05) {
   y <- data[[outcome]]
@@ -333,6 +350,9 @@ morie_iv_wald <- function(data, outcome, treatment, instrument, alpha = 0.05) {
 
 #' First-stage F-statistics and partial R^2
 #' @inheritParams morie_iv_params
+#' @return A \code{data.frame} with one row per endogenous regressor
+#'   and columns \code{endogenous}, \code{F} (first-stage F-statistic),
+#'   \code{partial_R2}, and \code{n_instruments}.
 #' @export
 morie_iv_first_stage_diagnostics <- function(data, endogenous, instruments,
                                              exogenous = NULL) {
@@ -410,6 +430,10 @@ morie_iv_cragg_donald <- function(data, endogenous, instruments,
 
 #' Stock-Yogo critical values
 #' @inheritParams morie_iv_params
+#' @return A named list of Stock-Yogo maximal-bias critical values
+#'   (elements \code{`10pct`}, \code{`15pct`}, \code{`20pct`},
+#'   \code{`25pct`}) for the given \code{(n_endogenous, n_instruments)}
+#'   combination.
 #' @export
 morie_iv_stock_yogo <- function(n_endogenous = 1, n_instruments = 1) {
   # TODO: ship full Stock & Yogo (2005, Table 5.2) lookup table -- currently
@@ -429,6 +453,9 @@ morie_iv_stock_yogo <- function(n_endogenous = 1, n_instruments = 1) {
 
 #' Kleibergen-Paap rank statistic
 #' @inheritParams morie_iv_params
+#' @return A named list with elements \code{statistic} (the
+#'   Cragg-Donald / KP F-statistic), \code{p_value}, \code{name}, and
+#'   \code{details} (first-stage diagnostics + degrees of freedom).
 #' @export
 morie_iv_kleibergen_paap <- function(data, endogenous, instruments,
                                      exogenous = NULL) {
@@ -439,6 +466,9 @@ morie_iv_kleibergen_paap <- function(data, endogenous, instruments,
 
 #' Anderson-Rubin (AR) weak-IV-robust test
 #' @inheritParams morie_iv_params
+#' @return A named list with elements \code{statistic} (chi-square AR
+#'   statistic), \code{F_statistic}, \code{p_value}, \code{name},
+#'   \code{df}, \code{df_resid}, and \code{beta0} (the null value tested).
 #' @export
 morie_iv_anderson_rubin <- function(data, outcome, endogenous, instruments,
                                     exogenous = NULL, beta0 = NULL,
@@ -474,6 +504,9 @@ morie_iv_anderson_rubin <- function(data, outcome, endogenous, instruments,
 #' Grid-based Anderson-Rubin confidence interval for a single endogenous
 #' variable.
 #' @inheritParams morie_iv_params
+#' @return A numeric length-2 vector \code{c(lower, upper)} giving
+#'   the AR confidence interval, or \code{c(NA, NA)} if no grid point
+#'   is accepted.
 #' @export
 morie_iv_anderson_rubin_ci <- function(data, outcome, endogenous, instruments,
                                        exogenous = NULL, grid_min = -10,
@@ -491,6 +524,11 @@ morie_iv_anderson_rubin_ci <- function(data, outcome, endogenous, instruments,
 
 #' Conditional likelihood-ratio (CLR) test of Moreira (2003)
 #' @inheritParams morie_iv_params
+#' @return A named list with the same fields as
+#'   \code{\link{morie_iv_anderson_rubin}} (\code{statistic},
+#'   \code{F_statistic}, \code{p_value}, \code{name}, \code{df},
+#'   \code{df_resid}, \code{beta0}) with \code{name} set to
+#'   \code{"Conditional LR (AR conservative)"}.
 #' @export
 morie_iv_conditional_lr <- function(data, outcome, endogenous, instruments,
                                     exogenous = NULL, beta0 = 0) {
@@ -504,6 +542,9 @@ morie_iv_conditional_lr <- function(data, outcome, endogenous, instruments,
 
 #' Sargan test of overidentifying restrictions (homoskedastic)
 #' @inheritParams morie_iv_params
+#' @return A named list with elements \code{statistic}, \code{p_value},
+#'   \code{name} (\code{"Sargan"} or \code{"Sargan (just-identified)"}),
+#'   and (for over-identified cases) \code{df} degrees of freedom.
 #' @export
 morie_iv_sargan <- function(data, outcome, endogenous, instruments,
                             exogenous = NULL) {
@@ -536,6 +577,9 @@ morie_iv_sargan <- function(data, outcome, endogenous, instruments,
 
 #' Hansen J test of overidentifying restrictions (robust)
 #' @inheritParams morie_iv_params
+#' @return A named list with elements \code{statistic}, \code{p_value},
+#'   \code{name} (\code{"Hansen J"} or a Sargan-fallback label), and
+#'   \code{df} degrees of freedom.
 #' @export
 morie_iv_hansen_j <- function(data, outcome, endogenous, instruments,
                               exogenous = NULL) {
@@ -556,6 +600,9 @@ morie_iv_hansen_j <- function(data, outcome, endogenous, instruments,
 
 #' Hausman test: OLS vs 2SLS
 #' @inheritParams morie_iv_params
+#' @return A named list with elements \code{statistic} (Hausman
+#'   chi-square), \code{p_value}, and \code{name}
+#'   (\code{"Wu-Hausman / Hausman"} or \code{"Hausman"}).
 #' @export
 morie_iv_hausman <- function(data, outcome, endogenous, instruments,
                              exogenous = NULL) {
@@ -588,6 +635,9 @@ morie_iv_hausman <- function(data, outcome, endogenous, instruments,
 
 #' Durbin-Wu-Hausman test of endogeneity
 #' @inheritParams morie_iv_params
+#' @return A named list with the same fields as
+#'   \code{\link{morie_iv_hausman}} (\code{statistic}, \code{p_value},
+#'   \code{name}) with \code{name = "Durbin-Wu-Hausman"}.
 #' @export
 morie_iv_durbin_wu_hausman <- function(data, outcome, endogenous, instruments,
                                        exogenous = NULL) {
@@ -604,6 +654,10 @@ morie_iv_durbin_wu_hausman <- function(data, outcome, endogenous, instruments,
 
 #' Jackknife IV (JIVE; Angrist, Imbens & Krueger 1999)
 #' @inheritParams morie_iv_tsls
+#' @return A list (same layout as \code{\link{morie_iv_tsls}}) with
+#'   coefficients, standard errors, t-statistics, p-values, confidence
+#'   interval bounds, variable names, sample size, \code{method =
+#'   "JIVE"}, and \code{details} (residuals + vcov).
 #' @export
 morie_iv_jive <- function(data, outcome, endogenous, instruments,
                           exogenous = NULL, alpha = 0.05) {
@@ -648,6 +702,10 @@ morie_iv_jive <- function(data, outcome, endogenous, instruments,
 #' @inheritParams morie_iv_tsls
 #' @param split_fraction Fraction of the data used in the first stage.
 #' @param seed RNG seed.
+#' @return A list (same layout as \code{\link{morie_iv_tsls}}) with
+#'   coefficients, standard errors, t-statistics, p-values, confidence
+#'   interval bounds, variable names, sample size, \code{method =
+#'   "split-sample IV"}, and \code{details} (fitted second-stage model).
 #' @export
 morie_iv_split_sample <- function(data, outcome, endogenous, instruments,
                                   exogenous = NULL, split_fraction = 0.5,
@@ -679,6 +737,11 @@ morie_iv_split_sample <- function(data, outcome, endogenous, instruments,
 
 #' Control-function (residual augmentation) IV
 #' @inheritParams morie_iv_tsls
+#' @return A list (same layout as \code{\link{morie_iv_tsls}}) with
+#'   coefficients, standard errors, t-statistics, p-values, confidence
+#'   interval bounds, variable names, sample size, \code{method =
+#'   "control function"}, and \code{details} (the fitted first- and
+#'   second-stage models).
 #' @export
 morie_iv_control_function <- function(data, outcome, endogenous, instruments,
                                       exogenous = NULL, robust = TRUE,
@@ -701,6 +764,11 @@ morie_iv_control_function <- function(data, outcome, endogenous, instruments,
 
 #' IV Probit (Rivers-Vuong control function)
 #' @inheritParams morie_iv_tsls
+#' @return A list (same layout as \code{\link{morie_iv_tsls}}) with
+#'   probit coefficients, standard errors, t-statistics, p-values,
+#'   confidence interval bounds, variable names, sample size,
+#'   \code{method = "IV probit (Rivers-Vuong CF)"}, and \code{details}
+#'   (first stage + probit fit).
 #' @export
 morie_iv_probit <- function(data, outcome, endogenous, instruments,
                             exogenous = NULL, alpha = 0.05) {
@@ -726,6 +794,11 @@ morie_iv_probit <- function(data, outcome, endogenous, instruments,
 #' @inheritParams morie_iv_tsls
 #' @param unit Cluster / unit identifier column.
 #' @param time_fe Optional time-FE column.
+#' @return A list (same layout as \code{\link{morie_iv_tsls}}) with
+#'   coefficients, standard errors, t-statistics, p-values, confidence
+#'   interval bounds, variable names, sample size, the \code{method}
+#'   label (\code{"panel IV (plm within)"} or a fallback label), and
+#'   \code{details}.
 #' @export
 morie_iv_panel <- function(data, outcome, endogenous, instruments, unit,
                            exogenous = NULL, time_fe = NULL, alpha = 0.05) {
@@ -763,6 +836,9 @@ morie_iv_panel <- function(data, outcome, endogenous, instruments, unit,
 
 #' Composite IV diagnostics
 #' @inheritParams morie_iv_params
+#' @return A named list with elements \code{first_stage} (data.frame),
+#'   \code{cragg_donald} (list), \code{sargan} (list), \code{hausman}
+#'   (list), and \code{n_obs} (integer sample size).
 #' @export
 morie_iv_diagnostics <- function(data, outcome, endogenous, instruments,
                                  exogenous = NULL) {
@@ -781,6 +857,9 @@ morie_iv_diagnostics <- function(data, outcome, endogenous, instruments,
 
 #' IV residual analysis
 #' @inheritParams morie_iv_params
+#' @return A \code{data.frame} with one row per observation and
+#'   columns \code{fitted}, \code{residual}, \code{abs_resid},
+#'   \code{sq_resid} from a fitted 2SLS model.
 #' @export
 morie_iv_residual_analysis <- function(data, outcome, endogenous, instruments,
                                        exogenous = NULL) {

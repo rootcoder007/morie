@@ -13,6 +13,14 @@ assess_calibration(y_true, y_pred, n_groups = 10L)
 
 \item{n_groups}{Hosmer-Lemeshow groups.}
 }
+\value{
+A \code{morie_calibration_result} (subclass of
+\code{morie_validation_result} / \code{morie_rich_result}) with the
+\code{hosmer_lemeshow_stat} and \code{hosmer_lemeshow_p},
+\code{calibration_slope}, \code{calibration_intercept},
+\code{brier_score}, \code{scaled_brier}, and
+\code{calibration_in_the_large}.
+}
 \description{
 Comprehensive calibration assessment for binary outcomes
 }

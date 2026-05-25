@@ -22,6 +22,13 @@ and \code{p_value}.}
 
 \item{title}{Title.}
 }
+\value{
+When \code{output_format = "dataframe"}, a \code{data.frame}
+indexed by estimator name with columns \code{Estimate}, \code{SE},
+\code{95\% CI}, \code{p-value}, and a star column. Otherwise a
+character string holding the rendered table in the requested
+format.
+}
 \description{
 Summary table of causal effect estimates from multiple estimators
 }

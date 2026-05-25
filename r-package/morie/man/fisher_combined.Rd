@@ -9,6 +9,10 @@ fisher_combined(p_values)
 \arguments{
 \item{p_values}{Numeric vector of raw p-values.}
 }
+\value{
+A \code{morie_rich_result} list with elements \code{method},
+\code{statistic} (chi-square), and \code{p_value} (combined p).
+}
 \description{
 Fisher's method for combining independent p-values
 }

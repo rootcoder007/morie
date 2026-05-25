@@ -23,6 +23,14 @@ format_dataframe(
 
 \item{title}{Title.}
 }
+\value{
+When \code{output_format = "dataframe"}, the input
+\code{data.frame} with numeric columns coerced to formatted
+character vectors (p-value columns use the morie p-value style;
+other numeric columns use \code{numeric_fmt}). Otherwise a
+character string holding the rendered table in the requested
+format.
+}
 \description{
 Apply uniform formatting to numeric columns
 }

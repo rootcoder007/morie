@@ -19,6 +19,11 @@ variable in \code{data}.}
 \item{landmark_time}{Numeric landmark time at which to subset
 the cohort before fitting (lead-time bias correction).}
 }
+\value{
+A \code{data.frame} restricted to rows surviving past
+\code{landmark_time}, with \code{duration_col} shifted so the
+landmark is the new time origin.
+}
 \description{
 Landmark dataset constructor.
 }

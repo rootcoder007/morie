@@ -13,6 +13,15 @@ morie_arsau_available_datasets(year = NULL, language = "en", data_dir = NULL)
 
 \item{data_dir}{Optional explicit ARSAU root.}
 }
+\value{
+A \code{morie_arsau_result} object (subclass of
+\code{morie_rich_result}) with \code{n} (number of registry
+entries returned) and \code{entries} (a list of per-entry
+summaries each carrying \code{year_or_range}, \code{kind},
+\code{csv}, \code{valid}, \code{rows}, \code{cols}, and a
+truncated \code{description}), plus the standard \code{title},
+\code{summary_lines}, \code{warnings}, and \code{interpretation}.
+}
 \description{
 List ARSAU dataset kinds, optionally restricted to one year.
 }

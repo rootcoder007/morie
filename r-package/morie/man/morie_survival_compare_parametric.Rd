@@ -11,6 +11,11 @@ morie_survival_compare_parametric(time, event)
 
 \item{event}{Integer/logical vector; 1 = event, 0 = censored.}
 }
+\value{
+A \code{data.frame} sorted by AIC with one row per fitted
+distribution and columns \code{distribution}, \code{log_likelihood},
+\code{aic}, \code{bic}, and \code{n_events}.
+}
 \description{
 Compare parametric survival models by AIC/BIC.
 }

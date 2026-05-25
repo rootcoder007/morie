@@ -29,6 +29,13 @@ morie_iv_liml(
 
 \item{alpha}{Significance level for confidence intervals.}
 }
+\value{
+A list (same layout as \code{\link{morie_iv_tsls}}) with
+coefficients, standard errors, t-statistics, p-values, confidence
+interval bounds, variable names, sample size, a \code{method}
+label (\code{"liml (ivreg)"} or a fallback label), and
+\code{details}.
+}
 \description{
 Solves the LIML eigenvalue problem; falls back to \code{ivreg::ivreg(...,
 method = "M")} if available.

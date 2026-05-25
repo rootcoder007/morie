@@ -25,6 +25,14 @@ fixture from \code{inst/extdata/tps_mha_apprehensions_sample.csv}
 
 \item{layer_url}{Optional ArcGIS layer URL override.}
 }
+\value{
+A \code{data.frame} of TPS Public Safety Data Portal Break
+and Enter records, either the bundled
+\code{tps_psdp_breakandenter_sample.csv} fixture when
+\code{offline = TRUE} or a live TPS Hub / FeatureServer query when
+\code{offline = FALSE}. Columns mirror the upstream 31-column
+Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
+}
 \description{
 TPS PSDP -- Break and Enter
 }

@@ -38,6 +38,13 @@ morie_rdd_sharp(
 
 \item{alpha}{Significance level.}
 }
+\value{
+A named list with elements \code{estimate}, \code{std_error},
+\code{t_stat}, \code{p_value}, \code{ci_lower}, \code{ci_upper},
+\code{n_obs}, \code{method}, and \code{details} (the underlying
+\pkg{rdrobust} fit when available, otherwise the local-polynomial
+fits on each side of the cutoff).
+}
 \description{
 Sharp RDD treatment effect at the cutoff
 }

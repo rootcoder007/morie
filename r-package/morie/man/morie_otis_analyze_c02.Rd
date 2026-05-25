@@ -9,6 +9,11 @@ morie_otis_analyze_c02(data)
 \arguments{
 \item{data}{c02 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and an
+institution x year crosstab of restrictive-confinement individual counts.
+}
 \description{
 Individuals in RC/seg by institution (c02)
 }

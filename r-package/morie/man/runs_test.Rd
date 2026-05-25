@@ -11,6 +11,12 @@ runs_test(x, cutoff = NULL)
 
 \item{cutoff}{Cut-off (median by default).}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the normal-approximation z statistic, two-sided p-value, sample
+size n, and \code{extra} list carrying \code{n_runs} and
+\code{expected_runs}.
+}
 \description{
 Wald-Wolfowitz runs test for randomness
 }

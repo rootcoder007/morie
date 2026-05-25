@@ -22,6 +22,12 @@ with the documented schema when no real CKAN row is bundled),
 error if absent), or \code{"synth"} (return a deterministic
 \code{set.seed()} synthetic for didactic examples).}
 }
+\value{
+A \code{data.frame} of OTIS c02 Individuals-by-institution rows
+resolved through the shared OTIS dispatcher (bundled sample,
+live Ontario CKAN, synthetic, or empty schema per \code{source}).
+Columns mirror the upstream resource.
+}
 \description{
 OTIS c02 -- Individuals by institution
 }

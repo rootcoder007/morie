@@ -11,6 +11,11 @@ mann_whitney_u(x, y, alternative = "two.sided")
 
 \item{alternative}{One of "two.sided", "less", "greater".}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the U statistic, p-value, rank-biserial effect size (also under
+\code{extra$rank_biserial}), and total n.
+}
 \description{
 Mann-Whitney U / Wilcoxon rank-sum test
 }

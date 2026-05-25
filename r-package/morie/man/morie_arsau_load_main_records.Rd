@@ -13,6 +13,15 @@ morie_arsau_load_main_records(year, language = "en", data_dir = NULL)
 
 \item{data_dir}{Optional explicit ARSAU root.}
 }
+\value{
+A \code{morie_arsau_result} object (subclass of
+\code{morie_rich_result}) containing the loaded main-records
+\code{data} (data.frame), parsed CKAN \code{sidecar},
+\code{schema} info, plus \code{title}, \code{summary_lines},
+\code{warnings}, \code{interpretation}, \code{year}, \code{kind},
+\code{language}, \code{is_valid}, \code{n_rows}, \code{n_cols},
+and \code{csv_path}.
+}
 \description{
 Load ARSAU main_records CSV for the given year.
 }

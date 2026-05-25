@@ -9,6 +9,10 @@ kruskal_wallis(...)
 \arguments{
 \item{...}{Two or more numeric vectors.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the H statistic, p-value, df, and eta-squared effect size.
+}
 \description{
 Kruskal-Wallis H-test
 }

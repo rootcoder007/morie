@@ -9,6 +9,12 @@ morie_otis_analyze_b07(data)
 \arguments{
 \item{data}{b07 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and an
+alert x gender x year table including with/without-alert counts and
+the rate of placements with an alert.
+}
 \description{
 Alerts x gender (b07)
 }

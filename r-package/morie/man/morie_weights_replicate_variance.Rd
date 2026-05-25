@@ -26,6 +26,11 @@ Allowed values depend on the caller.}
 \item{strata}{Optional vector of stratum identifiers aligned with
 \code{weights}.}
 }
+\value{
+A named list with elements \code{variance}, \code{se}
+(\eqn{\sqrt{variance}}), \code{ci_lower}, \code{ci_upper}
+(\code{full_estimate +/- 1.96 * se}).
+}
 \description{
 \code{method} selects the rescaling: "JK1", "JKn", "BRR", "Fay", "bootstrap", "SDR".
 }

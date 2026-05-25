@@ -18,6 +18,13 @@ morie_arsau_analyze_probe_cycle_records(year, language = "en", data_dir = NULL)
 \value{
 A list classed
 \code{c("morie_arsau_result", "morie_rich_result", "list")}.
+
+A \code{morie_arsau_analysis_result} object (subclass of
+\code{morie_rich_result}) with elements \code{title},
+\code{summary_lines}, \code{interpretation}, the loaded
+\code{data}, the CKAN \code{sidecar}, plus the per-analysis
+sub-results \code{cycle_distribution} (CEW cycle-count
+descriptive stats) and \code{data_quality}.
 }
 \description{
 The probe-cycle file is intentionally narrow (BatchFileName +

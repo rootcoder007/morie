@@ -6,6 +6,10 @@
 \usage{
 all_stat_command_names()
 }
+\value{
+A sorted character vector containing every registered stat
+command name together with all registered aliases (deduplicated).
+}
 \description{
 Sorted vector of all command names + aliases
 }

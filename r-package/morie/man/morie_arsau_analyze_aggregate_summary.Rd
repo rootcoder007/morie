@@ -26,6 +26,14 @@ morie_arsau_analyze_aggregate_summary(
 \value{
 A list classed
 \code{c("morie_arsau_result", "morie_rich_result", "list")}.
+
+A \code{morie_arsau_analysis_result} object (subclass of
+\code{morie_rich_result}) with elements \code{title},
+\code{summary_lines}, \code{interpretation}, the loaded
+\code{data}, the CKAN \code{sidecar}, plus the per-analysis
+sub-results \code{yoy_change_headline} (year-on-year shift
+relative to the REPORT_SCOPE headline volume) and
+\code{data_quality}.
 }
 \description{
 The aggregate file is a long-format

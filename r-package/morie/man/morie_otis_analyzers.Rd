@@ -6,6 +6,11 @@
 \usage{
 morie_otis_analyzers()
 }
+\value{
+A named list mapping OTIS dataset ids (\code{"b01"} ...
+\code{"d07"}) to the corresponding analyzer functions, suitable for
+driving \code{morie_otis_analyze_all()}.
+}
 \description{
 Mirrors \code{_ANALYSES} in
 \code{src/morie/otis_all_analyze.py}.

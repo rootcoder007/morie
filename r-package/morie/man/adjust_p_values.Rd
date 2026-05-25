@@ -19,6 +19,10 @@ adjust_p_values(p_values, method = "bh", alpha = 0.05, labels = NULL)
 
 \item{labels}{Optional character vector of test labels.}
 }
+\value{
+A \code{morie_rich_result} list as returned by the dispatched
+adjustment routine (see \code{morie_multiple_testing}).
+}
 \description{
 Convenience dispatcher for p-value adjustment methods
 }

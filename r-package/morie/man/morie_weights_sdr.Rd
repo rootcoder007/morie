@@ -13,6 +13,11 @@ morie_weights_sdr(weights, n_replicates = 100, seed = 42)
 
 \item{seed}{Integer RNG seed.}
 }
+\value{
+A numeric matrix of SDR replicate weights with
+\code{length(weights)} rows and \code{n_replicates} columns
+(negative values clipped to 0).
+}
 \description{
 Successive Difference Replication (SDR) weights.
 }

@@ -17,6 +17,12 @@ in ratio estimation).}
 \item{X_population_total}{Known population total for the auxiliary
 variable \code{x} (ratio estimator).}
 }
+\value{
+A named list with elements \code{ratio} (estimated ratio
+\eqn{r = Y_{HT}/X_{HT}}), \code{total_estimate} (ratio-estimated
+population total), \code{se}, \code{ci_lower}, \code{ci_upper}
+(95\\% Wald confidence interval).
+}
 \description{
 Ratio estimator of a population total using known X_pop.
 }

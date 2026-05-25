@@ -9,6 +9,11 @@ morie_otis_analyze_b04(data)
 \arguments{
 \item{data}{b04 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and a region x measure
+crosstab of placement durations.
+}
 \description{
 Placement durations by region & gender (b04)
 }

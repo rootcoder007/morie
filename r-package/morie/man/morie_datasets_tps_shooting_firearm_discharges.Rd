@@ -25,6 +25,15 @@ fixture from \code{inst/extdata/tps_mha_apprehensions_sample.csv}
 
 \item{layer_url}{Optional ArcGIS layer URL override.}
 }
+\value{
+A \code{data.frame} of TPS Public Safety Data Portal
+Shooting and Firearm Discharges records, either the bundled
+\code{tps_psdp_shooting_firearm_discharges_sample.csv} fixture when
+\code{offline = TRUE} or a live TPS Hub / FeatureServer query when
+\code{offline = FALSE}. Columns mirror the upstream 22-column
+Cluster-F schema (OCC_TIME_RANGE + DEATH + INJURIES +
+EVENT_TYPE) with HOOD_158 + HOOD_140 attached.
+}
 \description{
 TPS PSDP -- Shooting and Firearm Discharges
 }

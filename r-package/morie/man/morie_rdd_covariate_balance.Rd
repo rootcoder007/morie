@@ -35,6 +35,12 @@ side of the cutoff. \code{NULL} invokes the data-driven CCT selector.}
 
 \item{alpha}{Significance level (default \code{0.05}).}
 }
+\value{
+A \code{data.frame} with one row per covariate and columns
+\code{covariate}, \code{estimate}, \code{std_error}, \code{t_stat},
+\code{p_value}, and \code{balanced} (logical;
+\code{p_value > alpha}).
+}
 \description{
 Runs a sharp-RDD null test on each covariate.
 }

@@ -11,6 +11,11 @@ paired_ttest(x, y, confidence = 0.95)
 
 \item{confidence}{Confidence level.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the paired t statistic, p-value, df, mean-difference CI,
+Cohen's d on the differences, and n (number of pairs).
+}
 \description{
 Paired-sample t-test
 }

@@ -91,6 +91,9 @@ column_rule <- function(name, dtype = NULL, required = TRUE,
 #' @param data A data frame.
 #' @param rules List of \code{column_rule} objects.
 #' @param raise_on_error If TRUE, throw on first error.
+#' @return A \code{morie_schema_result} (subclass of
+#'   \code{morie_validation_result} / \code{morie_rich_result}) with logical
+#'   \code{passed} plus character vectors \code{errors} and \code{warnings}.
 #' @export
 validate_schema <- function(data, rules, raise_on_error = FALSE) {
   errors <- character(0)
@@ -216,6 +219,9 @@ validate_schema <- function(data, rules, raise_on_error = FALSE) {
 #' @param child Data frame with foreign key.
 #' @param parent Data frame with primary key.
 #' @param child_key,parent_key Column names.
+#' @return A \code{morie_schema_result} (subclass of
+#'   \code{morie_validation_result} / \code{morie_rich_result}) with logical
+#'   \code{passed} plus character \code{errors} and \code{warnings}.
 #' @export
 check_referential_integrity <- function(child, parent, child_key, parent_key) {
   pv <- unique(parent[[parent_key]])
@@ -246,6 +252,11 @@ check_referential_integrity <- function(child, parent, child_key, parent_key) {
 #' @param freshness_days Days for full timeliness score.
 #' @param key_cols Columns that should be unique together.
 #' @param consistency_rules List of functions \code{(df) -> logical(1)}.
+#' @return A \code{morie_data_quality_report} (subclass of
+#'   \code{morie_validation_result} / \code{morie_rich_result}) with the
+#'   \code{completeness}, \code{consistency}, \code{timeliness},
+#'   \code{uniqueness} sub-scores, an aggregate \code{overall}, and a
+#'   \code{details} list.
 #' @export
 score_data_quality <- function(data, date_cols = NULL, freshness_days = 365L,
                                 key_cols = NULL, consistency_rules = NULL) {
@@ -363,6 +374,10 @@ score_data_quality <- function(data, date_cols = NULL, freshness_days = 365L,
 #' @param groups Group labels for grouped_kfold.
 #' @param confidence Confidence level for the score CI.
 #' @param random_state Seed.
+#' @return A \code{morie_cv_result} (subclass of
+#'   \code{morie_validation_result} / \code{morie_rich_result}) with the
+#'   per-fold \code{scores}, their \code{mean} and \code{sd}, normal-CI
+#'   \code{ci_lower}/\code{ci_upper}, and (placeholder) \code{fold_details}.
 #' @export
 cross_validate <- function(fit_fn, predict_fn, X, y,
                             method = "stratified_kfold",
@@ -549,6 +564,11 @@ nested_cross_validate <- function(fit_fn = NULL, predict_fn = NULL,
 #' @inheritParams cross_validate
 #' @param n_bootstraps Number of bootstrap replicates.
 #' @param method "632" or "632plus".
+#' @return A \code{morie_cv_result} (subclass of
+#'   \code{morie_validation_result} / \code{morie_rich_result}) with the
+#'   out-of-bag \code{scores}, the optimism-corrected \code{mean}, an
+#'   \code{sd} of OOB scores, and a normal CI
+#'   \code{ci_lower}/\code{ci_upper}.
 #' @export
 bootstrap_validate <- function(fit_fn, predict_fn, X, y,
                                 n_bootstraps = 200L,
@@ -601,6 +621,12 @@ bootstrap_validate <- function(fit_fn, predict_fn, X, y,
 #' @param y_true Integer 0/1 vector.
 #' @param y_pred Predicted probabilities.
 #' @param n_groups Hosmer-Lemeshow groups.
+#' @return A \code{morie_calibration_result} (subclass of
+#'   \code{morie_validation_result} / \code{morie_rich_result}) with the
+#'   \code{hosmer_lemeshow_stat} and \code{hosmer_lemeshow_p},
+#'   \code{calibration_slope}, \code{calibration_intercept},
+#'   \code{brier_score}, \code{scaled_brier}, and
+#'   \code{calibration_in_the_large}.
 #' @export
 assess_calibration <- function(y_true, y_pred, n_groups = 10L) {
   y_true <- as.integer(y_true)
@@ -646,6 +672,11 @@ assess_calibration <- function(y_true, y_pred, n_groups = 10L) {
 #' @param n_bootstrap Bootstrap reps for AUC CI.
 #' @param confidence Confidence level.
 #' @param random_state Seed.
+#' @return A \code{morie_discrimination_result} (subclass of
+#'   \code{morie_validation_result} / \code{morie_rich_result}) with
+#'   \code{auroc}, bootstrap \code{auroc_ci_lower}/\code{auroc_ci_upper},
+#'   \code{c_statistic}, \code{somers_d}, \code{discrimination_slope}, and
+#'   (when \code{y_pred_ref} is provided) \code{nri} and \code{idi}.
 #' @export
 assess_discrimination <- function(y_true, y_pred, y_pred_ref = NULL,
                                    n_bootstrap = 1000L,
@@ -698,6 +729,10 @@ assess_discrimination <- function(y_true, y_pred, y_pred_ref = NULL,
 #' @inheritParams assess_calibration
 #' @param thresholds Numeric vector of thresholds (defaults to
 #'   \code{seq(0.01, 0.99, 0.01)}).
+#' @return A \code{morie_decision_curve_result} (subclass of
+#'   \code{morie_validation_result} / \code{morie_rich_result}) with the
+#'   \code{thresholds}, model \code{net_benefit}, treat-all
+#'   \code{net_benefit_all}, and treat-none \code{net_benefit_none} curves.
 #' @export
 decision_curve_analysis <- function(y_true, y_pred, thresholds = NULL) {
   y_true <- as.integer(y_true)
@@ -730,6 +765,11 @@ decision_curve_analysis <- function(y_true, y_pred, thresholds = NULL) {
 #' @inheritParams bootstrap_validate
 #' @param n_bootstrap Integer; number of bootstrap resamples used to
 #'   estimate the optimism correction (default 200).
+#' @return A \code{morie_overfit_result} (subclass of
+#'   \code{morie_validation_result} / \code{morie_rich_result}) with
+#'   \code{apparent_performance}, \code{optimism},
+#'   \code{corrected_performance}, \code{shrinkage_factor}, and a
+#'   plain-text \code{recommendation}.
 #' @export
 detect_overfitting <- function(fit_fn, predict_fn, X, y,
                                 scoring = "roc_auc",
@@ -780,6 +820,11 @@ detect_overfitting <- function(fit_fn, predict_fn, X, y,
 #' @param split_date Date to split on, or NULL.
 #' @param split_quantile Quantile of dates (if \code{split_date} is NULL).
 #' @param scoring Scoring metric.
+#' @return A \code{morie_temporal_result} (subclass of
+#'   \code{morie_validation_result} / \code{morie_rich_result}) with
+#'   \code{train_score}, \code{test_score}, \code{degradation}
+#'   (train - test), the chosen \code{split_date}, and \code{train_n} /
+#'   \code{test_n}.
 #' @export
 temporal_validate <- function(fit_fn, predict_fn, X, y, date_col,
                                split_date = NULL,
@@ -822,6 +867,11 @@ temporal_validate <- function(fit_fn, predict_fn, X, y, date_col,
 #' @param y_external Outcome vector.
 #' @param X_development Optional development-data features for KS-based
 #'   domain-shift diagnostics.
+#' @return A \code{morie_external_result} (subclass of
+#'   \code{morie_validation_result} / \code{morie_rich_result}) with nested
+#'   \code{discrimination} and \code{calibration} sub-results,
+#'   \code{n_external}, and a per-feature \code{domain_shift} list of
+#'   KS p-values (empty when \code{X_development} is NULL).
 #' @export
 external_validate <- function(predict_fn, X_external, y_external,
                                X_development = NULL) {
@@ -852,6 +902,11 @@ external_validate <- function(predict_fn, X_external, y_external,
 #' @param data Data frame (used for a SHA-256 checksum).
 #' @param parameters Optional list of analysis parameters.
 #' @param seeds Optional named list of random seeds.
+#' @return A \code{morie_reproducibility_manifest} (subclass of
+#'   \code{morie_validation_result} / \code{morie_rich_result}) with
+#'   \code{r_version}, \code{package_versions}, \code{random_seeds},
+#'   a SHA-256 \code{data_checksum} (NA when \pkg{digest} is absent),
+#'   \code{parameters}, and an ISO-8601 \code{timestamp}.
 #' @export
 create_reproducibility_manifest <- function(data, parameters = NULL,
                                              seeds = NULL) {

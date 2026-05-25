@@ -14,6 +14,8 @@
 #' of a source checkout. Users can override per-call via the `path`
 #' argument of [morie_tps_load_dataset()].
 #'
+#' @return A length-1 character string -- the resolved (possibly
+#'   non-existent) filesystem path to the TPS data directory.
 #' @export
 morie_tps_data_dir <- function() {
   # Mirror Python's `Path(__file__).resolve().parents[5] / data/datasets/TPS`

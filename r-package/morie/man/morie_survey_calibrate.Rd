@@ -26,6 +26,11 @@ to calibrate to (one entry per \code{aux_vars} element).}
 
 \item{tol}{Convergence tolerance for calibration.}
 }
+\value{
+Numeric vector of calibrated weights of length
+\code{nrow(df)} (one weight per row); a warning is emitted if the
+raking loop did not converge within \code{max_iter}.
+}
 \description{
 For multi-variable marginals use \code{morie_weights_rake()}; this helper is the
 single-variable convenience.

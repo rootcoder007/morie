@@ -9,6 +9,11 @@ friedman_test(...)
 \arguments{
 \item{...}{Three or more equal-length numeric vectors.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the chi-square statistic, p-value, df, and Kendall's W effect
+size (also under \code{extra$kendall_w}).
+}
 \description{
 Friedman test (repeated-measures rank ANOVA)
 }

@@ -20,6 +20,11 @@ instrumental variables.}
 regressors included in both the structural equation and the
 first stage. \code{NULL} (default) for a just-identified design.}
 }
+\value{
+A named list with elements \code{statistic} (the
+Cragg-Donald / KP F-statistic), \code{p_value}, \code{name}, and
+\code{details} (first-stage diagnostics + degrees of freedom).
+}
 \description{
 Kleibergen-Paap rank statistic
 }

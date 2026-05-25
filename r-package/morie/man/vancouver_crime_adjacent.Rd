@@ -49,6 +49,57 @@ morie_datasets_vancouver_public_art(offline = TRUE, max_features = NULL)
 
 \item{max_features}{Optional row cap.}
 }
+\value{
+A \code{data.frame} of City-of-Vancouver graffiti incident
+records (Opendatasoft slug \code{graffiti}); the bundled 100-row
+sample under \verb{inst/extdata/} when \code{offline = TRUE}, otherwise
+the live \verb{/records} pull (geometry flattened to \code{lon}/\code{lat}).
+
+A \code{data.frame} of City-of-Vancouver noise-control-area
+bylaw zone rows (Opendatasoft slug \code{noise-control-areas});
+the bundled fixture under \verb{inst/extdata/} when
+\code{offline = TRUE}, otherwise the live \verb{/records} pull.
+
+A \code{data.frame} of City-of-Vancouver homeless-shelter
+location records (Opendatasoft slug
+\code{homeless-shelter-locations}); the bundled fixture under
+\verb{inst/extdata/} when \code{offline = TRUE}, otherwise the live
+\verb{/records} pull.
+
+A \code{data.frame} of City-of-Vancouver property-use
+inspection district rows (Opendatasoft slug
+\code{property-use-inspection-districts}); the bundled fixture
+under \verb{inst/extdata/} when \code{offline = TRUE}, otherwise the
+live \verb{/records} pull.
+
+A \code{data.frame} of City-of-Vancouver fire-hall location
+records (Opendatasoft slug \code{fire-halls}); the bundled fixture
+under \verb{inst/extdata/} when \code{offline = TRUE}, otherwise the
+live \verb{/records} pull.
+
+A \code{data.frame} of City-of-Vancouver community-centre
+location records (Opendatasoft slug \code{community-centres}); the
+bundled 27-row fixture under \verb{inst/extdata/} when
+\code{offline = TRUE}, otherwise the live \verb{/records} pull.
+
+A \code{data.frame} of City-of-Vancouver community + farmers
+market location records (Opendatasoft slug
+\code{community-food-markets-and-farmers-markets}); the bundled
+91-row fixture under \verb{inst/extdata/} when \code{offline = TRUE},
+otherwise the live \verb{/records} pull.
+
+A \code{data.frame} of City-of-Vancouver designated
+disability-parking-space records (Opendatasoft slug
+\code{disability-parking}); the bundled 100-row fixture under
+\verb{inst/extdata/} when \code{offline = TRUE}, otherwise the live
+\verb{/records} pull.
+
+A \code{data.frame} of City-of-Vancouver public-art registry
+records (Opendatasoft slug \code{public-art}); the bundled 100-row
+fixture under \verb{inst/extdata/} when \code{offline = TRUE},
+otherwise the live \verb{/records} pull. Columns include artist,
+install year, neighbourhood, and primary material.
+}
 \description{
 Phase 3DDD1. Five small fixtures harvested live from
 opendata.vancouver.ca for offline reproducibility -- chosen to

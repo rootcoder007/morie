@@ -32,6 +32,13 @@ morie_iv_panel(
 
 \item{alpha}{Significance level for confidence intervals.}
 }
+\value{
+A list (same layout as \code{\link{morie_iv_tsls}}) with
+coefficients, standard errors, t-statistics, p-values, confidence
+interval bounds, variable names, sample size, the \code{method}
+label (\code{"panel IV (plm within)"} or a fallback label), and
+\code{details}.
+}
 \description{
 Panel IV with unit (and optional time) fixed effects via within-transform
 }

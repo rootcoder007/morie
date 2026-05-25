@@ -9,6 +9,12 @@ morie_otis_analyze_c10(data)
 \arguments{
 \item{data}{c10 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and an
+institution x measure crosstab of restrictive-confinement aggregate
+durations.
+}
 \description{
 RC/seg aggregate durations by institution (c10)
 }

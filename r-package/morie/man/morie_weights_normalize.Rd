@@ -18,6 +18,11 @@ morie_weights_normalize(
 \item{population_size}{Optional known population size used by
 \code{normalize} (target sum = population_size when supplied).}
 }
+\value{
+Numeric vector of normalised weights, same length as
+\code{weights}, scaled to sum to either \code{length(weights)}
+or \code{population_size}.
+}
 \description{
 Normalise weights so they sum to n (sample) or N (population).
 }

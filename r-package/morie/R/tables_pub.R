@@ -150,6 +150,13 @@ NULL
 #' @param output_format "dataframe", "latex", "html", "markdown",
 #'   "text", "csv".
 #' @param title Table title.
+#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
+#'   with one row per variable (N row first, then continuous summaries,
+#'   then categorical levels) and columns named by group plus optional
+#'   \code{p-value}, \code{SMD}, and \code{Missing}. Otherwise a
+#'   character string holding the rendered table in the requested
+#'   format (\pkg{knitr::kable} output for latex / html / markdown /
+#'   text; CSV text for "csv").
 #' @export
 table1 <- function(data, group_col = NULL,
                     continuous_vars = NULL, categorical_vars = NULL,
@@ -356,6 +363,12 @@ table1 <- function(data, group_col = NULL,
 #' @param apa APA p-value formatting.
 #' @param output_format Output target.
 #' @param title Title.
+#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
+#'   with one column per model and rows for each coefficient (estimate
+#'   + parenthesised SE + optional CI), plus a leading \code{term}
+#'   column and trailing rows holding requested model statistics.
+#'   Otherwise a character string holding the rendered table in the
+#'   requested format.
 #' @export
 regression_table <- function(models, exponentiate = FALSE,
                               show_ci = TRUE, show_stars = TRUE,
@@ -461,6 +474,11 @@ regression_table <- function(models, exponentiate = FALSE,
 #' @param apa APA formatting.
 #' @param output_format Output target.
 #' @param title Title.
+#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
+#'   with one row per coefficient and columns \code{OR},
+#'   \code{<confidence>\% CI}, \code{p-value}, and a star column.
+#'   Otherwise a character string holding the rendered table in the
+#'   requested format.
 #' @export
 odds_ratio_table <- function(model, confidence = 0.95, digits = 3L,
                               apa = FALSE, output_format = "dataframe",
@@ -511,6 +529,11 @@ odds_ratio_table <- function(model, confidence = 0.95, digits = 3L,
 #' @param apa APA formatting.
 #' @param output_format Output target.
 #' @param title Title.
+#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
+#'   with one row per coefficient and columns \code{HR},
+#'   \code{<confidence>\% CI}, \code{p-value}, and a star column.
+#'   Otherwise a character string holding the rendered table in the
+#'   requested format.
 #' @export
 hazard_ratio_table <- function(params, se, pvalues, confidence = 0.95,
                                 digits = 3L, apa = FALSE,
@@ -559,6 +582,11 @@ hazard_ratio_table <- function(params, se, pvalues, confidence = 0.95,
 #' @param digits Decimal places.
 #' @param output_format Output target.
 #' @param title Title.
+#' @return When \code{output_format = "dataframe"}, a square
+#'   \code{data.frame} of formatted correlation strings (with optional
+#'   significance stars) indexed by the numeric column names of
+#'   \code{data}. Otherwise a character string holding the rendered
+#'   table in the requested format.
 #' @export
 correlation_table <- function(data, method = "pearson", show_stars = TRUE,
                                 mask_diagonal = TRUE, digits = 3L,
@@ -605,6 +633,12 @@ correlation_table <- function(data, method = "pearson", show_stars = TRUE,
 #' @param digits Decimal places.
 #' @param output_format Output target.
 #' @param title Title.
+#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
+#'   with one row per model (indexed by model name) and columns
+#'   \code{N}, \code{df}, \code{Log-Lik}, \code{AIC}, \code{BIC}, and
+#'   optionally \code{R-sq}, \code{LR stat}, \code{LR p}. Otherwise a
+#'   character string holding the rendered table in the requested
+#'   format.
 #' @export
 model_comparison_table <- function(models, nested = FALSE, digits = 3L,
                                      output_format = "dataframe",
@@ -679,6 +713,11 @@ model_comparison_table <- function(models, nested = FALSE, digits = 3L,
 #' @param digits Decimal places.
 #' @param output_format Output target.
 #' @param title Title.
+#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
+#'   of the formatted ANOVA table (degrees of freedom, sums of squares
+#'   / chi-square statistic, F or LR statistic, formatted p-value, and
+#'   a star column). Otherwise a character string holding the rendered
+#'   table in the requested format.
 #' @export
 anova_table <- function(model, typ = 2L, digits = 3L,
                           output_format = "dataframe",
@@ -727,6 +766,8 @@ anova_table <- function(model, typ = 2L, digits = 3L,
 #' @param style "fixed", "scientific", "percent", "integer".
 #' @param digits Decimal places.
 #' @param apa APA-style leading-zero suppression.
+#' @return Length-1 character string of the formatted number, or
+#'   \code{""} when \code{x} is not finite.
 #' @export
 format_number <- function(x, style = c("fixed", "scientific",
                                           "percent", "integer"),
@@ -746,6 +787,12 @@ format_number <- function(x, style = c("fixed", "scientific",
 #' @param pval_cols Columns to format as p-values.
 #' @param output_format Output target.
 #' @param title Title.
+#' @return When \code{output_format = "dataframe"}, the input
+#'   \code{data.frame} with numeric columns coerced to formatted
+#'   character vectors (p-value columns use the morie p-value style;
+#'   other numeric columns use \code{numeric_fmt}). Otherwise a
+#'   character string holding the rendered table in the requested
+#'   format.
 #' @export
 format_dataframe <- function(df, numeric_fmt = "%.2f",
                                 pval_cols = NULL,
@@ -778,6 +825,11 @@ format_dataframe <- function(df, numeric_fmt = "%.2f",
 #' @param digits Decimal places.
 #' @param output_format Output target.
 #' @param title Title.
+#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
+#'   indexed by variable name with one column per requested statistic
+#'   (e.g. \code{n}, \code{mean}, \code{sd}, \code{median}, ...).
+#'   Otherwise a character string holding the rendered table in the
+#'   requested format.
 #' @export
 summary_statistics_table <- function(data, variables = NULL,
                                         stats = c("n", "mean", "sd",
@@ -845,6 +897,11 @@ summary_statistics_table <- function(data, variables = NULL,
 #' @param digits Decimal places.
 #' @param output_format Output target.
 #' @param title Title.
+#' @return When \code{output_format = "dataframe"}, a \code{data.frame}
+#'   indexed by estimator name with columns \code{Estimate}, \code{SE},
+#'   \code{95\% CI}, \code{p-value}, and a star column. Otherwise a
+#'   character string holding the rendered table in the requested
+#'   format.
 #' @export
 treatment_effect_table <- function(estimators, digits = 3L,
                                       output_format = "dataframe",

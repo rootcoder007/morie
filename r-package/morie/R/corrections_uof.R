@@ -103,6 +103,11 @@ morie_datasets_corrections_uof_incidents <- function(offline = TRUE,
 
 #' Inmate-to-incidents bridging table
 #' @inheritParams morie_datasets_corrections_uof_incidents
+#' @return A `data.frame` of inmate-to-incident bridging rows from the
+#'   Ontario Corrections Use-of-Force CKAN resource (or the bundled
+#'   sample / synthetic fallback per `source`). Columns mirror the
+#'   upstream schema described in
+#'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
 morie_datasets_corrections_uof_inmate_incident <- function(offline = TRUE,
                                                              resource_id = NULL,
@@ -112,6 +117,11 @@ morie_datasets_corrections_uof_inmate_incident <- function(offline = TRUE,
 
 #' Staff-to-incidents bridging table
 #' @inheritParams morie_datasets_corrections_uof_incidents
+#' @return A `data.frame` of staff-to-incident bridging rows from the
+#'   Ontario Corrections Use-of-Force CKAN resource (or the bundled
+#'   sample / synthetic fallback per `source`). Columns mirror the
+#'   upstream schema described in
+#'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
 morie_datasets_corrections_uof_staff_incident <- function(offline = TRUE,
                                                             resource_id = NULL,
@@ -121,6 +131,11 @@ morie_datasets_corrections_uof_staff_incident <- function(offline = TRUE,
 
 #' Incident-type lookup
 #' @inheritParams morie_datasets_corrections_uof_incidents
+#' @return A `data.frame` of incident-type lookup rows from the
+#'   Ontario Corrections Use-of-Force CKAN resource (or the bundled
+#'   sample / synthetic fallback per `source`). Columns mirror the
+#'   upstream schema described in
+#'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
 morie_datasets_corrections_uof_incident_type <- function(offline = TRUE,
                                                            resource_id = NULL,
@@ -130,6 +145,11 @@ morie_datasets_corrections_uof_incident_type <- function(offline = TRUE,
 
 #' Institution-level annual incident summary
 #' @inheritParams morie_datasets_corrections_uof_incidents
+#' @return A `data.frame` of institution-level annual incident
+#'   summary rows from the Ontario Corrections Use-of-Force CKAN
+#'   resource (or the bundled sample / synthetic fallback per
+#'   `source`). Columns mirror the upstream schema described in
+#'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
 morie_datasets_corrections_uof_institution_summary <- function(offline = TRUE,
                                                                  resource_id = NULL,
@@ -139,6 +159,11 @@ morie_datasets_corrections_uof_institution_summary <- function(offline = TRUE,
 
 #' Location-of-incident annual summary
 #' @inheritParams morie_datasets_corrections_uof_incidents
+#' @return A `data.frame` of location-of-incident annual summary
+#'   rows from the Ontario Corrections Use-of-Force CKAN resource
+#'   (or the bundled sample / synthetic fallback per `source`).
+#'   Columns mirror the upstream schema described in
+#'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
 morie_datasets_corrections_uof_location_summary <- function(offline = TRUE,
                                                               resource_id = NULL,
@@ -148,6 +173,11 @@ morie_datasets_corrections_uof_location_summary <- function(offline = TRUE,
 
 #' Select-incident-type annual summary
 #' @inheritParams morie_datasets_corrections_uof_incidents
+#' @return A `data.frame` of select-incident-type annual summary
+#'   rows from the Ontario Corrections Use-of-Force CKAN resource
+#'   (or the bundled sample / synthetic fallback per `source`).
+#'   Columns mirror the upstream schema described in
+#'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
 morie_datasets_corrections_uof_select_incident_summary <- function(offline = TRUE,
                                                                      resource_id = NULL,
@@ -158,6 +188,11 @@ morie_datasets_corrections_uof_select_incident_summary <- function(offline = TRU
 
 #' Inmate-participant demographics (head)
 #' @inheritParams morie_datasets_corrections_uof_incidents
+#' @return A `data.frame` of inmate-participant demographic header
+#'   rows from the Ontario Corrections Use-of-Force CKAN resource
+#'   (or the bundled sample / synthetic fallback per `source`).
+#'   Columns mirror the upstream schema described in
+#'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
 morie_datasets_corrections_uof_inmate_participant <- function(offline = TRUE,
                                                                 resource_id = NULL,
@@ -167,6 +202,11 @@ morie_datasets_corrections_uof_inmate_participant <- function(offline = TRUE,
 
 #' Inmate-participant Indigenous identity
 #' @inheritParams morie_datasets_corrections_uof_incidents
+#' @return A `data.frame` of inmate-participant Indigenous-identity
+#'   rows from the Ontario Corrections Use-of-Force CKAN resource
+#'   (or the bundled sample / synthetic fallback per `source`).
+#'   Columns mirror the upstream schema described in
+#'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
 morie_datasets_corrections_uof_indigenous <- function(offline = TRUE,
                                                        resource_id = NULL,
@@ -176,6 +216,11 @@ morie_datasets_corrections_uof_indigenous <- function(offline = TRUE,
 
 #' Inmate-participant ethnic origin
 #' @inheritParams morie_datasets_corrections_uof_incidents
+#' @return A `data.frame` of inmate-participant ethnic-origin rows
+#'   from the Ontario Corrections Use-of-Force CKAN resource (or
+#'   the bundled sample / synthetic fallback per `source`). Columns
+#'   mirror the upstream schema described in
+#'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
 morie_datasets_corrections_uof_ethnic_origin <- function(offline = TRUE,
                                                            resource_id = NULL,
@@ -185,6 +230,11 @@ morie_datasets_corrections_uof_ethnic_origin <- function(offline = TRUE,
 
 #' Inmate-participant race
 #' @inheritParams morie_datasets_corrections_uof_incidents
+#' @return A `data.frame` of inmate-participant race rows from the
+#'   Ontario Corrections Use-of-Force CKAN resource (or the bundled
+#'   sample / synthetic fallback per `source`). Columns mirror the
+#'   upstream schema described in
+#'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
 morie_datasets_corrections_uof_race <- function(offline = TRUE,
                                                   resource_id = NULL,
@@ -194,6 +244,11 @@ morie_datasets_corrections_uof_race <- function(offline = TRUE,
 
 #' Inmate-participant religion
 #' @inheritParams morie_datasets_corrections_uof_incidents
+#' @return A `data.frame` of inmate-participant religion rows from
+#'   the Ontario Corrections Use-of-Force CKAN resource (or the
+#'   bundled sample / synthetic fallback per `source`). Columns
+#'   mirror the upstream schema described in
+#'   `inst/extdata/corrections_uof_dictionary.json`.
 #' @export
 morie_datasets_corrections_uof_religion <- function(offline = TRUE,
                                                      resource_id = NULL,

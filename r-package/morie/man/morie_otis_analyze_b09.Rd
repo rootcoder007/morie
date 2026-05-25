@@ -9,6 +9,11 @@ morie_otis_analyze_b09(data)
 \arguments{
 \item{data}{b09 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and a
+placement-count x gender crosstab of individual counts.
+}
 \description{
 Individuals by number of placements x gender (b09)
 }

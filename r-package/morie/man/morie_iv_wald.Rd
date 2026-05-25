@@ -17,6 +17,12 @@ morie_iv_wald(data, outcome, treatment, instrument, alpha = 0.05)
 
 \item{alpha}{Significance level.}
 }
+\value{
+A list (same layout as \code{\link{morie_iv_tsls}}) with a
+single \code{LATE} coefficient and its standard error,
+t-statistic, p-value, confidence interval bounds, sample size,
+and \code{method = "wald (LATE)"}.
+}
 \description{
 \eqn{\hat\beta = (\bar y_{z=1} - \bar y_{z=0}) /
                 (\bar d_{z=1} - \bar d_{z=0})}{hatbeta = (bar y_z=1 - bar y_z=0) / (bar d_z=1 - bar d_z=0)}.

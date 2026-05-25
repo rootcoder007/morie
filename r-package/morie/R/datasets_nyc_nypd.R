@@ -298,6 +298,11 @@ morie_datasets_nyc_nypd_by_key <- function(dataset_key,
 
 #' NYPD Arrests Data (Historic)
 #' @inheritParams morie_datasets_nyc_nypd_by_key
+#' @return A `data.frame` of NYPD historic arrest records, either
+#'   the bundled `nypd_arrests_historic_sample.csv` fixture when
+#'   `offline = TRUE` or the live Socrata pull (SODA2 / SODA3)
+#'   when `offline = FALSE`. Columns mirror the upstream NYC
+#'   OpenData resource `8h9b-rp9u`.
 #' @export
 morie_datasets_nyc_nypd_arrests_historic <- function(year = NULL,
                                                        max_features = NULL,
@@ -319,6 +324,12 @@ morie_datasets_nyc_nypd_arrests_historic <- function(year = NULL,
 
 #' NYPD Arrest Data (Year to Date)
 #' @inheritParams morie_datasets_nyc_nypd_by_key
+#' @return A `data.frame` of NYPD year-to-date arrest records,
+#'   either the bundled `nypd_arrests_ytd_sample.csv` fixture when
+#'   `offline = TRUE` or the live Socrata pull (SODA2 / SODA3,
+#'   subject to the 1,000-row default cap; see `paginate`) when
+#'   `offline = FALSE`. Columns mirror NYC OpenData resource
+#'   `uip8-fykc`.
 #' @export
 morie_datasets_nyc_nypd_arrests_ytd <- function(year = NULL,
                                                   max_features = NULL,
@@ -340,6 +351,12 @@ morie_datasets_nyc_nypd_arrests_ytd <- function(year = NULL,
 
 #' NYPD Complaint Data Historic
 #' @inheritParams morie_datasets_nyc_nypd_by_key
+#' @return A `data.frame` of NYPD historic complaint (felony /
+#'   misdemeanor / violation) records, either the bundled
+#'   `nypd_complaint_historic_sample.csv` fixture when
+#'   `offline = TRUE` or the live Socrata pull (SODA2 / SODA3)
+#'   when `offline = FALSE`. Columns mirror NYC OpenData resource
+#'   `qgea-i56i`.
 #' @export
 morie_datasets_nyc_nypd_complaint_historic <- function(year = NULL,
                                                          max_features = NULL,
@@ -361,6 +378,11 @@ morie_datasets_nyc_nypd_complaint_historic <- function(year = NULL,
 
 #' NYPD Complaint Data Current (Year To Date)
 #' @inheritParams morie_datasets_nyc_nypd_by_key
+#' @return A `data.frame` of NYPD year-to-date complaint records,
+#'   either the bundled `nypd_complaint_ytd_sample.csv` fixture
+#'   when `offline = TRUE` or the live Socrata pull (SODA2 / SODA3)
+#'   when `offline = FALSE`. Columns mirror NYC OpenData resource
+#'   `5uac-w243`.
 #' @export
 morie_datasets_nyc_nypd_complaint_ytd <- function(year = NULL,
                                                     max_features = NULL,
@@ -382,6 +404,11 @@ morie_datasets_nyc_nypd_complaint_ytd <- function(year = NULL,
 
 #' NYPD Hate Crimes
 #' @inheritParams morie_datasets_nyc_nypd_by_key
+#' @return A `data.frame` of NYPD hate-crime incident records,
+#'   either the bundled `nypd_hate_crimes_sample.csv` fixture
+#'   when `offline = TRUE` or the live Socrata pull (SODA2 / SODA3)
+#'   when `offline = FALSE`. Columns mirror NYC OpenData resource
+#'   `bqiq-cu78`.
 #' @export
 morie_datasets_nyc_nypd_hate_crimes <- function(year = NULL,
                                                   max_features = NULL,
@@ -403,6 +430,11 @@ morie_datasets_nyc_nypd_hate_crimes <- function(year = NULL,
 
 #' NYPD Use of Force Incidents
 #' @inheritParams morie_datasets_nyc_nypd_by_key
+#' @return A `data.frame` of NYPD Use-of-Force incident records,
+#'   either the bundled `nypd_uof_incidents_sample.csv` fixture
+#'   when `offline = TRUE` or the live Socrata pull (SODA2 / SODA3)
+#'   when `offline = FALSE`. Columns mirror NYC OpenData resource
+#'   `f4tj-796d`.
 #' @export
 morie_datasets_nyc_nypd_uof_incidents <- function(year = NULL,
                                                     max_features = NULL,
@@ -424,6 +456,12 @@ morie_datasets_nyc_nypd_uof_incidents <- function(year = NULL,
 
 #' NYPD Use of Force: Subjects
 #' @inheritParams morie_datasets_nyc_nypd_by_key
+#' @return A `data.frame` of NYPD Use-of-Force subject-level
+#'   records (one row per civilian subject), either the bundled
+#'   `nypd_uof_subjects_sample.csv` fixture when `offline = TRUE`
+#'   or the live Socrata pull (SODA2 / SODA3) when
+#'   `offline = FALSE`. Columns mirror NYC OpenData resource
+#'   `dufe-vxb7`.
 #' @export
 morie_datasets_nyc_nypd_uof_subjects <- function(year = NULL,
                                                    max_features = NULL,
@@ -445,6 +483,11 @@ morie_datasets_nyc_nypd_uof_subjects <- function(year = NULL,
 
 #' NYPD Vehicle Stop Reports
 #' @inheritParams morie_datasets_nyc_nypd_by_key
+#' @return A `data.frame` of NYPD vehicle-stop report records,
+#'   either the bundled `nypd_vehicle_stops_sample.csv` fixture
+#'   when `offline = TRUE` or the live Socrata pull (SODA2 / SODA3)
+#'   when `offline = FALSE`. Columns mirror NYC OpenData resource
+#'   `hn9i-dwpr`.
 #' @export
 morie_datasets_nyc_nypd_vehicle_stops <- function(year = NULL,
                                                     max_features = NULL,

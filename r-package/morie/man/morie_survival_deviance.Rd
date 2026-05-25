@@ -11,6 +11,9 @@ morie_survival_deviance(cox_result)
 \code{morie_survival_cox}); used by residual diagnostics
 (\code{coxsnell}, \code{martingale}, \code{deviance}).}
 }
+\value{
+Numeric vector of deviance residuals from the underlying Cox fit.
+}
 \description{
 Deviance residuals.
 }

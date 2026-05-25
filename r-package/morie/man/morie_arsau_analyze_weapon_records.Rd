@@ -30,6 +30,14 @@ morie_arsau_analyze_weapon_records(
 \value{
 A list classed
 \code{c("morie_arsau_result", "morie_rich_result", "list")}.
+
+A \code{morie_arsau_analysis_result} object (subclass of
+\code{morie_rich_result}) with elements \code{title},
+\code{summary_lines}, \code{interpretation}, the loaded
+\code{data}, the CKAN \code{sidecar}, plus the per-analysis
+sub-results \code{weapon_x_location} (chi-square),
+\code{weapon_frequencies} (descriptive table), and
+\code{data_quality}.
 }
 \description{
 Chains \code{\link{mrm_uof_weapon_diversity}} over

@@ -13,6 +13,13 @@ morie_arsau_load_individual_records(year, language = "en", data_dir = NULL)
 
 \item{data_dir}{Optional explicit ARSAU root.}
 }
+\value{
+A \code{morie_arsau_result} object (subclass of
+\code{morie_rich_result}) carrying the per-civilian
+individual_records data.frame plus sidecar, schema, and the
+standard rich-result metadata fields described in
+\code{\link{morie_arsau_load_main_records}}.
+}
 \description{
 Load ARSAU individual_records CSV.
 }

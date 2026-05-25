@@ -50,6 +50,15 @@ factor / logical if NULL).}
 
 \item{title}{Table title.}
 }
+\value{
+When \code{output_format = "dataframe"}, a \code{data.frame}
+with one row per variable (N row first, then continuous summaries,
+then categorical levels) and columns named by group plus optional
+\code{p-value}, \code{SMD}, and \code{Missing}. Otherwise a
+character string holding the rendered table in the requested
+format (\pkg{knitr::kable} output for latex / html / markdown /
+text; CSV text for "csv").
+}
 \description{
 Table 1 (baseline characteristics) stratified by group
 }

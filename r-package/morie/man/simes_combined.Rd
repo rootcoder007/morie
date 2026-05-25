@@ -9,6 +9,10 @@ simes_combined(p_values)
 \arguments{
 \item{p_values}{Numeric vector of raw p-values.}
 }
+\value{
+A \code{morie_rich_result} list with elements \code{method},
+\code{statistic} (Simes statistic), and \code{p_value} (combined p).
+}
 \description{
 Simes test for the global null
 }

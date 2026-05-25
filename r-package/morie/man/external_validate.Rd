@@ -17,6 +17,13 @@ external_validate(predict_fn, X_external, y_external, X_development = NULL)
 \item{X_development}{Optional development-data features for KS-based
 domain-shift diagnostics.}
 }
+\value{
+A \code{morie_external_result} (subclass of
+\code{morie_validation_result} / \code{morie_rich_result}) with nested
+\code{discrimination} and \code{calibration} sub-results,
+\code{n_external}, and a per-feature \code{domain_shift} list of
+KS p-values (empty when \code{X_development} is NULL).
+}
 \description{
 External validation on new data
 }

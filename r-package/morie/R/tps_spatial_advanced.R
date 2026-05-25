@@ -972,6 +972,10 @@ morie_tps_moran_sweep_heatmap <- function(polygons,
 # Print method
 # ---------------------------------------------------------------------------
 
+#' Print method for advanced TPS spatial-analysis results
+#' @param x A \code{morie_tps_spatial_advanced_result}.
+#' @param ... Unused.
+#' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_tps_spatial_advanced_result <- function(x, ...) {
   cat(x$title, "\

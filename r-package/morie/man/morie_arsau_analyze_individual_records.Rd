@@ -31,6 +31,14 @@ morie_arsau_analyze_individual_records(
 \value{
 A list classed
 \code{c("morie_arsau_result", "morie_rich_result", "list")}.
+
+A \code{morie_arsau_analysis_result} object (subclass of
+\code{morie_rich_result}) with elements \code{title},
+\code{summary_lines}, \code{interpretation}, the loaded
+\code{data}, the CKAN \code{sidecar}, plus the per-analysis
+sub-results \code{disparity_by_race}, \code{disparity_by_gender},
+\code{disparity_by_age} (when columns are present), and
+\code{data_quality}.
 }
 \description{
 Chains demographic-disparity tests over Race, Gender, and

@@ -36,6 +36,8 @@ NULL
 
 
 #' @rdname morie_siu_fetch
+#' @return A length-1 character string -- the URL of the SIU
+#'   Director's Reports index page.
 #' @export
 morie_siu_index_url <- function() {
   "https://www.siu.on.ca/en/directors_reports.php"

@@ -120,6 +120,7 @@ bonferroni <- function(p_values, alpha = 0.05, labels = NULL) {
 #' Slightly less conservative than Bonferroni under independence.
 #'
 #' @inheritParams bonferroni
+#' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 #' @export
 sidak <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -134,6 +135,7 @@ sidak <- function(p_values, alpha = 0.05, labels = NULL) {
 #' powerful than Bonferroni.
 #'
 #' @inheritParams bonferroni
+#' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 #' @export
 holm <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -146,6 +148,7 @@ holm <- function(p_values, alpha = 0.05, labels = NULL) {
 #' Wraps \code{stats::p.adjust(method = "hochberg")}.
 #'
 #' @inheritParams bonferroni
+#' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 #' @export
 hochberg <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -158,6 +161,7 @@ hochberg <- function(p_values, alpha = 0.05, labels = NULL) {
 #' Wraps \code{stats::p.adjust(method = "hommel")}.
 #'
 #' @inheritParams bonferroni
+#' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 #' @export
 hommel <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -168,6 +172,7 @@ hommel <- function(p_values, alpha = 0.05, labels = NULL) {
 #' Holm-Sidak step-down procedure
 #'
 #' @inheritParams bonferroni
+#' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 #' @export
 holm_sidak <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -194,6 +199,7 @@ holm_sidak <- function(p_values, alpha = 0.05, labels = NULL) {
 #' Wraps \code{stats::p.adjust(method = "BH")}.
 #'
 #' @inheritParams bonferroni
+#' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 #' @export
 benjamini_hochberg <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -210,6 +216,7 @@ bh <- benjamini_hochberg
 #' Wraps \code{stats::p.adjust(method = "BY")}.
 #'
 #' @inheritParams bonferroni
+#' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 #' @export
 benjamini_yekutieli <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -228,6 +235,9 @@ by_fdr <- benjamini_yekutieli
 #'
 #' @inheritParams bonferroni
 #' @param lambda_param Tuning parameter in (0, 1) for the pi0 estimator.
+#' @return A \code{morie_rich_result} list with adjusted q-values plus the
+#'   estimated \code{pi0} and \code{lambda_param} (see
+#'   \code{morie_multiple_testing}).
 #' @export
 storey_q <- function(p_values, alpha = 0.05, lambda_param = 0.5,
                      labels = NULL) {
@@ -285,6 +295,8 @@ storey_q <- function(p_values, alpha = 0.05, lambda_param = 0.5,
 
 #' Fisher's method for combining independent p-values
 #' @inheritParams bonferroni
+#' @return A \code{morie_rich_result} list with elements \code{method},
+#'   \code{statistic} (chi-square), and \code{p_value} (combined p).
 #' @export
 fisher_combined <- function(p_values) {
   p <- .mt_check_p(p_values)
@@ -303,6 +315,8 @@ fisher_combined <- function(p_values) {
 #'
 #' @inheritParams bonferroni
 #' @param weights Optional non-negative weights (any scale).
+#' @return A \code{morie_rich_result} list with elements \code{method},
+#'   \code{statistic} (combined Z), and \code{p_value} (combined p).
 #' @export
 stouffer_combined <- function(p_values, weights = NULL) {
   p <- .mt_check_p(p_values)
@@ -325,6 +339,8 @@ stouffer_combined <- function(p_values, weights = NULL) {
 #' Tippett's minimum-p method
 #'
 #' @inheritParams bonferroni
+#' @return A \code{morie_rich_result} list with elements \code{method},
+#'   \code{statistic} (minimum p), and \code{p_value} (combined p).
 #' @export
 tippett_combined <- function(p_values) {
   p <- .mt_check_p(p_values)
@@ -341,6 +357,8 @@ tippett_combined <- function(p_values) {
 #' Simes test for the global null
 #'
 #' @inheritParams bonferroni
+#' @return A \code{morie_rich_result} list with elements \code{method},
+#'   \code{statistic} (Simes statistic), and \code{p_value} (combined p).
 #' @export
 simes_combined <- function(p_values) {
   p <- .mt_check_p(p_values)
@@ -360,6 +378,7 @@ simes_combined <- function(p_values) {
 #' For tests that may be dependent.
 #'
 #' @inheritParams bonferroni
+#' @return A single numeric scalar: the harmonic mean p-value.
 #' @export
 harmonic_mean_p <- function(p_values) {
   p <- .mt_check_p(p_values)
@@ -375,6 +394,9 @@ harmonic_mean_p <- function(p_values) {
 #'
 #' @inheritParams bonferroni
 #' @param weights Optional non-negative weights summing to 1.
+#' @return A \code{morie_rich_result} list with elements \code{method},
+#'   \code{statistic} (Cauchy combination statistic), and \code{p_value}
+#'   (combined p).
 #' @export
 cauchy_combination <- function(p_values, weights = NULL) {
   p <- .mt_check_p(p_values)
@@ -408,6 +430,8 @@ cauchy_combination <- function(p_values, weights = NULL) {
 #' adjustment.
 #'
 #' @inheritParams bonferroni
+#' @return A \code{morie_rich_result} list with a logical \code{rejected}
+#'   vector and an integer \code{n_rejected}; see \code{morie_multiple_testing}.
 #' @export
 fixed_sequence <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -440,6 +464,9 @@ fixed_sequence <- function(p_values, alpha = 0.05, labels = NULL) {
 #'
 #' @inheritParams bonferroni
 #' @param weights Numeric vector of non-negative weights summing to 1.
+#' @return A \code{morie_rich_result} list with logical \code{rejected},
+#'   integer \code{n_rejected}, and the input \code{weights}
+#'   (see \code{morie_multiple_testing}).
 #' @export
 fallback_procedure <- function(p_values, weights, alpha = 0.05,
                                 labels = NULL) {
@@ -606,6 +633,8 @@ estimate_pi0 <- function(p_values, method = c("storey", "bootstrap", "two_step")
 #'   \code{"holm_sidak"}, \code{"bh"} / \code{"benjamini_hochberg"} /
 #'   \code{"fdr"}, \code{"by"} / \code{"benjamini_yekutieli"},
 #'   \code{"storey"}, or \code{"fwer"} (alias of holm).
+#' @return A \code{morie_rich_result} list as returned by the dispatched
+#'   adjustment routine (see \code{morie_multiple_testing}).
 #' @export
 adjust_p_values <- function(p_values, method = "bh", alpha = 0.05,
                              labels = NULL) {
@@ -675,6 +704,7 @@ n_effective_tests <- function(correlation_matrix,
 # Print method (delegates to existing morie_rich_result printer)
 # ---------------------------------------------------------------------------
 
+#' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_multiple_testing_result <- function(x, ...) {
   cat(x$title, "\

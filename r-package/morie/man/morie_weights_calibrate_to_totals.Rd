@@ -26,6 +26,13 @@ Allowed values depend on the caller.}
 
 \item{...}{Additional method-specific arguments.}
 }
+\value{
+A named list with elements \code{weights} (calibrated
+numeric vector, same length as input), \code{converged},
+\code{iterations}, \code{max_adjustment}, and \code{diagnostics}
+(passed through from \code{\link{morie_weights_rake}} or
+\code{\link{morie_weights_greg}}).
+}
 \description{
 Dispatch helper -- calibrate to totals via "raking" or "greg".
 }

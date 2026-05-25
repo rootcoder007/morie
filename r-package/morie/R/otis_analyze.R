@@ -170,6 +170,11 @@ morie_otis_all_analyses <- function(df, year,
 # Default print/format for morie_otis_result
 # ---------------------------------------------------------------------------
 
+#' Format method for OTIS results
+#' @param x A \code{morie_otis_result}.
+#' @param ... Unused.
+#' @return A single character string (newline-joined) representing the
+#'   formatted result, suitable for \code{cat()} or \code{print()}.
 #' @export
 format.morie_otis_result <- function(x, ...) {
   lines <- character(0)
@@ -204,6 +209,10 @@ format.morie_otis_result <- function(x, ...) {
 ")
 }
 
+#' Print method for OTIS results
+#' @param x A \code{morie_otis_result}.
+#' @param ... Passed to \code{format.morie_otis_result()}.
+#' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_otis_result <- function(x, ...) {
   cat(format(x, ...), "\

@@ -9,6 +9,11 @@ morie_survival_schoenfeld(cox_result)
 \arguments{
 \item{cox_result}{Object returned by \code{morie_survival_cox()}.}
 }
+\value{
+A named list with the unscaled Schoenfeld \code{residuals},
+the \code{scaled} (scaledsch) residuals, and the cox.zph
+PH-assumption test table as \code{zph_table}.
+}
 \description{
 Wraps \code{survival::cox.zph()} (scaled Schoenfeld residuals).
 }

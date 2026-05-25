@@ -11,6 +11,11 @@ cohens_kappa(rater1, rater2, confidence = 0.95)
 
 \item{confidence}{Confidence level.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with kappa/SE z as the test statistic, two-sided p-value, Wald CI for
+kappa, kappa as both \code{effect_size} and \code{estimate}, and n.
+}
 \description{
 Cohen's kappa for two raters
 }

@@ -1923,6 +1923,9 @@ morie_siu_translate <- function(
 #' @description \code{morie_siu_translate_fr_to_en} is a thin
 #'   back-compat wrapper that calls \code{morie_siu_translate}
 #'   with \code{target_lang = "en", source_lang = "fr"}.
+#' @return The same value as \code{\link{morie_siu_translate}}: invisibly,
+#'   the updated SIU \code{data.frame} (cached translations written to
+#'   \code{cache_dir}).
 #' @export
 morie_siu_translate_fr_to_en <- function(
   case_numbers = NULL, model = "ollama",

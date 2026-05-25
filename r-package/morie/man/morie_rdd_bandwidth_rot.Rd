@@ -16,6 +16,10 @@ bandwidth selectors + density tests that don't take a
 \item{cutoff}{Numeric scalar; the threshold on \code{running}. Default
 \code{0} (the canonical normalisation).}
 }
+\value{
+A named list with elements \code{bandwidth} (numeric),
+\code{method} (character label), and \code{details}.
+}
 \description{
 Rule-of-thumb (ROT) bandwidth -- Silverman-style on running variable
 }

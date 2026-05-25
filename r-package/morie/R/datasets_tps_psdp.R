@@ -215,6 +215,12 @@ morie_tps_psdp_layers <- function() {
 
 #' TPS PSDP -- Assault
 #' @inheritParams morie_datasets_tps_mha_apprehensions
+#' @return A `data.frame` of TPS Public Safety Data Portal Assault
+#'   records, either the bundled `tps_psdp_assault_sample.csv`
+#'   fixture when `offline = TRUE` or a live TPS Hub /
+#'   FeatureServer query when `offline = FALSE`. Columns mirror the
+#'   upstream 31-column Cluster-A crime schema with HOOD_158 +
+#'   HOOD_140 attached.
 #' @export
 morie_datasets_tps_assault <- function(year = NULL,
                                          max_features = NULL,
@@ -226,6 +232,12 @@ morie_datasets_tps_assault <- function(year = NULL,
 
 #' TPS PSDP -- Auto Theft
 #' @inheritParams morie_datasets_tps_mha_apprehensions
+#' @return A `data.frame` of TPS Public Safety Data Portal Auto
+#'   Theft records, either the bundled
+#'   `tps_psdp_autotheft_sample.csv` fixture when `offline = TRUE`
+#'   or a live TPS Hub / FeatureServer query when
+#'   `offline = FALSE`. Columns mirror the upstream 31-column
+#'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
 morie_datasets_tps_autotheft <- function(year = NULL,
                                            max_features = NULL,
@@ -237,6 +249,13 @@ morie_datasets_tps_autotheft <- function(year = NULL,
 
 #' TPS PSDP -- Bicycle Theft
 #' @inheritParams morie_datasets_tps_mha_apprehensions
+#' @return A `data.frame` of TPS Public Safety Data Portal Bicycle
+#'   Theft records, either the bundled
+#'   `tps_psdp_bicycletheft_sample.csv` fixture when
+#'   `offline = TRUE` or a live TPS Hub / FeatureServer query when
+#'   `offline = FALSE`. Columns mirror the upstream 35-column
+#'   Cluster-B schema (PRIMARY_OFFENCE + BIKE_*) with HOOD_158 +
+#'   HOOD_140 attached.
 #' @export
 morie_datasets_tps_bicycletheft <- function(year = NULL,
                                               max_features = NULL,
@@ -248,6 +267,12 @@ morie_datasets_tps_bicycletheft <- function(year = NULL,
 
 #' TPS PSDP -- Break and Enter
 #' @inheritParams morie_datasets_tps_mha_apprehensions
+#' @return A `data.frame` of TPS Public Safety Data Portal Break
+#'   and Enter records, either the bundled
+#'   `tps_psdp_breakandenter_sample.csv` fixture when
+#'   `offline = TRUE` or a live TPS Hub / FeatureServer query when
+#'   `offline = FALSE`. Columns mirror the upstream 31-column
+#'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
 morie_datasets_tps_breakandenter <- function(year = NULL,
                                                max_features = NULL,
@@ -259,6 +284,13 @@ morie_datasets_tps_breakandenter <- function(year = NULL,
 
 #' TPS PSDP -- Hate Crimes
 #' @inheritParams morie_datasets_tps_mha_apprehensions
+#' @return A `data.frame` of TPS Public Safety Data Portal Hate
+#'   Crime records, either the bundled
+#'   `tps_psdp_hatecrimes_sample.csv` fixture when
+#'   `offline = TRUE` or a live TPS Hub / FeatureServer query when
+#'   `offline = FALSE`. Columns mirror the upstream 25-column
+#'   Cluster-C bias-attribute schema with HOOD_158 + HOOD_140
+#'   attached.
 #' @export
 morie_datasets_tps_hatecrimes <- function(year = NULL,
                                             max_features = NULL,
@@ -270,6 +302,12 @@ morie_datasets_tps_hatecrimes <- function(year = NULL,
 
 #' TPS PSDP -- Homicides
 #' @inheritParams morie_datasets_tps_mha_apprehensions
+#' @return A `data.frame` of TPS Public Safety Data Portal Homicide
+#'   records, either the bundled `tps_psdp_homicides_sample.csv`
+#'   fixture when `offline = TRUE` or a live TPS Hub /
+#'   FeatureServer query when `offline = FALSE`. Columns mirror the
+#'   upstream 18-column Cluster-D schema (HOMICIDE_TYPE + minimal
+#'   date triple) with HOOD_158 + HOOD_140 attached.
 #' @export
 morie_datasets_tps_homicides <- function(year = NULL,
                                            max_features = NULL,
@@ -281,6 +319,13 @@ morie_datasets_tps_homicides <- function(year = NULL,
 
 #' TPS PSDP -- Intimate Partner and Family Violence
 #' @inheritParams morie_datasets_tps_mha_apprehensions
+#' @return A `data.frame` of TPS Public Safety Data Portal Intimate
+#'   Partner and Family Violence records, either the bundled
+#'   `tps_psdp_intimate_partner_family_violence_sample.csv` fixture
+#'   when `offline = TRUE` or a live TPS Hub / FeatureServer query
+#'   when `offline = FALSE`. Columns mirror the upstream 15-column
+#'   Cluster-E schema (INDEX + HISTORICAL + FAMILY_VIOLENCE_FLAG +
+#'   RELATION + COUNT) with HOOD_158 + HOOD_140 attached.
 #' @export
 morie_datasets_tps_intimate_partner_family_violence <- function(
   year = NULL, max_features = NULL,
@@ -291,6 +336,12 @@ morie_datasets_tps_intimate_partner_family_violence <- function(
 
 #' TPS PSDP -- Robbery
 #' @inheritParams morie_datasets_tps_mha_apprehensions
+#' @return A `data.frame` of TPS Public Safety Data Portal Robbery
+#'   records, either the bundled `tps_psdp_robbery_sample.csv`
+#'   fixture when `offline = TRUE` or a live TPS Hub /
+#'   FeatureServer query when `offline = FALSE`. Columns mirror the
+#'   upstream 31-column Cluster-A crime schema with HOOD_158 +
+#'   HOOD_140 attached.
 #' @export
 morie_datasets_tps_robbery <- function(year = NULL,
                                          max_features = NULL,
@@ -302,6 +353,13 @@ morie_datasets_tps_robbery <- function(year = NULL,
 
 #' TPS PSDP -- Shooting and Firearm Discharges
 #' @inheritParams morie_datasets_tps_mha_apprehensions
+#' @return A `data.frame` of TPS Public Safety Data Portal
+#'   Shooting and Firearm Discharges records, either the bundled
+#'   `tps_psdp_shooting_firearm_discharges_sample.csv` fixture when
+#'   `offline = TRUE` or a live TPS Hub / FeatureServer query when
+#'   `offline = FALSE`. Columns mirror the upstream 22-column
+#'   Cluster-F schema (OCC_TIME_RANGE + DEATH + INJURIES +
+#'   EVENT_TYPE) with HOOD_158 + HOOD_140 attached.
 #' @export
 morie_datasets_tps_shooting_firearm_discharges <- function(
   year = NULL, max_features = NULL,
@@ -312,6 +370,12 @@ morie_datasets_tps_shooting_firearm_discharges <- function(
 
 #' TPS PSDP -- Theft From Motor Vehicle
 #' @inheritParams morie_datasets_tps_mha_apprehensions
+#' @return A `data.frame` of TPS Public Safety Data Portal Theft
+#'   From Motor Vehicle records, either the bundled
+#'   `tps_psdp_theft_from_motor_vehicle_sample.csv` fixture when
+#'   `offline = TRUE` or a live TPS Hub / FeatureServer query when
+#'   `offline = FALSE`. Columns mirror the upstream 31-column
+#'   Cluster-A crime schema with HOOD_158 + HOOD_140 attached.
 #' @export
 morie_datasets_tps_theft_from_motor_vehicle <- function(
   year = NULL, max_features = NULL,
@@ -322,6 +386,12 @@ morie_datasets_tps_theft_from_motor_vehicle <- function(
 
 #' TPS PSDP -- Theft Over
 #' @inheritParams morie_datasets_tps_mha_apprehensions
+#' @return A `data.frame` of TPS Public Safety Data Portal Theft
+#'   Over records, either the bundled `tps_psdp_theft_over_sample.csv`
+#'   fixture when `offline = TRUE` or a live TPS Hub /
+#'   FeatureServer query when `offline = FALSE`. Columns mirror the
+#'   upstream 31-column Cluster-A crime schema with HOOD_158 +
+#'   HOOD_140 attached.
 #' @export
 morie_datasets_tps_theft_over <- function(year = NULL,
                                             max_features = NULL,

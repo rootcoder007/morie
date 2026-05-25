@@ -30,6 +30,13 @@ estimate the optimism correction (default 200).}
 
 \item{random_state}{Seed.}
 }
+\value{
+A \code{morie_overfit_result} (subclass of
+\code{morie_validation_result} / \code{morie_rich_result}) with
+\code{apparent_performance}, \code{optimism},
+\code{corrected_performance}, \code{shrinkage_factor}, and a
+plain-text \code{recommendation}.
+}
 \description{
 Bootstrap optimism-corrected performance
 }

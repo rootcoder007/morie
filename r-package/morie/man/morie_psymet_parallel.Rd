@@ -13,6 +13,9 @@ morie_psymet_parallel(data, nsim = 100, seed = 42)
 
 \item{seed}{Integer; RNG seed for reproducibility.}
 }
+\value{
+Single integer >= 1: the suggested number of factors / components.
+}
 \description{
 Delegates to \code{psych::fa.parallel()} when available; otherwise compares
 observed eigenvalues to the 95th percentile of random-data eigenvalues.

@@ -25,6 +25,14 @@ fixture from \code{inst/extdata/tps_mha_apprehensions_sample.csv}
 
 \item{layer_url}{Optional ArcGIS layer URL override.}
 }
+\value{
+A \code{data.frame} of TPS Public Safety Data Portal Homicide
+records, either the bundled \code{tps_psdp_homicides_sample.csv}
+fixture when \code{offline = TRUE} or a live TPS Hub /
+FeatureServer query when \code{offline = FALSE}. Columns mirror the
+upstream 18-column Cluster-D schema (HOMICIDE_TYPE + minimal
+date triple) with HOOD_158 + HOOD_140 attached.
+}
 \description{
 TPS PSDP -- Homicides
 }

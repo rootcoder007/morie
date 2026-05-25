@@ -30,6 +30,13 @@ temporal_validate(
 
 \item{scoring}{Scoring metric.}
 }
+\value{
+A \code{morie_temporal_result} (subclass of
+\code{morie_validation_result} / \code{morie_rich_result}) with
+\code{train_score}, \code{test_score}, \code{degradation}
+(train - test), the chosen \code{split_date}, and \code{train_n} /
+\code{test_n}.
+}
 \description{
 Train on earlier data, test on later data
 }

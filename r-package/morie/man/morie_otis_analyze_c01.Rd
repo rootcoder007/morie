@@ -9,6 +9,11 @@ morie_otis_analyze_c01(data)
 \arguments{
 \item{data}{c01 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and a year x gender
+cohort-size table including RC/custody and Seg/custody ratios.
+}
 \description{
 Total individuals x custody/RC/seg x gender (c01)
 }

@@ -24,6 +24,10 @@ morie_weights_fay_brr(
 
 \item{seed}{Integer RNG seed.}
 }
+\value{
+A numeric matrix of Fay-perturbed replicate weights with
+\code{length(weights)} rows and \code{n_replicates} columns.
+}
 \description{
 Fay's BRR weights with perturbation coefficient \code{fay_coefficient} in [0,1).
 }

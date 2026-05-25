@@ -9,6 +9,10 @@ shapiro_wilk(x)
 \arguments{
 \item{x}{Numeric vector (n <= 5000).}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the Shapiro-Wilk W statistic, p-value, and sample size n.
+}
 \description{
 Shapiro-Wilk test for normality
 }

@@ -13,6 +13,12 @@ to look up the Stock-Yogo critical-value table.}
 \item{n_instruments}{Integer; number of instruments used to look
 up the Stock-Yogo critical-value table.}
 }
+\value{
+A named list of Stock-Yogo maximal-bias critical values
+(elements \code{`10pct`}, \code{`15pct`}, \code{`20pct`},
+\code{`25pct`}) for the given \code{(n_endogenous, n_instruments)}
+combination.
+}
 \description{
 Stock-Yogo critical values
 }

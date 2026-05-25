@@ -13,6 +13,11 @@ two_way_anova(data, outcome, factor_a, factor_b)
 
 \item{factor_a, factor_b}{Names of factor columns.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the interaction F statistic and p-value, the \code{factor_a} partial
+eta-squared, and the full ANOVA table in \code{extra$anova_table}.
+}
 \description{
 Uses base R \code{aov}, then \code{drop1} for Type-II sums of squares.
 }

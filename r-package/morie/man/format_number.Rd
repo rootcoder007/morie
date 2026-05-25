@@ -20,6 +20,10 @@ format_number(
 
 \item{apa}{APA-style leading-zero suppression.}
 }
+\value{
+Length-1 character string of the formatted number, or
+\code{""} when \code{x} is not finite.
+}
 \description{
 Format a single number according to style conventions
 }

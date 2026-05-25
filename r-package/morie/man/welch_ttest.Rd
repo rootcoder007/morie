@@ -11,6 +11,11 @@ welch_ttest(x, y, confidence = 0.95)
 
 \item{confidence}{Confidence level.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with Welch's t statistic, p-value, Satterthwaite df, mean-difference CI,
+Cohen's d, and combined sample size.
+}
 \description{
 Welch's t-test (convenience wrapper)
 }

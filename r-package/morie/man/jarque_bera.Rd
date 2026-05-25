@@ -9,6 +9,10 @@ jarque_bera(x)
 \arguments{
 \item{x}{Numeric vector.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the Jarque-Bera JB statistic, p-value, df = 2, and sample size n.
+}
 \description{
 Jarque-Bera test for normality
 }

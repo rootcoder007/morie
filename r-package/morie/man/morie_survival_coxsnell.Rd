@@ -11,6 +11,10 @@ morie_survival_coxsnell(cox_result)
 \code{morie_survival_cox}); used by residual diagnostics
 (\code{coxsnell}, \code{martingale}, \code{deviance}).}
 }
+\value{
+Numeric vector of Cox-Snell residuals (length equal to the
+number of rows used to fit \code{cox_result}).
+}
 \description{
 Cox-Snell residuals from a fitted morie Cox model.
 }

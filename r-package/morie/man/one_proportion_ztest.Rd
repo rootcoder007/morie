@@ -15,6 +15,11 @@ one_proportion_ztest(count, nobs, value = 0.5, confidence = 0.95)
 
 \item{confidence}{Confidence level (Wilson CI).}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the z statistic, two-sided p-value, Wilson CI for the proportion,
+the sample proportion as \code{estimate}, and sample size n.
+}
 \description{
 One-sample z-test for a proportion
 }

@@ -19,6 +19,12 @@ calibrate to.}
 
 \item{tol}{Convergence tolerance for calibration.}
 }
+\value{
+A named list with elements \code{weights} (calibrated
+numeric vector, same length as input), \code{converged},
+\code{iterations}, \code{max_adjustment}, and \code{diagnostics}
+(from \code{\link{morie_weights_diagnostics}}).
+}
 \description{
 Closed-form linear calibration to match population totals on auxiliary X.
 When \code{survey} is installed, defers to \code{survey::calibrate()} for a fully

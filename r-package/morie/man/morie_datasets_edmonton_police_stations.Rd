@@ -17,6 +17,11 @@ morie_datasets_edmonton_fire_stations(offline = TRUE, max_features = NULL)
 \value{
 A \code{data.frame} with \code{name}, \code{address}, \code{latitude},
 \code{longitude}.
+
+A \code{data.frame} of Edmonton fire-station locations
+(Socrata id \code{b4y7-zhnz}); the bundled fixture when
+\code{offline = TRUE}, otherwise the live SODA2 pull. Columns
+include \code{name}, \code{address}, \code{latitude}, \code{longitude}.
 }
 \description{
 Phase 3FFF3. Bundled 10-row fixture of Edmonton Police Service

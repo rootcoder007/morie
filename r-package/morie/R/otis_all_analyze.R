@@ -236,6 +236,9 @@ morie_otis_analyze_b01 <- function(data) {
 
 #' Aggregate segregation days per person per year (b02)
 #' @param data b02 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines, year-trend table and
+#'   gender x region crosstab of total segregation days.
 #' @export
 morie_otis_analyze_b02 <- function(data) {
   s <- .otis_summary_lines(data, "b02",
@@ -260,6 +263,9 @@ morie_otis_analyze_b02 <- function(data) {
 
 #' Segregation placements by alert x institution (b03)
 #' @param data b03 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and alert-by-institution
+#'   crosstabs of segregation-placement counts.
 #' @export
 morie_otis_analyze_b03 <- function(data) {
   s <- .otis_summary_lines(data, "b03",
@@ -278,6 +284,9 @@ morie_otis_analyze_b03 <- function(data) {
 
 #' Placement durations by region & gender (b04)
 #' @param data b04 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and a region x measure
+#'   crosstab of placement durations.
 #' @export
 morie_otis_analyze_b04 <- function(data) {
   s <- .otis_summary_lines(data, "b04",
@@ -293,6 +302,9 @@ morie_otis_analyze_b04 <- function(data) {
 
 #' Distribution of placements by binned duration (b05)
 #' @param data b05 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and a duration-bin x
+#'   fiscal-year crosstab of placement counts.
 #' @export
 morie_otis_analyze_b05 <- function(data) {
   s <- .otis_summary_lines(data, "b05",
@@ -307,6 +319,9 @@ morie_otis_analyze_b05 <- function(data) {
 
 #' Reasons for placement x institution x gender (b06)
 #' @param data b06 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and reason x year and
+#'   reason x gender crosstabs.
 #' @export
 morie_otis_analyze_b06 <- function(data) {
   s <- .otis_summary_lines(data, "b06",
@@ -325,6 +340,10 @@ morie_otis_analyze_b06 <- function(data) {
 
 #' Alerts x gender (b07)
 #' @param data b07 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and an
+#'   alert x gender x year table including with/without-alert counts and
+#'   the rate of placements with an alert.
 #' @export
 morie_otis_analyze_b07 <- function(data) {
   s <- .otis_summary_lines(data, "b07",
@@ -358,6 +377,9 @@ morie_otis_analyze_b07 <- function(data) {
 
 #' Durations by institution & gender (b08)
 #' @param data b08 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and an
+#'   institution x measure crosstab of placement durations.
 #' @export
 morie_otis_analyze_b08 <- function(data) {
   s <- .otis_summary_lines(data, "b08",
@@ -373,6 +395,9 @@ morie_otis_analyze_b08 <- function(data) {
 
 #' Individuals by number of placements x gender (b09)
 #' @param data b09 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and a
+#'   placement-count x gender crosstab of individual counts.
 #' @export
 morie_otis_analyze_b09 <- function(data) {
   s <- .otis_summary_lines(data, "b09",
@@ -392,6 +417,9 @@ morie_otis_analyze_b09 <- function(data) {
 
 #' Total individuals x custody/RC/seg x gender (c01)
 #' @param data c01 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and a year x gender
+#'   cohort-size table including RC/custody and Seg/custody ratios.
 #' @export
 morie_otis_analyze_c01 <- function(data) {
   s <- .otis_summary_lines(data, "c01",
@@ -418,6 +446,9 @@ morie_otis_analyze_c01 <- function(data) {
 
 #' Individuals in RC/seg by institution (c02)
 #' @param data c02 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and an
+#'   institution x year crosstab of restrictive-confinement individual counts.
 #' @export
 morie_otis_analyze_c02 <- function(data) {
   s <- .otis_summary_lines(data, "c02",
@@ -434,6 +465,10 @@ morie_otis_analyze_c02 <- function(data) {
 
 #' Individuals x race x gender (c03)
 #' @param data c03 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines, an interpretation
+#'   paragraph, and a per-race table of custody / RC / segregation totals
+#'   plus RC/custody and Seg/custody ratios.
 #' @export
 morie_otis_analyze_c03 <- function(data) {
   s <- .otis_summary_lines(data, "c03",
@@ -508,6 +543,9 @@ morie_otis_analyze_c06 <- .otis_c_simple(
 
 #' Individuals x alerts x gender (c07)
 #' @param data c07 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and alert x gender and
+#'   alert x year crosstabs of restrictive-confinement and segregation counts.
 #' @export
 morie_otis_analyze_c07 <- function(data) {
   s <- .otis_summary_lines(data, "c07",
@@ -539,6 +577,10 @@ morie_otis_analyze_c09 <- .otis_c_simple(
 
 #' RC/seg aggregate durations by institution (c10)
 #' @param data c10 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and an
+#'   institution x measure crosstab of restrictive-confinement aggregate
+#'   durations.
 #' @export
 morie_otis_analyze_c10 <- function(data) {
   s <- .otis_summary_lines(data, "c10",
@@ -554,6 +596,10 @@ morie_otis_analyze_c10 <- function(data) {
 
 #' Individuals by aggregate-duration bin (c11)
 #' @param data c11 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and an
+#'   aggregate-duration x year crosstab of restrictive-confinement
+#'   individual counts.
 #' @export
 morie_otis_analyze_c11 <- function(data) {
   s <- .otis_summary_lines(data, "c11",
@@ -568,6 +614,9 @@ morie_otis_analyze_c11 <- function(data) {
 
 #' RC/seg aggregate durations by region & gender (c12)
 #' @param data c12 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and a region x measure
+#'   crosstab of restrictive-confinement aggregate durations.
 #' @export
 morie_otis_analyze_c12 <- function(data) {
   s <- .otis_summary_lines(data, "c12",
@@ -588,6 +637,9 @@ morie_otis_analyze_c12 <- function(data) {
 
 #' Person-level custodial deaths (d01)
 #' @param data d01 data.frame.
+#' @return A \code{morie_otis_analysis_result} object (subclass of
+#'   \code{morie_rich_result}) with summary lines and tables of deaths by
+#'   region, housing-unit type, medical cause, and means of death.
 #' @export
 morie_otis_analyze_d01 <- function(data) {
   s <- .otis_summary_lines(data, "d01",
@@ -691,6 +743,9 @@ morie_otis_analyze_d07 <- function(data) {
 #'
 #' Mirrors \code{_ANALYSES} in
 #' \code{src/morie/otis_all_analyze.py}.
+#' @return A named list mapping OTIS dataset ids (\code{"b01"} ...
+#'   \code{"d07"}) to the corresponding analyzer functions, suitable for
+#'   driving \code{morie_otis_analyze_all()}.
 #' @export
 morie_otis_analyzers <- function() {
   list(
@@ -745,6 +800,10 @@ morie_otis_analyze_all <- function(datasets, out_dir = NULL) {
   out
 }
 
+#' Print method for OTIS analysis results
+#' @param x A \code{morie_otis_analysis_result}.
+#' @param ... Unused.
+#' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_otis_analysis_result <- function(x, ...) {
   cat(x$title, "\

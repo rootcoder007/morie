@@ -259,12 +259,18 @@ ARSAU_REGISTRY <- function() {
 }
 
 #' Known ARSAU year/range keys.
+#' @return Character vector of sorted unique year/range identifiers
+#'   (e.g. \code{"2023"}, \code{"2024"}, \code{"2020-2022"}) drawn from
+#'   the ARSAU registry.
 #' @export
 ARSAU_YEARS <- function() {
   sort(unique(vapply(.ARSAU_REGISTRY_LIST, function(e) e$year_or_range, character(1))))
 }
 
 #' Known ARSAU dataset kinds.
+#' @return Character vector of sorted unique dataset kinds (e.g.
+#'   \code{"main_records"}, \code{"individual_records"},
+#'   \code{"weapon_records"}) drawn from the ARSAU registry.
 #' @export
 ARSAU_KINDS <- function() {
   sort(unique(vapply(.ARSAU_REGISTRY_LIST, function(e) e$kind, character(1))))
@@ -433,6 +439,13 @@ morie_arsau_read_sidecar <- function(path) {
 #' @param year 2023 or 2024.
 #' @param language "en" or "fr".
 #' @param data_dir Optional explicit ARSAU root.
+#' @return A \code{morie_arsau_result} object (subclass of
+#'   \code{morie_rich_result}) containing the loaded main-records
+#'   \code{data} (data.frame), parsed CKAN \code{sidecar},
+#'   \code{schema} info, plus \code{title}, \code{summary_lines},
+#'   \code{warnings}, \code{interpretation}, \code{year}, \code{kind},
+#'   \code{language}, \code{is_valid}, \code{n_rows}, \code{n_cols},
+#'   and \code{csv_path}.
 #' @export
 morie_arsau_load_main_records <- function(year, language = "en", data_dir = NULL) {
   key <- .arsau_coerce_year_key(year)
@@ -446,6 +459,11 @@ morie_arsau_load_main_records <- function(year, language = "en", data_dir = NULL
 
 #' Load ARSAU individual_records CSV.
 #' @inheritParams morie_arsau_load_main_records
+#' @return A \code{morie_arsau_result} object (subclass of
+#'   \code{morie_rich_result}) carrying the per-civilian
+#'   individual_records data.frame plus sidecar, schema, and the
+#'   standard rich-result metadata fields described in
+#'   \code{\link{morie_arsau_load_main_records}}.
 #' @export
 morie_arsau_load_individual_records <- function(year, language = "en", data_dir = NULL) {
   key <- .arsau_coerce_year_key(year)
@@ -459,6 +477,11 @@ morie_arsau_load_individual_records <- function(year, language = "en", data_dir 
 
 #' Load ARSAU probe_cycle_records CSV (CEW telemetry).
 #' @inheritParams morie_arsau_load_main_records
+#' @return A \code{morie_arsau_result} object (subclass of
+#'   \code{morie_rich_result}) carrying the per-CEW-cycle
+#'   probe-cycle data.frame plus sidecar and the standard
+#'   rich-result metadata fields described in
+#'   \code{\link{morie_arsau_load_main_records}}.
 #' @export
 morie_arsau_load_probe_cycle_records <- function(year, language = "en", data_dir = NULL) {
   key <- .arsau_coerce_year_key(year)
@@ -475,6 +498,12 @@ morie_arsau_load_probe_cycle_records <- function(year, language = "en", data_dir
 #' 2023 requires \code{allow_invalid = TRUE} (ministry-flagged invalid).
 #' @inheritParams morie_arsau_load_main_records
 #' @param allow_invalid Logical; required \code{TRUE} for 2023.
+#' @return A \code{morie_arsau_result} object (subclass of
+#'   \code{morie_rich_result}) carrying the per-weapon weapon_records
+#'   data.frame plus sidecar and the standard rich-result metadata
+#'   fields. When \code{allow_invalid = TRUE} is used for the 2023
+#'   release the returned object has \code{is_valid = FALSE} and
+#'   \code{warnings} opens with the ministry-flagged-invalid caveat.
 #' @export
 morie_arsau_load_weapon_records <- function(year, allow_invalid = FALSE,
                                               language = "en", data_dir = NULL) {
@@ -492,6 +521,11 @@ morie_arsau_load_weapon_records <- function(year, allow_invalid = FALSE,
 #' @param year_range "2020-2022".
 #' @param language "en" or "fr".
 #' @param data_dir Optional explicit ARSAU root.
+#' @return A \code{morie_arsau_result} object (subclass of
+#'   \code{morie_rich_result}) carrying the aggregate-summary
+#'   data.frame (one row per service-year) plus sidecar and the
+#'   standard rich-result metadata fields described in
+#'   \code{\link{morie_arsau_load_main_records}}.
 #' @export
 morie_arsau_load_aggregate_summary <- function(year_range = "2020-2022",
                                                  language = "en", data_dir = NULL) {
@@ -506,6 +540,11 @@ morie_arsau_load_aggregate_summary <- function(year_range = "2020-2022",
 
 #' Load ARSAU detailed-incident-level CSV (2020-2022 only).
 #' @inheritParams morie_arsau_load_aggregate_summary
+#' @return A \code{morie_arsau_result} object (subclass of
+#'   \code{morie_rich_result}) carrying the detailed incident-level
+#'   data.frame (167-column wide layout) plus sidecar and the standard
+#'   rich-result metadata fields described in
+#'   \code{\link{morie_arsau_load_main_records}}.
 #' @export
 morie_arsau_load_detailed_dataset <- function(year_range = "2020-2022",
                                                 language = "en", data_dir = NULL) {
@@ -527,6 +566,12 @@ morie_arsau_load_detailed_dataset <- function(year_range = "2020-2022",
 #'
 #' @param data_dir Optional explicit ARSAU root.
 #' @param language "en" or "fr".
+#' @return A \code{morie_arsau_result} object (subclass of
+#'   \code{morie_rich_result}) with fields \code{years} (character
+#'   vector of all known year/range keys), \code{present} + \code{missing}
+#'   (which keys do/do not have a directory on disk), \code{n},
+#'   \code{data_root}, plus the standard \code{title},
+#'   \code{summary_lines}, \code{warnings}, and \code{interpretation}.
 #' @export
 morie_arsau_available_years <- function(data_dir = NULL, language = "en") {
   years <- ARSAU_YEARS()
@@ -581,6 +626,13 @@ morie_arsau_available_years <- function(data_dir = NULL, language = "en") {
 #' @param year Optional year; \code{NULL} lists everything.
 #' @param language "en" or "fr".
 #' @param data_dir Optional explicit ARSAU root.
+#' @return A \code{morie_arsau_result} object (subclass of
+#'   \code{morie_rich_result}) with \code{n} (number of registry
+#'   entries returned) and \code{entries} (a list of per-entry
+#'   summaries each carrying \code{year_or_range}, \code{kind},
+#'   \code{csv}, \code{valid}, \code{rows}, \code{cols}, and a
+#'   truncated \code{description}), plus the standard \code{title},
+#'   \code{summary_lines}, \code{warnings}, and \code{interpretation}.
 #' @export
 morie_arsau_available_datasets <- function(year = NULL, language = "en", data_dir = NULL) {
   if (is.null(year)) {
@@ -640,6 +692,12 @@ morie_arsau_available_datasets <- function(year = NULL, language = "en", data_di
 #' @param language "en" or "fr".
 #' @param data_dir Optional explicit ARSAU root.
 #' @param n_preview_rows Number of rows from the CSV head to include.
+#' @return A \code{morie_arsau_result} object (subclass of
+#'   \code{morie_rich_result}) with the matched registry \code{entry},
+#'   a logical \code{csv_present}, a small \code{preview} data.frame
+#'   (or \code{NULL}), the parsed \code{sidecar} (or \code{NULL}), plus
+#'   the standard \code{title}, \code{summary_lines}, \code{warnings},
+#'   and \code{interpretation}.
 #' @export
 morie_arsau_describe <- function(kind, year, language = "en", data_dir = NULL,
                                    n_preview_rows = 3L) {
@@ -716,6 +774,7 @@ morie_arsau_describe <- function(kind, year, language = "en", data_dir = NULL,
   out
 }
 
+#' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_arsau_result <- function(x, ...) {
   cat(x$title, "\n", strrep("=", nchar(x$title)), "\n", sep = "")

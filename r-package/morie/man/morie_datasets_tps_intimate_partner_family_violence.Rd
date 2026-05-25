@@ -25,6 +25,15 @@ fixture from \code{inst/extdata/tps_mha_apprehensions_sample.csv}
 
 \item{layer_url}{Optional ArcGIS layer URL override.}
 }
+\value{
+A \code{data.frame} of TPS Public Safety Data Portal Intimate
+Partner and Family Violence records, either the bundled
+\code{tps_psdp_intimate_partner_family_violence_sample.csv} fixture
+when \code{offline = TRUE} or a live TPS Hub / FeatureServer query
+when \code{offline = FALSE}. Columns mirror the upstream 15-column
+Cluster-E schema (INDEX + HISTORICAL + FAMILY_VIOLENCE_FLAG +
+RELATION + COUNT) with HOOD_158 + HOOD_140 attached.
+}
 \description{
 TPS PSDP -- Intimate Partner and Family Violence
 }

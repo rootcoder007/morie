@@ -22,6 +22,13 @@ real CKAN sample at
 \code{"synthetic"}, \code{"empty"}; takes precedence over
 \code{offline} when supplied.}
 }
+\value{
+A \code{data.frame} of inmate-participant Indigenous-identity
+rows from the Ontario Corrections Use-of-Force CKAN resource
+(or the bundled sample / synthetic fallback per \code{source}).
+Columns mirror the upstream schema described in
+\code{inst/extdata/corrections_uof_dictionary.json}.
+}
 \description{
 Inmate-participant Indigenous identity
 }

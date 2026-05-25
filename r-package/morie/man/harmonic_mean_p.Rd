@@ -9,6 +9,9 @@ harmonic_mean_p(p_values)
 \arguments{
 \item{p_values}{Numeric vector of raw p-values.}
 }
+\value{
+A single numeric scalar: the harmonic mean p-value.
+}
 \description{
 For tests that may be dependent.
 }

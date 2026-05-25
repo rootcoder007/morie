@@ -18,6 +18,16 @@ morie_datasets_ottawa_open_crime_adjacent_layers(offline = TRUE)
 \value{
 A \code{data.frame} with \code{soda_id}, \code{title}, \code{type},
 \code{search_keyword}.
+
+A \code{data.frame} of City-of-Edmonton Socrata datasets
+matched on crime-adjacent keywords, loaded from
+\code{inst/extdata/edmonton_opendata_crime_adjacent_catalog.csv}.
+Columns: \code{soda_id}, \code{title}, \code{type}, \code{search_keyword}.
+
+A \code{data.frame} of City-of-Ottawa ArcGIS Hub datasets
+matched on crime-adjacent keywords, loaded from
+\code{inst/extdata/ottawa_opendata_crime_adjacent_catalog.csv}.
+Columns: \code{soda_id}, \code{title}, \code{type}, \code{search_keyword}.
 }
 \description{
 Phase 3FFF3. Bundled snapshot of 157 City-of-Calgary Socrata

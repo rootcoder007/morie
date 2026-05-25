@@ -11,6 +11,11 @@ anderson_darling(x, dist = "norm")
 
 \item{dist}{Distribution name.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the Anderson-Darling A^2 statistic, a p-value (NA when no
+distribution-specific table is available), and sample size n.
+}
 \description{
 For \code{dist != "norm"} this is an API stub returning NA p-values;
 Anderson-Darling for arbitrary distributions requires the

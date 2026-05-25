@@ -157,6 +157,7 @@ morie_psymet_alphadel <- function(data) {
 #' Composite reliability from standardized factor loadings.
 #' CR = (sum lambda)^2 / ((sum lambda)^2 + sum(1 - lambda^2))
 #' @param loads Numeric vector of standardised factor loadings (lambda).
+#' @return Single numeric scalar in `[0, 1]`: the composite reliability (CR).
 #' @export
 morie_psymet_cr <- function(loads) {
   lam <- as.numeric(loads)
@@ -167,6 +168,8 @@ morie_psymet_cr <- function(loads) {
 
 #' Average variance extracted (AVE) from factor loadings. Mean(lambda^2).
 #' @param loads Numeric vector of standardised factor loadings (lambda).
+#' @return Single numeric scalar: the average variance extracted (mean of
+#'   squared loadings).
 #' @export
 morie_psymet_ave <- function(loads) {
   mean(as.numeric(loads)^2)
@@ -231,6 +234,7 @@ morie_psymet_bartlett <- function(data) {
 #' @param data Numeric matrix or data.frame of items.
 #' @param nsim Integer; number of simulated random datasets (default 100).
 #' @param seed Integer; RNG seed for reproducibility.
+#' @return Single integer >= 1: the suggested number of factors / components.
 #' @export
 morie_psymet_parallel <- function(data, nsim = 100, seed = 42) {
   X <- .as_item_matrix(data)
@@ -262,6 +266,8 @@ morie_psymet_parallel <- function(data, nsim = 100, seed = 42) {
 #' Spearman-Brown split-half reliability.
 #' @param method "first_last" or "odd_even".
 #' @param data Numeric matrix or data.frame of items.
+#' @return Single numeric scalar: the Spearman-Brown corrected split-half
+#'   reliability coefficient.
 #' @export
 morie_psymet_splithalf <- function(data, method = c("first_last", "odd_even")) {
   method <- match.arg(method)

@@ -15,6 +15,11 @@ fallback_procedure(p_values, weights, alpha = 0.05, labels = NULL)
 
 \item{labels}{Optional character vector of test labels.}
 }
+\value{
+A \code{morie_rich_result} list with logical \code{rejected},
+integer \code{n_rejected}, and the input \code{weights}
+(see \code{morie_multiple_testing}).
+}
 \description{
 Fallback (fixed-sequence with alpha spending)
 }

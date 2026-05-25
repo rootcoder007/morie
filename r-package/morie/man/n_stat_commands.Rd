@@ -6,6 +6,10 @@
 \usage{
 n_stat_commands()
 }
+\value{
+A length-1 integer giving the number of commands currently in
+the registry (aliases are not counted).
+}
 \description{
 Total number of registered commands (excluding aliases)
 }

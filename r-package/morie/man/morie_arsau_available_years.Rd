@@ -11,6 +11,14 @@ morie_arsau_available_years(data_dir = NULL, language = "en")
 
 \item{language}{"en" or "fr".}
 }
+\value{
+A \code{morie_arsau_result} object (subclass of
+\code{morie_rich_result}) with fields \code{years} (character
+vector of all known year/range keys), \code{present} + \code{missing}
+(which keys do/do not have a directory on disk), \code{n},
+\code{data_root}, plus the standard \code{title},
+\code{summary_lines}, \code{warnings}, and \code{interpretation}.
+}
 \description{
 List ARSAU year / year-range buckets.
 }

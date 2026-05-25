@@ -23,6 +23,13 @@ score_data_quality(
 
 \item{consistency_rules}{List of functions \code{(df) -> logical(1)}.}
 }
+\value{
+A \code{morie_data_quality_report} (subclass of
+\code{morie_validation_result} / \code{morie_rich_result}) with the
+\code{completeness}, \code{consistency}, \code{timeliness},
+\code{uniqueness} sub-scores, an aggregate \code{overall}, and a
+\code{details} list.
+}
 \description{
 Multi-dimensional data quality scores
 }

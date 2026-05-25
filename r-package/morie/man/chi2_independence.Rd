@@ -11,6 +11,11 @@ chi2_independence(contingency_table, correction = TRUE)
 
 \item{correction}{Yates's continuity correction (2x2).}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the chi-square statistic, p-value, df, Cramer's V effect size, and
+\code{extra} list carrying the \code{expected} table and \code{cramers_v}.
+}
 \description{
 Chi-squared test of independence
 }

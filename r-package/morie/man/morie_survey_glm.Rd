@@ -20,6 +20,10 @@ regression / GLM.}
 \item{family}{A \code{family} object (e.g. \code{stats::binomial()}) passed
 to the survey-weighted GLM.}
 }
+\value{
+A \code{survey::svyglm} model fit (inheriting from
+\code{svyglm} / \code{glm}) with design-based standard errors.
+}
 \description{
 Wraps \code{survey::svyglm()}. Family argument accepts the same strings as the
 Python module ("gaussian", "binomial", "poisson", "gamma", "negativebinomial")

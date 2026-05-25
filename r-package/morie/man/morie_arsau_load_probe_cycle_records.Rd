@@ -13,6 +13,13 @@ morie_arsau_load_probe_cycle_records(year, language = "en", data_dir = NULL)
 
 \item{data_dir}{Optional explicit ARSAU root.}
 }
+\value{
+A \code{morie_arsau_result} object (subclass of
+\code{morie_rich_result}) carrying the per-CEW-cycle
+probe-cycle data.frame plus sidecar and the standard
+rich-result metadata fields described in
+\code{\link{morie_arsau_load_main_records}}.
+}
 \description{
 Load ARSAU probe_cycle_records CSV (CEW telemetry).
 }

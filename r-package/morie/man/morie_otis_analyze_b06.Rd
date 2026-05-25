@@ -9,6 +9,11 @@ morie_otis_analyze_b06(data)
 \arguments{
 \item{data}{b06 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and reason x year and
+reason x gender crosstabs.
+}
 \description{
 Reasons for placement x institution x gender (b06)
 }

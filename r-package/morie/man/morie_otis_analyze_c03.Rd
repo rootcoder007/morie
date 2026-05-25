@@ -9,6 +9,12 @@ morie_otis_analyze_c03(data)
 \arguments{
 \item{data}{c03 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines, an interpretation
+paragraph, and a per-race table of custody / RC / segregation totals
+plus RC/custody and Seg/custody ratios.
+}
 \description{
 Individuals x race x gender (c03)
 }

@@ -16,6 +16,11 @@ in \code{df}.}
 \item{population_counts}{Named numeric vector of population counts
 by stratum (post-stratification target).}
 }
+\value{
+Numeric vector of post-stratification weights, one per row
+of \code{df}, scaled so each stratum's weighted share matches the
+stratum's share of \code{population_counts}.
+}
 \description{
 Delegates to \code{survey::postStratify()} when given a design; otherwise
 computes raw post-stratification factors in base R.

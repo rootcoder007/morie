@@ -13,6 +13,11 @@ check_referential_integrity(child, parent, child_key, parent_key)
 
 \item{child_key, parent_key}{Column names.}
 }
+\value{
+A \code{morie_schema_result} (subclass of
+\code{morie_validation_result} / \code{morie_rich_result}) with logical
+\code{passed} plus character \code{errors} and \code{warnings}.
+}
 \description{
 Check referential integrity (child FK -> parent PK)
 }

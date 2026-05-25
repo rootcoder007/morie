@@ -9,6 +9,11 @@ morie_otis_analyze_b03(data)
 \arguments{
 \item{data}{b03 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and alert-by-institution
+crosstabs of segregation-placement counts.
+}
 \description{
 Segregation placements by alert x institution (b03)
 }

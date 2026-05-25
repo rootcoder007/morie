@@ -9,6 +9,11 @@ morie_otis_analyze_b08(data)
 \arguments{
 \item{data}{b08 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and an
+institution x measure crosstab of placement durations.
+}
 \description{
 Durations by institution & gender (b08)
 }

@@ -27,6 +27,11 @@ morie_survival_rmst_diff(
 \item{confidence}{Confidence level for interval estimates (default
 \code{0.95}).}
 }
+\value{
+A named list with \code{rmst_diff}, \code{se}, the test \code{z},
+\code{p_value}, the Wald \code{ci_lower}/\code{ci_upper}, per-group
+\code{rmst_group1}/\code{rmst_group2}, and the common \code{tau}.
+}
 \description{
 Difference in RMST between two groups.
 }

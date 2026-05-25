@@ -22,6 +22,12 @@ morie_rdd_kernel_gaussian(u)
 }
 \value{
 Numeric vector of kernel weights, same length as \code{u}.
+
+Numeric vector of kernel weights, same length as \code{u}.
+
+Numeric vector of kernel weights, same length as \code{u}.
+
+Numeric vector of kernel weights, same length as \code{u}.
 }
 \description{
 Vectorised kernel functions on the support |u| <= 1 (Gaussian is on

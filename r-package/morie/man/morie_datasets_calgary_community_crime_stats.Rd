@@ -23,6 +23,16 @@ morie_datasets_calgary_fire_stations(offline = TRUE, max_features = NULL)
 \value{
 A \code{data.frame} with \code{community}, \code{category}, \code{crime_count},
 \code{year}, \code{month}.
+
+A \code{data.frame} of Calgary fire response call records
+(Socrata id \code{bdez-pds9}); the bundled 200-row sample under
+\verb{inst/extdata/} when \code{offline = TRUE}, otherwise the live
+SODA2 pull. Columns mirror the upstream Socrata schema.
+
+A \code{data.frame} of Calgary fire-station locations
+(Socrata id \verb{cqsb-2hhg}); the bundled fixture when
+\code{offline = TRUE}, otherwise the live SODA2 pull. Columns
+mirror the upstream Socrata schema.
 }
 \description{
 Phase 3FFF3. Bundled 200-row sample of Calgary's per-community

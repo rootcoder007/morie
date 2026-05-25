@@ -6,6 +6,11 @@
 \usage{
 ARSAU_KINDS()
 }
+\value{
+Character vector of sorted unique dataset kinds (e.g.
+\code{"main_records"}, \code{"individual_records"},
+\code{"weapon_records"}) drawn from the ARSAU registry.
+}
 \description{
 Known ARSAU dataset kinds.
 }

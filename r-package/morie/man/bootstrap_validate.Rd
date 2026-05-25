@@ -32,6 +32,13 @@ bootstrap_validate(
 
 \item{random_state}{Seed.}
 }
+\value{
+A \code{morie_cv_result} (subclass of
+\code{morie_validation_result} / \code{morie_rich_result}) with the
+out-of-bag \code{scores}, the optimism-corrected \code{mean}, an
+\code{sd} of OOB scores, and a normal CI
+\code{ci_lower}/\code{ci_upper}.
+}
 \description{
 Bootstrap .632 / .632+ validation
 }

@@ -362,6 +362,7 @@ morie_laniyonu_gentrification_policing <- function(
 }
 
 
+#' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_laniyonu_gp_result <- function(x, ...) {
   cat(x$title, "\

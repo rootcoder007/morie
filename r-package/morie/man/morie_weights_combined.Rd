@@ -31,6 +31,11 @@ calibrate to.}
 \item{trim_percentiles}{Two-element numeric vector \code{c(lower, upper)}
 of percentile bounds for trimming.}
 }
+\value{
+Numeric vector of final survey weights, same length as
+\code{selection_probs}, after design / nonresponse / optional
+post-stratification / optional trimming.
+}
 \description{
 Combined design x nonresponse x post-strat (x trim) pipeline.
 }

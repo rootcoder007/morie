@@ -13,6 +13,11 @@ two_sample_ttest(x, y, equal_var = TRUE, confidence = 0.95)
 
 \item{confidence}{Confidence level.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the t statistic, p-value, degrees of freedom, mean-difference CI,
+Cohen's d effect size, and combined sample size.
+}
 \description{
 Independent two-sample t-test (equal or unequal variance)
 }

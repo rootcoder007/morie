@@ -32,6 +32,48 @@ morie_datasets_vancouver_opendata_bulk_layers(offline = TRUE)
 }
 \value{
 Tabular catalog snapshot.
+
+A \code{data.frame} snapshot of the Chicago Open Data portal
+catalog (1856 entities) loaded from
+\code{inst/extdata/chicago_opendata_bulk_catalog.csv}. Columns: \code{id},
+\code{title}, \code{type}, \code{description}, \code{updated_at},
+\code{page_views_total}, \code{domain_category}.
+
+A \code{data.frame} snapshot of the Toronto Open Data CKAN
+catalog (540 packages) loaded from
+\code{inst/extdata/toronto_opendata_bulk_catalog.csv}. Columns
+follow the shared 7-column bulk-catalog schema (CKAN variants
+leave non-mapping columns blank).
+
+A \code{data.frame} snapshot of the Calgary Open Data Socrata
+catalog (933 entities) loaded from
+\code{inst/extdata/calgary_opendata_bulk_catalog.csv}. Columns: \code{id},
+\code{title}, \code{type}, \code{description}, \code{updated_at},
+\code{page_views_total}, \code{domain_category}.
+
+A \code{data.frame} snapshot of the Edmonton Open Data Socrata
+catalog (2027 entities) loaded from
+\code{inst/extdata/edmonton_opendata_bulk_catalog.csv}. Columns: \code{id},
+\code{title}, \code{type}, \code{description}, \code{updated_at},
+\code{page_views_total}, \code{domain_category}.
+
+A \code{data.frame} snapshot of the Ottawa Open Data ArcGIS
+Hub catalog (287 datasets) loaded from
+\code{inst/extdata/ottawa_opendata_bulk_catalog.csv}. Columns follow
+the shared 7-column bulk-catalog schema (Hub variants leave
+non-mapping columns blank).
+
+A \code{data.frame} snapshot of every CKAN package on
+donnees.montreal.ca (401 packages) loaded from
+\code{inst/extdata/montreal_opendata_bulk_catalog.csv}. Columns
+follow the shared 7-column bulk-catalog schema.
+
+A \code{data.frame} snapshot of every Opendatasoft v2.1
+dataset on opendata.vancouver.ca (190 datasets) loaded from
+\code{inst/extdata/vancouver_opendata_bulk_catalog.csv}, with the
+richer Opendatasoft schema (\code{publisher}, \code{theme}, \code{license},
+\code{records_count}) projected onto the shared bulk-catalog
+columns.
 }
 \description{
 Phase 3HHH1. Bundled snapshot of every CKAN package on

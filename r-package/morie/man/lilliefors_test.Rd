@@ -9,6 +9,11 @@ lilliefors_test(x)
 \arguments{
 \item{x}{Numeric vector.}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with the Lilliefors D statistic, p-value (approximate when
+\pkg{nortest} is missing), and sample size n.
+}
 \description{
 Uses \pkg{nortest::lillie.test} when available; otherwise falls back
 to a plain KS test with estimated parameters (p-value approximate).

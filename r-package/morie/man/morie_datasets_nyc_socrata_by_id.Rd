@@ -16,6 +16,11 @@ morie_datasets_chicago_socrata_by_id(soda_id, limit = 1000L)
 }
 \value{
 A \code{data.frame} of records.
+
+A \code{data.frame} of records pulled from
+\verb{https://data.cityofchicago.org/resource/<soda_id>.json}, with
+nested list-columns dropped. Columns mirror the live Socrata
+resource schema.
 }
 \description{
 Fetch a NYC OpenData Socrata dataset by ID

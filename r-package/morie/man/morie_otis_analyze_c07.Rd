@@ -9,6 +9,11 @@ morie_otis_analyze_c07(data)
 \arguments{
 \item{data}{c07 data.frame.}
 }
+\value{
+A \code{morie_otis_analysis_result} object (subclass of
+\code{morie_rich_result}) with summary lines and alert x gender and
+alert x year crosstabs of restrictive-confinement and segregation counts.
+}
 \description{
 Individuals x alerts x gender (c07)
 }

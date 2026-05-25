@@ -11,6 +11,10 @@ levene_test(..., center = "median")
 
 \item{center}{One of "median" (Brown-Forsythe), "mean", "trimmed".}
 }
+\value{
+A \code{morie_test_result} (subclass of \code{morie_rich_result})
+with Levene's F statistic, p-value, df, and total sample size n.
+}
 \description{
 Levene's test for equality of variances
 }

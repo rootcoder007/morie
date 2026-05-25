@@ -15,6 +15,12 @@ morie_weights_jackknife(weights, strata = NULL, jk_type = c("JK1", "JKn"))
 \item{jk_type}{Character; jackknife type (\code{"jk1"}, \code{"jk2"},
 \code{"jkn"}).}
 }
+\value{
+A numeric matrix of replicate weights with \code{n} rows
+(one per unit) and one column per replicate; for \code{jk_type =
+  "JKn"} the result carries a \code{morie_jkn_strata} attribute
+recording the stratum of each replicate.
+}
 \description{
 When the \code{survey} package is installed and \code{strata} is supplied, defers
 to \code{survey::as.svrepdesign(..., type = "JKn")} for variance compatibility.

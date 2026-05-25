@@ -20,6 +20,11 @@ and binned-plot reductions.}
 \item{bandwidth}{Numeric; the local-polynomial bandwidth on each
 side of the cutoff. \code{NULL} invokes the data-driven CCT selector.}
 }
+\value{
+A named list with elements \code{statistic} (test
+statistic), \code{p_value}, \code{name}, and optionally
+\code{details} (the underlying \pkg{rddensity} fit).
+}
 \description{
 McCrary (2008) density manipulation test
 }

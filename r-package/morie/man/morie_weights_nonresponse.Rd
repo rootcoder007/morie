@@ -14,6 +14,11 @@ morie_weights_nonresponse(weights, responded, adjustment_cells = NULL)
 \item{adjustment_cells}{Optional cell identifiers used by
 \code{nonresponse} adjustment.}
 }
+\value{
+Numeric vector of adjusted weights, same length as
+\code{weights}; non-respondents receive weight 0 and respondents
+are scaled up so each cell's weighted total is preserved.
+}
 \description{
 Within each cell, scales respondent weights up by total/responder ratio.
 Non-respondents end up with weight 0.

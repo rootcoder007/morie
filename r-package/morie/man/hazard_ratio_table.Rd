@@ -32,6 +32,13 @@ hazard_ratio_table(
 
 \item{title}{Title.}
 }
+\value{
+When \code{output_format = "dataframe"}, a \code{data.frame}
+with one row per coefficient and columns \code{HR},
+\code{<confidence>\% CI}, \code{p-value}, and a star column.
+Otherwise a character string holding the rendered table in the
+requested format.
+}
 \description{
 Hazard-ratio table from Cox model components
 }

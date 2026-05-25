@@ -38,6 +38,10 @@ morie_datasets_calgary_open_crime_adjacent_layers <- function(offline = TRUE) {
 
 #' Edmonton Open Data crime-adjacent catalog
 #' @rdname morie_datasets_calgary_open_crime_adjacent_layers
+#' @return A `data.frame` of City-of-Edmonton Socrata datasets
+#'   matched on crime-adjacent keywords, loaded from
+#'   `inst/extdata/edmonton_opendata_crime_adjacent_catalog.csv`.
+#'   Columns: `soda_id`, `title`, `type`, `search_keyword`.
 #' @export
 morie_datasets_edmonton_open_crime_adjacent_layers <- function(offline = TRUE) {
   .morie_canadian_cat_fixture("edmonton_opendata_crime_adjacent_catalog.csv",
@@ -46,6 +50,10 @@ morie_datasets_edmonton_open_crime_adjacent_layers <- function(offline = TRUE) {
 
 #' Ottawa Open Data (ArcGIS Hub) crime-adjacent catalog
 #' @rdname morie_datasets_calgary_open_crime_adjacent_layers
+#' @return A `data.frame` of City-of-Ottawa ArcGIS Hub datasets
+#'   matched on crime-adjacent keywords, loaded from
+#'   `inst/extdata/ottawa_opendata_crime_adjacent_catalog.csv`.
+#'   Columns: `soda_id`, `title`, `type`, `search_keyword`.
 #' @export
 morie_datasets_ottawa_open_crime_adjacent_layers <- function(offline = TRUE) {
   .morie_canadian_cat_fixture("ottawa_opendata_crime_adjacent_catalog.csv",
@@ -100,6 +108,10 @@ morie_datasets_calgary_community_crime_stats <- function(offline = TRUE,
 #' calls (Socrata id `bdez-pds9`).
 #'
 #' @rdname morie_datasets_calgary_community_crime_stats
+#' @return A `data.frame` of Calgary fire response call records
+#'   (Socrata id `bdez-pds9`); the bundled 200-row sample under
+#'   `inst/extdata/` when `offline = TRUE`, otherwise the live
+#'   SODA2 pull. Columns mirror the upstream Socrata schema.
 #' @export
 morie_datasets_calgary_fire_response_calls <- function(offline = TRUE,
                                                          max_features = NULL) {
@@ -113,6 +125,10 @@ morie_datasets_calgary_fire_response_calls <- function(offline = TRUE,
 
 #' Calgary Fire Stations
 #' @rdname morie_datasets_calgary_community_crime_stats
+#' @return A `data.frame` of Calgary fire-station locations
+#'   (Socrata id `cqsb-2hhg`); the bundled fixture when
+#'   `offline = TRUE`, otherwise the live SODA2 pull. Columns
+#'   mirror the upstream Socrata schema.
 #' @export
 morie_datasets_calgary_fire_stations <- function(offline = TRUE,
                                                    max_features = NULL) {
@@ -169,6 +185,10 @@ morie_datasets_edmonton_police_stations <- function(offline = TRUE,
 
 #' Edmonton Fire Station locations
 #' @rdname morie_datasets_edmonton_police_stations
+#' @return A `data.frame` of Edmonton fire-station locations
+#'   (Socrata id `b4y7-zhnz`); the bundled fixture when
+#'   `offline = TRUE`, otherwise the live SODA2 pull. Columns
+#'   include `name`, `address`, `latitude`, `longitude`.
 #' @export
 morie_datasets_edmonton_fire_stations <- function(offline = TRUE,
                                                     max_features = NULL) {
@@ -184,6 +204,10 @@ morie_datasets_edmonton_fire_stations <- function(offline = TRUE,
 #' @rdname morie_datasets_calgary_socrata_by_id
 #' @param soda_id 4-4 Socrata resource ID.
 #' @param limit Page size (default 1000).
+#' @return A `data.frame` of records pulled from
+#'   `https://data.edmonton.ca/resource/<soda_id>.json`, with nested
+#'   list-columns dropped. Columns mirror the live Socrata resource
+#'   schema.
 #' @export
 morie_datasets_edmonton_socrata_by_id <- function(soda_id,
                                                     limit = 1000L) {

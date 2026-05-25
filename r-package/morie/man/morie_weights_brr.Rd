@@ -16,6 +16,10 @@ morie_weights_brr(weights, strata, n_replicates = NULL, seed = 42)
 
 \item{seed}{Integer RNG seed.}
 }
+\value{
+A numeric matrix of replicate weights with \code{length(weights)}
+rows and \code{n_replicates} columns.
+}
 \description{
 Each stratum is split into two halves; signs from a random Hadamard-like
 matrix double one half and zero the other. For exact Hadamard ordering use
