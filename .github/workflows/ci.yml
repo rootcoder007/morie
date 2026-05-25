@@ -38,7 +38,7 @@ jobs:
             python-version: "3.14"
           - os: macos-latest
             python-version: "3.14"
-          - os: windows-latest
+          - os: windows-2025
             python-version: "3.14"
 
     steps:

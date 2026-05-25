@@ -173,7 +173,7 @@ sdist.include = ["libmorie/", "CMakeLists.txt"]
 [tool.cibuildwheel]
 # Build CPython wheels for the supported range; skip musl, 32-bit, PyPy.
 build = "cp310-* cp311-* cp312-* cp313-* cp314-*"
-skip = "*-musllinux* *_i686 *-win32 pp*"
+skip = "*-musllinux* *_i686 *-win32"
 build-frontend = "build"
 
 [tool.ruff]
