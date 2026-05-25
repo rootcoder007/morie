@@ -210,19 +210,24 @@ test_that(".morie_ckan_read_path reads a CSV resource into a data.frame", {
   expect_equal(nrow(out), 3L)
 })
 
-test_that(".morie_ckan_build_req constructs an httr2 request object", {
-  skip_if_not_installed("httr2")
-  if (!requireNamespace("httr2", quietly = TRUE)) {
-    skip("httr2 not installed")
-  }
-  out <- tryCatch(
-    morie:::.morie_ckan_build_req("open.toronto.ca", "package_show",
-                                    params = list(id = "demo")),
-    error = function(e) e)
-  if (inherits(out, "error")) {
-    skip(sprintf("build_req error: %s", conditionMessage(out)))
-  }
-  expect_s3_class(out, "httr2_request")
+test_that(".morie_ckan_call dispatches with mocked HTTP backend", {
+  # 3YY collapsed .morie_ckan_build_req + .morie_ckan_call into a
+  # single .morie_ckan_call. Mock the HTTP layer it routes through
+  # and verify the request shape (portal + action + params) lands
+  # in the right place.
+  testthat::local_mocked_bindings(
+    .morie_dataset_http_text = function(url, query = NULL, ...) {
+      # Return a JSON string the caller will fromJSON-parse.
+      jsonlite::toJSON(list(success = TRUE,
+                             result = list(captured_url = url)),
+                        auto_unbox = TRUE)
+    },
+    .package = "morie"
+  )
+  out <- morie:::.morie_ckan_call("open.toronto.ca", "package_show",
+                                    params = list(id = "demo"))
+  expect_type(out, "list")
+  expect_true(grepl("package_show", as.character(out)))
 })
 
 # ====================================================================== ipw.R

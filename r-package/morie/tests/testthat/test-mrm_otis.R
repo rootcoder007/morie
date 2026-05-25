@@ -43,11 +43,6 @@ test_that("mrm_otis_seg_duration_km accepts group_cols", {
 
 test_that("mrm_otis_mortification_cooccurrence runs on b01 with alert cols", {
   df <- make_synthetic_otis("b01", n = 200L, seed = 4L)
-  # Convert Yes/No alert text to 0/1 — mortification_cooccurrence does
-  # rowSums on the alert columns.
-  for (col in c("MentalHealth_Alert", "SuicideRisk_Alert",
-                "SuicideWatch_Alert"))
-    df[[col]] <- as.integer(df[[col]] == "Yes")
   out <- tryCatch(
     mrm_otis_mortification_cooccurrence(df),
     error = function(e) e
