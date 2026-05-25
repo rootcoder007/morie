@@ -54,7 +54,8 @@ test_that("mrm_assumptions_check returns a multi-check rich-result", {
   out <- tryCatch(
     mrm_assumptions_check(df,
                            treatment_col = "d",
-                           outcome_col = "y"),
+                           outcome_col = "y",
+                           covariates = c("x1", "x2")),
     error = function(e) e
   )
   if (inherits(out, "error")) {

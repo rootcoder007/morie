@@ -42,7 +42,8 @@ test_that("morie_predpol_calibration_audit returns calibration stats", {
     morie_predpol_calibration_audit(
       areas = sprintf("A%02d", 1:n),
       mean_risk = stats::runif(n),
-      outcome_rate = stats::runif(n)),
+      outcome_rate = stats::runif(n),
+      group = sample(c("A", "B"), n, replace = TRUE)),
     error = function(e) e
   )
   if (inherits(out, "error")) {
