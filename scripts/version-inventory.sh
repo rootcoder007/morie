@@ -62,6 +62,7 @@ echo "File,Line,Status,Version,Context" > "$INVENTORY_FILE"
 rg --vimgrep --sort path --color=never -e "$REGEX" \
   -g '!src/morie/fn/describe_*.md' \
   -g '!VERSION_INVENTORY.csv' \
+  -g '!VERSION_INVENTORY.csv.committed' \
   -g '!scripts/' \
   -g '!.git/' \
   . | awk -v curr="$CURRENT_VERSION" -F':' '{
