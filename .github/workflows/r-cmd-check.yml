@@ -36,9 +36,11 @@ jobs:
       matrix:
         config:
           - { os: macos-latest,   r: 'release' }
-          # Pin Windows runner explicitly (windows-latest auto-redirects to
-          # windows-2025-vs2026 by 2026-06-15; pre-pin removes ambiguity).
-          - { os: windows-2025,   r: 'release' }
+          # Use windows-latest so the runner image tracks GitHub's most-
+          # recently-patched Windows image (currently windows-2022, moving
+          # to windows-2025-vs2026 by 2026-06-15). Pinning to a specific
+          # release sticks us on an older image once `latest` rolls.
+          - { os: windows-latest, r: 'release' }
           - { os: ubuntu-latest,  r: 'release' }
           - { os: ubuntu-latest,  r: 'devel'   }
           - { os: ubuntu-latest,  r: 'oldrel-1' }
