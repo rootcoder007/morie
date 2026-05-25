@@ -37,7 +37,12 @@ test_that("morie_mvn_with_covariance returns an n x p sample", {
 
 test_that("morie_simulate_longitudinal_panel returns a balanced panel data.frame", {
   out <- tryCatch(
-    morie_simulate_longitudinal_panel(n_units = 20L, n_periods = 5L,
+    # p_variables = 1 so the long-format frame is exactly
+    # n_individuals * n_timepoints rows (one variable per id/time
+    # cell). Otherwise the panel layout multiplies by p_variables.
+    morie_simulate_longitudinal_panel(n_individuals = 20L,
+                                       n_timepoints = 5L,
+                                       p_variables = 1L,
                                        seed = 4L),
     error = function(e) e
   )

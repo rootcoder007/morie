@@ -11,7 +11,7 @@ test_that("morie_matching_genetic returns match_result on synthetic data", {
   df <- make_match_df(n = 150, tau = 0.4, seed = 2L)
   out <- tryCatch(
     morie_matching_genetic(df, "d", c("x1", "x2"),
-                           pop_size = 20L, max_generations = 3L),
+                           pop_size = 20L, n_generations = 3L),
     error = function(e) e
   )
   if (inherits(out, "error")) {

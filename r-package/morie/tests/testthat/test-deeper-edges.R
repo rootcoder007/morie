@@ -14,7 +14,7 @@ test_that("morie_matching_rosenbaum_bounds returns multiple Gamma rows", {
   df <- make_match_df(n = 200L, tau = 0.4, seed = 1L)
   out <- tryCatch(
     morie_matching_rosenbaum_bounds(df, "y", "d", c("x1", "x2"),
-                                     gammas = c(1.0, 1.5, 2.0, 3.0)),
+                                     gamma_range = c(1.0, 1.5, 2.0, 3.0)),
     error = function(e) e)
   if (inherits(out, "error")) {
     skip(sprintf("rosenbaum_bounds error: %s", conditionMessage(out)))
@@ -45,7 +45,7 @@ test_that("morie_matching_subclassify returns subclass-tagged data", {
   df <- make_match_df(n = 200L, tau = 0.4, seed = 4L)
   out <- tryCatch(
     morie_matching_subclassify(df, "d", c("x1", "x2"),
-                                 n_subclasses = 5L),
+                                 n_strata = 5L),
     error = function(e) e)
   if (inherits(out, "error")) {
     skip(sprintf("subclassify error: %s", conditionMessage(out)))

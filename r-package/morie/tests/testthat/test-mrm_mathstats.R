@@ -42,7 +42,7 @@ test_that("mrm_qq_plot returns a plottable structure or invisible", {
 
 test_that("mrm_clt_demo simulates means + recovers near-normality", {
   out <- tryCatch(
-    mrm_clt_demo(base_distribution = "unif", n = 100L, n_reps = 200L),
+    mrm_clt_demo(base_distribution = "unif", sample_size = 100L, n_samples = 200L),
     error = function(e) e
   )
   if (inherits(out, "error")) {

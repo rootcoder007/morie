@@ -17,7 +17,7 @@ test_that("midranks computes mid-ranks for a numeric vector", {
 test_that("cosine_lr_schedule returns a decayed learning rate", {
   out <- tryCatch(
     cosine_lr_schedule(x = 50L, lr_max = 1e-3, lr_min = 0,
-                       T_max = 100L),
+                       total_steps = 100L),
     error = function(e) e)
   if (inherits(out, "error"))
     skip(sprintf("cslnc error: %s", conditionMessage(out)))
