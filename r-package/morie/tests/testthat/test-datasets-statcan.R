@@ -30,15 +30,20 @@ test_that("morie_datasets_statcan_cube_metadata parses WDS getCubeMetadata respo
   # probes DNS/ICMP, not actual API content. Verify our parser
   # handles a canonical SUCCESS envelope instead of testing StatCan's
   # uptime.
+  # WDS getCubeMetadata returns an outer ARRAY of result envelopes, not a
+  # bare dict — the parser unwraps via `r[[1]]$status`. The mock must mirror
+  # that shape (list of 1 inner list), not just the inner dict.
   testthat::local_mocked_bindings(
     .morie_dataset_http_post_json = function(url, body, timeout_s = 30L) {
       list(
-        status = "SUCCESS",
-        object = list(
-          productId = 35100002L,
-          cubeTitleEn = "Selected police-reported cybercrime violations",
-          cubeTitleFr = "Affaires de cybercriminalite declarees par la police",
-          frequencyCode = 12L
+        list(
+          status = "SUCCESS",
+          object = list(
+            productId = 35100002L,
+            cubeTitleEn = "Selected police-reported cybercrime violations",
+            cubeTitleFr = "Affaires de cybercriminalite declarees par la police",
+            frequencyCode = 12L
+          )
         )
       )
     },
