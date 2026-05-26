@@ -21,9 +21,3 @@ packages:
     # `requireNamespace()` guards in function bodies handle absence.
     config:
       _R_CHECK_FORCE_SUGGESTS_: false
-
-# Note: the deprecated `moirais` R-package alias at
-# `r-package/moirais/` is intentionally NOT listed for r-universe
-# builds.  Users who want it should install via CRAN (where the
-# moirais alias is also published as a deprecation shim) or directly
-# from GitHub via `remotes::install_github("rootcoder007/morie", subdir = "r-package/moirais")`.

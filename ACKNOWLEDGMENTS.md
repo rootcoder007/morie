@@ -10,7 +10,7 @@ MORIE (Multi-domain Open Research and Inferential Estimation) is developed by Va
 
 ## Frameworks and Tools
 
-**Jeroen Ooms / r-universe** — [Jeroen Ooms](https://github.com/jeroen) (rOpenSci, University of California, Berkeley) maintains the [r-universe](https://r-universe.dev) infrastructure that builds and serves nightly Linux + macOS + Windows binaries of the `morie` and `moirais` R packages at [rootcoder007.r-universe.dev](https://rootcoder007.r-universe.dev). r-universe's CRAN-like service is what makes Linux-binary R installation tractable for downstream users without requiring source compilation.
+**Jeroen Ooms / r-universe** — [Jeroen Ooms](https://github.com/jeroen) (rOpenSci, University of California, Berkeley) maintains the [r-universe](https://r-universe.dev) infrastructure that builds and serves nightly Linux + macOS + Windows binaries of the `morie` R package at [rootcoder007.r-universe.dev](https://rootcoder007.r-universe.dev). r-universe's CRAN-like service is what makes Linux-binary R installation tractable for downstream users without requiring source compilation.
 
 **DoubleML team** — [DoubleML](https://github.com/DoubleML/doubleml-for-py) (Bach, Chernozhukov, Klaassen, Kurz, Spindler) is MORIE's canonical double-machine-learning back-end. The Python and R packages are released under BSD-3-Clause; MORIE wraps DoubleML for its IRM, PLR, and PLIV estimators, with Python and R idiomatic APIs around them. See Bach et al. (2022, *Journal of Statistical Software*, v108i03).
 

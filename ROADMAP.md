@@ -32,7 +32,7 @@ The release that makes the toolkit usable by a non-programmer:
 
 | Series | What landed |
 |---|---|
-| v0.1.x | First public release; rename from MOIRAIS in v0.1.3; 23 analysis modules; 275 textbook-derived R callables; OTIS / SIU / TPS ingestion; first c11 Mandela classifier. |
+| v0.1.x | First public release; 23 analysis modules; 275 textbook-derived R callables; OTIS / SIU / TPS ingestion; first c11 Mandela classifier. |
 | v0.2.x | `morie.entheo` DMT-imaging opt-in (Timmermann dataset); deterministic-seed plumbing for R/Python bit-for-bit parity; PEP 562 lazy-loading drops cold import from 123 s to 1.7 s. |
 | v0.3.x | Per-component licensing model first finalised; R/Python parity verification; 5 JSS-style companion papers drafted. |
 | v0.4.x | `anova_oneway` backwards-compat alias; `gibbons_chakraborti` canonical naming (Gibbons & Chakraborti, 2003 §2.11); Homebrew tap; GHCR container made public; auto-tag-on-version-bump CI; Windows install in CI matrix; `\cite{}` → `\citep{}` JSS citation cleanup. |

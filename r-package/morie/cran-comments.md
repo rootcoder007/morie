@@ -162,10 +162,6 @@ shipped in the GitHub repository's `kernel-module/` and `daemon/`
 directories remain `GPL-2.0-only` (a Linux kernel ABI requirement) and
 are not part of the CRAN source tarball.
 
-The deprecated `moirais` alias package is not part of this
-submission; users install and upgrade through the canonical `morie`
-package.
-
 ## AI-assistance disclosure
 
 morie was developed with substantial assistance from Anthropic's

@@ -158,8 +158,8 @@ head(mrm_tps_neighbourhood_recurrence_km(tps))
 `mrm_tps_load_hawkes_refit(path)` reads
 `paper_hawkes_refit.json` (the per-category Hawkes refit table from
 the MRM empirical paper \u00a77.1-7.2) and returns it as a tidy
-data.frame. Skipped here because the JSON is in the MOIRAIS data
-manifest, not bundled with the package.
+data.frame. Skipped here because the JSON is in the external morie
+data manifest, not bundled with the package.
 
 # SIU suite
 
