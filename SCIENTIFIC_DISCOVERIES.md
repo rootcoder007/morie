@@ -124,7 +124,7 @@ appear in two or more years.
 
 | MRM callable | Data | Result file |
 |---|---|---|
-| `mrm_tps_load_hawkes_refit(manifest_path)` | `paper_hawkes_refit.json` | `results/08-hawkes-verified.txt` |
+| `mrm_tps_load_hawkes_refit()` | bundled `paper_hawkes_refit.json` (`inst/extdata/`) | `results/08-hawkes-verified.txt` |
 
 ## Toronto crime is becoming LESS spatially concentrated (LISA + Moran)
 
