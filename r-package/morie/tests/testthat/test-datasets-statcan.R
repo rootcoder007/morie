@@ -23,9 +23,27 @@ test_that("registered cubes include the canonical CCJS flagships", {
   expect_true(35100026L %in% c$product_id)  # Homicide victims
 })
 
-test_that("morie_datasets_statcan_cube_metadata reaches WDS for 35100002", {
-  skip_on_cran()
-  skip_if_offline("www150.statcan.gc.ca")
+test_that("morie_datasets_statcan_cube_metadata parses WDS getCubeMetadata response", {
+  # Mocked, not live: StatCan WDS returned 200 OK with empty body on
+  # 2026-05-26 (post-3VV libcurl backend reports this honestly as
+  # "libcurl returned empty body"), and `skip_if_offline()` only
+  # probes DNS/ICMP, not actual API content. Verify our parser
+  # handles a canonical SUCCESS envelope instead of testing StatCan's
+  # uptime.
+  testthat::local_mocked_bindings(
+    .morie_dataset_http_post_json = function(url, body, timeout_s = 30L) {
+      list(
+        status = "SUCCESS",
+        object = list(
+          productId = 35100002L,
+          cubeTitleEn = "Selected police-reported cybercrime violations",
+          cubeTitleFr = "Affaires de cybercriminalite declarees par la police",
+          frequencyCode = 12L
+        )
+      )
+    },
+    .package = "morie"
+  )
   m <- morie_datasets_statcan_cube_metadata(35100002L)
   expect_equal(m$status, "SUCCESS")
   expect_true(!is.null(m$object$cubeTitleEn))
@@ -34,8 +52,21 @@ test_that("morie_datasets_statcan_cube_metadata reaches WDS for 35100002", {
 })
 
 test_that("morie_datasets_statcan_full_csv_url returns canonical zip URL", {
-  skip_on_cran()
-  skip_if_offline("www150.statcan.gc.ca")
+  # Mocked, same reason as the cube_metadata test above. WDS
+  # getFullTableDownloadCSV returns a SUCCESS envelope whose $object
+  # is the canonical .zip URL string.
+  testthat::local_mocked_bindings(
+    .morie_dataset_http_json = function(url) {
+      list(
+        status = "SUCCESS",
+        object = paste0(
+          "https://www150.statcan.gc.ca/n1/tbl/csv/",
+          "35100002-eng.zip"
+        )
+      )
+    },
+    .package = "morie"
+  )
   u <- morie_datasets_statcan_full_csv_url(35100002L)
   expect_match(u, "^https://www150\\.statcan\\.gc\\.ca/")
   expect_match(u, "35100002-eng\\.zip$")
