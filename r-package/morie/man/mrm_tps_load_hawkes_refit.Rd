@@ -4,10 +4,11 @@
 \alias{mrm_tps_load_hawkes_refit}
 \title{Load the precomputed per-category TPS Hawkes refit manifest}
 \usage{
-mrm_tps_load_hawkes_refit(manifest_path)
+mrm_tps_load_hawkes_refit(manifest_path = NULL)
 }
 \arguments{
-\item{manifest_path}{Path to \code{paper_hawkes_refit.json}.}
+\item{manifest_path}{Path to a \code{paper_hawkes_refit.json} file. If
+\code{NULL} (the default), the bundled reference manifest is used.}
 }
 \value{
 A data.frame with one row per category, columns
@@ -20,8 +21,13 @@ kernel, constant baseline) and non-Markovian (Weibull kernel,
 sinusoidal baseline) AIC, branching ratio, and KS p-value per
 category as a tidy data.frame.
 }
-\examples{
-if (FALSE) {
-  mrm_tps_load_hawkes_refit("paper_hawkes_refit.json")
+\details{
+The reference manifest is shipped with the package at
+\code{system.file("extdata", "paper_hawkes_refit.json", package = "morie")}.
+Pass \code{manifest_path = NULL} (the default) to read the bundled copy;
+pass an explicit path to load a user-supplied refit.
 }
+\examples{
+df <- mrm_tps_load_hawkes_refit()
+head(df)
 }
