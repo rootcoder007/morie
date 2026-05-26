@@ -63,7 +63,7 @@ From r-universe (development snapshot):
 ```r
 install.packages(
   "morie",
-  repos = c(hadesllm = "https://hadesllm.r-universe.dev",
+  repos = c(rootcoder007 = "https://rootcoder007.r-universe.dev",
             CRAN     = "https://cloud.r-project.org")
 )
 ```
@@ -235,7 +235,7 @@ software and the relevant companion papers.
   title   = {morie: Multi-domain Open Research and Inferential Estimation in R},
   author  = {Ruhela, Vansh Singh},
   year    = {2026},
-  note    = {R package version 0.9.5.4},
+  note    = {R package version 0.9.5.12},
   url     = {https://github.com/rootcoder007/morie}
 }
 

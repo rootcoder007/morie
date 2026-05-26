@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """
 cxphr.py - Cox proportional hazards model via partial likelihood (Newton-Raphson).
 

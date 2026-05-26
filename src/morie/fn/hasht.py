@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Build a hash table with separate chaining for collision resolution."""
 
 from __future__ import annotations

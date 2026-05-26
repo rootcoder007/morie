@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Hebb's rule for perceptron weight update."""
 import numpy as np
 from ._richresult import RichResult

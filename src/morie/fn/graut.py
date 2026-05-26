@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Reverse-mode autodiff via chain rule (what PyTorch autograd computes)."""
 import numpy as np
 from ._richresult import RichResult

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Polynomial ring operations mod (x^n+1) over Z_q."""
 
 from __future__ import annotations

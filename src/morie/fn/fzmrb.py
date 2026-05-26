@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Boundary-free MRL estimator (Fauzi Ch 4).
 
 Standard kernel MRL has boundary bias near t=0 because the Gaussian

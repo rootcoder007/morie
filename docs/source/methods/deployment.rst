@@ -12,7 +12,7 @@ From source
 
 .. code-block:: bash
 
-   git clone https://github.com/hadesllm/morie.git
+   git clone https://github.com/rootcoder007/morie.git
    cd morie
    python -m venv .venv && source .venv/bin/activate
    pip install -e ".[interactive]"
@@ -48,12 +48,12 @@ and verification.
 .. code-block:: bash
 
    docker buildx build --platform linux/amd64,linux/arm64 \
-     -t ghcr.io/hadesllm/morie:latest --push .
+     -t ghcr.io/rootcoder007/morie:latest --push .
 
 .. note::
 
-   The published image lives at ``ghcr.io/hadesllm/morie`` post-migration
-   (not ``ghcr.io/hadesllm/morie``). The package is currently private —
+   The published image lives at ``ghcr.io/rootcoder007/morie`` post-migration
+   (not ``ghcr.io/rootcoder007/morie``). The package is currently private —
    authenticate with a PAT that has ``read:packages`` scope before pulling.
 
 Ollama Sidecar
@@ -115,7 +115,7 @@ Current and planned installation paths:
 - **pip (PyPI)** — active. ``pip install morie``.
 - **brew** — planned. ``brew install morie``.
 - **curl installer** — planned. ``curl -fsSL https://morie.dev/install | sh``.
-- **Docker** — active. ``docker pull ghcr.io/hadesllm/morie:latest``.
+- **Docker** — active. ``docker pull ghcr.io/rootcoder007/morie:latest``.
 
 The curl installer will auto-detect the platform (macOS/Linux/WSL),
 install R, Python, and Quarto as needed, and configure the environment.

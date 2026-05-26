@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Mean and variance of Jonckheere-Terpstra statistic under H0."""
 import numpy as np
 from scipy import stats

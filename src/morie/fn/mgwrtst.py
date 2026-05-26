@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """MGWR Monte-Carlo stationarity test."""
 
 import numpy as np

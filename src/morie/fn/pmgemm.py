@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Burnett 2018 GEMM -- nonlinear PM₂.₅ exposure-response for mortality."""
 
 from __future__ import annotations

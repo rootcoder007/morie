@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Monte Carlo integration of f(x) over [lo, hi]."""
 
 from __future__ import annotations

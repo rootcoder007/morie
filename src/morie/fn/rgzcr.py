@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Zero-crossing rate -- Rangayyan Ch 5."""
 from __future__ import annotations
 

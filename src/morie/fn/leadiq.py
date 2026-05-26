@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Lead blood-level -> IQ loss dose-response (Lanphear 2005 pooled)."""
 
 from __future__ import annotations

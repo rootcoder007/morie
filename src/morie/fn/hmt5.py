@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """T5: text-to-text transfer transformer (encoder-decoder)."""
 import numpy as np
 from ._richresult import RichResult

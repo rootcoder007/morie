@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Characterise the acceleration profile of a velocity time series."""
 
 from __future__ import annotations

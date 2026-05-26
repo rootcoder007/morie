@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Ordinal logistic regression (proportional odds model)."""
 
 import numpy as np

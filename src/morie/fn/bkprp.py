@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Backpropagation gradient computation for a single dense layer."""
 from __future__ import annotations
 

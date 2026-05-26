@@ -9,7 +9,7 @@ env:
 # no API token in GitHub secrets. The PyPI side has a Trusted
 # Publisher configured at:
 #   https://pypi.org/manage/project/morie/settings/publishing/
-# with: Owner=hadesllm Repository=morie Workflow=pypi-publish.yml
+# with: Owner=rootcoder007 Repository=morie Workflow=pypi-publish.yml
 # Environment=pypi.
 #
 # Since v0.9.1 morie ships a compiled C++ core (morie._core), so the

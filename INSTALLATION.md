@@ -154,13 +154,13 @@ need Python, `pip`, or Homebrew first; you **do** need `curl` and
   Linux — follow the Linux note inside your WSL shell.)
 
 ```bash
-curl -fsSL https://hadesllm.github.io/morie/install.sh | bash
+curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash
 ```
 
 With R alongside Python:
 
 ```bash
-curl -fsSL https://hadesllm.github.io/morie/install.sh | bash -s -- --auto
+curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash -s -- --auto
 ```
 
 **What you get after install:**
@@ -205,7 +205,7 @@ Windows ships without `bash`, `python`, and `R` (though it *does* include `curl`
 2. Open **PowerShell** and install morie from r-universe — it ships pre-compiled Windows binaries, so no Rtools is needed:
 
    ```powershell
-   Rscript -e "install.packages('morie', repos=c('https://hadesllm.r-universe.dev', 'https://cloud.r-project.org'))"
+   Rscript -e "install.packages('morie', repos=c('https://rootcoder007.r-universe.dev', 'https://cloud.r-project.org'))"
    ```
 
 **Smoke test:**
@@ -265,11 +265,11 @@ Reboot, then re-run `pip install morie`.
 ## 3. Homebrew (macOS / Linuxbrew)
 
 ```bash
-brew tap hadesllm/morie
+brew tap rootcoder007/morie
 brew install morie
 ```
 
-The tap source is at [`hadesllm/homebrew-morie`](https://github.com/hadesllm/homebrew-morie). It pulls morie's source distribution from PyPI and bundles a self-contained `python@3.12` venv at `$(brew --prefix)/opt/morie/libexec`. No system Python required.
+The tap source is at [`rootcoder007/homebrew-morie`](https://github.com/rootcoder007/homebrew-morie). It pulls morie's source distribution from PyPI and bundles a self-contained `python@3.12` venv at `$(brew --prefix)/opt/morie/libexec`. No system Python required.
 
 **Upgrade later:**
 
@@ -343,7 +343,7 @@ install.packages("morie")
 install.packages(
   "morie",
   repos = c(
-    hadesllm = "https://hadesllm.r-universe.dev",
+    rootcoder007 = "https://rootcoder007.r-universe.dev",
     CRAN     = "https://cloud.r-project.org"
   )
 )
@@ -510,7 +510,7 @@ rm -rf ~/.venvs/morie ~/.local/bin/morie
 
 # Homebrew
 brew uninstall morie
-brew untap hadesllm/morie  # optional — removes the tap repo cache
+brew untap rootcoder007/morie  # optional — removes the tap repo cache
 
 # pip
 pip uninstall morie
@@ -521,8 +521,8 @@ remove.packages("morie")
 
 ## Getting help
 
-- Documentation: <https://hadesllm.github.io/morie/>
+- Documentation: <https://rootcoder007.github.io/morie/>
 - Source / issues: <https://github.com/rootcoder007/morie>
 - PyPI: <https://pypi.org/project/morie/>
-- r-universe: <https://hadesllm.r-universe.dev/morie>
-- Homebrew tap: <https://github.com/hadesllm/homebrew-morie>
+- r-universe: <https://rootcoder007.r-universe.dev/morie>
+- Homebrew tap: <https://github.com/rootcoder007/homebrew-morie>

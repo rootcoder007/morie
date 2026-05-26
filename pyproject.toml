@@ -78,19 +78,14 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage      = "https://hadesllm.github.io/morie/"
-Documentation = "https://hadesllm.github.io/morie/"
+Homepage      = "https://rootcoder007.github.io/morie/"
+Documentation = "https://rootcoder007.github.io/morie/"
 "Source code" = "https://github.com/rootcoder007/morie"
 "Issue tracker" = "https://github.com/rootcoder007/morie/issues"
 Changelog     = "https://github.com/rootcoder007/morie/releases"
 "Download"    = "https://pypi.org/project/morie/#files"
-"R package"   = "https://hadesllm.r-universe.dev/morie"
+"R package"   = "https://rootcoder007.r-universe.dev/morie"
 "Container (GHCR)" = "https://github.com/rootcoder007/morie/pkgs/container/morie"
-"Software"                       = "https://doi.org/10.5281/zenodo.20111233"
-"MORIE paper"                    = "https://doi.org/10.5281/zenodo.20096350"
-"MRM framework paper"            = "https://doi.org/10.5281/zenodo.20096075"
-"Hawkes process paper"           = "https://doi.org/10.5281/zenodo.20102198"
-"Empirical applications paper"   = "https://doi.org/10.5281/zenodo.20175689"
 
 [project.optional-dependencies]
 test = [

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Convert agreement matrix to distance matrix: D = 1 - agreement."""
 
 from __future__ import annotations

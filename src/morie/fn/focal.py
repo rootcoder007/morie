@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 r"""Focal loss for class imbalance.
 
 Downweights easy examples, emphasizes hard negatives.

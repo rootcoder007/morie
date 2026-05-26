@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Disparity index: ratio of two group rates."""
 
 from __future__ import annotations

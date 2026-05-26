@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Detect hidden (ghost) periodic signals buried in noise via surrogate testing."""
 
 from __future__ import annotations

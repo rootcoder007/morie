@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Calculate statistical power for an ANOVA F-test (interaction power)."""
 
 import numpy as np

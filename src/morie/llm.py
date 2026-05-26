@@ -1201,7 +1201,7 @@ To enable AI-assisted mode, use any of the following:
   5. Set an OpenAI API key:
        export OPENAI_API_KEY="your-key-here"
 
-For more information, see: https://github.com/hadesllm/morie
+For more information, see: https://github.com/rootcoder007/morie
 """
 
 

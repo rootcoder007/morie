@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Spatial GLMM SAR simultaneous autoregressive."""
 
 import numpy as np

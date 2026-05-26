@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute the 2-D convex hull of a point set using the gift-wrapping."""
 
 from __future__ import annotations

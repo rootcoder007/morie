@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Random match probability for forensic genetics."""
 
 __all__ = ["rmpob"]

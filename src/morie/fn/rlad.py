@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Least absolute deviations regression. 'The unexamined statistic is not worth reporting. -- adapted from Socrates'"""
 
 from __future__ import annotations

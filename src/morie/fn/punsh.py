@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Fit elastic net regression via coordinate descent."""
 
 from __future__ import annotations

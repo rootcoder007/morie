@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Score range check -- validate responses within bounds."""
 
 from __future__ import annotations

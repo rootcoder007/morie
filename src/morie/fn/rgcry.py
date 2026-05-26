@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Infant cry signal analysis: formants and fundamental frequency."""
 import numpy as np
 from ._richresult import RichResult

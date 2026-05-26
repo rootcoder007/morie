@@ -6,7 +6,7 @@
 # CI-tier child workflows (version-drift, ci, r-cmd-check,
 # r-coverage-and-lint, wheels, codeql) into one connected
 # directed-acyclic graph so the GitHub Actions UI shows a single
-# unified pipeline -- the same style as r-universe/hadesllm.
+# unified pipeline -- the same style as r-universe/rootcoder007.
 #
 # Topology (mathematically: a DAG with one source, one sink, no cycles):
 #

@@ -70,7 +70,7 @@ Per-package full changelogs:
 ## What's new in v0.7.0
 
 - **Licensing** — morie is licensed `AGPL-3.0-or-later` on both language sides. The two optional Linux-kernel adjuncts (`kernel-module/` and `daemon/`) stay `GPL-2.0-only` because the kernel ABI requires it; they are not part of the wheel or CRAN tarball.
-- **Empirical applications paper published** — *Solitary Confinement, Self-Excitation, and Institutional Churn: Empirical Applications of MRM to Canadian Carceral and Police Data* on Zenodo at [10.5281/zenodo.20175689](https://doi.org/10.5281/zenodo.20175689). Five-paper publication set now complete.
+- **Empirical applications paper complete** — *Solitary Confinement, Self-Excitation, and Institutional Churn: Empirical Applications of MRM to Canadian Carceral and Police Data*. Five-paper publication set now complete.
 - **`ac` / `vm` terminology locked across all 5 papers** — `ac` (alert complexity) and `vm` (volatility measure of placements, "regional-transition count" alongside) are now the canonical operational terms.
 - **DOI + version propagation sweep** — empirical-paper DOI now reaches Sphinx index, `pyproject.toml [project.urls]`, `papers/README.md`, and CITATION.cff. Sphinx install snippets, Docker tag examples, and the in-tree `papers/README.md` were also un-pinned from stale versions.
 - **R-package roxygen docs for fast Rcpp kernels** — `morie_mean`, `morie_var`, `morie_cor_pearson`, `morie_normal_pdf`, `morie_fast_available` ship with Rd man pages.

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """K-fold cross-validation for genomic-prediction accuracy."""
 from __future__ import annotations
 

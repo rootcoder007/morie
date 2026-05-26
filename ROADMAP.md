@@ -9,7 +9,7 @@ This document lists what's shipped and what's planned. Items below v1.0.0 are pr
 The release that closes the publication set, migrates the R package off `GPL-2.0-only`, and propagates the new empirical-paper DOI everywhere downstream consumers look:
 
 - **Licensing unified across the R and Python sides** — both language sides are `AGPL-3.0-or-later` (see `LICENSING.md`). The two optional Linux-kernel adjuncts (`kernel-module/morie.c` and `daemon/morie_lsm.py`) stay `GPL-2.0-only` (kernel ABI requirement) and are explicitly NOT part of the wheel or CRAN tarball. 279 R source-file SPDX headers swept.
-- **Empirical applications paper now public on Zenodo** — *Solitary Confinement, Self-Excitation, and Institutional Churn: Empirical Applications of MRM to Canadian Carceral and Police Data*, [10.5281/zenodo.20175689](https://doi.org/10.5281/zenodo.20175689). Five-paper set (MRM framework, Hawkes methodology, morie-R software, morie-Python software, empirical applications) is now complete.
+- **Empirical applications paper complete** — *Solitary Confinement, Self-Excitation, and Institutional Churn: Empirical Applications of MRM to Canadian Carceral and Police Data*. Five-paper set (MRM framework, Hawkes methodology, morie-R software, morie-Python software, empirical applications) is now complete.
 - **`ac` / `vm` terminology locked across all 5 papers** — `ac` (alert complexity) and `vm` (volatility measure of placements, "regional-transition count" alongside) are now the canonical operational terms.
 - **DOI + version sweep across all surfaces** — empirical-paper DOI now reaches `docs/source/index.rst` Sphinx badges, `pyproject.toml [project.urls]`, `papers/README.md`, and `CITATION.cff`. Also: `Dockerfile` un-pinned from `0.9.5.6` → `0.7.0`; Sphinx install snippets un-pinned from `0.4.12` → `0.7.0`; `papers/README.md` "in preparation" → published DOI for the empirical paper; v0.5.0 version stamp note → v0.7.0.
 - **R-package roxygen man pages for the fast Rcpp kernels** — `morie_mean`, `morie_var`, `morie_cor_pearson`, `morie_normal_pdf`, `morie_fast_available` now ship with proper Rd documentation alongside the C++ exports.
@@ -24,7 +24,7 @@ The release that makes the toolkit usable by a non-programmer:
 - **Open-data ingestors** — `morie ingest ckan` (open.canada.ca and any CKAN portal), `morie ingest tps` (ArcGIS layers), `morie ingest siu` (Director's-report PDFs).
 - **Schema-agnostic loader** — datasets with non-canonical column names flow through morie modules without renaming; `morie.schema.infer_mapping(your_df, canonical=...)` does the mapping.
 - **Nine-language CLI** — EN / FR / ES / DE / ZH / PT / JA / AR / HI via `MORIE_LOCALE=<code>`.
-- **Five install channels verified** end-to-end on Mac + Raspberry Pi: curl one-liner, `pip install morie`, `brew tap hadesllm/morie && brew install morie`, `docker run ghcr.io/rootcoder007/morie:0.5.0`, R via r-universe.
+- **Five install channels verified** end-to-end on Mac + Raspberry Pi: curl one-liner, `pip install morie`, `brew tap rootcoder007/morie && brew install morie`, `docker run ghcr.io/rootcoder007/morie:0.5.0`, R via r-universe.
 - **First-paper template** — `morie generate-template --module <name> --out my-paper.md` writes a JSS-style methods + results scaffold pre-filled with BibTeX entries for the four companion papers.
 - **Accessibility** — `NO_COLOR=1` and pipe-detection auto-degrade to plain text for screen readers.
 

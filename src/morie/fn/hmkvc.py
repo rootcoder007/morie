@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """KV-cache compression for autoregressive LLM inference."""
 import numpy as np
 from ._richresult import RichResult

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Chirp (frequency sweep) detection via instantaneous frequency."""
 
 from __future__ import annotations

@@ -19,7 +19,7 @@ By the end you'll have ~13 CSV files, and we'll show you which one answers the q
 If you haven't installed yet:
 
 ```bash
-curl -fsSL https://hadesllm.github.io/morie/install.sh | bash
+curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash
 ```
 
 That's it. The installer puts the `morie` command on your `PATH`. If the installer warns about `PATH`, run the line it shows you and then start a new terminal window.
@@ -163,7 +163,7 @@ If `python -c "..."` looks intimidating, the same is doable from a Python REPL (
 ## What to do next
 
 - Read the [INSTALLATION.md](INSTALLATION.md) for the full install matrix
-- Browse [the docs site](https://hadesllm.github.io/morie/) for module reference
+- Browse [the docs site](https://rootcoder007.github.io/morie/) for module reference
 - Look at the [JSS papers](papers/) for the methodological backing
 - Open the Terminal IDE for an interactive exploration: `morie tui`
 

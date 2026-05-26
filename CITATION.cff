@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use morie in your research, please cite the language-specific software paper (R: DOI 10.5281/zenodo.20111233; Python: DOI 10.5281/zenodo.20096350). Where applicable to your work, also cite the MRM framework paper (DOI 10.5281/zenodo.20096075), the Hawkes-process methodology paper (DOI 10.5281/zenodo.20102198), and the empirical applications paper (DOI 10.5281/zenodo.20175689)."
+message: "If you use morie in your research, please cite the language-specific software paper (R or Python). Where applicable to your work, also cite the MRM framework paper, the Hawkes-process methodology paper, and the empirical applications paper. See README.md for the full bibliography."
 title: "morie: Multi-domain Open Research and Inferential Estimation"
 authors:
   - family-names: "Ruhela"
@@ -12,22 +12,6 @@ date-released: "2026-05-22"
 url: "https://github.com/rootcoder007/morie"
 repository-code: "https://github.com/rootcoder007/morie"
 license: "AGPL-3.0-or-later"
-identifiers:
-  - type: doi
-    value: "10.5281/zenodo.20111233"
-    description: "morie R software paper (and R package source)."
-  - type: doi
-    value: "10.5281/zenodo.20096350"
-    description: "morie Python software paper (and Python package source)."
-  - type: doi
-    value: "10.5281/zenodo.20096075"
-    description: "MRM framework paper (theoretical foundations)."
-  - type: doi
-    value: "10.5281/zenodo.20102198"
-    description: "Hawkes-process methodology paper."
-  - type: doi
-    value: "10.5281/zenodo.20175689"
-    description: "Empirical applications paper (Solitary Confinement, Self-Excitation, and Institutional Churn)."
 preferred-citation:
   type: software
   title: "morie: Multi-domain Open Research and Inferential Estimation"
@@ -37,8 +21,7 @@ preferred-citation:
       orcid: "https://orcid.org/0009-0004-1750-3592"
   year: "2026"
   version: "0.9.5.12"
-  doi: "10.5281/zenodo.20111233"
-  url: "https://doi.org/10.5281/zenodo.20111233"
+  url: "https://github.com/rootcoder007/morie"
 references:
   - type: software
     title: "morie: Multi-domain Open Research and Inferential Estimation in Python"
@@ -48,8 +31,6 @@ references:
         orcid: "https://orcid.org/0009-0004-1750-3592"
     year: "2026"
     version: "0.9.5.12"
-    doi: "10.5281/zenodo.20096350"
-    url: "https://doi.org/10.5281/zenodo.20096350"
     notes: "Python companion software paper (same toolkit, Python implementation)."
   - type: generic
     title: "MRM: Multilevel Reconciliation Methodology -- A multi-source statistical foundation for Canadian carceral, police, and oversight data"
@@ -59,8 +40,6 @@ references:
         orcid: "https://orcid.org/0009-0004-1750-3592"
     year: "2026"
     version: "v1"
-    doi: "10.5281/zenodo.20096075"
-    url: "https://doi.org/10.5281/zenodo.20096075"
     notes: "Theoretical foundations paper for the MRM framework."
   - type: generic
     title: "Criminological Hawkes Process via MORIE: Markovian and Non-Markovian Self-Exciting Point Processes for Toronto Crime"
@@ -70,8 +49,6 @@ references:
         orcid: "https://orcid.org/0009-0004-1750-3592"
     year: "2026"
     version: "v1"
-    doi: "10.5281/zenodo.20102198"
-    url: "https://doi.org/10.5281/zenodo.20102198"
     notes: "Hawkes methodology paper."
   - type: generic
     title: "Solitary Confinement, Self-Excitation, and Institutional Churn: Empirical Applications of MRM to Canadian Carceral and Police Data"
@@ -81,8 +58,6 @@ references:
         orcid: "https://orcid.org/0009-0004-1750-3592"
     year: "2026"
     version: "v1"
-    doi: "10.5281/zenodo.20175689"
-    url: "https://doi.org/10.5281/zenodo.20175689"
     notes: "Empirical applications paper — DML causal estimates, Mandela classification, Goffmanian institutional churn, Hawkes self-excitation on Toronto crime data."
   - type: software
     title: "Claude (Opus, Sonnet, Haiku) — Claude 4.x model family"

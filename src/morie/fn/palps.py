@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Horn's parallel analysis: how many factors to retain?."""
 
 from __future__ import annotations

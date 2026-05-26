@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Filter out votes where a single option exceeds threshold agreement."""
 
 from __future__ import annotations

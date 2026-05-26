@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """KDFE bias and variance properties (Fauzi Ch 2).
 
 Kernel distribution function estimator (KDFE):

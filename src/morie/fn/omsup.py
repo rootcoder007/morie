@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Solve a two-player zero-sum game via minimax / linear programming."""
 
 from __future__ import annotations

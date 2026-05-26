@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Nearest neighbor index (Clark-Evans)"""
 
 import numpy as np

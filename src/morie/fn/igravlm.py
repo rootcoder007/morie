@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Gravity model LM test for spatial autocorrelation."""
 
 import numpy as np

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Minimum Redundancy Maximum Relevance (mRMR) scoring."""
 
 import numpy as np

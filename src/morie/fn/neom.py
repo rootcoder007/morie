@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Find the optimal binary split for *feature* predicting *target*."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Firth penalized logistic regression for rare events."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Generate a random elastic deformation field (Simard et al., 2003)."""
 
 from __future__ import annotations

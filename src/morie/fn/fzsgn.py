@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Smoothed sign test (Fauzi Ch 5).
 
 Classical sign test counts S = #{X_i > theta_0}.  Fauzi's smoothed

@@ -231,7 +231,7 @@ fi
 # --- R morie ------------------------------------------------------
 if [ "$R" = "1" ] && [ "$HAVE_R" = "1" ]; then
   echo "[install.sh] installing R morie via CRAN + r-universe fallback"
-  run Rscript -e 'install.packages("morie", repos = c(hadesllm = "https://hadesllm.r-universe.dev", CRAN = "https://cloud.r-project.org"))'
+  run Rscript -e 'install.packages("morie", repos = c(rootcoder007 = "https://rootcoder007.r-universe.dev", CRAN = "https://cloud.r-project.org"))'
 fi
 
 # --- Kernel module (opt-in, Linux only) ---------------------------

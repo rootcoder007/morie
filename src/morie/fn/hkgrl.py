@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute Hawking radiation temperature for a Schwarzschild black hole."""
 
 from __future__ import annotations

@@ -11,15 +11,10 @@ A multi-domain scientific computing toolkit (Python and R) for observational inf
 [![CodeQL](https://github.com/rootcoder007/morie/actions/workflows/codeql.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/codeql.yml)
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg)](https://github.com/rootcoder007/morie/blob/main/LICENSE)
 [![PyPI version](https://img.shields.io/pypi/v/morie.svg)](https://pypi.org/project/morie/)
-[![r-universe](https://img.shields.io/badge/r--universe-hadesllm-276DC3)](https://hadesllm.r-universe.dev/morie)
+[![r-universe](https://img.shields.io/badge/r--universe-rootcoder007-276DC3)](https://rootcoder007.r-universe.dev/morie)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![DOI · morie R](https://img.shields.io/badge/DOI%20%C2%B7%20morie%20R-10.5281%2Fzenodo.20111233-0d9488?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.20111233)
-[![DOI · morie Python](https://img.shields.io/badge/DOI%20%C2%B7%20morie%20Python-10.5281%2Fzenodo.20096350-7c3aed?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.20096350)
-[![MRM paper](https://img.shields.io/badge/MRM_paper-10.5281%2Fzenodo.20096075-15803d?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.20096075)
-[![Hawkes paper](https://img.shields.io/badge/Hawkes_paper-10.5281%2Fzenodo.20102198-be123c?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.20102198)
-[![Empirical paper](https://img.shields.io/badge/Empirical_paper-10.5281%2Fzenodo.20175689-1a73e8?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.20175689)
 
-> ⚠️ **Pre-alpha (v0.x).** MORIE is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift, datasets may move, and findings may be refined between minor versions. Paper sources are at [`papers/`](https://github.com/rootcoder007/morie/tree/main/papers) (LaTeX); compiled PDFs are on Zenodo via the DOI badges above.
+> ⚠️ **Pre-alpha (v0.x).** MORIE is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift, datasets may move, and findings may be refined between minor versions. Paper sources are at [`papers/`](https://github.com/rootcoder007/morie/tree/main/papers) (LaTeX).
 
 ## Installation
 
@@ -36,16 +31,16 @@ morie is a Python (and R) package — once Python is present it is `pip install 
 The simplest path **if you have a terminal with `curl` and `bash`** — both are built into macOS and preinstalled on most Linux (**Windows has no `bash`**, so use the installer above instead). It then bootstraps everything else for you: Python via `uv`, a managed venv, and the morie wheel. No pre-existing Python or `pip` needed.
 
 ```bash
-curl -fsSL https://hadesllm.github.io/morie/install.sh | bash
+curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash
 ```
 
 Or, with R alongside Python:
 
 ```bash
-curl -fsSL https://hadesllm.github.io/morie/install.sh | bash -s -- --auto
+curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash -s -- --auto
 ```
 
-After install, `~/.local/bin/morie` is a thin shim into the managed venv at `~/.venvs/morie`. Full install instructions, channel comparison, and platform-specific notes are at **[hadesllm.github.io/morie/#quick-start](https://hadesllm.github.io/morie/#quick-start)**.
+After install, `~/.local/bin/morie` is a thin shim into the managed venv at `~/.venvs/morie`. Full install instructions, channel comparison, and platform-specific notes are at **[rootcoder007.github.io/morie/#quick-start](https://rootcoder007.github.io/morie/#quick-start)**.
 
 > On minimal Linux containers (Alpine, slim Debian) that ship without `curl`, install it first: `apt-get install -y curl` or `apk add curl`. macOS already has `curl` built in.
 
@@ -63,7 +58,7 @@ python -m pip install morie
 python -c "import morie; print(morie.__version__)"
 ```
 
-For the R package: `Rscript -e "install.packages('morie', repos=c('https://hadesllm.r-universe.dev','https://cloud.r-project.org'))"`
+For the R package: `Rscript -e "install.packages('morie', repos=c('https://rootcoder007.r-universe.dev','https://cloud.r-project.org'))"`
 
 Prefer a package manager? If `winget --version` works on your machine, `winget install -e --id Python.Python.3.12` (and `RProject.R`) installs the prerequisites in one line each — but `winget` is absent from many Windows installs, so the installer steps above are the reliable default. The full Windows walkthrough, including fixes for common errors (`python` opening the Microsoft Store, PowerShell execution policy, long-path), is in **[INSTALLATION.md](https://github.com/rootcoder007/morie/blob/main/INSTALLATION.md)**.
 
@@ -78,11 +73,11 @@ If you don't have Homebrew yet, install it first (macOS ships `curl` and `bash`,
 Then:
 
 ```bash
-brew tap hadesllm/morie
+brew tap rootcoder007/morie
 brew install morie
 ```
 
-The tap repo is [`hadesllm/homebrew-morie`](https://github.com/hadesllm/homebrew-morie). It pulls morie's source distribution from PyPI and bundles a self-contained `python@3.12` venv — no system Python required.
+The tap repo is [`rootcoder007/homebrew-morie`](https://github.com/rootcoder007/homebrew-morie). It pulls morie's source distribution from PyPI and bundles a self-contained `python@3.12` venv — no system Python required.
 
 ### Python — PyPI (manual; requires `pip` already installed)
 
@@ -114,7 +109,7 @@ install.packages("morie")
 install.packages(
   "morie",
   repos = c(
-    hadesllm = "https://hadesllm.r-universe.dev",
+    rootcoder007 = "https://rootcoder007.r-universe.dev",
     CRAN     = "https://cloud.r-project.org"
   )
 )
@@ -142,7 +137,7 @@ For the planned roadmap see [ROADMAP.md](ROADMAP.md).
 
 ## Documentation
 
-Full documentation is at [hadesllm.github.io/morie](https://hadesllm.github.io/morie/).
+Full documentation is at [rootcoder007.github.io/morie](https://rootcoder007.github.io/morie/).
 
 ## Citation
 
@@ -151,30 +146,27 @@ and, where applicable, the **MRM framework paper**, the **Hawkes methodology pap
 and the **empirical applications paper**.
 
 ```
-# Software paper — R (also the R package source on Zenodo)
+# Software paper — R
 Ruhela, V. S. (2026). morie: Multi-domain Open Research and Inferential
-Estimation in R (v0.9.5.4). Zenodo.
-https://doi.org/10.5281/zenodo.20111233
+Estimation in R (v0.9.5.12).
+https://github.com/rootcoder007/morie
 
-# Software paper — Python (also the Python package source on Zenodo)
+# Software paper — Python
 Ruhela, V. S. (2026). morie: Multi-domain Open Research and Inferential
-Estimation in Python (v0.9.5.4). Zenodo.
-https://doi.org/10.5281/zenodo.20096350
+Estimation in Python (v0.9.5.12).
 
 # MRM framework paper (theoretical foundations)
 Ruhela, V. S. (2026). MRM Framework: Multi-Source Statistical Foundation
-for Canadian Carceral, Police, and Oversight Data (v1). Zenodo.
-https://doi.org/10.5281/zenodo.20096075
+for Canadian Carceral, Police, and Oversight Data (v1).
 
 # Hawkes-process methodology paper
 Ruhela, V. S. (2026). Criminological Hawkes Process via MORIE: Markovian
 and Non-Markovian Self-Exciting Point Processes for Toronto Crime (v1).
-Zenodo. https://doi.org/10.5281/zenodo.20102198
 
 # Empirical applications paper
 Ruhela, V. S. (2026). Solitary Confinement, Self-Excitation, and
 Institutional Churn: Empirical Applications of MRM to Canadian Carceral
-and Police Data (v1). Zenodo. https://doi.org/10.5281/zenodo.20175689
+and Police Data (v1).
 ```
 
 See [`CITATION.cff`](https://github.com/rootcoder007/morie/blob/main/CITATION.cff) for machine-readable citation metadata.

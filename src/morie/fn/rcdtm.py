@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Time-to-event summary for recidivism."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Hierarchical Bayes nonparametric -- alpha-integrated DP."""
 import numpy as np
 from scipy.special import gammaln

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Holt-Winters additive seasonal smoothing."""
 
 from __future__ import annotations

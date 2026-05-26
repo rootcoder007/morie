@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute pairwise agreement matrix from vote/preference matrix."""
 
 from __future__ import annotations

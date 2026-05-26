@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Quantization-aware training (QAT): simulate quantization during training."""
 import numpy as np
 from ._richresult import RichResult

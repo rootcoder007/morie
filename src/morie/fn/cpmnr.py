@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Detect a single mean shift in a time series using CUSUM."""
 
 from __future__ import annotations

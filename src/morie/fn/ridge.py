@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Ridge regression with L2 penalty. Dataset-agnostic."""
 
 from __future__ import annotations

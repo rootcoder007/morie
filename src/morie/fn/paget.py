@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Page's test for ordered alternatives (repeated measures)."""
 
 import numpy as np

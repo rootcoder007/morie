@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """DAG (Directed Acyclic Graph) diagram."""
 
 from __future__ import annotations

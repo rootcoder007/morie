@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """GNS dual Jacobian ln|I-rho*W| + ln|I-lam*W|."""
 
 import numpy as np

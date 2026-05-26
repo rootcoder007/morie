@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Respiratory sound generation model (bronchial turbulence)."""
 import numpy as np
 from ._richresult import RichResult

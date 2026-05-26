@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Stratified random sample (proportional allocation)."""
 
 from typing import Sequence, Union

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Rosenbaum bounds sensitivity analysis for hidden confounding."""
 
 import math

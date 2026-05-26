@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """G_n(x) correction term in Edgeworth expansion for kernel quantile."""
 import numpy as np
 from ._richresult import RichResult

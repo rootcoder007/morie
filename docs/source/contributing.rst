@@ -6,7 +6,7 @@ Development setup
 
 .. code-block:: bash
 
-   git clone https://github.com/hadesllm/morie.git
+   git clone https://github.com/rootcoder007/morie.git
    cd morie
    python -m venv .venv && source .venv/bin/activate
    pip install -e ".[test,interactive]"

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Oracle inequality verification for model selection."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Reassigned spectrogram for sharper TF representation."""
 
 from __future__ import annotations

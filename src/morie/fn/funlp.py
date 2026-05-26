@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute funnel plot data and Egger's test for publication bias."""
 
 from __future__ import annotations

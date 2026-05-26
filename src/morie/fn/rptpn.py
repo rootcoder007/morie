@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Repetition penalty for generation (Keskar et al. 2019, CTRL)."""
 from __future__ import annotations
 

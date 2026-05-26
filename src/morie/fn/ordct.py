@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Linear-by-linear association test for ordered categories
 (Gibbons Ch 14.6.1).
 

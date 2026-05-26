@@ -1,4 +1,4 @@
-# r-universe build configuration for hadesllm/morie
+# r-universe build configuration for rootcoder007/morie
 #
 # r-universe (https://r-universe.dev) is the CI/CD service that builds
 # R packages from GitHub source and publishes binary builds for Linux,
@@ -7,7 +7,7 @@
 # `r-package/morie/`, not the repo root), and which dependencies it
 # needs.
 #
-# Once `.github/r-universe.yml` is in place, hadesllm.r-universe.dev
+# Once `.github/r-universe.yml` is in place, rootcoder007.r-universe.dev
 # will pick up new commits to main automatically (typically within an
 # hour) and rebuild + republish binaries.
 #
@@ -26,4 +26,4 @@ packages:
 # `r-package/moirais/` is intentionally NOT listed for r-universe
 # builds.  Users who want it should install via CRAN (where the
 # moirais alias is also published as a deprecation shim) or directly
-# from GitHub via `remotes::install_github("hadesllm/morie", subdir = "r-package/moirais")`.
+# from GitHub via `remotes::install_github("rootcoder007/morie", subdir = "r-package/moirais")`.

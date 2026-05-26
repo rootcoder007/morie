@@ -267,7 +267,7 @@ jobs:
         run: |
           REPO=public/apt
           cat > "${REPO}/dists/stable/Release" <<EOF
-          Origin: hadesllm
+          Origin: rootcoder007
           Label: morie
           Suite: stable
           Codename: stable
@@ -296,11 +296,11 @@ jobs:
           createrepo_c "${REPO}"
           cat > "${REPO}/morie.repo" <<'EOF'
           [morie]
-          name=morie (hadesllm)
-          baseurl=https://hadesllm.github.io/morie-repo/rpm
+          name=morie (rootcoder007)
+          baseurl=https://rootcoder007.github.io/morie-repo/rpm
           enabled=1
           gpgcheck=1
-          gpgkey=https://hadesllm.github.io/morie-repo/key.gpg
+          gpgkey=https://rootcoder007.github.io/morie-repo/key.gpg
           EOF
 
       - name: Sign repomd.xml
@@ -320,7 +320,7 @@ jobs:
           <!doctype html><meta charset="utf-8">
           <title>morie-repo</title>
           <h1>morie apt / dnf repository</h1>
-          <p>See <a href="https://github.com/hadesllm/morie/blob/main/packaging/README.md">install instructions</a>.</p>
+          <p>See <a href="https://github.com/rootcoder007/morie/blob/main/packaging/README.md">install instructions</a>.</p>
           <ul>
             <li><a href="apt/">apt/</a> &mdash; Debian / Ubuntu</li>
             <li><a href="rpm/">rpm/</a> &mdash; Fedora / RHEL</li>

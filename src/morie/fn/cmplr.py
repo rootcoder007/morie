@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Complier Average Causal Effect (CACE/LATE)."""
 
 from __future__ import annotations

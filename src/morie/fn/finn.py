@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Scan all numeric column pairs for significant correlations."""
 
 from __future__ import annotations

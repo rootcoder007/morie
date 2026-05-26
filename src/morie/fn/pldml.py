@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Partially linear DML (double/debiased ML)."""
 
 from __future__ import annotations

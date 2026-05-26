@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Detect edges in a grayscale image using Sobel or Prewitt operators."""
 
 from __future__ import annotations

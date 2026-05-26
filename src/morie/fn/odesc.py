@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """OTIS demographic summary -- region x age x gender counts."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """2D Gaussian kernel density estimation for geographic heatmaps."""
 
 from __future__ import annotations

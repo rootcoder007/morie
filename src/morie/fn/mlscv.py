@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Check convergence of MLSMU6 unfolding."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Omega-squared from ANOVA -- less biased than eta-squared."""
 
 

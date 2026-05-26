@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 r"""Huber loss (robust regression).
 
 Combines MSE (quadratic) and MAE (linear) losses.

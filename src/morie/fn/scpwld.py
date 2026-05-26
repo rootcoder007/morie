@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Spatial Poisson Wald test on rho."""
 
 from ._containers import SpatialResult

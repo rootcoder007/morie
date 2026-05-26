@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Diagnostic agreement (Cohen's kappa). 'Judge me by my size, do you?'"""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Moving average smoother (simple, weighted, exponential)."""
 
 import numpy as np

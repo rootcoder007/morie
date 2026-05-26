@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Unigram LM tokenizer: EM over piece probabilities."""
 import numpy as np
 from ._richresult import RichResult

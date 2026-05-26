@@ -551,9 +551,8 @@ v0.3.0 release lands on CRAN + PyPI + r-universe):
    First-time submitter endorsement may be needed per category.
    After acceptance, add `eprint = "26XX.XXXXX",
    archivePrefix = "arXiv"` fields to each paper's `Ruhela2026*`
-   bib self-cites alongside the existing Zenodo `doi = "..."`
-   entries.  Bump to v0.4.0-alpha after eprints land so the bib
-   entries reflect the new ID.
+   bib self-cites.  Bump to v0.4.0-alpha after eprints land so the
+   bib entries reflect the new ID.
 
 2. **Per-component licensing audit on every dependency** — verify
    that morie's dependency licences remain compatible with the
@@ -583,11 +582,11 @@ Five concrete deliverables for the alpha milestone:
    stat.ME / cs.MS / cs.LG categories.  First-time submitter
    endorsement may apply.  After acceptance: bump each `Ruhela2026*`
    bib self-cite to v0.4.0-alpha, add `eprint = "26XX.XXXXX",
-   archivePrefix = "arXiv"` fields alongside Zenodo DOI.
+   archivePrefix = "arXiv"` fields.
 
 2. **DEB/RPM packaging** hosted via **GitHub Pages** as a static
    apt/dnf repository.  CI builds .deb + .rpm artifacts on `v0.4.0*`
-   tags, publishes to `hadesllm.github.io/morie-repo/`.  Users add
+   tags, publishes to `rootcoder007.github.io/morie-repo/`.  Users add
    one apt-repository line + trust the project GPG key.
 
 3. **Deterministic-mode SHA-keyed seed stream** for stochastic
@@ -609,4 +608,4 @@ Five concrete deliverables for the alpha milestone:
 
 Plus org-level polish:
 - `hadesllm/.github` profile README + SECURITY.md + CONTRIBUTING.md.
-- `hadesllm.r-universe.dev` per-package license + paper DOI display.
+- `rootcoder007.r-universe.dev` per-package license + paper DOI display.

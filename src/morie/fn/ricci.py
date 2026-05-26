@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Ricci tensor and scalar curvature."""
 
 __all__ = ["ricci"]

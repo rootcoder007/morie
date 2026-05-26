@@ -147,9 +147,9 @@ def morie_banner() -> None:
         Console().print(Panel.fit(
             "[bold cyan]MORIE[/bold cyan] -- Multi-domain Open Research\n"
             "and Inferential Estimation\n"
-            "[dim]v0.2.0 · GPL-2.0-only · https://github.com/hadesllm/morie[/dim]",
+            "[dim]v0.2.0 · GPL-2.0-only · https://github.com/rootcoder007/morie[/dim]",
             border_style="cyan",
         ))
     else:
         print("MORIE -- Multi-domain Open Research and Inferential Estimation")
-        print("v0.2.0 · GPL-2.0-only · https://github.com/hadesllm/morie")
+        print("v0.2.0 · GPL-2.0-only · https://github.com/rootcoder007/morie")

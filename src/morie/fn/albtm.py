@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """BERTopic pipeline: embed -> UMAP -> HDBSCAN -> c-TF-IDF -> topic labels."""
 import numpy as np
 from ._richresult import RichResult

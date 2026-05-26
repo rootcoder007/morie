@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """PC algorithm for constraint-based causal discovery.
 
 The PC algorithm recovers the Markov equivalence class of a DAG by

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """K-fold cross-validation for OLS. Returns mean MSE across folds."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """SDEM Wald test on lambda."""
 
 from ._containers import SpatialResult

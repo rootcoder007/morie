@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Newton-Raphson root finding with convergence rate analysis."""
 
 from __future__ import annotations

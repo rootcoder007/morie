@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Hajek estimator for population mean."""
 
 from morie.survey import hajek_mean as _fn

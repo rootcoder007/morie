@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Determine optimal number of factors (parallel analysis, MAP, BIC)."""
 
 from __future__ import annotations

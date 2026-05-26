@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Bridge observations for cross-chamber comparison (Armstrong Ch 6)."""
 import numpy as np
 from ._richresult import RichResult

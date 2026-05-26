@@ -4,13 +4,13 @@ This directory contains the source LaTeX for the five papers that document the *
 
 ## Papers
 
-| Paper | Source | Zenodo DOI |
-|---|---|---|
-| **morie (Python)** | [`morie-py-paper/main.tex`](morie-py-paper/main.tex) | [10.5281/zenodo.20096350](https://doi.org/10.5281/zenodo.20096350) |
-| **morie (R)** | [`morie-r-paper/main.tex`](morie-r-paper/main.tex) | [10.5281/zenodo.20111233](https://doi.org/10.5281/zenodo.20111233) |
-| **MRM framework** | [`mrm-formulations-paper/main.tex`](mrm-formulations-paper/main.tex) | [10.5281/zenodo.20096075](https://doi.org/10.5281/zenodo.20096075) |
-| **MRM empirical** | [`morie-empirical-paper/main.tex`](morie-empirical-paper/main.tex) | [10.5281/zenodo.20175689](https://doi.org/10.5281/zenodo.20175689) |
-| **Hawkes process** | [`hawkes-paper/main.tex`](hawkes-paper/main.tex) | [10.5281/zenodo.20102198](https://doi.org/10.5281/zenodo.20102198) |
+| Paper | Source |
+|---|---|
+| **morie (Python)** | [`morie-py-paper/main.tex`](morie-py-paper/main.tex) |
+| **morie (R)** | [`morie-r-paper/main.tex`](morie-r-paper/main.tex) |
+| **MRM framework** | [`mrm-formulations-paper/main.tex`](mrm-formulations-paper/main.tex) |
+| **MRM empirical** | [`morie-empirical-paper/main.tex`](morie-empirical-paper/main.tex) |
+| **Hawkes process** | [`hawkes-paper/main.tex`](hawkes-paper/main.tex) |
 
 All papers use the [JSS](https://www.jstatsoft.org/) document class via the bundled `jss.cls` + `jss.bst`. Compile with `xelatex main.tex` (or `pdflatex main.tex`) followed by `bibtex main && xelatex main.tex && xelatex main.tex`.
 

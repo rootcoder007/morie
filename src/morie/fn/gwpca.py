@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Geographically weighted PCA (Harris et al. 2011)."""
 
 from __future__ import annotations

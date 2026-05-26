@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Asymptotic distribution of Page's L statistic."""
 import numpy as np
 from scipy import stats

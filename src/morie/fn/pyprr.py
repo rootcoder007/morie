@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Generate a Pitman-Yor process, a two-parameter generalization of DP."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """DW-NOMINATE ideal point estimation"""
 
 import numpy as np

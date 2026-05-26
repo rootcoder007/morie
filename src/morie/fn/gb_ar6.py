@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """ARE of Wilcoxon rank-sum vs t-test under uniform distribution: 1.0."""
 import numpy as np
 from scipy import stats

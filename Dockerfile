@@ -90,9 +90,9 @@ ARG BUILD_DATE=unknown
 
 LABEL org.opencontainers.image.title="morie" \
       org.opencontainers.image.description="Multi-domain Open Research and Inferential Estimation -- a multi-domain scientific computing toolkit for observational inference and intervention analysis (Python + R)" \
-      org.opencontainers.image.url="https://github.com/hadesllm/morie" \
-      org.opencontainers.image.source="https://github.com/hadesllm/morie" \
-      org.opencontainers.image.documentation="https://hadesllm.github.io/morie/" \
+      org.opencontainers.image.url="https://github.com/rootcoder007/morie" \
+      org.opencontainers.image.source="https://github.com/rootcoder007/morie" \
+      org.opencontainers.image.documentation="https://rootcoder007.github.io/morie/" \
       org.opencontainers.image.licenses="AGPL-3.0-or-later" \
       org.opencontainers.image.authors="Vansh Singh Ruhela <hadesllm@proton.me>" \
       org.opencontainers.image.vendor="hadesllm" \

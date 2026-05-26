@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Winsorized mean: replace extreme values at both tails then average."""
 
 from __future__ import annotations

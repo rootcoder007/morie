@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """SSP posterior distribution: conjugate-like update for species sampling process."""
 import numpy as np
 from ._richresult import RichResult

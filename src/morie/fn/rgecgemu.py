@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """ECG-EMG coupling during physical effort (VMG correlation)."""
 import numpy as np
 from scipy import stats

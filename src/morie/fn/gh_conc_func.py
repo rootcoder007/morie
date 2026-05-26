@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Concentration function phi_{f0}(eps) combines RKHS approximation and small ball prob."""
 import numpy as np
 from ._richresult import RichResult

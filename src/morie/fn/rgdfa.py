@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Detrended fluctuation analysis -- Rangayyan Ch 7."""
 from __future__ import annotations
 

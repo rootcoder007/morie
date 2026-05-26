@@ -88,4 +88,4 @@ The full methodology and Toronto application are in:
 
 - Ruhela, V. S. (2026). *Criminological Hawkes Process via MORIE:
   Markovian and Non-Markovian Self-Exciting Point Processes for
-  Toronto Crime.* Zenodo. https://doi.org/10.5281/zenodo.20102198
+  Toronto Crime.*

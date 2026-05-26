@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """IDW power-parameter sensitivity analysis."""
 
 import numpy as np

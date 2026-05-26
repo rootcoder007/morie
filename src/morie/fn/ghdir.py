@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Dirichlet process posterior update."""
 import numpy as np
 from scipy.stats import norm

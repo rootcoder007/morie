@@ -432,7 +432,7 @@ morie_arsau_fetch_sidecar <- function(kind, year, limit = 5000L,
   }
   # 3XX: route through the shared libcurl backend (with httr2
   # fallback). User-Agent is now whatever the C++ helper's default
-  # is (`morie-R/0.9.5.5 (...) libcurl`) -- close enough to the
+  # is (`morie-R/<DESCRIPTION-Version> (...) libcurl`) -- close enough to the
   # original arsau-specific string for upstream-portal analytics
   # purposes. timeout_sec preserved verbatim.
   body <- .morie_dataset_http_text(url, timeout_s = as.integer(timeout_sec))

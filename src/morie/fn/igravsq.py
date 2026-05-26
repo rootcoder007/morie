@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Square gravity (symmetric OD matrix)."""
 
 from ._containers import SpatialResult

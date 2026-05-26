@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """
 Average Treatment Effect on the Treated (ATT) via Hajek-weighted IPW.
 

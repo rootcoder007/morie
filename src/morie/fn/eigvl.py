@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Return eigenvalues of symmetric matrix B sorted descending."""
 
 from __future__ import annotations

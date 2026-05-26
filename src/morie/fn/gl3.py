@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Guttman's Lambda 3 (identical to Cronbach's alpha)."""
 
 from __future__ import annotations

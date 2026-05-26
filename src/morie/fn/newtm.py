@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Newton's method for root finding (1D and multivariate)."""
 
 from __future__ import annotations

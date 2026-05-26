@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Detect structural breaks in a time series and characterise recovery."""
 
 from __future__ import annotations

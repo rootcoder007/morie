@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Cross-tabulate two categorical variables and compute Pearson's."""
 
 from __future__ import annotations
