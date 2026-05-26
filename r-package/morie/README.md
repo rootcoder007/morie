@@ -236,44 +236,31 @@ software and the relevant companion papers.
   author  = {Ruhela, Vansh Singh},
   year    = {2026},
   note    = {R package version 0.9.5.4},
-  doi     = {10.5281/zenodo.20111233},
   url     = {https://github.com/rootcoder007/morie}
 }
 
 @Misc{ruhela_morie_python_2026,
-  title     = {morie: Multi-domain Open Research and Inferential Estimation in Python},
-  author    = {Ruhela, Vansh Singh},
-  year      = {2026},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.20096350},
-  url       = {https://doi.org/10.5281/zenodo.20096350}
+  title  = {morie: Multi-domain Open Research and Inferential Estimation in Python},
+  author = {Ruhela, Vansh Singh},
+  year   = {2026}
 }
 
 @Misc{ruhela_mrm_framework_2026,
-  title     = {MRM: Multilevel Reconciliation Methodology --- A multi-source statistical foundation for Canadian carceral, police, and oversight data},
-  author    = {Ruhela, Vansh Singh},
-  year      = {2026},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.20096075},
-  url       = {https://doi.org/10.5281/zenodo.20096075}
+  title  = {MRM: Multilevel Reconciliation Methodology --- A multi-source statistical foundation for Canadian carceral, police, and oversight data},
+  author = {Ruhela, Vansh Singh},
+  year   = {2026}
 }
 
 @Misc{ruhela_hawkes_2026,
-  title     = {Criminological Hawkes Process via MORIE: Markovian and Non-Markovian Self-Exciting Point Processes for Toronto Crime},
-  author    = {Ruhela, Vansh Singh},
-  year      = {2026},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.20102198},
-  url       = {https://doi.org/10.5281/zenodo.20102198}
+  title  = {Criminological Hawkes Process via MORIE: Markovian and Non-Markovian Self-Exciting Point Processes for Toronto Crime},
+  author = {Ruhela, Vansh Singh},
+  year   = {2026}
 }
 
 @Misc{ruhela_empirical_2026,
-  title     = {Solitary Confinement, Self-Excitation, and Institutional Churn: Empirical Applications of MRM to Canadian Carceral and Police Data},
-  author    = {Ruhela, Vansh Singh},
-  year      = {2026},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.20175689},
-  url       = {https://doi.org/10.5281/zenodo.20175689}
+  title  = {Solitary Confinement, Self-Excitation, and Institutional Churn: Empirical Applications of MRM to Canadian Carceral and Police Data},
+  author = {Ruhela, Vansh Singh},
+  year   = {2026}
 }
 ```
 
