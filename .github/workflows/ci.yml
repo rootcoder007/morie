@@ -82,42 +82,15 @@ jobs:
           python -c "import os, sys; sys.exit(0 if os.path.exists('morie-ci-smoke/power_summary.csv') else 1)"
         shell: bash
 
-  test-papers-latex:
-    name: LaTeX compile (5 papers)
-    runs-on: ubuntu-latest
-    # Only run the LaTeX job when papers actually change — typical CI
-    # runs skip this 90% of the time.
-    if: |
-      contains(github.event.head_commit.modified || '', 'papers/') ||
-      contains(github.event.head_commit.added || '', 'papers/') ||
-      github.event_name == 'workflow_dispatch'
-    steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-      - name: Install xelatex + bibtex
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            texlive-xetex texlive-latex-extra texlive-fonts-recommended \
-            texlive-publishers texlive-bibtex-extra biber lmodern
-      - name: Compile each paper
-        run: |
-          set -e
-          for paper in papers/hawkes-paper papers/morie-empirical-paper \
-                       papers/morie-py-paper papers/morie-r-paper \
-                       papers/mrm-formulations-paper; do
-            echo "=== $paper ==="
-            cd "$GITHUB_WORKSPACE/$paper"
-            cp ../jss.cls .
-            cp ../jss.bst .
-            # Two xelatex + bibtex passes to resolve refs
-            xelatex -interaction=nonstopmode main.tex || true
-            bibtex main || true
-            xelatex -interaction=nonstopmode main.tex || true
-            xelatex -interaction=nonstopmode main.tex
-            test -f main.pdf || { echo "FAIL: no PDF produced for $paper"; exit 1; }
-            ls -la main.pdf
-            cd "$GITHUB_WORKSPACE"
-          done
+  # test-papers-latex removed 2026-05-26: the five JSS-format papers
+  # (papers/hawkes-paper, papers/morie-empirical-paper,
+  # papers/morie-py-paper, papers/morie-r-paper,
+  # papers/mrm-formulations-paper) were git rm'd in commit fd415e9e5
+  # alongside the Zenodo-DOI cleanup, and the entire papers/ tree is
+  # now gitignored as a tripwire. The job is permanently dead code
+  # since it loops over directories that no longer exist; restore it
+  # only if the publication strategy is re-decided and the papers
+  # come back to the repo.
 
   test-r:
     name: R tests
