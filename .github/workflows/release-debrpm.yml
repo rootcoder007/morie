@@ -297,10 +297,10 @@ jobs:
           cat > "${REPO}/morie.repo" <<'EOF'
           [morie]
           name=morie (rootcoder007)
-          baseurl=https://rootcoder007.github.io/morie-repo/rpm
+          baseurl=https://rootcoder007.github.io/apt-morie/rpm
           enabled=1
           gpgcheck=1
-          gpgkey=https://rootcoder007.github.io/morie-repo/key.gpg
+          gpgkey=https://rootcoder007.github.io/apt-morie/key.gpg
           EOF
 
       - name: Sign repomd.xml
@@ -318,7 +318,7 @@ jobs:
           gpg --armor --export "${GPG_KEYID}" > public/key.gpg
           cat > public/index.html <<'EOF'
           <!doctype html><meta charset="utf-8">
-          <title>morie-repo</title>
+          <title>apt-morie</title>
           <h1>morie apt / dnf repository</h1>
           <p>See <a href="https://github.com/rootcoder007/morie/blob/main/packaging/README.md">install instructions</a>.</p>
           <ul>
@@ -328,12 +328,19 @@ jobs:
           </ul>
           EOF
 
-      - name: Deploy to morie-repo branch
+      - name: Deploy to rootcoder007/apt-morie (cross-repo)
+        # apt/dnf moved out of morie itself in 2026-05-26: served from
+        # https://rootcoder007.github.io/apt-morie/ via its own
+        # GitHub Pages site. Cross-repo push requires a fine-grained
+        # PAT (APT_MORIE_DEPLOY_PAT) with Contents:write scoped to
+        # ONLY the apt-morie repo. The default GITHUB_TOKEN cannot
+        # write across repos.
         uses: peaceiris/actions-gh-pages@373f7f263a76c20808c831209c920827a82a2847 # v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          personal_token: ${{ secrets.APT_MORIE_DEPLOY_PAT }}
+          external_repository: rootcoder007/apt-morie
           publish_dir: ./public
-          publish_branch: morie-repo
+          publish_branch: main
           force_orphan: false
           keep_files: true
           commit_message: "Publish apt/dnf repo for v${{ steps.ver.outputs.VERSION }}"

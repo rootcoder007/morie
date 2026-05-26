@@ -1,16 +1,16 @@
 # morie system packages
 
 Signed `.deb` and `.rpm` packages of `morie` are published to the
-[rootcoder007/morie-repo](https://rootcoder007.github.io/morie-repo/) GitHub Pages
+[rootcoder007/apt-morie](https://rootcoder007.github.io/apt-morie/) GitHub Pages
 site by the `release-debrpm.yml` GitHub Actions workflow on every `v*` tag.
 
 ## Install morie on Debian/Ubuntu
 
 ```bash
 sudo install -d -m 0755 /etc/apt/keyrings
-curl -fsSL https://rootcoder007.github.io/morie-repo/key.gpg \
+curl -fsSL https://rootcoder007.github.io/apt-morie/key.gpg \
   | sudo gpg --dearmor -o /etc/apt/keyrings/rootcoder007.gpg
-echo "deb [signed-by=/etc/apt/keyrings/rootcoder007.gpg] https://rootcoder007.github.io/morie-repo/apt stable main" \
+echo "deb [signed-by=/etc/apt/keyrings/rootcoder007.gpg] https://rootcoder007.github.io/apt-morie/apt stable main" \
   | sudo tee /etc/apt/sources.list.d/morie.list
 sudo apt update && sudo apt install morie
 ```
@@ -20,14 +20,14 @@ Supported architectures: `amd64`, `arm64`.
 ## Install morie on Fedora/RHEL
 
 ```bash
-sudo dnf config-manager --add-repo https://rootcoder007.github.io/morie-repo/rpm/morie.repo
+sudo dnf config-manager --add-repo https://rootcoder007.github.io/apt-morie/rpm/morie.repo
 sudo dnf install morie
 ```
 
 Or on older RHEL/CentOS:
 
 ```bash
-sudo yum-config-manager --add-repo https://rootcoder007.github.io/morie-repo/rpm/morie.repo
+sudo yum-config-manager --add-repo https://rootcoder007.github.io/apt-morie/rpm/morie.repo
 sudo yum install morie
 ```
 
@@ -62,13 +62,13 @@ Repository artifacts are authenticated with the project GPG key:
 `InRelease` rather than an embedded per-package signature.
 
 The ASCII-armored public key is published at
-`https://rootcoder007.github.io/morie-repo/key.gpg`.
+`https://rootcoder007.github.io/apt-morie/key.gpg`.
 
 ## Verifying a downloaded package manually
 
 ```bash
 # .rpm
-rpm --import https://rootcoder007.github.io/morie-repo/key.gpg
+rpm --import https://rootcoder007.github.io/apt-morie/key.gpg
 rpm --checksig morie-0.8.0.x86_64.rpm
 ```
 
