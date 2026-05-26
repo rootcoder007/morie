@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use morie in your research, please cite the language-specific software paper (R or Python). Where applicable to your work, also cite the MRM framework paper, the Hawkes-process methodology paper, and the empirical applications paper. See README.md for the full bibliography."
+message: "If you use morie in your research, please cite the software (see preferred-citation below). The single citation covers both the R and Python implementations. Methodology and empirical-applications papers are in preparation and will be added once publicly available with DOIs."
 title: "morie: Multi-domain Open Research and Inferential Estimation"
 authors:
   - family-names: "Ruhela"
@@ -23,42 +23,11 @@ preferred-citation:
   version: "0.9.5.12"
   url: "https://github.com/rootcoder007/morie"
 references:
-  - type: software
-    title: "morie: Multi-domain Open Research and Inferential Estimation in Python"
-    authors:
-      - family-names: "Ruhela"
-        given-names: "Vansh Singh"
-        orcid: "https://orcid.org/0009-0004-1750-3592"
-    year: "2026"
-    version: "0.9.5.12"
-    notes: "Python companion software paper (same toolkit, Python implementation)."
-  - type: generic
-    title: "MRM: Multilevel Reconciliation Methodology -- A multi-source statistical foundation for Canadian carceral, police, and oversight data"
-    authors:
-      - family-names: "Ruhela"
-        given-names: "Vansh Singh"
-        orcid: "https://orcid.org/0009-0004-1750-3592"
-    year: "2026"
-    version: "v1"
-    notes: "Theoretical foundations paper for the MRM framework."
-  - type: generic
-    title: "Criminological Hawkes Process via MORIE: Markovian and Non-Markovian Self-Exciting Point Processes for Toronto Crime"
-    authors:
-      - family-names: "Ruhela"
-        given-names: "Vansh Singh"
-        orcid: "https://orcid.org/0009-0004-1750-3592"
-    year: "2026"
-    version: "v1"
-    notes: "Hawkes methodology paper."
-  - type: generic
-    title: "Solitary Confinement, Self-Excitation, and Institutional Churn: Empirical Applications of MRM to Canadian Carceral and Police Data"
-    authors:
-      - family-names: "Ruhela"
-        given-names: "Vansh Singh"
-        orcid: "https://orcid.org/0009-0004-1750-3592"
-    year: "2026"
-    version: "v1"
-    notes: "Empirical applications paper — DML causal estimates, Mandela classification, Goffmanian institutional churn, Hawkes self-excitation on Toronto crime data."
+  # Methodology + empirical-applications papers (MRM framework,
+  # Hawkes process, solitary-confinement / self-excitation /
+  # institutional churn, language-specific software papers) are
+  # in preparation. They will be added back as `references` once
+  # they are publicly available with DOIs or preprint URLs.
   - type: software
     title: "Claude (Opus, Sonnet, Haiku) — Claude 4.x model family"
     authors:

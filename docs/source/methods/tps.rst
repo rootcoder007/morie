@@ -73,12 +73,9 @@ Quick start
 References
 ----------
 
-The Hawkes-process methodology applied to these data is developed in
-detail in the companion paper:
-
-- Ruhela, V. S. (2026). *Criminological Hawkes Process via MORIE:
-  Markovian and Non-Markovian Self-Exciting Point Processes for
-  Toronto Crime.*
+The Hawkes-process methodology applied to these data will appear in a
+forthcoming companion paper (in preparation; will be linked here once
+publicly available with a DOI or preprint URL).
 
 The statistical-physics components follow the D'Orsogna-Perc (2015)
 review and the references cited therein.

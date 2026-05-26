@@ -141,35 +141,26 @@ Full documentation is at [rootcoder007.github.io/morie](https://rootcoder007.git
 
 ## Citation
 
-If you use morie in your research, please cite **both software papers** (R and Python)
-and, where applicable, the **MRM framework paper**, the **Hawkes methodology paper**,
-and the **empirical applications paper**.
+If you use morie in your research, please cite the software:
 
 ```
-# Software paper — R
-Ruhela, V. S. (2026). morie: Multi-domain Open Research and Inferential
-Estimation in R (v0.9.5.12).
+Ruhela, V. S. (2026). morie: Multi-domain Open Research and
+Inferential Estimation (v0.9.5.12).
 https://github.com/rootcoder007/morie
-
-# Software paper — Python
-Ruhela, V. S. (2026). morie: Multi-domain Open Research and Inferential
-Estimation in Python (v0.9.5.12).
-
-# MRM framework paper (theoretical foundations)
-Ruhela, V. S. (2026). MRM Framework: Multi-Source Statistical Foundation
-for Canadian Carceral, Police, and Oversight Data (v1).
-
-# Hawkes-process methodology paper
-Ruhela, V. S. (2026). Criminological Hawkes Process via MORIE: Markovian
-and Non-Markovian Self-Exciting Point Processes for Toronto Crime (v1).
-
-# Empirical applications paper
-Ruhela, V. S. (2026). Solitary Confinement, Self-Excitation, and
-Institutional Churn: Empirical Applications of MRM to Canadian Carceral
-and Police Data (v1).
 ```
 
-See [`CITATION.cff`](https://github.com/rootcoder007/morie/blob/main/CITATION.cff) for machine-readable citation metadata.
+The single citation above covers both the R (`r-package/morie/`) and
+Python (`src/morie/`) implementations, which ship under the same
+version.
+
+Methodology and empirical-applications papers (MRM framework,
+criminological Hawkes process, solitary-confinement / self-excitation
+/ institutional churn) are in preparation; they will be linked here
+once publicly available.
+
+See [`CITATION.cff`](https://github.com/rootcoder007/morie/blob/main/CITATION.cff)
+for machine-readable citation metadata (BibTeX, etc.) — that file is
+what GitHub's "Cite this repository" button consumes.
 
 
 ## Acknowledgments
