@@ -29,6 +29,12 @@ jobs:
     env:
       _R_CHECK_FORCE_SUGGESTS_: false
       R_KEEP_PKG_SOURCE: yes
+      # pak resolves Remotes against the GitHub API; without a token
+      # anonymous lookups can 404 or hit rate limits, surfacing as
+      # "Can't find GitHub repo rootcoder007/rmoriedata". Pass the
+      # runner token so pak authenticates.
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     defaults:
       run:
@@ -62,6 +68,14 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     name: lintr
+
+    env:
+      # pak resolves Remotes (rootcoder007/rmoriedata, synth-inference/synthdid)
+      # against the GitHub API; anonymous lookups can 404 or get rate-
+      # limited, surfacing as "Can't find GitHub repo". Pass the runner's
+      # GITHUB_TOKEN so pak can authenticate and dependably resolve.
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     defaults:
       run:
