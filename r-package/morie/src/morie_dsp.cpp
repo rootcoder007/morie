@@ -108,7 +108,12 @@ List morie_dsp_rls_cpp(NumericVector x, NumericVector d,
 
         for (int r = 0; r < order; ++r) {
             double s = 0.0;
-            const double *Pr = &P[r * order];
+            // Cast to size_t BEFORE the multiplication: `int * int -> int`
+        // can overflow with large `order` (CodeQL cpp/integer-
+        // multiplication-cast-to-long flags the implicit ptrdiff_t
+        // widening). Promote one operand so the multiply happens in
+        // the wider type.
+        const double *Pr = &P[static_cast<std::size_t>(r) * static_cast<std::size_t>(order)];
             for (int c = 0; c < order; ++c) s += Pr[c] * seg[c];
             Pseg[r] = s;
         }
@@ -119,7 +124,10 @@ List morie_dsp_rls_cpp(NumericVector x, NumericVector d,
         for (int r = 0; r < order; ++r) w[r] += kg[r] * err;
         const double inv_lam = 1.0 / lam;
         for (int r = 0; r < order; ++r) {
-            double *Pr = &P[r * order];
+            // Same int*int -> ptrdiff_t widening trap as above
+            // (CodeQL cpp/integer-multiplication-cast-to-long); promote
+            // to size_t before the multiplication.
+            double *Pr = &P[static_cast<std::size_t>(r) * static_cast<std::size_t>(order)];
             const double kgr = kg[r];
             for (int c = 0; c < order; ++c) {
                 Pr[c] = (Pr[c] - kgr * Pseg[c]) * inv_lam;

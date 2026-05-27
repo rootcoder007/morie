@@ -26,6 +26,13 @@ on:
   workflow_call:
   workflow_dispatch:
 
+# Minimal permissions: we only checkout + read the working tree to
+# regen + diff VERSION_INVENTORY.csv. No writes anywhere. CodeQL
+# rule actions/missing-workflow-permissions flags workflows that
+# default to the runner's broad GITHUB_TOKEN scope.
+permissions:
+  contents: read
+
 jobs:
   drift-check:
     runs-on: ubuntu-latest
