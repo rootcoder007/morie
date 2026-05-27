@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Lilliefors test (KS with estimated parameters)."""
 
 from typing import Union

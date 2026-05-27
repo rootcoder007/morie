@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Stationary bootstrap spatial autocorrelated."""
 
 import numpy as np

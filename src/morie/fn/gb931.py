@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Freund-Ansari-Bradley-David-Barton scale test using folded ranks."""
 import numpy as np
 from scipy import stats

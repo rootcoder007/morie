@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Kernel density estimate of event times."""
 
 from __future__ import annotations

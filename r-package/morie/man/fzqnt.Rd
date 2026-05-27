@@ -20,7 +20,7 @@ morie_fauzi_kernel_quantile_asymptotic(x, p = 0.5, h = NULL)
 Named list with estimate, se, p, h, density_at_Q, n, method.
 }
 \description{
-\eqn{\sqrt n(\hat Q-Q) \to N(0,p(1-p)/f(Q)^2)}.
+\eqn{\sqrt n(\hat Q-Q) \to N(0,p(1-p)/f(Q)^2)}{sqrt n(hat Q-Q) -> N(0,p(1-p)/f(Q)^2)}.
 }
 \examples{
 fzqnt(x = rnorm(50))

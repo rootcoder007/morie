@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Two-stage least squares (2SLS) IV estimation."""
 from __future__ import annotations
 

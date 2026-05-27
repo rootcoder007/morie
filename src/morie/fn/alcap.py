@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Image captioning pipeline: visual encoder -> projector -> LLM decoder."""
 import numpy as np
 from ._richresult import RichResult

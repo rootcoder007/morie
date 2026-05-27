@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Ordinal probit coefficients for cutting-plane normal vectors."""
 
 from __future__ import annotations

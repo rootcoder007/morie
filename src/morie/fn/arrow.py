@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Compute 2-D layout positions for a directed graph via force-directed placement."""
 
 from __future__ import annotations

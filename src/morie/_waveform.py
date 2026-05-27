@@ -186,11 +186,15 @@ def higuchi_fd(x: np.ndarray, kmax: int = 10) -> float:
     for k in range(1, kmax + 1):
         lm_sum = 0.0
         for m in range(1, k + 1):
-            indices = np.arange(0, (n - m) // k) * k + m - 1
-            if len(indices) < 2:
+            n_pts = (n - m) // k  # Higuchi (1988) M = floor((N-m)/k)
+            if n_pts < 2:
                 continue
+            # Need M+1 indices to get M differences (Higuchi eq 1 exactly).
+            # Earlier `arange(0, n_pts)` gave only M-1 differences.
+            indices = np.arange(0, n_pts + 1) * k + m - 1
+            indices = indices[indices < n]
             seg = x[indices]
-            length = np.sum(np.abs(np.diff(seg))) * (n - 1) / (((n - m) // k) * k)
+            length = np.sum(np.abs(np.diff(seg))) * (n - 1) / (n_pts * k)
             lm_sum += length
         lk[k - 1] = lm_sum / k
     valid = lk > 0

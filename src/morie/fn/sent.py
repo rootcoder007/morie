@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Descriptive statistics for sentence lengths (months)."""
 from __future__ import annotations
 

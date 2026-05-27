@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Increasing-process prior via integrated Gaussian process for monotone functions."""
 import numpy as np
 from ._richresult import RichResult

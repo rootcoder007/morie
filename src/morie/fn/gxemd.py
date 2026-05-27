@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Genotype-by-environment interaction (G×E) main-and-interaction model."""
 from __future__ import annotations
 

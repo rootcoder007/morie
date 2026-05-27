@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Pruned Exact Linear Time (PELT) algorithm for change-point detection."""
 
 from __future__ import annotations

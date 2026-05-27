@@ -75,7 +75,7 @@ Biometrika 70(1): 41-55.
 Attribution -- Ruhela formulations
 ---------------------------------
 The OTIS-RC formulations and the entire codebase implemented here
-are the work of Vansh Singh Ruhela (hadesllm).  No one
+are the work of Vansh Singh Ruhela (rootcoder007).  No one
 co-formulated the analyses: the (T = ac ≥ 2, Y = vm count)
 alert-complexity -> regional-volatility contrast, the 8-state
 combo encoding, and the full method battery (IPW + AIPW +

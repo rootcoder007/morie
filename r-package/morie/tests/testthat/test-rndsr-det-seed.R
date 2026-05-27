@@ -22,7 +22,6 @@ xy_fixture <- function() {
 
 test_that("rndsr deterministic_seed is reproducible", {
   skip_if_no_hash()
-  testthat::skip_if_not_installed("caret")
   d <- xy_fixture()
   r1 <- morie_random_search_cv(d$x, d$y, n_iter = 5L, cv = 3L, deterministic_seed = 42L)
   r2 <- morie_random_search_cv(d$x, d$y, n_iter = 5L, cv = 3L, deterministic_seed = 42L)
@@ -33,7 +32,6 @@ test_that("rndsr deterministic_seed is reproducible", {
 })
 
 test_that("rndsr default (deterministic_seed = NULL) path is unchanged", {
-  testthat::skip_if_not_installed("caret")
   d <- xy_fixture()
   r1 <- morie_random_search_cv(d$x, d$y, n_iter = 5L, cv = 3L, seed = 42L)
   r2 <- morie_random_search_cv(d$x, d$y, n_iter = 5L, cv = 3L, seed = 42L)

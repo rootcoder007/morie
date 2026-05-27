@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Rapidly-exploring Random Tree (RRT) path planner in 2-D."""
 
 from __future__ import annotations

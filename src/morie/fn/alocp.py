@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """OpenCLIP contrastive objective -- scaled dot-product between normalized text + image emb."""
 import numpy as np
 from ._richresult import RichResult

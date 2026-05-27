@@ -1,31 +1,21 @@
-name: R coverage + lint + goodpractice
+name: R coverage + lint
 
-# Runs covr (with codecov.io upload), lintr, and goodpractice on every
-# push to main / PR. Complements r-cmd-check.yml — which only runs
-# R CMD check across the OS × R-version matrix. Together they cover
-# the full rOpenSci pkgcheck surface (rcmdcheck + covr + cyclocomp +
-# lintr + goodpractice).
+# Two small parallel jobs: covr (coverage) + lintr (style).
+# Both run in parallel with r-cmd-check matrix, NOT serialized after it.
+# Avoids the +40 min sequential cost from 3MMM.65 (reverted in 3MMM.72).
+#
+# pkgcheck + goodpractice were dropped from automatic CI in 3MMM.72:
+#   * Both re-run R CMD check + covr + cyclocomp + lintr internally,
+#     duplicating work already done in this DAG. ~1 hour per push each.
+#   * They remain available via workflow_dispatch for pre-rOpenSci-
+#     submission audits -- just not on every push.
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'r-package/morie/**'
-      - '.github/workflows/r-coverage-and-lint.yml'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'r-package/morie/**'
+  workflow_call:
   workflow_dispatch:
 
 env:
-  # Force every JavaScript-based action (codecov, upload-artifact, etc.)
-  # to use Node.js 24 instead of the deprecated Node.js 20.
-  # Node 20 is scheduled for removal from runners on 2026-09-16.
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-  # Parallel compile for source-installed Suggests (notably duckdb,
-  # which has ~50 MB of C++ source). 4-vCPU runners + -j4 cuts the
-  # dependency-install step from ~25 min single-threaded to ~5 min.
   MAKEFLAGS: "-j4"
 
 permissions:
@@ -39,6 +29,12 @@ jobs:
     env:
       _R_CHECK_FORCE_SUGGESTS_: false
       R_KEEP_PKG_SOURCE: yes
+      # pak resolves Remotes against the GitHub API; without a token
+      # anonymous lookups can 404 or hit rate limits, surfacing as
+      # "Can't find GitHub repo rootcoder007/rmoriedata". Pass the
+      # runner token so pak authenticates.
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     defaults:
       run:
@@ -46,13 +42,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           r-version: 'release'
           use-public-rspm: true
-      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
+          cache-version: 1
           extra-packages: any::covr any::xml2
           needs: coverage
 
@@ -65,12 +62,20 @@ jobs:
         with:
           files: r-package/morie/coverage.xml
           flags: r-tests
-          fail_ci_if_error: false  # don't block on codecov outages
+          fail_ci_if_error: false
         continue-on-error: true
 
   lint:
     runs-on: ubuntu-latest
     name: lintr
+
+    env:
+      # pak resolves Remotes (rootcoder007/rmoriedata, synth-inference/synthdid)
+      # against the GitHub API; anonymous lookups can 404 or get rate-
+      # limited, surfacing as "Can't find GitHub repo". Pass the runner's
+      # GITHUB_TOKEN so pak can authenticate and dependably resolve.
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     defaults:
       run:
@@ -78,22 +83,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           r-version: 'release'
           use-public-rspm: true
-      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
+          cache-version: 1
           extra-packages: any::lintr
 
       - name: Run lintr
         run: |
           Rscript -e 'lintr::lint_package()'
 
+  # goodpractice: only on workflow_dispatch. Re-runs R CMD check
+  # internally; ~25 min per run; duplicates the matrix r-cmd-check job.
+  # Manually fire from the Actions tab before rOpenSci submission.
   goodpractice:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    name: goodpractice (covr + cyclocomp + lintr + rcmdcheck)
+    name: goodpractice (manual only)
 
     env:
       _R_CHECK_FORCE_SUGGESTS_: false
@@ -104,25 +114,28 @@ jobs:
 
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-      - uses: r-lib/actions/setup-pandoc@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
-      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-pandoc@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
+      - uses: r-lib/actions/setup-r@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           r-version: 'release'
           use-public-rspm: true
-      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
+          cache-version: 1
           extra-packages: any::goodpractice any::rcmdcheck any::covr any::cyclocomp any::lintr
 
       - name: Run goodpractice
         run: |
           Rscript -e 'g <- goodpractice::gp("."); print(g)'
 
+  # pkgcheck: only on workflow_dispatch. Re-runs covr + cyclocomp +
+  # lintr + rcmdcheck internally; ~1 hr per run. Manually fire from
+  # the Actions tab before rOpenSci submission.
   pkgcheck:
-    # rOpenSci's own check — runs pkgstats + covr + goodpractice + rcmdcheck
-    # internally and produces the markdown comment the rOpenSci bot uses.
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    name: rOpenSci pkgcheck
+    name: rOpenSci pkgcheck (manual only)
 
     defaults:
       run:
@@ -130,17 +143,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-      - uses: r-lib/actions/setup-pandoc@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
-      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-pandoc@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
+      - uses: r-lib/actions/setup-r@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           r-version: 'release'
           use-public-rspm: true
 
-      # pkgcheck's internal rcmdcheck builds the PDF manual, which needs
-      # the `inconsolata` LaTeX font. Without it pkgcheck reports a
-      # spurious "R CMD check found 1 warning" against a package that
-      # otherwise has 0 warnings in the dedicated r-cmd-check.yml matrix.
-      - uses: r-lib/actions/setup-tinytex@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      # pkgcheck builds the PDF manual; needs LaTeX.
+      - uses: r-lib/actions/setup-tinytex@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
       - name: Install inconsolata + helpers for PDF manual build
         run: |
           tlmgr update --self
@@ -151,9 +161,10 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y universal-ctags
 
-      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
+          cache-version: 1
           extra-packages: |
             any::rcmdcheck
             any::goodpractice
@@ -161,18 +172,15 @@ jobs:
             ropensci-review-tools/pkgstats
             ropensci-review-tools/pkgcheck
 
-      - name: Run pkgcheck::pkgcheck() + checks_to_markdown()
+      - name: Run pkgcheck
         env:
-          # pkgcheck queries the GitHub GraphQL API for repo metadata. Use
-          # the runner's auto-provided token instead of unauthenticated
-          # requests (which hit the 60-req/hr rate limit instantly).
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           Rscript -e 'cks <- pkgcheck::pkgcheck("."); md <- pkgcheck::checks_to_markdown(cks); writeLines(md, "pkgcheck.md"); cat(md)'
 
       - name: Upload pkgcheck markdown
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: pkgcheck-markdown
           path: r-package/morie/pkgcheck.md

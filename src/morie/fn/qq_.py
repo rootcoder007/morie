@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """QQ-plot data for GWAS p-values."""
 
 import numpy as np

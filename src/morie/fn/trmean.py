@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Trimmed mean with R-style verbose result."""
 
 from typing import Sequence, Union

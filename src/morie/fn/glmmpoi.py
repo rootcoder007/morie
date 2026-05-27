@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Spatial GLMM Poisson log-link simulation."""
 
 import numpy as np

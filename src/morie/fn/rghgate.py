@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Hodgkin-Huxley gating variable ODEs (m, h, n)."""
 import numpy as np
 from ._richresult import RichResult

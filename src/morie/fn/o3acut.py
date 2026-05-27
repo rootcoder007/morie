@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Acute ozone short-term mortality relative risk (NMMAPS / APHENA)."""
 
 from __future__ import annotations

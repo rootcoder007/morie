@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Hurst exponent estimation via rescaled range (R/S) analysis."""
 
 import numpy as np

@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bootstrap confidence interval (percentile, BCa, studentized).
 
 Implements three resampling-based CIs from Efron & Tibshirani (1993,

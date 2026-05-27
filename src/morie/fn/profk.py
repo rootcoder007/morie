@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Profile likelihood for semiparametric models.
 
 Computes the profile likelihood by maximizing over nuisance parameters

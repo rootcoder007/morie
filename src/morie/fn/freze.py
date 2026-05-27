@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Model material strength degradation under freeze-thaw cycling."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Fligner-Killeen test for homogeneity of variance."""
 
 from __future__ import annotations

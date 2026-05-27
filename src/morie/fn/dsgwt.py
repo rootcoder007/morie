@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Inverse-probability design weights for stratified samples."""
 
 from morie.sampling import compute_design_weights as _fn

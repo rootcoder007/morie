@@ -19,7 +19,7 @@ By the end you'll have ~13 CSV files, and we'll show you which one answers the q
 If you haven't installed yet:
 
 ```bash
-curl -fsSL https://hadesllm.github.io/morie/install.sh | bash
+curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash
 ```
 
 That's it. The installer puts the `morie` command on your `PATH`. If the installer warns about `PATH`, run the line it shows you and then start a new terminal window.
@@ -158,12 +158,12 @@ If `python -c "..."` looks intimidating, the same is doable from a Python REPL (
 | `Segmentation fault` after `import morie` | The system Python on Raspberry Pi OS 13 has a known bug that crashes when loading scientific libraries. | Same fix: curl one-liner — it installs a working Python 3.12 alongside the broken system one. |
 | `FileNotFoundError ... cpads-2021-2022-pumf2.csv` | (Pre-v0.5.0 only) — should not happen on v0.5.0+ which falls back to synthetic data | `python -c "import morie; print(morie.__version__)"` should show `0.8.0` or later; upgrade via `pip install -U morie` or re-run the curl installer |
 | `UserWarning: using the SHIPPED SYNTHETIC CPADS frame` | Expected on first run; outputs are toy | Get real PUMF (Step 5) when ready |
-| Some other error | We want to hear about it | File an issue at <https://github.com/hadesllm/morie/issues> — paste the full error message |
+| Some other error | We want to hear about it | File an issue at <https://github.com/rootcoder007/morie/issues> — paste the full error message |
 
 ## What to do next
 
 - Read the [INSTALLATION.md](INSTALLATION.md) for the full install matrix
-- Browse [the docs site](https://hadesllm.github.io/morie/) for module reference
+- Browse [the docs site](https://rootcoder007.github.io/morie/) for module reference
 - Look at the [JSS papers](papers/) for the methodological backing
 - Open the Terminal IDE for an interactive exploration: `morie tui`
 

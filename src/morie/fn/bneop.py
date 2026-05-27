@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Simulate a continuous-time birth-death (Markov) process."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Asymptotic properties of the kernel mean residual life (MRL) (Fauzi Ch 4).
 
 For non-negative X with survival S(t)=1-F(t), the MRL is

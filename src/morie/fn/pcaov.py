@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """PCA on overlapping signal windows."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Hadamard differentiability check via numerical perturbation."""
 
 from __future__ import annotations

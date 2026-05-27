@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Unfolding analysis for preference data (Coombs 1964; Armstrong Ch 7)."""
 import numpy as np
 from ._richresult import RichResult

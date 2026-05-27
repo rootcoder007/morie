@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """DCC multivariate GARCH (Engle 2002)."""
 from __future__ import annotations
 

@@ -37,21 +37,15 @@
 #'     person-year regional-transition count)
 #' }
 #'
-#' @section Companion papers (Zenodo DOIs):
+#' @section Companion papers:
 #' If you use morie in your work, please cite the relevant companion
-#' papers (see \code{citation("morie")} or the \file{CITATION.cff}
-#' file in the source distribution):
+#' papers (see \code{citation("morie")} for the full bibliography):
 #' \itemize{
-#'   \item morie (R software paper):
-#'     \doi{10.5281/zenodo.20111233}
-#'   \item morie (Python software paper):
-#'     \doi{10.5281/zenodo.20096350}
-#'   \item MRM framework paper:
-#'     \doi{10.5281/zenodo.20096075}
-#'   \item Hawkes-process methodology paper:
-#'     \doi{10.5281/zenodo.20102198}
-#'   \item Empirical applications paper:
-#'     \doi{10.5281/zenodo.20175689}
+#'   \item morie (R software paper)
+#'   \item morie (Python software paper)
+#'   \item MRM framework paper
+#'   \item Hawkes-process methodology paper
+#'   \item Empirical applications paper
 #' }
 #'
 #' @section Key external citations used by MRM modules:
@@ -91,8 +85,9 @@
 #'
 #' @keywords internal
 #' @aliases morie-package
-#' @importFrom stats aggregate ave deviance median na.omit plogis
-#'   setNames update weighted.mean
+#' @importFrom stats aggregate anova ave deviance median na.omit plogis
+#'   qf setNames update weighted.mean
+#' @importFrom utils str
 #' @importFrom Rcpp sourceCpp
 #' @useDynLib morie, .registration = TRUE
 "_PACKAGE"

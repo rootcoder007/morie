@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Data-efficient Image Transformer (DeiT) with distillation token."""
 import numpy as np
 from ._richresult import RichResult

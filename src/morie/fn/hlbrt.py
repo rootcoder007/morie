@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Hilbert transform amplitude envelope."""
 
 from __future__ import annotations

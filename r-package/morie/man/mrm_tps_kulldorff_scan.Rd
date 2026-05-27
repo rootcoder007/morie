@@ -13,6 +13,7 @@ mrm_tps_kulldorff_scan(
   window_years = 4,
   n_centers = 60L,
   n_permutations = 199L,
+  n_top_clusters = 1L,
   seed = 42L
 )
 }
@@ -31,6 +32,13 @@ mrm_tps_kulldorff_scan(
 \item{n_centers}{Number of random candidate centres sub-sampled.}
 
 \item{n_permutations}{Monte-Carlo permutations.}
+
+\item{n_top_clusters}{Integer; number of top clusters to return.
+Accepted for Python signature parity. The current implementation
+returns a single primary cluster (the secondary-cluster loop in
+\code{morie.mrm_kulldorff.py} \code{break}s out pending a proper
+mask-and-rescan rewrite); values >1 are reserved for that
+future TRUE multi-cluster mode.}
 
 \item{seed}{Random seed.}
 }

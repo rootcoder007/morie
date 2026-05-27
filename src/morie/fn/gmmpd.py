@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Gaussian Mixture Model PDF evaluation."""
 
 import numpy as np

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Simulate a simple pendulum using the nonlinear ODE."""
 
 from __future__ import annotations

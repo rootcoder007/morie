@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """GNS (general nesting spatial) ML estimation."""
 
 import numpy as np

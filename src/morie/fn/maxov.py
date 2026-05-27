@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Maximal Overlap DWT (MODWT / non-decimated DWT)."""
 
 from __future__ import annotations

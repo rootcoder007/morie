@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """CO₂-equivalent conversion using IPCC AR6 GWP100 factors."""
 
 from __future__ import annotations

@@ -581,7 +581,7 @@ def _friendly_error(exc: BaseException) -> str | None:
             "(this is PEP 668, enforced on modern Debian / Ubuntu / Pi). "
             "morie isn't broken; your system pip is locked.\n\n"
             "Fix: install morie into a managed venv using the one-liner:\n"
-            "    curl -fsSL https://hadesllm.github.io/morie/install.sh | bash\n"
+            "    curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash\n"
         )
 
     # Missing CPADS data (pre-v0.5.0 — we ship synthetic now, but a stale
@@ -626,7 +626,7 @@ def _friendly_error(exc: BaseException) -> str | None:
             "  - The endpoint URL changed (governments reorganise sites).\n\n"
             "If you can curl the URL from the same machine, the problem is\n"
             "in our client; please file an issue at\n"
-            "https://github.com/hadesllm/morie/issues.\n"
+            "https://github.com/rootcoder007/morie/issues.\n"
         )
 
     return None

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Page's L test for ordered alternatives in a randomised block design."""
 
 from __future__ import annotations

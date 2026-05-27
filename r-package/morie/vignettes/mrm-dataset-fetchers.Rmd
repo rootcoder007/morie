@@ -192,5 +192,5 @@ For a full-data version, swap `morie_sample("otis_b01")` for
   `data.ontario.ca/dataset/data-on-inmates-in-ontario`
 * Toronto Police Open Data \u2014 `data.torontopolice.on.ca/`
 * SIU Director's Reports \u2014 `siu.on.ca/en/case_directors_reports.php`
-* MRM theoretical paper \u2014 Zenodo DOI
-  [10.5281/zenodo.20096075](https://doi.org/10.5281/zenodo.20096075)
+* MRM theoretical paper (Ruhela 2026, *Multilevel Reconciliation
+  Methodology*; see `citation("morie")` for the full bibentry)

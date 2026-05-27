@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Bayesian 2PL IRT model via Gibbs sampler."""
 
 from __future__ import annotations

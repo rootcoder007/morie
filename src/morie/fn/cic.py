@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Changes-in-Changes estimator (Athey & Imbens, 2006)."""
 
 from __future__ import annotations

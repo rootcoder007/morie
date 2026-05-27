@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bias-corrected and accelerated (BCa) bootstrap confidence interval."""
 
 from __future__ import annotations

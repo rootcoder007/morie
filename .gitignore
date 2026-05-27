@@ -39,6 +39,33 @@ docs/build/
 data/cache/
 data/manifest/outputs/
 
+# Restricted-access datasets — never commit.
+#   data/datasets/vsr/  — UofT Map & Data Library restricted holdings
+#                          (toneighe00.zip, toneighmapinfo.zip,
+#                          toneighshape.zip, etc.). Student-only
+#                          licence; redistribution forbidden.
+#   data/datasets/OT/   — City of Toronto Open Data bulk download
+#                          (Neighbourhoods 158/140 + NIA + crime rates
+#                          in GeoJSON / GeoPackage / Shapefile / CSV).
+#                          Licensed under Open Government Licence -
+#                          Toronto but ~30 MB; bundle the small
+#                          synthetic fixtures in r-package/morie/
+#                          inst/extdata/ instead.
+#   data/datasets/CPD/  — Chicago PD + Chicago Open Data bulk
+#                          (Arrests dpt3-jri9 ~217 MB CSV; Crimes
+#                          ijzp-q8t2 1-yr ~49 MB; PublicReleaseArrest
+#                          historical 2014-2017 ~30 MB; UoF annual
+#                          report PDFs). Bundle SYNTHETIC fixtures
+#                          in inst/extdata/, never the raw exports.
+#   data/datasets/NYPD/ — NYC OpenData NYPD Arrest YTD bulk
+#                          (uip8-fykc CSV/zip/geojson/kml/xlsx/xml
+#                          ~14 MB CSV but >150 MB across formats).
+#                          Bundle SYNTHETIC fixtures only.
+data/datasets/vsr/
+data/datasets/OT/
+data/datasets/CPD/
+data/datasets/NYPD/
+
 # Secrets / local config
 .env
 .env.local
@@ -51,8 +78,8 @@ Thumbs.db
 *.swp
 *~
 
-# Large datasets (downloaded via moirais download-bootstrap)
-src/moirais/data/*.db
+# Large datasets (downloaded via `morie download-bootstrap`)
+src/morie/data/*.db
 
 # ad-hoc smoke harnesses (use tests/parity/ for the canonical ones)
 _smoke_*
@@ -70,26 +97,17 @@ r-package/morie/vignettes/*.tex
 backups/
 
 # papers/ is the authoring tree (emails, drafts, working PDFs, etc.).
-# It must NEVER be tracked wholesale — a previous public publish
-# leaked papers/emails/ and cost ~40,000 deleted changes to recover.
-#
-# We allow ONLY the public JSS .tex sources + their bibs +
-# the JSS class files + an explanatory README.  Any new addition to
-# this allowlist requires a security review of the file.
-papers/*
-!papers/README.md
-!papers/jss.cls
-!papers/jss.bst
-!papers/hawkes-paper/
-!papers/morie-empirical-paper/
-!papers/morie-py-paper/
-!papers/morie-r-paper/
-!papers/mrm-formulations-paper/
-papers/hawkes-paper/*
-papers/morie-empirical-paper/*
-papers/morie-py-paper/*
-papers/morie-r-paper/*
-papers/mrm-formulations-paper/*
+# It must NEVER be tracked. A previous public publish leaked
+# papers/emails/ and cost ~40,000 deleted changes to recover. The
+# five JSS-format papers that were briefly allowlisted here were
+# removed from the repo on 2026-05-26 alongside the Zenodo-DOI
+# cleanup (the Zenodo deposits were taken down). Keep this entire
+# tree gitignored until the publication strategy is re-decided.
+papers/
+# templates/ is the same story -- paper-template scaffolding lived
+# at templates/first-paper.md (removed 2026-05-26); the dir stays
+# ignored so future scaffolding doesn't accidentally land in git.
+templates/
 !papers/hawkes-paper/main.tex
 !papers/hawkes-paper/refs.bib
 !papers/morie-empirical-paper/main.tex

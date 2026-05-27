@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """L-statistic for kernel functionals (Fauzi Ch 5).
 
 L_n = sum_i c_{n,i} X_{(i)} with c_{n,i} = integral_{(i-1)/n}^{i/n} J(u) du

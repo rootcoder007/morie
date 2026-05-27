@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Combine respondent ideal points and stimulus coords for plotting."""
 
 from __future__ import annotations

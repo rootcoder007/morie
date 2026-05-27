@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """SEM GMM heteroskedasticity-robust (KP-HET)."""
 
 import numpy as np

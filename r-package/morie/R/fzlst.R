@@ -2,8 +2,8 @@
 
 #' Fauzi: L-statistic for kernel functionals (Ch 5)
 #'
-#' \eqn{L_n = \sum_i c_{n,i} X_{(i)}} with
-#' \eqn{c_{n,i} = \int_{(i-1)/n}^{i/n} J(u) du}.
+#' \eqn{L_n = \sum_i c_{n,i} X_{(i)}}{L_n = sum_i c_n,i X_(i)} with
+#' \eqn{c_{n,i} = \int_{(i-1)/n}^{i/n} J(u) du}{c_n,i = int_(i-1)/n^i/n J(u) du}.
 #' Default J(u)=1 gives the sample mean.
 #'
 #' @param x Numeric vector.

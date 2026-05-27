@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Fit a Rosin-Rammler (Weibull) distribution to particle size data."""
 
 from __future__ import annotations

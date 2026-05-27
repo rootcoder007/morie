@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """KV-cache management and compression for autoregressive decoding.
 
 Two callables share this module:

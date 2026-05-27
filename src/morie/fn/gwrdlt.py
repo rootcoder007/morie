@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """GWR delta test for coefficient stationarity."""
 
 import numpy as np

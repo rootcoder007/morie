@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Apply a repair pipeline: outlier clipping, missing fill, optional smoothing."""
 
 from __future__ import annotations

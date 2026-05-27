@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Truncated stick-breaking representation of a DP."""
 import numpy as np
 from scipy.stats import norm

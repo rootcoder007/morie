@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Solve a linear program via the revised simplex (Phase I / Phase II)."""
 
 from __future__ import annotations

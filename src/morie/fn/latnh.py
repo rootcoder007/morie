@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Latin hypercube sampling (McKay, Beckman & Conover 1979).
 
 Generates an N×d stratified sample on [0,1]^d:

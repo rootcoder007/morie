@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Comparisons with a control (Gibbons Ch 10.7).
 
 Nonparametric many-to-one comparison: each treatment group i is

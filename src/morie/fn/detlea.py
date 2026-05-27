@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Detect potential data leakage by identifying features with."""
 
 from __future__ import annotations

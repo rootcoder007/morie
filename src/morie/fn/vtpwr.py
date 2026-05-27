@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Banzhaf and Shapley-Shubik voting-power indices (Armstrong Ch 10)."""
 import numpy as np
 from itertools import combinations

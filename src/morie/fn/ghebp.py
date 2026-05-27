@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Empirical-Bayes hyper-parameter selection for a DP prior."""
 import numpy as np
 from scipy.special import gammaln

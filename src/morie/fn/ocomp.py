@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """OTIS group comparison -- t-test/ANOVA + effect size."""
 
 from __future__ import annotations

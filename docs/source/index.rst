@@ -1,7 +1,9 @@
-MORIE — Multi-domain Open Research and Inferential Estimation
-=============================================================
+MORIE 森 — The Fates' Forest
+============================
 
-*Pronounced* /ˈmɔɪraɪ/ — *"MOY-rye", like the Greek Moirai (the Fates).*
+**Multi-domain Open Research and Inferential Estimation**
+
+*Pronounced* /ˈmɔɪraɪ ˈmoɾi/ *— "MOY-rye MOH-ree". A compound name: the Greek* **Moirai** *(Μοῖραι, the three Fates) paired with the Japanese* **森** *(mori, "forest" — three trees stacked into one ideogram). A forest of methods named after the Fates.*
 
 .. image:: https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg
    :alt: License: AGPL-3.0-or-later
@@ -16,29 +18,9 @@ MORIE — Multi-domain Open Research and Inferential Estimation
    :target: https://pypi.org/project/morie/
    :alt: PyPI version
 
-.. image:: https://img.shields.io/badge/r--universe-hadesllm-276DC3
-   :target: https://hadesllm.r-universe.dev/morie
+.. image:: https://img.shields.io/badge/r--universe-rootcoder007-276DC3
+   :target: https://rootcoder007.r-universe.dev/morie
    :alt: r-universe
-
-.. image:: https://img.shields.io/badge/DOI%20%C2%B7%20morie%20R-10.5281%2Fzenodo.20111233-0d9488?logo=zenodo&logoColor=white
-   :target: https://doi.org/10.5281/zenodo.20111233
-   :alt: DOI - morie R - 10.5281/zenodo.20111233
-
-.. image:: https://img.shields.io/badge/DOI%20%C2%B7%20morie%20Python-10.5281%2Fzenodo.20096350-7c3aed?logo=zenodo&logoColor=white
-   :target: https://doi.org/10.5281/zenodo.20096350
-   :alt: DOI - morie Python - 10.5281/zenodo.20096350
-
-.. image:: https://img.shields.io/badge/MRM_paper-10.5281%2Fzenodo.20096075-15803d?logo=zenodo&logoColor=white
-   :target: https://doi.org/10.5281/zenodo.20096075
-   :alt: MRM paper - 10.5281/zenodo.20096075
-
-.. image:: https://img.shields.io/badge/Hawkes_paper-10.5281%2Fzenodo.20102198-be123c?logo=zenodo&logoColor=white
-   :target: https://doi.org/10.5281/zenodo.20102198
-   :alt: Hawkes paper - 10.5281/zenodo.20102198
-
-.. image:: https://img.shields.io/badge/Empirical_paper-10.5281%2Fzenodo.20175689-1a73e8?logo=zenodo&logoColor=white
-   :target: https://doi.org/10.5281/zenodo.20175689
-   :alt: Empirical applications paper - 10.5281/zenodo.20175689
 
 A dual-language (Python + R) multi-domain scientific computing toolkit for
 observational inference, with sociolegal, signal-processing, cryptographic,
@@ -56,7 +38,7 @@ Pick any one channel — all install the **same** ``morie`` v0.8.0:
 .. code-block:: bash
 
    # 1. One-line installer (Linux / macOS / WSL) — detects pip + R, installs both
-   curl -fsSL https://hadesllm.github.io/morie/install.sh | bash
+   curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash
 
    # 2. PyPI (any platform with Python ≥3.10)
    pip install morie                  # 60+ built-in datasets
@@ -64,14 +46,14 @@ Pick any one channel — all install the **same** ``morie`` v0.8.0:
    pip install "morie[carbon]"        # + CodeCarbon emissions (Python ≤3.14 only)
 
    # 3. Homebrew (macOS / Linuxbrew)
-   brew tap hadesllm/morie
+   brew tap rootcoder007/morie
    brew install morie
 
    # 4. Docker (zero local dependencies)
-   docker run --rm ghcr.io/hadesllm/morie:0.8.0 morie --help
+   docker run --rm ghcr.io/rootcoder007/morie:0.8.0 morie --help
 
    # 5. R package (CRAN-compatible, served from r-universe)
-   install.packages("morie", repos = "https://hadesllm.r-universe.dev")
+   install.packages("morie", repos = "https://rootcoder007.r-universe.dev")
 
 .. note::
 
@@ -224,7 +206,7 @@ for function reference.
   ``morie.tps_*`` modules: incident I/O, CSI, neighbourhood
   spatial / temporal analyses, Hawkes (basic + advanced),
   statistical physics, Hohl-style choropleths and proportional-symbol
-  district maps. Companion paper at 10.5281/zenodo.20102198.
+  district maps. (See CITATION.cff for the companion Hawkes paper.)
 
 **LLM + assistant**
   Ollama (local, private) → vendored OllamaFreeAPI (no key) → Gemini

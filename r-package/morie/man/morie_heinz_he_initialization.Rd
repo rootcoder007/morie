@@ -43,7 +43,7 @@ Named list \code{(W, estimate, mean, std, shape, method)}.
 R parity for \code{morie.fn.heinz.he_initialization}.
 }
 \details{
-\deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in}}\right)}
+\deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in}}\right)}{W ~ N(0, tfrac{2}{n_in})}
 }
 \examples{
 # See the package vignettes for usage examples:

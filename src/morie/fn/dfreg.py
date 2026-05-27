@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Regression degrees of freedom."""
 
 def dfreg(k: int) -> int:

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """R0 estimation via the next-generation matrix method."""
 
 from __future__ import annotations

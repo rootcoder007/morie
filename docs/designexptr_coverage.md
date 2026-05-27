@@ -1,4 +1,4 @@
-# designexptr.org coverage map (morie 0.2.0)
+# designexptr.org coverage map (morie 0.9.5.6)
 
 Closes the audit from 2026-05-11: every designexptr.org book chapter has
 one or more `mrm_*` callables in `morie` with full Python + R parity.

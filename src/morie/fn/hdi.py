@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Highest Density Interval from MCMC samples."""
 
 from __future__ import annotations

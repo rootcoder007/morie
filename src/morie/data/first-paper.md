@@ -72,31 +72,25 @@ Reproducibility: outputs are reproducible by running `morie run-module [MODULE] 
 
 ```bibtex
 @software{Ruhela2026MoriePy,
-  author    = {Ruhela, Vansh Singh},
-  title     = {morie: Multi-domain Open Research and Inferential Estimation in {Python}},
-  year      = {2026},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.20096350},
-  url       = {https://doi.org/10.5281/zenodo.20096350}
+  author = {Ruhela, Vansh Singh},
+  title  = {morie: Multi-domain Open Research and Inferential Estimation in {Python}},
+  year   = {2026},
+  url    = {https://github.com/rootcoder007/morie}
 }
 
 @software{Ruhela2026MorieR,
-  author    = {Ruhela, Vansh Singh},
-  title     = {morie: Multi-domain Open Research and Inferential Estimation in {R}},
-  year      = {2026},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.20111233},
-  url       = {https://doi.org/10.5281/zenodo.20111233}
+  author = {Ruhela, Vansh Singh},
+  title  = {morie: Multi-domain Open Research and Inferential Estimation in {R}},
+  year   = {2026},
+  url    = {https://github.com/rootcoder007/morie}
 }
 
 @article{Ruhela2026MRM,
-  author  = {Ruhela, Vansh Singh},
-  title   = {{MRM}: Multilevel Reconciliation Methodology --
-             A multi-source statistical foundation for {Canadian}
-             carceral, police, and oversight data},
-  year    = {2026},
-  doi     = {10.5281/zenodo.20096075},
-  url     = {https://doi.org/10.5281/zenodo.20096075}
+  author = {Ruhela, Vansh Singh},
+  title  = {{MRM}: Multilevel Reconciliation Methodology --
+            A multi-source statistical foundation for {Canadian}
+            carceral, police, and oversight data},
+  year   = {2026}
 }
 ```
 

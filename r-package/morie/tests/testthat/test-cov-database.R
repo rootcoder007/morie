@@ -5,8 +5,6 @@
 # are exercised with mocked HTTP so no connection is made.
 
 .cdb_have_db <- function() {
-  testthat::skip_if_not_installed("DBI")
-  testthat::skip_if_not_installed("RSQLite")
 }
 
 test_that("morie_cache_dir honours MORIE_CACHE_DIR then R_user_dir", {
@@ -60,6 +58,7 @@ test_that("cache store / load / list round-trip on a temp SQLite db", {
 })
 
 test_that("morie_cache_list returns an empty frame for an empty db", {
+  skip_if_not_installed("DBI")
   .cdb_have_db()
   db <- tempfile(fileext = ".db")
   on.exit(unlink(db), add = TRUE)
@@ -121,8 +120,7 @@ test_that("morie_load_cpads returns NULL when offline and use_ckan = FALSE", {
   on.exit(unlink(db), add = TRUE)
   withr <- tempfile("cpads-wd-")
   dir.create(withr)
-  old <- setwd(withr)
-  on.exit(setwd(old), add = TRUE)
+  withr::local_dir(withr)
   res <- tryCatch(morie_load_cpads(db_path = db, use_ckan = FALSE),
     error = function(e) e
   )
@@ -132,7 +130,6 @@ test_that("morie_load_cpads returns NULL when offline and use_ckan = FALSE", {
 
 test_that("morie_fetch_ckan paginates a mocked CKAN datastore", {
   .cdb_have_db()
-  skip_if_not_installed("jsonlite")
   page1 <- paste0(
     '{"success":true,"result":{"total":3,"records":',
     '[{"_id":1,"SEQID":"a"},{"_id":2,"SEQID":"b"}]}}'
@@ -164,7 +161,6 @@ test_that("morie_fetch_ckan paginates a mocked CKAN datastore", {
 
 test_that("morie_fetch_ckan errors when the datastore yields no records", {
   .cdb_have_db()
-  skip_if_not_installed("jsonlite")
   testthat::local_mocked_bindings(
     readLines = function(con, ...) {
       '{"success":true,"result":{"total":0,"records":[]}}'

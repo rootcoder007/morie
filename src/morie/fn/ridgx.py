@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Ridge extraction from time-frequency representation."""
 
 from __future__ import annotations

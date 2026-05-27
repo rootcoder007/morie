@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Semiparametric quantile regression (Horowitz 2009, Ch 10).
 
     Q_tau(Y | X) = X' beta(tau)

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Structural Similarity Index (SSIM) between two signals or images."""
 
 from __future__ import annotations

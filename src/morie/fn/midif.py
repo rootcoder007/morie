@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Delta-fit indices between measurement invariance levels."""
 
 from __future__ import annotations

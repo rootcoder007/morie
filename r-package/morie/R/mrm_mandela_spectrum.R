@@ -23,10 +23,10 @@
 #' Meaningful-contact proxies (Rule 44, derived from b01 alert flags):
 #' \describe{
 #'   \item{\code{none}}{Rule 43 only; no contact proxy applied}
-#'   \item{\code{any_alert}}{Rule 43 \\cap{} (any of MH/SR/SW alert
+#'   \item{\code{any_alert}}{Rule 43 AND (any of MH/SR/SW alert
 #'     active); these placements receive staff contact, so this is the
 #'     looser contact-failure proxy}
-#'   \item{\code{no_alert}}{Rule 43 \\cap{} (no alert active);
+#'   \item{\code{no_alert}}{Rule 43 AND (no alert active);
 #'     strictest contact-failure proxy}
 #' }
 #'

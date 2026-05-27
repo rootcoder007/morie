@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Optimize MDS coordinates via Nelder-Mead (scipy)."""
 
 from __future__ import annotations

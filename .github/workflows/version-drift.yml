@@ -1,0 +1,62 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# version-drift.yml — CI gate that enforces the DRY version contract.
+#
+# Workflow:
+#   1. Re-run scripts/version-inventory.sh from a fresh checkout.
+#   2. Compare the regenerated VERSION_INVENTORY.csv against the
+#      committed copy.
+#   3. Fail the job if they differ.
+#
+# This guarantees that the committed CSV is always a faithful snapshot
+# of the repo's version mentions. If a contributor bumps a version stamp
+# without re-running the inventory script (or updates VERSION but forgets
+# to regenerate), CI catches it.
+#
+# Companion scripts:
+#   - scripts/version-inventory.sh  (regen CSV)
+#   - scripts/version-bump.sh       (propagate VERSION + regen CSV)
+
+name: version-drift
+
+# Triggered only via the build.yml orchestrator (workflow_call).
+# Kept workflow_dispatch so this can still be run manually for
+# debugging.
+on:
+  workflow_call:
+  workflow_dispatch:
+
+# Minimal permissions: we only checkout + read the working tree to
+# regen + diff VERSION_INVENTORY.csv. No writes anywhere. CodeQL
+# rule actions/missing-workflow-permissions flags workflows that
+# default to the runner's broad GITHUB_TOKEN scope.
+permissions:
+  contents: read
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        # SHA-pinned to v5 to match every other workflow in this
+        # repo and silence the Node20-deprecation warning Vee
+        # surfaced 2026-05-25.
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Install ripgrep
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
+
+      - name: Regenerate inventory
+        run: |
+          cp VERSION_INVENTORY.csv VERSION_INVENTORY.csv.committed
+          ./scripts/version-inventory.sh
+
+      - name: Compare against committed copy
+        run: |
+          if ! diff -u VERSION_INVENTORY.csv.committed VERSION_INVENTORY.csv; then
+            echo ""
+            echo "::error::VERSION_INVENTORY.csv is out of date."
+            echo "Run scripts/version-inventory.sh locally and commit the result."
+            exit 1
+          fi
+          echo "Inventory matches committed snapshot."

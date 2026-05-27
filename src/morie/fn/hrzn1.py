@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Nonparametric instrumental variables (Horowitz 2009, Ch 12).
 
 Solves the linear inverse problem  T g = m  with

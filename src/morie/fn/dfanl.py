@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Detrended fluctuation analysis (DFA).
 
 Reference: Rangayyan, R.M. & Krishnan, S. (2024). *Biomedical Signal

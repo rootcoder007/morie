@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Delete-1 jackknife: bias and SE estimation."""
 
 from __future__ import annotations

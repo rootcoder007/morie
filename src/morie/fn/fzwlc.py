@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Smoothed Wilcoxon signed-rank test (Fauzi Ch 5).
 
 Classical Wilcoxon signed-rank: with D_i = X_i - theta_0,

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Stationary GP via spectral representation: k(x-y) = integral exp(i*omega'*(x-y)) dF(omega)."""
 import numpy as np
 from ._richresult import RichResult

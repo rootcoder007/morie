@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute the Chebyshev distance (L-infinity norm) between two vectors."""
 
 from __future__ import annotations

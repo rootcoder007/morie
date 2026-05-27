@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Kruskal-Wallis H-test (non-parametric one-way ANOVA)."""
 
 import numpy as np

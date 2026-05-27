@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Health gap indicator (Indigenous vs general population)."""
 
 from ._containers import ESRes

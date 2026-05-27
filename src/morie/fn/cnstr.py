@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Remove anomalies (exorcise outliers) using the IQR fence method."""
 
 from __future__ import annotations

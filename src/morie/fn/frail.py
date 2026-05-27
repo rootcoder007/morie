@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Frailty model -- gamma-distributed shared frailty for survival."""
 
 import numpy as np

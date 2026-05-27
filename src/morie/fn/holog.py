@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Holographic entanglement entropy (Ryu-Takayanagi)."""
 
 from __future__ import annotations

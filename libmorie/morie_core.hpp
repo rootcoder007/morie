@@ -19,11 +19,36 @@
 
 #pragma once
 
+#include <climits>
 #include <cmath>
 #include <complex>
 #include <cstddef>
 #include <random>
 #include <vector>
+
+// ---------------------------------------------------------------------------
+// Toolchain integrity guards
+//
+// morie's numeric core assumes the host compiler uses two's complement for
+// signed integers (so signed int has no negative zero, INT_MIN is one less
+// than -INT_MAX, and signed bit patterns match the C++20 standard model).
+// C++20 makes two's complement mandatory; we're on CXX_STD = CXX17 so the
+// standard doesn't formally enforce it. Every R-supported compiler (gcc,
+// clang, MSVC) on every R-supported platform (x86_64, aarch64, RISC-V) has
+// used two's complement for decades, so these static_asserts exist purely
+// to fail compile-time on a hypothetical sign-magnitude or
+// ones'-complement toolchain rather than silently miscomputing at runtime.
+//
+// Test: in two's complement, ~0u (bitwise NOT of an unsigned zero) has
+// every bit set; reinterpreting that as signed int yields -1 exactly.
+// In sign-magnitude or ones'-complement, the bit pattern of -1 differs.
+static_assert(static_cast<int>(~0u) == -1,
+              "morie requires a two's-complement signed-integer "
+              "representation. C++20 mandates this; pre-C++20 compilers "
+              "that diverge cannot be used with this package.");
+// Bytes must be 8 bits for our raw-pointer / cstddef-based interfaces.
+static_assert(CHAR_BIT == 8,
+              "morie assumes 8-bit bytes (CHAR_BIT == 8).");
 
 namespace morie::core {
 

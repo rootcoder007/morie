@@ -53,7 +53,7 @@ test_that(".morie_parse_file errors when a reader package is absent", {
 })
 
 test_that(".morie_parse_file html returns multiple tables / the document", {
-  skip_if_not_installed("xml2")
+  skip_if_not_installed("rvest")
   h <- tempfile(fileext = ".html")
   writeLines(paste0(
     "<html><body>",
@@ -77,9 +77,7 @@ test_that("morie_fetch zip member matches by substring and errors if absent", {
   on.exit(unlink(csv), add = TRUE)
   zp <- tempfile("zm-", fileext = ".zip")
   on.exit(unlink(zp), add = TRUE)
-  owd <- getwd()
-  setwd(dirname(csv))
-  on.exit(setwd(owd), add = TRUE)
+  withr::local_dir(dirname(csv))
   utils::zip(zp, basename(csv), flags = "-q")
   base <- basename(csv)
   partial <- substr(base, 1, nchar(base) - 4) # drop ".csv"
@@ -105,7 +103,6 @@ test_that("morie_ckan_search jsonlite-missing + failed + empty-resources", {
 })
 
 test_that("morie_ckan_search handles failure and empty-resource datasets", {
-  skip_if_not_installed("jsonlite")
   testthat::local_mocked_bindings(
     .morie_read_text = function(url) '{"success":false}',
     .package = "morie"
@@ -137,7 +134,6 @@ test_that("morie_fetch_arcgis: jsonlite stop, empty, and multi-page", {
 })
 
 test_that("morie_fetch_arcgis paginates and handles empty layers", {
-  skip_if_not_installed("jsonlite")
   # max_records = 0 -> the loop breaks immediately, empty frame
   testthat::local_mocked_bindings(
     .morie_read_text = function(url) {

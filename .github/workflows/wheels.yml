@@ -8,14 +8,11 @@ env:
 # Path-restricted to the C++ / packaging surface -- pure-Python changes
 # are covered by ci.yml, so they do not trigger a 12-wheel matrix.
 
+# Triggered only via the build.yml orchestrator (workflow_call).
+# Kept workflow_dispatch so this can still be run manually for
+# debugging.
 on:
-  push:
-    branches: ["main"]
-    paths:
-      - "libmorie/**"
-      - "CMakeLists.txt"
-      - "pyproject.toml"
-      - ".github/workflows/wheels.yml"
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -38,7 +35,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@d16cc544083d96996f923fc4b318fee3cb14b34e # v3.4.1
 
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: wheels-${{ matrix.os }}
           path: wheelhouse/*.whl

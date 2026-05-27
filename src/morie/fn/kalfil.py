@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """1-D or multi-dimensional Kalman filter."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bayesian False Discovery Rate (Newton et al., 2004)."""
 
 from __future__ import annotations

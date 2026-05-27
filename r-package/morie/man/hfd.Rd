@@ -7,23 +7,27 @@
 hfd(x, kmax = 10L)
 }
 \arguments{
-\item{x}{Numeric vector.}
+\item{x}{Numeric vector (length \eqn{\geq}{>=} 4).}
 
 \item{kmax}{Maximum k (default 10).}
 }
 \value{
-List with the fractal-dimension value.
+List with \code{value} (D), \code{name}, and \code{extra} (\code{kmax}, \code{n},
+\code{L_k}).
 }
 \description{
 Estimates the Higuchi (1988) fractal dimension of a 1-D time series via
-length scaling across \code{k} time-lags. Used in EEG and biological-signal
-complexity analysis. Values typically fall in [1, 2]; higher values
-indicate greater signal complexity.
+length scaling across \code{k} time-lags. Values typically fall in [1, 2];
+higher values indicate greater signal complexity.
+}
+\details{
+Reference: Higuchi, T. (1988) "Approach to an irregular time series on
+the basis of the fractal theory", \emph{Physica D} 31(2):277--283.
 }
 \examples{
 \donttest{
 set.seed(1)
 x <- cumsum(rnorm(1000))
-hfd(x, kmax = 10)
+hfd(x, kmax = 10)$value
 }
 }

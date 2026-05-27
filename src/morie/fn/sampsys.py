@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Systematic sample (every k-th unit)."""
 
 def sampsys(population, k: int, start: int = 0):

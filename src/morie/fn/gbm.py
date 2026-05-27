@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Gradient boosting machine (simplified, pure NumPy)."""
 
 from __future__ import annotations

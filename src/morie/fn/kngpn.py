@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute multiple centrality measures for a crime/social network."""
 
 from __future__ import annotations

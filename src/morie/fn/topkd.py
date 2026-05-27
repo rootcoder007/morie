@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Top-k decoding (Fan et al. 2018)."""
 from __future__ import annotations
 

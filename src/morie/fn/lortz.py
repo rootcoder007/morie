@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Lorentz transformation (special relativity)."""
 
 __all__ = ["lortz"]

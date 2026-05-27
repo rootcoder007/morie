@@ -84,7 +84,7 @@ jobs:
           labels: |
             org.opencontainers.image.title=MORIE
             org.opencontainers.image.licenses=GPL-2.0-only
-            org.opencontainers.image.vendor=hadesllm
+            org.opencontainers.image.vendor=rootcoder007
 
       - name: Build and push Docker image
         id: build
@@ -93,7 +93,7 @@ jobs:
           context: .
           file: Dockerfile
           # Single-arch (amd64) by default — the proven recipe in the
-          # other hadesllm/* repos. ARM64 build under QEMU emulation
+          # other rootcoder007/* repos. ARM64 build under QEMU emulation
           # added 28+ min per run for marginal user benefit.
           platforms: linux/amd64
           push: true
@@ -128,7 +128,7 @@ jobs:
       # push so the setting survives any future org-admin changes.
       #
       # Requires the org-level setting at
-      # https://github.com/organizations/hadesllm/settings/packages to
+      # https://github.com/users/rootcoder007/settings/packages to
       # *allow* public packages first; otherwise the PATCH returns
       # HTTP 422 and we keep going (warning, not fatal).
       - name: Set container visibility = public

@@ -869,7 +869,7 @@ def generate_citation(
     *,
     software_version: str = "0.1.0",
     doi: str = "",
-    url: str = "https://github.com/hadesllm/morie",
+    url: str = "https://github.com/rootcoder007/morie",
     output_format: str = "bibtex",
 ) -> str:
     """

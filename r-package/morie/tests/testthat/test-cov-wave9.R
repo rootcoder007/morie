@@ -58,7 +58,6 @@ test_that("bandpass / notch fall back to FFT masks without the signal pkg", {
 })
 
 test_that("bandpass / notch use the signal package when available", {
-  skip_if_not_installed("signal")
   set.seed(3)
   m <- matrix(stats::rnorm(8 * 256), 8, 256)
   expect_equal(dim(morie:::.entheo_bandpass(m, 250, 1, 40)), dim(m))

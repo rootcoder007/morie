@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Structural causal model -- linear SCM with do-calculus."""
 
 import numpy as np

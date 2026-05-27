@@ -5,7 +5,10 @@
 
 ok <- function(label, expr) {
   invisible(tryCatch(expr, error = function(e) {
-    message("WAVE29-ERR [", label, "]: ", conditionMessage(e))
+    # Silent by default; set MORIE_WAVE_DEBUG=1 to surface diagnostics.
+    if (nzchar(Sys.getenv("MORIE_WAVE_DEBUG"))) {
+      message("WAVE29-ERR [", label, "]: ", conditionMessage(e))
+    }
   }))
 }
 
@@ -76,7 +79,6 @@ test_that("morie_builtin_db dev fallback + .fuzzy_match_key name match", {
 })
 
 test_that("morie_load_dataset: unsupported-format and not-found stops", {
-  testthat::skip_if_not_installed("DBI")
   cat <- morie_dataset_catalog()
   ld <- tempfile("ld-")
   dir.create(ld)

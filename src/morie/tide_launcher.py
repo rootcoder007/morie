@@ -38,7 +38,7 @@ def main() -> None:
     if binary is None:
         print(
             "TIDE binary not found.\n"
-            "Install via: go install github.com/hadesllm/morie/tide@latest\n"
+            "Install via: go install github.com/rootcoder007/morie/tide@latest\n"
             "Or set TIDE_BIN=/path/to/tide",
             file=sys.stderr,
         )

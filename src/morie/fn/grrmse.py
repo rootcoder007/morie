@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Root mean squared error -- L2 norm of prediction residuals."""
 import numpy as np
 from ._richresult import RichResult

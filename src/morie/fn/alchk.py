@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Recursive text chunking: split on separators in priority order until under target size."""
 import numpy as np
 from ._richresult import RichResult

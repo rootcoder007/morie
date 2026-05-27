@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """SAR Jacobian term for log-likelihood."""
 
 import numpy as np

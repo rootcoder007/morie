@@ -12,7 +12,7 @@
 # Sphinx Pages workflow for the Python side) and is wired up
 # separately.
 
-url: https://hadesllm.github.io/morie/
+url: https://rootcoder007.github.io/morie/
 
 template:
   bootstrap: 5

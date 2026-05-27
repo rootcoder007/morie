@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Floyd-Warshall algorithm for all-pairs shortest paths."""
 
 from __future__ import annotations

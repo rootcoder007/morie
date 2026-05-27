@@ -15,17 +15,11 @@ env:
 # Python src/ tree at the repo root); the matrix sets the
 # working-directory accordingly.
 
+# Triggered only via the build.yml orchestrator (workflow_call).
+# Kept workflow_dispatch so this can still be run manually for
+# debugging.
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'r-package/morie/**'
-      - '.github/workflows/r-cmd-check.yml'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'r-package/morie/**'
-      - '.github/workflows/r-cmd-check.yml'
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -42,9 +36,11 @@ jobs:
       matrix:
         config:
           - { os: macos-latest,   r: 'release' }
-          # Pin Windows runner explicitly (windows-latest auto-redirects to
-          # windows-2025-vs2026 by 2026-06-15; pre-pin removes ambiguity).
-          - { os: windows-2025,   r: 'release' }
+          # Use windows-latest so the runner image tracks GitHub's most-
+          # recently-patched Windows image (currently windows-2022, moving
+          # to windows-2025-vs2026 by 2026-06-15). Pinning to a specific
+          # release sticks us on an older image once `latest` rolls.
+          - { os: windows-latest, r: 'release' }
           - { os: ubuntu-latest,  r: 'release' }
           - { os: ubuntu-latest,  r: 'devel'   }
           - { os: ubuntu-latest,  r: 'oldrel-1' }
@@ -60,21 +56,24 @@ jobs:
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
-      - uses: r-lib/actions/setup-pandoc@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-pandoc@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
 
-      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      # cache-version: 1 -- pak's binary cache persists across runs.
+      # Bump to invalidate on toolchain change.
+      - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
+          cache-version: 1
           extra-packages: any::rcmdcheck
           needs: check
 
-      - uses: r-lib/actions/check-r-package@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/check-r-package@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
           upload-snapshots: true
@@ -83,6 +82,15 @@ jobs:
           # vignettes/PDFs in CI.
           args: 'c("--no-manual")'
           error-on: '"error"'
+
+      # Post-check QA (lintr / covr / goodpractice) was folded INTO this
+      # cell in 3MMM.65 to "share R library state" -- the actual effect
+      # was +40 min of sequential duplicate work (covr re-runs all tests
+      # instrumented; goodpractice re-runs R CMD check internally).
+      # Reverted in 3MMM.72: lintr + covr now run as separate parallel
+      # jobs in r-coverage-and-lint.yml. goodpractice + pkgcheck dropped
+      # from regular CI -- only workflow_dispatch (manually run before
+      # rOpenSci submission).
 
   # Separate Linux-only job that spins up a live PostgreSQL service and
   # exercises the PG branch of the DBI cache layer. The PG testthat
@@ -126,20 +134,25 @@ jobs:
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
-      - uses: r-lib/actions/setup-pandoc@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-pandoc@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
 
-      - uses: r-lib/actions/setup-r@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           r-version: 'release'
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
-          extra-packages: any::rcmdcheck any::RPostgres any::duckdb any::withr
+          cache-version: 1
+          extra-packages: |
+            any::rcmdcheck
+            any::RPostgres
+            any::duckdb
+            any::withr
           needs: check
 
-      - uses: r-lib/actions/check-r-package@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2
+      - uses: r-lib/actions/check-r-package@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
           upload-snapshots: true

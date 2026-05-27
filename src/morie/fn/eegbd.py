@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """EEG frequency band decomposition plot."""
 
 from __future__ import annotations

@@ -4,7 +4,7 @@
 #'
 #' R parity for \code{morie.fn.heinz.he_initialization}.
 #'
-#' \deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in}}\right)}
+#' \deqn{W \sim \mathcal{N}\!\left(0, \tfrac{2}{n_{in}}\right)}{W ~ N(0, tfrac{2}{n_in})}
 #'
 #' @param fan_in Number of input units.
 #' @param fan_out Number of output units (NULL returns a length-\code{fan_in}

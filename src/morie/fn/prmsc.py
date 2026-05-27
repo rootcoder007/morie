@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Sample from a VAE latent space using the reparameterization trick."""
 
 from __future__ import annotations

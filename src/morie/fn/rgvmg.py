@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Vibromyogram (VMG) signal characterization (lateral oscillation of contracting muscle)."""
 import numpy as np
 from ._richresult import RichResult

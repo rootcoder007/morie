@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Estimate the maximal Lyapunov exponent from a time series."""
 
 from __future__ import annotations

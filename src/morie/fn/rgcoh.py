@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Magnitude-squared coherence -- Rangayyan Ch 4."""
 from __future__ import annotations
 

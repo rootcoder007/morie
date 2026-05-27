@@ -90,7 +90,7 @@ See `NEWS.md` for the full changelog.
   workflow).
 * win-builder R-devel / R-release / R-oldrelease: tarball submitted
   (3 jobs, results emailed to the maintainer).
-* r-universe (Linux + macOS + Windows binaries): the `hadesllm`
+* r-universe (Linux + macOS + Windows binaries): the `rootcoder007`
   r-universe builds morie continuously; `R CMD check` reports OK on
   the linux-devel x86_64 and arm64 runners.
 
@@ -107,7 +107,7 @@ The single NOTE is the standard CRAN-incoming feasibility check:
 
 ```
 * checking CRAN incoming feasibility ... NOTE
-Maintainer: 'Vansh Singh Ruhela <hadesllm@proton.me>'
+Maintainer: 'Vansh Singh Ruhela <rootcoder007@proton.me>'
 New submission
 Package was archived on CRAN
 CRAN repository db overrides:
@@ -161,10 +161,6 @@ language sides -- Python on PyPI and R here. The Linux-kernel adjuncts
 shipped in the GitHub repository's `kernel-module/` and `daemon/`
 directories remain `GPL-2.0-only` (a Linux kernel ABI requirement) and
 are not part of the CRAN source tarball.
-
-The deprecated `moirais` alias package is not part of this
-submission; users install and upgrade through the canonical `morie`
-package.
 
 ## AI-assistance disclosure
 

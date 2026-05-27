@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Missing data: 'summary' reports patterns, 'mean'/'median'/'drop' imputes."""
 from __future__ import annotations
 

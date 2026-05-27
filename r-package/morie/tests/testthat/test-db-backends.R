@@ -13,8 +13,6 @@
 
 # ---- 1. SQLite (the default fallback; always available) ------------------
 test_that("DBI/SQLite cache round-trip via db_path", {
-  skip_if_not_installed("RSQLite")
-  skip_if_not_installed("withr")
 
   tmp_db <- tempfile(fileext = ".db")
   withr::defer(if (file.exists(tmp_db)) unlink(tmp_db))
@@ -29,8 +27,8 @@ test_that("DBI/SQLite cache round-trip via db_path", {
 })
 
 test_that("DBI/SQLite cache via pre-opened `con=`", {
+  skip_if_not_installed("DBI")
   skip_if_not_installed("RSQLite")
-  skip_if_not_installed("withr")
 
   tmp_db <- tempfile(fileext = ".db")
   withr::defer(if (file.exists(tmp_db)) unlink(tmp_db))
@@ -55,8 +53,8 @@ test_that(".morie_db_handle rejects non-DBI input", {
 
 # ---- 2. DuckDB (default for new caches; columnar, larger data sizes) -----
 test_that("DBI/DuckDB cache round-trip via tempfile", {
+  skip_if_not_installed("DBI")
   skip_if_not_installed("duckdb")
-  skip_if_not_installed("withr")
 
   tmp_db <- tempfile(fileext = ".duckdb")
   withr::defer(if (file.exists(tmp_db)) unlink(tmp_db))
@@ -76,8 +74,7 @@ test_that("DBI/DuckDB cache round-trip via tempfile", {
 })
 
 test_that("morie_db_connect() default opens DuckDB when available", {
-  skip_if_not_installed("duckdb")
-  skip_if_not_installed("withr")
+  skip_if_not_installed("DBI")
 
   tmp_dir <- tempfile("morie-test-")
   dir.create(tmp_dir)
@@ -91,8 +88,7 @@ test_that("morie_db_connect() default opens DuckDB when available", {
 })
 
 test_that("morie_db_connect() falls back to SQLite when duckdb absent", {
-  skip_if_not_installed("RSQLite")
-  skip_if_not_installed("withr")
+  skip_if_not_installed("DBI")
 
   tmp_dir <- tempfile("morie-test-")
   dir.create(tmp_dir)
@@ -109,13 +105,10 @@ test_that("morie_db_connect() falls back to SQLite when duckdb absent", {
 
 # ---- 3. PostgreSQL (server backend; CI only, opt-in via env var) ---------
 test_that("DBI/PostgreSQL cache round-trip (CI only)", {
-  testthat::skip_on_cran()
   testthat::skip_if_not(
     identical(Sys.getenv("MORIE_PG_TEST"), "true"),
     message = "Set MORIE_PG_TEST=true (and a live postgres service) to run."
   )
-  skip_if_not_installed("RPostgres")
-  skip_if_not_installed("withr")
 
   con <- DBI::dbConnect(
     RPostgres::Postgres(),

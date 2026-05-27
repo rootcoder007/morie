@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute maximum flow using Edmonds-Karp (BFS-based Ford-Fulkerson)."""
 
 from __future__ import annotations

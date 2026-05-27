@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Embed a binary message into integer data using LSB steganography."""
 
 from __future__ import annotations

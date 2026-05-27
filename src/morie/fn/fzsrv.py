@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Kernel survival function estimator (Fauzi Ch 4).
 
 For non-negative X:

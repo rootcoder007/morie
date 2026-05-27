@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """GWR corrected AIC (AICc) for model selection."""
 
 from ._containers import SpatialResult

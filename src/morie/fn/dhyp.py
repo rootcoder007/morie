@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Hypergeometric distribution probability mass function."""
 
 from __future__ import annotations

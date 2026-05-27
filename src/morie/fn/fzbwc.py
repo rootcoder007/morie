@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Bandwidth condition for kernel quantile Edgeworth expansion."""
 import numpy as np
 from ._richresult import RichResult

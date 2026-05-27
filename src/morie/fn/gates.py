@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Simulate a logic gate over an array of binary inputs."""
 
 from __future__ import annotations

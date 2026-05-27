@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Run parallel-universes bootstrap: generate many independent bootstrap."""
 
 from __future__ import annotations

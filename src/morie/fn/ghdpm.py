@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """DP-mixture density estimate (collapsed Gibbs)."""
 import numpy as np
 from scipy.stats import norm, t as student_t

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Posterior consistency rate under nonparametric model. 'Converge, the posterior must.'"""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Reed-Muller code generator matrix."""
 
 __all__ = ["reedm"]

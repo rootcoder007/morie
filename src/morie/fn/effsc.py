@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Efficient score function for semiparametric models.
 
 The efficient score is the residual from projecting the parametric score

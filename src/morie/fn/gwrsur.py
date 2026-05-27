@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """GWR seemingly-unrelated regression system."""
 
 import numpy as np

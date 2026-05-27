@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Empirical Bayes mixture (two-groups model)."""
 
 from __future__ import annotations

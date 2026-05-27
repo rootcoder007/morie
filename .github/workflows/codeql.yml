@@ -11,11 +11,11 @@ env:
 # single run, so the summary check waits for every language and the
 # race -- and the warning -- cannot occur.
 
+# Triggered via the build.yml orchestrator (workflow_call) plus a
+# weekly scheduled scan (cron). Manual dispatch retained for
+# debugging.
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+  workflow_call:
   schedule:
     - cron: "27 3 * * 1"
   workflow_dispatch:

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Nelson-Aalen cumulative hazard estimator."""
 
 import numpy as np
