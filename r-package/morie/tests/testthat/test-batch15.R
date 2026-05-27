@@ -101,10 +101,17 @@ test_that("mrm_tps_neighbourhood_recurrence_km errors on missing columns", {
 
 test_that("mrm_tps_load_hawkes_refit errors on missing manifest file", {
   expect_error(mrm_tps_load_hawkes_refit(tempfile(fileext = ".json")))
-  if (FALSE) {
-    mrm_tps_load_hawkes_refit("paper_hawkes_refit.json")
-  }
-  expect_true(TRUE)
+})
+
+test_that("mrm_tps_load_hawkes_refit loads the bundled reference manifest", {
+  df <- mrm_tps_load_hawkes_refit()
+  expect_s3_class(df, "data.frame")
+  expect_true(nrow(df) >= 9L)
+  expect_true(all(c("category", "n_fitted", "T_days",
+                    "aic_mark", "kappa_mark", "ks_p_mark",
+                    "aic_nm", "eta_nm", "ks_p_nm",
+                    "delta_aic") %in% names(df)))
+  expect_true("Assault" %in% df$category)
 })
 
 test_that("morie_multi_trait_gblup runs on a small multi-trait problem", {

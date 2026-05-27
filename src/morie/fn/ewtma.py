@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """EWMA volatility (RiskMetrics 1996)."""
 from __future__ import annotations
 

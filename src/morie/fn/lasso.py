@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Soft-thresholding operator for L1 penalty."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Ridge (L2) regression cost."""
 import numpy as np
 from ._richresult import RichResult

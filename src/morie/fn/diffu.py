@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Solve the 1D heat equation via explicit finite differences."""
 
 from __future__ import annotations

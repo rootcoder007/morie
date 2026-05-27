@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """One-step asymptotically efficient estimator for single-index model."""
 import numpy as np
 from ._richresult import RichResult

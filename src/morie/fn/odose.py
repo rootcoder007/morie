@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Dose-response: number of placements to outcome."""
 
 from __future__ import annotations

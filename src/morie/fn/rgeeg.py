@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """EEG band power (δ θ α β γ) via Welch -- Rangayyan Ch 9."""
 from __future__ import annotations
 

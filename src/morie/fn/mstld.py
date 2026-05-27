@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """MSTL: Multiple Seasonal and Trend decomposition using Loess."""
 
 from __future__ import annotations

@@ -4,8 +4,8 @@
 #'
 #' R parity for \code{morie.fn.posab.positional_encoding_abs}.
 #'
-#' \deqn{\mathrm{PE}(pos, 2i)   = \sin(pos / N^{2i/d})}
-#' \deqn{\mathrm{PE}(pos, 2i+1) = \cos(pos / N^{2i/d})}
+#' \deqn{\mathrm{PE}(pos, 2i)   = \sin(pos / N^{2i/d})}{PE(pos, 2i) = sin(pos / N^2i/d)}
+#' \deqn{\mathrm{PE}(pos, 2i+1) = \cos(pos / N^{2i/d})}{PE(pos, 2i+1) = cos(pos / N^2i/d)}
 #'
 #' @param seq_len Sequence length.
 #' @param d_model Embedding dimension.

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute MDS coordinates: Z = V * sqrt(Lambda)."""
 
 from __future__ import annotations

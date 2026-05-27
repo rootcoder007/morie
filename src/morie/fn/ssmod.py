@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Linear-Gaussian state-space model -- Kalman filter + smoother."""
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Heatmap data for issue weight matrix."""
 
 from __future__ import annotations

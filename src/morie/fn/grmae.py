@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Mean absolute error -- L1 norm of prediction residuals."""
 import numpy as np
 from ._richresult import RichResult

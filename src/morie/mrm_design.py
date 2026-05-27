@@ -312,7 +312,10 @@ def mrm_causal_design(
         treatment_col: binary 0/1 treatment column.
         outcome_col: continuous outcome column.
         covariates: optional adjustment-set columns.
-        estimator: one of {"ipw", "aipw", "att"}.
+        estimator: "ipw" (Hajek IPW) is the only implemented path; any
+            other value falls through to a naive difference-of-means
+            estimator. {"aipw", "att"} were advertised in older
+            docstrings but were never wired in.
     """
     df = data[[treatment_col, outcome_col] + list(covariates)].dropna().copy()
     D = df[treatment_col].astype(int).to_numpy()

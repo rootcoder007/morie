@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Return top *n_dims* eigenvectors of symmetric matrix B."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """MISE decomposition for kernel density estimators (Fauzi Ch 1).
 
 Asymptotic MISE of a 2nd-order kernel density estimator:

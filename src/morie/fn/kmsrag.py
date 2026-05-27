@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Self-RAG: emit reflection tokens deciding to retrieve / grade relevance / check support."""
 import numpy as np
 from ._richresult import RichResult

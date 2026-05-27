@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """GRU cell forward pass (Cho et al. 2014)."""
 from __future__ import annotations
 

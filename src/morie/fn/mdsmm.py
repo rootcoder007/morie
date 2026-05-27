@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Classical MDS with weighted stress for missing data."""
 
 from __future__ import annotations

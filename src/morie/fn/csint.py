@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Natural cubic spline interpolation (S''=0 at endpoints)."""
 
 from __future__ import annotations

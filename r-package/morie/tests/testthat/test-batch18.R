@@ -76,7 +76,6 @@ test_that("rgwav returns documented structure", {
 })
 
 test_that("rgwav wavelet path returns positive threshold and sigma", {
-  skip_if_not_installed("wavelets")
   set.seed(1)
   x <- sin(2 * pi * 3 * seq(0, 1, length.out = 256)) + 0.3 * rnorm(256)
   r <- rgwav(x, level = 3, mode = "hard")
@@ -86,9 +85,11 @@ test_that("rgwav wavelet path returns positive threshold and sigma", {
 })
 
 test_that("rgwav MA fallback warns when wavelets unavailable", {
-  skip_if(
-    requireNamespace("wavelets", quietly = TRUE),
-    "wavelets installed; fallback path not exercised"
+  testthat::local_mocked_bindings(
+    requireNamespace = function(package, ...) {
+      if (identical(package, "wavelets")) FALSE else TRUE
+    },
+    .package = "base"
   )
   set.seed(2)
   x <- rnorm(64)
@@ -129,7 +130,6 @@ test_that("morie_rangayyan_zero_crossing alias is identical to rgzcr", {
 })
 
 test_that("morie_regularization_path runs ridge with glmnet", {
-  skip_if_not_installed("glmnet")
   set.seed(0)
   n <- 40
   p <- 3
@@ -149,7 +149,6 @@ test_that("morie_regularization_path runs ridge with glmnet", {
 })
 
 test_that("morie_regularization_path supports lasso and elasticnet", {
-  skip_if_not_installed("glmnet")
   set.seed(1)
   x <- matrix(rnorm(60), 30, 2)
   y <- as.numeric(x %*% c(0.8, -0.3) + rnorm(30))
@@ -161,7 +160,6 @@ test_that("morie_regularization_path supports lasso and elasticnet", {
 })
 
 test_that("morie_regularization_path accepts a two-column design", {
-  skip_if_not_installed("glmnet")
   set.seed(2)
   x <- matrix(rnorm(60), 30, 2)
   y <- as.numeric(x %*% c(2, -1) + rnorm(30))
@@ -280,9 +278,6 @@ test_that("rms_norm applies gamma scale and custom eps", {
 })
 
 test_that("morie_random_search_cv runs a small regression search", {
-  skip_if_not_installed("caret")
-  skip_if_not_installed("glmnet")
-  skip_if_not_installed("elasticnet")
   set.seed(0)
   n <- 40
   p <- 3
@@ -301,9 +296,6 @@ test_that("morie_random_search_cv runs a small regression search", {
 })
 
 test_that("morie_random_search_cv auto-detects classification task", {
-  skip_if_not_installed("caret")
-  skip_if_not_installed("glmnet")
-  skip_if_not_installed("elasticnet")
   set.seed(1)
   n <- 40
   p <- 3
@@ -387,7 +379,6 @@ test_that("morie_rnn_genomic trains and returns documented structure", {
 })
 
 test_that("morie_rnn_genomic accepts a deterministic_seed", {
-  skip_if_not_installed("morie")
   set.seed(9)
   M <- matrix(rnorm(60), 12, 5)
   y <- rowSums(M) + 0.1 * rnorm(12)
@@ -405,7 +396,6 @@ test_that("morie_rnn_genomic accepts a deterministic_seed", {
 })
 
 test_that("morie_roc_auc_score returns documented structure", {
-  skip_if_not_installed("pROC")
   set.seed(0)
   y_true <- rep(c(0, 1), each = 20)
   y_score <- c(rnorm(20, 0), rnorm(20, 1.5))
@@ -424,7 +414,6 @@ test_that("morie_roc_auc_score returns documented structure", {
 })
 
 test_that("morie_roc_auc_score errors on non-binary y_true", {
-  skip_if_not_installed("pROC")
   expect_error(
     morie_roc_auc_score(c(0, 1, 2, 1), c(0.1, 0.2, 0.3, 0.4)),
     "binary"

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Welch power spectral density estimation.
 
 Reference: Rangayyan, R.M. & Krishnan, S. (2024). *Biomedical Signal

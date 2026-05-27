@@ -4,7 +4,6 @@
 # ARCH-in-mean, scaled dot-product attention.
 
 test_that("morie_det_rng_sha_hex returns a 64-char lowercase hex digest", {
-  skip_if_not_installed("digest")
   h <- morie_det_rng_sha_hex("ksr07_bootstrap", 42L)
   expect_type(h, "character")
   expect_length(h, 1L)
@@ -13,7 +12,6 @@ test_that("morie_det_rng_sha_hex returns a 64-char lowercase hex digest", {
 })
 
 test_that("morie_det_rng_sha_hex is deterministic and key-sensitive", {
-  skip_if_not_installed("digest")
   a <- morie_det_rng_sha_hex("fixture_x", 1L)
   b <- morie_det_rng_sha_hex("fixture_x", 1L)
   c <- morie_det_rng_sha_hex("fixture_x", 2L)
@@ -24,13 +22,11 @@ test_that("morie_det_rng_sha_hex is deterministic and key-sensitive", {
 })
 
 test_that("morie_det_rng_sha_hex rejects bad input", {
-  skip_if_not_installed("digest")
   expect_error(morie_det_rng_sha_hex(c("a", "b"), 1L))
   expect_error(morie_det_rng_sha_hex(123, 1L))
 })
 
 test_that("morie_det_rng installs a seed and returns it invisibly", {
-  skip_if_not_installed("digest")
   s <- morie_det_rng("ksr07_bootstrap", 42L)
   expect_type(s, "integer")
   expect_length(s, 1L)
@@ -40,7 +36,6 @@ test_that("morie_det_rng installs a seed and returns it invisibly", {
 })
 
 test_that("morie_det_rng makes subsequent draws reproducible", {
-  skip_if_not_installed("digest")
   morie_det_rng("repro_fixture", 7L)
   d1 <- rnorm(5)
   morie_det_rng("repro_fixture", 7L)
@@ -50,7 +45,6 @@ test_that("morie_det_rng makes subsequent draws reproducible", {
 })
 
 test_that("morie_det_rng rejects bad input", {
-  skip_if_not_installed("digest")
   expect_error(morie_det_rng(123, 1L))
   expect_error(morie_det_rng(c("a", "b"), 1L))
 })

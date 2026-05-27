@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Net Reclassification Improvement between two risk tools."""
 
 from __future__ import annotations

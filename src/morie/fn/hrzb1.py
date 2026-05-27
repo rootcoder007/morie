@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Manski (1975) maximum-score estimator (Horowitz 2009, Ch 5).
 
     beta_hat = argmax_{||b||=1} (1/n) sum_i (2 Y_i - 1) * 1(X_i' b > 0)

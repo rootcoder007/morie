@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Letter frequency analysis for substitution cipher detection."""
 
 from __future__ import annotations

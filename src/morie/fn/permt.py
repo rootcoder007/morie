@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """General two-sample permutation test (Good 2005, *Permutation Tests*).
 
 Tests H0: F_x = F_y by shuffling group labels and comparing the observed

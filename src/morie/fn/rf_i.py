@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Iterative OLS regression imputation (simplified random-forest style)."""
 
 from __future__ import annotations

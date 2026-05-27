@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """PM₂.₅ attributable-burden via GEMM nonlinear RR (Burnett 2018)."""
 
 from __future__ import annotations

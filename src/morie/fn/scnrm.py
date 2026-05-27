@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Score norms -- normative table from score distribution."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Multinomial probit for spatial choice (Armstrong Ch 9)."""
 import numpy as np
 from scipy.stats import norm

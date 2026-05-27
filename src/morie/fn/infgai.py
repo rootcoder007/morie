@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute mutual information / information gain between a feature and target."""
 
 from __future__ import annotations

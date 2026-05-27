@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """1D Wasserstein distance with R-style verbose result."""
 
 from typing import Sequence, Union

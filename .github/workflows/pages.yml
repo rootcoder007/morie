@@ -6,7 +6,7 @@ env:
 
 # Builds the Sphinx documentation in docs/source/ and deploys to
 # GitHub Pages. The published site is at:
-#   https://hadesllm.github.io/morie/
+#   https://rootcoder007.github.io/morie/
 #
 # Uses the official actions/deploy-pages workflow pattern; no
 # branch (gh-pages) needed — artefact is uploaded directly.

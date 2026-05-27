@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """BayesA via Gibbs sampler (per-marker variance scaled-inverse-chi^2)."""
 from __future__ import annotations
 

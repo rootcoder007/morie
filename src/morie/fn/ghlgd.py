@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Log-density estimation by exponential-family expansion."""
 import numpy as np
 from scipy.optimize import minimize

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Spatial GLMM simulation Gaussian response."""
 
 import numpy as np

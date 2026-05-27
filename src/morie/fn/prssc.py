@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Polygenic risk score calculation."""
 
 __all__ = ["prssc"]

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Earth mover's (Wasserstein-1) distance."""
 
 import numpy as np

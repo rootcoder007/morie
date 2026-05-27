@@ -40,7 +40,18 @@ load_dmt_imaging <- function(subject_id = NULL, root = NULL) {
     subs <- .entheo_list_subjects(root)
     if (length(subs) == 0L) subs <- default_subjects
   } else {
-    subs <- sprintf("%02d", as.integer(subject_id))
+    # 3MMM.28: subject_id may be "sub-001" (DMT_Imaging convention),
+    # "1", or 1L. Extract the embedded integer cleanly so we don't
+    # raise "NAs introduced by coercion" on the "sub-001" form.
+    sid_chars <- as.character(subject_id)
+    parsed <- suppressWarnings(as.integer(sid_chars))
+    needs_extract <- is.na(parsed) & nzchar(sid_chars)
+    if (any(needs_extract)) {
+      digit_match <- regmatches(sid_chars[needs_extract],
+                                  regexpr("[0-9]+", sid_chars[needs_extract]))
+      parsed[needs_extract] <- suppressWarnings(as.integer(digit_match))
+    }
+    subs <- sprintf("%02d", parsed)
   }
 
   if (!root_exists) {

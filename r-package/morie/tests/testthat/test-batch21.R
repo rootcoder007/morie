@@ -210,7 +210,6 @@ test_that("top_p_nucleus errors when p is out of range", {
 })
 
 test_that("morie_thin_plate_spline fits a smooth surface", {
-  skip_if_not_installed("MASS")
   set.seed(25)
   xx <- matrix(runif(60), ncol = 2)
   yy <- xx[, 1] + xx[, 2] + rnorm(30, sd = 0.01)
@@ -229,7 +228,6 @@ test_that("morie_thin_plate_spline fits a smooth surface", {
 })
 
 test_that("tpspn accepts a vector predictor and a smoothing penalty", {
-  skip_if_not_installed("MASS")
   set.seed(26)
   x <- runif(20)
   y <- x^2 + rnorm(20, sd = 0.05)
@@ -312,7 +310,6 @@ test_that("morie_transformer_genomic accepts a deterministic seed", {
 })
 
 test_that("morie_tsne_reduction wraps Rtsne and returns an embedding", {
-  skip_if_not_installed("Rtsne")
   set.seed(31)
   x <- matrix(rnorm(120), nrow = 30, ncol = 4)
   res <- morie_tsne_reduction(x,
@@ -332,6 +329,7 @@ test_that("morie_tsne_reduction wraps Rtsne and returns an embedding", {
 })
 
 test_that("morie_tsne_reduction errors when Rtsne is unavailable", {
+  skip_if_not_installed("Rtsne")
   if (!requireNamespace("Rtsne", quietly = TRUE)) {
     expect_error(morie_tsne_reduction(matrix(rnorm(40), 10, 4)), "Rtsne")
   } else {

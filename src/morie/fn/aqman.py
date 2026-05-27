@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Inverse distance weighted (IDW) interpolation on a regular grid."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Mediation analysis -- Baron-Kenny with Sobel test."""
 
 import numpy as np

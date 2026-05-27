@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Analyse a stress-strain curve to extract material properties."""
 
 from __future__ import annotations

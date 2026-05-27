@@ -377,7 +377,6 @@ test_that("morie_svm_genomic accepts NULL fixed effects and numeric gamma", {
 })
 
 test_that("morie_svm_hinge_primal fits a linear SVM when e1071 is available", {
-  skip_if_not_installed("e1071")
   set.seed(14)
   x <- rbind(matrix(rnorm(40, 1), 20, 2), matrix(rnorm(40, -1), 20, 2))
   y <- rep(c(1L, 0L), each = 20)
@@ -393,14 +392,12 @@ test_that("morie_svm_hinge_primal fits a linear SVM when e1071 is available", {
 })
 
 test_that("morie_svm_hinge_primal errors on non-binary y", {
-  skip_if_not_installed("e1071")
   x <- matrix(rnorm(30), 15, 2)
   y <- rep(c(1L, 2L, 3L), each = 5)
   expect_error(morie_svm_hinge_primal(x, y), "binary")
 })
 
 test_that("morie_svm_hinge_primal coerces a vector predictor to a 1-column matrix", {
-  skip_if_not_installed("e1071")
   set.seed(15)
   x <- c(rnorm(15, 2), rnorm(15, -2))
   y <- rep(c(1L, 0L), each = 15)
@@ -409,7 +406,6 @@ test_that("morie_svm_hinge_primal coerces a vector predictor to a 1-column matri
 })
 
 test_that("morie_svm_kernel_trick fits each supported kernel", {
-  skip_if_not_installed("e1071")
   set.seed(16)
   x <- rbind(matrix(rnorm(60, 1), 30, 2), matrix(rnorm(60, -1), 30, 2))
   y <- rep(c(1L, 0L), each = 30)
@@ -427,7 +423,6 @@ test_that("morie_svm_kernel_trick fits each supported kernel", {
 })
 
 test_that("morie_svm_kernel_trick honours gamma 'auto' and numeric gamma", {
-  skip_if_not_installed("e1071")
   set.seed(17)
   x <- rbind(matrix(rnorm(40, 1), 20, 2), matrix(rnorm(40, -1), 20, 2))
   y <- rep(c(1L, 0L), each = 20)

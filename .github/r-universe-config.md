@@ -1,14 +1,14 @@
 # r-universe configuration
 
 The MORIE R package is registered with r-universe via the
-**hadesllm** organization. r-universe rebuilds binaries for
+**rootcoder007** organization. r-universe rebuilds binaries for
 Windows / macOS / Linux every 24 hours from the GitHub source —
 no GitHub Action is needed on this side.
 
-## One-time setup (already done if you see hadesllm.r-universe.dev)
+## One-time setup (already done if you see rootcoder007.r-universe.dev)
 
 1. Sign in at https://r-universe.dev with your GitHub account
-   (the one that owns or admins `hadesllm/morie`).
+   (the one that owns or admins `rootcoder007/morie`).
 2. Visit https://github.com/r-universe-org/help#how-to-create-your-personal-r-universe
    and follow the instructions to create an org-level repo named
    `<owner>.r-universe.dev` with a `packages.json` file.
@@ -18,7 +18,7 @@ no GitHub Action is needed on this side.
    [
      {
        "package": "morie",
-       "url": "https://github.com/hadesllm/morie",
+       "url": "https://github.com/rootcoder007/morie",
        "subdir": "r-package/morie",
        "branch": "main"
      }
@@ -31,13 +31,13 @@ no GitHub Action is needed on this side.
 ## Installation for end users
 
 Once the package builds successfully on r-universe (you can
-check the dashboard at `https://hadesllm.r-universe.dev`):
+check the dashboard at `https://rootcoder007.r-universe.dev`):
 
 ```r
 install.packages(
   "morie",
   repos = c(
-    hadesllm = "https://hadesllm.r-universe.dev",
+    rootcoder007 = "https://rootcoder007.r-universe.dev",
     CRAN     = "https://cloud.r-project.org"
   )
 )

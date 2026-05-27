@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Generate a Dirichlet process via stick-breaking (GEM distribution)."""
 
 from __future__ import annotations

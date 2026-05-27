@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """LDL^T decomposition for symmetric matrices."""
 
 from __future__ import annotations

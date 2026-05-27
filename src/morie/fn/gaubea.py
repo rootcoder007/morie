@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute Gaussian beam parameters along the propagation axis."""
 
 from __future__ import annotations

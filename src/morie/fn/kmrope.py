@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Rotary positional embedding (RoPE): rotate query/key by angle m*theta_i."""
 import numpy as np
 from ._richresult import RichResult

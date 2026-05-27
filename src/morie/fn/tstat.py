@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """t-statistic for one coefficient (atomic, scalar return)."""
 
 

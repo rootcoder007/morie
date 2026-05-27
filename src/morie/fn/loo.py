@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """LOO-CV via Pareto Smoothed Importance Sampling (PSIS-LOO)."""
 
 from __future__ import annotations

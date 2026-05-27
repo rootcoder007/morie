@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Transfer features from a source domain to a target domain via."""
 
 from __future__ import annotations

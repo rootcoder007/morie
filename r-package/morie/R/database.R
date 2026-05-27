@@ -61,7 +61,7 @@
 #' }
 #'
 #' The persistent location is \code{tools::R_user_dir("morie", "cache")}
-#' (R \eqn{\ge} 4.0), which on Linux defaults to
+#' (R \eqn{\ge}{>=} 4.0), which on Linux defaults to
 #' \code{~/.cache/R/morie/}, on macOS to
 #' \code{~/Library/Caches/org.R-project.R/R/morie/}, and on Windows to
 #' \code{\%LOCALAPPDATA\%/R/cache/R/morie/}. Users can override this
@@ -196,11 +196,7 @@ morie_builtin_db <- function() {
 #' }
 #' @export
 morie_db_connect <- function(db_path = NULL) {
-  if (!requireNamespace("DBI", quietly = TRUE)) {
-    stop("Package 'DBI' is required. install.packages('DBI')",
-      call. = FALSE
-    )
-  }
+  morie_ensure_extras("DBI")
   # CRAN Policy: by default never write under user HOME. When the
   # caller doesn't supply a path and the MORIE_CACHE_DB env var is
   # unset, default to a session-scoped subdirectory of tempdir(). R
@@ -281,6 +277,11 @@ morie_cache_store <- function(data, table_name, db_path = NULL, con = NULL) {
   h <- .morie_db_handle(con, db_path)
   if (h$close) on.exit(DBI::dbDisconnect(h$con), add = TRUE)
   DBI::dbWriteTable(h$con, table_name, data, overwrite = TRUE)
+  # Auto-create the cardinality-driven indexes for known dataset
+  # tables (SIU, OTIS a01/b01..d07, ARSAU uof_*, TPS crime-table
+  # family). Unknown table_names are silently no-op. See
+  # R/db_indexes.R for the per-dataset registry + cardinality rationale.
+  morie_db_create_indexes(h$con, table_name)
   invisible(nrow(data))
 }
 

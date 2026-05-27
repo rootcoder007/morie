@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Gehan-Breslow (generalized Wilcoxon) test for survival."""
 
 from __future__ import annotations

@@ -49,6 +49,8 @@ test_that("fzcvm runs and .morie_cvm_pvalue spans its table", {
 })
 
 test_that("det-rng helpers derive stable SHA-keyed seeds", {
+  skip_if_not_installed("digest")
+  skip_if_not_installed("openssl")
   skip_if(
     !requireNamespace("digest", quietly = TRUE) &&
       !requireNamespace("openssl", quietly = TRUE),
@@ -82,6 +84,7 @@ test_that("fast.R kernels work on the C++ and the base-R fallback path", {
 })
 
 test_that("rgwav denoises via wavelets and via the MA fallback", {
+  skip_if_not_installed("wavelets")
   set.seed(3)
   x <- sin(2 * pi * 3 * seq(0, 1, length.out = 256)) +
     0.3 * stats::rnorm(256)

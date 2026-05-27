@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Mercer's theorem: kernel expansion via eigenfunctions."""
 import numpy as np
 from ._richresult import RichResult

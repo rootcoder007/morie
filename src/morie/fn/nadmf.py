@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """
 Nesterov accelerated gradient (NAG) for faster convergence.
 

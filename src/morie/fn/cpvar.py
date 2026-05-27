@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Detect a single variance change point in a time series."""
 
 from __future__ import annotations

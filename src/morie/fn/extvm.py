@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Generalised Extreme Value (GEV) distribution fit (Coles 2001).
 
 ML-fits the three-parameter GEV

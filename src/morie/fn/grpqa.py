@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Grouped-Query Attention (Ainslie et al. 2023)."""
 from __future__ import annotations
 

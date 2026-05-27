@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """BayesA -- t-distributed marker effects for genomic prediction."""
 
 __all__ = ["baysa"]

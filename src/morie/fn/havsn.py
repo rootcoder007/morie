@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute great-circle distance using the Haversine formula."""
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Spectral error measure (SEM) for adaptive segmentation."""
 import numpy as np
 from ._richresult import RichResult

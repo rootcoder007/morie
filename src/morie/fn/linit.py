@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute the intersection point of two line segments (p1-p2) and (p3-p4)."""
 
 from __future__ import annotations

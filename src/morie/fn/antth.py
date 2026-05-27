@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Antithetic variates Monte-Carlo (Hammersley & Morton 1956).
 
 For uniform draws ``U_i in (0,1)`` and integrand ``f``, the antithetic

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute the Highest Density Interval (HDI) from posterior samples."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """describe(name) -- pedagogical multi-section guide for any morie.fn callable.
 
 Per  and the rule in

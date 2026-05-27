@@ -23,7 +23,7 @@ Named list \code{SampEn}, \code{A}, \code{B}, \code{m}, \code{r}, \code{n}.
 Richman & Moorman (2000) sample entropy.
 }
 \details{
-\deqn{\mathrm{SampEn}(m, r) = -\ln(A / B)}
+\deqn{\mathrm{SampEn}(m, r) = -\ln(A / B)}{SampEn(m, r) = -ln(A / B)}
 
 where \code{B} is the number of unordered template-vector pairs of length
 \code{m} within Chebyshev distance \code{r} and \code{A} is the count at length

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Stacked generalization (Wolpert, 1992) ensemble."""
 
 from __future__ import annotations

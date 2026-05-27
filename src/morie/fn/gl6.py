@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Guttman's Lambda 6 reliability using squared multiple correlations."""
 
 from __future__ import annotations

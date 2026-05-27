@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Siegel-Tukey scale test using interleaved rank assignment."""
 import numpy as np
 from scipy import stats

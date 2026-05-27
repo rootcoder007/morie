@@ -3,7 +3,6 @@
 # GARCH, gradient boosting, and GBLUP.
 
 test_that("fzkdf returns a structured KDFE bias-variance list", {
-  skip_if_not_installed("digest")
   set.seed(1)
   x <- rnorm(300)
   r <- fzkdf(x, t = 0)
@@ -400,7 +399,6 @@ test_that("morie_garch_fit errors on too-short series", {
 })
 
 test_that("morie_gradient_boosting_ensemble fits a regression task", {
-  skip_if_not_installed("gbm")
   set.seed(25)
   x <- matrix(rnorm(200), ncol = 4)
   y <- x[, 1] + 0.3 * rnorm(50)
@@ -420,7 +418,6 @@ test_that("morie_gradient_boosting_ensemble fits a regression task", {
 })
 
 test_that("morie_gradient_boosting_ensemble fits a classification task", {
-  skip_if_not_installed("gbm")
   set.seed(26)
   x <- matrix(rnorm(200), ncol = 4)
   y <- as.integer(x[, 1] + rnorm(50) > 0)

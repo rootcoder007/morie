@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Impulse response function (IRF) for VAR models."""
 
 from __future__ import annotations

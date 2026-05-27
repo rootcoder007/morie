@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Hedges' g (bias-corrected Cohen's d) with R-style verbose result."""
 
 

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Person-time incidence rate with CI."""
 
 import scipy.stats as stats

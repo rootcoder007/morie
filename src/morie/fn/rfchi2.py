@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Chi-squared random field from Gaussian squares."""
 
 import numpy as np

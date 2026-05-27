@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Schwartz posterior consistency diagnostic."""
 import numpy as np
 from scipy.stats import norm

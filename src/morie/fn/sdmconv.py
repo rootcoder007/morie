@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """SDM rho/lambda joint feasibility check."""
 
 import numpy as np

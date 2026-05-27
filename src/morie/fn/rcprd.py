@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Predict binary choice based on proximity of ideal point to yea/nay positions."""
 
 from __future__ import annotations

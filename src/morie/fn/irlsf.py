@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """
 Iteratively reweighted least squares (IRLS) for GLM fitting.
 

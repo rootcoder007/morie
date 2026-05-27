@@ -180,7 +180,6 @@ test_that("morie_horowitz_binary_response alias is bound to hrzb1", {
 })
 
 test_that("morie_horowitz_smoothed_maximum_score fits with the default bandwidth", {
-  skip_if_not_installed("MASS")
   set.seed(202)
   n <- 70
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
@@ -194,7 +193,6 @@ test_that("morie_horowitz_smoothed_maximum_score fits with the default bandwidth
 })
 
 test_that("morie_horowitz_smoothed_maximum_score accepts an explicit bandwidth", {
-  skip_if_not_installed("MASS")
   set.seed(203)
   n <- 60
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
@@ -204,7 +202,6 @@ test_that("morie_horowitz_smoothed_maximum_score accepts an explicit bandwidth",
 })
 
 test_that("morie_horowitz_smoothed_maximum_score handles a vector covariate", {
-  skip_if_not_installed("MASS")
   set.seed(204)
   x <- stats::rnorm(50)
   y <- as.numeric(x + stats::rnorm(50) > 0)
@@ -219,7 +216,6 @@ test_that("morie_horowitz_smoothed_maximum_score returns NA on tiny data", {
 })
 
 test_that("morie_horowitz_censored_regression fits a censored LAD model", {
-  skip_if_not_installed("MASS")
   set.seed(205)
   n <- 80
   X <- cbind(1, stats::rnorm(n))
@@ -238,7 +234,6 @@ test_that("morie_horowitz_censored_regression fits a censored LAD model", {
 })
 
 test_that("morie_horowitz_censored_regression uses a custom censor threshold", {
-  skip_if_not_installed("MASS")
   set.seed(206)
   n <- 70
   X <- cbind(1, stats::rnorm(n))
@@ -254,7 +249,6 @@ test_that("morie_horowitz_censored_regression returns NA on insufficient data", 
 })
 
 test_that("morie_horowitz_censored_regression flags too few uncensored obs", {
-  skip_if_not_installed("MASS")
   set.seed(207)
   n <- 40
   X <- cbind(1, stats::rnorm(n))
@@ -265,7 +259,6 @@ test_that("morie_horowitz_censored_regression flags too few uncensored obs", {
 })
 
 test_that("morie_horowitz_duration_model fits a Cox proportional-hazards model", {
-  skip_if_not_installed("MASS")
   set.seed(208)
   n <- 80
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
@@ -281,7 +274,6 @@ test_that("morie_horowitz_duration_model fits a Cox proportional-hazards model",
 })
 
 test_that("morie_horowitz_duration_model handles a single-covariate vector", {
-  skip_if_not_installed("MASS")
   set.seed(209)
   n <- 60
   x <- stats::rnorm(n)
@@ -301,7 +293,6 @@ test_that("morie_horowitz_duration_model returns NA on insufficient data", {
 })
 
 test_that("morie_horowitz_index_model fits a single-index model", {
-  skip_if_not_installed("MASS")
   set.seed(210)
   n <- 70
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
@@ -319,7 +310,6 @@ test_that("morie_horowitz_index_model fits a single-index model", {
 })
 
 test_that("morie_horowitz_index_model accepts an explicit bandwidth", {
-  skip_if_not_installed("MASS")
   set.seed(211)
   n <- 60
   X <- cbind(stats::rnorm(n), stats::rnorm(n))
@@ -428,7 +418,6 @@ test_that("morie_horowitz_kernel_regression returns NA on insufficient data", {
 })
 
 test_that("morie_horowitz_local_linear fits a local-linear regression", {
-  skip_if_not_installed("MASS")
   set.seed(219)
   x <- stats::rnorm(70)
   y <- 1.5 * x + stats::rnorm(70, sd = 0.2)
@@ -440,7 +429,6 @@ test_that("morie_horowitz_local_linear fits a local-linear regression", {
 })
 
 test_that("morie_horowitz_local_linear evaluates on a custom grid", {
-  skip_if_not_installed("MASS")
   set.seed(220)
   x <- stats::rnorm(60)
   y <- x^2 + stats::rnorm(60, sd = 0.3)
@@ -490,7 +478,6 @@ test_that("morie_horowitz_mixture_model returns NA on insufficient data", {
 })
 
 test_that("morie_horowitz_nonparametric_iv fits an NPIV model", {
-  skip_if_not_installed("MASS")
   set.seed(223)
   n <- 120
   z <- stats::rnorm(n)
@@ -509,7 +496,6 @@ test_that("morie_horowitz_nonparametric_iv fits an NPIV model", {
 })
 
 test_that("morie_horowitz_nonparametric_iv bootstraps SEs when requested", {
-  skip_if_not_installed("MASS")
   set.seed(224)
   n <- 80
   z <- stats::rnorm(n)
@@ -523,7 +509,6 @@ test_that("morie_horowitz_nonparametric_iv bootstraps SEs when requested", {
 })
 
 test_that("morie_horowitz_nonparametric_iv falls back to 2SLS for small n", {
-  skip_if_not_installed("MASS")
   set.seed(225)
   n <- 30
   z <- stats::rnorm(n)
@@ -570,7 +555,6 @@ test_that("morie_horowitz_deconvolution returns NA on insufficient data", {
 })
 
 test_that("morie_horowitz_plr_estimator fits a partially-linear regression", {
-  skip_if_not_installed("MASS")
   set.seed(228)
   n <- 80
   x <- stats::rnorm(n)
@@ -586,7 +570,6 @@ test_that("morie_horowitz_plr_estimator fits a partially-linear regression", {
 })
 
 test_that("morie_horowitz_plr_estimator handles a multi-column parametric part", {
-  skip_if_not_installed("MASS")
   set.seed(229)
   n <- 70
   X <- cbind(stats::rnorm(n), stats::rnorm(n))

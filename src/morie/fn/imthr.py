@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Binarise a grayscale image using Otsu's method or a fixed threshold."""
 
 from __future__ import annotations

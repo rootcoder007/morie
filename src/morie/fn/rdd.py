@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Sharp RDD: local linear regression around the cutoff."""
 
 from __future__ import annotations

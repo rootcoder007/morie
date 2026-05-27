@@ -283,6 +283,7 @@ morie_hawkes_fit <- function(times, end_time = NULL,
   )
 }
 
+#' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_hawkes_fit <- function(x, ...) {
   cat(sprintf(

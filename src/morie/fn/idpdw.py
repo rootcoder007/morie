@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Dynamic ideal point (DW-NOMINATE).
 
 Category: Spatial

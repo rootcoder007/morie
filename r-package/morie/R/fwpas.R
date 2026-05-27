@@ -4,7 +4,7 @@
 #'
 #' Pure-base-R parity for \code{morie.fn.fwpas.forward_pass_dense}.
 #'
-#' \deqn{z = W x + b, \quad a = \sigma(z)}
+#' \deqn{z = W x + b, \quad a = \sigma(z)}{z = W x + b, a = sigma(z)}
 #'
 #' @param x Numeric vector (single input) or matrix (rows = samples).
 #' @param w Weight matrix shape \code{(n_out, n_in)}.

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Mini-batch gradient descent on subset of size b."""
 import numpy as np
 from ._richresult import RichResult

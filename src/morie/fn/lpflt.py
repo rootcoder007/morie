@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Apply a Butterworth lowpass filter to a signal."""
 
 from __future__ import annotations

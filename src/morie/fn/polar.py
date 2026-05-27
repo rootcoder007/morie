@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Polar decomposition A = UP. 'There is another.'"""
 
 from __future__ import annotations

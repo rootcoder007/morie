@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Item discrimination for all items (corrected item-total r)."""
 
 from __future__ import annotations

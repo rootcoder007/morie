@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Thermometer folding problem: ratings fold at ideal point creating non-monotone pattern."""
 import numpy as np
 from ._richresult import RichResult

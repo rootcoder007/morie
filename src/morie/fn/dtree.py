@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """CART decision tree classifier (pure NumPy, Gini splitting)."""
 
 from __future__ import annotations

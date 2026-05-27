@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """DR-learner (doubly-robust) for CATE estimation.
 
 The DR-learner uses augmented IPW pseudo-outcomes as a robust signal,

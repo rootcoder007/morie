@@ -22,7 +22,7 @@ Named list: \code{atc}, \code{se}, \code{ci_lower}, \code{ci_upper}, \code{n_con
 }
 \description{
 Control units receive weight 1; treated units receive
-\eqn{w_i = (1-\hat{e}(X_i))/\hat{e}(X_i)}.
+\eqn{w_i = (1-\hat{e}(X_i))/\hat{e}(X_i)}{w_i = (1-e_hat(X_i))/e_hat(X_i)}.
 }
 \examples{
 set.seed(1)

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Double Machine Learning for recidivism treatment effect."""
 
 from __future__ import annotations

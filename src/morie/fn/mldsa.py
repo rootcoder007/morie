@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """ML-DSA (Dilithium) post-quantum signature -- keygen."""
 
 from __future__ import annotations

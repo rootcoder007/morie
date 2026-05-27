@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """O'Brien-Fleming interim analysis boundaries."""
 
 from __future__ import annotations

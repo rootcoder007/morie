@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Competing risks -- cumulative incidence via Aalen-Johansen."""
 
 import numpy as np

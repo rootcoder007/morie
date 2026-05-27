@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """LMS adaptive noise canceller -- Rangayyan Ch 11."""
 from __future__ import annotations
 

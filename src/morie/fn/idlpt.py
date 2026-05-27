@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Ideal point recovery from unfolding coordinates."""
 
 from __future__ import annotations

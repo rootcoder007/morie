@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute absorbed energy from a Charpy or Izod impact test."""
 
 from __future__ import annotations

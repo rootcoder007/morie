@@ -137,7 +137,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 html_theme = "alabaster"
 html_static_path = ["_static"]
 # Files copied verbatim to the site root (clean URLs for curl-able shell
-# installers, e.g. https://hadesllm.github.io/morie/install.sh).
+# installers, e.g. https://rootcoder007.github.io/morie/install.sh).
 html_extra_path = ["_extra"]
 html_title = "MORIE"
 
@@ -147,11 +147,11 @@ html_title = "MORIE"
 html_show_sourcelink = True
 html_context = {
     "display_github": True,
-    "github_user": "hadesllm",
+    "github_user": "rootcoder007",
     "github_repo": "morie",
     "github_version": "main",
     "conf_py_path": "/docs/source/",
-    "source_url_prefix": "https://github.com/hadesllm/morie/blob/main/docs/source/",
+    "source_url_prefix": "https://github.com/rootcoder007/morie/blob/main/docs/source/",
 }
 
 # Sidebar toggle — alabaster doesn't ship a collapse button; this
@@ -172,7 +172,7 @@ html_js_files = [
 # fixed sidebar so the toctree is always visible.
 html_theme_options = {
     "description": "Reproducible scientific computing — 36k+ registered callables, 60+ built-in datasets (plus ~160 BigQuery-derived via Datasette), Python + R.",
-    "github_user": "hadesllm",
+    "github_user": "rootcoder007",
     "github_repo": "morie",
     "github_button": False,
     "fixed_sidebar": True,

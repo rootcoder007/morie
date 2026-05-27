@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute precision and recall at top-k ranked predictions."""
 
 from __future__ import annotations

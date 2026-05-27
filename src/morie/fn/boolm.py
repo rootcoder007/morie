@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Minimize a boolean function using the Quine-McCluskey algorithm."""
 
 from __future__ import annotations

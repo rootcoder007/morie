@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Determine whether a point lies inside a polygon using the ray-casting."""
 
 from __future__ import annotations

@@ -2,7 +2,6 @@
 # Coverage lift batch I: vines, ksr19, polrz, xgbst, hrzp1, ghcls, rfens, gcvgn, gwreg, stvar.
 
 test_that("vines runs on multivariate normal sample", {
-  testthat::skip_if_not_installed("MASS")
   set.seed(1)
   Sigma <- matrix(c(1, 0.5, 0.3, 0.5, 1, 0.4, 0.3, 0.4, 1), 3)
   z <- MASS::mvrnorm(200, c(0, 0, 0), Sigma)
@@ -38,6 +37,8 @@ test_that("polrz error guards fire", {
 })
 
 test_that("morie_xgboost_objective regression task on auto-detected continuous y", {
+  skip_if_not_installed("gbm")
+  skip_if_not_installed("xgboost")
   testthat::skip_if_not(
     requireNamespace("xgboost", quietly = TRUE) ||
       requireNamespace("gbm", quietly = TRUE),
@@ -78,7 +79,6 @@ test_that("morie_ghosal_np_classification runs on binary y", {
 })
 
 test_that("morie_random_forest_ensemble regression path runs", {
-  testthat::skip_if_not_installed("randomForest")
   set.seed(1)
   x <- matrix(rnorm(200), 50, 4)
   y <- as.numeric(x %*% c(1, -1, 0.5, 0) + 0.3 * rnorm(50))

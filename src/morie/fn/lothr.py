@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Find a template pattern within a signal via cross-correlation."""
 
 from __future__ import annotations

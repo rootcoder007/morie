@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Yates continuity correction for 2x2 chi-square test."""
 import numpy as np
 from scipy import stats

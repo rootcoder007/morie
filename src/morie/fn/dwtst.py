@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Durbin-Watson test statistic for autocorrelation."""
 
 import numpy as np

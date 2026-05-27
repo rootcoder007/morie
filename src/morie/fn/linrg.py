@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Ordinary least squares closed-form solution (sklearn-backed)."""
 import numpy as np
 

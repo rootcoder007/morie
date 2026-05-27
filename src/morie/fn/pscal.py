@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Calibrate propensity scores using Platt scaling."""
 
 from __future__ import annotations

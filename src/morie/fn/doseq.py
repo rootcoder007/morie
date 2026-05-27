@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Dose-response analysis (logistic/probit)."""
 
 from __future__ import annotations

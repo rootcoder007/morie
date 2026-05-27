@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute positive and negative predictive values from prevalence."""
 
 from __future__ import annotations

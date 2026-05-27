@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """R v Jordan compliance (18/30 month ceiling)."""
 
 from __future__ import annotations

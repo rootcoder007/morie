@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """GWR Frisch-Waugh-Lovell local partitioned regression."""
 
 import numpy as np

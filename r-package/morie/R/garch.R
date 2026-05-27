@@ -18,7 +18,7 @@
 
 #' Fit a GARCH(1,1) model to a return series
 #'
-#' \deqn{\sigma_t^2 = \omega + \alpha \epsilon_{t-1}^2 + \beta \sigma_{t-1}^2.}
+#' \deqn{\sigma_t^2 = \omega + \alpha \epsilon_{t-1}^2 + \beta \sigma_{t-1}^2.}{sigma_t^2 = omega + alpha epsilon_t-1^2 + beta sigma_t-1^2.}
 #'
 #' @param x Numeric return series.
 #' @return Named list with \code{omega, alpha, beta, persistence, loglik,

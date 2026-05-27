@@ -1,0 +1,1850 @@
+                          PUBLIC SAFETY DATA
+                          PORTAL: OPEN DATA
+                            DOCUMENTATION
+
+
+
+                                                Analytics and Innovation
+                               Analytics.Innovation@torontopolice.on.ca
+
+
+
+
+Updated: April 21, 2026
+Table of Contents
+I N T R O D U C T I O N ............................................................................................................................... 2
+   Toronto Police Service Public Safety Data Portal...................................................................................... 2
+   Police Open Data & Privacy Considerations ............................................................................................. 3
+   Geographic Information............................................................................................................................ 3
+   Open Data Updates ................................................................................................................................... 4
+   Open Analytics Information ...................................................................................................................... 4
+   Web Mapping Applications ....................................................................................................................... 5
+   Open Datasets Currently Available ........................................................................................................... 6
+O P E N D A T A S E T S ............................................................................................................................. 6
+   Community Safety Indicators (CSI)....................................................................................................... 6
+   Homicides (ASR-RC-TBL-002) ............................................................................................................... 8
+   Shootings & Firearm Discharges .......................................................................................................... 9
+   Neighbourhood Crime Rates .............................................................................................................. 10
+   Bicycle Thefts ......................................................................................................................................... 11
+   Killed or Seriously Injured (KSI) Collisions ......................................................................................... 13
+   Field Information Reports (FIRS) ......................................................................................................... 16
+   Traffic Collisions (ASR-T-TBL-001) ...................................................................................................... 17
+   Mental Health Act (MHA) Apprehensions ......................................................................................... 19
+   Persons in Crisis (PIC) Calls for Service Attended (CFSA) ................................................................ 21
+   Budget & Staffing ................................................................................................................................. 22
+   Theft from Motor Vehicle .................................................................................................................... 25
+   Hate Crimes ........................................................................................................................................... 27
+   Intimate Partner and Family Violence ................................................................................................ 29
+A p p e n d i x A : .................................................................................................................................... 32
+   Open Data Summary Table ................................................................................................................. 32
+   Premises Type Summary Table ........................................................................................................... 33
+A p p e n d i x B : .................................................................................................................................... 35
+   Glossary .................................................................................................................................................. 35
+
+
+
+
+                                                                                                                                              Page 1 of 41
+Analytics & Innovation
+
+Public Safety Data Portal Open Data
+Documentation
+INTRODUCTION
+
+        The Toronto Police Service is committed to the ongoing release of open data for public
+safety, awareness, greater openness and transparency. The Service’s Open Data Program strives
+to release valuable open data and provide continuous support for public understanding, use
+and application of police information.
+
+         Government agencies and institutions under the Freedom of Information and Protection
+of Privacy Act (FIPPA), the Municipal Freedom of Information and Protection of Privacy Act
+(MFIPPA) and/or the Personal Health Information Protection Act (PHIPA) are required to provide
+members of the public with access to public government data, unless the data is exempt for
+legal, privacy, security, confidentiality or commercially-sensitive reasons 1. The Toronto Police
+Service has adopted the Government of Ontario’s Open Data Directive and all police open
+datasets are subject to the Open Government Licence. Open government guidelines define open
+data as structured data that is machine-readable, freely shared, used and built on without
+restrictions 2.
+
+Toronto Police Service Public Safety Data Portal
+
+         The Toronto Police Service publishes open datasets via the Toronto Police Service Public
+Safety Data Portal designed to provide access to police open datasets for public use. This open
+data portal delivers police information by providing downloadable open datasets that meet the
+industry standards for open data, data visualizations, web mapping applications and supporting
+documentation to aid public understanding and open data literacy of police information. The
+Public Safety Data Portal can be accessed through the Toronto Police Service website or by
+visiting directly at: data.tps.ca
+
+
+
+
+1
+    https://www.ontario.ca/page/open-government
+2
+    https://www.ontario.ca/page/open-government-licence-ontario
+
+                                                                                      Page 2 of 41
+Police Open Data & Privacy Considerations
+
+Police open data includes any data collected or maintained by the Toronto Police Service unless
+certain data or data in its entirety is exempt for legal, privacy, security, and confidentiality or
+commercially-sensitive reasons. The Toronto Police Service considers privacy and data quality to
+be of utmost importance. The Toronto Police Service is committed to the proactive provision of
+police open data while taking necessary measures to protect privacy, legal and confidential data.
+Therefore, the Toronto Police Service will:
+
+    •   Not disclose data exempt for legal, privacy, security, confidentially or commercially-
+        sensitive reasons.
+    •   Exclude data when the service is prevented from disclosing data by law/or authorized by
+        law to refuse its existence.
+    •   Personal information is strictly protected unless sufficient statutory authority for release
+        and where appropriate.
+
+The Toronto Police Service reserves the right to exclude the release of personal identification
+information or any data that has the potential to identify an individual.
+
+
+Geographic Information
+
+        Toronto Police Service Open Data includes geographic location information provided in
+the projected coordinate system, WGS 1984 Web Mercator (auxiliary sphere). The location of
+events were offset to the nearest road intersection to protect the privacy of parties involved in
+the event. All data must be considered an approximate location of the event and users are
+advised not to interpret any of these locations as related to a specific address or individual. For
+datasets without location information, events are either at the neighbourhood level or they are
+aggregated in a category.
+        Neighbourhood and coordinate information (latitude and longitude) will appear to be
+Not Specified Area (NSA) and (0,0), respectively, if any of the following conditions are met: (1)
+Division is NSA OR (2) Originating X/Y values are 0 OR (3) Originating X/Y values are outside the
+City of Toronto.
+        City of Toronto neighbourhood information has been provided for both the old 140
+neighbourhood structure as well as the new 158 neighbourhood structure. 3
+
+Important note regarding neighbourhood and coordinate information: If an event occurred
+within 5,000 meters outside the City of Toronto, it is snapped to an intersection and will have
+coordinates. Neighbourhood values for these events would be NSA.
+
+
+3
+ https://www.toronto.ca/city-government/data-research-maps/neighbourhoods-communities/neighbourhood-
+profiles/
+
+                                                                                          Page 3 of 41
+Important note regarding TPS Divisional boundaries: June 2018 marked the amalgamation
+of divisions 54 and 55 and thus after this point all offences/crimes occurring in the boundaries
+of “54 Division” have been marked as “55 Division”. Please note, data summarized in the open
+analytics combines all data for 54 and 55 divisions together for historical comparisons.
+
+
+Open Data Updates
+
+        Toronto Police Service Open Data is updated quarterly. Due to the dynamic nature of
+police reporting, a complete update of the entire dataset is required. However, all historical date
+ranges will be provided. See Appendix A for a complete list of datasets and their respective date
+range availability.
+
+
+Open Analytics Information
+
+        Toronto Police Service provides open analytics to aid in visualizing and understanding
+police information. These interactive visualizations provide trend analysis and important
+information at a glance. Open analytics are delivered through Last Five (5) Years and Historical
+Reports.
+
+Last Five (5) Years: depending on the button selected, refers to the last five years including the
+present year for the period of January 1 up to and including the previous Sunday as indicated
+for Year-to-Date. For Year End, the period refers to January 1st to December 31st of the last five
+full years:
+
+       Year-to-Date: refers to the period beginning on January 1st of the current year up to
+       and including the present date or date as indicated. The same time period may be
+       applied across multiple years in order to determine trends over time. The purpose of this
+       report is to keep the public informed of criminal activity and other police information on
+       a regular basis. Year-to-date open analytics are updated every Monday and include data
+       up to the previous day.
+
+       Important Note: Open Data for downloading is not available for Year-to-date reports. The
+       open data is provided to the public for awareness and reporting purposes only. Due to the
+       dynamic nature of police information, Uniform Crime Reporting information associated
+       with recently reported occurrences is preliminary and subject to change upon further
+       investigation.
+
+       Year End: refers to the full year period beginning on January 1st and ending on
+       December 31st. This time period may be applied across multiple years in order to
+
+
+                                                                                       Page 4 of 41
+        compare year over year changes and/or determine trends over time. The purpose of this
+        report is to provide an overview of statistics for the previous year.
+
+Historical: refers to all compiled data from previous years. Historical reports and open datasets
+are updated and available for download upon the release of the associated open data at the end
+of the first and third quarters of every year.
+
+Open data uses the 24-hour clock format to eliminate AM/PM confusion and ensure consistency
+in reporting. Hours range from 0 to 23, where:
+
+        0 (00:00) = Midnight, marking the start of a new day.
+
+        1 to 11 = Morning hours (e.g. 1 = 1:00 AM, 11 = 11:00 AM).
+
+        12 to 23 = Afternoon and evening (e.g. 13 = 1:00 PM, 23 = 11:00 PM).
+
+
+Time Zone: REPORT_DATE, OCC_DATE and EVENT_DATE are stored and published in local time
+(Toronto – UTC- 05:00 Eastern Time (US & Canada)); however, when accessed or downloaded
+from through the ArcGIS Online Feature Service (Public Safety Data Portal), these date fields are
+automatically converted to Coordinated Universal Time (UTC) by the platform.
+
+
+
+Web Mapping Applications
+
+         Toronto Police Service provides web mapping applications to visualize data spatially.
+These dynamic and interactive web mapping applications allow users to visualize crime and
+traffic data where it occurs. Crime App Year-to-date and Fatal Traffic Collisions web applications
+provide up-to-date information related to the current year and are updated at different
+intervals. Crime App Year-to-date is updated twice daily, with valid data up to the previous day.
+Fatal Traffic Collisions is updated 1-2 business days after a fatality occurs. Web mapping
+applications associated with downloadable open datasets are updated upon the open data
+release associated with that dataset. For a complete list of web mapping applications, please
+visit the Maps section on the portal.
+
+
+Open Data Documentation Information
+
+   This document is designed to provide a comprehensive guide regarding the various open
+datasets currently provided on the Public Safety Data Portal 4. This document provides a list of
+
+
+4
+ This guide excludes the Annual Statistical Report datasets, please refer to the ASR documentation. This
+guide also excludes data currently reported through open analytics but not currently available as
+downloadable open datasets (e.g. Sexual Violations).
+
+                                                                                              Page 5 of 41
+the open datasets currently available for downloading supplemented by detailed metadata, data
+qualifiers, glossary of terms and links to related open analytics and web mapping applications.
+
+    This document also contains an Open Data Summary Table which includes a list of all open
+datasets, table identifiers, data extraction dates, and date range. The Glossary can be found at
+the end of this document (See Appendix B).
+Open Datasets Currently Available
+    1. Community Safety Indicators (CSI)
+    2. Homicides
+    3. Shootings & Firearm Discharges
+    4. Neighbourhood Crime Rates
+    5. Bicycle Thefts
+    6. Killed or Seriously Injured (KSI) Collisions
+    7. Field Information Reports (FIRS)
+    8. Traffic Collisions
+    9. Mental Health Act (MHA) Apprehensions
+    10. Persons in Crisis (PIC) Calls for Service Attended (CFSA)
+    11. Budget & Staffing
+    12. Theft from Motor Vehicle
+    13. Hate Crimes
+    14. Intimate Partner and Family Violence
+
+
+
+OPEN DATASETS
+
+Community Safety Indicators (CSI)
+
+Description
+This dataset includes selected Community Safety Indicators (CSI) occurrences by reported date
+and related offences. Selected CSI categories in this dataset include Assault, Break and Enter,
+Auto Theft, Robbery and Theft Over (Excludes Sexual Violations). Additional CSIs are published
+through separate datasets and dashboards. This data is provided at the offence and/or victim
+level (offence and/or vehicle level for auto thefts), therefore one occurrence number may have
+several records associated to the various CSIs used to categorize the occurrence. This data does
+not include occurrences that have been deemed unfounded. The definition of unfounded
+according to Statistics Canada is: “It has been determined through police investigation that the
+offence reported did not occur, nor was it attempted” (Statistics Canada, 2020). 5
+
+
+5
+ Statistics Canada. 2020. Uniform Crime Reporting Manual. Surveys and Statistical Programs. Canadian
+Centre for Justice Statistics.
+
+                                                                                            Page 6 of 41
+Format: CSV, KML, Shapefile, GeoJSON
+
+Community Safety Indicators (CSI) - Data Field Descriptions
+
+ Field     Field Name               Description
+ 1         EVENT_UNIQUE_ID          Offence Number
+ 2                                  Date Offence was Reported (time is displayed in UTC
+           REPORT_DATE              format when downloaded as a CSV)
+ 3                                  Date Offence Occurred (time is displayed in UTC format
+           OCC_DATE                 when downloaded as a CSV)
+ 4         REPORT_YEAR              Year Offence was Reported
+ 5         REPORT_MONTH             Month Offence was Reported
+ 6         REPORT_DAY               Day of the Month Offence was Reported
+ 7         REPORT_DOY               Day of the Year Offence was Reported
+ 8         REPORT_DOW               Day of the Week Offence was Reported
+ 9         REPORT_HOUR              Hour Offence was Reported
+ 10        OCC_YEAR                 Year Offence Occurred
+ 11        OCC_MONTH                Month Offence Occurred
+ 12        OCC_DAY                  Day of the Month Offence Occurred
+ 13        OCC_DOY                  Day of the Year Offence Occurred
+ 14        OCC_DOW                  Day of the Week Offence Occurred
+ 15        OCC_HOUR                 Hour Offence Occurred
+ 16        DIVISION                 Police Division where Offence Occurred
+ 17        LOCATION_TYPE            Location Type of Offence
+ 18        PREMISES_TYPE            Premises Type of Offence
+ 19        UCR_CODE                 UCR Code for Offence
+ 20        UCR_EXT                  UCR Extension for Offence
+ 21        OFFENCE                  Title of Offence
+ 22        CSI_CATEGORY             CSI Category of Occurrence
+ 23                                 Identifier of Neighbourhood using City of Toronto's
+           HOOD_158                 new 158 neighbourhood structure
+ 24                                 Name of Neighbourhood using City of Toronto's new
+           NEIGHBOURHOOD_158        158 neighbourhood structure
+ 25                                 Identifier of Neighbourhood using City of Toronto's old
+           HOOD_140                 140 neighbourhood structure
+ 26                                 Name of Neighbourhood using City of Toronto's old
+           NEIGHBOURHOOD_140        140 neighbourhood structure
+ 27        LONG_WGS84               Longitude Coordinates (Offset to nearest intersection)
+ 28        LAT_WGS84                Latitude Coordinates (Offset to nearest intersection)
+
+
+
+
+                                                                                 Page 7 of 41
+Open Analytics
+The Toronto Police Service currently reports on CSIs by providing a Year-to-date, a Year End and
+a Historical report. Open analytics for each individual CSI are also available on the Data Analytics
+page on the portal, however, these only include a historical report.
+
+Web Mapping Applications
+The Toronto Police Service Crime App Year-to-date is an interactive web app that reports on all
+CSIs on a daily basis. The Crime App Year End includes all the CSIs historical data. The
+Neighbourhood Crime Map provides all historical CSIs by neighbourhoods using interactive
+thematic maps.
+
+
+
+Homicides (ASR-RC-TBL-002)
+
+Description
+This dataset includes all Homicides occurrences. This includes offences of First Degree Murder,
+Second Degree Murder, and Manslaughter. A homicide occurs when a person directly or
+indirectly, by any means, causes the death of another human being. Deaths caused by criminal
+negligence, suicide, or accidental or justifiable homicide (i.e self-defence) are not included.
+Homicide data is compiled based on the Homicide Squad Case List Log. Count is based on
+offence (i.e each deceased victim).
+
+Format: CSV, KML, Shapefile, GeoJSON
+
+Homicides - Data Field Descriptions
+
+ Field       Field Name                 Description
+ 1           EVENT_UNIQUE_ID            Offence Number
+ 2                                      Date Offence Occurred (time is displayed in UTC format
+             OCC_DATE                   when downloaded as a CSV)
+ 3           OCC_YEAR                   Year Offence Occurred
+ 4           OCC_MONTH                  Month Offence Occurred
+ 5           OCC_DAY                    Day of the Month Offence Occurred
+ 6           OCC_DOW                    Day of the Week Offence Occurred
+ 7           OCC_DOY                    Day of the Year Offence Occurred
+ 8           DIVISION                   Police Division where Offence Occurred
+ 9           HOMICIDE_TYPE              Type of Homicide (Shooting, Stabbing, Other)
+
+
+
+                                                                                        Page 8 of 41
+ 10                                     Identifier of Neighbourhood using City of Toronto's
+             HOOD_158                   new 158 neighbourhood structure
+ 11                                     Name of Neighbourhood using City of Toronto's new
+             NEIGHBOURHOOD_158          158 neighbourhood structure
+ 12                                     Identifier of Neighbourhood using City of Toronto's old
+             HOOD_140                   140 neighbourhood structure
+ 13                                     Name of Neighbourhood using City of Toronto's old
+             NEIGHBOURHOOD_140          140 neighbourhood structure
+ 14          LONG_WGS84                 Longitude Coordinates (Offset to nearest intersection)
+ 15          LAT_WGS84                  Latitude Coordinates (Offset to nearest intersection)
+
+Open Analytics
+The Toronto Police Service currently reports on Homicide by providing a Year-to-date, a Year
+End and a Historical report.
+
+
+Web Mapping Applications
+The Toronto Police Service Crime App Year-to-date is an interactive web app that reports on all
+CSIs on a daily basis. The Crime App Year End includes all the CSIs historical data. The
+Neighbourhood Crime Map provides all historical CSIs by neighbourhoods using interactive
+thematic maps.
+
+
+
+Shootings & Firearm Discharges
+
+Description
+This dataset contains all shooting-related occurrences reported to the Toronto Police Service,
+including, but not limited to, those that may have been deemed unfounded after investigation.
+Shooting incidents in this dataset include both firearm discharges and shooting events, which
+are defined in the glossary in Appendix B.
+
+In 2014, the Toronto Police Service changed records management systems. For occurrences
+prior to this date, coordinates are limited, therefore for some events with 0, 0 coordinates the
+neighbourhood will be identified as ‘NSA’ to indicate ‘Not Specified Area.
+
+Format: CSV, KML, Shapefile, GeoJSON
+
+Shootings & Firearm Discharges - Data Field Descriptions
+
+ Field       Field Name                 Description
+ 1           EVENT_UNIQUE_ID            Offence Number
+
+
+                                                                                       Page 9 of 41
+ 2                                     Date Offence Occurred (time is displayed in UTC format
+              OCC_DATE                 when downloaded as a CSV)
+ 3            OCC_YEAR                 Year Offence Occurred
+ 4            OCC_MONTH                Month Offence Occurred
+ 5            OCC_DOW                  Day of the Week Offence Occurred
+ 6            OCC_DOY                  Day of the Year Offence Occurred
+ 7            OCC_DAY                  Day of the Month Offence Occurred
+ 8            OCC_HOUR                 Hour of Day Offence Occurred
+ 9            OCC_TIME_RANGE           Time Range of Day Offence Occurred
+ 10           DIVISION                 Police Division where Offence Occurred
+ 11           DEATH                    Count of Deaths caused by the Shooting
+ 12           INJURIES                 Count of Injured Persons caused by the Shooting
+ 13           EVENT_TYPE               Classification identifying whether the occurrence is a
+                                       Shooting or a Firearm Discharge
+ 14           HOOD_158                 Identifier of Neighbourhood using City of Toronto's
+                                       new 158 neighbourhood structure
+ 15           NEIGHBOURHOOD_158        Name of Neighbourhood using City of Toronto's new
+                                       158 neighbourhood structure
+ 16           HOOD_140                 Identifier of Neighbourhood using City of Toronto's old
+                                       140 neighbourhood structure
+ 17           NEIGHBOURHOOD_140        Name of Neighbourhood using City of Toronto's old
+                                       140 neighbourhood structure
+ 18           LONG_WGS84               Longitude Coordinates (Offset to nearest intersection)
+ 19           LAT_WGS84                Latitude Coordinates (Offset to nearest intersection)
+
+
+Open Analytics
+The Toronto Police Service currently reports on Shootings by providing a Year-to-date, a Year
+End and a Historical report.
+
+
+Web Mapping Applications
+The Toronto Police Service Crime App Year-to-date is an interactive web app that reports on all
+CSIs on a daily basis. The Crime App Year End includes all the CSIs historical data. The
+Neighbourhood Crime Map provides all historical CSIs by neighbourhoods using interactive
+thematic maps.
+
+
+
+
+Neighbourhood Crime Rates
+
+Description
+
+
+
+                                                                                   Page 10 of 41
+This dataset includes all of the Crime Data by Neighbourhood. Counts are available for Assault,
+Auto Theft, Break and Enter, Robbery, Theft Over, Homicide and Shooting & Firearm Discharges.
+Data also includes the crime rate per 100,000 population calculated using the population
+estimates provided by Environics Analytics.
+
+Format: CSV, KML, Shapefile, GeoJSON
+Neighbourhood Crime Rates - Data Field Descriptions
+
+ Field       Field Name                     Description
+ 1                                          Identifier of Neighbourhood where offence occurred
+                                            using City of Toronto's new 158 neighbourhood
+             HOOD_158                       structure
+ 2                                          Name of Neighbourhood where offence occurred
+                                            using City of Toronto's new 158 neighbourhood
+             NEIGHBOURHOOD_158              structure
+ 3                                          2022 Population projection provided by Environics
+             POPN_PROJ_2022                 Analytics.
+ 4                                          This represents a count of crime offences for each
+             [CRIME CATEGORY]_[YYYY]        crime category for each corresponding year.
+ 5                                          This represents the crime rate per 100,000 for each
+                                            crime category for each corresponding year. This is
+            [CRIME CATEGORY]_RATE_          calculated using the population projection provided
+            [YYYY]                          by Environics Analytics for each respective year.
+Field abbreviations for Crime Categories:
+         BREAKENTER = Break and Enter
+         THEFTFROMMV = Theft from Motor Vehicle
+
+
+Open Analytics
+The Toronto Police Service does not currently provide open analytics reports for Neighbourhood
+Crime Rates.
+
+
+Web Mapping Applications
+The Neighbourhood Crime Map provides all historical crime data using interactive thematic
+maps.
+
+
+
+Bicycle Thefts
+
+Description
+This dataset contains occurrences related to bicycle thefts. These occurrences are related to a
+variety of offences where the theft of a bicycle was included.
+
+                                                                                     Page 11 of 41
+Format: CSV, KML, Shapefile, GeoJSON
+
+
+
+
+Bicycle Thefts - Data Field Descriptions
+
+ Field      Field Name                 Description
+ 1          EVENT_UNIQUE_ID            Offence Number
+ 2          PRIMARY_OFFENCE            Primary Offence Type
+ 3                                     Date Offence Occurred (time is displayed in UTC
+            OCC_DATE                   format when downloaded as a CSV)
+ 4          OCC_YEAR                   Year Offence Occurred
+ 5          OCC_MONTH                  Month Offence Occurred
+ 6          OCC_DOW                    Day of the Week Offence Occurred
+ 7          OCC_DAY                    Day of the Month Offence Occurred
+ 8          OCC_DOY                    Day of the Year Offence Occurred
+ 9          OCC_HOUR                   Hour Offence Occurred
+ 10                                    Date Offence was Reported (time is displayed in UTC
+            REPORT_DATE                format when downloaded as a CSV)
+ 11         REPORT_YEAR                Year Offence was Reported
+ 12         REPORT_MONTH               Month Offence was Reported
+ 13         REPORT_DOW                 Day of the Week Offence was Reported
+ 14         REPORT_DAY                 Day of the Month Offence was Reported
+ 15         REPORT_DOY                 Day of the Year Offence was Reported
+ 16         REPORT_HOUR                Hour Offence was Reported
+ 17         DIVISION                   Police Division where Offence Occurred
+ 18         LOCATION_TYPE              Location Type of Offence
+ 19         PREMISES_TYPE              Premises Type of Offence
+ 20         BIKE_MAKE                  Make of Bicycle *
+ 21         BIKE_MODEL                 Model of Bicycle
+ 22         BIKE_TYPE                  Type of Bicycle *
+ 23         BIKE_SPEED                 Speed of Bicycle
+ 24         BIKE_COLOUR                Colour Code of Bicycle *
+ 25         BIKE_COST                  Cost of Bicycle
+ 26         STATUS                     Status of Bicycle
+ 27                                    Identifier of Neighbourhood using City of Toronto's
+            HOOD_158                   new 158 neighbourhood structure
+ 28                                    Name of Neighbourhood using City of Toronto's new
+            NEIGHBOURHOOD_158          158 neighbourhood structure
+ 29                                    Identifier of Neighbourhood using City of Toronto's
+            HOOD_140                   old 140 neighbourhood structure
+
+                                                                                Page 12 of 41
+ 30                                       Name of Neighbourhood using City of Toronto's old
+             NEIGHBOURHOOD_140            140 neighbourhood structure
+ 31          LONG_WGS84                   Longitude Coordinates (Offset to nearest intersection)
+ 32          LAT_WGS84                    Latitude Coordinates (Offset to nearest intersection)
+
+
+Bicycle Colour
+The Bicycle Colour field describes the colour of a bicycle using standardized colour codes.
+The colours are represented using either three-letter or six-letter codes.
+       A three-letter code represents a single colour.
+               Examples:
+                   •   BLK – Black
+                   •   BLU – Blue
+       A six-letter code represents a bicycle with two colours.
+               Examples:
+                   •   BLKGRN – Black and Green
+                   •   BLUBLK – Blue and Black
+
+
+*For standardized code definitions, please refer to the Bike Theft Open Data Code Reference,
+which lists the valid codes and their corresponding meanings for BIKE_COLOUR, BIKE_TYPE, and
+BIKE_MAKE.
+
+
+Open Analytics
+The Toronto Police Service currently only provides a Historical Bike Theft report.
+
+
+Web Mapping Applications
+The Crime App Year End includes historical bike thefts.
+
+
+
+Killed or Seriously Injured (KSI) Collisions
+
+Description
+Important Notice – Dataset Transition:
+The Toronto Police Service Public Safety Data Portal provides archived Killed or Seriously Injured
+(KSI) data from 2006 to 2023. The dataset available through the Toronto Police Service portal is
+maintained for historical reference and research purposes only and is no longer updated with new-
+year data.
+
+
+
+
+                                                                                     Page 13 of 41
+Motor Vehicle Collisions Involving Killed or Seriously Injured Persons dataset (2006–present) is
+published and actively maintained by the City of Toronto and is available through the City of
+Toronto Open Data Portal.
+This dataset may include updates to records from previous years, as well as additional or revised
+data fields. New records and updates may continue to be added on an ongoing basis.
+For questions related to the KSI dataset, please contact: VolumeCollision_Requests@toronto.ca
+
+This Killed or Seriously Injured (KSI) dataset is a subset from all traffic collision events. The
+source of the data comes from police reports where an officer attended an event related to a
+traffic collision. Please note that this dataset does not include all traffic collision events. The KSI
+data only includes events where a person sustained a major or fatal injury in a traffic collision
+event. The definitions included in Appendix B relate to the severity of injury used to classify the
+events in this dataset. Other injury types including minor or none are associated to every
+individual included in the event.
+
+The KSI data includes a record (row) for every person involved in the collision event regardless
+of their level of injury, it includes everyone who was involved in a particular collision event. The
+field “Index” provides an arbitrary unique identification for every record in the entire dataset.
+The “ACCNUM” is a unique identification for each traffic collision event. Since the data includes
+every person involved in a collision event, this identification is duplicated. Please note that this
+number is not unique and it may repeat year over year. Careful consideration must be made
+when creating a subset for unique events, as the detailed information provided is for every
+person involved and its associated role and information may be lost.
+
+For example, the event with ACCNUM=6000607400 has 5 persons involved in the collision (5
+records). The field “INVTYPE” indicates the role of the person in the collision event. The
+“INVAGE” indicates the age range of the person and the “INJURY” type indicates the level of
+injury they sustained. Therefore, this event can be interpreted in the following way:
+    1. Passenger 1 age 20 to 24 sustained a fatal injury.
+    2. Passenger 2 age 15-19 sustained a fatal injury.
+    3. Passenger 3 age 20 to 24 sustained a major injury
+    4. Driver age 1 20 to 24 sustained a major injury.
+    5. Driver 2 age 45 to 49 sustained a major injury.
+
+Synopsis: “IMPACTYPE” indicates this was a rear-end type of collision. “MANOUVER”, “DRIVACT”
+and “DRIVCON” indicates Driver 2 stopped, was driving properly and in normal condition.
+However, Driver 1 was changing lanes, sped too fast for conditions and had been drinking.
+There are thirteen categories related to the type of event. Each record is flagged with a “Yes” if
+this collision is considered to fall under this criteria. Definitions for those categories are provided
+below.
+
+
+                                                                                           Page 14 of 41
+Format: CSV, KML, Shapefile, GeoJSON
+
+KSI Collisions - Data Field Descriptions
+
+ Field      Field Name                     Description
+ 1          INDEX_                         Unique Identifier
+ 2          ACCNUM                         Accident Number
+ 3          DATE                           Date Collision Occurred (time is displayed in UTC
+                                           format when downloaded as a CSV)
+ 4          TIME                           Time Collision Occurred
+ 5          STREET1                        Street Collision Occurred
+ 6          STREET2                        Street Collision Occurred
+ 7          OFFSET                         Distance and direction of the Collision
+ 8          ROAD_CLASS                     Road Classification
+ 9          DISTRICT                       City District
+ 10         LATITUDE                       Latitude
+ 11         LONGITUDE                      Longitude
+ 12         ACCLOC                         Collision Location
+ 13         TRAFFCTL                       Traffic Control Type
+ 14         VISIBILITY                     Environment Condition
+ 15         LIGHT                          Light Condition
+ 16         RDSFCOND                       Road Surface Condition
+ 17         ACCLASS                        Classification of Accident
+ 18         IMPACTYPE                      Initial Impact Type
+ 19         INVTYPE                        Involvement Type
+ 20         INVAGE                         Age of Involved Party
+ 21         INJURY                         Severity of Injury
+ 22         FATAL_NO                       Sequential Number
+ 23         INITDIR                        Initial Direction of Travel
+ 24         VEHTYPE                        Type of Vehicle
+ 25         MANOEUVER                      Vehicle Manoeuver
+ 26         DRIVACT                        Apparent Driver Action
+ 27         DRIVCOND                       Driver Condition
+ 28         PEDTYPE                        Pedestrian Crash Type - detail
+ 29         PEDACT                         Pedestrian Action
+ 30         PEDCOND                        Condition of Pedestrian
+ 31         CYCLISTYPE                     Cyclist Crash Type - detail
+ 32         CYCACT                         Cyclist Action
+ 33         CYCCOND                        Cyclist Condition
+ 34         PEDESTRIAN                     Pedestrian Involved In Collision
+ 35         CYCLIST                        Cyclists Involved in Collision
+ 36         AUTOMOBILE                     Driver Involved in Collision
+
+                                                                                      Page 15 of 41
+ 37           MOTORCYCLE                    Motorcyclist Involved in Collision
+ 38           TRUCK                         Truck Driver Involved in Collision
+ 39           TRSN_CITY_VEH                 Transit or City Vehicle Involved in Collision
+ 40           EMERG_VEH                     Emergency Vehicle Involved in Collision
+ 41           PASSENGER                     Passenger Involved in Collision
+ 42           SPEEDING                      Speeding Related Collision
+ 43           AG_DRIV                       Aggressive and Distracted Driving Collision
+ 44           REDLIGHT                      Red Light Related Collision
+ 45           ALCOHOL                       Alcohol Related Collision
+ 46           DISABILITY                    Medical or Physical Disability Related Collision
+ 47           HOOD_158                      Unique ID for City of Toronto Neighbourhood (new)
+ 48           NEIGHBOURHOOD_158             City of Toronto Neighbourhood name (new)
+ 49           HOOD_140                      Unique ID for City of Toronto Neighbourhood (old)
+ 50           NEIGHBOURHOOD_140             City of Toronto Neighbourhood name (old)
+ 51           DIVISION                      Toronto Police Service Division
+ 52           ObjectID                      Unique Identifier (auto generated)
+
+
+
+
+Open Analytics
+The Toronto Police Service currently only provides a Historical Killed or Seriously Injured Traffic
+Collisions report. These historical reports are available for each individual Killed or Serially
+Injured category.
+Web Mapping Applications
+The Fatal Traffic Collisions includes historical fatal traffic collisions only, a subset of the Killed or
+Serially Injured dataset.
+
+
+
+Field Information Reports (FIRS)
+
+Description
+As part of our ongoing commitment to open data, the Toronto Police Service continues to
+release data sets relating to completed Municipal Freedom of Information and Protection of
+Privacy Act requests that are of public interest. This data includes Field Information Reports
+reported between 2008.01.01 and 2013.11.04.
+
+Format: CSV
+Note: Please note this dataset is no longer updated.
+
+
+FIRS - Data Field Descriptions
+
+                                                                                            Page 16 of 41
+    Field    Field Name                    Description
+    1        CONTACTID                     Unique Identifier for Each Contact
+    2                                      Toronto Police Service (TPS) Patrol Zone where
+             TPS_PATROL_ZONE
+                                           Contact Occurred
+    3        NATURE_OF_CONTACT             Category of Contact
+    4                                      Date of Contact (time is displayed in UTC format when
+             CONTACT_DATE
+                                           downloaded as a CSV)
+    5        CONTACT_TIME                  Time of Contact
+    6        CONTACT_YEAR                  Year of Contact
+    7        AGE*                          Age of Person at Time of Contact
+    8        SEX*                          Gender of Person Contacted
+    9        BIRTH_PLACE                   Birth Place of Person Contacted
+    10       SKIN_COLOUR*                  Skin Colour of Person Contacted
+    11       YEAR_MONTH_OF_BIRTH           Year/Month of Birth of Person Contacted
+    12       UNIQUE_PERSON_ID              Unique Identifier for Person Contact
+    13       HOME_CITY                     Home City of Person Contacted
+
+
+Open Analytics
+The Toronto Police Service does not currently provide open data analytics for Field Information
+Reports.
+
+
+Web Mapping Applications
+The Toronto Police Service does not currently provide FIRS in a web mapping application.
+
+
+
+Traffic Collisions (ASR-T-TBL-001)
+Description
+This dataset includes all Motor Vehicle Collision (MVC) occurrences by their occurrence date and
+related offences. The MVC categories include property damage (PD) collisions, Fail to Remain
+(FTR) collisions, injury collisions and fatalities. This data is provided at the occurrence level,
+therefore multiple offences and/or victims can be associated with each record. This data does
+not include occurrences that have been deemed unfounded. The definition of unfounded
+according to Statistics Canada is: “It has been determined through police investigation that the
+offence reported did not occur, nor was it attempted” (Statistics Canada, 2020). 6
+
+
+
+
+6
+ Statistics Canada. 2020. Uniform Crime Reporting Manual. Surveys and Statistical Programs. Canadian
+Centre for Justice Statistics.
+
+                                                                                          Page 17 of 41
+In this dataset a collision is defined as the contact resulting from the motion of a motor vehicle
+or streetcar or its load, which produces property damage, injury or death. The term collision
+indicates that the initial point of contact involved at least one motor vehicle or streetcar.
+
+Definitions:
+Fatal Collisions occur when an individual’s injuries from a MVC result in a fatality within 30 days.
+Please note this category excludes:
+         (i) Occurrences on private property
+         (ii) Occurrences related to sudden death prior to collision (suicide or medical episode)
+         (iii) Occurrences where the individual has died more than 30 days after the collision
+Personal Injury Collisions occur when an individual involved in a MVC suffers personal injuries.
+Fail to Remain Collisions occur when an individual involved in a MVC fails to stop and provide
+their information at the scene of a collision.
+Property Damage Collisions occur when an individual’s property has been damaged in a MVC
+or the value of damages is less than $2,000 for all involved parties.
+
+Format: CSV, KML, Shapefile, GeoJSON
+
+Traffic Collisions - Data Field Descriptions
+
+ Field     Field Name                   Description
+ 1        EVENT_UNIQUE_ID              Offence Number
+ 2                                     Date Collision Occurred (time is displayed in UTC format
+          OCC_DATE
+                                       when downloaded as a CSV)
+ 3        OCC_MONTH                    Month Collision Occurred
+ 4        OCC_DOW                      Day of Week Collision Occurred
+ 5        OCC_YEAR                     Year Collision Occurred
+ 6        OCC_HOUR                     Hour Collision Occurred
+ 7        DIVISION                     Police Division where Collision Occurred
+ 8                                     Number of Person’s Killed associated with the Collision
+          FATALITIES
+                                       (See definitions)
+ 9                                     Indicates whether a Collision had an associated Injury (See
+          INJURY_COLLISIONS
+                                       definitions)
+ 10                                    Indicates whether a Collision was associated to Fail to
+          FTR_COLLISIONS
+                                       Remain (See definitions)
+ 11                                    Indicates Whether a Collision was associated to Property
+          PD_COLLISIONS
+                                       Damage (See definitions)
+ 12       HOOD_158                     Identifier of Neighbourhood
+ 13       NEIGHBOURHOOD_158            Name of Neighbourhood where Collision Occurred
+ 14       LONG_WGS84                   Longitude Coordinate (Offset to nearest intersection)
+ 15       LAT_WGS84                    Latitude Coordinate (Offset to nearest intersection)
+
+
+                                                                                       Page 18 of 41
+ 16                                   Indicates whether a Collision involved a person in an
+          AUTOMOBILE
+                                      automobile
+ 17                                   Indicates whether a Collision involved a person in a
+          MOTORCYCLE
+                                      motorcycle
+ 18                                   Indicates whether a Collision involved a passenger in a
+          PASSENGER
+                                      motor vehicle
+ 19       BICYCLE                     Indicates whether a Collision involved a cyclist
+ 20       PEDESTRIAN                  Indicates whether a Collision involved a pedestrian
+Open Analytics
+Toronto Police Service currently reports on Total Motor Vehicle Collisions in the Annual
+Statistical Report Crime & Traffic Dashboard which is updated annually.
+
+
+Web Mapping Applications
+The Toronto Police Service provides Total Motor Vehicle Collision data in the ASR Maps
+application as a thematic map of the rate per 100,000 population by TPS division.
+
+
+
+
+Mental Health Act (MHA) Apprehensions
+
+Description
+
+This dataset includes Mental Health Act (MHA) Apprehensions pursuant to the Mental Health
+Act.
+
+MHA Apprehensions of individuals aged 17 and under have been omitted to protect youth
+identity. From 2014 to 2020, these individuals comprised 6.5% (4,724 of 71,717) of all MHA
+Apprehensions, with individuals under 12 comprising 0.4% (320 of 71,717), and 12-17
+comprising 6.1% (4,404 of 71,717) respectively. There are instances where an individual’s age
+group is classified as “Not Recorded”; these account for 1.3% (915 of 71,717) of all MHA
+Apprehensions.
+
+There are instances where an individual’s sex is classified as “Not Recorded”. In line with
+recommendations 5f, 11c, and 25c in Police Reform in Toronto: Systemic Racism, Alternative
+Community Safety and Crisis Response Models and Building New Confidence in Public Safety,
+Toronto Police Service continues to work towards enhancing data collection to include non-
+binary gender options.
+
+Each row in the dataset represents a distinct MHA Apprehension and this dataset is queried
+based on reported date. Please note while each row represents the apprehension of an
+
+                                                                                    Page 19 of 41
+individual under the Mental Health Act, a unique individual may have been apprehended
+multiple times and thus account for multiple records of apprehensions
+MHA Apprehension types are as follows:
+     •   MHA Section 17 (Police Officer’s Power of Apprehension);
+     •   MHA Section 15 (Form 1 - Physician - Application for Psychiatric
+         Assessment);
+     •   MHA Section 16 (Form 2 – Justice of the Peace – Order for Examination);
+     •   MHA Section 28 (1) (Form 9 - Elopee - Order for Return); and,
+     •   MHA Section 33.4 (Form 47 - Community Treatment Order for Examination).
+
+
+Format: CSV
+
+MHA Apprehensions - Data Field Descriptions
+
+ Field       Field Name                 Description
+ 1           EVENT_UNIQUE_ID            Offence Number
+ 2                                      Date Offence was Reported (time is displayed in UTC
+             REPORT_DATE                format when downloaded as a CSV)
+ 3           REPORT_YEAR                Year Offence was Reported
+ 4           REPORT_MONTH               Month Offence was Reported
+ 5           REPORT_DOW                 Day of the Week Offence was Reported
+ 6           REPORT_DOY                 Day of the Year Offence was Reported
+ 7           REPORT_DAY                 Day of the Month Offence was Reported
+ 8           REPORT_HOUR                Hour Offence was Reported
+ 9                                      Date Offence Occurred (time is displayed in UTC format
+             OCC_DATE                   when downloaded as a CSV)
+ 10          OCC_YEAR                   Year Offence Occurred
+ 11          OCC_MONTH                  Month Offence Occurred
+ 12          OCC_DOY                    Day of the Year Offence Occurred
+ 13          OCC_DAY                    Day of the Month Offence Occurred
+ 14          OCC_DOW                    Day of the Week Offence Occurred
+ 15          OCC_HOUR                   Hour Offence Occurred
+ 16          DIVISION                   Police Division where Offence Occurred
+ 17          PREMISES_TYPE              Premises Type of Offence
+ 18                                     The section applied when apprehending an individual
+             APPREHENSION_TYPE          pursuant to the Mental Health Act
+ 19          SEX                        Sex of Person Apprehended
+ 20          AGE_COHORT                 Age category of Person Apprehended
+ 21                                     Identifier of Neighbourhood using City of Toronto's new
+             HOOD_158                   158 neighbourhood structure
+ 22                                     Name of Neighbourhood using City of Toronto's new
+             NEIGHBOURHOOD_158          158 neighbourhood structure
+
+
+                                                                                   Page 20 of 41
+ 23                                    Identifier of Neighbourhood using City of Toronto's old
+           HOOD_140                    140 neighbourhood structure
+ 24                                    Name of Neighbourhood using City of Toronto's old 140
+           NEIGHBOURHOOD_140           neighbourhood structure
+
+
+Open Analytics
+The Toronto Police Service currently reports on MHA Apprehensions by providing a Historical
+report.
+
+Web Mapping Applications
+The Toronto Police Service does not currently provide MHA Apprehensions in a web mapping
+application.
+
+
+
+Persons in Crisis (PIC) Calls for Service Attended (CFSA)
+
+Description
+This dataset includes all Persons in Crisis (PIC) calls for service attended (CFSA), including the
+following Event Types: Attempt Suicide, Elopee, Fall from Heights, Overdose, Person in Crisis and
+Threaten Suicide. To protect the privacy of individuals involved in Calls for Service, these Event
+Types have been aggregated into Person in Crisis calls (Person in Crisis, Elopee), Suicide-related
+calls (Attempt Suicide, Fall from Heights and Threaten Suicide), and Overdose calls. This dataset
+includes only events that were attended by an officer of the Toronto Police Service (TPS), but
+excludes events attended by TPS members in Parking, Marine, Court or Primary Report Intake
+Management and Entry (PRIME). This dataset is queried based on event date.
+
+
+Effective May 2023, the Toronto Police Service has renamed the Jumper event type to Fall from
+Heights. Since then, calls of this nature have been processed as Threatening Suicide.
+
+
+Format: CSV
+
+PIC CFSA - Data Field Descriptions
+
+ Field     Field Name                  Description
+ 1         EVENT_ID                    Event Number
+ 2                                     Date of Event (time is displayed in UTC format when
+           EVENT_DATE                  downloaded as a CSV)
+ 3         EVENT_YEAR                  Year of Event
+ 4         EVENT_MONTH                 Month of Event
+ 5         EVENT_DOW                   Day of Week of Event
+
+                                                                                     Page 21 of 41
+ 6         EVENT_HOUR                   Hour of Event
+ 7         EVENT_TYPE                   Agency specified field that is used to describe the Event
+ 8         DIVISION                     Police Division of Event
+ 9         OCCURRENCE_CREATED           Indicates whether an Occurrence was created or not
+ 10                                     Indicates whether a Mental Health Act (MHA)
+           APPREHENSION_MADE            Apprehension was made or not
+ 11                                     Identifier of Neighbourhood using City of Toronto's new
+           HOOD_158                     158 neighbourhood structure
+ 12                                     Name of Neighbourhood using City of Toronto's new
+           NEIGHBOURHOOD_158            158 neighbourhood structure
+ 13                                     Identifier of Neighbourhood using City of Toronto's old
+           HOOD_140                     140 neighbourhood structure
+ 14                                     Name of Neighbourhood using City of Toronto's old 140
+           NEIGHBOURHOOD_140            neighbourhood structure
+
+
+Open Analytics
+Toronto Police Service currently reports on PIC CFSA by providing a Historical report.
+
+
+Web Mapping Applications
+The Toronto Police Service does not currently provide Persons in Crisis Calls for Service in a
+web-mapping application.
+
+
+
+Budget & Staffing
+
+
+Description
+
+These datasets include a line-by-line breakdown of the Toronto Police Service budget and actual
+expenditures at a Service-wide level and a summarized breakdown of the Toronto Police Service
+budget and actual expenditures and approved and actual staffing level by command. Budget is
+provided by the categories Proposed Budget, Approved Budget and Actual Expenditures.
+
+The documents provided align with our currently approved organizational structure.
+
+
+Definitions:
+Approved Budget: Operating funding approved by the Toronto Police Services Board and City
+Council for a specific fiscal year.
+Actual Expenditures: Operating expenses incurred by the Toronto Police Service during a fiscal
+year.
+
+
+
+                                                                                      Page 22 of 41
+Approved Staffing: All positions which have been approved via the annual and/or ad hoc
+budget process for continuous delivery of core operations and services and/or specific
+projects/initiatives.
+Actual Staffing: All full-time, part-time and temporary employees active on the operating
+payroll or who are on paid leave at the end of the year.
+Proposed Budget: Operating funding presented to the Toronto Police Services Board for
+approval for a specific fiscal year.
+SAP: Enterprise resource planning software suite made by SAP SE. This is the system of record
+for financial information of the Toronto Police Service.
+Format: CSV
+
+Budget & Staffing - Data Field Descriptions
+
+Budget Line-by-Line
+
+ Field     Field Name                 Description
+                                      The 12 month period for which budgets are prepared
+                                      and financial records are maintained. The fiscal year for
+ 1         Fiscal Year
+                                      the Toronto Police Service is the calendar year (January
+                                      1st to December 31st).
+                                      Budget Type reflects budget status. There are 2 budget
+                                      types: Proposed and Approved. Proposed Budget is the
+                                      budget request submitted by the Service to the Board
+ 2         Budget Type                and City. Approved Budget is the budget that has been
+                                      reviewed, amended where applicable, and approved by
+                                      the Board and City. This category also includes the
+                                      categorization for Actual Expenditures.
+
+ 3         Organization Entity         Organization for which the budget is presented.
+
+                                       A Command, headed by a Uniform or Civilian Command
+                                       Officer, represents the highest level of the organizational
+ 4         Command Name
+                                       structure, and may have multiple Pillars within its span of
+                                       control.
+                                       A Pillar, headed by a Director (Civilian) or Staff
+                                       Superintendent (Uniform) represents the second highest
+                                       level of the organizational structure, and may have
+ 5         Pillar Name
+                                       multiple Districts within its span of control. TPS Pillars
+                                       include but are not limited to East Field Command, West
+                                       Field Command, and Detective Operations.
+                                       A District represents the third highest level of the
+ 6         District Name               organizational structure, and may have multiple Units
+                                       within its span of control.
+
+
+
+                                                                                     Page 23 of 41
+                                   A Unit represents the fourth highest level of the
+                                   organizational structure and focuses on a specific area of
+ 7        Unit Name                operations. Examples of units within Toronto Police
+                                   Service include Employee Services, Talent Acquisition,
+                                   name a few more across TPS
+                                   In SAP, it represents a numerical reference to a particular
+                                   kind of expense or revenue. For example, 2510 is the
+ 8        Cost Element             cost element denoting “Survey Supplies”. A cost
+                                   element corresponds to a cost-relevant item in the City’s
+                                   chart of accounts.
+                                   A group of cost elements of the same type. For
+ 9        Feature Category
+                                   example, Salaries, Benefits, Equipment or Revenue.
+                                   Name of the cost element as presented in SAP. For
+ 10       Cost Element Long Name   example, Membership Fees, Long Term Disability or
+                                   Gasoline.
+                                   Funding (requested, approved or actual expenditures)
+ 11       Amount
+                                   for a particular budget line item.
+
+
+
+
+Budget by Command
+
+ Field   Field Name                Description
+                                   Fiscal Year: The 12 month period for which budgets are
+                                   prepared and financial records are maintained. The
+ 1        Year
+                                   fiscal year for the Toronto Police Service is the calendar
+                                   year (January 1st to December 31st).
+                                   Type of Metric is either Approved Budget or Actual
+ 2        Type of Metric
+                                   Expenditures.
+
+ 3        Organizational Entity    Organization for which the budget is presented.
+
+                                   A Command represents the highest level of the
+ 4        Command Name
+                                   organizational structure.
+                                   A group of cost elements belonging to the same type of
+                                   expenditure or revenue. Examples of expenditure or
+ 5        Category
+                                   revenue categories include Salaries, Benefits, Equipment
+                                   or Revenue.
+                                   Funding (requested, approved or actual expenditures)
+ 6        Amount
+                                   for a particular budget line item.
+
+
+Staffing by Command
+
+                                                                                 Page 24 of 41
+ Field     Field Name                  Description
+                                       Fiscal Year: The 12 month period for which budgets are
+                                       prepared and financial records are maintained. The
+ 1         Year
+                                       fiscal year for the Toronto Police Service is the calendar
+                                       year (January 1st to December 31st).
+                                       Type of Metric is either Approved Staffing or Actual
+ 2         Type of Metric
+                                       Staffing.
+ 3         Organizational Entity        Organization for which the budget is presented.
+
+                                        A Command represents the highest level of the
+ 4         Command Name
+                                        organizational structure.
+                                        Represents the job family the position belongs to: either
+ 5         Category                     Uniform (sworn police officers) or Civilian (unsworn
+                                        members).
+                                        Metric related to the number of approved positions
+ 6         Count                        required for a delivery of services and core operations or
+                                        actual staffing levels.
+
+
+Open Analytics
+Toronto Police Service currently reports on the Actual Expenditures and Staffing in the Annual
+Statistical Report Administrative Dashboard which is updated annually.
+
+
+Web Mapping Applications
+The Toronto Police Service does not currently provide Budget or Staffing data in a web-mapping
+application.
+
+
+
+
+Theft from Motor Vehicle
+
+Description
+This dataset includes all Theft from Motor Vehicle occurrences by reported date and related
+offences. The Theft from Motor Vehicle offences include Theft from Motor Vehicle Under and
+Theft from Motor Vehicle Over. This data is provided at the offence and/or victim level, therefore
+one occurrence number may have several records associated to the various offences used to
+categorize the occurrence. This data does not include occurrences that have been deemed
+unfounded. The definition of unfounded according to Statistics Canada is: “It has been
+
+
+
+
+                                                                                     Page 25 of 41
+determined through police investigation that the offence reported did not occur, nor was it
+attempted” (Statistics Canada, 2020). 7
+
+Format: CSV, KML, Shapefile, GeoJSON
+
+Theft from Motor Vehicle - Data Field Descriptions
+
+    Field    Field Name                   Description
+    1        EVENT_UNIQUE_ID              Offence Number
+    2        REPORT_DATE                  Date Offence was Reported
+    3        OCC_DATE                     Date Offence Occurred
+    4        REPORT_YEAR                  Year Offence was Reported
+    5        REPORT_MONTH                 Month Offence was Reported
+    6        REPORT_DAY                   Day of the Month Offence was Reported
+    7        REPORT_DOY                   Day of the Year Offence was Reported
+    8        REPORT_DOW                   Day of the Week Offence was Reported
+    9        REPORT_HOUR                  Hour Offence was Reported
+    10       OCC_YEAR                     Year Offence Occurred
+    11       OCC_MONTH                    Month Offence Occurred
+    12       OCC_DAY                      Day of the Month Offence Occurred
+    13       OCC_DOY                      Day of the Year Offence Occurred
+    14       OCC_DOW                      Day of the Week Offence Occurred
+    15       OCC_HOUR                     Hour Offence Occurred
+    16       DIVISION                     Police Division where Offence Occurred
+    17       LOCATION_TYPE                Location Type of Offence
+    18       PREMISES_TYPE                Premises Type of Offence
+    19       UCR_CODE                     UCR Code for Offence
+    20       UCR_EXT                      UCR Extension for Offence
+    21       OFFENCE                      Title of Offence
+    22       CSI_CATEGORY                 CSI Category of Occurrence
+    23       HOOD_158                     Identifier of Neighbourhood using City of Toronto's
+                                          new 158 neighbourhood structure
+    24       NEIGHBOURHOOD_158            Name of Neighbourhood using City of Toronto's new
+                                          158 neighbourhood structure
+    25       HOOD_140                     Identifier of Neighbourhood using City of Toronto's old
+                                          140 neighbourhood structure
+    26       NEIGHBOURHOOD_140            Name of Neighbourhood using City of Toronto's old
+                                          140 neighbourhood structure
+    27       LONG_WGS84                   Longitude Coordinates (Offset to nearest intersection)
+
+
+7
+ Statistics Canada. 2020. Uniform Crime Reporting Manual. Surveys and Statistical Programs. Canadian
+Centre for Justice Statistics.
+
+                                                                                          Page 26 of 41
+    28         LAT_WGS84                  Latitude Coordinates (Offset to nearest intersection)
+
+Open Analytics
+The Toronto Police Service currently reports on Theft from Motor Vehicle occurrences by
+providing open analytics on the Data Analytics page on the portal in a historical report.
+
+Web Mapping Applications
+The Toronto Police Service does not currently provide Theft from Motor Vehicle data in a web
+mapping application.
+
+
+Hate Crimes
+
+Description
+This dataset includes all verified Hate Crime occurrences investigated by the Hate Crime Unit by
+reported date since 2018. The Hate Crime categories (bias categories) include Age, Mental or
+Physical Disability, Race, Ethnicity, Language, Religion, Sexual Orientation, Gender and Other
+Similar Factor.
+
+The categories relating to Disability, Race, Ethnicity, Religion, Sexual Orientation, and Gender
+were developed and standardized with the collaboration of the following units: Hate Crimes
+Unit; Equity, Inclusion and Human Rights Unit; Analytics & Innovation Unit; and the Information
+Management Pillar (Data Governance team). The Race categories are in compliance with
+Ontario’s Anti-Racism Data Standards. Ethnicity and Religion categories were taken from
+Statistics Canada’s 2021 census. Categories for Sexual Orientation and Gender were developed
+as part of EIHR’s Gender Diverse and Trans Inclusion (GDTI) initiative through community
+consultations and engagements with other organizations such as the City of Toronto.
+
+This data is provided at the offence and/or occurrence level, therefore one occurrence may have
+multiple bias (multi-bias) categories associated to the victim.
+
+This data only includes confirmed hate crimes. This data does not include occurrences that have
+been deemed unfounded, classified as hate incidents or suspected. The definition of unfounded
+according to Statistics Canada is: “It has been determined through police investigation that the
+offence reported did not occur, nor was it attempted” (Statistics Canada, 2020). 8
+
+Definitions:
+
+
+8
+ Statistics Canada. 2020. Uniform Crime Reporting Manual. Surveys and Statistical Programs. Canadian
+Centre for Justice Statistics.
+
+
+                                                                                          Page 27 of 41
+Hate crime
+A hate crime is a criminal offence committed against a person or property motivated in whole or
+in part by bias, prejudice or hate based on race, national or ethnic origin, language, colour,
+religion, sex, age, mental or physical disability, sexual orientation or gender identity or
+expression or any other similar factor.
+
+Hate incident
+A hate incident is a non-criminal action or behaviour that is motivated by hate against an
+identifiable group. Examples of hate incidents include using racial slurs, or insulting a person
+because of their ethnic or religious dress or how they identify.
+
+
+Format: CSV
+
+Hate Crimes - Data Field Descriptions
+
+ Field    Field Name                         Description
+ 1        EVENT_UNIQUE_ID                    Offence Number
+ 2        OCCURRENCE_YEAR                    Year Offence Occurred
+ 3        OCCURRENCE_DATE                    Date Offence Occurred (time is displayed in UTC format
+                                             when downloaded as a CSV)
+ 4        OCCURRENCE_TIME                    Time of Day Offence Occurred
+ 5        REPORTED_YEAR                      Year Offence was Reported
+ 6        REPORTED_DATE                      Date Offence was Reported (time is displayed in UTC
+                                             format when downloaded as a CSV)
+ 7        REPORTED_TIME                      Time of Day Offence was Reported
+ 8        DIVISION                           Police Division where Offence Occurred
+ 11       LOCATION_TYPE                      Location Type of the Offence
+ 12       AGE_BIAS                           A Hate Crime committed on the basis of the Suspect’s
+                                             perception of the Victim’s age
+ 13       MENTAL_OR_PHYSICAL_DISABILITY      A Hate Crime committed on the basis of the Suspect’s
+                                             perception of the Victim’s mental or physical disability
+ 14       RACE_BIAS                          A Hate Crime committed on the basis of the Suspect’s
+                                             perception of the Victim’s race.
+ 15       ETHNICITY_BIAS                     A Hate Crime committed on the basis of the Suspect’s
+                                             perception of the Victim’s ethnicity
+ 16       LANGUAGE_BIAS                      A Hate Crime committed on the basis of the Suspect’s
+                                             perception of the Victim’s language
+ 17       RELIGION_BIAS                      A Hate Crime committed on the basis of the Suspect’s
+                                             perception of the Victim’s religion
+ 18       SEXUAL_ORIENTATION_BIAS            A Hate Crime committed on the basis of the Suspect’s
+                                             perception of the Victim’s sexual orientation
+ 19       GENDER_BIAS                        A Hate Crime committed on the basis of the Suspect’s
+                                             perception of the Victim’s gender
+
+
+                                                                                          Page 28 of 41
+    20    MULTI_BIAS                           A Hate Crime with more than one Bias Category
+    21    PRIMARY_OFFENCE                      The Offence committed in relation to the Hate Crime.
+    22    HOOD_158                             Identifier of Neighbourhood using City of Toronto's new
+                                               158 neighbourhood structure
+    23    NEIGHBOURHOOD_158                    Name of Neighbourhood using City of Toronto's new
+                                               158 neighbourhood structure
+    24    HOOD_140                             Identifier of Neighbourhood using City of Toronto's old
+                                               140 neighbourhood structure
+    25    NEIGHBOURHOOD_140                    Name of Neighbourhood using City of Toronto's old
+                                               140 neighbourhood structure
+    26    ARREST_MADE                          An entity can be considered arrested when a charge is
+                                               laid, recommended or the person(s) who committed the
+                                               offence has been identified and taken into custody for
+                                               the same.
+
+
+
+
+Intimate Partner and Family Violence
+
+
+Description
+This data set includes all verified Intimate Partner and Family Violence occurrences investigated
+by Toronto Police Service by reported date since 2014. The Intimate Partner Violence categories
+include Family, Intimate Partner, and Unclassified. Count is an aggregated count of Intimate
+Partner Violence by fields listed in the dataset.
+
+This data only includes confirmed Intimate Partner Violence crimes. This data does not include
+occurrences that have been deemed unfounded. The definition of unfounded according to
+Statistics Canada is: “It has been determined through police investigation that the offence
+reported did not occur, nor was it attempted” (Statistics Canada, 2020). 9
+
+Definitions:
+Family: Familial relationships such as parents, siblings, or any other family members.
+
+Intimate Partner: The TPS IPV Procedure defines an Intimate Relationship as "marriage,
+domestic partnership, engagement, casual or serious romantic involvement, and dating,
+whether in a current or former relationship. Intimate Partner Violence can occur between
+persons of any sex, sexual orientation, gender, gender identity, or gender expression, and
+it can occur in any type of intimate relationship including monogamous, non- committed,
+
+
+9
+ Statistics Canada. 2020. Uniform Crime Reporting Manual. Surveys and Statistical Programs. Canadian
+Centre for Justice Statistics.
+
+
+                                                                                          Page 29 of 41
+and relationships involving more than two partners.
+
+Intimate Relationship - Dating means marriage, domestic partnership, engagement,
+casual or serious romantic involvement, and dating, whether in a current or former
+relationship. Intimate Partner Violence can occur between persons of any sex, sexual
+orientation, gender, gender identity, or gender expression, and it can occur in any type of
+intimate relationship including monogamous, non-committed, and relationships involving
+more than two partners.
+
+
+
+Intimate Partner Violence means any physical, sexual or psychological harm caused, or
+attempted, between persons involved in an intimate relationship including:
+
+         • assault;
+
+         • murder;
+
+         • sexual assault;
+
+         • threatening;
+
+         • harassment;
+
+         • intimidation;
+
+         • unlawful interference with personal liberty;
+
+         • any other criminal offence;
+
+         • offences under other statutes, such as the Family Law Act, Children’s Law Reform
+         Act, etc.;
+
+         but does not include child abuse investigations.
+
+Unclassified: The relationship between the victim and the accused in the occurrence is
+not identified or indicated but the investigating officers have identified this as an intimate
+partner related incident.
+
+
+Format: CSV
+
+Intimate Partner Violence - Data Field Descriptions
+
+
+ Field         Field Name                       Description
+ 1             INDEX                            Unique Identifier
+ 2             REPORT_YEAR                      Year Occurrence was Reported
+ 3             REPORT_MONTH                     Month Occurrence was Reported
+
+
+                                                                                        Page 30 of 41
+ 4          REPORT_DOW                       Day of the Week Offence was Reported
+
+                                             Calculated flag defining Historical
+ 5          HISTORICAL
+                                             (ReportingDelayDays >= 365) and Non-Historical
+                                             (ReportingDelayDays < 365) incidents
+ 6          FAMILY_VIOLENCE_FLAG             Indicator to presence and nature of Family Violence
+
+ 7          FAMILY_VIOLENCE_RELATION         Identifies relation of parties involved in family violence
+                                             incident
+ 8          DIVISION                         Police Division where of Occurrence
+ 9          PREMISES_TYPE                    Premises Type of Offence
+
+            HOOD_158                         Identifier of Neighbourhood using City of Toronto's
+ 10                                          new 158 neighbourhood structure
+
+            NEIGHBOURHOOD_158                Name of Neighbourhood using City of Toronto's new
+ 11                                          158 neighbourhood structure
+
+            HOOD_140                         Identifier of Neighbourhood using City of Toronto's
+ 12                                          old 140 neighbourhood structure
+
+            NEIGHBOURHOOD_140                Name of Neighbourhood using City of Toronto's old
+ 13                                          140 neighbourhood structure
+
+ 14         COUNT                            Aggregated count of Intimate Partner Violence data
+                                             that is grouped by all preceding fields
+
+
+
+
+Open Analytics
+
+The Toronto Police Service currently reports on hate crime by providing open analytics on the
+Data Analytics page on the portal. Previous Hate/Bias crime documentation can be found at:
+http://www.torontopolice.on.ca/publications/. Note, hate crime counts are subject to change
+based on re-evaluation of the occurrence or changes in reporting methodology.
+
+
+
+
+                                                                                          Page 31 of 41
+      Appendix A:
+      Open Data Summary Table
+
+Section                            Table Name                            Date Updated      Date Range         Update Frequency
+                                   Community Safety Indicators            2026.04.14    2014 – 2026.03.31        Quarterly
+                                   Assault                                2026.04.14    2014 – 2026.03.31        Quarterly
+                                   Auto Theft                             2026.04.14    2014 – 2026.03.31        Quarterly
+Community Safety Indicators
+                                   Break & Enter                          2026.04.14    2014 – 2026.03.31        Quarterly
+                                   Robbery                                2026.04.14    2014 – 2026.03.31        Quarterly
+                                   Theft Over                             2026.04.14    2014 – 2026.03.31        Quarterly
+Homicides                          Homicides                              2026.04.14    2004 – 2026.03.31        Quarterly
+Shootings & Firearm Discharges     Shootings & Firearm Discharges         2026.04.14    2004 – 2026.03.31        Quarterly
+Neighbourhood Crime Rates          Neighbourhood Crime Rates              2026.01.28       2014 – 2025            Annually
+Bicycle Thefts                     Bicycle Thefts                         2026.04.14    2014 – 2026.03.31        Quarterly
+                                   Killed/Seriously Injured Collisions    2024.04.22       2006 – 2023            Archived
+                                   Fatalities                             2024.04.22       2006 – 2023            Archived
+                                   Automobile                             2024.04.22       2006 – 2023            Archived
+Killed/Seriously Injured                                                  2024.04.22       2006 – 2023            Archived
+                                   Cyclists
+Collisions
+                                   Motorcyclists                          2024.04.22       2006 – 2023            Archived
+                                   Passenger                              2024.04.22       2006 – 2023            Archived
+                                   Pedestrian                             2024.04.22       2006 – 2023            Archived
+Field Information Reports (FIRS)   Field Information Reports              2017.11.29       2008 – 2013            Retired
+                                   Mental Health Act Apprehensions        2026.04.14    2014 – 2026.03.31        Quarterly
+Persons in Crisis                  Persons in Crisis Calls for Service
+                                                                          2026.04.14    2014 – 2026.03.31        Quarterly
+                                   Attended
+Traffic                            Total Motor Vehicle Collisions         2026.04.14    2014 – 2026.03.31        Quarterly
+                                   Budget 2020                            2021.09.16          2020               As needed
+                                   Budget 2021                            2021.01.03          2021               As needed
+                                   Budget 2022                            2023.12.13          2022               As needed
+                                   Budget 2023                            2024.12.05          2023               As needed
+Budget & Staffing                  Budget 2024                            2025.12.18          2024               As needed
+                                   Budget 2025                            2025.12.18          2025               As needed
+                                   Budget 2026                            2025.12.18          2026               As needed
+                                   Budget by Command                      2025.12.18       2016 – 2026            Annually
+                                   Staffing by Command                    2025.12.18       2016 – 2026            Annually
+Theft from Motor Vehicle           Theft from Motor Vehicle               2026.04.14    2014 – 2026.03.31        Quarterly
+Hate Crimes                        Hate Crimes                            2025.04.22       2018 – 2024            Annually
+Intimate Partner Violence          Intimate Partner Violence              2025.11.06       2014 – 2024            Annually
+
+
+
+
+                                                                                                            Page 32 of 41
+Premises Type Summary Table
+
+Premises Type                                 Location Type
+Apartment       Apartment (Rooming House, Condo)
+                Bank And Other Financial Institutions (Money Mart, Tsx)
+                Bar / Restaurant
+                Commercial Dwelling Unit (Hotel, Motel, B & B, Short Term Rental)
+                Construction Site (Warehouse, Trailer, Shed)
+Commercial
+                Convenience Stores
+                Dealership (Car, Motorcycle, Marine, Trailer, Etc.)
+                Gas Station (Self, Full, Attached Convenience)
+                Other Commercial / Corporate Places (For Profit, Warehouse, Corp. Bldg
+                Schools During Supervised Activity
+Educational     Schools During Un-Supervised Activity
+                Universities / Colleges
+House           Single Home, House (Attach Garage, Cottage, Mobile)
+                Cargo Train
+                Community Group Home
+                Group Homes (Non-Profit, Halfway House, Social Agency)
+                Halfway House
+                Homeless Shelter / Mission
+                Hospital / Institutions / Medical Facilities (Clinic, Dentist, Morgue)
+                Jails / Detention Centres
+                Nursing Home
+Other
+                Other Non Commercial / Corporate Places (Non-Profit, Gov'T, Firehall)
+                Other Train Tracks
+                Pharmacy
+                Police / Courts (Parole Board, Probation Office)
+                Private Property Structure (Pool, Shed, Detached Garage)
+                Religious Facilities (Synagogue, Church, Convent, Mosque)
+                Retirement Home
+                Unknown
+                Open Areas (Lakes, Parks, Rivers)
+                Other Train Yard
+Outside         Parking Lots (Apt., Commercial Or Non-Commercial)
+                Streets, Roads, Highways (Bicycle Path, Private Road)
+                TTC Bus Stop / Shelter / Loop
+                Go Bus
+                Go Station
+                Go Train
+                Other Passenger Train
+Transit
+                Other Passenger Train Station
+                Other Regional Transit System Vehicle
+                Other Train Admin Or Support Facility
+                TTC Admin Or Support Facility
+
+
+                                                                                    Page 33 of 41
+TTC Bus
+TTC Bus Garage
+TTC Light Rail Transit Station
+TTC Light Rail Vehicle
+TTC Street Car
+TTC Subway Station
+TTC Subway Train
+TTC Subway Tunnel / Outdoor Tracks
+TTC Support Vehicle
+TTC Wheel Trans Vehicle
+
+
+
+
+                                     Page 34 of 41
+Appendix B:
+Glossary
+
+Actual Expenditures
+Operating expenses incurred by the Toronto Police Service during a fiscal year.
+
+Actual Staffing
+All full-time, part-time and temporary employees active on the operating payroll or who are on
+paid leave at the end of the year.
+
+Aggressive Driving
+These events include any serious or fatal collision where aggressive driving played a role in the
+collision. Aggressive Driving events refer to one or more persons operating a motor vehicle who
+were acting in one or more of the following ways:
+    • Operating the vehicle at a speed in excess of the maximum posted limit
+    • Operating the vehicle within the posted limit, but too fast for existing road conditions
+    • Following too closely
+    • Disobeying a traffic control
+    • Failing to yield right-of-way
+    • Passing improperly
+
+Alcohol
+These events include any serious or fatal collision where alcohol consumption played a role in
+the collision. Alcohol consumption is involved when one or more persons operating a motor
+vehicle had consumed alcohol and, upon testing, were found to either:
+    • Have a blood-alcohol level in excess of 80 mg
+    • Had consumed sufficient alcohol to warrant being charged with a drinking and driving
+        offence.
+
+Approved Budget
+Operating funding approved by the Toronto Police Services Board and City Council for a specific
+fiscal year.
+
+Approved Staffing
+All positions which have been approved via the annual and/or ad hoc budget process for
+continuous delivery of core operations and services and/or specific projects/initiatives.
+
+Assault
+The direct or indirect application of force to another person, or the attempt or threat to apply
+force to another person, without that person’s consent.
+
+
+
+
+                                                                                      Page 35 of 41
+Automobile
+Traffic-related collisions involving occupants of an Automobile. It includes motor vehicle with
+more than three wheels for general use including: cars, station wagons, taxis, passenger vans,
+delivery vans, pickup trucks, tow trucks, SUVs.
+
+Auto Theft
+The act of taking another person's vehicle (not including attempts). Auto Theft figures represent
+the number of vehicles stolen.
+
+Bicycle Theft
+An occurrence where a theft of a bicycle occurred.
+
+Break and Enter
+The act of entering a place with the intent to commit an indictable offence therein.
+
+Collision
+The contact resulting from the motion of a motor vehicle or streetcar or its load, which produces
+property damage, injury or death. The term collision indicates that the initial point of contact
+involved at least one motor vehicle or streetcar.
+
+Crime Rate
+Following the standard definition by Statistics Canada, crime rate is defined as the crime count
+per 100,000 population 10 per year.
+
+Cyclists
+These events include any serious or fatal collision where a cyclist is involved. A cyclist is a person
+controlling or a passenger on a road vehicle propelled by human power (i.e. pedalling) through
+a belt, chain or gear. (i.e.) a moped or bicycle.
+
+Death
+Where the injured person (as defined above) has died as a result of injuries sustained from a
+bullet(s).
+
+Emergency Vehicle
+These events include any serious or fatal involving an operator or passenger of an emergency
+vehicle. An emergency vehicle is any vehicle that is designated and authorized to respond to an
+emergency. These vehicles are usually operated by designated agencies, often part of the
+government, but also run by charities, nongovernmental organizations and some commercial
+companies. Emergency vehicles include the following:
+   • Police car
+
+10 Population figures reflect only the resident population of a region. The temporary population such as the
+commuters and business patrons are not included.
+
+
+
+                                                                                                      Page 36 of 41
+   •   Ambulance
+   •   Fire truck
+
+Fail to Remain Collisions
+These collisions occur when an individual involved in a MVC fails to stop and provide their
+information at the scene of a collision.
+
+Fatal Collisions
+These collisions occur when an individual’s injuries from a MVC result in a fatality within 30 days.
+Please note this category excludes:
+       (i) Occurrences on private property
+       (ii) Occurrences related to sudden death prior to collision (suicide or medical episode)
+       (iii) Occurrences where the individual has died more than 30 days after the collision
+
+Firearm Discharge
+Any incident where evidence exists that a projectile was discharged from a firearm (as defined
+under the Criminal Code of Canada) including accidental discharge (non-police), celebratory fire,
+drive-by etc.
+
+Homicide Occurrence
+The homicide category includes the offences of First Degree Murder, Second Degree Murder,
+and Manslaughter. A homicide occurs when a person directly or indirectly, by any means, causes
+the death of another human being. Deaths caused by criminal negligence, suicide, or accidental
+or justifiable homicide (i.e self-defence) are not included. Homicide data is compiled based on
+the Homicide Squad Case List Log. Count is based on offence (i.e each deceased victim).
+
+Homicide Victim
+Any deceased person where the offence of First or Second Degree Murder or Manslaughter was
+committed.
+
+Homicide Type
+Homicides are categorized into three types:
+      •   Shooting: Where the cause of death was as a result of being shot with a firearm.
+      •   Stabbing: Where the cause of death was as a result of an edged weapon (such as a
+          knife or other blade).
+      •   Other: Where the cause of death was as a result of other methods such as blunt force
+          trauma or strangulation.
+
+Injuries
+Where the injured person (as defined above) has non-fatal physical injuries as a result of a
+bullet(s).
+
+
+
+
+                                                                                       Page 37 of 41
+Killed or Seriously Injured (KSI)
+Traffic collision where a person was killed or seriously injured.
+
+Major Injury
+A non-fatal injury that is severe enough to require the injured person to be admitted to hospital,
+even if only for observation at the time of the collision. Includes: fracture, internal injury, severe
+cuts, crushing, burns, concussion, severe general shocks.
+
+Mental Health Act (MHA)
+Provides for the control, apprehensions, detention and treatment of persons in crisis.
+
+MHA Section 17 (Police Officer’s Power of Apprehension) 11
+Where a police officer has reasonable and probable grounds to believe that a person is acting or
+has acted in a disorderly manner and has reasonable cause to believe that the person,
+   (a) has threatened or attempted or is threatening or attempting to cause bodily harm to
+       himself or herself;
+   (b) has behaved or is behaving violently towards another person or has caused or is causing
+       another person to fear bodily harm from him or her; or
+   (c) has shown or is showing a lack of competence to care for himself or herself, and in
+       addition the police officer is of the opinion that the person is apparently suffering from
+       mental disorder of a nature or quality that likely will result in,
+   (d) serious bodily harm to the person;
+   (e) serious bodily harm to another person; or
+   (f) serious physical impairment of the person, and that it would be dangerous to proceed
+       under section 16, the police officer may take the person in custody to an appropriate
+       place for examination by a physician. 2000, c. 9, s. 5.
+
+Motorcyclists
+These events include any serious or fatal collision where a motorcyclist is involved. A
+Motorcyclist is a person operator or a passenger of a self-propelled motor vehicle with not more
+than three wheels.
+
+Passenger
+These events include any serious or fatal collisions where a passenger is involved. A passenger is
+an occupant of a vehicle who is not in control of said vehicle.
+
+Pedestrian
+These events include any serious or fatal collision where a Pedestrian is involved. A pedestrian is
+a person not occupying a bicycle or motor vehicle and can be doing any of the following:
+    • Walking
+    • Sitting
+
+
+
+11 Mental Health Act, R.S.O. 1990, c. M.7, s 17.
+
+                                                                                         Page 38 of 41
+   •   Lying
+   •   Standing
+   •   Working on a road or place
+   •   Or using a small wheeled device that provides personal mobility such as the following:
+           o skateboard
+           o skates
+           o in-line skates
+           o scooter
+           o Segway
+           o stroller
+           o wheelchair
+
+Personal Injury Collisions
+These collisions occur when an individual involved in a MVC suffers personal injuries.
+
+Persons Injured (previously classified as “victims”)
+A person who was struck by a bullet(s) as a result of the discharge of a firearm (as defined under
+the Criminal Code of Canada). This excludes events such as suicide, police-involved event or
+where the weapon used was not a real firearm (such as pellet gun, air pistol, “sim-munition” etc.)
+Person in Crisis
+A person who appears to be in a state of crisis or any person who is experiencing a mental
+health crisis.
+
+Persons Involved
+Total persons involved in the collisions either killed or seriously injured.
+
+Physical/Medical Disability
+
+These events include any serious of fatal collisions where the operator of the vehicle has a
+medical or physical disability. Any serious or fatal collision where one or more persons operating
+a motor vehicle have a medical or physical disability that may or may not have played a factor in
+the collision. A medical or physical disability is a condition such as the following:
+    • Diabetes
+    • Epilepsy
+    • Amputee
+    • Broken bones, etc.
+
+Property Damage Collisions
+These collisions occur when an individual’s property has been damaged in a MVC or the value of
+damages is less than $2,000 for all involved parties.
+
+Proposed Budget
+Operating funding presented to the Toronto Police Services Board for approval for a specific
+fiscal year.
+
+                                                                                     Page 39 of 41
+Red Light
+These events include any serious or fatal collision where red light running played a role in the
+collision. Red light running is when one or more persons operating a motor vehicle proceeded
+into a signalized intersection while the signal display indication was red.
+
+Robbery
+The act of taking property from another person or business by the use of force or intimidation in
+the presence of the victim.
+
+SAP
+Enterprise resource planning software suite made by SAP SE. This is the system of record for
+financial information of the Toronto Police Service.
+
+Sexual Violation
+A wide range of offences that fall under the Sexual Assault category, including sexual assault (s.
+271), sexual assault with a weapon, threats to a third party or causing bodily harm (s. 272),
+aggravated sexual assault (s. 273), administering drugs for sex (s. 212), indecent assault (s. 141,
+149, 148, 156) sexual interference (s. 151), invitation to sexual touching (s. 152), and sexual
+exploitation (s. 153). It refers to any type of sexual activity that is not consented to. Behaviours
+may range in severity from gestures, verbal assaults and attempts, to forced penetration,
+disfigurement and endangerment of life. More so than with any other type of crime, sexual
+assaults (including child abuse) are often reported to police long after the incident has taken
+place, if they are reported at all.
+
+Shooting Event/Occurrence
+Any incident in which a projectile is discharged from a firearm (as defined under the Criminal
+Code of Canada) and injures a person. This excludes events such as suicide and police involved
+firearm discharges.
+
+Speeding
+These events include any serious or fatal collision where speeding played a role in the collision.
+Speeding is when one or more persons operating a motor vehicle were either: operating the
+vehicle at a speed in excess of the maximum posted limit or operating the vehicle within the
+posted limit, but too fast for existing road conditions.
+
+Theft Over
+The act of stealing property in excess of $5,000 (excluding auto theft).
+
+Theft from Motor Vehicle
+The act of stealing property from a motor vehicle.
+
+
+
+
+                                                                                        Page 40 of 41
+Time Periods
+      Year-to-Date
+      Refers to the period beginning on January 1st of the current year up to and including the
+      present date or date as indicated. The same time period may be applied across multiple
+      years in order to determine trends over time.
+
+       Year End
+       Refers to the full year period beginning on January 1st and ending on December 31st.
+       This time period may be applied across multiple years in order to compare year over year
+       changes and/or determine trends over time.
+
+       Historical
+       Refers to all compiled data from previous years.
+
+Truck
+These events include any serious or fatal collision involving an operator or passenger of a truck.
+A truck is a large motorized vehicle of transport such as the following: open truck, closed truck,
+tanker truck, dump truck, car carrier or a tractor trailer. The definition of truck does not include
+the following: delivery van, passenger van, pickup truck, van or an SUV.
+
+TTC/Municipal Vehicle
+These events include any serious or fatal collision involving an operator or passenger of a transit
+vehicle or streetcar.
+
+
+
+
+                                                                                        Page 41 of 41
+

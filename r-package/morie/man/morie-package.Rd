@@ -46,22 +46,16 @@ person-year regional-transition count)
 }
 }
 
-\section{Companion papers (Zenodo DOIs)}{
+\section{Companion papers}{
 
 If you use morie in your work, please cite the relevant companion
-papers (see \code{citation("morie")} or the \file{CITATION.cff}
-file in the source distribution):
+papers (see \code{citation("morie")} for the full bibliography):
 \itemize{
-\item morie (R software paper):
-\doi{10.5281/zenodo.20111233}
-\item morie (Python software paper):
-\doi{10.5281/zenodo.20096350}
-\item MRM framework paper:
-\doi{10.5281/zenodo.20096075}
-\item Hawkes-process methodology paper:
-\doi{10.5281/zenodo.20102198}
-\item Empirical applications paper:
-\doi{10.5281/zenodo.20175689}
+\item morie (R software paper)
+\item morie (Python software paper)
+\item MRM framework paper
+\item Hawkes-process methodology paper
+\item Empirical applications paper
 }
 }
 
@@ -107,8 +101,8 @@ the R and Python sides. The optional Linux-kernel adjuncts under
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/hadesllm/morie}
-  \item Report bugs at \url{https://github.com/hadesllm/morie/issues}
+  \item \url{https://github.com/rootcoder007/morie}
+  \item Report bugs at \url{https://github.com/rootcoder007/morie/issues}
 }
 
 }

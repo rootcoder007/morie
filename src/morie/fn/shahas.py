@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute SHA-256 hash of a message with optional iterated hashing."""
 
 from __future__ import annotations

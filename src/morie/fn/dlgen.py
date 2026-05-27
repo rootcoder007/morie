@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Deep-learning genomic prediction (single-hidden-layer MLP, NumPy)."""
 from __future__ import annotations
 

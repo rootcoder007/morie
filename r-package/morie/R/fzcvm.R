@@ -2,7 +2,7 @@
 
 #' Fauzi: Cramer-von Mises test with kernel-smoothed CDF (Ch 5)
 #'
-#' \eqn{W_n^2 = n \int (\hat F_h(t)-F_0(t))^2 dF_0(t)}.
+#' \eqn{W_n^2 = n \int (\hat F_h(t)-F_0(t))^2 dF_0(t)}{W_n^2 = n int (hat F_h(t)-F_0(t))^2 dF_0(t)}.
 #'
 #' @param x Numeric vector.
 #' @param cdf "norm" (default) or a function F0(t).

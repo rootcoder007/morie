@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """A* shortest path on a 2-D grid."""
 
 from __future__ import annotations

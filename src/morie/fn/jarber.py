@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Jarque-Bera test for normality. Tests if skewness=0 and kurtosis=3."""
 
 from __future__ import annotations

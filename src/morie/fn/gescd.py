@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """GES (Greedy Equivalence Search) for score-based causal discovery.
 
 GES is a two-phase greedy algorithm that maximizes a decomposable

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """LZW compression (Lempel-Ziv-Welch)."""
 
 __all__ = ["lzwcd"]

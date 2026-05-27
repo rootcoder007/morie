@@ -22,7 +22,6 @@ xy_fixture <- function() {
 
 test_that("rfens deterministic_seed is reproducible", {
   skip_if_no_hash()
-  testthat::skip_if_not_installed("randomForest")
   d <- xy_fixture()
   r1 <- morie_random_forest_ensemble(d$x, d$y, n_estimators = 20L, deterministic_seed = 42L)
   r2 <- morie_random_forest_ensemble(d$x, d$y, n_estimators = 20L, deterministic_seed = 42L)
@@ -33,7 +32,6 @@ test_that("rfens deterministic_seed is reproducible", {
 })
 
 test_that("rfens default (deterministic_seed = NULL) path is unchanged", {
-  testthat::skip_if_not_installed("randomForest")
   d <- xy_fixture()
   r1 <- morie_random_forest_ensemble(d$x, d$y, n_estimators = 20L, seed = 42L)
   r2 <- morie_random_forest_ensemble(d$x, d$y, n_estimators = 20L, seed = 42L)

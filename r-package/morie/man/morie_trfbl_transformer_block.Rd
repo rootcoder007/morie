@@ -43,7 +43,7 @@ R parity for \code{morie.fn.trfbl.transformer_block}.
 }
 \details{
 \deqn{h_1 = \mathrm{LN}(x + \mathrm{MHA}(x)), \quad
-      h_2 = \mathrm{LN}(h_1 + \mathrm{FFN}(h_1))}
+      h_2 = \mathrm{LN}(h_1 + \mathrm{FFN}(h_1))}{h_1 = LN(x + MHA(x)), h_2 = LN(h_1 + FFN(h_1))}
 }
 \examples{
 # See the package vignettes for usage examples:

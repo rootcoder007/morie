@@ -115,6 +115,8 @@ test_that("morie_det_rng('foo', 42) returns the value pinned by Python", {
 })
 
 test_that("morie_det_rng_sha_hex matches Python for several seeds", {
+  skip_if_not_installed("digest")
+  skip_if_not_installed("openssl")
   skip_if_no_hash()
   # These hex values were computed with hashlib.sha256(b"<name>:<seed>") on
   # the Python side; the R helper must agree exactly.

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Von Neumann entanglement entropy -Tr(rho log rho)."""
 
 from __future__ import annotations

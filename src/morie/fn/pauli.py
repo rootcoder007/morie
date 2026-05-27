@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Pauli matrices and spin operators."""
 
 __all__ = ["pauli"]

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Dynamic W-NOMINATE / dynamic ideal points (Armstrong Ch 6)."""
 import numpy as np
 from ._richresult import RichResult

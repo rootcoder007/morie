@@ -771,12 +771,23 @@ def wald_estimator(
 
     beta_wald = rf / fs
 
-    # Delta method SE
+    # Delta-method SE for beta = rf / fs, INCLUDING the Cov(rf, fs)
+    # term that the textbook expression often drops. Per-z-stratum:
+    # cov(mean(y), mean(d)) = cov(y, d) / n.
     n1 = int(z1.sum())
     n0 = int(z0.sum())
     var_rf = float(y[z1].var(ddof=1) / n1 + y[z0].var(ddof=1) / n0)
     var_fs = float(d[z1].var(ddof=1) / n1 + d[z0].var(ddof=1) / n0)
-    se_wald = abs(beta_wald) * np.sqrt(var_rf / rf**2 + var_fs / fs**2) if rf != 0 else np.sqrt(var_rf / fs**2)
+    cov_rf_fs = float(
+        np.cov(y[z1], d[z1], ddof=1)[0, 1] / n1
+        + np.cov(y[z0], d[z0], ddof=1)[0, 1] / n0
+    )
+    var_beta = (
+        var_rf / fs**2
+        + (rf**2 / fs**4) * var_fs
+        - 2.0 * (rf / fs**3) * cov_rf_fs
+    )
+    se_wald = float(np.sqrt(max(var_beta, 0.0))) if fs != 0 else float("nan")
 
     t_val = beta_wald / se_wald if se_wald > 0 else 0.0
     p_val = float(2 * stats.norm.sf(abs(t_val)))

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Align X to Y via Procrustes (rotation + reflection)."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Convolutional layer: cross-correlation with learnable kernels."""
 import numpy as np
 from scipy import stats

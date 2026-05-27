@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Quadrat test for Complete Spatial Randomness (CSR)."""
 
 import numpy as np

@@ -67,7 +67,6 @@ test_that("morie_run_morie_module errors on an unknown module name", {
 })
 
 test_that("morie_run_morie_modules runs a set of in-memory-safe modules", {
-  skip_on_cran()
   csv <- tempfile("rawcpads-", fileext = ".csv")
   utils::write.csv(make_raw_cpads(n = 600L), csv, row.names = FALSE)
   on.exit(unlink(csv), add = TRUE)

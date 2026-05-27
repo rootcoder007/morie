@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Cure rate mixture model -- long-term survivors."""
 
 import numpy as np

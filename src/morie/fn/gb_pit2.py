@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """PIT-based random number generation from arbitrary continuous CDF."""
 import numpy as np
 from ._richresult import RichResult

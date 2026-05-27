@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute the Flesch-Kincaid Grade Level readability score."""
 
 from __future__ import annotations

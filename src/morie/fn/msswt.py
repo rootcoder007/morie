@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Create weight matrix: 0 for NaN, 1 for observed."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """One-way MANOVA (Wilks' lambda)."""
 
 from __future__ import annotations

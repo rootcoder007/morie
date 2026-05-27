@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """CNN for genomic prediction -- NumPy Conv1D + dense, deterministic."""
 from __future__ import annotations
 

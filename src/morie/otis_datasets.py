@@ -539,3 +539,318 @@ def download_all_otis(target_dir: str | Path | None = None,
                 continue
             raise
     return out
+
+
+# ── Dictionary-aware introspection (added v0.9.5.5) ─────────────────
+
+
+def _lookup_dictionary_for(dataset_id: str, dictionary: dict | None = None):
+    """Find the DatasetSchema in the OTIS dictionary that matches
+    ``dataset_id``.
+
+    The OTIS Markdown uses short IDs (``b01df``) while the XLSX uses
+    long filename-style IDs (``b01_segregation_detailed_dataset``).
+    The registry uses the short form, but the dictionary may carry
+    either or both keys, so we try several plausible mappings.
+
+    Returns the first match, or None.
+    """
+    if dictionary is None:
+        from morie.dataset_dictionary import load_otis_dictionary
+        dictionary = load_otis_dictionary()
+    if dataset_id in dictionary:
+        return dictionary[dataset_id]
+    short = dataset_id.lower()
+    # Try short id with 'df' suffix (b01df / c03df pattern).
+    if short + "df" in dictionary:
+        return dictionary[short + "df"]
+    # Try matching by stem of CSV filename.
+    entry = DATASET_REGISTRY.get(dataset_id)
+    if entry is None:
+        return None
+    stem = entry.csv_filename
+    if stem.lower().endswith(".csv"):
+        stem = stem[:-4]
+    for k, schema in dictionary.items():
+        if k.lower() == stem.lower():
+            return schema
+        if k.lower().startswith(short + "_"):
+            return schema
+    return None
+
+
+def otis_describe(dataset_id: str, language: str = "en"):
+    """Describe an OTIS dataset by combining registry + parsed dictionary.
+
+    Looks up ``dataset_id`` in :data:`DATASET_REGISTRY`, then attempts
+    to attach the matching parsed schema from
+    :func:`morie.dataset_dictionary.load_otis_dictionary` so users get
+    both the canonical column list AND the rich English / French
+    descriptions from the published data dictionary.
+
+    Parameters
+    ----------
+    dataset_id : str
+        e.g. ``"b01"``, ``"c03"``.
+    language : str, default "en"
+        ``"en"`` or ``"fr"`` for the localised description text.
+
+    Returns
+    -------
+    RichResult
+        ``payload`` keys: ``dataset_id``, ``series``, ``csv_filename``,
+        ``columns_registry``, ``schema_columns`` (from the
+        DatasetSchema if found, else None), ``description``,
+        ``language``, ``schema_present``, ``n``.
+    """
+    from morie.fn._richresult import RichResult
+
+    if dataset_id not in DATASET_REGISTRY:
+        raise ValueError(
+            f"Unknown OTIS dataset id {dataset_id!r}. Use "
+            f"list_otis_datasets() to enumerate the {len(DATASET_REGISTRY)} "
+            f"registered datasets."
+        )
+    entry = DATASET_REGISTRY[dataset_id]
+
+    schema = None
+    try:
+        schema = _lookup_dictionary_for(dataset_id)
+    except Exception as exc:  # noqa: BLE001
+        schema = None
+
+    sections: list[dict] = []
+    sections.append({
+        "title": "Registry metadata",
+        "headers": ["field", "value"],
+        "table": [
+            ["id", entry.id],
+            ["series", entry.series],
+            ["csv_filename", entry.csv_filename],
+            ["panel", str(entry.panel)],
+            ["primary_metric", entry.primary_metric],
+            ["columns (count)", str(len(entry.columns))],
+        ],
+    })
+
+    if schema is not None:
+        col_rows: list[list] = []
+        for col in schema.columns[:30]:
+            desc = col.localised_description(language) or ""
+            if len(desc) > 90:
+                desc = desc[:90] + "…"
+            col_rows.append([col.name, col.dtype, desc])
+        sections.append({
+            "title": (
+                f"Data dictionary columns (first 30 of "
+                f"{len(schema.columns)})"
+            ),
+            "headers": ["name", "dtype", "description"],
+            "table": col_rows,
+        })
+
+    if language.lower().startswith("fr"):
+        interp = (
+            f"OTIS dataset {entry.id!r}: {entry.description}. "
+            f"{'Dictionnaire des données trouvé.' if schema else 'Aucune entrée correspondante dans le dictionnaire.'}"
+        )
+    else:
+        interp = (
+            f"OTIS dataset {entry.id!r}: {entry.description}. "
+            f"{'Data dictionary entry found.' if schema else 'No matching data-dictionary entry.'}"
+        )
+
+    return RichResult(
+        title=f"OTIS {entry.id} — {entry.csv_filename}",
+        call=f"otis_describe({dataset_id!r}, language={language!r})",
+        summary_lines=[
+            ("Dataset ID", entry.id),
+            ("Series", entry.series),
+            ("CSV", entry.csv_filename),
+            ("Registry columns", len(entry.columns)),
+            ("Dictionary columns", len(schema.columns) if schema else 0),
+            ("Schema language", schema.language if schema else "n/a"),
+        ],
+        sections=sections,
+        interpretation=interp,
+        payload={
+            "n": 1,
+            "dataset_id": entry.id,
+            "series": entry.series,
+            "csv_filename": entry.csv_filename,
+            "columns_registry": list(entry.columns),
+            "schema_columns": (
+                [c.name for c in schema.columns] if schema else None
+            ),
+            "description": entry.description,
+            "language": language,
+            "schema_present": schema is not None,
+        },
+    )
+
+
+def otis_validate_against_dictionary(
+    dataset_id: str | None = None,
+):
+    """Cross-validate OTIS CSVs against the parsed data dictionary.
+
+    For each dataset in :data:`DATASET_REGISTRY` (or just the one named
+    by ``dataset_id``), loads the CSV header, looks up the matching
+    parsed schema, and reports columns present in the CSV but absent
+    in the dictionary, and vice versa.
+
+    Surfaces — but does NOT attempt to repair — the small set of known
+    upstream annotation drifts in the Ontario release:
+
+    - ``c05`` dictionary filename says ``..._race_by_region`` but the
+      on-disk CSV is ``..._religion_by_region`` (variable list confirms
+      religion, not race; the dict filename is a typo)
+    - ``_id`` appears as the first variable in every dictionary entry
+      but is a CKAN-visualiser-only synthetic column — never present
+      in the published CSVs
+    - The ``a01_<Year>_…`` row in the dictionary is a per-year split
+      note about ``MentalHealth_Alert`` only, not a separate dataset
+
+    Returns
+    -------
+    RichResult
+        ``payload`` keys: ``per_dataset`` (list of dicts with
+        ``dataset_id``, ``missing_in_csv``, ``extra_in_csv``,
+        ``schema_present``), ``known_drifts`` (the three above),
+        ``n_datasets``, ``n_with_drift``, ``n``.
+    """
+    from morie.fn._richresult import RichResult
+    from morie.dataset_dictionary import load_otis_dictionary
+
+    try:
+        dictionary = load_otis_dictionary()
+    except Exception as exc:  # noqa: BLE001
+        return RichResult(
+            title="OTIS dictionary validation",
+            call="otis_validate_against_dictionary()",
+            warnings=[f"Could not load OTIS dictionary: {exc}"],
+            interpretation=(
+                f"Cannot validate against the OTIS data dictionary: "
+                f"{type(exc).__name__}: {exc}. Check that the OTIS data "
+                f"directory contains OTIS_DATA_DICTIONARY.md and the "
+                f"official XLSX dictionary, or set MORIE_OTIS_DIR."
+            ),
+            payload={"n": 0, "per_dataset": [], "n_with_drift": 0},
+        )
+
+    targets = [dataset_id] if dataset_id else list(DATASET_REGISTRY.keys())
+
+    per_dataset: list[dict] = []
+    n_with_drift = 0
+
+    for did in targets:
+        if did not in DATASET_REGISTRY:
+            continue
+        entry = DATASET_REGISTRY[did]
+        try:
+            csv_header = list(pd.read_csv(entry.csv_path, nrows=0).columns)
+        except Exception:
+            csv_header = list(entry.columns)
+        schema = _lookup_dictionary_for(did, dictionary=dictionary)
+        if schema is None:
+            per_dataset.append({
+                "dataset_id": did,
+                "csv_columns": csv_header,
+                "missing_in_csv": [],
+                "extra_in_csv": [],
+                "schema_present": False,
+            })
+            continue
+
+        schema_names = {c.name.lower() for c in schema.columns}
+        csv_lc = {c.lower() for c in csv_header}
+        # Filter the synthetic _id column out of the dict view per the
+        # known-drift note.
+        schema_names_no_id = schema_names - {"_id"}
+        missing_in_csv = sorted(s for s in schema_names_no_id if s not in csv_lc)
+        extra_in_csv = sorted(c for c in csv_lc if c not in schema_names_no_id)
+        if missing_in_csv or extra_in_csv:
+            n_with_drift += 1
+        per_dataset.append({
+            "dataset_id": did,
+            "csv_columns": csv_header,
+            "missing_in_csv": missing_in_csv,
+            "extra_in_csv": extra_in_csv,
+            "schema_present": True,
+        })
+
+    known_drifts = [
+        {
+            "issue": "c05 dictionary filename typo",
+            "detail": (
+                "Dictionary lists 'c05_..._race_by_region' but the CSV "
+                "on disk is 'c05_..._religion_by_region'; the variable "
+                "list confirms religion, not race."
+            ),
+        },
+        {
+            "issue": "Synthetic _id column",
+            "detail": (
+                "Every dictionary entry lists _id as the first variable, "
+                "but _id is a CKAN-visualiser-only synthetic column that "
+                "never appears in the published CSVs. Excluded from drift "
+                "counts."
+            ),
+        },
+        {
+            "issue": "a01_<Year>_... dictionary entry",
+            "detail": (
+                "The a01_<Year>_restrictive_confinement_detailed_dataset "
+                "row in the dictionary is a per-year naming-convention "
+                "note about MentalHealth_Alert; not a separate dataset."
+            ),
+        },
+    ]
+
+    drift_rows: list[list] = []
+    for entry in per_dataset:
+        if not entry["schema_present"]:
+            drift_rows.append([entry["dataset_id"], "—", "—", "no schema match"])
+            continue
+        if not entry["missing_in_csv"] and not entry["extra_in_csv"]:
+            continue
+        drift_rows.append([
+            entry["dataset_id"],
+            ", ".join(entry["missing_in_csv"][:5]) +
+            ("…" if len(entry["missing_in_csv"]) > 5 else ""),
+            ", ".join(entry["extra_in_csv"][:5]) +
+            ("…" if len(entry["extra_in_csv"]) > 5 else ""),
+            f"miss={len(entry['missing_in_csv'])} extra={len(entry['extra_in_csv'])}",
+        ])
+
+    interpretation = (
+        f"Validated {len(per_dataset)} OTIS dataset(s) against the "
+        f"parsed data dictionary. {n_with_drift} dataset(s) have "
+        f"observed drift between CSV and dictionary column lists. "
+        f"Three known upstream annotation issues are documented in "
+        f"`payload['known_drifts']` and are NOT counted as drift."
+    )
+
+    return RichResult(
+        title="OTIS data-dictionary validation",
+        call=f"otis_validate_against_dictionary(dataset_id={dataset_id!r})",
+        summary_lines=[
+            ("Datasets checked", len(per_dataset)),
+            ("With drift", n_with_drift),
+            ("Known annotation issues", len(known_drifts)),
+        ],
+        sections=[{
+            "title": "Drift per dataset (truncated to top-5 column names)",
+            "headers": ["dataset", "missing in CSV", "extra in CSV", "totals"],
+            "table": drift_rows or [["(none)", "", "", ""]],
+        }],
+        interpretation=interpretation,
+        payload={
+            "n": len(per_dataset),
+            "per_dataset": per_dataset,
+            "known_drifts": known_drifts,
+            "n_datasets": len(per_dataset),
+            "n_with_drift": n_with_drift,
+            "value": float(n_with_drift),
+        },
+    )

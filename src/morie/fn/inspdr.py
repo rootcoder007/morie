@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Inspect all CSV files in a directory."""
 
 from morie.inspector import inspect_directory as _fn

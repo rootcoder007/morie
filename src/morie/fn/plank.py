@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Planck distribution (blackbody radiation)."""
 
 __all__ = ["plank"]

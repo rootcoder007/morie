@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """PFAS Hazard Index per US EPA 2024 MCL methodology."""
 
 from __future__ import annotations

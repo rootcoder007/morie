@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """GLS via Cochrane-Orcutt for AR(1) errors. Dataset-agnostic."""
 
 from __future__ import annotations

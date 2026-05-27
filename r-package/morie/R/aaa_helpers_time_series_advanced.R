@@ -10,7 +10,7 @@ NULL
 
 # Null-coalescing helper used internally by Johansen fallback critical
 # values; not exported.
-`%||%` <- function(a, b) if (is.null(a) || length(a) == 0) b else a
+`%||%` <- function(a, b) if (is.null(a)) b else a
 
 .morie_beta_weights <- function(t1, t2, K) {
   k <- seq_len(K) / (K + 1)

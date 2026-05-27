@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """f-divergence (general: KL, chi-squared, Hellinger, total variation)."""
 
 __all__ = ["fdisc"]

@@ -124,7 +124,7 @@ appear in two or more years.
 
 | MRM callable | Data | Result file |
 |---|---|---|
-| `mrm_tps_load_hawkes_refit(manifest_path)` | `paper_hawkes_refit.json` | `results/08-hawkes-verified.txt` |
+| `mrm_tps_load_hawkes_refit()` | bundled `paper_hawkes_refit.json` (`inst/extdata/`) | `results/08-hawkes-verified.txt` |
 
 ## Toronto crime is becoming LESS spatially concentrated (LISA + Moran)
 
@@ -217,7 +217,7 @@ relevant paper §.
 ## How to re-run any finding
 
 ```bash
-pip install morie==0.2.0
+pip install morie==0.9.5.6
 python -m morie.demo           # 30-second showcase with animations
 ```
 

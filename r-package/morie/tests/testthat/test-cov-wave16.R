@@ -36,7 +36,6 @@ test_that("morie_inspect_output flags unsupported and unreadable files", {
   on.exit(unlink(uf), add = TRUE)
   expect_match(morie_inspect_output(uf)$status, "unsupported")
 
-  skip_if_not_installed("jsonlite")
   bf <- tempfile(fileext = ".json")
   writeLines("{not valid json", bf)
   on.exit(unlink(bf), add = TRUE)

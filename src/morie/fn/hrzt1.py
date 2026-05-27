@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Semiparametric ATE via kernel matching on propensity scores
 (Heckman-Ichimura-Todd 1998; Horowitz 2009, Ch 9).
 

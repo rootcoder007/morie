@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Higher-order kernel for bias reduction (Fauzi Ch 1).
 
 A kernel K_r is of order r if

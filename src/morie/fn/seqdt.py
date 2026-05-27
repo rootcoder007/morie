@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Sequential change-point detection (CUSUM/EWMA)."""
 
 from __future__ import annotations

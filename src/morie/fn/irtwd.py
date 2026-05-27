@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Wright map data (item difficulty vs person ability)."""
 
 from __future__ import annotations

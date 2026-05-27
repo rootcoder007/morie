@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Confidence intervals for smoothed maximum-score via subsampling."""
 import numpy as np
 from ._richresult import RichResult

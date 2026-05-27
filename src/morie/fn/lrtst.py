@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Likelihood ratio test with R-style verbose result."""
 
 from scipy.stats import chi2

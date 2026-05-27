@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Fit a resource depletion model and estimate time to exhaustion."""
 
 from __future__ import annotations

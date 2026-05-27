@@ -22,7 +22,7 @@ R parity for \code{morie.fn.rotrp.rotary_position_embedding}.
 }
 \details{
 Each pair (2i, 2i+1) is rotated by
-\eqn{\theta_{pos, i} = pos / N^{2i/d}}.
+\eqn{\theta_{pos, i} = pos / N^{2i/d}}{theta_pos, i = pos / N^2i/d}.
 }
 \examples{
 # See the package vignettes for usage examples:

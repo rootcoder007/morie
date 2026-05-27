@@ -306,16 +306,31 @@ mrm_tps_neighbourhood_recurrence_km <- function(
 #' sinusoidal baseline) AIC, branching ratio, and KS p-value per
 #' category as a tidy data.frame.
 #'
-#' @param manifest_path Path to `paper_hawkes_refit.json`.
+#' The reference manifest is shipped with the package at
+#' `system.file("extdata", "paper_hawkes_refit.json", package = "morie")`.
+#' Pass `manifest_path = NULL` (the default) to read the bundled copy;
+#' pass an explicit path to load a user-supplied refit.
+#'
+#' @param manifest_path Path to a `paper_hawkes_refit.json` file. If
+#'   `NULL` (the default), the bundled reference manifest is used.
 #' @return A data.frame with one row per category, columns
 #'   `category`, `n_fitted`, `T_days`, `aic_mark`, `kappa_mark`,
 #'   `ks_p_mark`, `aic_nm`, `eta_nm`, `ks_p_nm`, `delta_aic`.
 #' @export
 #' @examples
-#' if (FALSE) {
-#'   mrm_tps_load_hawkes_refit("paper_hawkes_refit.json")
-#' }
-mrm_tps_load_hawkes_refit <- function(manifest_path) {
+#' df <- mrm_tps_load_hawkes_refit()
+#' head(df)
+mrm_tps_load_hawkes_refit <- function(manifest_path = NULL) {
+  if (is.null(manifest_path)) {
+    manifest_path <- system.file(
+      "extdata", "paper_hawkes_refit.json", package = "morie"
+    )
+    if (!nzchar(manifest_path)) {
+      stop("Bundled paper_hawkes_refit.json not found in the morie ",
+           "installation. Reinstall morie or pass an explicit ",
+           "manifest_path.", call. = FALSE)
+    }
+  }
   stopifnot(file.exists(manifest_path))
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop("jsonlite is required for mrm_tps_load_hawkes_refit().")

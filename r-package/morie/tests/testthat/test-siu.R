@@ -166,7 +166,6 @@ test_that(".siu_curl_version reports a libcurl build string", {
 })
 
 test_that(".siu_http_get / .siu_http_get_many fetch over the network", {
-  skip_on_cran()
   testthat::skip_if_offline("www.siu.on.ca")
   one <- tryCatch(
     morie:::.siu_http_get(
@@ -200,7 +199,6 @@ test_that(".siu_http_get / .siu_http_get_many fetch over the network", {
 })
 
 test_that("morie_fetch_siu runs end-to-end, one row per case (network)", {
-  skip_on_cran()
   testthat::skip_if_offline("www.siu.on.ca")
   out <- tryCatch(
     morie_fetch_siu(
@@ -229,7 +227,6 @@ test_that(".siu_http_get_many_with_status returns parallel slots", {
 })
 
 test_that(".siu_http_get_many rate-limit gate spaces requests (network)", {
-  skip_on_cran()
   testthat::skip_if_offline("www.siu.on.ca")
   # 8 requests at 4 rps should take >= ~1.5s of pure gating overhead
   # (gap between starts = 250 ms; 8 - 1 = 7 gaps -> 1.75s floor before

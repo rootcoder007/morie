@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Asymptotic normality of standardized total runs statistic."""
 import numpy as np
 from scipy import stats

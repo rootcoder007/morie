@@ -33,14 +33,26 @@ hrzb1 <- function(x, y) {
   if (beta0[1] < 0) beta0 <- -beta0
   best <- beta0
   best_l <- score(best)
+  # Pick an optimiser appropriate to p: Brent (1-D bracketing) for the
+  # univariate case, Nelder-Mead simplex for p >= 2. Nelder-Mead on 1-D
+  # emits a "use Brent or optimize() directly" warning on every call,
+  # which is correct -- it really is the wrong tool for 1-D.
+  .hrzb1_optim <- function(start, fn, maxit) {
+    if (length(start) == 1L) {
+      r <- stats::optim(start, fn, method = "Brent",
+                         lower = -1, upper = 1,
+                         control = list(maxit = maxit, reltol = 1e-4))
+    } else {
+      r <- stats::optim(start, fn, method = "Nelder-Mead",
+                         control = list(maxit = maxit, reltol = 1e-4))
+    }
+    r
+  }
   set.seed(0)
   for (k in 1:8) {
     s <- stats::rnorm(p)
     s <- s / sqrt(sum(s^2))
-    r <- stats::optim(s, score,
-      method = "Nelder-Mead",
-      control = list(maxit = 300, reltol = 1e-4)
-    )
+    r <- .hrzb1_optim(s, score, maxit = 300)
     b <- r$par / max(sqrt(sum(r$par^2)), 1e-12)
     if (b[1] < 0) b <- -b
     l <- score(b)
@@ -59,10 +71,7 @@ hrzb1 <- function(x, y) {
     Xb <- X[idx, , drop = FALSE]
     yb <- ys[idx]
     sc <- function(b) .hrzb1_score(b, yb, Xb)
-    r <- stats::optim(best + 0.05 * stats::rnorm(p), sc,
-      method = "Nelder-Mead",
-      control = list(maxit = 150)
-    )
+    r <- .hrzb1_optim(best + 0.05 * stats::rnorm(p), sc, maxit = 150)
     bb <- r$par / max(sqrt(sum(r$par^2)), 1e-12)
     if (bb[1] < 0) bb <- -bb
     boot[b_idx, ] <- bb

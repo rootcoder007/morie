@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Ljung-Box portmanteau test for autocorrelation."""
 
 import numpy as np

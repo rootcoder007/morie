@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute Failure Mode and Effects Analysis Risk Priority Numbers."""
 
 from __future__ import annotations

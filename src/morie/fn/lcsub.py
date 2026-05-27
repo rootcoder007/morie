@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Longest common subsequence. 'Patience you must have.'"""
 
 from __future__ import annotations

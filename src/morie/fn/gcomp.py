@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """G-computation for time-varying treatments.
 
 Extends the parametric g-formula to the time-varying setting by

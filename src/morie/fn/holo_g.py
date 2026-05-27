@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Per-region descriptive statistics for geographic mapping."""
 
 from __future__ import annotations

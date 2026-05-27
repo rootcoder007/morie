@@ -30,7 +30,7 @@ zero-phase via \code{\link[signal:filtfilt]{signal::filtfilt()}} (or single-pass
 when the signal is too short to allow forward-backward padding).
 }
 \details{
-\deqn{h[n] = w[n] \, 2 f_c \, \mathrm{sinc}(2 f_c (n - M/2))}
+\deqn{h[n] = w[n] \, 2 f_c \, \mathrm{sinc}(2 f_c (n - M/2))}{h[n] = w[n] 2 f_c sinc(2 f_c (n - M/2))}
 }
 \examples{
 \donttest{

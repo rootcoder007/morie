@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Kaplan-Meier survival curve with confidence bands."""
 
 from __future__ import annotations

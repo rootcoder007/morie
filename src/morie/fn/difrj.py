@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Raju's signed/unsigned area DIF measure."""
 
 from __future__ import annotations

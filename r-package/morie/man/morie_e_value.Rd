@@ -17,7 +17,7 @@ Named list: \code{morie_e_value}, \code{e_value_ci} (for the CI bound).
 \description{
 The E-value quantifies the minimum strength of confounding association
 needed to fully explain away an observed treatment effect:
-\deqn{E = RR + \sqrt{RR \cdot (RR - 1)}}
+\deqn{E = RR + \sqrt{RR \cdot (RR - 1)}}{E = RR + sqrt(RR * (RR - 1))}
 }
 \details{
 For a risk ratio \eqn{RR < 1}, use \eqn{1/RR} before applying the formula.

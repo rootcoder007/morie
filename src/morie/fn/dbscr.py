@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """DBSCAN clustering returning DescriptiveResult with diagnostics."""
 
 from __future__ import annotations

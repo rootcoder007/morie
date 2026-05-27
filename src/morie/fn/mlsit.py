@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """One alternating least-squares step for unfolding."""
 
 from __future__ import annotations

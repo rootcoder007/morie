@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """LiNGAM: Linear Non-Gaussian Acyclic Model for causal discovery.
 
 LiNGAM identifies a unique causal ordering (not just an equivalence

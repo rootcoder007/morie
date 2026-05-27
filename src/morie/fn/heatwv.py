@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Heat-wave detection via WMO percentile + consecutive-day criteria."""
 
 from __future__ import annotations

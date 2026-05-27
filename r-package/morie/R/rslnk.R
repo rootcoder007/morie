@@ -4,7 +4,7 @@
 #'
 #' R parity for \code{morie.fn.rslnk.residual_connection}.
 #'
-#' \deqn{y = \mathcal{F}(x) + x}
+#' \deqn{y = \mathcal{F}(x) + x}{y = F(x) + x}
 #'
 #' @param x Numeric array.
 #' @param f Function applied as the residual branch; defaults to identity.

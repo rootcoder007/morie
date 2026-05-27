@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Cramer-von Mises test with kernel-smoothing (Fauzi Ch 5).
 
     W_n^2 = n * integral ( F_hat_h(t) - F_0(t) )^2 dF_0(t).

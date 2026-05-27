@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Least median of squares (LMS) regression."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute the magnetic field at a point due to a current-carrying wire."""
 
 from __future__ import annotations

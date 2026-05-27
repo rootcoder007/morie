@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Block kriging -- areal prediction (Schabenberger & Gotway Ch 5)."""
 
 import numpy as np

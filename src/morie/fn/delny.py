@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute a Delaunay triangulation of 2-D points."""
 
 from __future__ import annotations

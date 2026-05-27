@@ -68,9 +68,9 @@ morie_estimate_propensity_scores <- function(data, treatment, covariates,
 #' Estimate the Average Treatment Effect (ATE) via Hajek IPW
 #'
 #' The Hajek estimator uses stabilised IPW weights:
-#' \deqn{\widehat{ATE} = \bar{y}_1^{w} - \bar{y}_0^{w}}
-#' where \eqn{\bar{y}_t^{w} = \sum_{T_i=t} w_i Y_i / \sum_{T_i=t} w_i}
-#' and \eqn{w_i = T_i/\hat{e}(X_i) + (1-T_i)/(1-\hat{e}(X_i))}.
+#' \deqn{\widehat{ATE} = \bar{y}_1^{w} - \bar{y}_0^{w}}{ATE_hat = y_bar_1^w - y_bar_0^w}
+#' where \eqn{\bar{y}_t^{w} = \sum_{T_i=t} w_i Y_i / \sum_{T_i=t} w_i}{y_bar_t^w = sum_T_i=t w_i Y_i / sum_T_i=t w_i}
+#' and \eqn{w_i = T_i/\hat{e}(X_i) + (1-T_i)/(1-\hat{e}(X_i))}{w_i = T_i/e_hat(X_i) + (1-T_i)/(1-e_hat(X_i))}.
 #'
 #' @param data A data frame.
 #' @param treatment Name of the binary treatment column.
@@ -99,7 +99,15 @@ morie_estimate_ate <- function(data, treatment, outcome, covariates,
 
   w <- t / ps + (1 - t) / (1 - ps)
   ate <- .hajek_diff(y[t == 1], w[t == 1], y[t == 0], w[t == 0])
-  se <- stats::sd(w * (t - ps) * y) / sqrt(length(y))
+  # Standard IPW influence-function SE (Hernan-Robins, "What If" Ch 12.6):
+  # psi_i = t*y/ps - (1-t)*y/(1-ps) - ATE. Divides by sqrt(total n).
+  # NB: This is the "known propensity score" form. When ps is estimated
+  # (the default path via morie_estimate_propensity_scores), this SE is
+  # conservative — it ignores the PS-estimation step and slightly
+  # over-estimates variance. Standard for IPW packages; bootstrap or
+  # `WeightIt`/`survey` for the efficient sandwich correction.
+  if_vec <- t * y / ps - (1 - t) * y / (1 - ps) - ate
+  se <- stats::sd(if_vec) / sqrt(length(y))
   ci <- .wald_ci(ate, se)
   ess <- (sum(w)^2) / sum(w^2)
 
@@ -117,7 +125,7 @@ morie_estimate_ate <- function(data, treatment, outcome, covariates,
 #' Estimate the Average Treatment Effect on the Treated (ATT)
 #'
 #' Treated units receive weight 1; controls receive
-#' \eqn{w_i = \hat{e}(X_i)/(1-\hat{e}(X_i))}.
+#' \eqn{w_i = \hat{e}(X_i)/(1-\hat{e}(X_i))}{w_i = e_hat(X_i)/(1-e_hat(X_i))}.
 #'
 #' @inheritParams morie_estimate_ate
 #' @return Named list: `att`, `se`, `ci_lower`, `ci_upper`, `n_treated`.
@@ -143,9 +151,15 @@ morie_estimate_att <- function(data, treatment, outcome, covariates,
   att <- mean_t - mean_c
 
   n1 <- sum(t == 1)
-  # Delta-method SE approximation
-  se <- sqrt(stats::var(y[t == 1]) / n1 +
-    stats::var(w_ctrl[t == 0] * y[t == 0]) / sum(t == 0))
+  n <- length(y)
+  # Influence-function SE for IPW-ATT (Imbens & Wooldridge 2009 §5.5).
+  # psi_i = [t*Y - (1-t)*Y*ps/(1-ps)] / E[t] - t*ATT / E[t].
+  # Divides by sqrt(total n), not sqrt(n_treated).
+  # NB: "known propensity score" form; conservative when ps is estimated
+  # (slightly over-estimates variance). See morie_estimate_ate notes.
+  p_t <- mean(t)
+  if_vec <- (t * y - (1 - t) * y * w_ctrl) / p_t - t * att / p_t
+  se <- stats::sd(if_vec) / sqrt(n)
   ci <- .wald_ci(att, se)
 
   list(att = att, se = se, ci_lower = ci[1], ci_upper = ci[2], n_treated = n1)
@@ -159,7 +173,7 @@ morie_estimate_att <- function(data, treatment, outcome, covariates,
 #' Estimate the Average Treatment Effect on the Controls (ATC)
 #'
 #' Control units receive weight 1; treated units receive
-#' \eqn{w_i = (1-\hat{e}(X_i))/\hat{e}(X_i)}.
+#' \eqn{w_i = (1-\hat{e}(X_i))/\hat{e}(X_i)}{w_i = (1-e_hat(X_i))/e_hat(X_i)}.
 #'
 #' @inheritParams morie_estimate_ate
 #' @return Named list: `atc`, `se`, `ci_lower`, `ci_upper`, `n_control`.
@@ -184,8 +198,14 @@ morie_estimate_atc <- function(data, treatment, outcome, covariates,
   atc <- mean_treated_reweighted - mean_c
 
   n0 <- sum(t == 0)
-  se <- sqrt(stats::var(y[t == 0]) / n0 +
-    stats::var(w_trt[t == 1] * y[t == 1]) / sum(t == 1))
+  n <- length(y)
+  # Influence-function SE for IPW-ATC (mirror of ATT, swapping roles).
+  # psi_i = [t*Y*(1-ps)/ps - (1-t)*Y] / E[1-t] - (1-t)*ATC / E[1-t].
+  # Divides by sqrt(total n), not sqrt(n_control).
+  # NB: "known propensity score" form; conservative when ps is estimated.
+  p_c <- mean(1 - t)
+  if_vec <- (t * y * w_trt - (1 - t) * y) / p_c - (1 - t) * atc / p_c
+  se <- stats::sd(if_vec) / sqrt(n)
   ci <- .wald_ci(atc, se)
 
   list(atc = atc, se = se, ci_lower = ci[1], ci_upper = ci[2], n_control = n0)
@@ -312,7 +332,7 @@ morie_estimate_gate <- function(data, treatment, outcome, covariates,
 #'
 #' The **T-learner** fits separate outcome models on treated and control
 #' units, then predicts the counterfactual for each unit:
-#' \eqn{\widehat{CATE}_i = \hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)}.
+#' \eqn{\widehat{CATE}_i = \hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)}{CATE_hat_i = mu_hat_1(X_i) - mu_hat_0(X_i)}.
 #'
 #' The **S-learner** fits one model with treatment as a feature.
 #'
@@ -370,7 +390,7 @@ morie_estimate_cate <- function(data, treatment, outcome, covariates,
 #' Estimate the Local Average Treatment Effect (LATE) via 2SLS / Wald
 #'
 #' Uses a binary instrument \eqn{Z} to identify the LATE (Imbens & Angrist, 1994):
-#' \deqn{LATE = \frac{Cov(Y, Z)}{Cov(T, Z)}}
+#' \deqn{LATE = \frac{Cov(Y, Z)}{Cov(T, Z)}}{LATE = (Cov(Y, Z))/(Cov(T, Z))}
 #'
 #' With covariates, uses two-stage OLS (Wald within residuals).
 #' Requires `ivreg::ivreg()` if available; otherwise falls back to the
@@ -468,7 +488,7 @@ morie_estimate_late <- function(data, treatment, outcome, instrument,
 #'
 #' The E-value quantifies the minimum strength of confounding association
 #' needed to fully explain away an observed treatment effect:
-#' \deqn{E = RR + \sqrt{RR \cdot (RR - 1)}}
+#' \deqn{E = RR + \sqrt{RR \cdot (RR - 1)}}{E = RR + sqrt(RR * (RR - 1))}
 #'
 #' For a risk ratio \eqn{RR < 1}, use \eqn{1/RR} before applying the formula.
 #'
@@ -496,8 +516,8 @@ morie_e_value <- function(rr, rr_lower = NULL) {
 
 #' Rosenbaum bounds sensitivity analysis
 #'
-#' For a range of hidden-confounding levels \eqn{\Gamma}, tests whether
-#' the treatment effect remains significant. A large \eqn{\Gamma} at
+#' For a range of hidden-confounding levels \eqn{\Gamma}{Gamma}, tests whether
+#' the treatment effect remains significant. A large \eqn{\Gamma}{Gamma} at
 #' which the result remains significant indicates robustness.
 #'
 #' Uses Wilcoxon signed-rank statistic bounds for matched designs.
@@ -506,7 +526,7 @@ morie_e_value <- function(rr, rr_lower = NULL) {
 #' @param treated Numeric vector of outcomes for treated units.
 #' @param control Numeric vector of outcomes for control units
 #'   (may differ in length from `treated` for unmatched designs).
-#' @param gamma_range Numeric vector of \eqn{\Gamma} values to test.
+#' @param gamma_range Numeric vector of \eqn{\Gamma}{Gamma} values to test.
 #' @return Data frame with columns: `gamma`, `p_lower`, `p_upper`.
 #' @examples
 #' morie_sensitivity_rosenbaum(treated = rnorm(30, 0.5), control = rnorm(30))
@@ -552,7 +572,7 @@ morie_sensitivity_rosenbaum <- function(treated, control,
 #' G-computation (outcome regression) ATE estimator
 #'
 #' Estimates the ATE by:
-#' \deqn{\widehat{ATE} = \frac{1}{n}\sum_i \bigl[\hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)\bigr]}
+#' \deqn{\widehat{ATE} = \frac{1}{n}\sum_i \bigl[\hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)\bigr]}{ATE_hat = (1)/(n)sum_i bigl[mu_hat_1(X_i) - mu_hat_0(X_i)bigr]}
 #'
 #' @inheritParams morie_estimate_aipw
 #' @return Named list: `ate`, `se`, `ci_lower`, `ci_upper`.
@@ -580,4 +600,277 @@ morie_estimate_g_computation <- function(data, treatment, outcome, covariates,
   se <- stats::sd(diffs) / sqrt(length(diffs))
   ci <- .wald_ci(ate, se)
   list(ate = ate, se = se, ci_lower = ci[1], ci_upper = ci[2])
+}
+
+
+
+# ---------------------------------------------------------------------------
+# Double Machine Learning -- PLR + IRM
+# ---------------------------------------------------------------------------
+
+# Internal: hand-rolled cross-fit ridge fallback when DoubleML R package is
+# unavailable. Implements a partially linear regression (PLR) cross-fit on
+# residualised outcome and treatment using ridge regression with a fixed
+# lambda (lightweight; not for high-precision inference).
+.dml_xfit_ridge <- function(X, y, n_folds = 5L, lambda = 1.0,
+                            random_state = 42L) {
+  n <- nrow(X)
+  p <- ncol(X)
+  set.seed(random_state)
+  folds <- sample(rep(seq_len(n_folds), length.out = n))
+  pred <- numeric(n)
+  Xs <- scale(X)
+  center <- attr(Xs, "scaled:center")
+  scl <- attr(Xs, "scaled:scale")
+  scl[scl == 0] <- 1
+  Xs[, ] <- sweep(sweep(X, 2, center, "-"), 2, scl, "/")
+  for (k in seq_len(n_folds)) {
+    te <- which(folds == k)
+    tr <- setdiff(seq_len(n), te)
+    Xt <- Xs[tr, , drop = FALSE]
+    yt <- y[tr]
+    yc <- mean(yt)
+    A <- crossprod(Xt) + lambda * diag(p)
+    b <- crossprod(Xt, yt - yc)
+    beta <- tryCatch(solve(A, b), error = function(e) MASS::ginv(A) %*% b)
+    pred[te] <- as.numeric(Xs[te, , drop = FALSE] %*% beta) + yc
+  }
+  pred
+}
+
+.dml_prepare_xy <- function(data, treatment, outcome, covariates) {
+  frame <- data[, c(treatment, outcome, covariates), drop = FALSE]
+  frame <- frame[stats::complete.cases(frame), , drop = FALSE]
+  # encode non-numeric covariates as integer codes
+  for (cn in covariates) {
+    if (!is.numeric(frame[[cn]])) {
+      frame[[cn]] <- as.integer(as.factor(frame[[cn]]))
+    }
+  }
+  list(
+    frame = frame,
+    X = as.matrix(frame[, covariates, drop = FALSE]),
+    y = as.numeric(frame[[outcome]]),
+    d = as.numeric(frame[[treatment]])
+  )
+}
+
+#' Estimate ATE via Double Machine Learning (Partially Linear Regression)
+#'
+#' Implements Chernozhukov et al. (2018) double/debiased machine learning
+#' for the partially linear regression model. When the
+#' \pkg{DoubleML} R package is installed, delegates to
+#' \code{DoubleML::DoubleMLPLR} with random-forest nuisance learners.
+#' Otherwise falls back to a hand-rolled cross-fit ridge implementation:
+#' residualise \eqn{Y} and \eqn{D} on \eqn{X} via K-fold ridge, then
+#' regress the outcome residual on the treatment residual.
+#'
+#' @param data A data frame with treatment, outcome, and covariate columns.
+#' @param outcome Name of the continuous outcome column.
+#' @param treatment Name of the (binary) treatment column.
+#' @param covariates Character vector of covariate column names.
+#' @param n_folds Number of cross-fitting folds (default 5).
+#' @param n_rep Number of repeated cross-fitting repetitions (DoubleML only;
+#'   ignored by the ridge fallback). Default 1.
+#' @param random_state Integer seed for cross-fit folds and learners (default 42).
+#' @return Named list with elements \code{ate}, \code{se}, \code{ci_lower},
+#'   \code{ci_upper}, \code{n}, \code{method}.
+#' @examples
+#' set.seed(1)
+#' n <- 200
+#' X <- matrix(rnorm(n * 3), n, 3)
+#' d <- rbinom(n, 1, plogis(X[, 1]))
+#' y <- 0.5 * d + X[, 1] + rnorm(n)
+#' df <- data.frame(y = y, d = d, x1 = X[, 1], x2 = X[, 2], x3 = X[, 3])
+#' morie_estimate_double_ml(df, "y", "d", c("x1", "x2", "x3"))
+#' @references
+#' Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C.,
+#' Newey, W., & Robins, J. (2018). Double/debiased machine learning for
+#' treatment and structural parameters. \emph{The Econometrics Journal},
+#' 21(1), C1--C68.
+#' @export
+morie_estimate_double_ml <- function(data, outcome, treatment, covariates,
+                                     n_folds = 5L, n_rep = 1L,
+                                     random_state = 42L) {
+  prep <- .dml_prepare_xy(data, treatment, outcome, covariates)
+  n <- nrow(prep$frame)
+  z <- 1.959964
+
+  if (requireNamespace("DoubleML", quietly = TRUE) &&
+      requireNamespace("mlr3", quietly = TRUE) &&
+      requireNamespace("mlr3learners", quietly = TRUE) &&
+      requireNamespace("ranger", quietly = TRUE)) {
+    set.seed(random_state)
+    dml_data <- DoubleML::double_ml_data_from_data_frame(
+      df = prep$frame,
+      y_col = outcome,
+      d_cols = treatment,
+      x_cols = covariates
+    )
+    ml_l <- mlr3::lrn("regr.ranger", num.trees = 100L, max.depth = 5L)
+    ml_m <- mlr3::lrn("regr.ranger", num.trees = 100L, max.depth = 5L)
+    plr <- DoubleML::DoubleMLPLR$new(dml_data, ml_l = ml_l, ml_m = ml_m,
+                                     n_folds = n_folds, n_rep = n_rep)
+    plr$fit()
+    ate <- as.numeric(plr$coef[1])
+    se <- as.numeric(plr$se[1])
+    return(list(
+      ate = ate, se = se,
+      ci_lower = ate - z * se, ci_upper = ate + z * se,
+      n = n, method = "PLR (DoubleML)"
+    ))
+  }
+
+  # Hand-rolled cross-fit ridge fallback.
+  ml_y <- .dml_xfit_ridge(prep$X, prep$y, n_folds = n_folds,
+                          random_state = random_state)
+  ml_d <- .dml_xfit_ridge(prep$X, prep$d, n_folds = n_folds,
+                          random_state = random_state + 1L)
+  u <- prep$y - ml_y
+  v <- prep$d - ml_d
+  denom <- sum(v * v)
+  if (denom <= 0) {
+    stop("morie_estimate_double_ml: treatment residual variance is zero")
+  }
+  ate <- sum(v * u) / denom
+  # Neyman-orthogonal score variance estimator
+  psi <- v * (u - ate * v)
+  se <- sqrt(mean(psi^2) / denom^2 * n) / sqrt(n)
+  se <- sqrt(sum(psi^2)) / denom
+  list(
+    ate = ate, se = se,
+    ci_lower = ate - z * se, ci_upper = ate + z * se,
+    n = n, method = "PLR (cross-fit ridge fallback)"
+  )
+}
+
+#' Estimate ATE via the Interactive Regression Model (IRM)
+#'
+#' Implements the IRM variant of Chernozhukov et al. (2018) double machine
+#' learning, which allows treatment-effect heterogeneity by fitting separate
+#' outcome regressions for \eqn{T=0} and \eqn{T=1} alongside a propensity
+#' model. Uses \code{DoubleML::DoubleMLIRM} when available; otherwise falls
+#' back to a hand-rolled cross-fit estimator using logistic regression for
+#' the propensity score and ridge regression for the conditional outcome
+#' regressions.
+#'
+#' @param data A data frame containing treatment, outcome, and covariates.
+#' @param treatment Binary treatment column name.
+#' @param outcome Outcome column name.
+#' @param covariates Character vector of covariate column names.
+#' @param n_folds Number of cross-fitting folds (default 5).
+#' @param random_state Integer seed (default 42).
+#' @return Named list with \code{ate}, \code{se}, \code{ci_lower},
+#'   \code{ci_upper}, \code{n}, \code{method}.
+#' @examples
+#' set.seed(1)
+#' n <- 200
+#' X <- matrix(rnorm(n * 3), n, 3)
+#' d <- rbinom(n, 1, plogis(X[, 1]))
+#' y <- 0.5 * d + X[, 1] + rnorm(n)
+#' df <- data.frame(y = y, d = d, x1 = X[, 1], x2 = X[, 2], x3 = X[, 3])
+#' morie_estimate_irm(df, treatment = "d", outcome = "y",
+#'                    covariates = c("x1", "x2", "x3"))
+#' @references
+#' Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C.,
+#' Newey, W., & Robins, J. (2018). Double/debiased machine learning for
+#' treatment and structural parameters. \emph{The Econometrics Journal},
+#' 21(1), C1--C68.
+#' @export
+morie_estimate_irm <- function(data, treatment, outcome, covariates,
+                               n_folds = 5L, random_state = 42L) {
+  prep <- .dml_prepare_xy(data, treatment, outcome, covariates)
+  n <- nrow(prep$frame)
+  z <- 1.959964
+
+  if (requireNamespace("DoubleML", quietly = TRUE) &&
+      requireNamespace("mlr3", quietly = TRUE) &&
+      requireNamespace("mlr3learners", quietly = TRUE) &&
+      requireNamespace("ranger", quietly = TRUE)) {
+    set.seed(random_state)
+    irm_frame <- prep$frame
+    irm_frame[[treatment]] <- as.integer(irm_frame[[treatment]])
+    dml_data <- DoubleML::double_ml_data_from_data_frame(
+      df = irm_frame,
+      y_col = outcome,
+      d_cols = treatment,
+      x_cols = covariates
+    )
+    ml_g <- mlr3::lrn("regr.ranger", num.trees = 100L, max.depth = 5L)
+    ml_m <- mlr3::lrn("classif.ranger", num.trees = 100L, max.depth = 5L,
+                      predict_type = "prob")
+    irm <- DoubleML::DoubleMLIRM$new(dml_data, ml_g = ml_g, ml_m = ml_m,
+                                     n_folds = n_folds)
+    irm$fit()
+    ate <- as.numeric(irm$coef[1])
+    se <- as.numeric(irm$se[1])
+    return(list(
+      ate = ate, se = se,
+      ci_lower = ate - z * se, ci_upper = ate + z * se,
+      n = n, method = "IRM (DoubleML)"
+    ))
+  }
+
+  # Hand-rolled cross-fit IRM fallback.
+  d <- prep$d
+  y <- prep$y
+  X <- prep$X
+  set.seed(random_state)
+  folds <- sample(rep(seq_len(n_folds), length.out = n))
+  mu1 <- numeric(n)
+  mu0 <- numeric(n)
+  ps <- numeric(n)
+  for (k in seq_len(n_folds)) {
+    te <- which(folds == k)
+    tr <- setdiff(seq_len(n), te)
+    # propensity via logistic regression on training fold
+    dat_tr <- data.frame(d = d[tr], X[tr, , drop = FALSE])
+    dat_te <- data.frame(X[te, , drop = FALSE])
+    glm_fit <- suppressWarnings(stats::glm(d ~ ., data = dat_tr,
+                                           family = stats::binomial()))
+    ps[te] <- .clip_ps(stats::predict(glm_fit, newdata = dat_te,
+                                      type = "response"))
+    # outcome regressions on T=1 and T=0 subsamples of the training fold
+    tr1 <- tr[d[tr] == 1]
+    tr0 <- tr[d[tr] == 0]
+    if (length(tr1) >= ncol(X) + 1L) {
+      mu1[te] <- .dml_xfit_ridge_predict(X[tr1, , drop = FALSE], y[tr1],
+                                         X[te, , drop = FALSE])
+    } else {
+      mu1[te] <- mean(y[tr1])
+    }
+    if (length(tr0) >= ncol(X) + 1L) {
+      mu0[te] <- .dml_xfit_ridge_predict(X[tr0, , drop = FALSE], y[tr0],
+                                         X[te, , drop = FALSE])
+    } else {
+      mu0[te] <- mean(y[tr0])
+    }
+  }
+  # Neyman-orthogonal IRM score
+  psi <- (mu1 - mu0) +
+    d * (y - mu1) / ps -
+    (1 - d) * (y - mu0) / (1 - ps)
+  ate <- mean(psi)
+  se <- stats::sd(psi) / sqrt(n)
+  list(
+    ate = ate, se = se,
+    ci_lower = ate - z * se, ci_upper = ate + z * se,
+    n = n, method = "IRM (cross-fit ridge fallback)"
+  )
+}
+
+# Helper: closed-form ridge fit on (X_tr, y_tr) and predict at X_te.
+.dml_xfit_ridge_predict <- function(X_tr, y_tr, X_te, lambda = 1.0) {
+  p <- ncol(X_tr)
+  ctr <- colMeans(X_tr)
+  scl <- apply(X_tr, 2, stats::sd)
+  scl[scl == 0 | !is.finite(scl)] <- 1
+  Xs_tr <- sweep(sweep(X_tr, 2, ctr, "-"), 2, scl, "/")
+  Xs_te <- sweep(sweep(X_te, 2, ctr, "-"), 2, scl, "/")
+  yc <- mean(y_tr)
+  A <- crossprod(Xs_tr) + lambda * diag(p)
+  b <- crossprod(Xs_tr, y_tr - yc)
+  beta <- tryCatch(solve(A, b),
+                   error = function(e) MASS::ginv(A) %*% b)
+  as.numeric(Xs_te %*% beta) + yc
 }

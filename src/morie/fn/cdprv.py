@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Age-adjusted chronic disease prevalence."""
 
 import numpy as np

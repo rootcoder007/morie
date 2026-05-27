@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Fit an allometric (power-law) scaling model :math:`y = a x^b`."""
 
 from __future__ import annotations

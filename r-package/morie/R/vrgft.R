@@ -24,7 +24,7 @@
 #' Variogram model fit by weighted least squares.
 #'
 #' Models: exponential, gaussian, spherical.
-#' Exponential form: \deqn{\gamma(h) = c_0 + c_1(1 - e^{-h/a})}.
+#' Exponential form: \deqn{\gamma(h) = c_0 + c_1(1 - e^{-h/a})}{gamma(h) = c_0 + c_1(1 - e^-h/a)}.
 #'
 #' @param x Numeric vector.
 #' @param coords Numeric coordinate matrix.

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Average treatment effect via simple difference-in-means with Welch CI."""
 from __future__ import annotations
 

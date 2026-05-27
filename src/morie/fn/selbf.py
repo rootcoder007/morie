@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Quantify selection bias as a multiplicative factor."""
 
 from __future__ import annotations

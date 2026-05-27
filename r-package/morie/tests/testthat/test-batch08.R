@@ -131,7 +131,6 @@ test_that("morie_ghosal_stick_breaking_trunc handles an empty input", {
 })
 
 test_that("morie_ghosal_stick_breaking_trunc supports deterministic_seed", {
-  skip_if_not_installed("digest")
   set.seed(22)
   x <- rnorm(30)
   res <- morie_ghosal_stick_breaking_trunc(x, K = 15, deterministic_seed = 99L)
@@ -452,7 +451,6 @@ test_that("morie_grucl_gru_cell infers hidden size from h_prev", {
 })
 
 test_that("morie_grucl_gru_cell supports deterministic_seed", {
-  skip_if_not_installed("digest")
   set.seed(103)
   x <- rnorm(4)
   res <- morie_grucl_gru_cell(x, hidden_size = 4L, deterministic_seed = 55L)
@@ -461,8 +459,6 @@ test_that("morie_grucl_gru_cell supports deterministic_seed", {
 })
 
 test_that("morie_grid_search_cv runs a regression grid search", {
-  skip_if_not_installed("caret")
-  skip_if_not_installed("elasticnet")
   set.seed(110)
   x <- matrix(rnorm(120), ncol = 3)
   y <- x[, 1] - x[, 2] + rnorm(40, sd = 0.2)
@@ -482,6 +478,7 @@ test_that("morie_grid_search_cv runs a regression grid search", {
 })
 
 test_that("morie_grid_search_cv errors clearly when caret is missing", {
+  skip_if_not_installed("caret")
   if (!requireNamespace("caret", quietly = TRUE)) {
     expect_error(
       morie_grid_search_cv(matrix(rnorm(20), ncol = 2), rnorm(10)),

@@ -5,23 +5,42 @@
 \title{Run a treatment-effects analysis (point estimate, SE, 95\% CI)}
 \usage{
 morie_run_treatment_effects_analysis(data, treatment, outcome, covariates)
+
+morie_run_treatment_effects_analysis(data, treatment, outcome, covariates)
 }
 \arguments{
-\item{data}{A \code{data.frame}.}
+\item{data}{data.frame containing treatment, outcome, and covariates.}
 
-\item{treatment}{Column name of the binary treatment.}
+\item{treatment}{Treatment column name.}
 
-\item{outcome}{Column name of the outcome.}
+\item{outcome}{Outcome column name.}
 
 \item{covariates}{Character vector of covariate column names.}
 }
 \value{
 A list with \code{ate}, \code{se}, \code{ci_lower}, \code{ci_upper}, \code{n}, \code{method}.
+
+Named list as described above.
 }
 \description{
 Mirrors the Python \code{morie.run_treatment_effects_analysis()}. Convenience
 wrapper around \code{\link[=morie_estimate_ate]{morie_estimate_ate()}} that also produces a 95\% confidence
 interval (delta-method approximation).
+
+R port of \code{investigation.run_treatment_effects_analysis}.  Returns a
+list with:
+\itemize{
+\item \code{treatment_effects_summary} -- data.frame of ATE / ATT / ATC
+point estimates (SE / CI columns present but NA, matching Python).
+\item \code{cate_subgroup_estimates} -- data.frame of within-subgroup
+Hajek IPW CATEs with sandwich-style SEs and Wald 95\\\% CIs.
+\item \code{analysis_frame} -- the trimmed data.frame with attached
+propensity score and IPW weight columns (\code{ps}, \code{w_ate}, \code{w_att},
+\code{w_atc}).
+\item Convenience scalars \code{ate} / \code{att} / \code{atc} / \code{se} /
+\code{ci_lower} / \code{ci_upper} / \code{n} / \code{method} preserved from the
+previous R surface for backward compatibility.
+}
 }
 \examples{
 set.seed(1)

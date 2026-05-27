@@ -21,7 +21,7 @@ Named list \code{(y, estimate, Fx, method)}.
 R parity for \code{morie.fn.rslnk.residual_connection}.
 }
 \details{
-\deqn{y = \mathcal{F}(x) + x}
+\deqn{y = \mathcal{F}(x) + x}{y = F(x) + x}
 }
 \examples{
 morie_rslnk_residual_connection(x = rnorm(50))

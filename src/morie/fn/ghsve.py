@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Sieve prior construction (truncated log-spline / Bernstein basis)."""
 import numpy as np
 from scipy.stats import beta as beta_dist

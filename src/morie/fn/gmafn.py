@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Gemma 4 native function calling via local Ollama."""
 
 from __future__ import annotations

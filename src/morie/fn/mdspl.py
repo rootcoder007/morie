@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Classical MDS for spatial map of legislators (Armstrong Ch 7)."""
 import numpy as np
 from ._richresult import RichResult

@@ -55,6 +55,10 @@ cached HTML.}
 \value{
 Invisibly, a data frame of newly-recorded
 (case_number, field, verified_value) translations.
+
+The same value as \code{\link{morie_siu_translate}}: invisibly,
+the updated SIU \code{data.frame} (cached translations written to
+\code{cache_dir}).
 }
 \description{
 For SIU cases whose parser-emitted text isn't in the reader's

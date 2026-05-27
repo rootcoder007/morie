@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Estimate a target quantile via bootstrap resampling with BCa correction."""
 
 from __future__ import annotations

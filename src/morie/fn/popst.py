@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Population structure via PCA on genotype data."""
 
 __all__ = ["popst"]

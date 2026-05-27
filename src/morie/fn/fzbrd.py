@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Bias-reduced KDFE via geometric extrapolation (Fauzi Ch 2).
 
 Geometric/Richardson-style extrapolation cancels the O(h^2) bias term

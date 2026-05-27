@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """CPL dark energy equation of state and Hubble parameter as a function of redshift."""
 
 from __future__ import annotations

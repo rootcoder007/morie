@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """b_3(t) coefficient in cumulative survival estimator 2 bias."""
 import numpy as np
 from ._richresult import RichResult

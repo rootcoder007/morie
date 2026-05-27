@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Edgeworth expansion for kernel quantile (Fauzi Ch 3).
 
 One-term Edgeworth correction to the normal approximation of the

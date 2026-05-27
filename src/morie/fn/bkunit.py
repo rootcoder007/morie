@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Unit vector: normalize a vector to unit L2 norm."""
 import numpy as np
 from ._richresult import RichResult

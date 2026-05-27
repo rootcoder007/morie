@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Simulate the Chinese restaurant process (CRP)."""
 from __future__ import annotations
 

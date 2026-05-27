@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Identify hot-spot locations that meet a repeat-event threshold."""
 
 from __future__ import annotations

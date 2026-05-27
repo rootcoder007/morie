@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Partial Credit Model (Masters) for polytomous IRT."""
 
 from __future__ import annotations

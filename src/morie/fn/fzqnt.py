@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Asymptotic distribution of kernel quantile estimator (Fauzi Ch 3).
 
 Kernel quantile estimator: Q_hat(p) = F_hat_h^{-1}(p) where F_hat_h is

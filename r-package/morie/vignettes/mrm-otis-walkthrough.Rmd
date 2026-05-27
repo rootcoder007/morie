@@ -30,8 +30,8 @@ ten-estimator ensemble to a binary-treatment design on dataset `a01`,
 and shows how to read the resulting summary.
 
 The mathematical foundations are developed in the companion paper
-(Ruhela 2026, *The MRM Framework*, Zenodo
-[10.5281/zenodo.20096075](https://doi.org/10.5281/zenodo.20096075)).
+(Ruhela 2026, *The MRM Framework*; see `citation("morie")` for the
+full bibentry).
 
 # Loading OTIS
 
@@ -103,8 +103,8 @@ IAP, Sprott--Doob--Iftene) live in the companion Python module
 
 - The full MRM framework paper, including all ten estimators,
   multi-SE comparison, propensity calibration, and the
-  Sprott--Doob--Iftene replication tables, is at Zenodo
-  [10.5281/zenodo.20096075](https://doi.org/10.5281/zenodo.20096075).
-- The MORIE package paper covers the broader toolkit:
-  [10.5281/zenodo.20096350](https://doi.org/10.5281/zenodo.20096350).
+  Sprott--Doob--Iftene replication tables, is in the companion
+  publication set (see `citation("morie")`).
+- The MORIE package paper covers the broader toolkit; see
+  `citation("morie")` for the bibentry.
 - Citation: see `citation("morie")`.

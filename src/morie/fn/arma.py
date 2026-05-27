@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Fit ARIMA(p,d,q) model via conditional MLE."""
 
 from __future__ import annotations

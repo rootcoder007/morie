@@ -1,17 +1,19 @@
-# morie
+# morie 森 — The Fates' Forest
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/hadesllm/morie/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/hadesllm/morie/actions/workflows/r-cmd-check.yml)
-[![codecov](https://codecov.io/gh/hadesllm/morie/branch/main/graph/badge.svg)](https://app.codecov.io/gh/hadesllm/morie)
+[![R-CMD-check](https://github.com/rootcoder007/morie/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/r-cmd-check.yml)
+[![codecov](https://codecov.io/gh/rootcoder007/morie/branch/main/graph/badge.svg)](https://app.codecov.io/gh/rootcoder007/morie)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![rOpenSci review](https://img.shields.io/badge/rOpenSci-under_review_%23770-orange)](https://github.com/ropensci/software-review/issues/770)
 <!-- badges: end -->
 
 `morie` is a dual-language (R + Python) scientific computing package for
 causal inference, sampling, psychometrics, point-process modeling, and
-criminological accountability analysis. It is pronounced like the Greek
-*Moirai*: /ˈmɔɪraɪ/ (MOY-rye). The name expands to **Multi-domain Open
-Research and Inferential Estimation**.
+criminological accountability analysis. The name is a compound: the Greek
+*Moirai* (/ˈmɔɪraɪ/, "MOY-rye", the three Fates) paired with the
+Japanese **森** (/moɾi/, "MOH-ree", "forest" — three trees stacked into
+one ideogram). It expands to **Multi-domain Open Research and
+Inferential Estimation**.
 
 ## What's in v0.9.5
 
@@ -61,7 +63,7 @@ From r-universe (development snapshot):
 ```r
 install.packages(
   "morie",
-  repos = c(hadesllm = "https://hadesllm.r-universe.dev",
+  repos = c(rootcoder007 = "https://rootcoder007.r-universe.dev",
             CRAN     = "https://cloud.r-project.org")
 )
 ```
@@ -225,55 +227,24 @@ CodeQL.
 
 ## Citation
 
-Run `citation("morie")` after installation. Please cite **both** the
-software and the relevant companion papers.
+Run `citation("morie")` after installation. Please cite the software:
 
 ```bibtex
-@Manual{ruhela_morie_R_2026,
-  title   = {morie: Multi-domain Open Research and Inferential Estimation in R},
+@Manual{ruhela_morie_2026,
+  title   = {morie: Multi-domain Open Research and Inferential Estimation},
   author  = {Ruhela, Vansh Singh},
   year    = {2026},
-  note    = {R package version 0.9.5.4},
-  doi     = {10.5281/zenodo.20111233},
-  url     = {https://github.com/hadesllm/morie}
-}
-
-@Misc{ruhela_morie_python_2026,
-  title     = {morie: Multi-domain Open Research and Inferential Estimation in Python},
-  author    = {Ruhela, Vansh Singh},
-  year      = {2026},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.20096350},
-  url       = {https://doi.org/10.5281/zenodo.20096350}
-}
-
-@Misc{ruhela_mrm_framework_2026,
-  title     = {MRM: Multilevel Reconciliation Methodology --- A multi-source statistical foundation for Canadian carceral, police, and oversight data},
-  author    = {Ruhela, Vansh Singh},
-  year      = {2026},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.20096075},
-  url       = {https://doi.org/10.5281/zenodo.20096075}
-}
-
-@Misc{ruhela_hawkes_2026,
-  title     = {Criminological Hawkes Process via MORIE: Markovian and Non-Markovian Self-Exciting Point Processes for Toronto Crime},
-  author    = {Ruhela, Vansh Singh},
-  year      = {2026},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.20102198},
-  url       = {https://doi.org/10.5281/zenodo.20102198}
-}
-
-@Misc{ruhela_empirical_2026,
-  title     = {Solitary Confinement, Self-Excitation, and Institutional Churn: Empirical Applications of MRM to Canadian Carceral and Police Data},
-  author    = {Ruhela, Vansh Singh},
-  year      = {2026},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.20175689},
-  url       = {https://doi.org/10.5281/zenodo.20175689}
+  note    = {R package version 0.9.5.12},
+  url     = {https://github.com/rootcoder007/morie}
 }
 ```
+
+The single citation above covers both the R and Python implementations
+(same version, same toolkit). Methodology and empirical-applications
+papers (MRM framework, criminological Hawkes process, solitary-
+confinement / self-excitation / institutional churn) are in
+preparation; this section will be expanded once they are publicly
+available with DOIs or preprint URLs.
 
 ## License
 

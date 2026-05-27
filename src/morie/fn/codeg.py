@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Generate a Wigner random matrix and verify the semicircle law."""
 
 from __future__ import annotations

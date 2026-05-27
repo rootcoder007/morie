@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Design effect (DEFF) from survey weights."""
 
 from morie.sampling import design_effect as _fn

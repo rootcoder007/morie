@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Kolmogorov-Smirnov test with kernel-smoothed CDF (Fauzi Ch 5).
 
     D_n = sup_t | F_hat_h(t) - F_0(t) |

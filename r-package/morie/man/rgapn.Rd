@@ -23,7 +23,7 @@ Named list \code{ApEn}, \code{phi_m}, \code{phi_m1}, \code{m}, \code{r}, \code{n
 Pincus (1991) approximate entropy.
 }
 \details{
-\deqn{\mathrm{ApEn}(m, r) = \phi_m(r) - \phi_{m+1}(r)}
+\deqn{\mathrm{ApEn}(m, r) = \phi_m(r) - \phi_{m+1}(r)}{ApEn(m, r) = phi_m(r) - phi_m+1(r)}
 
 Self-matches INCLUDED (Pincus convention) and Chebyshev distance.
 }

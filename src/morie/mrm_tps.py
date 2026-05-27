@@ -178,9 +178,20 @@ def mrm_tps_neighbourhood_recurrence_km(
     return pd.DataFrame(rows)
 
 
-def mrm_tps_load_hawkes_refit(manifest_path: str | Path) -> pd.DataFrame:
-    """Load the precomputed per-category Hawkes refit manifest."""
-    p = Path(manifest_path)
+def mrm_tps_load_hawkes_refit(
+    manifest_path: str | Path | None = None,
+) -> pd.DataFrame:
+    """Load the precomputed per-category Hawkes refit manifest.
+
+    The reference manifest is shipped with the package at
+    ``morie/data/paper_hawkes_refit.json``. Pass ``manifest_path=None``
+    (the default) to read the bundled copy; pass an explicit path to
+    load a user-supplied refit.
+    """
+    if manifest_path is None:
+        p = Path(__file__).parent / "data" / "paper_hawkes_refit.json"
+    else:
+        p = Path(manifest_path)
     if not p.is_file():
         raise FileNotFoundError(p)
     d = json.loads(p.read_text())

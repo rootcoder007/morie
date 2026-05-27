@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Two-sample permutation test for equality of distributions."""
 
 from __future__ import annotations

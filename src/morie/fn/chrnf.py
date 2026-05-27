@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Chernoff distribution (cube-root asymptotics)."""
 
 from __future__ import annotations

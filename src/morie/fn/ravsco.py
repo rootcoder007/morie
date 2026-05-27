@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Score a Raven's Progressive Matrices-style test."""
 
 from __future__ import annotations

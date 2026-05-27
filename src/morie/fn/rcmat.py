@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Format a rectangular preference matrix (respondents x stimuli)."""
 
 from __future__ import annotations

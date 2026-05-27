@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Local Average Treatment Effect (LATE) via IV Wald estimator
 (Imbens-Angrist 1994; Horowitz 2009, Ch 9).
 

@@ -95,7 +95,6 @@ test_that("predpol audits run on synthetic prediction data", {
 })
 
 test_that("study_core module internals run via morie_run_morie_module", {
-  skip_on_cran()
   csv <- tempfile("rawcpads-", fileext = ".csv")
   utils::write.csv(make_raw_cpads(n = 900L), csv, row.names = FALSE)
   on.exit(unlink(csv), add = TRUE)

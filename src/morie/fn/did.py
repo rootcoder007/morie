@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Difference-in-differences estimator (2x2 design)."""
 
 from __future__ import annotations

@@ -4,11 +4,10 @@
 # local-file / cache branches of morie_load_cpads().
 
 .cw20_db <- function() {
-  testthat::skip_if_not_installed("DBI")
-  testthat::skip_if_not_installed("RSQLite")
 }
 
 test_that("morie_load_dataset reads from the built-in database tier", {
+  skip_if_not_installed("DBI")
   .cw20_db()
   bdb <- tempfile(fileext = ".db")
   on.exit(unlink(bdb), add = TRUE)
@@ -35,8 +34,7 @@ test_that("morie_load_dataset ingests csv and rds local files", {
   )
   wd <- tempfile("ld-")
   dir.create(wd)
-  owd <- setwd(wd)
-  on.exit(setwd(owd), add = TRUE)
+  withr::local_dir(wd)
   cat <- morie_dataset_catalog()
 
   lp <- cat$local_path[cat$key == "ocp21"][1]
@@ -56,8 +54,7 @@ test_that("morie_load_cpads resolves local file then the SQLite cache", {
   .cw20_db()
   wd <- tempfile("cp-")
   dir.create(wd)
-  owd <- setwd(wd)
-  on.exit(setwd(owd), add = TRUE)
+  withr::local_dir(wd)
   db <- tempfile(fileext = ".db")
   lp <- "data/datasets/oc/CPADS/2021-2022/cpads-2021-2022-pumf2.csv"
   dir.create(dirname(lp), recursive = TRUE, showWarnings = FALSE)

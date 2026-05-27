@@ -43,7 +43,7 @@ Named list: estimate, se, n, method.
 \deqn{\hat Z(s_0) = \lambda^\top Z,
   \begin{bmatrix}C & 1 \\ 1^\top & 0\end{bmatrix}
   \begin{bmatrix}\lambda \\ \mu\end{bmatrix} =
-  \begin{bmatrix}c_0 \\ 1\end{bmatrix}}
+  \begin{bmatrix}c_0 \\ 1\end{bmatrix}}{hat Z(s_0) = lambda^top Z, begin{bmatrix}C & 1 1^top & 0end{bmatrix} begin{bmatrix}lambda muend{bmatrix} = begin{bmatrix}c_0 1end{bmatrix}}
 }
 \examples{
 okrig(x = rnorm(50), coords = matrix(runif(100), 50, 2), target = rnorm(50))

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Convert odds ratio to Cohen's d (Hasselblad and Hedges, 1995)."""
 
 import math

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Cosine annealing learning rate schedule."""
 import numpy as np
 from ._richresult import RichResult

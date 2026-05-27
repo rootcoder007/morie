@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Hoeffding (H-) decomposition for U-statistics (Fauzi Ch 5).
 
 For a symmetric kernel g(x1,x2):

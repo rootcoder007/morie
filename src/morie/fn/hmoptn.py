@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Optuna-based hyperparameter tuning with tree-structured Parzen estimator."""
 import numpy as np
 from ._richresult import RichResult

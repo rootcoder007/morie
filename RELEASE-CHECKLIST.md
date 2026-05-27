@@ -31,7 +31,7 @@ At https://pypi.org/manage/project/morie/settings/publishing/:
 
 | Field             | Value                  |
 |-------------------|------------------------|
-| Owner             | hadesllm               |
+| Owner             | rootcoder007               |
 | Repository name   | morie                |
 | Workflow filename | pypi-publish.yml       |
 | Environment       | pypi                   |
@@ -93,14 +93,14 @@ install.packages("morie")
 
 - **No release action needed** — r-universe rebuilds nightly.
 - Configuration is documented at `.github/r-universe-config.md`.
-- Dashboard: https://hadesllm.r-universe.dev
+- Dashboard: https://rootcoder007.r-universe.dev
 - End users install with:
 
 ```r
 install.packages(
   "morie",
   repos = c(
-    hadesllm = "https://hadesllm.r-universe.dev",
+    rootcoder007 = "https://rootcoder007.r-universe.dev",
     CRAN     = "https://cloud.r-project.org"
   )
 )
@@ -109,9 +109,3 @@ install.packages(
 ## After every release
 
 1. Tag the GitHub release with the same `v*.*.*` tag.
-2. Confirm the Zenodo software DOI minted via the GitHub-Zenodo
-   integration (see `.zenodo.json`).
-3. Update the MRM paper's `[Ruhela2026RF]` citation key on Zenodo
-   to reference the new release DOI.
-4. Update `papers/ruhela-formulations-paper/zenodo-paper-metadata.yaml`
-   `related_identifiers` with the new software DOI.

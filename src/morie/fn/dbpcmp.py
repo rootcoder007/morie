@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Disinfection-byproducts (TTHMs, HAA5) drinking-water compliance."""
 
 from __future__ import annotations

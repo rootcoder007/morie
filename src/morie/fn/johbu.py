@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Bottom-up reconciliation: sum base-level forecasts to aggregate levels."""
 import numpy as np
 from ._richresult import RichResult

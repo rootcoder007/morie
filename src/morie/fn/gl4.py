@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Guttman's Lambda 4 (maximum split-half reliability)."""
 
 from __future__ import annotations

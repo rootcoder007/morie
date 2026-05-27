@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Inter-rater reliability (Cohen's weighted kappa for ordinal data)."""
 
 from __future__ import annotations

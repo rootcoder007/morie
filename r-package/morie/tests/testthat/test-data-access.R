@@ -38,6 +38,7 @@ test_that(".morie_detect_format falls back to the URL extension", {
 })
 
 test_that("morie_fetch reads csv and json over file://", {
+  skip_if_not_installed("jsonlite")
   csv <- tempfile(fileext = ".csv")
   utils::write.csv(data.frame(a = 1:3, b = letters[1:3]), csv,
     row.names = FALSE
@@ -57,16 +58,13 @@ test_that("morie_fetch reads csv and json over file://", {
 })
 
 test_that("morie_fetch extracts a member from a zip over file://", {
-  skip_on_cran()
   skip_if(Sys.which("zip") == "", "zip utility not available")
   csv <- tempfile("dl-", fileext = ".csv")
   utils::write.csv(data.frame(a = 1:4), csv, row.names = FALSE)
   on.exit(unlink(csv), add = TRUE)
   zp <- tempfile("dl-", fileext = ".zip")
   on.exit(unlink(zp), add = TRUE)
-  owd <- getwd()
-  setwd(dirname(csv))
-  on.exit(setwd(owd), add = TRUE)
+  withr::local_dir(dirname(csv))
   utils::zip(zp, basename(csv), flags = "-q")
   z <- morie_fetch(paste0("file://", zp),
     format = "zip",
@@ -86,7 +84,6 @@ test_that("TPS catalog entries carry verified ArcGIS layer URLs", {
 })
 
 test_that("morie_ckan_search returns resource rows (network)", {
-  skip_on_cran()
   testthat::skip_if_offline("open.canada.ca")
   hits <- tryCatch(morie_ckan_search("cannabis", rows = 3),
     error = function(e) NULL
@@ -98,7 +95,6 @@ test_that("morie_ckan_search returns resource rows (network)", {
 })
 
 test_that("morie_fetch_arcgis paginates a FeatureServer layer (network)", {
-  skip_on_cran()
   testthat::skip_if_offline("services.arcgis.com")
   layer <- paste0(
     "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/",

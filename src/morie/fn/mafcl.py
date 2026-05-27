@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Minor allele frequency (MAF) calculation for SNP markers."""
 import numpy as np
 from ._richresult import RichResult

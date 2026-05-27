@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Mixed-effects model (random intercept via EM algorithm)."""
 
 import numpy as np

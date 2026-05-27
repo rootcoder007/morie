@@ -508,7 +508,7 @@ def push_image(
     image : str
         Local image tag.
     registry : str | None
-        Registry prefix (e.g. ``ghcr.io/hadesllm``). If provided, the image
+        Registry prefix (e.g. ``ghcr.io/rootcoder007``). If provided, the image
         is tagged with the registry prefix before pushing.
 
     Returns

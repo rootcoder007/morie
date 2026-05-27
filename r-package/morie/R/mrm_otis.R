@@ -51,12 +51,18 @@ NULL
 }
 
 .hill_mle <- function(x, x_min) {
+  # Clauset-Shalizi-Newman discrete MLE: alpha = 1 + n / sum(log(x / (x_min - 0.5)))
+  # The -0.5 continuity correction matters when x_min is small.
+  # Continuous Hill (no correction) would use log(x / x_min), but morie's
+  # OTIS placement counts are integer-valued so the discrete form is right.
   x <- x[x >= x_min]
   n <- length(x)
   if (n < 2L) {
     return(NA_real_)
   }
-  1 + n / sum(log(x / x_min))
+  denom <- x_min - 0.5
+  if (denom <= 0) denom <- x_min  # safety guard for x_min < 0.5
+  1 + n / sum(log(x / denom))
 }
 
 .cramer_v <- function(tbl) {

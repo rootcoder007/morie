@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Autocorrelation at lag k."""
 
 from typing import Sequence, Union

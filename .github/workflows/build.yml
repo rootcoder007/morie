@@ -1,0 +1,165 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# build.yml -- single-DAG orchestrator for morie CI.
+#
+# This is the ONLY workflow that fires on push/PR.  It chains the
+# CI-tier child workflows (version-drift, ci, r-cmd-check,
+# r-coverage-and-lint, wheels, codeql) into one connected
+# directed-acyclic graph so the GitHub Actions UI shows a single
+# unified pipeline -- the same style as r-universe/rootcoder007.
+#
+# Topology (mathematically: a DAG with one source, one sink, no cycles):
+#
+#   setup
+#     |-> version-drift -----------------------+
+#     |-> python-test -----> wheels -----------|
+#     |-> r-cmd-check ---+-> r-coverage        |
+#     |                   +-> r-lint           |
+#     |                   +-> r-goodpractice   |
+#     +-> codeql ------------------------------+
+#                                                v
+#                                            summary
+#
+# The summary node fan-ins on every leaf and FAILS if any of them
+# failed -- so branch-protection on `main` can require exactly ONE
+# required check (`build / summary`) instead of 12 individual ones.
+#
+# Each child workflow is self-contained (workflow_call trigger) and
+# preserves its own matrix expansion (e.g. r-cmd-check is still
+# 9 jobs: 3 OS x 3 R versions); only the orchestration moves here.
+#
+# Release-time workflows (auto-tag-on-merge, docker-publish,
+# pypi-publish, pages, homebrew-bump, release-debrpm, draft-pdf,
+# ci-numba-bench) intentionally stay separate -- they don't gate
+# PR merges and have their own tag/cron/schedule triggers.
+
+name: build
+
+on:
+  push:
+    branches: ["main", "release/**"]
+  pull_request:
+    branches: ["main", "release/**"]
+  workflow_dispatch:
+
+# Permissions union of every child workflow's needs.  Reusable
+# workflows inherit the caller's permission scope, so the parent
+# must declare the WIDEST set any child requests at any job level
+# -- otherwise GitHub's pre-flight validator rejects the run with
+# "is requesting 'X: read', but is only allowed 'X: none'".
+#
+# codeql.yml::analyze (R/codeql.yml:37-41) requests
+#   security-events: write + actions: read + packages: read
+#   + contents: read.
+# Every other child requests only contents: read.
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  packages: read
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Cheap source-of-the-DAG -- everything else flows from this.
+  # Runs in seconds; mostly a hook for branch-protection summary +
+  # a place to surface the VERSION stamp downstream jobs read.
+  setup:
+    name: setup
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - name: Read VERSION
+        id: meta
+        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
+      - name: Report
+        run: |
+          echo "morie version: ${{ steps.meta.outputs.version }}"
+          echo "ref:           ${{ github.ref }}"
+          echo "sha:           ${{ github.sha }}"
+
+  version-drift:
+    needs: setup
+    uses: ./.github/workflows/version-drift.yml
+    secrets: inherit
+
+  python-test:
+    needs: setup
+    uses: ./.github/workflows/ci.yml
+    secrets: inherit
+
+  r-cmd-check:
+    needs: setup
+    uses: ./.github/workflows/r-cmd-check.yml
+    secrets: inherit
+
+  r-coverage-and-lint:
+    needs: r-cmd-check
+    uses: ./.github/workflows/r-coverage-and-lint.yml
+    secrets: inherit
+
+  wheels:
+    needs: python-test
+    uses: ./.github/workflows/wheels.yml
+    secrets: inherit
+
+  codeql:
+    needs: setup
+    uses: ./.github/workflows/codeql.yml
+    secrets: inherit
+
+  # Fan-in: this is the single required status check for
+  # branch-protection on `main`.  Mathematically: it's `success`
+  # iff every leaf in the DAG above succeeded.  We use `if:
+  # always()` so the summary still runs (and fails clearly) when
+  # any upstream leaf failed or was cancelled.
+  summary:
+    name: summary
+    needs:
+      - setup
+      - version-drift
+      - python-test
+      - r-cmd-check
+      - r-coverage-and-lint
+      - wheels
+      - codeql
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tabulate per-leaf results
+        run: |
+          set -eu
+          echo "Per-leaf result table:"
+          echo "  setup              = ${{ needs.setup.result }}"
+          echo "  version-drift      = ${{ needs.version-drift.result }}"
+          echo "  python-test        = ${{ needs.python-test.result }}"
+          echo "  r-cmd-check        = ${{ needs.r-cmd-check.result }}"
+          echo "  r-coverage-and-lint= ${{ needs.r-coverage-and-lint.result }}"
+          echo "  wheels             = ${{ needs.wheels.result }}"
+          echo "  codeql             = ${{ needs.codeql.result }}"
+      - name: Fail summary if any leaf failed
+        run: |
+          set -eu
+          fail=0
+          for r in \
+            "${{ needs.setup.result }}" \
+            "${{ needs.version-drift.result }}" \
+            "${{ needs.python-test.result }}" \
+            "${{ needs.r-cmd-check.result }}" \
+            "${{ needs.r-coverage-and-lint.result }}" \
+            "${{ needs.wheels.result }}" \
+            "${{ needs.codeql.result }}"; do
+            if [ "$r" != "success" ]; then
+              fail=1
+            fi
+          done
+          if [ "$fail" -eq 1 ]; then
+            echo "::error::At least one CI leaf failed/cancelled -- see the table above."
+            exit 1
+          fi
+          echo "All CI leaves green."

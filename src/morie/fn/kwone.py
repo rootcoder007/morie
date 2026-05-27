@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Kruskal-Wallis one-way ANOVA by ranks."""
 
 import numpy as np

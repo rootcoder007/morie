@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Logistic regression via Iteratively Reweighted Least Squares (IRLS)."""
 
 from __future__ import annotations

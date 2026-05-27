@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Huber loss."""
 
 def hubrl(residual: float, delta: float = 1.345) -> float:

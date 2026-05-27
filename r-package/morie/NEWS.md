@@ -1,3 +1,381 @@
+# morie 0.9.5.12 - 2026-05-25
+
+## CI: drop fwildclusterboot (pak recursive Remotes unreliable) (3MMM.40c)
+
+* Removed `fwildclusterboot` from Suggests and removed the
+  `.morie_did_have_fwildboot()` helper + the
+  `if (.morie_did_have_fwildboot()) { fwildclusterboot::boottest(...) }`
+  branch in `morie_did_wild_cluster_bootstrap()`. The function
+  now goes straight to the base-R Rademacher/Webb wild-cluster
+  bootstrap (which already existed as the fallback and mirrors
+  the Python implementation; no math change for any caller).
+* Reason: pak's resolver does not reliably recurse through a
+  Remote's own Remotes. 3MMM.40 added `s3alfisc/fwildclusterboot`
+  and 3MMM.40b added `s3alfisc/summclust`, but the resolver still
+  reported `summclust: Can't find package called summclust` -- so
+  the recursive-Remote pattern is structurally fragile. Following
+  the same "drop optional CRAN-archived/GitHub-only deps" pattern
+  used for `rdd` in 3MMM.40.
+* `Remotes:` now lists only `synth-inference/synthdid`, which has
+  no GitHub-only transitive Imports.
+
+# morie 0.9.5.11 - 2026-05-25
+
+## CI: pak resolver -- transitive Remote for summclust (3MMM.40b)
+
+* Added `s3alfisc/summclust` to DESCRIPTION `Remotes:`.
+  `fwildclusterboot` Imports `summclust`, which is also
+  GitHub-only (never on CRAN). 3MMM.40 added the
+  fwildclusterboot Remote but pak's recursive resolver still
+  failed one level deeper because it does not auto-recurse
+  through a Remote's own DESCRIPTION. summclust's Imports
+  (utils, dreamerr, MASS, collapse, generics, cli, rlang) are
+  all on CRAN, so the chain terminates here.
+
+# morie 0.9.5.10 - 2026-05-25
+
+## R CMD check ERROR fixes (3MMM.39)
+
+* `R/datasets.R` (6 sites): dropped the invalid `n = 2L` argument
+  from `strsplit()`. Base R's `strsplit()` has no `n=`; the call
+  silently ignored it on most R versions but errors on R-devel.
+* `R/dataset_load_by_key.R`: removed the spurious
+  `max_features = max_features` argument from the
+  `morie_datasets_ontario_ckan_by_key()` dispatch. That function's
+  formals are only `(dataset_key, offline, resource_id)` -- passing
+  the unused formal caused a hard error in the dispatcher example.
+* `R/ingest_statcan.R`: replaced the non-existent
+  `cansim::set_cansim_api_key(api_key)` call with the documented
+  mechanism. `cansim` has no such helper in any current CRAN
+  release; it reads `CANSIM_API_KEY` from the environment.
+  `morie_ingest_statcan_cansim()` now mirrors a user-supplied
+  `STATCAN_API_KEY` into `CANSIM_API_KEY` when only the morie alias
+  is set.
+* `R/spatial_voting.R::mlsmu6`: added `is.finite(prev_stress)` guard
+  for the convergence check. `prev_stress` starts as `Inf`, so
+  iter 1's `abs(Inf - stress) / max(Inf, 1e-12) = NaN` triggered
+  `"missing value where TRUE/FALSE needed"` and broke the
+  `\examples{}` block. The first iteration now skips the
+  convergence check cleanly; iter 2+ uses real values.
+* Added a proper roxygen block for `morie_dataset_portal_catalog()`
+  (only the `@export` tag was present; the docstring upstream was
+  attached to the sibling `_clear_cache` helper).
+* `man/morie_dataset_portal_catalog.Rd` and
+  `man/morie_entheo_clone_dmt_imaging.Rd` regenerated.
+
+## CI: `setup-r-dependencies` pak resolver unblocked (3MMM.40)
+
+* Dropped `rdd` from Suggests. CRAN archived it in 2024 and pak
+  could no longer resolve it. The only morie callsite
+  (`morie_rdd_mccrary()`) used it as a fallback when `rddensity`
+  wasn't installed; `rddensity` itself is on CRAN and in Suggests,
+  so the `rdd` branch was effectively dead code in any realistic
+  configuration.
+* Added `Remotes: s3alfisc/fwildclusterboot, synth-inference/synthdid`
+  so pak can fetch the two remaining GitHub-only Suggests when
+  building the lockfile. Both upstream repositories are verified
+  live (HTTP 200 from `api.github.com/repos/...`).
+
+# morie 0.9.5.9 - 2026-05-24
+
+## Correctness recovery: math typesetting restored
+
+Phase 3LLL reverses the destructive `\eqn{LATEX}` -> `\code{LATEX}` swap
+shipped in commit f399ec41a (Phase 3KKK1+2). That swap eliminated the
+"Lost-braces" warning but at the cost of stripping LaTeX math
+typesetting from the PDF/HTML manual and turning every greek letter,
+`\hat`, `\sum`, `\frac`, etc. into an "unknown macro" warning at
+`R CMD check`.
+
+The proper Rd-compliant fix is the two-argument form:
+
+    \eqn{LATEX}{ASCII fallback}      # inline
+    \deqn{LATEX}{ASCII fallback}     # display
+
+Every affected line (104 R files) now uses this form, preserving PDF
+math while satisfying the Rd parser. Driven by `fix_rd_math.py`, a
+LaTeX->ASCII transformer covering the common Greek alphabet,
+operators (`\sum`, `\int`, `\hat`, `\bar`, `\frac`, `\sqrt`), and
+relation symbols.
+
+## Auto-install helper for optional dependencies
+
+New `morie_install_extras()` lets users install the ~50 optional
+`Suggests:` packages in one call. CRAN policy forbids
+`install.packages()` at `.onLoad()` time, so morie ships an opt-in
+helper instead. Three modes:
+
+    morie_install_extras()                       # missing only (default)
+    morie_install_extras("all", ask = FALSE)     # everything, CI-safe
+    morie_install_extras(c("hawkes", "sf"))      # named subset
+
+The helper also probes for the C system libraries `libcurl`,
+`libsodium`, and `liboqs` and prints platform-specific install hints
+when any are missing. System libraries must be installed BEFORE
+re-installing morie so the configure-time probes link the C/C++
+backends against them.
+
+# morie 0.9.5.8 - 2026-05-24
+
+## Bulk open-data catalog explosion
+
+Cross-portal `morie_dataset_portal_catalog()` grows from ~1,044
+rows to **9,242 rows across 14 portals**. Every Socrata / CKAN /
+ArcGIS Hub / Opendatasoft portal morie touches now has its full
+public catalog bundled offline.
+
+### Phase 3GGG -- 6-portal bulk harvest
+
+* **3GGG1**: NYC OpenData -- 2851 entities (2395 datasets + 294
+  maps + 162 filters/charts/hrefs/stories).
+* **3GGG2**: Chicago Open Data -- 1856 entities.
+* **3GGG3**: Toronto Open Data CKAN -- 540 packages.
+* **3GGG4**: Calgary (933) + Edmonton (2027) Socrata.
+* **3GGG5**: Ottawa Open Data Hub -- 287 datasets (via OGC
+  `startindex=` pagination, not Socrata `offset=`).
+* Replaced the per-portal crime-adjacent subset catalogs from
+  3EEE2/3FFF3 with the bulk variants (no API change -- the small
+  curated catalogs are still callable via the older loader names
+  for backwards compat).
+* New generic Socrata-by-id wrappers:
+  `morie_datasets_nyc_socrata_by_id()` +
+  `morie_datasets_chicago_socrata_by_id()` (mirror the 3FFF3
+  Calgary/Edmonton pattern). `morie_datasets_load_by_key()` routes
+  chicago + nyc_opendata sources through them; `max_features` now
+  threads as the SODA `$limit`.
+
+### Phase 3HHH -- full catalogs for the last two portals
+
+* **3HHH1**: Montreal Open Data CKAN full bulk -- 401 packages
+  (up from the 23-row Loi/Justice/Securite subset from 3EEE1).
+* **3HHH2**: Vancouver Opendatasoft v2.1 full bulk -- 190 datasets
+  with enriched schema (publisher, theme, license, records_count
+  added to the 3CCC4 fixture).
+
+### Catalog totals
+
+```
+calgary_opendata      933    nyc_opendata          2861
+chicago              1864    ontario_ckan            38
+edmonton_opendata    2027    ottawa_opendata        287
+montreal_opendata     401    statcan_ccjs            10
+nyc_nypd                8    toronto_opendata       540
+tps_arcgis_hub         71    tps_psdp                11
+vancouver_opendata    190    vpd_geodash              1
+                                                  -------
+                                                     9242
+```
+
+Bundled fixture footprint: ~3.4 MB of catalog metadata; per-row
+unwound this is the metadata equivalent of every NYC dataset
+descriptor + every CKAN package summary + every Hub item -- offline
+queryable via `morie_datasets_browse(keyword=...)`.
+
+---
+
+# morie 0.9.5.7 - 2026-05-24
+
+## Cross-portal open-data infrastructure
+
+Major sprint adding 14 open-data portals + a unified browse/load
+interface. The cross-portal `morie_dataset_portal_catalog()`
+now spans 9 cities + 1 federal source + ~800 dataset entries
+across 4 different API protocols.
+
+### Phase 3CCC -- NYC + TPS deep coverage
+
+* **3CCC1**: NYPD `law_code` resolver. New
+  `morie_datasets_nyc_nypd_law_books()` (46-row statute book ->
+  human name + jurisdiction dict; PL, VTL, CPL, ABC, AC, COR, AM,
+  PHL, ED, GB, GCI, HTH, PAR, LOC, FOA, RR, TAX, RPA, RP, PRL,
+  TWN, ...) + `morie_parse_nypd_law_code()` vectorised regex
+  parser. Added as 4th resolver in
+  `morie_datasets_nyc_nypd_resolved()`.
+* **3CCC2**: NYC multi-boundary loader bundle -- 5 new fixtures
+  (school districts / council districts / community districts /
+  NTAs 2020 / ZCTAs) + `morie_datasets_nyc_boundaries_catalog()`
+  unified index.
+* **3CCC3**: TPS Hub resolved-joins analyzer
+  (`morie_datasets_tps_psdp_resolved()`) -- division + hood158 +
+  hood140 + NIA + psdp_class 5-way join, mirrors the Chicago /
+  NYPD `_resolved()` patterns. Plus
+  `morie_datasets_tps_police_divisions()` (16 post-amalgamation
+  TPS divisions).
+* **3CCC4**: cross-portal `morie_dataset_portal_catalog()` -- 7
+  initial portals, 336 datasets, uniform schema (dataset_key,
+  source, id, api_modes, loader, dict_url, n_rows_bundled). Added
+  Vancouver Open Data (Opendatasoft v2.1, 190 datasets). Folded
+  SODA3-auth note into the SODA3 helper docstring per
+  Socrata support article 34730618169623.
+
+### Phase 3DDD -- Canadian municipal + federal coverage
+
+* **3DDD1**: 5 Vancouver crime-adjacent civic loaders -- graffiti
+  (100 / 7683), noise control areas (3), homeless shelters (17),
+  property use inspection districts (23), fire halls (20).
+* **3DDD2**: VPD GeoDASH crime loader. T&Cs gate auto-download,
+  so morie ships a stratified 550-row sample (50 x 11 TYPE
+  categories) + bundled legal disclaimer + user-`zip_path =` mode
+  for the full 915k-row feed.
+* **3DDD3**: Statistics Canada CCJS / CODR WDS REST API.
+  10-cube registry covering federal crime + corrections;
+  `morie_datasets_statcan_cube_metadata()` +
+  `morie_datasets_statcan_vectors()` +
+  `morie_datasets_statcan_full_csv_url()` wrappers.
+* **3DDD4**: `morie_datasets_browse()` + `morie_datasets_summary()`
+  -- filter the cross-portal catalog by keyword / portal /
+  api_mode / loader regex with AND-composable predicates.
+
+### Phase 3EEE -- Montreal + expanded Toronto/Vancouver + dispatcher
+
+* **3EEE1**: Montreal Open Data CKAN -- 23-row Loi/Justice/
+  Securite catalog + SIM (fire/EMS) interventions flagship loader
+  with 349-row stratified bundled sample + 170-row
+  INCIDENT_TYPE_DESC dict + generic CKAN dispatcher.
+* **3EEE2**: Toronto Open Data CKAN beyond TPS Hub -- 208-row
+  crime-adjacent catalog + ambulance stations + TPS ASR misc
+  aggregates + generic CKAN dispatcher.
+* **3EEE3**: Vancouver Open Data deeper coverage -- 4 more
+  fixtures (community centres, food markets, disability parking,
+  public art).
+* **3EEE4**: `morie_datasets_load_by_key()` -- single dispatcher
+  resolving any catalog dataset_key to its loader across all
+  portals.
+
+### Phase 3FFF -- dispatcher hardening + prairie cities
+
+* **3FFF1**: CKAN `package_show` -> first-CSV resource
+  auto-resolution. MTL + TO generic CKAN keys now Just Work
+  through `morie_datasets_load_by_key()`.
+* **3FFF2**: `mode = c("auto","soda2","soda3","odata")` +
+  `app_token` args on the dispatcher; routes through SODA3 for
+  Socrata-backed sources, silently ignored elsewhere.
+* **3FFF3**: Calgary + Edmonton + Ottawa loaders. Calgary +
+  Edmonton are Socrata (data.calgary.ca, data.edmonton.ca);
+  Ottawa is ArcGIS Hub (open.ottawa.ca, dispatches through the
+  existing 3SS+ generic ArcGIS pipeline). Crime-adjacent catalogs
+  + per-dataset bundled fixtures + generic Socrata-by-id
+  dispatchers.
+
+### Catalog totals (across 14 portals)
+
+```
+chicago             8     ontario_ckan       38
+nyc_nypd            8     vancouver_opendata 190
+nyc_opendata       10     vpd_geodash         1
+tps_arcgis_hub     71     statcan_ccjs       10
+tps_psdp           11     montreal_opendata  23
+                          toronto_opendata  208
+                          calgary_opendata  157
+                          edmonton_opendata 195
+                          ottawa_opendata   106
+```
+
+Total ~ 1044 catalog rows.
+
+---
+
+# morie 0.9.5.6 - 2026-05-23
+
+Formula corrections (affect Python AND R sibling identically):
+
+* `iv.morie_iv_wald` / `iv.wald_estimator` Wald-LATE delta-method SE
+  previously omitted the Cov(num, den) term, biasing the SE under
+  realistic Y-D correlation. Now includes `- 2*(num/den^3) *
+  cov(y, d) / n` per-stratum aggregation.
+* `dsp_waveform.morie_dsp_higuchi_fd` / `_waveform.higuchi_fd`
+  fractal dimension previously summed M-1 differences instead of M
+  (Higuchi 1988 eq 1 specifies floor((N-m)/k) summands). Fixed by
+  using M+1 indices so diff() yields M terms.
+
+R-side feature additions:
+
+* 4 new RcppArmadillo C++ kernel files (`src/morie_hawkes.cpp`,
+  `morie_dsp.cpp`, `morie_matching.cpp`, `morie_spatial.cpp`)
+  exposing 14 // [[Rcpp::export]] symbols.
+* R wrappers in `R/{tps_hawkes_advanced,dsp_filters,matching,
+  spatial_voting}.R` now dispatch to the C++ kernels when the
+  compiled .so is loaded, falling back to pure-R otherwise.
+* DESCRIPTION: `LinkingTo: Rcpp, RcppArmadillo` (was: Rcpp).
+
+Other fixes carried from the 5-layer review on 2026-05-22 (all
+Python-parity-verified before applying):
+
+* `R/survival.R` `.validate_te` now returns `ok` mask; KM/HR/concordance
+  callers re-align `group`/`risk_score` by mask instead of `seq_along`.
+* `R/iv.R` JIVE projects only the endogenous columns (was: every
+  column including intercept and exogenous controls), matching
+  `src/morie/iv.py:1604-1613`.
+* `R/did.R` `morie_did_aggregate_gt_att` SE uses `k = cell count`
+  (was: `nrow(g)`, equivalent only when nrow(g)==1).
+* `R/did.R` `morie_did_test_parallel_trends` returns
+  `joint_chi2 + joint_df`, keeps `joint_f_stat` as alias.
+* `R/inference.R` Clopper-Pearson exact CI handles `successes==0`
+  and `successes==n` edges instead of calling `qbeta(., 0, .)`.
+* `R/weights.R` `morie_weights_brr` warns on odd-size strata.
+* `R/spatial_voting.R` Hare 2018 + King 2003 citation corrections.
+* `R/tps_statphysics.R` Helbing 2010 venue corrected (NJP not PNAS).
+
+Earlier from 2026-05-22 marathon (already in 0.9.5.6 in tree):
+
+* Cox-Snell residuals use per-row `y[,"status"]` not scalar `nevent`.
+* JKn replicate weights rewritten to Wolter 2007 form (one PSU per
+  replicate, scale survivors by n_h/(n_h-1)); aggregator uses
+  `((n_h-1)/n_h)*sum_{i in h} diffs_sq_i`.
+* Mann-Whitney effect size `r = Z/sqrt(n1+n2)` (was: `n1*n2`).
+* Li-Ji `n_effective_tests` sums fractional part for all eigenvalues.
+* Sampling proportional alloc keeps stratum names so weights aren't NA.
+* Abadie-Imbens SE splits by treatment, denom is `n_treated^2`.
+* tps_statphysics inspection-game payoff matrix transposed back to
+  match Python convention.
+
+# morie 0.9.5.6 - 2026-05-22
+
+R-side `describe()` parity closure. Patch release that closes one
+of the two parity gaps named in v0.9.5.4: the pedagogical
+narratives that the Python sibling exposes via `morie.describe()`
+are now available on the R side via `morie_describe()` and the
+string-only variant `morie_describe_by_name()`.
+
+**R API additions**:
+
+* `morie_describe(callable)` — takes a function object OR a
+  character scalar (with or without the `morie_` prefix). Prints
+  the pedagogical narrative for the named callable.
+* `morie_describe_by_name(name)` — string-only variant.
+
+**Bundled data**:
+
+* `inst/extdata/describe_corpus.Rds` — a single xz-compressed Rds
+  (~1.6 MB on disk) containing 36,433 named character entries.
+  Names are the callable mnemonics (the 4-7 character forms);
+  values are the markdown narrative bodies sourced from
+  `src/morie/fn/describe_<name>.md`. The Rds is loaded once per
+  session and cached in a package-private environment.
+
+**Build tooling**:
+
+* `tools/bundle-describe-files.R` — re-runs the Python-to-R sync
+  when `src/morie/fn/describe_*.md` changes. Run from the repo
+  root with `Rscript tools/bundle-describe-files.R`.
+
+**Tests**:
+
+* `tests/testthat/test-describe.R` — 17 tests covering lookup,
+  prefix stripping, `.md` extension stripping, unknown-name
+  diagnostics, type-rejection, function-object capture via
+  `substitute()`, and cache identity across calls. All pass on
+  the development build.
+
+**Remaining parity gap**:
+
+* `morie.crypto` educational primitives ship on the Python side
+  only; a native R + Rcpp port (ML-KEM, Dilithium, NTRU,
+  McEliece, ECC, hybrid PQC) is planned for v1.0.0. Calling into
+  the Python side via `reticulate` is not added in v0.9.5.5; the
+  scope was set at the native-R port path, which is a larger
+  arc and the natural place for a v1.0.0 milestone.
+
 # morie 0.9.5.4 - 2026-05-21
 
 Doob → MRM chi-square rename. Patch release with deprecation aliases;
@@ -508,7 +886,7 @@ Security patch.
   crafted HTML page. The pattern is now linear-time; parsing of valid
   SIU index pages is unchanged. (CodeQL `py/redos`, high severity.)
 * `User-Agent` strings across the data-ingestion modules were stale
-  (`morie/0.2.0`–`morie/0.6.1`) and are now aligned to the release
+  (`morie/0.9.5.6`–`morie/0.6.1`) and are now aligned to the release
   version.
 * No API changes.
 
@@ -569,12 +947,10 @@ bump.
   entry.) The Linux-kernel adjuncts in `kernel-module/` and `daemon/`
   remain `GPL-2.0-only` (kernel ABI requirement) and are not part of
   the CRAN tarball.
-* Five-paper publication set complete: empirical applications paper
-  (*Solitary Confinement, Self-Excitation, and Institutional Churn:
-  Empirical Applications of MRM to Canadian Carceral and Police Data*)
-  published on Zenodo at
-  [10.5281/zenodo.20175689](https://doi.org/10.5281/zenodo.20175689).
-* Terminology locked across all 5 papers: `ac` (alert complexity)
+* Companion papers in preparation (methodology + empirical
+  applications). The papers will be linked from the citation block
+  once they are publicly available with DOIs or preprint URLs.
+* Terminology locked across the codebase: `ac` (alert complexity)
   and `vm` (volatility measure of placements, "regional-transition
   count" alongside) are now the canonical operational terms.
 * Roxygen man pages for the fast Rcpp kernels: `morie_mean`,
@@ -583,12 +959,10 @@ bump.
 * R 4.6.0 strict-`Author` compatibility: `DESCRIPTION` now carries
   an explicit `Author:` field alongside the modern `Authors@R:` so
   `R CMD check` passes on the 4.6.0 series.
-* DOI propagation: empirical-paper Zenodo DOI now reaches Sphinx
-  docs, `pyproject.toml [project.urls]`, `papers/README.md`, and
-  CITATION.cff. Sphinx install snippets + Docker tag examples
-  un-pinned from stale versions.
+* Sphinx install snippets + Docker tag examples un-pinned from
+  stale versions.
 
-# morie 0.2.0 — 2026-05-11
+# morie 0.9.5.6 — 2026-05-11
 
 * Completes Python <-> R full parity: adds Python
   `morie.mrm_classify_mandela()` as the dual of the R-side
@@ -678,5 +1052,5 @@ bump.
 * `estimate_irm()` is a thin R wrapper around `DoubleML::DoubleMLIRM` from
   the CRAN `DoubleML` package; `DoubleML`, `mlr3`, and `mlr3learners` are in
   `Suggests` and the function gates them with `requireNamespace()`.
-* CITATION includes both the software DOI (`10.5281/zenodo.20111233`) and
-  the companion paper DOI (`10.5281/zenodo.20096350`).
+* CITATION includes both the R software paper and the Python software
+  paper bibentries.

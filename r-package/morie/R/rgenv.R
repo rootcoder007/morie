@@ -2,7 +2,7 @@
 #'
 #' Analytic-signal envelope via the discrete Hilbert transform.
 #'
-#' \deqn{\mathrm{env}(t) = |x(t) + j\,H\{x(t)\}|}
+#' \deqn{\mathrm{env}(t) = |x(t) + j\,H\{x(t)\}|}{env(t) = |x(t) + j H\{x(t)\}|}
 #'
 #' Uses [seewave::hilbert()] if available, otherwise computes the analytic
 #' signal directly from the FFT.

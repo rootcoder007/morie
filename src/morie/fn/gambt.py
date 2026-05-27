@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute the probability of drawing at least *at_least* target cards."""
 
 from __future__ import annotations

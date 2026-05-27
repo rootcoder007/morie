@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute disparities from observed and model distances using isotonic regression."""
 
 from __future__ import annotations

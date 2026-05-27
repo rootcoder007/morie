@@ -184,6 +184,7 @@ def ask_percy(
 
 # Backward compatibility aliases
 ask_morie_assistant = ask_percy
+morie_ask_percy = ask_percy  # R-package bridge (perseus.R imports this name)
 assistant_available = agent_available
 build_assistant_prompt = build_prompt
 DEFAULT_SYSTEM_PROMPT = PERSEUS_SYSTEM_PROMPT

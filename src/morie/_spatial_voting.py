@@ -60,9 +60,20 @@ def aldrich_mckelvey(
             valid = mask[:, j]
             if valid.sum() < 1:
                 continue
-            num = ((Z[valid, j] - alpha[valid]) / beta[valid]).sum()
-            denom = valid.sum()
-            zhat[j] = num / denom
+            # v0.9.5.6+: Aldrich-McKelvey (1977) precision-weighted
+            # stimulus update z_j = sum beta(Z-alpha) / sum beta^2,
+            # NOT the unweighted mean. Reduces bias under
+            # heterogeneous respondent reliability.
+            denom = float((beta[valid] ** 2).sum())
+            if denom < 1e-12:
+                zhat[j] = float(
+                    ((Z[valid, j] - alpha[valid]) / beta[valid]).mean()
+                )
+            else:
+                zhat[j] = float(
+                    (beta[valid] * (Z[valid, j] - alpha[valid])).sum()
+                    / denom
+                )
 
         zhat = zhat - zhat.mean()
         if zhat.std() > 0:
@@ -266,9 +277,13 @@ def classical_mds(
     valid = D > 0
     stress = 0.0
     if valid.sum() > 0:
+        # v0.9.5.6+: Kruskal stress-1 normalises by sum(D^2), not by
+        # sum(d_model^2) (which collapses to zero when the model is
+        # underfit). Pre-v0.9.5.6 used d_model^2 denom.
+        denom = (D[valid] ** 2).sum()
         stress = (
-            np.sqrt(((d_model[valid] - D[valid]) ** 2).sum() / (d_model[valid] ** 2).sum())
-            if d_model[valid].sum() > 0
+            np.sqrt(((d_model[valid] - D[valid]) ** 2).sum() / denom)
+            if denom > 0
             else 0.0
         )
 
@@ -2315,7 +2330,15 @@ def wordfish_irt(
             h = -np.sum(beta**2 * mu) - 1.0
             omega[i] -= g / h
 
-        omega = (omega - omega.mean()) / (omega.std() + 1e-12)
+        # v0.9.5.6+: couple the omega standardisation with an alpha +
+        # beta rescale so eta = psi + alpha + beta*omega is invariant.
+        # Pre-v0.9.5.6 only standardised omega, silently distorting
+        # beta and degrading convergence.
+        m_om = omega.mean()
+        s_om = omega.std() + 1e-12
+        omega = (omega - m_om) / s_om
+        alpha = alpha + beta * m_om   # absorb mean shift
+        beta = beta * s_om            # rescale to standardised omega
 
         for j in range(n_words):
             eta = psi + alpha[j] + beta[j] * omega

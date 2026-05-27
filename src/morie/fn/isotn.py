@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Isotonic (monotone) regression via the pool-adjacent-violators algorithm
 (Barlow, Bartholomew, Bremner & Brunk 1972).
 

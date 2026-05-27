@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """FastICA algorithm for blind source separation."""
 
 from __future__ import annotations

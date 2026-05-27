@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Stochastic gradient descent step using a single random sample."""
 import numpy as np
 from ._richresult import RichResult

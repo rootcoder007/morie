@@ -86,13 +86,14 @@ def _kernel_density(u: np.ndarray, kind: KernelKind,
         return (alpha / lam) * np.power(np.maximum(x, 1e-300),
                                          alpha - 1) * np.exp(-np.power(x, alpha))
     if kind == "lomax":
-        # Pareto-II / Lomax, shape α > 1, scale c > 0.
-        # density: (α-1) c^{α-1} (u+c)^{-α}.  Computed in log-space to
-        # avoid overflow when c^{α-1} or (u+c)^{α} blow up at large α.
+        # v0.9.5.6+: scipy.stats.lomax convention.
+        # density: alpha * c^alpha * (u+c)^{-(alpha+1)} for alpha > 0, c > 0.
+        # Pre-v0.9.5.6 used the (alpha-1) shifted form which gave
+        # zero density at alpha = 1 and required alpha > 1.
         alpha, c = psi
-        log_d = (math.log(alpha - 1)
-                 + (alpha - 1) * math.log(c)
-                 - alpha * np.log(u + c))
+        log_d = (math.log(alpha)
+                 + alpha * math.log(c)
+                 - (alpha + 1.0) * np.log(u + c))
         return np.exp(log_d)
     raise ValueError(f"unknown kernel kind: {kind}")
 
@@ -111,8 +112,9 @@ def _kernel_cdf(u: np.ndarray, kind: KernelKind,
         alpha, lam = psi
         return 1.0 - np.exp(-np.power(u / lam, alpha))
     if kind == "lomax":
+        # v0.9.5.6+: scipy CDF 1 - (c/(u+c))^alpha (was: alpha-1).
         alpha, c = psi
-        return 1.0 - np.power(c / (u + c), alpha - 1)
+        return 1.0 - np.power(c / (u + c), alpha)
     raise ValueError(f"unknown kernel kind: {kind}")
 
 
@@ -213,7 +215,7 @@ def _neg_loglik_general(theta: np.ndarray, t: np.ndarray, T: float,
     if any(p <= 1e-6 for p in psi):
         return 1e12
     if kernel_kind == "lomax" and psi[0] <= 1.001:
-        return 1e12  # need α > 1 for finite mean
+        return 1e12  # need α > 1 for finite mean (scipy convention)
 
     # Σᵢ log λ(tᵢ)
     n = t.size

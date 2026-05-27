@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 r"""Layer normalization.
 
 Normalizes activations independently for each sample.

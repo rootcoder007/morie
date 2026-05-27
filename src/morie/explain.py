@@ -194,7 +194,7 @@ def describe(filename: str) -> str:
         f"Known files:\n"
         + "\n".join(f"  - {k}" for k in sorted(_EXPLANATIONS))
         + "\n\nIf you think this file should be explained, file an issue at "
-        "https://github.com/hadesllm/morie/issues."
+        "https://github.com/rootcoder007/morie/issues."
     )
 
 
@@ -213,10 +213,10 @@ morie cheat sheet
 =================
 
 {t("cheatsheet.install")}
-  curl -fsSL https://hadesllm.github.io/morie/install.sh | bash
-  brew tap hadesllm/morie && brew install morie
+  curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash
+  brew tap rootcoder007/morie && brew install morie
   pip install morie
-  docker run --rm ghcr.io/hadesllm/morie:latest morie --help
+  docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 {t("cheatsheet.learn")}
   morie tutorial                  Interactive walkthrough
@@ -251,10 +251,10 @@ morie cheat sheet
   morie --help                    Top-level help
 
 {t("cheatsheet.refs")}
-  Docs:     https://hadesllm.github.io/morie/
-  Issues:   https://github.com/hadesllm/morie/issues
+  Docs:     https://rootcoder007.github.io/morie/
+  Issues:   https://github.com/rootcoder007/morie/issues
   PyPI:     https://pypi.org/project/morie/
-  R:        https://hadesllm.r-universe.dev/morie
+  R:        https://rootcoder007.r-universe.dev/morie
 """.strip()
 
 

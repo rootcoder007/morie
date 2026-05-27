@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Jacobi iterative solver for diagonally dominant systems."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Simple neural network (1 hidden layer, pure NumPy)."""
 
 from __future__ import annotations

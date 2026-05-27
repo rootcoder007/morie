@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Polya urn scheme simulation. 'Always two there are.'"""
 
 from __future__ import annotations

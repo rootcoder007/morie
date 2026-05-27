@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """SAR Wald test on spatial lag parameter."""
 
 from ._containers import SpatialResult

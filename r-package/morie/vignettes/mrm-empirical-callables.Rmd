@@ -158,8 +158,8 @@ head(mrm_tps_neighbourhood_recurrence_km(tps))
 `mrm_tps_load_hawkes_refit(path)` reads
 `paper_hawkes_refit.json` (the per-category Hawkes refit table from
 the MRM empirical paper \u00a77.1-7.2) and returns it as a tidy
-data.frame. Skipped here because the JSON is in the MOIRAIS data
-manifest, not bundled with the package.
+data.frame. The reference manifest ships with the package; the loader
+defaults to it (no path argument needed).
 
 # SIU suite
 
@@ -187,13 +187,10 @@ processing cadence rather than a per-jurisdiction effect.
 
 * MRM theoretical paper \u2014 Ruhela (2026), *MRM: Multilevel
   Reconciliation Methodology --- A Multi-Source Statistical
-  Foundation for Canadian Carceral, Police, and Oversight Data*,
-  Zenodo
-  [10.5281/zenodo.20096075](https://doi.org/10.5281/zenodo.20096075).
+  Foundation for Canadian Carceral, Police, and Oversight Data*.
 * MRM empirical paper \u2014 Ruhela (2026), *Solitary Confinement,
   Self-Excitation, and Institutional Churn: Empirical Applications
-  of MRM to Canadian Carceral and Police Data*, Zenodo
-  [10.5281/zenodo.20175689](https://doi.org/10.5281/zenodo.20175689).
+  of MRM to Canadian Carceral and Police Data*.
 * OTIS data dictionary \u2014 `data.ontario.ca/dataset/data-on-inmates-in-ontario`.
 * Toronto Police Open Data \u2014 `data.torontopolice.on.ca/`.
 * SIU public Director's Reports \u2014 `siu.on.ca/en/case_directors_reports.php`.

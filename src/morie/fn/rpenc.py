@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 r"""Rotary positional encoding (RoPE).
 
 Applies rotation matrices to position-encode via complex numbers.

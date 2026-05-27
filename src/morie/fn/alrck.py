@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Recall@k -- fraction of relevant items in the top-k retrieved set."""
 import numpy as np
 from ._richresult import RichResult

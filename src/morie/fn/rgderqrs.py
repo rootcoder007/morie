@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Derivative-based QRS detection (first and second differences)."""
 import numpy as np
 from ._richresult import RichResult

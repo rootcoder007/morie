@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Probability density function estimation of VAG signals."""
 import numpy as np
 from ._richresult import RichResult

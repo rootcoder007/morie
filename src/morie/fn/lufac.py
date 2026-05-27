@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """LU decomposition with partial pivoting: PA = LU."""
 
 from __future__ import annotations

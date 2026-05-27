@@ -61,6 +61,12 @@ NULL
 #' @param window_years Time-cylinder length in years.
 #' @param n_centers Number of random candidate centres sub-sampled.
 #' @param n_permutations Monte-Carlo permutations.
+#' @param n_top_clusters Integer; number of top clusters to return.
+#'   Accepted for Python signature parity. The current implementation
+#'   returns a single primary cluster (the secondary-cluster loop in
+#'   `morie.mrm_kulldorff.py` `break`s out pending a proper
+#'   mask-and-rescan rewrite); values >1 are reserved for that
+#'   future TRUE multi-cluster mode.
 #' @param seed Random seed.
 #' @return A one-row data.frame describing the top cluster, with
 #'   columns \code{center_lat}, \code{center_lon}, \code{radius_km},
@@ -81,8 +87,17 @@ mrm_tps_kulldorff_scan <- function(
   window_years = 4,
   n_centers = 60L,
   n_permutations = 199L,
+  n_top_clusters = 1L,
   seed = 42L
 ) {
+  # n_top_clusters accepted for Python signature parity.  Python's
+  # mrm_kulldorff.py:188-198 currently `break`s out of the secondary-
+  # cluster loop, so both ports return a single primary cluster as of
+  # 2026-05-22.  Promoting this to TRUE multi-cluster requires masking
+  # out events in the primary cluster and rescanning — a separate task.
+  if (!is.numeric(n_top_clusters) || n_top_clusters < 1L) {
+    stop("n_top_clusters must be a positive integer.", call. = FALSE)
+  }
   stopifnot(is.data.frame(data))
   stopifnot(all(c(date_col, lat_col, lon_col) %in% names(data)))
   set.seed(as.integer(seed))

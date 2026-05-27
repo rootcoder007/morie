@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Covariance of two linear rank statistics B_N and T_N."""
 import numpy as np
 from scipy import stats

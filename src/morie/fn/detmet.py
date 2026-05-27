@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute precision, recall, F1, and average precision for detection."""
 
 from __future__ import annotations

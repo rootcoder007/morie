@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Lifting scheme DWT (in-place, memory efficient)."""
 
 from __future__ import annotations

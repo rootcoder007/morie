@@ -52,7 +52,7 @@ R parity for \code{morie.fn.grucl.gru_cell}.  Gates stacked as
 }
 \details{
 \deqn{z, r = \sigma(\ldots); \quad n = \tanh(W_n x + r \odot U_n h); \quad
-      h = (1 - z) \odot n + z \odot h_\text{prev}}
+      h = (1 - z) \odot n + z \odot h_\text{prev}}{z, r = sigma(...); n = tanh(W_n x + r odot U_n h); h = (1 - z) odot n + z odot h_prev}
 }
 \examples{
 morie_grucl_gru_cell(x = rnorm(50))

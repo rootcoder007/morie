@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Fit a Schechter-like mass function to cloud mass observations."""
 
 from __future__ import annotations

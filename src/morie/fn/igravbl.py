@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Gravity model row/column balancing (IPFP)."""
 
 from ._containers import SpatialResult

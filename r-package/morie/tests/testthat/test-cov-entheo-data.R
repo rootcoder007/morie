@@ -56,14 +56,12 @@ test_that(".entheo_load_real returns NULL without R.matlab", {
 })
 
 test_that(".entheo_load_real returns NULL when the .mat files are absent", {
-  skip_if_not_installed("R.matlab")
   root <- tempfile("dmt-empty-")
   dir.create(file.path(root, "fMRI"), recursive = TRUE)
   expect_null(morie:::.entheo_load_real("05", root))
 })
 
 test_that("load_dmt_imaging reads a real subject via a mocked R.matlab", {
-  skip_if_not_installed("R.matlab")
   root <- tempfile("dmt-real-")
   dir.create(file.path(root, "fMRI"), recursive = TRUE)
   file.create(file.path(

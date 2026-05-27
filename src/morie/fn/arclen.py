@@ -1,4 +1,4 @@
-# morie.fn -- function file from book-equation translation pipeline (hadesllm/morie)
+# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Compute the arc length of a parametric curve via trapezoidal integration."""
 
 from __future__ import annotations

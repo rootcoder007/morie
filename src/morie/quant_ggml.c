@@ -27,7 +27,7 @@
  * SIMD strategy (added 2026-04-26 — P3 dual-ISA pass; mirrors the pattern
  * documented at the top of engine_kernels.c).
  *
- *   Linux ARM (Pi 5 zeus.local, AWS Graviton, Asahi)  →  NEON 4-wide
+ *   Linux ARM (Raspberry Pi 5, AWS Graviton, Asahi)  →  NEON 4-wide
  *   Linux x86_64 (HADES GCP, AWS, Azure)              →  AVX2 8-wide
  *                                                        (-mavx2 -mfma)
  *   Other (incl macOS without Accelerate path here)   →  scalar fallback

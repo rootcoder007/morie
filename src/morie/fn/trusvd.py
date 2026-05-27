@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Truncated SVD with rank estimation and reconstruction error."""
 
 from __future__ import annotations

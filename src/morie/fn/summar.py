@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Per-column summary: n, mean, std, min, q25, median, q75, max, missing, skew."""
 
 from __future__ import annotations

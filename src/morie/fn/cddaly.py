@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """DALY = YLL + YLD calculation."""
 
 from ._containers import ESRes

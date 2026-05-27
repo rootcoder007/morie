@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Randomized PCA via the Halko-Martinsson-Tropp algorithm."""
 
 from __future__ import annotations

@@ -35,7 +35,7 @@ DEFAULT_CACHE = Path(__file__).resolve().parents[6] / "data" / "cache" / "siu"
 
 USER_AGENT = (
     "morie-siu-scraper/0.1 "
-    "(+https://github.com/hadesllm/morie; research; rate-limited)"
+    "(+https://github.com/rootcoder007/morie; research; rate-limited)"
 )
 DEFAULT_TIMEOUT = httpx.Timeout(15.0, connect=10.0)
 POLITE_DELAY_S = 0.25       # sequential floor between requests

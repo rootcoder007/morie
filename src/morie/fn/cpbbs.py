@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Binary segmentation algorithm for multiple change-point detection."""
 
 from __future__ import annotations

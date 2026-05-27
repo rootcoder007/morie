@@ -42,7 +42,7 @@ counts), n, method.
 }
 \description{
 \deqn{\hat\gamma(h, u) = \frac{1}{2|N(h, u)|}
-      \sum_{(i,j)\in N(h,u)} (Z(s_i, t_i) - Z(s_j, t_j))^2}.
+      \sum_{(i,j)\in N(h,u)} (Z(s_i, t_i) - Z(s_j, t_j))^2}{hatgamma(h, u) = (1)/(2|N(h, u)|) sum_(i,j)in N(h,u) (Z(s_i, t_i) - Z(s_j, t_j))^2}.
 }
 \examples{
 stvar(x = rnorm(50), coords = matrix(runif(100), 50, 2), times = sort(cumsum(rexp(50))))

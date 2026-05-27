@@ -5,7 +5,6 @@
 # paths run when 'signal' / 'pracma' are installed.
 
 test_that("Butterworth + Savitzky-Golay filters run via the signal pkg", {
-  skip_if_not_installed("signal")
   set.seed(1)
   tt <- seq(0, 1, length.out = 600)
   x <- sin(2 * pi * 5 * tt) + 0.5 * sin(2 * pi * 60 * tt)
@@ -18,7 +17,6 @@ test_that("Butterworth + Savitzky-Golay filters run via the signal pkg", {
 })
 
 test_that("morie_hurst_r estimates the Hurst exponent via pracma", {
-  skip_if_not_installed("pracma")
   set.seed(2)
   r <- morie_hurst_r(cumsum(stats::rnorm(2048)))
   expect_true(r$interpretation %in%
@@ -39,11 +37,14 @@ test_that(".morie_py_call builds the bridge command and shells out", {
   expect_true(any(grepl("[1,2,3]", captured, fixed = TRUE)))
 })
 
-test_that("hfd delegates to the Python bridge", {
-  testthat::local_mocked_bindings(
-    system2 = function(command, args, ...) "1.42", .package = "base"
-  )
-  expect_equal(hfd(cumsum(stats::rnorm(50)), kmax = 5L), "1.42")
+test_that("hfd returns a structured higuchi_fd list on a deterministic input", {
+  set.seed(1L)
+  out <- hfd(cumsum(stats::rnorm(50)), kmax = 5L)
+  expect_type(out, "list")
+  expect_equal(out$name, "higuchi_fd")
+  expect_true(is.finite(out$value))
+  expect_equal(out$extra$kmax, 5L)
+  expect_length(out$extra$L_k, 5L)
 })
 
 test_that("filters fall back to the Python bridge without the signal pkg", {

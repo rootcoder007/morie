@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Hyperparameter tuning: optimize over discrete grid or random samples."""
 import numpy as np
 from ._richresult import RichResult

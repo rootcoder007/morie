@@ -27,7 +27,6 @@ test_that("morie_regime_switching base-R EM path runs when MSwM is absent", {
 })
 
 test_that("morie_regime_switching uses MSwM when it is available", {
-  skip_if_not_installed("MSwM")
   set.seed(2)
   x <- c(stats::rnorm(60, 0, 1), stats::rnorm(60, 4, 1.5))
   r <- tryCatch(suppressWarnings(morie_regime_switching(x, k_regimes = 2)),
@@ -88,7 +87,6 @@ test_that("morie_fetch_tps errors on an unknown category", {
 })
 
 test_that("morie_fetch_tps writes a CSV from a mocked ArcGIS layer", {
-  skip_if_not_installed("jsonlite")
   testthat::local_mocked_bindings(
     fromJSON = function(txt, ...) {
       list(

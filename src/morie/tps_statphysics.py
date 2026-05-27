@@ -238,11 +238,15 @@ def levy_flight_alpha(category: str = "Assault",
                             df["LONG_WGS84"].to_numpy())
     dx_ = np.diff(xk); dy_ = np.diff(yk)
     steps = np.sqrt(dx_ ** 2 + dy_ ** 2)
-    steps = steps[steps >= lmin_km]
+    # Hill MLE: strictly drop ties at the lower bound so log(s/lmin)=0
+    # terms don't bias alpha upward. v0.9.5.6+ uses strict `>` per
+    # the textbook Hill estimator (the prior `>=` slightly
+    # over-estimated alpha when many values equalled the floor).
+    steps = steps[steps > lmin_km]
     if steps.size < 50:
         return RichResult(title=f"Lévy α -- {category}",
                             warnings=[f"only {steps.size} tail steps "
-                                       f"≥ {lmin_km} km"])
+                                       f"> {lmin_km} km"])
     # Hill-MLE: α̂ = 1 + n / Σ ln(ℓ_i / ℓ_min)
     alpha = 1 + steps.size / np.sum(np.log(steps / lmin_km))
     # Bootstrap SE

@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Martingale residuals for Cox proportional hazards model."""
 
 from __future__ import annotations

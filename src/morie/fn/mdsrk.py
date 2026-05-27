@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Compute pairwise Euclidean distance matrix from coordinate matrix X."""
 
 from __future__ import annotations

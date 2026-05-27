@@ -163,7 +163,7 @@ You can quit at any prompt (press q) and resume by re-running
         "  • Ask the agent for help:      morie ask \"...\"\n"
         "  • Browse the cheat sheet:      morie cheatsheet\n"
         "  • Read the full tutorial:      cat TUTORIAL.md\n"
-        "  • File an issue if stuck:      https://github.com/hadesllm/morie/issues\n\n"
+        "  • File an issue if stuck:      https://github.com/rootcoder007/morie/issues\n\n"
         "Welcome aboard.",
     )
     _prompt()

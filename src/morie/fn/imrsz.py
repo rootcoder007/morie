@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Resize a grayscale image using bilinear interpolation."""
 
 from __future__ import annotations

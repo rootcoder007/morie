@@ -96,6 +96,8 @@ test_that("morie_random_forest_ensemble fits a random forest", {
 })
 
 test_that("morie_gradient_boosting_ensemble fits a GBM", {
+  skip_if_not_installed("gbm")
+  skip_if_not_installed("xgboost")
   testthat::skip_if(!requireNamespace("gbm", quietly = TRUE) &&
     !requireNamespace("xgboost", quietly = TRUE))
   set.seed(0)
@@ -106,6 +108,8 @@ test_that("morie_gradient_boosting_ensemble fits a GBM", {
 })
 
 test_that("morie_xgboost_objective fits boosted trees", {
+  skip_if_not_installed("gbm")
+  skip_if_not_installed("xgboost")
   testthat::skip_if(!requireNamespace("xgboost", quietly = TRUE) &&
     !requireNamespace("gbm", quietly = TRUE))
   set.seed(0)

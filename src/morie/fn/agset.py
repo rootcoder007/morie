@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Agenda-setter model (Romer-Rosenthal; Armstrong Ch 10)."""
 
 import numpy as np

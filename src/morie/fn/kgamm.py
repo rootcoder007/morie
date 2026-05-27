@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Modified gamma kernel density for positive-support data."""
 
 from __future__ import annotations

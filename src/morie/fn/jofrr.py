@@ -1,4 +1,4 @@
-# morie.fn -- function file (hadesllm/morie)
+# morie.fn -- function file (rootcoder007/morie)
 """Fourier-series seasonality features: sin/cos at K harmonics of the seasonal period m."""
 import numpy as np
 from ._richresult import RichResult
