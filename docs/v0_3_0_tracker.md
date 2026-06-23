@@ -494,7 +494,7 @@ items queued from `papers/PAPERS_v0.2.0_WORK_SUMMARY.txt` PART B:
    provincial-vs-federal Mandela spectrum table cleanly; partial
    bounds added in v0.2.1).
 3. **CCRSO fetcher / parser** for the federal correctional data layout
-   beyond SIU (McNamara primitives generalisation).
+   beyond SIU (MRM primitives generalisation).
 4. Multi-category JIT Hawkes re-fits (currently only Assault landed
    under the v0.2.1 JIT path; AutoTheft / BreakAndEnter / Homicide /
    Robbery / Shooting / TheftFromMV / TheftOver still on the legacy
