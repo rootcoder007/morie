@@ -1,6 +1,8 @@
 """Variance of a sum of two uncorrelated random processes equals sum of their variances.."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_variance_of_sum_uncorrelated"]
@@ -32,9 +34,23 @@ def rangayyan_ch3_variance_of_sum_uncorrelated(sigma_x, sigma_eta):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(sigma_x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Variance of a sum of two uncorrelated random processes equals sum of their variances."})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Variance of a sum of two uncorrelated random processes equals sum of their variances.",
+            }
+        )
     result = stats.spearmanr(sigma_x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Variance of a sum of two uncorrelated random processes equals sum of their variances."})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Variance of a sum of two uncorrelated random processes equals sum of their variances.",
+        }
+    )
 
 
 def cheatsheet():

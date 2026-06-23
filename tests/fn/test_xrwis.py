@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrwis -- Weights islands detection"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrwis import w_islands
 

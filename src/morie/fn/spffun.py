@@ -1,5 +1,7 @@
 """F-function (empty space function): CDF of distance from arbitrary point to nearest event."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_f_function"]
@@ -33,7 +35,14 @@ def schabenberger_f_function(points, region, r):
     n = int(points) if points.ndim == 0 else len(points)
     result = float(np.mean(points))
     se = float(np.std(points, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "F-function (empty space function): CDF of distance from arbitrary point to nearest event"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "F-function (empty space function): CDF of distance from arbitrary point to nearest event",
+        }
+    )
 
 
 def cheatsheet():

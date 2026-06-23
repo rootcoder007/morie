@@ -1,6 +1,7 @@
 """Tests for morie.fn.bcred -- Bayesian credible interval."""
 
 import numpy as np
+
 from morie.fn.bcred import credible_interval
 
 

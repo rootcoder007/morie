@@ -1,6 +1,7 @@
 """Rotatable bond count."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rotatable_bond_count"]

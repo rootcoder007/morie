@@ -1,6 +1,7 @@
 """Tests for esllpr.esl_local_linear."""
+
 import numpy as np
-import pytest
+
 from morie.fn.esllpr import esl_local_linear
 
 
@@ -12,7 +13,7 @@ def test_esllpr_basic():
     lambda_ = np.random.default_rng(42).normal(0, 1, 100)
     result = esl_local_linear(x0, x, y, lambda_)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_esllpr_edge():

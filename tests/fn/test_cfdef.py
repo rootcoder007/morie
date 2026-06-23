@@ -1,7 +1,7 @@
 """Tests for morie.fn.cfdef."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cfdef import cfdef
 
 

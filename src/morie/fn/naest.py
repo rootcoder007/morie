@@ -55,7 +55,7 @@ def naest(
         dj = np.sum((t_s == tj) & (e_s == 1))
         if nj > 0:
             H += dj / nj
-            V += dj / (nj ** 2)
+            V += dj / (nj**2)
         cum_haz[j] = H
         var_arr[j] = V
 

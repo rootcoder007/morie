@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bayesian Aldrich-McKelvey scaling via MCMC."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["bayesian_am_scaling"]
@@ -34,7 +36,9 @@ def bayesian_am_scaling(survey_data, n_iter, burnin):
     n = int(survey_data) if survey_data.ndim == 0 else len(survey_data)
     result = float(np.mean(survey_data))
     se = float(np.std(survey_data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian Aldrich-McKelvey scaling via MCMC"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bayesian Aldrich-McKelvey scaling via MCMC"}
+    )
 
 
 def cheatsheet():

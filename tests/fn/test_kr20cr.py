@@ -1,6 +1,7 @@
 """Tests for kr20cr.kuder_richardson_20."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kr20cr import kuder_richardson_20
 
 
@@ -9,7 +10,7 @@ def test_kr20cr_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = kuder_richardson_20(X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kr20cr_edge():

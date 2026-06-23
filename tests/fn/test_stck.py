@@ -1,8 +1,9 @@
 """Tests for morie.fn.stck -- Model stacking."""
 
 import numpy as np
-from morie.fn.stck import stacking, stck
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.stck import stacking, stck
 
 
 class TestStck:

@@ -1,6 +1,7 @@
 """McDonald's omega total."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["omega_total"]

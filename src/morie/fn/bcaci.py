@@ -11,7 +11,9 @@ from scipy import stats as _st
 from ._containers import DescriptiveResult
 
 
-def bca_ci(data: np.ndarray, stat_fn: Callable, n_boot: int = 2000, alpha: float = 0.05, seed: int = 42, cdf=None) -> DescriptiveResult:
+def bca_ci(
+    data: np.ndarray, stat_fn: Callable, n_boot: int = 2000, alpha: float = 0.05, seed: int = 42, cdf=None
+) -> DescriptiveResult:
     """
     Bias-corrected and accelerated (BCa) bootstrap confidence interval.
 
@@ -77,4 +79,4 @@ bcaci = bca_ci
 
 
 def cheatsheet() -> str:
-    return 'bca_ci({}) -> BCa bootstrap confidence interval.'
+    return "bca_ci({}) -> BCa bootstrap confidence interval."

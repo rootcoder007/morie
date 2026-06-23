@@ -1,6 +1,7 @@
 """PLS regression QSAR with cross-validated component count."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["pls_qsar"]
@@ -34,7 +35,14 @@ def pls_qsar(activities, descriptors, n_components):
     n = len(activities)
     result = float(np.mean(activities))
     se = float(np.std(activities, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PLS regression QSAR with cross-validated component count"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PLS regression QSAR with cross-validated component count",
+        }
+    )
 
 
 def cheatsheet():

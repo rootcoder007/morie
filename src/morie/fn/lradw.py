@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Linear LR warmup (Vaswani et al. 2017, Transformer "Noam" schedule)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -35,11 +36,15 @@ def lr_warmup(x, lr_target: float = 1e-3, warmup_steps: int = 1000):
     val = float(lr) if lr.ndim == 0 else float(lr[0])
     return RichResult(
         title="Linear LR Warmup (Vaswani 2017)",
-        summary_lines=[("lr_target", lr_target),
-                       ("warmup_steps", warmup_steps)],
-        payload={"tensor": lr, "value": val,
-                 "lr_target": lr_target, "warmup_steps": warmup_steps,
-                 "step": t, "method": "linear-warmup"},
+        summary_lines=[("lr_target", lr_target), ("warmup_steps", warmup_steps)],
+        payload={
+            "tensor": lr,
+            "value": val,
+            "lr_target": lr_target,
+            "warmup_steps": warmup_steps,
+            "step": t,
+            "method": "linear-warmup",
+        },
     )
 
 

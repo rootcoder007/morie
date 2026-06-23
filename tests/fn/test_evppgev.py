@@ -1,6 +1,7 @@
 """Tests for evppgev.evt_gev_pp_plot."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evppgev import evt_gev_pp_plot
 
 
@@ -12,7 +13,7 @@ def test_evppgev_basic():
     xi = np.random.default_rng(42).normal(0, 1, 100)
     result = evt_gev_pp_plot(x, mu, sigma, xi)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evppgev_edge():

@@ -1,6 +1,7 @@
 """Tests for evgofa.evt_gev_anderson_darling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evgofa import evt_gev_anderson_darling
 
 
@@ -12,7 +13,7 @@ def test_evgofa_basic():
     xi = np.random.default_rng(42).normal(0, 1, 100)
     result = evt_gev_anderson_darling(x, mu, sigma, xi)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_evgofa_edge():

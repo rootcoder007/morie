@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Logistic/sigmoid activation used as link in binary logistic regression."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_sigmoid"]
@@ -30,7 +32,14 @@ def geron_sigmoid(t):
     n = int(t) if t.ndim == 0 else len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Logistic/sigmoid activation used as link in binary logistic regression"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Logistic/sigmoid activation used as link in binary logistic regression",
+        }
+    )
 
 
 def cheatsheet():

@@ -54,7 +54,7 @@ def smhaz(
             continue
         u = (event_times - t) / bandwidth
         mask = np.abs(u) <= 1
-        K = np.where(mask, 0.75 * (1 - u ** 2), 0)
+        K = np.where(mask, 0.75 * (1 - u**2), 0)
         haz[i] = np.sum(K) / (at_risk * bandwidth)
 
     dt = grid[1] - grid[0] if n_grid > 1 else 1.0

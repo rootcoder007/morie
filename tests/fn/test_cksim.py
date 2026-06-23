@@ -1,6 +1,7 @@
 """Test cksim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cksim import cksim
 
 

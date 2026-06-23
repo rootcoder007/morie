@@ -1,6 +1,7 @@
 """Fejer-type theorem stating that location-scale kernel mixtures converge in L1 to f as the bandwidth sigma tends to zero.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch2_location_scale_mixture_limit"]
@@ -36,7 +37,14 @@ def ghosal_ch2_location_scale_mixture_limit(psi, f, sigma, mu):
     n = len(psi)
     result = float(np.mean(psi))
     se = float(np.std(psi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fejer-type theorem stating that location-scale kernel mixtures converge in L1 to f as the bandwidth sigma tends to zero."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Fejer-type theorem stating that location-scale kernel mixtures converge in L1 to f as the bandwidth sigma tends to zero.",
+        }
+    )
 
 
 def cheatsheet():

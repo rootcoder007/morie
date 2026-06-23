@@ -1,7 +1,6 @@
 """Tests for morie.fn.zesir -- Spatial SIR diffusion"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zesir import spatial_sir
 

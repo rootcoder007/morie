@@ -1,6 +1,7 @@
 """Tests for hmnmd.geron_numerical_diff."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmnmd import geron_numerical_diff
 
 
@@ -11,7 +12,7 @@ def test_hmnmd_basic():
     h = 0.3
     result = geron_numerical_diff(f, x, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmnmd_edge():

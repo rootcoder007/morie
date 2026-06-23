@@ -1,6 +1,7 @@
 """Tests for volrlmt.vol_realised_log_vol_ar."""
+
 import numpy as np
-import pytest
+
 from morie.fn.volrlmt import vol_realised_log_vol_ar
 
 
@@ -9,7 +10,7 @@ def test_volrlmt_basic():
     RV = np.random.default_rng(42).normal(0, 1, 100)
     result = vol_realised_log_vol_ar(RV)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_volrlmt_edge():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.sveln -- Elbow method for dimensions"""
 
 import numpy as np
-import pytest
 
 from morie.fn.sveln import elbow_spatial
 

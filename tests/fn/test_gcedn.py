@@ -1,6 +1,7 @@
 """Test gcedn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcedn import gcedn
 
 

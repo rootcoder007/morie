@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgcrf -- Correlogram function"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgcrf import correlogram
 

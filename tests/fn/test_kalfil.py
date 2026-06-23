@@ -1,8 +1,9 @@
 """Tests for morie.fn.kalfil -- Kalman filter."""
 
 import numpy as np
-from morie.fn.kalfil import kalman_filter, kalfil
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.kalfil import kalfil, kalman_filter
 
 
 class TestKalfil:

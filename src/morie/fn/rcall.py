@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Roll-call matrix analysis (Armstrong Ch 2)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["roll_call_analysis", "rcall"]
@@ -48,15 +50,26 @@ def roll_call_analysis(x, absent_codes=(np.nan, 9)):
     lopsided = float(np.mean((pct_yea >= 0.975) | (pct_yea <= 0.025)))
     return RichResult(
         title="Roll-call matrix summary",
-        summary_lines=[("n legislators", n), ("m roll calls", m),
-                       ("Total yeas", n_yea), ("Total nays", n_nay),
-                       ("Total absences", n_abs),
-                       ("Lopsided (>=97.5%) share", lopsided)],
-        payload={"n": int(n), "m": int(m), "n_yea": n_yea, "n_nay": n_nay,
-                 "n_abs": n_abs, "marginal_yea": marg_yea,
-                 "marginal_nay": marg_nay,
-                 "pct_yea": pct_yea, "lopsided_pct": float(lopsided),
-                 "method": "roll_call_analysis"},
+        summary_lines=[
+            ("n legislators", n),
+            ("m roll calls", m),
+            ("Total yeas", n_yea),
+            ("Total nays", n_nay),
+            ("Total absences", n_abs),
+            ("Lopsided (>=97.5%) share", lopsided),
+        ],
+        payload={
+            "n": int(n),
+            "m": int(m),
+            "n_yea": n_yea,
+            "n_nay": n_nay,
+            "n_abs": n_abs,
+            "marginal_yea": marg_yea,
+            "marginal_nay": marg_nay,
+            "pct_yea": pct_yea,
+            "lopsided_pct": float(lopsided),
+            "method": "roll_call_analysis",
+        },
     )
 
 

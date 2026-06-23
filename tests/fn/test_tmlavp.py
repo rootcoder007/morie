@@ -1,6 +1,7 @@
 """Tests for tmlavp.tmle_average_predictiveness."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlavp import tmle_average_predictiveness
 
 
@@ -13,7 +14,7 @@ def test_tmlavp_basic():
     loss = np.random.default_rng(42).normal(0, 1, 100)
     result = tmle_average_predictiveness(y, D, X, f, loss)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlavp_edge():

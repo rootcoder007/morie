@@ -1,6 +1,7 @@
 """Tests for morie.fn.cdinc -- incidence rate."""
 
 import pytest
+
 from morie.fn.cdinc import incidence_rate
 
 

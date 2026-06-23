@@ -1,7 +1,9 @@
 """Test chebyshev2_filter (chbf2)."""
+
 import numpy as np
-from morie.fn.chbf2 import chebyshev2_filter, chbf2
+
 from morie.fn._containers import SignalResult
+from morie.fn.chbf2 import chbf2, chebyshev2_filter
 
 
 class TestChebyshev2Filter:

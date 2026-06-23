@@ -1,6 +1,7 @@
 """Tests for gdupd.gradient_descent_update."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdupd import gradient_descent_update
 
 
@@ -11,7 +12,7 @@ def test_gdupd_basic():
     alpha = 0.05
     result = gradient_descent_update(beta, grad, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gdupd_edge():

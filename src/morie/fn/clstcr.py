@@ -1,6 +1,7 @@
 """Cluster-level causal inference."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["cluster_causal_inference"]

@@ -1,6 +1,7 @@
 """Tests for crpcol.crp_collapsed."""
+
 import numpy as np
-import pytest
+
 from morie.fn.crpcol import crp_collapsed
 
 
@@ -11,7 +12,7 @@ def test_crpcol_basic():
     n_iter = 50
     result = crp_collapsed(y, alpha, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_crpcol_edge():

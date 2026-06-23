@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GAN minimax objective for generator G and discriminator D."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_gan_minimax"]
@@ -36,7 +38,14 @@ def geron_gan_minimax(real, fake, D_real, D_fake):
     n = len(real)
     result = float(np.mean(real))
     se = float(np.std(real, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GAN minimax objective for generator G and discriminator D"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "GAN minimax objective for generator G and discriminator D",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,8 +1,9 @@
 """Tests for morie.fn.waltes -- Wald test ('This party is over.')."""
 
 import pytest
-from morie.fn.waltes import wald_test, waltes
+
 from morie.fn._containers import TestResult
+from morie.fn.waltes import wald_test, waltes
 
 
 class TestWaltes:

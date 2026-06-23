@@ -1,8 +1,9 @@
 """Tests for morie.fn.tpscrs — crime severity."""
 
 import pytest
-from morie.fn.tpscrs import tps_crime_severity
+
 from morie.fn._containers import ESRes
+from morie.fn.tpscrs import tps_crime_severity
 
 
 class TestCrimeSeverity:

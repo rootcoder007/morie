@@ -1,6 +1,7 @@
 """Tests for nemed.nested_counterfactual_mediation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nemed import nested_counterfactual_mediation
 
 
@@ -11,7 +12,7 @@ def test_nemed_basic():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     result = nested_counterfactual_mediation(X, M, Y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_nemed_edge():

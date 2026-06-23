@@ -1,5 +1,7 @@
 """Tests for aggcl (agglomerative clustering)."""
+
 import numpy as np
+
 from morie.fn.aggcl import agglomerative
 
 
@@ -14,6 +16,7 @@ def test_agglomerative_basic():
 
 def test_cheatsheet():
     from morie.fn.aggcl import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

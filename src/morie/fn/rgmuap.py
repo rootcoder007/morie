@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Motor unit action potential (MUAP) model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_muap"]
@@ -34,7 +36,9 @@ def rangayyan_muap(t, n_fibers, conduction_vel):
     n = int(t) if t.ndim == 0 else len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Motor unit action potential (MUAP) model"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Motor unit action potential (MUAP) model"}
+    )
 
 
 def cheatsheet():

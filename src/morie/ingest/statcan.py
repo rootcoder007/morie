@@ -14,6 +14,7 @@ real ``..._CSV.zip``.
 :data:`morie.data.DATASET_CATALOG` through the ``fetcher`` mechanism,
 so ``morie.load_dataset()`` can fetch a StatCan product on demand.
 """
+
 from __future__ import annotations
 
 import os
@@ -24,8 +25,7 @@ from typing import Any
 __all__ = ["fetch_statcan_csv"]
 
 
-def _csv_from_zip(zip_path: str, member: str | None = None,
-                  **read_csv_kwargs: Any):
+def _csv_from_zip(zip_path: str, member: str | None = None, **read_csv_kwargs: Any):
     """Read a CSV member out of a zip archive into a DataFrame.
 
     If ``member`` is omitted the first ``.csv`` entry is used.
@@ -39,9 +39,7 @@ def _csv_from_zip(zip_path: str, member: str | None = None,
             raise ValueError("no .csv file inside the StatCan archive")
         chosen = member or csvs[0]
         if chosen not in names:
-            raise KeyError(
-                f"member {chosen!r} not in the archive; CSVs present: {csvs}"
-            )
+            raise KeyError(f"member {chosen!r} not in the archive; CSVs present: {csvs}")
         kwargs = {"low_memory": False, **read_csv_kwargs}
         with zf.open(chosen) as fh:
             return pd.read_csv(fh, **kwargs)
@@ -84,11 +82,10 @@ def fetch_statcan_csv(
 
     tmp = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
     try:
-        with httpx.Client(timeout=timeout, follow_redirects=True) as client:
-            with client.stream("GET", url) as resp:
-                resp.raise_for_status()
-                for chunk in resp.iter_bytes():
-                    tmp.write(chunk)
+        with httpx.Client(timeout=timeout, follow_redirects=True) as client, client.stream("GET", url) as resp:
+            resp.raise_for_status()
+            for chunk in resp.iter_bytes():
+                tmp.write(chunk)
         tmp.close()
         return _csv_from_zip(tmp.name, member, **read_csv_kwargs)
     finally:

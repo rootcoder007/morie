@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Split-merge MCMC for DP mixtures: proposes splitting or merging clusters."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_splitmerge"]
@@ -30,7 +32,14 @@ def ghosal_splitmerge(x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Split-merge MCMC for DP mixtures: proposes splitting or merging clusters"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Split-merge MCMC for DP mixtures: proposes splitting or merging clusters",
+        }
+    )
 
 
 def cheatsheet():

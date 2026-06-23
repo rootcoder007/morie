@@ -1,9 +1,9 @@
 """Tests for morie.fn.grosta -- Grouped summary statistics."""
 
-import numpy as np
 import pandas as pd
-from morie.fn.grosta import grouped_stats, grosta
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.grosta import grosta, grouped_stats
 
 
 class TestGrosta:
@@ -11,10 +11,12 @@ class TestGrosta:
         assert grosta is grouped_stats
 
     def test_correct_group_means(self):
-        df = pd.DataFrame({
-            "group": ["A"] * 50 + ["B"] * 50,
-            "val": [10.0] * 50 + [20.0] * 50,
-        })
+        df = pd.DataFrame(
+            {
+                "group": ["A"] * 50 + ["B"] * 50,
+                "val": [10.0] * 50 + [20.0] * 50,
+            }
+        )
         result = grouped_stats(df, by="group", cols=["val"])
         assert isinstance(result, DescriptiveResult)
         assert result.extra["n_groups"] == 2
@@ -25,12 +27,14 @@ class TestGrosta:
         assert abs(means[1] - 20.0) < 0.01
 
     def test_auto_numeric_cols(self):
-        df = pd.DataFrame({
-            "group": ["X", "X", "Y", "Y"],
-            "a": [1.0, 2.0, 3.0, 4.0],
-            "b": [10.0, 20.0, 30.0, 40.0],
-            "label": ["p", "q", "r", "s"],
-        })
+        df = pd.DataFrame(
+            {
+                "group": ["X", "X", "Y", "Y"],
+                "a": [1.0, 2.0, 3.0, 4.0],
+                "b": [10.0, 20.0, 30.0, 40.0],
+                "label": ["p", "q", "r", "s"],
+            }
+        )
         result = grouped_stats(df, by="group")
         # Should auto-detect numeric columns a, b (not label)
         assert "a" in result.extra["columns"]

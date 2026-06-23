@@ -1,6 +1,7 @@
 """Test gdmar."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdmar import gdmar
 
 

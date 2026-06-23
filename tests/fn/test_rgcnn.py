@@ -1,6 +1,7 @@
 """Tests for rgcnn.rangayyan_cnn_signal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgcnn import rangayyan_cnn_signal
 
 
@@ -12,7 +13,7 @@ def test_rgcnn_basic():
     n_classes = 3
     result = rangayyan_cnn_signal(x, filters, kernel_sizes, n_classes)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgcnn_edge():

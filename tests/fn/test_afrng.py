@@ -1,6 +1,7 @@
 """Test afrng."""
+
 import numpy as np
-import pytest
+
 from morie.fn.afrng import afrng
 
 

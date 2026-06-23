@@ -1,5 +1,7 @@
 """Tests for rank_correlation_test."""
-import numpy as np, pytest
+
+import pytest
+
 from morie.fn.rnkcr import rank_correlation_test
 
 

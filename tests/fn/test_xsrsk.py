@@ -1,6 +1,7 @@
 """Tests for morie.fn.xsrsk -- Excess risk."""
 
 import pytest
+
 from morie.fn.xsrsk import excess_risk
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Swin Transformer: shifted-window attention."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_swin"]
@@ -34,7 +36,9 @@ def geron_swin(image, window_size, n_layers):
     n = len(image)
     result = float(np.mean(image))
     se = float(np.std(image, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Swin Transformer: shifted-window attention"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Swin Transformer: shifted-window attention"}
+    )
 
 
 def cheatsheet():

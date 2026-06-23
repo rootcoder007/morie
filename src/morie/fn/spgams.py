@@ -1,6 +1,7 @@
 """Spatial GAM with bivariate smooth."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["spatial_gams"]

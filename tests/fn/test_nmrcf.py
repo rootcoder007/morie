@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmrcf -- Roll call filtering"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmrcf import roll_call_filter
 

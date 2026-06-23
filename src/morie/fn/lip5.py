@@ -1,6 +1,7 @@
 """Lipinski Rule of 5 oral-bioavailability filter."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["lipinski_rule_of_5"]
@@ -30,7 +31,9 @@ def lipinski_rule_of_5(smiles):
     n = len(smiles)
     result = float(np.mean(smiles))
     se = float(np.std(smiles, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Lipinski Rule of 5 oral-bioavailability filter"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Lipinski Rule of 5 oral-bioavailability filter"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for esldat.esl_dropout."""
+
 import numpy as np
-import pytest
+
 from morie.fn.esldat import esl_dropout
 
 
@@ -10,7 +11,7 @@ def test_esldat_basic():
     p = 5
     result = esl_dropout(X, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_esldat_edge():

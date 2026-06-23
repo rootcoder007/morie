@@ -1,6 +1,7 @@
 """Minimum covariance determinant location/scatter."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["min_covariance_determinant"]
@@ -34,7 +35,9 @@ def min_covariance_determinant(y, X, h):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Minimum covariance determinant location/scatter"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Minimum covariance determinant location/scatter"}
+    )
 
 
 def cheatsheet():

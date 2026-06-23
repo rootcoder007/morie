@@ -1,6 +1,8 @@
 """Tests for rfms."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfms import rfms
 
 
@@ -28,4 +30,5 @@ def test_rfms_no_data():
 
 def test_rfms_alias():
     from morie.fn.rfms import rfms
+
     assert rfms is rfms

@@ -1,6 +1,7 @@
 """Tests for causmm.causal_mahalanobis_match."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causmm import causal_mahalanobis_match
 
 
@@ -11,7 +12,7 @@ def test_causmm_basic():
     k = 5
     result = causal_mahalanobis_match(X, treat, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causmm_edge():

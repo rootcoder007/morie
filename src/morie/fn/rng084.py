@@ -1,6 +1,7 @@
 """kth observed realization of a signal in noise (signal-plus-noise model).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_observed_signal_kth_realization"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_observed_signal_kth_realization(x_k, eta_k, n):
     n = len(x_k)
     result = float(np.mean(x_k))
     se = float(np.std(x_k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "kth observed realization of a signal in noise (signal-plus-noise model)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "kth observed realization of a signal in noise (signal-plus-noise model).",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Affine (linear) layer forward pass."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_linear_layer_forward"]

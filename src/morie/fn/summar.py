@@ -48,4 +48,4 @@ summar = summarize
 
 
 def cheatsheet() -> str:
-    return 'summarize({}) -> Per-column summary stats.'
+    return "summarize({}) -> Per-column summary stats."

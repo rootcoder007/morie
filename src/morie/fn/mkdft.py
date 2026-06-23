@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["mkdft"]
@@ -94,7 +95,7 @@ def mkdft(
     norm_const = 1.0 / (np.prod(bw_vec) * (2 * np.pi) ** (d / 2.0))
     for i in range(n):
         diff = (x_eval - data[i]) / bw_vec
-        density += np.exp(-0.5 * np.sum(diff ** 2, axis=1))
+        density += np.exp(-0.5 * np.sum(diff**2, axis=1))
     density *= norm_const / n
 
     return RichResult(payload={"x_eval": x_eval, "density": density, "bw": bw_vec})

@@ -1,6 +1,7 @@
 """Tests for bdmnts.bound_monot_inst."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bdmnts import bound_monot_inst
 
 
@@ -13,7 +14,7 @@ def test_bdmnts_basic():
     y_max = 100
     result = bound_monot_inst(y, D, Z, y_min, y_max)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bdmnts_edge():

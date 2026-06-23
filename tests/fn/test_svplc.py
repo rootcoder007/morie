@@ -1,7 +1,6 @@
 """Tests for morie.fn.svplc -- Plott radial symmetry condition check"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svplc import plott_condition
 

@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-import pytest
+
 from morie.fn.rf_i import rf_impute
 
 
@@ -27,10 +27,12 @@ class TestRFImpute:
     def test_imputed_mean_reasonable(self, rng):
         """Imputed values should have a mean close to the true mean."""
         n = 300
-        df = pd.DataFrame({
-            "a": rng.normal(10, 1, n),
-            "b": rng.standard_normal(n),
-        })
+        df = pd.DataFrame(
+            {
+                "a": rng.normal(10, 1, n),
+                "b": rng.standard_normal(n),
+            }
+        )
         mask = rng.random(n) < 0.15
         df.loc[mask, "a"] = np.nan
         result = rf_impute(df, n_iter=5)

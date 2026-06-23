@@ -1,6 +1,7 @@
 """Tests for otgw.ot_gromov_wasserstein."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otgw import ot_gromov_wasserstein
 
 
@@ -13,7 +14,7 @@ def test_otgw_basic():
     max_iter = np.random.default_rng(42).normal(0, 1, 100)
     result = ot_gromov_wasserstein(Cx, Cy, a, b, max_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otgw_edge():

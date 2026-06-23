@@ -1,5 +1,7 @@
 """Variance reduction criterion for regression tree splitting."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["variance_reduction_split"]
@@ -31,7 +33,14 @@ def variance_reduction_split(y, split_idx):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Variance reduction criterion for regression tree splitting"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Variance reduction criterion for regression tree splitting",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svbnz -- Banzhaf power index spatial"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svbnz import banzhaf_spatial
 

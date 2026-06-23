@@ -1,6 +1,7 @@
 """Tests for wsmcvr.wasserman_kfold_cv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmcvr import wasserman_kfold_cv
 
 
@@ -12,7 +13,7 @@ def test_wsmcvr_basic():
     k = 5
     result = wasserman_kfold_cv(X, y, model, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmcvr_edge():

@@ -1,6 +1,7 @@
 """Test snr_to_linear (snrdb)."""
-from morie.fn.snrdb import snr_to_linear, snrdb
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.snrdb import snr_to_linear, snrdb
 
 
 class TestSNRToLinear:

@@ -70,4 +70,4 @@ cepana = cepstral_analysis
 
 
 def cheatsheet() -> str:
-    return 'cepstral_analysis({}) -> Cepstral analysis.'
+    return "cepstral_analysis({}) -> Cepstral analysis."

@@ -1,7 +1,5 @@
 """Tests for morie.fn.cpads — load CPADS data."""
 
-import pytest
-
 from morie.fn.cpads import cpads, load_cpads
 
 
@@ -18,6 +16,7 @@ def test_callable():
 def test_function_signature():
     """load_cpads accepts db_path and timeout kwargs."""
     import inspect
+
     sig = inspect.signature(load_cpads)
     params = list(sig.parameters.keys())
     assert "db_path" in params

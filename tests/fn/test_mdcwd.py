@@ -1,7 +1,7 @@
 """Tests for morie.fn.mdcwd."""
 
 import numpy as np
-import pytest
+
 from morie.fn.mdcwd import mdcwd
 
 

@@ -73,7 +73,7 @@ def penrs(
         }
 
     elif geometry == "schwarzschild":
-        rs = 2.0 * G * M / c ** 2
+        rs = 2.0 * G * M / c**2
         mask = r > rs
         if not np.all(mask):
             raise ValueError("All r must be > Schwarzschild radius for exterior region.")

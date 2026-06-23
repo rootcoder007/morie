@@ -1,5 +1,7 @@
 """Separable spatio-temporal covariance: product of spatial and temporal."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_st_cov_separable"]
@@ -35,7 +37,14 @@ def schabenberger_st_cov_separable(spatial_h, temporal_u, cov_spatial, cov_tempo
     n = int(spatial_h) if spatial_h.ndim == 0 else len(spatial_h)
     result = float(np.mean(spatial_h))
     se = float(np.std(spatial_h, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Separable spatio-temporal covariance: product of spatial and temporal"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Separable spatio-temporal covariance: product of spatial and temporal",
+        }
+    )
 
 
 def cheatsheet():

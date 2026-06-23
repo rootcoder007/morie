@@ -1,6 +1,5 @@
 """Tests for morie.fn.scnrm — score norms."""
 
-import numpy as np
 from morie.fn.scnrm import score_norms
 
 

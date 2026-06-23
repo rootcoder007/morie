@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Isomap: MDS on geodesic distances from kNN graph."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_isomap"]
@@ -34,7 +36,9 @@ def geron_isomap(X, n_components, n_neighbors):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Isomap: MDS on geodesic distances from kNN graph"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Isomap: MDS on geodesic distances from kNN graph"}
+    )
 
 
 def cheatsheet():

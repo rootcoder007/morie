@@ -1,6 +1,7 @@
 """Test semtl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.semtl import semtl
 
 

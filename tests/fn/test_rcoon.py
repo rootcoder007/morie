@@ -1,7 +1,7 @@
 """Tests for morie.fn.rcoon -- Hohmann transfer orbit."""
 
-from morie.fn.rcoon import hohmann_transfer, rcoon
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rcoon import hohmann_transfer, rcoon
 
 
 class TestRcoon:

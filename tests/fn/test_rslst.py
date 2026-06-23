@@ -1,6 +1,7 @@
 """Test rslst."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rslst import rslst
 
 

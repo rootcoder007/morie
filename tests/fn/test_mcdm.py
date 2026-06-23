@@ -1,6 +1,7 @@
 """Tests for morie.fn.mcdm — TOPSIS."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mcdm import topsis
 
 

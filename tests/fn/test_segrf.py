@@ -1,6 +1,7 @@
 """Test segrf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.segrf import segrf
 
 

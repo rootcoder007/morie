@@ -1,6 +1,7 @@
 """Test opabc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opabc import opabc
 
 

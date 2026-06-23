@@ -1,6 +1,7 @@
 """Tests for morie.fn.vachrd -- vaccine herd immunity."""
 
 import pytest
+
 from morie.fn.vachrd import vaccine_herd
 
 

@@ -1,6 +1,8 @@
 """Tests for mcsrs."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mcsrs import mcsrs
 
 
@@ -28,4 +30,5 @@ def test_mcsrs_no_data():
 
 def test_mcsrs_alias():
     from morie.fn.mcsrs import mcsrs
+
     assert mcsrs is mcsrs

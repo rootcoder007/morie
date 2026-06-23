@@ -1,6 +1,7 @@
 """Tests for grmnr.geron_max_norm_regularization."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grmnr import geron_max_norm_regularization
 
 
@@ -10,7 +11,7 @@ def test_grmnr_basic():
     r = 10
     result = geron_max_norm_regularization(W, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grmnr_edge():

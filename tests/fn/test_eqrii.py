@@ -1,8 +1,9 @@
 """Tests for morie.fn.eqrii — relative inequality index."""
 
 import pytest
-from morie.fn.eqrii import relative_inequality
+
 from morie.fn._containers import ESRes
+from morie.fn.eqrii import relative_inequality
 
 
 class TestRelativeInequality:

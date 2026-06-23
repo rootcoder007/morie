@@ -1,6 +1,7 @@
 """Tests for bmdul.bayesian_mds_unfolding."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bmdul import bayesian_mds_unfolding
 
 
@@ -11,7 +12,7 @@ def test_bmdul_basic():
     n_iter = 50
     result = bayesian_mds_unfolding(ratings, n_dims, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bmdul_edge():

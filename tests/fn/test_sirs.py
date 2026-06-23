@@ -11,7 +11,7 @@ class TestSIRSModel:
         res = sirs_model(beta=0.3, gamma=0.1, xi=0.01)
         assert res.model == "SIRS"
         assert res.R is not None
-        assert res.R0 == pytest.approx(3.0)
+        assert pytest.approx(3.0) == res.R0
 
     def test_population_conserved(self):
         res = sirs_model(beta=0.4, gamma=0.2, xi=0.05, n_steps=500)

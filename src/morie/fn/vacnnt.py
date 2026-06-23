@@ -1,6 +1,5 @@
 """Number needed to vaccinate (NNV)."""
 
-
 from ._containers import ESRes
 
 

@@ -1,7 +1,8 @@
 """Tests for mptfd.py - Matching Pursuit Time-Frequency Distribution."""
+
 import numpy as np
-import pytest
-from morie.fn.mptfd import mptfd_fn, mptfd
+
+from morie.fn.mptfd import mptfd, mptfd_fn
 
 
 def test_mptfd_returns_descriptive_result():

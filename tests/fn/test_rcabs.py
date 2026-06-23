@@ -1,7 +1,7 @@
 """Tests for morie.fn.rcabs."""
 
 import numpy as np
-import pytest
+
 from morie.fn.rcabs import rcabs
 
 

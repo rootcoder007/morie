@@ -1,6 +1,7 @@
 """Tests for morie.fn.mhgad -- GAD-7 score."""
 
 import pytest
+
 from morie.fn.mhgad import gad7_score
 
 

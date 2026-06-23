@@ -1,6 +1,7 @@
 r"""Mean squared error cost over the dataset for the linear model with parameters w and b.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_mse_cost"]
@@ -38,7 +39,14 @@ def burkov_lm_ch1_mse_cost(w, b, x, y, N):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mean squared error cost over the dataset for the linear model with parameters w and b."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mean squared error cost over the dataset for the linear model with parameters w and b.",
+        }
+    )
 
 
 def cheatsheet():

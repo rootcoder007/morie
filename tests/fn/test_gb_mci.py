@@ -1,6 +1,7 @@
 """Tests for gb_mci.gibbons_mcnemar_ci."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb_mci import gibbons_mcnemar_ci
 
 
@@ -12,7 +13,7 @@ def test_gb_mci_basic():
     alpha = 0.05
     result = gibbons_mcnemar_ci(b, c, n, alpha)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb_mci_edge():

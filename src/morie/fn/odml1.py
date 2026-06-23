@@ -9,7 +9,16 @@ from numpy.linalg import lstsq
 from scipy import stats
 
 
-def otis_dml_region(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", region_col: str = "region", n_folds: int = 3, seed: int = 123) -> pd.DataFrame:
+def otis_dml_region(
+    df: pd.DataFrame,
+    cdf=None,
+    *,
+    outcome: str = "Y",
+    treatment: str = "D",
+    region_col: str = "region",
+    n_folds: int = 3,
+    seed: int = 123,
+) -> pd.DataFrame:
     """Estimate DML ATE separately within each region.
 
     Uses Frisch-Waugh-Lovell partialling out with OLS nuisance models

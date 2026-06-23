@@ -22,8 +22,8 @@ __all__ = ["kv_cache_management", "kv_cache_compress"]
 
 # ───────────────────────── canonical spec API ──────────────────────────
 
-def kv_cache_management(K_cache, V_cache, k_new, v_new,
-                        max_len: int | None = None) -> RichResult:
+
+def kv_cache_management(K_cache, V_cache, k_new, v_new, max_len: int | None = None) -> RichResult:
     """Append a new (k, v) pair to a running KV cache.
 
     Formula:
@@ -61,16 +61,16 @@ def kv_cache_management(K_cache, V_cache, k_new, v_new,
     T = K_new.shape[-2]
     return RichResult(
         title="KV-Cache Append (Pope 2022)",
-        summary_lines=[("T_new", T),
-                       ("d_head", K_new.shape[-1])],
-        payload={"K": K_new, "V": V_new, "T": T,
-                 "max_len": max_len, "method": "kv-cache-append"},
+        summary_lines=[("T_new", T), ("d_head", K_new.shape[-1])],
+        payload={"K": K_new, "V": V_new, "T": T, "max_len": max_len, "method": "kv-cache-append"},
     )
 
 
 def cheatsheet() -> str:
-    return ("kvcmp(K_cache, V_cache, k_new, v_new, max_len): KV-cache append; "
-            "kv_cache_compress(K, V, bits): TurboQuant quantisation")
+    return (
+        "kvcmp(K_cache, V_cache, k_new, v_new, max_len): KV-cache append; "
+        "kv_cache_compress(K, V, bits): TurboQuant quantisation"
+    )
 
 
 # CANONICAL TEST
@@ -81,6 +81,7 @@ def cheatsheet() -> str:
 
 
 # ─────────────────── legacy TurboQuant quantisation API ────────────────
+
 
 def kv_cache_compress(
     K: np.ndarray,

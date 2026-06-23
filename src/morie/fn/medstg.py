@@ -1,6 +1,7 @@
 """Sequential / chain mediation X -> M1 -> M2 -> Y."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sequential_mediation"]
@@ -34,7 +35,9 @@ def sequential_mediation(a1, b1, c1):
     n = len(a1)
     result = float(np.mean(a1))
     se = float(np.std(a1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sequential / chain mediation X -> M1 -> M2 -> Y"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Sequential / chain mediation X -> M1 -> M2 -> Y"}
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""morie.dataset_dictionary — unified parser for dataset documentation.
+r"""morie.dataset_dictionary — unified parser for dataset documentation.
 
 Real-world open-data releases ship their schemas in a half-dozen
 different formats, all describing the same logical thing: "what
@@ -65,9 +65,10 @@ from __future__ import annotations
 
 import json
 import re
-from dataclasses import dataclass, field, replace
+from collections.abc import Iterable
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from morie._datapaths import resolve_data_dir
 from morie.fn._richresult import RichResult
@@ -116,8 +117,8 @@ def _canonical_dtype(raw: str | None) -> str:
     if raw is None:
         return "string"
     cleaned = str(raw).strip()
-    cleaned = cleaned.replace("\xa0", " ")   # non-breaking space → space
-    cleaned = re.sub(r"\s+", " ", cleaned)   # collapse repeated spaces
+    cleaned = cleaned.replace("\xa0", " ")  # non-breaking space → space
+    cleaned = re.sub(r"\s+", " ", cleaned)  # collapse repeated spaces
     return _DTYPE_MAP.get(cleaned.lower(), "string")
 
 
@@ -226,7 +227,7 @@ _MD_VAR_LINE = re.compile(
 
 
 def parse_markdown_dictionary(path: str | Path) -> dict[str, DatasetSchema]:
-    """Parse a OTIS-style Markdown data dictionary.
+    r"""Parse a OTIS-style Markdown data dictionary.
 
     The Markdown is expected to be one file with multiple
     ``### N. <Title>`` sections, each containing at least:
@@ -269,8 +270,7 @@ def parse_markdown_dictionary(path: str | Path) -> dict[str, DatasetSchema]:
 
         # Carve out the variables block: from "**Variables**:" until the
         # next horizontal rule "------" or the end of the section body.
-        m_vars = re.search(r"\*\*Variables\*\*:\s*\n(.*?)(?:\n-{4,}\s*$|\Z)",
-                            body, re.S | re.M)
+        m_vars = re.search(r"\*\*Variables\*\*:\s*\n(.*?)(?:\n-{4,}\s*$|\Z)", body, re.S | re.M)
         if not m_vars:
             schemas[dataset_id] = DatasetSchema(
                 dataset_name=dataset_id,
@@ -296,13 +296,15 @@ def parse_markdown_dictionary(path: str | Path) -> dict[str, DatasetSchema]:
                 dtype = "int" if "ID" not in desc else "int"
                 if "Row ID" in desc:
                     dtype = "int"
-            cols.append(ColumnSpec(
-                name=name,
-                dtype=dtype,
-                description_en=full_en or None,
-                source_notes=None,
-                raw_type=None,
-            ))
+            cols.append(
+                ColumnSpec(
+                    name=name,
+                    dtype=dtype,
+                    description_en=full_en or None,
+                    source_notes=None,
+                    raw_type=None,
+                )
+            )
 
         schemas[dataset_id] = DatasetSchema(
             dataset_name=dataset_id,
@@ -331,13 +333,10 @@ _XLSX_HEADER_MARKERS = (
 _XLSX_COL_ROLES: dict[str, tuple[str, ...]] = {
     "file_name": ("file name", "nom du fichier"),
     "var_name": ("variable name", "nom de la variable"),
-    "var_label": ("variable label", "étiquette de variable",
-                  "étiquette de la variable"),
-    "var_definition": ("variable definition", "définition de la variable",
-                        "définition"),
+    "var_label": ("variable label", "étiquette de variable", "étiquette de la variable"),
+    "var_definition": ("variable definition", "définition de la variable", "définition"),
     "data_values": ("data values", "type de valeur"),
-    "additional_notes": ("additional notes", "notes additionnelles",
-                          "notes complémentaires"),
+    "additional_notes": ("additional notes", "notes additionnelles", "notes complémentaires"),
     "data_type": ("data type", "type de données"),
     "data_format": ("data format", "format"),
     "measurement_level": ("measurement level", "niveau de mesure"),
@@ -413,12 +412,12 @@ def _parse_xlsx_sheet(
         return {}
     if "file_name" not in role_to_col:
         # No grouping column — treat the whole sheet as one anonymous dataset.
-        role_to_col["file_name"] = -1   # sentinel meaning "no grouping"
+        role_to_col["file_name"] = -1  # sentinel meaning "no grouping"
 
     by_dataset: dict[str, list[ColumnSpec]] = {}
     by_dataset_source_notes: dict[str, str] = {}
 
-    for row in rows[hdr_idx + 1:]:
+    for row in rows[hdr_idx + 1 :]:
         # An entirely-blank row separates dataset blocks in some layouts;
         # just skip blank rows and continue.
         if all(c is None or str(c).strip() == "" for c in row):
@@ -436,11 +435,10 @@ def _parse_xlsx_sheet(
 
         var_name = get("var_name")
         if not var_name:
-            continue   # rows without a variable name aren't column definitions
+            continue  # rows without a variable name aren't column definitions
 
         file_name = get("file_name") or "_unknown_"
-        dataset_id = _normalise_dataset_id(file_name) if file_name != "_unknown_" \
-                     else "_unknown_"
+        dataset_id = _normalise_dataset_id(file_name) if file_name != "_unknown_" else "_unknown_"
 
         # Build the description string from label + definition.
         label = get("var_label")
@@ -548,9 +546,14 @@ def parse_xlsx_dictionary(
             continue
 
         # Skip non-data-dictionary sheets.
-        if "relationship" in name_lc or "diagram" in name_lc or \
-           "general notes" in name_lc or "generallnotes" in name_lc or \
-           "notegénérales" in name_lc or "notesgenerales" in name_lc:
+        if (
+            "relationship" in name_lc
+            or "diagram" in name_lc
+            or "general notes" in name_lc
+            or "generallnotes" in name_lc
+            or "notegénérales" in name_lc
+            or "notesgenerales" in name_lc
+        ):
             continue
 
         # Decide language from sheet name.
@@ -678,13 +681,15 @@ def parse_ckan_sidecar(path: str | Path) -> DatasetSchema:
         dtype = _CKAN_TYPE_MAP.get(str(raw_type).lower(), "string")
         info = f.get("info") or {}
         notes = info.get("notes") if isinstance(info, dict) else None
-        cols.append(ColumnSpec(
-            name=name,
-            dtype=dtype,
-            description_en=None,    # CKAN sidecars don't carry rich descriptions
-            source_notes=notes,
-            raw_type=str(raw_type) if raw_type else None,
-        ))
+        cols.append(
+            ColumnSpec(
+                name=name,
+                dtype=dtype,
+                description_en=None,  # CKAN sidecars don't carry rich descriptions
+                source_notes=notes,
+                raw_type=str(raw_type) if raw_type else None,
+            )
+        )
 
     return DatasetSchema(
         dataset_name=p.stem,
@@ -718,16 +723,18 @@ def merge_schemas(primary: DatasetSchema, secondary: DatasetSchema) -> DatasetSc
         if sec is None:
             merged_cols.append(col)
         else:
-            merged_cols.append(ColumnSpec(
-                name=col.name,
-                dtype=col.dtype or sec.dtype,
-                description_en=col.description_en or sec.description_en,
-                description_fr=col.description_fr or sec.description_fr,
-                valid_values=col.valid_values or sec.valid_values,
-                nullable=col.nullable,
-                source_notes=col.source_notes or sec.source_notes,
-                raw_type=col.raw_type or sec.raw_type,
-            ))
+            merged_cols.append(
+                ColumnSpec(
+                    name=col.name,
+                    dtype=col.dtype or sec.dtype,
+                    description_en=col.description_en or sec.description_en,
+                    description_fr=col.description_fr or sec.description_fr,
+                    valid_values=col.valid_values or sec.valid_values,
+                    nullable=col.nullable,
+                    source_notes=col.source_notes or sec.source_notes,
+                    raw_type=col.raw_type or sec.raw_type,
+                )
+            )
         seen.add(col.name.lower())
 
     for col in secondary.columns:
@@ -751,7 +758,7 @@ def _coerce_dtype_match(pandas_dtype: str, canonical: str) -> bool:
     if canonical == "int":
         return "int" in s
     if canonical == "float":
-        return "float" in s or "int" in s   # ints are valid floats
+        return "float" in s or "int" in s  # ints are valid floats
     if canonical == "bool":
         return "bool" in s
     if canonical in ("date", "datetime"):
@@ -801,12 +808,14 @@ def validate_dataframe_against_schema(
         df_name = df_cols[lc]
         pd_dtype = str(df[df_name].dtype)
         if not _coerce_dtype_match(pd_dtype, spec.dtype):
-            dtype_mismatches.append({
-                "column": spec.name,
-                "expected": spec.dtype,
-                "actual_pandas": pd_dtype,
-                "raw_upstream_type": spec.raw_type,
-            })
+            dtype_mismatches.append(
+                {
+                    "column": spec.name,
+                    "expected": spec.dtype,
+                    "actual_pandas": pd_dtype,
+                    "raw_upstream_type": spec.raw_type,
+                }
+            )
 
     is_valid = not missing and not dtype_mismatches
     n_rows = len(df)
@@ -847,24 +856,27 @@ def validate_dataframe_against_schema(
 
     sections: list[dict] = []
     if missing:
-        sections.append({
-            "title": "Missing columns",
-            "lines": [(name, "") for name in missing],
-        })
+        sections.append(
+            {
+                "title": "Missing columns",
+                "lines": [(name, "") for name in missing],
+            }
+        )
     if extra:
-        sections.append({
-            "title": "Extra columns (in DataFrame but not in schema)",
-            "lines": [(name, "") for name in extra],
-        })
+        sections.append(
+            {
+                "title": "Extra columns (in DataFrame but not in schema)",
+                "lines": [(name, "") for name in extra],
+            }
+        )
     if dtype_mismatches:
-        sections.append({
-            "title": "Dtype mismatches",
-            "headers": ["column", "expected", "actual (pandas)"],
-            "table": [
-                [m["column"], m["expected"], m["actual_pandas"]]
-                for m in dtype_mismatches
-            ],
-        })
+        sections.append(
+            {
+                "title": "Dtype mismatches",
+                "headers": ["column", "expected", "actual (pandas)"],
+                "table": [[m["column"], m["expected"], m["actual_pandas"]] for m in dtype_mismatches],
+            }
+        )
 
     warnings = []
     if extra and not missing:
@@ -962,8 +974,8 @@ def load_otis_dictionary(
 # ARSAU/Suppl/ directory:
 _ARSAU_DICT_FILENAMES = {
     "2020-2022": "datadictionary_useofforce_2020-2022en_fr1.xlsx",
-    "2023":      "datadictionary_2023uof_en_fr.xlsx",
-    "2024":      "datadictionary_uof_en_fr_v1.0_20250822.xlsx",
+    "2023": "datadictionary_2023uof_en_fr.xlsx",
+    "2024": "datadictionary_uof_en_fr_v1.0_20250822.xlsx",
 }
 
 
@@ -980,10 +992,7 @@ def load_arsau_dictionary(
     """
     key = str(year_or_range).strip()
     if key not in _ARSAU_DICT_FILENAMES:
-        raise ValueError(
-            f"Unknown ARSAU year_or_range {year_or_range!r}; "
-            f"valid keys: {sorted(_ARSAU_DICT_FILENAMES)}"
-        )
+        raise ValueError(f"Unknown ARSAU year_or_range {year_or_range!r}; valid keys: {sorted(_ARSAU_DICT_FILENAMES)}")
 
     root = resolve_data_dir("arsau", data_dir=data_dir)
     xlsx_path = root / "Suppl" / _ARSAU_DICT_FILENAMES[key]

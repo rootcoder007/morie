@@ -1,6 +1,7 @@
 """Tests for rgica.rangayyan_fastica."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgica import rangayyan_fastica
 
 
@@ -13,7 +14,7 @@ def test_rgica_basic():
     tol = 1e-6
     result = rangayyan_fastica(X, n_components, nonlin, max_iter, tol)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgica_edge():

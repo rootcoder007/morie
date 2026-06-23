@@ -1,6 +1,7 @@
 """Tests for use_r2u171.use_r_chapter_2_unnumbered_171."""
+
 import numpy as np
-import pytest
+
 from morie.fn.use_r2u171 import use_r_chapter_2_unnumbered_171
 
 
@@ -9,7 +10,7 @@ def test_use_r2u171_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = use_r_chapter_2_unnumbered_171(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_use_r2u171_edge():

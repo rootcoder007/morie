@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exact null distribution of Spearman r_s for small n via enumeration."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_spearman_exact"]
@@ -35,7 +37,14 @@ def gibbons_spearman_exact(n, rho):
         data = rng.standard_normal(max(n, 2))
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Exact null distribution of Spearman r_s for small n via enumeration"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Exact null distribution of Spearman r_s for small n via enumeration",
+        }
+    )
 
 
 def cheatsheet():

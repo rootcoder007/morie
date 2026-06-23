@@ -1,6 +1,7 @@
 """Tests for ardlmd.ardl_bounds_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ardlmd import ardl_bounds_test
 
 
@@ -12,7 +13,7 @@ def test_ardlmd_basic():
     q = np.random.default_rng(42).normal(0, 1, 100)
     result = ardl_bounds_test(y, X, p, q)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_ardlmd_edge():

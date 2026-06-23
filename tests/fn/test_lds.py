@@ -24,6 +24,7 @@ def test_rejects_unknown_key():
 def test_function_signature():
     """load_dataset accepts key, db_path, and timeout."""
     import inspect
+
     sig = inspect.signature(load_dataset)
     params = list(sig.parameters.keys())
     assert "key" in params

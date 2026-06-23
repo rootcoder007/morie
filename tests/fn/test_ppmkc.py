@@ -1,6 +1,7 @@
 """Test ppmkc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppmkc import ppmkc
 
 

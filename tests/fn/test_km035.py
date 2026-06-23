@@ -1,6 +1,7 @@
 """Tests for km035.kamath_ch2_gpt_supervised_softmax."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km035 import kamath_ch2_gpt_supervised_softmax
 
 
@@ -11,7 +12,7 @@ def test_km035_basic():
     W_y = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ch2_gpt_supervised_softmax(x, h, W_y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km035_edge():

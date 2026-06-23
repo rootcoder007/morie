@@ -1,6 +1,7 @@
 """ABC with neural likelihood-free inference."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["abc_neural"]
@@ -36,7 +37,9 @@ def abc_neural(sim, obs, theta_prior, n_train):
     n = len(obs)
     result = float(np.mean(obs))
     se = float(np.std(obs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ABC with neural likelihood-free inference"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "ABC with neural likelihood-free inference"}
+    )
 
 
 def cheatsheet():

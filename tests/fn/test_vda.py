@@ -1,8 +1,9 @@
 """Tests for morie.fn.vda -- Vargha-Delaney A statistic."""
 
 import pytest
-from morie.fn.vda import vargha_delaney_a
+
 from morie.fn._containers import ESRes
+from morie.fn.vda import vargha_delaney_a
 
 
 class TestVarghaDelaneyA:

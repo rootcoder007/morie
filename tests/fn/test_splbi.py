@@ -1,6 +1,7 @@
 """Test splbi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.splbi import splbi
 
 

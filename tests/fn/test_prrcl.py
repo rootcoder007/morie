@@ -1,5 +1,5 @@
 """Tests for precision_recall."""
-import pytest
+
 from morie.fn.prrcl import precision_recall, prrcl
 
 

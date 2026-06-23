@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DDPM forward (noising) process q(x_t | x_0)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ddpm_forward_process"]
@@ -34,7 +36,9 @@ def geron_ddpm_forward_process(x0, t, alpha_bar):
     n = len(x0)
     result = float(np.mean(x0))
     se = float(np.std(x0, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DDPM forward (noising) process q(x_t | x_0)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DDPM forward (noising) process q(x_t | x_0)"}
+    )
 
 
 def cheatsheet():

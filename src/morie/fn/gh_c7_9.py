@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Consistency for linear regression with unknown error density."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_linreg_unk_err"]
@@ -32,7 +34,14 @@ def ghosal_linreg_unk_err(x, y):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Consistency for linear regression with unknown error density"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Consistency for linear regression with unknown error density",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 """Tests for stkval."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stkval import stkval
 
 
@@ -28,4 +30,5 @@ def test_stkval_no_data():
 
 def test_stkval_alias():
     from morie.fn.stkval import stkval
+
     assert stkval is stkval

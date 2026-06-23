@@ -1,6 +1,7 @@
 """Test pcfsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pcfsp import pcfsp
 
 

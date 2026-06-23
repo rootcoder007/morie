@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kdgof"]
@@ -74,7 +75,7 @@ def kdgof(
 
     def _kde(sample, grid, h):
         u = (grid[:, None] - sample[None, :]) / h
-        return np.exp(-0.5 * u ** 2).mean(axis=1) / (h * np.sqrt(2 * np.pi))
+        return np.exp(-0.5 * u**2).mean(axis=1) / (h * np.sqrt(2 * np.pi))
 
     def _stat(sample):
         f_hat = _kde(sample, x_grid, bw)

@@ -1,6 +1,7 @@
 """Tests for kmdpr.kamath_dense_passage_retrieval."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmdpr import kamath_dense_passage_retrieval
 
 
@@ -11,7 +12,7 @@ def test_kmdpr_basic():
     k = 5
     result = kamath_dense_passage_retrieval(q_embed, p_embeds, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmdpr_edge():

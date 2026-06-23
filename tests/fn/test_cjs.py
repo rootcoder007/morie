@@ -1,8 +1,9 @@
 """Tests for morie.fn.cjs -- CJS flow calculation."""
 
 import pytest
-from morie.fn.cjs import cjs_flow, cjs
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cjs import cjs, cjs_flow
 
 
 class TestCjs:

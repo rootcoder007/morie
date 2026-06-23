@@ -1,8 +1,9 @@
 """Tests for morie.fn.inpnt -- Interior point method."""
 
 import numpy as np
-from morie.fn.inpnt import interior_point_lp, inpnt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.inpnt import inpnt, interior_point_lp
 
 
 class TestInpnt:

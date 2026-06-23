@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """VeRA: shared frozen random matrices + per-layer learned scaling vectors."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_vera_adapter"]
@@ -40,7 +42,14 @@ def kamath_vera_adapter(W0, A_frozen, B_frozen, lam_b, lam_d, x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "VeRA: shared frozen random matrices + per-layer learned scaling vectors"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "VeRA: shared frozen random matrices + per-layer learned scaling vectors",
+        }
+    )
 
 
 def cheatsheet():

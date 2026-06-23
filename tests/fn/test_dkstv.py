@@ -1,6 +1,7 @@
 """Test dkstv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkstv import dkstv
 
 

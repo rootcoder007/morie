@@ -1,6 +1,7 @@
 """Croston's method (intermittent demand)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["croston"]
@@ -32,7 +33,9 @@ def croston(y, alpha):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Croston's method (intermittent demand)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Croston's method (intermittent demand)"}
+    )
 
 
 def cheatsheet():

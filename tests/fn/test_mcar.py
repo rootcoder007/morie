@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import pytest
+
 from morie.fn.mcar import littles_mcar_test
 
 
@@ -20,11 +21,13 @@ class TestLittlesMCARTest:
     def test_mcar_data_high_pvalue(self, rng):
         """Data generated MCAR should usually yield p > 0.01."""
         n = 500
-        df = pd.DataFrame({
-            "a": rng.standard_normal(n),
-            "b": rng.standard_normal(n),
-            "c": rng.standard_normal(n),
-        })
+        df = pd.DataFrame(
+            {
+                "a": rng.standard_normal(n),
+                "b": rng.standard_normal(n),
+                "c": rng.standard_normal(n),
+            }
+        )
         # Inject MCAR missingness
         for col in df.columns:
             mask = rng.random(n) < 0.1

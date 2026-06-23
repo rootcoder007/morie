@@ -1,6 +1,7 @@
 """Test agpd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agpd import agpd
 
 

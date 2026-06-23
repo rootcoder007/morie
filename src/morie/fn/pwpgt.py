@@ -1,6 +1,7 @@
 """Prentice-Williams-Peterson gap-time model."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["pwp_gap_time"]
@@ -38,7 +39,9 @@ def pwp_gap_time(start, stop, event, X, occurrence):
     n = len(start)
     result = float(np.mean(start))
     se = float(np.std(start, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Prentice-Williams-Peterson gap-time model"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Prentice-Williams-Peterson gap-time model"}
+    )
 
 
 def cheatsheet():

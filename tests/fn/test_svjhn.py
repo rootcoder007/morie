@@ -1,7 +1,6 @@
 """Tests for morie.fn.svjhn -- Johnston power index"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svjhn import johnston_power
 

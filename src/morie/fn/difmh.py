@@ -10,7 +10,16 @@ from scipy import stats as sp
 from morie.fn._containers import DIFResult
 
 
-def difmh(data: pd.DataFrame | np.ndarray, group: np.ndarray | pd.Series | list, cdf=None, *, item_names: list[str] | None = None, n_strata: int = 5, alpha: float = 0.05, ref_group: int | str = 0) -> DIFResult:
+def difmh(
+    data: pd.DataFrame | np.ndarray,
+    group: np.ndarray | pd.Series | list,
+    cdf=None,
+    *,
+    item_names: list[str] | None = None,
+    n_strata: int = 5,
+    alpha: float = 0.05,
+    ref_group: int | str = 0,
+) -> DIFResult:
     """Mantel-Haenszel DIF detection with ETS A/B/C classification.
 
     Stratifies examinees by total score, computes the MH odds ratio and

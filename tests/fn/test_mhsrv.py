@@ -1,6 +1,7 @@
 """Tests for morie.fn.mhsrv -- service utilization."""
 
 import pytest
+
 from morie.fn.mhsrv import service_utilization
 
 

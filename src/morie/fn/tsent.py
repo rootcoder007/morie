@@ -33,7 +33,7 @@ def tsallis_entropy(x, q: float = 2.0, bins: int = 50, **kwargs) -> ESRes:
     counts, _ = np.histogram(x, bins=bins)
     p = counts / counts.sum()
     p = p[p > 0]
-    s = float((1.0 - np.sum(p ** q)) / (q - 1.0))
+    s = float((1.0 - np.sum(p**q)) / (q - 1.0))
     return ESRes(
         measure="tsallis_entropy",
         estimate=s,

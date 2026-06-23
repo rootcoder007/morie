@@ -92,4 +92,4 @@ anmls = multiview_cca
 
 
 def cheatsheet() -> str:
-    return 'multiview_cca({}) -> Multi-view learning (CCA fusion).'
+    return "multiview_cca({}) -> Multi-view learning (CCA fusion)."

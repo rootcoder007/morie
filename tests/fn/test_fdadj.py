@@ -1,6 +1,7 @@
 """Tests for fdadj.frontdoor_adjustment."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fdadj import frontdoor_adjustment
 
 
@@ -12,7 +13,7 @@ def test_fdadj_basic():
     data = np.random.default_rng(42).normal(0, 1, 100)
     result = frontdoor_adjustment(X, Y, Z, data)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fdadj_edge():

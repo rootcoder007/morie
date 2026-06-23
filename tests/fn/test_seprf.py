@@ -1,6 +1,7 @@
 """Test seprf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.seprf import seprf
 
 

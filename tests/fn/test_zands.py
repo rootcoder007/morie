@@ -1,6 +1,8 @@
 """Tests for morie.fn.zands -- Zivot-Andrews test."""
+
 import numpy as np
 import pytest
+
 from morie.fn.zands import za_test
 
 
@@ -17,4 +19,5 @@ class TestZA:
 
     def test_cheatsheet(self):
         from morie.fn.zands import cheatsheet
+
         assert isinstance(cheatsheet(), str)

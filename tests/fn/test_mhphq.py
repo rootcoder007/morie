@@ -1,6 +1,7 @@
 """Tests for morie.fn.mhphq -- PHQ-9 score."""
 
 import pytest
+
 from morie.fn.mhphq import phq9_score
 
 

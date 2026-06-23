@@ -1,6 +1,7 @@
 """Test abpmc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.abpmc import abpmc
 
 

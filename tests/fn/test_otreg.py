@@ -1,6 +1,7 @@
 """Tests for otreg.ot_regularised_dual."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otreg import ot_regularised_dual
 
 
@@ -13,7 +14,7 @@ def test_otreg_basic():
     max_iter = np.random.default_rng(42).normal(0, 1, 100)
     result = ot_regularised_dual(a, b, C, epsilon, max_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otreg_edge():

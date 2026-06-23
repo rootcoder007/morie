@@ -1,6 +1,7 @@
 """Tests for gb_rco.gibbons_rank_corr_partial."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb_rco import gibbons_rank_corr_partial
 
 
@@ -11,7 +12,7 @@ def test_gb_rco_basic():
     z = np.random.default_rng(44).normal(0, 1, 100)
     result = gibbons_rank_corr_partial(x, y, z)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_gb_rco_edge():

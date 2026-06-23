@@ -1,6 +1,7 @@
 """Tests for hmarim.geron_arima."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmarim import geron_arima
 
 
@@ -12,7 +13,7 @@ def test_hmarim_basic():
     q = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_arima(y, p, d, q)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmarim_edge():

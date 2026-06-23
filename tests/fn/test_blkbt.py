@@ -1,5 +1,7 @@
 """Tests for morie.fn.blkbt — Blackbox scaling."""
+
 import numpy as np
+
 from morie.fn.blkbt import blkbt
 
 

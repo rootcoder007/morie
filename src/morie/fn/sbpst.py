@@ -1,6 +1,7 @@
 """Posterior stick-breaking weights."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["stick_breaking_post"]

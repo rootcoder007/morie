@@ -1,13 +1,13 @@
 """Tests for morie.fn.rskrd — risk reclassification NRI."""
 
-import pytest
 import numpy as np
-from morie.fn.rskrd import risk_reclassification
+import pytest
+
 from morie.fn._containers import ESRes
+from morie.fn.rskrd import risk_reclassification
 
 
 class TestRiskReclassification:
-
     def test_returns_esres(self):
         old = np.array([1, 2, 1, 2, 3])
         new = np.array([2, 2, 2, 3, 3])

@@ -1,6 +1,7 @@
 """GCNII -- initial residual + identity mapping."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["gcnii"]
@@ -38,7 +39,9 @@ def gcnii(A, H0, alpha, beta, K):
     n = len(A)
     result = float(np.mean(A))
     se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GCNII -- initial residual + identity mapping"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "GCNII -- initial residual + identity mapping"}
+    )
 
 
 def cheatsheet():

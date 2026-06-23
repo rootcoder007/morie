@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Binary sentiment classification output (positive/negative) via MLP over embeddings."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_sentiment_binary"]
@@ -36,7 +38,14 @@ def geron_sentiment_binary(token_ids, E, w, b):
     n = len(w)
     result = float(np.mean(w))
     se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Binary sentiment classification output (positive/negative) via MLP over embeddings"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Binary sentiment classification output (positive/negative) via MLP over embeddings",
+        }
+    )
 
 
 def cheatsheet():

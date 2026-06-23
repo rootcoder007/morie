@@ -1,5 +1,7 @@
 """Tests for AIC from entropy."""
+
 import pytest
+
 from morie.fn.aient import aic_entropy, aient
 
 

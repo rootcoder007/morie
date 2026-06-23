@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Log-likelihood for LMM under ML estimation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["lmm_log_likelihood"]
@@ -35,14 +37,25 @@ def lmm_log_likelihood(y, X, beta, V):
     y = np.asarray(y, dtype=float)
     n = int(y) if y.ndim == 0 else len(y)
     if y.ndim == 0:
-        return RichResult(payload={"statistic": float('nan'), "p_value": float('nan'), "n": 1, "method": "scalar-input placeholder"})
+        return RichResult(
+            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+        )
     if n < 1:
         return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Log-likelihood for LMM under ML estimation"})
     estimate = np.median(y)
     se = 1.2533 * np.std(y, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Log-likelihood for LMM under ML estimation"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Log-likelihood for LMM under ML estimation",
+        }
+    )
 
 
 def cheatsheet():

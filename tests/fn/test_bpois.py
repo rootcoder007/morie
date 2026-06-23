@@ -1,6 +1,7 @@
 """Tests for morie.fn.bpois -- Bayesian Poisson model."""
 
 import numpy as np
+
 from morie.fn.bpois import bayesian_poisson
 
 
@@ -30,7 +31,7 @@ def test_array_counts():
 def test_variance_formula():
     result = bayesian_poisson(10, 5.0, prior_a=2, prior_b=1)
     a, b = result["posterior_a"], result["posterior_b"]
-    np.testing.assert_allclose(result["posterior_var"], a / b ** 2, atol=1e-10)
+    np.testing.assert_allclose(result["posterior_var"], a / b**2, atol=1e-10)
 
 
 def test_invalid_exposure():

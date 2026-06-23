@@ -9,7 +9,16 @@ from numpy.linalg import lstsq
 from scipy import stats
 
 
-def otis_dml_alert(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "alert_mental_health", covariates: list[str] | None = None, n_folds: int = 3, seed: int = 123) -> dict:
+def otis_dml_alert(
+    df: pd.DataFrame,
+    cdf=None,
+    *,
+    outcome: str = "Y",
+    treatment: str = "alert_mental_health",
+    covariates: list[str] | None = None,
+    n_folds: int = 3,
+    seed: int = 123,
+) -> dict:
     """Estimate DML ATE for an alert-type treatment.
 
     Cross-fitted partialling-out estimator for the effect of a binary

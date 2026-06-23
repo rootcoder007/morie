@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.elnet import elastic_net, elnet
+
 from morie.fn._containers import RegressionResult
+from morie.fn.elnet import elastic_net, elnet
 
 
 @pytest.fixture()

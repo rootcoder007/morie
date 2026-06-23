@@ -1,6 +1,7 @@
 """Tests for grswin.geron_swin_window_attention."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grswin import geron_swin_window_attention
 
 
@@ -13,7 +14,7 @@ def test_grswin_basic():
     WV = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_swin_window_attention(X, window_size, WQ, WK, WV)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grswin_edge():

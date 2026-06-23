@@ -1,8 +1,9 @@
 """Tests for fn/btsmp.py -- Bootstrap resampling."""
+
 import numpy as np
 import pandas as pd
 
-from morie.fn.btsmp import btsmp, bootstrap_sample
+from morie.fn.btsmp import bootstrap_sample, btsmp
 
 
 def test_btsmp_returns_dict():

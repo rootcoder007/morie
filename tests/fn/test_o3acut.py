@@ -1,7 +1,5 @@
 """Tests for acute O3 mortality RR (NMMAPS / APHENA)."""
 
-import math
-
 import numpy as np
 import pytest
 

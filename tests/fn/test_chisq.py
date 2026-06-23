@@ -1,7 +1,7 @@
 """Tests for morie.fn.chisq -- Chi-square test."""
 
-import numpy as np
 import pytest
+
 from morie.fn.chisq import chi_square_test
 
 

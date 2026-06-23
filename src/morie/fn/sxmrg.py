@@ -58,15 +58,15 @@ def sxmrg(
         raise ValueError("Standard errors must be positive.")
 
     beta_diff = bm - bf
-    se_diff = np.sqrt(sm ** 2 + sf ** 2)
+    se_diff = np.sqrt(sm**2 + sf**2)
     z_diff = beta_diff / se_diff
     p_diff = 2.0 * _norm.sf(np.abs(z_diff))
 
     threshold = 0.05 / p if p > 0 else 0.05
     n_sig = int(np.sum(p_diff < threshold))
 
-    wm = 1.0 / sm ** 2
-    wf = 1.0 / sf ** 2
+    wm = 1.0 / sm**2
+    wf = 1.0 / sf**2
     beta_combined = (wm * bm + wf * bf) / (wm + wf)
     se_combined = 1.0 / np.sqrt(wm + wf)
 

@@ -1,6 +1,7 @@
 """Tests for rng122.rangayyan_ch3_baseline_wander_filter_difference_eq."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng122 import rangayyan_ch3_baseline_wander_filter_difference_eq
 
 
@@ -12,7 +13,7 @@ def test_rng122_basic():
     n = 100
     result = rangayyan_ch3_baseline_wander_filter_difference_eq(x, y, T, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng122_edge():

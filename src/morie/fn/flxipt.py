@@ -1,6 +1,7 @@
 """Flexible IPTW with super learner."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["flexible_iptw"]

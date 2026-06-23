@@ -36,7 +36,7 @@ def fuzzy_entropy(x, m: int = 2, r: float | None = None, n_exp: float = 2.0, **k
     def _phi_fuzzy(dim):
         templates = []
         for i in range(n - dim):
-            seg = x[i:i + dim]
+            seg = x[i : i + dim]
             templates.append(seg - np.mean(seg))
         templates = np.array(templates)
         nt = len(templates)

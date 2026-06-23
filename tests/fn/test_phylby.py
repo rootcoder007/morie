@@ -1,6 +1,7 @@
 """Tests for phylby.bayesian_phylogeny."""
+
 import numpy as np
-import pytest
+
 from morie.fn.phylby import bayesian_phylogeny
 
 
@@ -11,7 +12,7 @@ def test_phylby_basic():
     n_iter = 50
     result = bayesian_phylogeny(alignment, priors, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_phylby_edge():

@@ -1,6 +1,7 @@
 """Test gcgrw."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcgrw import gcgrw
 
 

@@ -1,6 +1,7 @@
 """Tests for snaivf.seasonal_naive."""
+
 import numpy as np
-import pytest
+
 from morie.fn.snaivf import seasonal_naive
 
 
@@ -11,7 +12,7 @@ def test_snaivf_basic():
     h = 0.3
     result = seasonal_naive(y, m, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_snaivf_edge():

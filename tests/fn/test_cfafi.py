@@ -1,12 +1,12 @@
 """Tests for morie.fn.cfafi -- CFA fit indices for any structure."""
 
 import numpy as np
-from morie.fn.cfafi import cfa_fit
+
 from morie.fn._mapq_const import SUBSCALES
+from morie.fn.cfafi import cfa_fit
 
 
 class TestCfaFit:
-
     def test_returns_all_indices(self, mapq_df):
         result = cfa_fit(mapq_df, SUBSCALES)
         for key in ("cfi", "tli", "rmsea", "srmr", "aic", "bic"):

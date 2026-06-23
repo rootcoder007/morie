@@ -1,7 +1,9 @@
 """Test log_spectral_dist (lgrtn)."""
+
 import numpy as np
-from morie.fn.lgrtn import log_spectral_dist, lgrtn
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lgrtn import lgrtn, log_spectral_dist
 
 
 class TestLgrtn:

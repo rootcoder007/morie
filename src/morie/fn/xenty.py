@@ -50,9 +50,7 @@ def xenty(
         if y_pred.ndim == 1:
             y_pred = 1.0 / (1.0 + np.exp(-y_pred))
         else:
-            y_pred = np.exp(y_pred) / np.sum(
-                np.exp(y_pred), axis=1, keepdims=True
-            )
+            y_pred = np.exp(y_pred) / np.sum(np.exp(y_pred), axis=1, keepdims=True)
 
     y_pred = np.clip(y_pred, epsilon, 1.0 - epsilon)
 

@@ -1,6 +1,7 @@
 """Test srpnl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srpnl import srpnl
 
 

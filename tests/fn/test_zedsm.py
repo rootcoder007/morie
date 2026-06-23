@@ -1,7 +1,6 @@
 """Tests for morie.fn.zedsm -- Poisson disease mapping"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zedsm import disease_map_pois
 

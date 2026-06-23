@@ -1,6 +1,7 @@
 """Tests for icc12c.icc_two_way."""
+
 import numpy as np
-import pytest
+
 from morie.fn.icc12c import icc_two_way
 
 
@@ -10,7 +11,7 @@ def test_icc12c_basic():
     model = np.random.default_rng(42).normal(0, 1, 100)
     result = icc_two_way(X, model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_icc12c_edge():

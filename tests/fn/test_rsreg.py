@@ -1,6 +1,7 @@
 """Test rsreg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsreg import rsreg
 
 

@@ -1,6 +1,7 @@
 """Concurrent calibration linkage (single calibration)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["concurrent_calibration"]
@@ -36,7 +37,9 @@ def concurrent_calibration(y, item, group, anchor):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Concurrent calibration linkage (single calibration)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Concurrent calibration linkage (single calibration)"}
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,7 @@
 """Test klzkl."""
+
 import pytest
+
 from morie.fn.klzkl import kaluza_klein_spectrum
 
 

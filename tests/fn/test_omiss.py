@@ -1,6 +1,7 @@
 """Tests for morie.fn.omiss — Missing data report."""
 
 import pandas as pd
+
 from morie.fn.omiss import otis_missing_report
 
 

@@ -1,7 +1,9 @@
 """Tests for dfa — Detrended fluctuation analysis."""
+
 import numpy as np
-from morie.fn.dfa import detrended_fluctuation
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.dfa import detrended_fluctuation
 
 
 def test_dfa_basic(rng):

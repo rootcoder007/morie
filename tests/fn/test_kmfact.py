@@ -1,6 +1,7 @@
 """Tests for kmfact.kamath_factscore."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmfact import kamath_factscore
 
 
@@ -10,7 +11,7 @@ def test_kmfact_basic():
     knowledge_base = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_factscore(atomic_claims, knowledge_base)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmfact_edge():

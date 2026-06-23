@@ -35,10 +35,10 @@ def varimax(
 
     for it in range(max_iter):
         B = A @ R
-        B2 = B ** 2
+        B2 = B**2
         cm = B2.mean(axis=0)
 
-        u = B ** 3 - B * cm[None, :]
+        u = B**3 - B * cm[None, :]
         svd_mat = A.T @ u
         U, _, Vt = np.linalg.svd(svd_mat)
         R_new = U @ Vt

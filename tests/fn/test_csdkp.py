@@ -1,6 +1,7 @@
 """Test csdkp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csdkp import csdkp
 
 

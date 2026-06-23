@@ -1,6 +1,7 @@
 """Tests for cfaftr.cfa_one_factor."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cfaftr import cfa_one_factor
 
 
@@ -10,7 +11,7 @@ def test_cfaftr_basic():
     factor_structure = np.random.default_rng(42).normal(0, 1, 100)
     result = cfa_one_factor(X, factor_structure)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cfaftr_edge():

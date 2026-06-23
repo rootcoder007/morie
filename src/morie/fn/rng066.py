@@ -1,6 +1,7 @@
 """Continuous-time inverse Fourier transform (synthesis).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_inverse_fourier_transform"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_inverse_fourier_transform(X, omega, f, t):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Continuous-time inverse Fourier transform (synthesis)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Continuous-time inverse Fourier transform (synthesis).",
+        }
+    )
 
 
 def cheatsheet():

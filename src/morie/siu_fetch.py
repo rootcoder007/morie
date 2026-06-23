@@ -24,9 +24,8 @@ import re
 import time
 import urllib.parse
 import urllib.request
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, Optional
-
 
 __all__ = [
     "SIU_INDEX_URL",
@@ -68,8 +67,13 @@ _DATE_FIELDS = {
     "decision_iso": re.compile(r"(?:Director'?s? [Dd]ecision)\s*[:\-]?\s*([A-Z][a-z]+\s+\d{1,2},\s*\d{4})"),
 }
 
-_SERVICE_FIELD = re.compile(r"(?:Police Service|Notifying Service)\s*[:\-]?\s*([A-Z][A-Za-z' \-]+(?:Police|Service))", re.I)
-_DECISION_FIELD = re.compile(r"(?:no reasonable grounds|reasonable grounds|charge\(s\)? was|withdrawn|director'?s decision|charges? were laid)", re.I)
+_SERVICE_FIELD = re.compile(
+    r"(?:Police Service|Notifying Service)\s*[:\-]?\s*([A-Z][A-Za-z' \-]+(?:Police|Service))", re.I
+)
+_DECISION_FIELD = re.compile(
+    r"(?:no reasonable grounds|reasonable grounds|charge\(s\)? was|withdrawn|director'?s decision|charges? were laid)",
+    re.I,
+)
 
 
 def _parse_case_page(html: str, case_number: str, url: str) -> dict:
@@ -85,9 +89,26 @@ def _parse_case_page(html: str, case_number: str, url: str) -> dict:
     return record
 
 
-_MONTHS = {m: i for i, m in enumerate(
-    ["January", "February", "March", "April", "May", "June",
-     "July", "August", "September", "October", "November", "December"], start=1)}
+_MONTHS = {
+    m: i
+    for i, m in enumerate(
+        [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ],
+        start=1,
+    )
+}
 
 
 def _to_iso(date_str: str) -> str:
@@ -108,7 +129,7 @@ def siu_cache_path(cache_dir: str | Path = "~/.cache/morie/siu") -> Path:
 
 def fetch_siu_cases(
     *,
-    years: Optional[Iterable[int]] = None,
+    years: Iterable[int] | None = None,
     cache_dir: str | Path = "~/.cache/morie/siu",
     overwrite: bool = False,
     progress: bool = True,
@@ -152,10 +173,12 @@ def fetch_siu_cases(
         time.sleep(RATE_LIMIT_SECONDS)
 
     # Deduplicate
-    seen = set(); unique_links = []
+    seen = set()
+    unique_links = []
     for cn, u in case_links:
         if u not in seen:
-            seen.add(u); unique_links.append((cn, u))
+            seen.add(u)
+            unique_links.append((cn, u))
 
     # Fetch detail pages
     records: list[dict] = []
@@ -176,9 +199,15 @@ def fetch_siu_cases(
         )
 
     fieldnames = list({k for r in records for k in r.keys()})
-    fieldnames = ["case_number", "police_service", "incident_iso",
-                  "notification_iso", "decision_iso",
-                  "director_decision_text", "source_url"]
+    fieldnames = [
+        "case_number",
+        "police_service",
+        "incident_iso",
+        "notification_iso",
+        "decision_iso",
+        "director_decision_text",
+        "source_url",
+    ]
     with out_path.open("w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=fieldnames, extrasaction="ignore")
         w.writeheader()

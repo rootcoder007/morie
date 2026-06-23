@@ -1,9 +1,9 @@
 """Test moving_average (movav)."""
-import numpy as np
-import pytest
 
-from morie.fn.movav import moving_average, movav
+import numpy as np
+
 from morie.fn._containers import SignalResult
+from morie.fn.movav import movav, moving_average
 
 
 class TestMovingAverage:

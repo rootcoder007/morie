@@ -1,16 +1,18 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mahalanobis distance with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
 
 
-def mahalan(x: Union[Sequence, np.ndarray],
-            mu: Union[Sequence, np.ndarray],
-            cov: Union[Sequence, np.ndarray]):
+def mahalan(x: Union[Sequence, np.ndarray], mu: Union[Sequence, np.ndarray], cov: Union[Sequence, np.ndarray]):
     """Mahalanobis distance: sqrt((x-mu)' Sigma^-1 (x-mu))."""
-    from ._richresult import RichResult
     from scipy.stats import chi2 as _chi2
+
+    from ._richresult import RichResult
+
     x = np.asarray(x, dtype=float)
     mu = np.asarray(mu, dtype=float)
     cov = np.asarray(cov, dtype=float)
@@ -30,12 +32,17 @@ def mahalan(x: Union[Sequence, np.ndarray],
     cutoff = float(np.sqrt(_chi2.ppf(0.95, x.size)))
     return RichResult(
         title="Mahalanobis distance",
-        summary_lines=[("Distance", dist), ("Squared distance", dist**2),
-                       ("Dimension", x.size), ("Cov condition number", cond)],
+        summary_lines=[
+            ("Distance", dist),
+            ("Squared distance", dist**2),
+            ("Dimension", x.size),
+            ("Cov condition number", cond),
+        ],
         warnings=warnings,
-        interpretation=(f"chi^2(p) cutoff at alpha=0.05 is {cutoff:.3f}; "
-                        f"this point {'IS' if dist > cutoff else 'is not'} "
-                        f"an outlier under multivariate Normality."),
-        payload={"distance": dist, "squared": dist**2, "dimension": x.size,
-                 "cov_condition": cond},
+        interpretation=(
+            f"chi^2(p) cutoff at alpha=0.05 is {cutoff:.3f}; "
+            f"this point {'IS' if dist > cutoff else 'is not'} "
+            f"an outlier under multivariate Normality."
+        ),
+        payload={"distance": dist, "squared": dist**2, "dimension": x.size, "cov_condition": cond},
     )

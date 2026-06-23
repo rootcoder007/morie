@@ -1,6 +1,7 @@
 """Tests for granci.granger_causality_info."""
+
 import numpy as np
-import pytest
+
 from morie.fn.granci import granger_causality_info
 
 
@@ -11,7 +12,7 @@ def test_granci_basic():
     lag = 10
     result = granger_causality_info(x, y, lag)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_granci_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Zero-shot classification via NLI entailment scoring."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_zero_shot_classification"]
@@ -34,7 +36,9 @@ def alammar_zero_shot_classification(text, candidate_labels, nli_model):
     n = len(text)
     result = float(np.mean(text))
     se = float(np.std(text, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Zero-shot classification via NLI entailment scoring"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Zero-shot classification via NLI entailment scoring"}
+    )
 
 
 def cheatsheet():

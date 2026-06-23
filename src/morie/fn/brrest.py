@@ -1,6 +1,7 @@
 """Balanced repeated replication."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["brr_balanced"]

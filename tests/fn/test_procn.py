@@ -7,7 +7,6 @@ from morie.fn.procn import procn
 
 
 class TestProcn:
-
     def test_fitted_shape(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (25, 2))

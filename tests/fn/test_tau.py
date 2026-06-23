@@ -1,6 +1,7 @@
 """Tests for morie.fn.tau -- Kendall's tau-b rank correlation."""
 
 import pytest
+
 from morie.fn.tau import kendall_tau
 
 

@@ -1,5 +1,7 @@
 """Lloyd-Max optimal scalar codebook for N(0, 1) source at b bits."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_lloyd_max_codebook"]
@@ -31,7 +33,14 @@ def turboquant_lloyd_max_codebook(bits, source_dist):
     n = len(bits)
     result = float(np.mean(bits))
     se = float(np.std(bits, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Lloyd-Max optimal scalar codebook for N(0, 1) source at b bits"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Lloyd-Max optimal scalar codebook for N(0, 1) source at b bits",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for grridg.geron_ridge_cost."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grridg import geron_ridge_cost
 
 
@@ -12,7 +13,7 @@ def test_grridg_basic():
     alpha = 0.05
     result = geron_ridge_cost(X, y, theta, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grridg_edge():

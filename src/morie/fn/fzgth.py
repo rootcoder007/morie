@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """G(theta): distribution function of (X_1+X_2)/2 used in Wilcoxon moments."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_g_theta_distribution"]
@@ -34,7 +36,14 @@ def fauzi_g_theta_distribution(theta, cdf, density):
     n = int(theta) if theta.ndim == 0 else len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "G(theta): distribution function of (X_1+X_2)/2 used in Wilcoxon moments"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "G(theta): distribution function of (X_1+X_2)/2 used in Wilcoxon moments",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Principal components via SVD of centered data matrix."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_principal_components"]
@@ -32,7 +34,9 @@ def geron_principal_components(X, n_components):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Principal components via SVD of centered data matrix"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Principal components via SVD of centered data matrix"}
+    )
 
 
 def cheatsheet():

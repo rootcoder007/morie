@@ -1,6 +1,7 @@
 """Test agspr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agspr import agspr
 
 

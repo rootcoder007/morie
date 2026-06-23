@@ -1,6 +1,7 @@
 """Tests for grddqn.geron_double_dqn_target."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grddqn import geron_double_dqn_target
 
 
@@ -13,7 +14,7 @@ def test_grddqn_basic():
     gamma = 1.0
     result = geron_double_dqn_target(Q_online, Q_target, s_next, r, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grddqn_edge():

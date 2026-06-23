@@ -1,6 +1,7 @@
 """Tests for cfafit.cfa_fit_indices."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cfafit import cfa_fit_indices
 
 
@@ -9,7 +10,7 @@ def test_cfafit_basic():
     fit = np.random.default_rng(42).normal(0, 1, 100)
     result = cfa_fit_indices(fit)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cfafit_edge():

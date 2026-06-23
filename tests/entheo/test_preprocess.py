@@ -1,14 +1,15 @@
 """Smoke tests for morie.entheo.preprocess."""
+
 from __future__ import annotations
 
 import os
 
 import numpy as np
-import pytest
 
 
 def _record():
     from morie.entheo.data import load_dmt_imaging
+
     os.environ["MORIE_DMT_IMAGING_ROOT"] = "/nope/this/does/not/exist"
     try:
         res = load_dmt_imaging(subject_id="01")
@@ -19,9 +20,9 @@ def _record():
 
 def test_preprocess_eeg_smoke():
     from morie.entheo import preprocess_eeg
+
     rec = _record()
-    res = preprocess_eeg(rec, bandpass=(1.0, 40.0), notch=60.0,
-                         asr_threshold=20.0)
+    res = preprocess_eeg(rec, bandpass=(1.0, 40.0), notch=60.0, asr_threshold=20.0)
     assert isinstance(res, dict)
     out = res["record"]["eeg"]["data_dmt"]
     assert isinstance(out, np.ndarray)
@@ -32,10 +33,10 @@ def test_butterworth_notch_roundtrip_preserves_band():
     """Inject a 10 Hz sinusoid + 60 Hz line noise; after bandpass+notch
     the 10 Hz energy should dominate."""
     from morie.entheo.preprocess import _butter_bandpass, _notch
+
     sfreq = 250.0
     t = np.arange(0, 4.0, 1.0 / sfreq, dtype=np.float32)
-    sig = (np.sin(2 * np.pi * 10.0 * t) + np.sin(2 * np.pi * 60.0 * t)) \
-        .astype(np.float32)
+    sig = (np.sin(2 * np.pi * 10.0 * t) + np.sin(2 * np.pi * 60.0 * t)).astype(np.float32)
     x = np.tile(sig, (4, 1))
     y = _butter_bandpass(x, sfreq, 1.0, 40.0)
     y = _notch(y, sfreq, 60.0)
@@ -49,6 +50,7 @@ def test_butterworth_notch_roundtrip_preserves_band():
 
 def test_preprocess_fmri_smoke():
     from morie.entheo import preprocess_fmri
+
     rec = _record()
     res = preprocess_fmri(rec, motion_threshold_mm=0.5)
     assert isinstance(res, dict)
@@ -63,6 +65,7 @@ def test_preprocess_fmri_smoke():
 
 def test_preprocess_fmri_scrubs_high_motion_volumes():
     from morie.entheo import preprocess_fmri
+
     rec = _record()
     # Inject one large FD spike.
     fd = np.asarray(rec["fmri"]["motion_fd_mm"]).copy()

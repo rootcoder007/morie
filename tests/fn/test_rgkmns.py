@@ -1,6 +1,7 @@
 """Tests for rgkmns.rangayyan_kmeans."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgkmns import rangayyan_kmeans
 
 
@@ -12,7 +13,7 @@ def test_rgkmns_basic():
     tol = 1e-6
     result = rangayyan_kmeans(X, k, max_iter, tol)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgkmns_edge():

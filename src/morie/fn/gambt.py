@@ -77,4 +77,4 @@ gambt = card_probability
 
 
 def cheatsheet() -> str:
-    return 'card_probability({}) -> Combinatorial probability (card counting).'
+    return "card_probability({}) -> Combinatorial probability (card counting)."

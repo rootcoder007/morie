@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.reset import ramsey_reset_test
+
 from morie.fn._containers import TestResult
+from morie.fn.reset import ramsey_reset_test
 
 
 class TestReset:
@@ -25,7 +26,7 @@ class TestReset:
         rng = np.random.default_rng(42)
         n = 300
         x = rng.normal(0, 1, n)
-        y = 1 + 2 * x + 3 * x ** 2 + rng.normal(0, 0.5, n)
+        y = 1 + 2 * x + 3 * x**2 + rng.normal(0, 0.5, n)
         X = np.column_stack([np.ones(n), x])  # omits x^2
         beta = np.linalg.lstsq(X, y, rcond=None)[0]
         fitted = X @ beta

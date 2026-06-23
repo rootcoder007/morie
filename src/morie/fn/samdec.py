@@ -1,6 +1,7 @@
 """SAM mask decoder (transformer + upsample)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sam_mask_decoder"]
@@ -32,7 +33,9 @@ def sam_mask_decoder(img_emb, prompt_emb):
     n = len(img_emb)
     result = float(np.mean(img_emb))
     se = float(np.std(img_emb, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SAM mask decoder (transformer + upsample)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "SAM mask decoder (transformer + upsample)"}
+    )
 
 
 def cheatsheet():

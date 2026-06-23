@@ -1,7 +1,9 @@
 """Tests for nwcom -- network community detection."""
+
 import numpy as np
-from morie.fn.nwcom import network_community
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.nwcom import network_community
 
 
 class TestNetworkCommunity:

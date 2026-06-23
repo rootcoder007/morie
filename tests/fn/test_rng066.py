@@ -1,6 +1,7 @@
 """Tests for rng066.rangayyan_ch3_inverse_fourier_transform."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng066 import rangayyan_ch3_inverse_fourier_transform
 
 
@@ -12,7 +13,7 @@ def test_rng066_basic():
     t = np.linspace(0, 10, 100)
     result = rangayyan_ch3_inverse_fourier_transform(X, omega, f, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng066_edge():

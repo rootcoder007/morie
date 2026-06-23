@@ -1,6 +1,7 @@
 """Test enmng."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enmng import enmng
 
 

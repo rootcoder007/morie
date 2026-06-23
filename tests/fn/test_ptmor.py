@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptmor -- Morisita index of dispersion"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptmor import pp_morisita
 

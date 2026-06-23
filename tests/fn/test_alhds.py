@@ -1,6 +1,7 @@
 """Tests for alhds.alammar_hdbscan_cluster."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alhds import alammar_hdbscan_cluster
 
 
@@ -11,7 +12,7 @@ def test_alhds_basic():
     min_samples = np.random.default_rng(42).normal(0, 1, 100)
     result = alammar_hdbscan_cluster(X, min_cluster_size, min_samples)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alhds_edge():

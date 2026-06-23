@@ -1,7 +1,7 @@
 """Tests for morie.fn.irtds — IRT discrimination extraction."""
 
-import numpy as np
 import pandas as pd
+
 from morie.fn.irtds import irt_discrimination
 
 

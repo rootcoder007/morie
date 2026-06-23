@@ -1,6 +1,7 @@
 """Mixture of Pólya tree priors."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["polya_tree_extended"]

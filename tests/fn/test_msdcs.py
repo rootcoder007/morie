@@ -1,7 +1,6 @@
 """Tests for morie.fn.msdcs -- Cosine distance matrix"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msdcs import dist_cosine
 

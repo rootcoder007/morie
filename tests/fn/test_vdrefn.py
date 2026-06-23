@@ -1,6 +1,8 @@
 """Tests for vdrefn."""
+
 import numpy as np
 import pytest
+
 from morie.fn.vdrefn import vdrefn
 
 
@@ -28,4 +30,5 @@ def test_vdrefn_no_data():
 
 def test_vdrefn_alias():
     from morie.fn.vdrefn import vdrefn
+
     assert vdrefn is vdrefn

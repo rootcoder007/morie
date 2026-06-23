@@ -1,8 +1,9 @@
 """Tests for morie.fn.mtlog -- Matrix logarithm."""
 
 import numpy as np
-from morie.fn.mtlog import matrix_log, mtlog
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mtlog import matrix_log, mtlog
 
 
 class TestMtlog:

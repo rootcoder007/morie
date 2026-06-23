@@ -55,9 +55,7 @@ def granger_test(y1, y2, maxlag: int = 4, cdf=None) -> TestResult:
     if maxlag < 1:
         raise ValueError(f"maxlag must be >= 1, got {maxlag}.")
     if n < 2 * maxlag + 3:
-        raise ValueError(
-            f"Need n >= 2*maxlag + 3 = {2*maxlag + 3}; got n={n}."
-        )
+        raise ValueError(f"Need n >= 2*maxlag + 3 = {2 * maxlag + 3}; got n={n}.")
 
     y_target = y1[maxlag:]
     n_use = len(y_target)

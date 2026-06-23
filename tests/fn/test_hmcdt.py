@@ -1,6 +1,7 @@
 """Tests for hmcdt.geron_classification_tree."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmcdt import geron_classification_tree
 
 
@@ -12,7 +13,7 @@ def test_hmcdt_basic():
     max_depth = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_classification_tree(X, y, criterion, max_depth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmcdt_edge():

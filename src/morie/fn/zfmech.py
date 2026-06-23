@@ -1,6 +1,7 @@
 """z-CDP mechanism noise calibration."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["z_dp_mechanism"]

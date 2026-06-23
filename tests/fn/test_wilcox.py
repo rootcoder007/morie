@@ -1,6 +1,7 @@
 """Tests for morie.fn.wilcox -- Wilcoxon signed-rank test."""
 
 import pytest
+
 from morie.fn.wilcox import wilcoxon_signed_rank_test
 
 

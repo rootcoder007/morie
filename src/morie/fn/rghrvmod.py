@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """AR spectral model of HRV for LF/HF decomposition."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_hrv_ar_model"]
@@ -32,7 +34,9 @@ def rangayyan_hrv_ar_model(rr_intervals, order):
     n = int(rr_intervals) if rr_intervals.ndim == 0 else len(rr_intervals)
     result = float(np.mean(rr_intervals))
     se = float(np.std(rr_intervals, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AR spectral model of HRV for LF/HF decomposition"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "AR spectral model of HRV for LF/HF decomposition"}
+    )
 
 
 def cheatsheet():

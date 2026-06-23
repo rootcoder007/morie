@@ -41,7 +41,7 @@ def bayesian_gp_classification(
 
     def _rbf(A, B):
         sq = np.sum((A[:, None, :] - B[None, :, :]) ** 2, axis=2)
-        return signal_var * np.exp(-sq / (2 * length_scale ** 2))
+        return signal_var * np.exp(-sq / (2 * length_scale**2))
 
     K = _rbf(Xtr, Xtr) + 1e-6 * np.eye(len(Xtr))
     n = len(Xtr)
@@ -71,7 +71,7 @@ def bayesian_gp_classification(
 
     v = np.linalg.solve(L_f, W_sqrt_f @ K_s)
     K_ss = _rbf(Xte, Xte)
-    var_star = np.diag(K_ss) - np.sum(v ** 2, axis=0)
+    var_star = np.diag(K_ss) - np.sum(v**2, axis=0)
 
     kappa = 1.0 / np.sqrt(1 + np.pi * var_star / 8)
     pred_probs = _sigmoid(kappa * f_star).tolist()

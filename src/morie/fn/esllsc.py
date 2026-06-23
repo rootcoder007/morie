@@ -1,6 +1,7 @@
 """Linear discriminant analysis."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["esl_lda_disc"]

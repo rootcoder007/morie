@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kalman filter: state prediction/update with Riccati equation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_kalman_filter"]
@@ -42,7 +44,14 @@ def rangayyan_kalman_filter(z, F, H, Q, R, x0, P0):
     n = int(z) if z.ndim == 0 else len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Kalman filter: state prediction/update with Riccati equation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Kalman filter: state prediction/update with Riccati equation",
+        }
+    )
 
 
 def cheatsheet():

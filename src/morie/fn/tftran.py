@@ -1,6 +1,7 @@
 """Temporal Fusion Transformer."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["temporal_fusion_transformer"]

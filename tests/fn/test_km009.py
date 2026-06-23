@@ -1,6 +1,7 @@
 """Tests for km009.kamath_ch2_softmax_element."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km009 import kamath_ch2_softmax_element
 
 
@@ -10,7 +11,7 @@ def test_km009_basic():
     a = np.random.default_rng(44).normal(0, 1, 100)
     result = kamath_ch2_softmax_element(a_i, a)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km009_edge():

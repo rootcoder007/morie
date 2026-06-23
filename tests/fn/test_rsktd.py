@@ -1,7 +1,8 @@
 """Tests for morie.fn.rsktd — risk score trend over years."""
 
 import pandas as pd
-from morie.fn.rsktd import risk_trend, rsktd
+
+from morie.fn.rsktd import risk_trend
 
 
 class TestRiskTrend:

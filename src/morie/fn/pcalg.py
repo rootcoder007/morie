@@ -14,6 +14,7 @@ Colombo, D., & Maathuis, M. H. (2014). Order-independent constraint-
 based causal structure learning. *Journal of Machine Learning
 Research*, 15, 3741-3782.
 """
+
 from __future__ import annotations
 
 from itertools import combinations

@@ -4,6 +4,7 @@
 __all__ = ["bscch"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 

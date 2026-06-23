@@ -1,6 +1,7 @@
 """Tests for arbrg.py - AR Burg estimation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.arbrg import ar_burg_fn, arbrg
 
 

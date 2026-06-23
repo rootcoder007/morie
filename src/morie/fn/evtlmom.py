@@ -1,6 +1,7 @@
 """Trimmed L-moments TL(s,t) of a sample."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_trimmed_lmom"]

@@ -1,5 +1,7 @@
 """Tests for morie.fn.linit."""
+
 import numpy as np
+
 from morie.fn.linit import linit
 
 
@@ -13,6 +15,7 @@ def test_linit_smoke():
 
 def test_cheatsheet():
     from morie.fn.linit import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,9 +1,9 @@
 """Tests for morie.fn.r2 -- R-squared (coefficient of determination)."""
 
-import numpy as np
 import pytest
-from morie.fn.r2 import r_squared
+
 from morie.fn._containers import ESRes
+from morie.fn.r2 import r_squared
 
 
 class TestRSquared:

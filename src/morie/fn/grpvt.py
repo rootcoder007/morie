@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pyramid ViT stage: spatial reduction before attention."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_pyramid_vit_stage"]
@@ -38,7 +40,14 @@ def geron_pyramid_vit_stage(X, WQ, WK, WV, reduction_ratio):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pyramid ViT stage: spatial reduction before attention"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pyramid ViT stage: spatial reduction before attention",
+        }
+    )
 
 
 def cheatsheet():

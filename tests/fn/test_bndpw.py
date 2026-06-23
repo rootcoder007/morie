@@ -1,6 +1,7 @@
 """Tests for bndpw.py - band power."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndpw import band_power_fn, bndpw
 
 

@@ -1,6 +1,5 @@
 """Tests for morie.fn.legal — legal BAC limit check."""
 
-import pytest
 from morie.fn.legal import is_over_legal_limit as legal
 
 

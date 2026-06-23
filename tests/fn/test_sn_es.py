@@ -1,5 +1,8 @@
 """Tests for sn_estimator."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.sn_es import sn_estimator
 
 

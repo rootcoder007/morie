@@ -1,6 +1,7 @@
 """Tests for btbca.boot_bca_ci."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btbca import boot_bca_ci
 
 
@@ -13,7 +14,7 @@ def test_btbca_basic():
     alpha = 0.05
     result = boot_bca_ci(theta_hat, theta_b, x, stat, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_btbca_edge():

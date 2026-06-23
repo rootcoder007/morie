@@ -1,4 +1,5 @@
 """Tests for attnr (attenuation correction)."""
+
 from morie.fn.attnr import attenuation_ratio
 
 
@@ -10,6 +11,7 @@ def test_attenuation_ratio_basic():
 
 def test_cheatsheet():
     from morie.fn.attnr import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

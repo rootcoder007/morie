@@ -1,6 +1,7 @@
 """Test dkpsm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkpsm import dkpsm
 
 

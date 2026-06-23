@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxilr -- Isometric log-ratio spatial"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxilr import ilr_spatial
 

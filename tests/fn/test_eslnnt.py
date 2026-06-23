@@ -1,6 +1,7 @@
 """Tests for eslnnt.esl_neural_net."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslnnt import esl_neural_net
 
 
@@ -11,7 +12,7 @@ def test_eslnnt_basic():
     M = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = esl_neural_net(X, y, M)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslnnt_edge():

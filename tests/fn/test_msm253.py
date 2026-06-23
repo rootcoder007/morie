@@ -1,6 +1,7 @@
 """Tests for msm253.mvsml_reproducing_kernel_eq_10_14."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm253 import mvsml_reproducing_kernel_eq_10_14
 
 
@@ -14,7 +15,7 @@ def test_msm253_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = mvsml_reproducing_kernel_eq_10_14(jk, Next, to, update, the, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm253_edge():

@@ -1,6 +1,8 @@
 """MCMC autocorrelation diagnostic."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["autocorrelation_check"]
@@ -30,9 +32,18 @@ def autocorrelation_check(chain):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(chain), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "MCMC autocorrelation diagnostic"})
+        return RichResult(
+            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "MCMC autocorrelation diagnostic"}
+        )
     result = stats.spearmanr(chain[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "MCMC autocorrelation diagnostic"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "MCMC autocorrelation diagnostic",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,7 @@
 """Tests for sequential Gaussian simulation."""
+
 import numpy as np
+
 from morie.fn.sgsqs import sgsqs
 
 
@@ -16,6 +18,7 @@ def test_sgsqs_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgsqs import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

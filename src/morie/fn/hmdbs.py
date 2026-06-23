@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Density-based spatial clustering (DBSCAN)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_dbscan"]
@@ -34,7 +36,9 @@ def geron_dbscan(X, eps, min_samples):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Density-based spatial clustering (DBSCAN)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Density-based spatial clustering (DBSCAN)"}
+    )
 
 
 def cheatsheet():

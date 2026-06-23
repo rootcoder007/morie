@@ -1,6 +1,9 @@
 """Tests for cooks_distance."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.cooks import cooks_distance
+
 
 class TestCooks:
     def test_basic(self):

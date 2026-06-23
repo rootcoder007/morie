@@ -1,6 +1,7 @@
 """Tests for morie.fn.bloos -- PSIS-LOO."""
 
 import numpy as np
+
 from morie.fn.bloos import psis_loo
 
 

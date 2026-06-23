@@ -1,5 +1,7 @@
 """Tests for lpcep.py - LPC to cepstral coefficients."""
+
 import numpy as np
+
 from morie.fn.lpcep import lpc_to_cepstral_fn, lpcep
 
 

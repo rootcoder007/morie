@@ -1,9 +1,8 @@
 """Tests for morie.fn.wscrp -- Web scrape + text extraction."""
 
-from io import BytesIO
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-from morie.fn.wscrp import web_scrape, extract_text, wscrp
+from morie.fn.wscrp import extract_text, web_scrape, wscrp
 
 
 class TestWscrp:

@@ -1,6 +1,7 @@
 """Test afhrv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.afhrv import afhrv
 
 

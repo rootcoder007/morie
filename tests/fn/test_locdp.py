@@ -1,6 +1,7 @@
 """Tests for locdp.local_dp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.locdp import local_dp
 
 
@@ -11,7 +12,7 @@ def test_locdp_basic():
     epsilon = 1e-6
     result = local_dp(x, mech, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_locdp_edge():

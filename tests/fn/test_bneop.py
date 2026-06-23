@@ -1,7 +1,7 @@
 """Tests for morie.fn.bneop -- birth-death process."""
 
-from morie.fn.bneop import birth_death_process, bneop
 from morie.fn._containers import DescriptiveResult
+from morie.fn.bneop import birth_death_process, bneop
 
 
 class TestBneop:

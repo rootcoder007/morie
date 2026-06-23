@@ -1,6 +1,7 @@
 """Tests for msmtve.msm_time_varying_exposure."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msmtve import msm_time_varying_exposure
 
 
@@ -12,7 +13,7 @@ def test_msmtve_basic():
     time = np.linspace(0, 10, 100)
     result = msm_time_varying_exposure(y, exposure_history, covariate_history, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msmtve_edge():

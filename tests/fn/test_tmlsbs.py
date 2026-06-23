@@ -1,6 +1,7 @@
 """Tests for tmlsbs.tmle_subset_selection."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlsbs import tmle_subset_selection
 
 
@@ -11,7 +12,7 @@ def test_tmlsbs_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = tmle_subset_selection(y, D, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlsbs_edge():

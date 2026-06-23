@@ -1,6 +1,7 @@
 r"""Gpt2 task conditioning.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_gpt2_task_conditioning"]

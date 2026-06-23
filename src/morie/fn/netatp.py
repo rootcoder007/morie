@@ -1,6 +1,7 @@
 """Attack tolerance via giant-component."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["network_attack_tolerance"]

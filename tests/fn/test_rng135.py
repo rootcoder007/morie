@@ -1,6 +1,7 @@
 """Tests for rng135.rangayyan_ch3_butterworth_highpass_dft_indexed."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng135 import rangayyan_ch3_butterworth_highpass_dft_indexed
 
 
@@ -11,7 +12,7 @@ def test_rng135_basic():
     N = 100
     result = rangayyan_ch3_butterworth_highpass_dft_indexed(k, k_c, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng135_edge():

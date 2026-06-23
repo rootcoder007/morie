@@ -1,5 +1,7 @@
 """Tests for lognormal kriging."""
+
 import numpy as np
+
 from morie.fn.sglnk import sglnk
 
 
@@ -14,6 +16,7 @@ def test_sglnk_smoke():
 
 def test_sglnk_rejects_negative():
     import pytest
+
     coords = np.array([[0, 0], [1, 0]], dtype=float)
     Z = np.array([-1.0, 2.0])
     with pytest.raises(ValueError):

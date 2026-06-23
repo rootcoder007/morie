@@ -1,6 +1,8 @@
 """Tests for tmspln."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tmspln import tmspln
 
 
@@ -28,4 +30,5 @@ def test_tmspln_no_data():
 
 def test_tmspln_alias():
     from morie.fn.tmspln import tmspln
+
     assert tmspln is tmspln

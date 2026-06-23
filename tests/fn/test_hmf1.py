@@ -1,6 +1,7 @@
 """Tests for hmf1.geron_f1_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmf1 import geron_f1_score
 
 
@@ -10,7 +11,7 @@ def test_hmf1_basic():
     y_pred = np.random.default_rng(44).normal(0, 1, 100)
     result = geron_f1_score(y_true, y_pred)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmf1_edge():

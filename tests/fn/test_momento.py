@@ -1,6 +1,7 @@
 """Tests for momento.moment_foundation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.momento import moment_foundation
 
 
@@ -10,7 +11,7 @@ def test_momento_basic():
     task = np.random.default_rng(42).normal(0, 1, 100)
     result = moment_foundation(y, task)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_momento_edge():

@@ -1,6 +1,8 @@
 """Tests for sqsgm.py - Synchrosqueezed transform."""
+
 import numpy as np
-from morie.fn.sqsgm import synchrosqueezed_transform, sqsgm
+
+from morie.fn.sqsgm import sqsgm, synchrosqueezed_transform
 
 
 def test_sst_returns_result():

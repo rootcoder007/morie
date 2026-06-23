@@ -1,6 +1,7 @@
 """Test wllcv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wllcv import wllcv
 
 

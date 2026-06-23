@@ -85,7 +85,7 @@ def bunching_did(
         if incl.sum() < poly_order + 1:
             return 0.0, 0.0
         z = (mids - cutoff) / (bin_width * 10)
-        Xp = np.column_stack([z ** k for k in range(poly_order + 1)])
+        Xp = np.column_stack([z**k for k in range(poly_order + 1)])
         beta = np.linalg.lstsq(Xp[incl], counts[incl], rcond=None)[0]
         cf = np.maximum(Xp @ beta, 0)
         excess = float(np.sum(counts[excl] - cf[excl]))
@@ -98,7 +98,7 @@ def bunching_did(
     b_post, se_post = _bunching_excess(R[P == 1])
 
     delta = b_post - b_pre
-    se = float(np.sqrt(se_pre ** 2 + se_post ** 2))
+    se = float(np.sqrt(se_pre**2 + se_post**2))
     z_crit = stats.norm.ppf(1 - alpha / 2)
 
     return ESRes(

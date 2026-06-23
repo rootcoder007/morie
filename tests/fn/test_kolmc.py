@@ -1,7 +1,6 @@
 """Tests for morie.fn.kolmc — Kolmogorov complexity approximation."""
 
 import numpy as np
-import pytest
 
 from morie.fn.kolmc import kolmc
 

@@ -1,6 +1,7 @@
 """Tests for b205.burkov_lm_ch2_perplexity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.b205 import burkov_lm_ch2_perplexity
 
 
@@ -11,7 +12,7 @@ def test_b205_basic():
     t = np.linspace(0, 10, 100)
     result = burkov_lm_ch2_perplexity(D, k, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_b205_edge():

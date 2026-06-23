@@ -1,6 +1,7 @@
 """E-BFMI (Bayesian fraction of missing information)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["energy_bayesian_fmi"]
@@ -30,7 +31,9 @@ def energy_bayesian_fmi(chains):
     n = len(chains)
     result = float(np.mean(chains))
     se = float(np.std(chains, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "E-BFMI (Bayesian fraction of missing information)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "E-BFMI (Bayesian fraction of missing information)"}
+    )
 
 
 def cheatsheet():

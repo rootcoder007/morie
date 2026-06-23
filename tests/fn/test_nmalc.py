@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmalc -- Alpha-NOMINATE convergence"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmalc import alpha_nom_conv
 

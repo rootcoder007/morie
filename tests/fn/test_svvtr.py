@@ -1,7 +1,6 @@
 """Tests for morie.fn.svvtr -- Vote trading (logrolling) model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svvtr import vote_trading
 

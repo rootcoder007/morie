@@ -52,8 +52,8 @@ def stsep(
         Cs = spatial_sill * np.exp(-sdists / (spatial_range + 1e-12))
         Ct = temporal_sill * np.exp(-tdists / (temporal_range + 1e-12))
     elif model == "gaussian":
-        Cs = spatial_sill * np.exp(-sdists ** 2 / (spatial_range ** 2 + 1e-12))
-        Ct = temporal_sill * np.exp(-tdists ** 2 / (temporal_range ** 2 + 1e-12))
+        Cs = spatial_sill * np.exp(-(sdists**2) / (spatial_range**2 + 1e-12))
+        Ct = temporal_sill * np.exp(-(tdists**2) / (temporal_range**2 + 1e-12))
     else:
         raise ValueError(f"Unknown model: {model}")
 

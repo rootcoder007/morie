@@ -1,12 +1,15 @@
 """Tests for dunnett_test."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.dnntt import dunnett_test
+
 
 class TestDunnett:
     def test_basic(self):
-        ctrl = np.array([1,2,3,4,5], dtype=float)
-        t1 = np.array([5,6,7,8,9], dtype=float)
-        t2 = np.array([2,3,4,5,6], dtype=float)
+        ctrl = np.array([1, 2, 3, 4, 5], dtype=float)
+        t1 = np.array([5, 6, 7, 8, 9], dtype=float)
+        t2 = np.array([2, 3, 4, 5, 6], dtype=float)
         r = dunnett_test(ctrl, t1, t2)
         assert r.name == "dunnett"
         assert len(r.extra["comparisons"]) == 2

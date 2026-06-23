@@ -57,12 +57,11 @@ def arfit(y, p=1, demean=True):
         y = y - np.mean(y)
 
     # Compute sample autocovariance
-    acov = np.array([np.mean(y[:-k] * y[k:]) if k > 0 else np.mean(y**2)
-                     for k in range(p + 1)])
+    acov = np.array([np.mean(y[:-k] * y[k:]) if k > 0 else np.mean(y**2) for k in range(p + 1)])
 
     # Yule-Walker equations: R * phi = r
-    R = np.array([[acov[abs(i-j)] for j in range(p)] for i in range(p)])
-    r = acov[1:p+1]
+    R = np.array([[acov[abs(i - j)] for j in range(p)] for i in range(p)])
+    r = acov[1 : p + 1]
 
     # Solve for AR coefficients
     try:
@@ -90,14 +89,14 @@ def arfit(y, p=1, demean=True):
     if p > 1:
         phi_temp = np.copy(phi)
         for k in range(2, p + 1):
-            numerator = acf_vals[k] - np.sum(phi_temp[:k-1] * acf_vals[k-1:0:-1])
-            denominator = 1.0 - np.sum(phi_temp[:k-1]**2)
+            numerator = acf_vals[k] - np.sum(phi_temp[: k - 1] * acf_vals[k - 1 : 0 : -1])
+            denominator = 1.0 - np.sum(phi_temp[: k - 1] ** 2)
             if abs(denominator) > 1e-10:
                 pacf_k = numerator / denominator
                 pacf_vals[k] = pacf_k
-                phi_old = phi_temp[:k-1].copy()
-                phi_temp[k-1] = pacf_k
-                phi_temp[:k-1] -= pacf_k * phi_old[::-1]
+                phi_old = phi_temp[: k - 1].copy()
+                phi_temp[k - 1] = pacf_k
+                phi_temp[: k - 1] -= pacf_k * phi_old[::-1]
 
     return TimeSeriesResult(
         name=short,
@@ -105,7 +104,7 @@ def arfit(y, p=1, demean=True):
         extra={
             "ar_coeff": phi.copy(),
             "sigma2": sigma2,
-            "acf": acf_vals[:p+1].copy(),
+            "acf": acf_vals[: p + 1].copy(),
             "pacf": pacf_vals.copy(),
             "aic": float(aic),
             "bic": float(bic),

@@ -77,4 +77,4 @@ bane = structural_break
 
 
 def cheatsheet() -> str:
-    return 'bane() -> Chow-type structural break test using maximum F-statistic'
+    return "bane() -> Chow-type structural break test using maximum F-statistic"

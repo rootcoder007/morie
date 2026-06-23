@@ -1,6 +1,7 @@
 """Test canny."""
+
 import numpy as np
-import pytest
+
 from morie.fn.canny import canny
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zehtm -- Hotspot detection map"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zehtm import hotspot_map
 

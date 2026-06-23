@@ -1,6 +1,7 @@
 """Test agcrs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agcrs import agcrs
 
 

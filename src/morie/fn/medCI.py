@@ -1,6 +1,7 @@
 """Asymmetric CI for ab (Monte Carlo)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["asymmetric_indirect_ci"]

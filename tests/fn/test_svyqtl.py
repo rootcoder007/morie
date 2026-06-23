@@ -1,6 +1,7 @@
 """Tests for svyqtl.survey_quantile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.svyqtl import survey_quantile
 
 
@@ -11,7 +12,7 @@ def test_svyqtl_basic():
     quantile = np.random.default_rng(42).normal(0, 1, 100)
     result = survey_quantile(y, weights, quantile)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_svyqtl_edge():

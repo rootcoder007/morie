@@ -8,7 +8,9 @@ LS to find theta_n that solves sum psi_H((x - theta)/eta_n) = 0
 where psi_H is the Huber score with tuning k = 1.345.  Returns
 theta_n and its sandwich SE (Huber 1981, Section 3.2.2).
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_m_estimator"]
@@ -54,12 +56,16 @@ def kosorok_m_estimator(x, y=None, k=1.345, max_iter=100, tol=1e-10):
     u = (x - theta) / eta
     psi = _huber_psi(u, k)
     A = float(np.mean(np.abs(u) <= k)) / eta  # E[psi'/eta]
-    B = float(np.mean(psi ** 2))
-    se = float(np.sqrt(B / (A ** 2) / n))
-    return RichResult(payload={
-        "estimate": float(theta), "se": se, "n": n,
-        "method":   "Huber-M location (k=%.3f) with profiled MAD/0.6745 scale" % k,
-    })
+    B = float(np.mean(psi**2))
+    se = float(np.sqrt(B / (A**2) / n))
+    return RichResult(
+        payload={
+            "estimate": float(theta),
+            "se": se,
+            "n": n,
+            "method": "Huber-M location (k=%.3f) with profiled MAD/0.6745 scale" % k,
+        }
+    )
 
 
 def cheatsheet():

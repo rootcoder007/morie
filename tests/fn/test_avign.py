@@ -1,5 +1,7 @@
 """Tests for anchoring vignettes."""
+
 import numpy as np
+
 from morie.fn.avign import avign
 
 
@@ -15,6 +17,7 @@ def test_avign_smoke():
 
 def test_cheatsheet():
     from morie.fn.avign import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

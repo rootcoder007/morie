@@ -1,6 +1,7 @@
 """Tests for rng050.rangayyan_ch3_frequency_response_from_laplace."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng050 import rangayyan_ch3_frequency_response_from_laplace
 
 
@@ -12,7 +13,7 @@ def test_rng050_basic():
     T = np.random.default_rng(43).integers(0, 2, 100)
     result = rangayyan_ch3_frequency_response_from_laplace(h, omega, t, T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng050_edge():

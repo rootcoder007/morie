@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mixture-of-basis prior for densities using kernel representation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_mixture_basis_prior"]
@@ -30,7 +32,14 @@ def ghosal_mixture_basis_prior(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mixture-of-basis prior for densities using kernel representation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mixture-of-basis prior for densities using kernel representation",
+        }
+    )
 
 
 def cheatsheet():

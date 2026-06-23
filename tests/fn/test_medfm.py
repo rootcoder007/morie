@@ -1,6 +1,7 @@
 """Tests for medfm.mediation_formula."""
+
 import numpy as np
-import pytest
+
 from morie.fn.medfm import mediation_formula
 
 
@@ -13,7 +14,7 @@ def test_medfm_basic():
     C = np.random.default_rng(42).normal(0, 1, 100)
     result = mediation_formula(Y_model, M_model, x, x_prime, C)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_medfm_edge():

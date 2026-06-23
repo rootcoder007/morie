@@ -1,6 +1,7 @@
 """Smith-Waterman local alignment."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["smith_waterman"]

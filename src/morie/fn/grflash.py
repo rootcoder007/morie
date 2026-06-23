@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """FlashAttention tiled softmax(QK^T)V via online normalization."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"]
@@ -36,8 +38,15 @@ def geron_flash_attention_tile(Q, K, V, block_size):
     n = len(Q)
     result = float(np.mean(Q))
     se = float(np.std(Q, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius",
+        }
+    )
 
 
 def cheatsheet():
-    return 'grflash() -> FlashAttention tiled softmax(QK^T)V via online normalization'
+    return "grflash() -> FlashAttention tiled softmax(QK^T)V via online normalization"

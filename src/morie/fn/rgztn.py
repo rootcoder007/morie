@@ -1,4 +1,5 @@
 """Ridge / LASSO / ElasticNet regularization path."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -29,7 +30,7 @@ def regularization_path(x, y, *, penalty="ridge", alphas=None, l1_ratio=0.5):
     coef_path (shape (len(alphas), p+1) including intercept), alphas, penalty,
     n, method.
     """
-    from sklearn.linear_model import Ridge, Lasso, ElasticNet
+    from sklearn.linear_model import ElasticNet, Lasso, Ridge
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float).ravel()
@@ -53,15 +54,17 @@ def regularization_path(x, y, *, penalty="ridge", alphas=None, l1_ratio=0.5):
         m.fit(X, y)
         coef_path[i, 0] = m.intercept_
         coef_path[i, 1:] = m.coef_
-    return RichResult(payload={
-        "estimate": coef_path[-1].tolist(),
-        "coef_path": coef_path.tolist(),
-        "alphas": alphas.tolist(),
-        "penalty": penalty,
-        "l1_ratio": float(l1_ratio) if penalty == "elasticnet" else None,
-        "n": int(n),
-        "method": f"Regularization path ({penalty})",
-    })
+    return RichResult(
+        payload={
+            "estimate": coef_path[-1].tolist(),
+            "coef_path": coef_path.tolist(),
+            "alphas": alphas.tolist(),
+            "penalty": penalty,
+            "l1_ratio": float(l1_ratio) if penalty == "elasticnet" else None,
+            "n": int(n),
+            "method": f"Regularization path ({penalty})",
+        }
+    )
 
 
 def cheatsheet():

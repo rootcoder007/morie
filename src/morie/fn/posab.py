@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Absolute sinusoidal positional encoding (Vaswani et al. 2017)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -41,18 +42,17 @@ def positional_encoding_abs(seq_len: int, d_model: int, base: float = 10000.0):
     d_model = int(d_model)
     if seq_len <= 0 or d_model <= 0:
         raise ValueError("seq_len and d_model must be > 0.")
-    pos = np.arange(seq_len)[:, None].astype(float)          # (seq, 1)
-    i = np.arange(d_model)[None, :].astype(float)             # (1, d)
+    pos = np.arange(seq_len)[:, None].astype(float)  # (seq, 1)
+    i = np.arange(d_model)[None, :].astype(float)  # (1, d)
     # 2i/d using floor-division of column index by 2
-    div_term = np.power(base, (2.0 * (i // 2)) / d_model)     # (1, d)
-    angles = pos / div_term                                   # (seq, d)
+    div_term = np.power(base, (2.0 * (i // 2)) / d_model)  # (1, d)
+    angles = pos / div_term  # (seq, d)
     PE = np.empty_like(angles)
     PE[:, 0::2] = np.sin(angles[:, 0::2])
     PE[:, 1::2] = np.cos(angles[:, 1::2])
     return RichResult(
         title=f"Sinusoidal positional encoding ({seq_len}x{d_model})",
-        summary_lines=[("seq_len", seq_len), ("d_model", d_model),
-                       ("base", base)],
+        summary_lines=[("seq_len", seq_len), ("d_model", d_model), ("base", base)],
         payload={
             "PE": PE,
             "estimate": PE,

@@ -1,5 +1,7 @@
 """Tests for wveng.py - Wavelet energy distribution."""
+
 import numpy as np
+
 from morie.fn.wveng import wavelet_energy, wveng
 
 

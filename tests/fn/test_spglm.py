@@ -7,7 +7,6 @@ from morie.fn.spglm import spglm
 
 
 class TestSpglm:
-
     def test_gaussian_output(self):
         rng = np.random.default_rng(42)
         n = 30

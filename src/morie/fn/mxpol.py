@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Max pooling forward pass (2D)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -42,7 +43,7 @@ def maxpool_forward(x, kernel_size: int = 2, stride=None):
     k = int(kernel_size)
     s = int(stride) if stride is not None else k
     H, W = x.shape
-    if H < k or W < k:
+    if k > H or k > W:
         raise ValueError(f"Input {(H, W)} smaller than kernel {k}.")
     out_h = (H - k) // s + 1
     out_w = (W - k) // s + 1
@@ -52,9 +53,7 @@ def maxpool_forward(x, kernel_size: int = 2, stride=None):
     argmax = flat.argmax(axis=-1)
     return RichResult(
         title="MaxPool2D forward",
-        summary_lines=[("kernel", k), ("stride", s),
-                       ("input shape", (H, W)),
-                       ("output shape", (out_h, out_w))],
+        summary_lines=[("kernel", k), ("stride", s), ("input shape", (H, W)), ("output shape", (out_h, out_w))],
         payload={
             "y": y,
             "estimate": y,

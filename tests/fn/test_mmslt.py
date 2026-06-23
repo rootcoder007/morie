@@ -1,5 +1,8 @@
 """Tests for mm_estimator."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.mmslt import mm_estimator
 
 

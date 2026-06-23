@@ -1,8 +1,9 @@
 """Tests for morie.fn.spclr -- Spectral clustering."""
 
 import numpy as np
-from morie.fn.spclr import spectral_clustering, spclr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.spclr import spclr, spectral_clustering
 
 
 class TestSpectralClustering:

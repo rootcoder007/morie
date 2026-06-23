@@ -1,6 +1,7 @@
 """Test lvsmp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lvsmp import lvsmp
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Max-norm regularization: project weight vectors onto L2 ball of radius r."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_max_norm_regularization"]
@@ -32,7 +34,14 @@ def geron_max_norm_regularization(W, r):
     n = int(W) if W.ndim == 0 else len(W)
     result = float(np.mean(W))
     se = float(np.std(W, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Max-norm regularization: project weight vectors onto L2 ball of radius r"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Max-norm regularization: project weight vectors onto L2 ball of radius r",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 """Tests for sisim2."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sisim2 import sisim2
 
 
@@ -28,4 +30,5 @@ def test_sisim2_no_data():
 
 def test_sisim2_alias():
     from morie.fn.sisim2 import sisim2
+
     assert sisim2 is sisim2

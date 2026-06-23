@@ -1,6 +1,7 @@
 """Tests for grkfd.geron_kfold_cv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grkfd import geron_kfold_cv
 
 
@@ -12,7 +13,7 @@ def test_grkfd_basic():
     seed = 42
     result = geron_kfold_cv(n, K, shuffle, seed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grkfd_edge():

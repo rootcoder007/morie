@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Party alignment / Rice cohesion (Armstrong Ch 8)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["party_alignment", "algnm"]
@@ -31,18 +33,20 @@ def party_alignment(x, party=None):
     if X.ndim == 1:
         valid = X[~np.isnan(X)]
         if valid.size == 0:
-            return RichResult(payload={"estimate": np.nan, "n": 0,
-                                       "method": "rice_cohesion"})
+            return RichResult(payload={"estimate": np.nan, "n": 0, "method": "rice_cohesion"})
         pct_yea = float(np.mean(valid == 1))
         pct_nay = float(np.mean(valid == 0))
         rice = abs(pct_yea - pct_nay)
         return RichResult(
             title="Rice cohesion index",
-            summary_lines=[("Rice", rice), ("%yea", pct_yea),
-                           ("%nay", pct_nay), ("n", int(valid.size))],
-            payload={"estimate": rice, "pct_yea": pct_yea,
-                     "pct_nay": pct_nay, "n": int(valid.size),
-                     "method": "rice_cohesion"},
+            summary_lines=[("Rice", rice), ("%yea", pct_yea), ("%nay", pct_nay), ("n", int(valid.size))],
+            payload={
+                "estimate": rice,
+                "pct_yea": pct_yea,
+                "pct_nay": pct_nay,
+                "n": int(valid.size),
+                "method": "rice_cohesion",
+            },
         )
     n, m = X.shape
     if party is None:
@@ -69,17 +73,13 @@ def party_alignment(x, party=None):
             for j in range(m):
                 col = sub[:, j]
                 col = col[~np.isnan(col)]
-                rice_p[j] = (abs(np.mean(col == 1) - np.mean(col == 0))
-                             if col.size else np.nan)
+                rice_p[j] = abs(np.mean(col == 1) - np.mean(col == 0)) if col.size else np.nan
             per[str(lbl)] = float(np.nanmean(rice_p))
         overall = float(np.nanmean(list(per.values())))
     return RichResult(
         title="Rice cohesion (per-party)",
-        summary_lines=[("Mean Rice (all parties)", overall),
-                       ("n legislators", n), ("m roll calls", m)],
-        payload={"estimate": overall, "per_party": per,
-                 "n": int(n), "m": int(m),
-                 "method": "rice_cohesion"},
+        summary_lines=[("Mean Rice (all parties)", overall), ("n legislators", n), ("m roll calls", m)],
+        payload={"estimate": overall, "per_party": per, "n": int(n), "m": int(m), "method": "rice_cohesion"},
     )
 
 

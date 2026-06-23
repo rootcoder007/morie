@@ -1,6 +1,7 @@
 """Test mtnet."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtnet import mtnet
 
 

@@ -1,6 +1,7 @@
 """Combined impulse response of two LSI systems in series is their convolution.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_lsi_series_combined_h"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_lsi_series_combined_h(h_1, h_2, n):
     n = len(h_1)
     result = float(np.mean(h_1))
     se = float(np.std(h_1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Combined impulse response of two LSI systems in series is their convolution."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Combined impulse response of two LSI systems in series is their convolution.",
+        }
+    )
 
 
 def cheatsheet():

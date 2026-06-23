@@ -1,6 +1,7 @@
 """Tests for grbag.geron_bagging_predictor."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grbag import geron_bagging_predictor
 
 
@@ -9,7 +10,7 @@ def test_grbag_basic():
     predictions = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_bagging_predictor(predictions)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grbag_edge():

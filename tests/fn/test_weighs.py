@@ -1,6 +1,7 @@
 """Test weighs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.weighs import weighs
 
 

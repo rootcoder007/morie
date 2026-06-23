@@ -1,6 +1,7 @@
 """Test mablc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mablc import mablc
 
 

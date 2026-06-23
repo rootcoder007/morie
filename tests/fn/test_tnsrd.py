@@ -1,7 +1,9 @@
 """Test tensor_decompose (tnsrd)."""
+
 import numpy as np
-from morie.fn.tnsrd import tensor_decompose, tnsrd
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.tnsrd import tensor_decompose, tnsrd
 
 
 class TestTnsrd:

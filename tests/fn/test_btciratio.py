@@ -1,6 +1,7 @@
 """Tests for btciratio.boot_ci_ratio."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btciratio import boot_ci_ratio
 
 
@@ -14,7 +15,7 @@ def test_btciratio_basic():
     alpha = 0.05
     result = boot_ci_ratio(x, y, stat_x, stat_y, B, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_btciratio_edge():

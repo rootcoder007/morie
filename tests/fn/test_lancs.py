@@ -1,8 +1,9 @@
 """Tests for morie.fn.lancs -- Lanczos algorithm."""
 
 import numpy as np
-from morie.fn.lancs import lanczos, lancs
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lancs import lancs, lanczos
 
 
 class TestLancs:

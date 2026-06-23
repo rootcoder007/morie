@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Higuchi fractal dimension -- Rangayyan Ch 7."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -53,8 +54,13 @@ def rangayyan_higuchi_fd(x, kmax=10):
         title="Higuchi fractal dimension",
         summary_lines=[("HFD", float(slope)), ("kmax", kmax), ("N", N)],
         interpretation=f"HFD = {slope:.4g}. ~1 smooth, ~2 rough.",
-        payload={"HFD": float(slope), "intercept": float(intercept),
-                 "log_L": log_L, "log_inv_k": log_inv_k, "kmax": kmax},
+        payload={
+            "HFD": float(slope),
+            "intercept": float(intercept),
+            "log_L": log_L,
+            "log_inv_k": log_inv_k,
+            "kmax": kmax,
+        },
     )
     return with_describe_pointer(res, "rghfd")
 

@@ -60,6 +60,7 @@ def screening_properties(
         denom = 1 + z**2 / n
         centre = p + z**2 / (2 * n)
         import numpy as np
+
         margin = z * np.sqrt(p * (1 - p) / n + z**2 / (4 * n**2))
         return ((centre - margin) / denom, (centre + margin) / denom)
 

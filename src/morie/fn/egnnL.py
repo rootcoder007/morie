@@ -1,6 +1,7 @@
 """EGNN layer (equivariant graph NN)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["egnn_layer"]

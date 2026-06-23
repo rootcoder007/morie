@@ -1,6 +1,7 @@
 """Test gcch4."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcch4 import gcch4
 
 

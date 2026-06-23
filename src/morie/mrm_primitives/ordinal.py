@@ -39,10 +39,11 @@ import pandas as pd
 @dataclass
 class ThresholdSpecificOrdinalResult:
     """Coefficients per threshold + diagnostics."""
-    threshold_labels: list[str]                  # e.g. ["low->med", "med->high"]
+
+    threshold_labels: list[str]  # e.g. ["low->med", "med->high"]
     covariate_names: list[str]
-    coefficients: np.ndarray                     # shape (K-1, p)
-    cutpoints: np.ndarray                        # shape (K-1,)
+    coefficients: np.ndarray  # shape (K-1, p)
+    cutpoints: np.ndarray  # shape (K-1,)
     log_likelihood: float
     n_obs: int
     proportional_odds_lr_stat: float | None = None
@@ -51,18 +52,16 @@ class ThresholdSpecificOrdinalResult:
 
     def coefficient_by_threshold(self, covariate: str) -> dict[str, float]:
         i = self.covariate_names.index(covariate)
-        return {self.threshold_labels[k]: float(self.coefficients[k, i])
-                for k in range(len(self.threshold_labels))}
+        return {self.threshold_labels[k]: float(self.coefficients[k, i]) for k in range(len(self.threshold_labels))}
 
     def interpret(self) -> str:
         K = len(self.threshold_labels)
         lines = [
-            f"Threshold-specific ordinal logit, K={K+1} levels, "
+            f"Threshold-specific ordinal logit, K={K + 1} levels, "
             f"p={len(self.covariate_names)} covariates, n={self.n_obs}.",
         ]
         if self.proportional_odds_p is not None:
-            decision = ("REJECTED" if self.proportional_odds_p < 0.05
-                        else "not rejected")
+            decision = "REJECTED" if self.proportional_odds_p < 0.05 else "not rejected"
             lines.append(
                 f"  Proportional-odds LR test: "
                 f"chi2={self.proportional_odds_lr_stat:.3f} on "
@@ -115,14 +114,10 @@ def threshold_specific_ordinal(
     level_to_int = {lvl: i for i, lvl in enumerate(ordinal_levels)}
     y = df[outcome_col].map(level_to_int).to_numpy(dtype=int)
     if (y < 0).any():
-        raise ValueError(
-            f"outcome contains values not in ordinal_levels={ordinal_levels}"
-        )
+        raise ValueError(f"outcome contains values not in ordinal_levels={ordinal_levels}")
     K = len(ordinal_levels)
     if K < 3:
-        raise ValueError(
-            f"threshold-specific ordinal needs >=3 levels; got {K}"
-        )
+        raise ValueError(f"threshold-specific ordinal needs >=3 levels; got {K}")
 
     X = df[covariate_cols].to_numpy(dtype=float)
     n, p = X.shape
@@ -132,10 +127,7 @@ def threshold_specific_ordinal(
     coefs = np.zeros((K - 1, p))
     cutpoints = np.zeros(K - 1)
     total_ll = 0.0
-    threshold_labels = [
-        f"{ordinal_levels[k]}_vs_{ordinal_levels[k+1]}+"
-        for k in range(K - 1)
-    ]
+    threshold_labels = [f"{ordinal_levels[k]}_vs_{ordinal_levels[k + 1]}+" for k in range(K - 1)]
     for k in range(K - 1):
         y_k = (y <= k).astype(int)
         intercept, beta_k = _logit_fit(X, y_k, max_iter, tol)
@@ -158,18 +150,16 @@ def threshold_specific_ordinal(
         # We approximate by pooling all (X, y<=k) pairs into one
         # regression — a coarse but useful nested-LR baseline.
         X_stacked = np.tile(X, (K - 1, 1))
-        y_stacked = np.concatenate([
-            (y <= k).astype(int) for k in range(K - 1)
-        ])
+        y_stacked = np.concatenate([(y <= k).astype(int) for k in range(K - 1)])
         # Add per-threshold dummies so the intercepts can still differ
         threshold_dummies = np.zeros((n * (K - 1), K - 1))
         for k in range(K - 1):
-            threshold_dummies[k * n:(k + 1) * n, k] = 1.0
+            threshold_dummies[k * n : (k + 1) * n, k] = 1.0
         X_po = np.column_stack([threshold_dummies, X_stacked])
         # No global intercept (the dummies absorb it)
         coef_po = _logit_fit_no_intercept(X_po, y_stacked, max_iter, tol)
-        intercepts_po = coef_po[:K - 1]
-        beta_po = coef_po[K - 1:]
+        intercepts_po = coef_po[: K - 1]
+        beta_po = coef_po[K - 1 :]
         ll_po = 0.0
         for k in range(K - 1):
             ll_po += _logit_ll(X, (y <= k).astype(int), intercepts_po[k], beta_po)
@@ -187,8 +177,7 @@ def threshold_specific_ordinal(
 # ─── helpers ────────────────────────────────────────────────────────────
 
 
-def _logit_fit(X: np.ndarray, y: np.ndarray, max_iter: int, tol: float
-               ) -> tuple[float, np.ndarray]:
+def _logit_fit(X: np.ndarray, y: np.ndarray, max_iter: int, tol: float) -> tuple[float, np.ndarray]:
     """Standalone IRLS logistic fit; returns (intercept, beta)."""
     n, p = X.shape
     X_int = np.column_stack([np.ones(n), X])
@@ -196,21 +185,17 @@ def _logit_fit(X: np.ndarray, y: np.ndarray, max_iter: int, tol: float
     return float(coef[0]), coef[1:]
 
 
-def _logit_fit_no_intercept(X: np.ndarray, y: np.ndarray, max_iter: int, tol: float
-                             ) -> np.ndarray:
+def _logit_fit_no_intercept(X: np.ndarray, y: np.ndarray, max_iter: int, tol: float) -> np.ndarray:
     """IRLS without auto-added intercept (caller already supplied one)."""
     return _logit_fit_raw(X, y, max_iter, tol)
 
 
-def _logit_fit_raw(X_int: np.ndarray, y: np.ndarray, max_iter: int, tol: float
-                    ) -> np.ndarray:
+def _logit_fit_raw(X_int: np.ndarray, y: np.ndarray, max_iter: int, tol: float) -> np.ndarray:
     p = X_int.shape[1]
     beta = np.zeros(p)
     for _ in range(max_iter):
         eta = X_int @ beta
-        mu = np.where(eta >= 0,
-                      1.0 / (1.0 + np.exp(-eta)),
-                      np.exp(eta) / (1.0 + np.exp(eta)))
+        mu = np.where(eta >= 0, 1.0 / (1.0 + np.exp(-eta)), np.exp(eta) / (1.0 + np.exp(eta)))
         w = mu * (1 - mu)
         w = np.clip(w, 1e-10, None)
         XW = X_int * w[:, None]
@@ -226,8 +211,7 @@ def _logit_fit_raw(X_int: np.ndarray, y: np.ndarray, max_iter: int, tol: float
     return beta
 
 
-def _logit_ll(X: np.ndarray, y: np.ndarray, intercept: float, beta: np.ndarray
-              ) -> float:
+def _logit_ll(X: np.ndarray, y: np.ndarray, intercept: float, beta: np.ndarray) -> float:
     eta = intercept + X @ beta
     # Use log-sum-exp for numerical safety
     return float(np.sum(y * eta - np.logaddexp(0.0, eta)))
@@ -250,6 +234,7 @@ def _erf(x: float) -> float:
     sign = 1.0 if x >= 0 else -1.0
     ax = abs(x)
     t = 1.0 / (1.0 + 0.3275911 * ax)
-    y = 1.0 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t
-                - 0.284496736) * t + 0.254829592) * t * np.exp(-ax * ax)
+    y = 1.0 - (
+        ((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592
+    ) * t * np.exp(-ax * ax)
     return sign * y

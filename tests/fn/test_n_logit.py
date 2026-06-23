@@ -1,6 +1,7 @@
 """Tests for morie.fn.n_logit -- minimum sample size for logistic regression."""
 
 import pytest
+
 from morie.fn.n_logit import sample_size_logistic
 
 

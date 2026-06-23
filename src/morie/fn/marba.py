@@ -1,6 +1,7 @@
 """Variance of Hedges' g for crossover/within-subject designs."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_smd_var_correlated_designs"]
@@ -34,7 +35,14 @@ def ma_smd_var_correlated_designs(g, n, rho):
     n = len(g)
     result = float(np.mean(g))
     se = float(np.std(g, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Variance of Hedges' g for crossover/within-subject designs"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Variance of Hedges' g for crossover/within-subject designs",
+        }
+    )
 
 
 def cheatsheet():

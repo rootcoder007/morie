@@ -1,5 +1,5 @@
 """Tests for knn_classify."""
-import numpy as np
+
 from morie.fn.knnc import knn_classify, knnc
 
 

@@ -1,6 +1,7 @@
 """Tests for rgfrqdom.rangayyan_freq_domain_feat."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgfrqdom import rangayyan_freq_domain_feat
 
 
@@ -10,7 +11,7 @@ def test_rgfrqdom_basic():
     fs = 100.0
     result = rangayyan_freq_domain_feat(x, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgfrqdom_edge():

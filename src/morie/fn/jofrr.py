@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fourier-series seasonality features: sin/cos at K harmonics of the seasonal period m."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_fourier_features"]
@@ -34,7 +36,14 @@ def joseph_fourier_features(t, m, K):
     n = len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fourier-series seasonality features: sin/cos at K harmonics of the seasonal period m"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Fourier-series seasonality features: sin/cos at K harmonics of the seasonal period m",
+        }
+    )
 
 
 def cheatsheet():

@@ -9,7 +9,9 @@ from scipy import stats as _st
 from ._containers import RegressionResult
 
 
-def probit_regression(y: np.ndarray, X: np.ndarray, cdf=None, *, add_intercept: bool = True, max_iter: int = 50, tol: float = 1e-8) -> RegressionResult:
+def probit_regression(
+    y: np.ndarray, X: np.ndarray, cdf=None, *, add_intercept: bool = True, max_iter: int = 50, tol: float = 1e-8
+) -> RegressionResult:
     r"""Probit regression via IRLS (Fisher scoring).
 
     The link function is :math:`\\Phi^{-1}(\\mu)` where :math:`\\Phi`
@@ -46,7 +48,7 @@ def probit_regression(y: np.ndarray, X: np.ndarray, cdf=None, *, add_intercept: 
         mu = _st.norm.cdf(eta)
         mu = np.clip(mu, 1e-8, 1 - 1e-8)
         phi = _st.norm.pdf(eta)
-        W = (phi ** 2) / (mu * (1.0 - mu)) + 1e-12
+        W = (phi**2) / (mu * (1.0 - mu)) + 1e-12
         z = eta + (y - mu) / (phi + 1e-12)
         XtWX = (X * W[:, None]).T @ X
         XtWz = (X * W[:, None]).T @ z
@@ -67,7 +69,7 @@ def probit_regression(y: np.ndarray, X: np.ndarray, cdf=None, *, add_intercept: 
     aic = deviance + 2 * k
 
     phi_f = _st.norm.pdf(eta_f)
-    W_f = (phi_f ** 2) / (mu_f * (1 - mu_f)) + 1e-12
+    W_f = (phi_f**2) / (mu_f * (1 - mu_f)) + 1e-12
     XtWX = (X * W_f[:, None]).T @ X
     try:
         cov = np.linalg.inv(XtWX)
@@ -78,9 +80,7 @@ def probit_regression(y: np.ndarray, X: np.ndarray, cdf=None, *, add_intercept: 
     z_vals = beta / (se_arr + 1e-300)
     p_vals = 2.0 * _st.norm.sf(np.abs(z_vals))
 
-    names = (["(Intercept)"] if add_intercept else []) + [
-        f"x{j}" for j in range(p_raw)
-    ]
+    names = (["(Intercept)"] if add_intercept else []) + [f"x{j}" for j in range(p_raw)]
     return RegressionResult(
         method="Probit (IRLS)",
         coefficients={nm: float(b) for nm, b in zip(names, beta)},

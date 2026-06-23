@@ -1,6 +1,7 @@
 """Tests for morie.fn.suhdnk -- heavy drinking."""
 
 import pytest
+
 from morie.fn.suhdnk import heavy_drinking
 
 

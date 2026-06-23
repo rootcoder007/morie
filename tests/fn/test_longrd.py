@@ -1,6 +1,7 @@
 """Tests for longrd.long_read_polish."""
+
 import numpy as np
-import pytest
+
 from morie.fn.longrd import long_read_polish
 
 
@@ -10,7 +11,7 @@ def test_longrd_basic():
     reads = np.random.default_rng(42).normal(0, 1, 100)
     result = long_read_polish(assembly, reads)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_longrd_edge():

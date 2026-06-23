@@ -1,6 +1,7 @@
 """Manski monotone instrumental variable bounds."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["monotone_iv_bounds"]
@@ -38,7 +39,9 @@ def monotone_iv_bounds(y, D, Z, y_min, y_max):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Manski monotone instrumental variable bounds"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Manski monotone instrumental variable bounds"}
+    )
 
 
 def cheatsheet():

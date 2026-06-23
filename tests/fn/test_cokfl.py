@@ -1,6 +1,7 @@
 """Test cokfl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cokfl import cokfl
 
 

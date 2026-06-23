@@ -1,6 +1,7 @@
 """Tests for msm024.mvsml_linear_mixed_models_eq_5_3."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm024 import mvsml_linear_mixed_models_eq_5_3
 
 
@@ -14,7 +15,7 @@ def test_msm024_basic():
     environment = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_linear_mixed_models_eq_5_3(M11, referred, to, model, plus, environment)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm024_edge():

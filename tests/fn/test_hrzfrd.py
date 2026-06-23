@@ -1,6 +1,5 @@
 """Tests for hrzfrd.horowitz_fredholm_eq."""
-import numpy as np
-import pytest
+
 from morie.fn.hrzfrd import horowitz_fredholm_eq
 
 
@@ -10,7 +9,7 @@ def test_hrzfrd_basic():
     k = 5
     result = horowitz_fredholm_eq(m, k)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_hrzfrd_edge():

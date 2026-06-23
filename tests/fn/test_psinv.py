@@ -1,6 +1,8 @@
 """Tests for pseudo_inverse."""
+
 import numpy as np
 import pytest
+
 from morie.fn.psinv import pseudo_inverse, psinv
 
 

@@ -1,6 +1,7 @@
 """Tests for rdrobu.calonico_cattaneo_titiunik."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rdrobu import calonico_cattaneo_titiunik
 
 
@@ -11,7 +12,7 @@ def test_rdrobu_basic():
     cutoff = 10.0
     result = calonico_cattaneo_titiunik(y, x, cutoff)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rdrobu_edge():

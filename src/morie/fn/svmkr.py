@@ -1,4 +1,5 @@
 """SVM with kernel trick (RBF / poly / sigmoid)."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -40,17 +41,19 @@ def svm_kernel_trick(x, y, *, kernel="rbf", C=1.0, gamma="scale", degree=3, seed
     clf = SVC(kernel=kernel, C=C, gamma=gamma, degree=degree, random_state=seed)
     clf.fit(X, y)
     acc = float(clf.score(X, y))
-    return RichResult(payload={
-        "estimate": acc,
-        "train_accuracy": acc,
-        "n_support": clf.n_support_.tolist(),
-        "kernel": kernel,
-        "C": float(C),
-        "gamma": str(gamma),
-        "degree": int(degree),
-        "n": int(n),
-        "method": f"Kernel SVM ({kernel})",
-    })
+    return RichResult(
+        payload={
+            "estimate": acc,
+            "train_accuracy": acc,
+            "n_support": clf.n_support_.tolist(),
+            "kernel": kernel,
+            "C": float(C),
+            "gamma": str(gamma),
+            "degree": int(degree),
+            "n": int(n),
+            "method": f"Kernel SVM ({kernel})",
+        }
+    )
 
 
 def cheatsheet():

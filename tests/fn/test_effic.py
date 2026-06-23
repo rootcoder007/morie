@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.effic import effic, EfficiencyBoundResult
+from morie.fn.effic import EfficiencyBoundResult, effic
 
 
 @pytest.fixture()

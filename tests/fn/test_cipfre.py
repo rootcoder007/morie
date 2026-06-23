@@ -1,7 +1,7 @@
 """Tests for morie.fn.cipfre -- Cipher frequency analysis."""
 
-from morie.fn.cipfre import cipher_frequency, cipfre
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cipfre import cipfre, cipher_frequency
 
 
 class TestCipfre:

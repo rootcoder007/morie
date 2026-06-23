@@ -1,6 +1,7 @@
 """Noise PSD at the output of a matched filter.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_noise_psd_at_output"]
@@ -34,7 +35,9 @@ def rangayyan_ch4_noise_psd_at_output(P_eta_i, H, f):
     n = len(P_eta_i)
     result = float(np.mean(P_eta_i))
     se = float(np.std(P_eta_i, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Noise PSD at the output of a matched filter."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Noise PSD at the output of a matched filter."}
+    )
 
 
 def cheatsheet():

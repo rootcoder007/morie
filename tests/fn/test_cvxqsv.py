@@ -1,6 +1,7 @@
 """Tests for cvxqsv.boyd_qcqp_relaxation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxqsv import boyd_qcqp_relaxation
 
 
@@ -13,7 +14,7 @@ def test_cvxqsv_basic():
     r = 10
     result = boyd_qcqp_relaxation(P0, q0, P, q, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxqsv_edge():

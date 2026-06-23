@@ -1,6 +1,7 @@
 """Test gdlng."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdlng import gdlng
 
 

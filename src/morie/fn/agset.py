@@ -38,12 +38,11 @@ def agenda_setter_power(options, setter_ideal, reversion):
     setter_ideal = float(setter_ideal)
     reversion = float(reversion)
     if options.size == 0:
-        return SpatialResult(name="Agenda setter model",
-                             statistic=0.0,
-                             extra={"chosen": np.nan,
-                                    "setter_ideal": setter_ideal,
-                                    "reversion": reversion,
-                                    "win_set_size": 0})
+        return SpatialResult(
+            name="Agenda setter model",
+            statistic=0.0,
+            extra={"chosen": np.nan, "setter_ideal": setter_ideal, "reversion": reversion, "win_set_size": 0},
+        )
     # Win-set: options at least as close to reversion as reversion itself
     # is to itself -- i.e. options strictly preferred by the median voter
     # over the reversion (single-peaked, voter at midpoint for monopoly
@@ -77,8 +76,7 @@ def agset(options, setter_ideal, reversion):
 
 
 def cheatsheet() -> str:
-    return ("agset(options, setter_ideal, reversion) -> "
-            "Romer-Rosenthal agenda-setter outcome and power.")
+    return "agset(options, setter_ideal, reversion) -> Romer-Rosenthal agenda-setter outcome and power."
 
 
 # CANONICAL TEST

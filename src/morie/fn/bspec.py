@@ -11,7 +11,9 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['bspec']
+__all__ = ["bspec"]
+
+
 def bspec(
     x: np.ndarray,
     fs: float = 1.0,

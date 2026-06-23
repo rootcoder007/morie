@@ -1,6 +1,7 @@
 """I cannot teach anybody anything. I can only make them think. — Socrates"""
+
 import numpy as np
-import pytest
+
 from morie.fn.atfla import flash_attention_block
 
 
@@ -13,7 +14,7 @@ def test_atfla_basic():
     block_size = 100
     result = flash_attention_block(y, Q, K, V, block_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_atfla_edge():

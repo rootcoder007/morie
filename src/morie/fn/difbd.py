@@ -10,7 +10,14 @@ from scipy import stats as sp
 from morie.fn._containers import DIFResult
 
 
-def dif_bundle(responses: np.ndarray | pd.DataFrame, group: np.ndarray | list, bundles: dict[str, list[int]], cdf=None, *, alpha: float = 0.05) -> DIFResult:
+def dif_bundle(
+    responses: np.ndarray | pd.DataFrame,
+    group: np.ndarray | list,
+    bundles: dict[str, list[int]],
+    cdf=None,
+    *,
+    alpha: float = 0.05,
+) -> DIFResult:
     """Bundle-level DIF analysis for item testlets.
 
     Tests whether bundles of items show DIF collectively using

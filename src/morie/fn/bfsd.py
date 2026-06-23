@@ -1,6 +1,7 @@
 """Savage-Dickey density ratio for nested point null."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bayes_factor_savage_dickey"]
@@ -32,7 +33,9 @@ def bayes_factor_savage_dickey(samples, prior):
     n = len(samples)
     result = float(np.mean(samples))
     se = float(np.std(samples, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Savage-Dickey density ratio for nested point null"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Savage-Dickey density ratio for nested point null"}
+    )
 
 
 def cheatsheet():

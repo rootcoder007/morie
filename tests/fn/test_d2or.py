@@ -1,7 +1,9 @@
 """Tests for morie.fn.d2or -- Convert Cohen's d to odds ratio."""
 
 import math
+
 import pytest
+
 from morie.fn.d2or import d_to_or
 
 

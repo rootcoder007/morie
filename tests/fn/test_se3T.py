@@ -1,6 +1,7 @@
 """Tests for se3T.se3_transformer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.se3T import se3_transformer
 
 
@@ -11,7 +12,7 @@ def test_se3T_basic():
     coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
     result = se3_transformer(G, X, coords)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_se3T_edge():

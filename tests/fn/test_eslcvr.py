@@ -1,6 +1,7 @@
 """Tests for eslcvr.esl_cv_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslcvr import esl_cv_score
 
 
@@ -12,7 +13,7 @@ def test_eslcvr_basic():
     k = 5
     result = esl_cv_score(X, y, model, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslcvr_edge():

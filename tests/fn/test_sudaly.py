@@ -1,6 +1,7 @@
 """Tests for morie.fn.sudaly -- substance DALY."""
 
 import pytest
+
 from morie.fn.sudaly import substance_daly
 
 

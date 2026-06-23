@@ -1,7 +1,10 @@
 """The whole is greater than the sum of its parts. — Aristotle"""
+
 import numpy as np
-import pytest
-from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_8e24 import christopher_gandrud_author_reproducible_research_with_r_and__chapter_8_equation_24
+
+from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_8e24 import (
+    christopher_gandrud_author_reproducible_research_with_r_and__chapter_8_equation_24,
+)
 
 
 def test_christopher_gandrud_author_reproducible_research_with_r_and_8e24_basic():
@@ -9,7 +12,7 @@ def test_christopher_gandrud_author_reproducible_research_with_r_and_8e24_basic(
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = christopher_gandrud_author_reproducible_research_with_r_and__chapter_8_equation_24(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_christopher_gandrud_author_reproducible_research_with_r_and_8e24_edge():

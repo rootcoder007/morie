@@ -1,6 +1,7 @@
 """BLUP for random slope (one covariate)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["blup_random_slope"]

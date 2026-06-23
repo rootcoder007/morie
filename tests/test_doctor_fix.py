@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Tests for `morie doctor` -- the --fix healing mode and version check."""
+
 import inspect
 
 import morie.doctor as doctor
@@ -31,13 +32,13 @@ def test_heal_pip_installs_failed_imports(monkeypatch):
     class _Result:
         returncode = 0
 
-    monkeypatch.setattr(
-        doctor.subprocess, "run",
-        lambda cmd, *a, **k: (calls.append(cmd), _Result())[1])
-    results = {"checks": [
-        {"label": "import sklearn", "passed": False, "detail": "x", "required": True},
-        {"label": "import numpy", "passed": True, "detail": "1.0", "required": True},
-    ]}
+    monkeypatch.setattr(doctor.subprocess, "run", lambda cmd, *a, **k: (calls.append(cmd), _Result())[1])
+    results = {
+        "checks": [
+            {"label": "import sklearn", "passed": False, "detail": "x", "required": True},
+            {"label": "import numpy", "passed": True, "detail": "1.0", "required": True},
+        ]
+    }
     healed = doctor._heal(results)
     assert healed is True
     flat = [" ".join(c) for c in calls]

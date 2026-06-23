@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmpol -- Legislative polarity detection"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmpol import leg_polarity
 

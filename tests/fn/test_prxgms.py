@@ -1,6 +1,7 @@
 """Tests for prxgms.proximal_gradient_method."""
+
 import numpy as np
-import pytest
+
 from morie.fn.prxgms import proximal_gradient_method
 
 
@@ -13,7 +14,7 @@ def test_prxgms_basic():
     lam = 0.1
     result = proximal_gradient_method(f, grad_f, x0, lr, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_prxgms_edge():

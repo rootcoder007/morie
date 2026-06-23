@@ -96,7 +96,7 @@ def medsv(
     for t_j in event_times:
         n_r = np.sum(t_s >= t_j)
         n_e = np.sum((t_s == t_j) & (e_s == 1))
-        S *= (1 - n_e / n_r)
+        S *= 1 - n_e / n_r
         if n_r > n_e:
             gw_sum += n_e / (n_r * (n_r - n_e))
         km_t.append(float(t_j))

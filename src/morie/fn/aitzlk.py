@@ -1,6 +1,7 @@
 """Log-ratio data augmentation imputation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["compositional_zero_lrda"]
@@ -32,7 +33,9 @@ def compositional_zero_lrda(X, n_iter):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Log-ratio data augmentation imputation"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Log-ratio data augmentation imputation"}
+    )
 
 
 def cheatsheet():

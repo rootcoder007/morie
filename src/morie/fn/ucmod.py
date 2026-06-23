@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Unobserved-components model -- trend + seasonal + irregular (Harvey 1989)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -47,21 +48,26 @@ def unobserved_components(x, period=12, trend="local linear"):
 
     try:
         from statsmodels.tsa.statespace.structural import UnobservedComponents
+
         kwargs = dict(level=trend, freq_seasonal=None)
         if period and period > 1:
             kwargs["seasonal"] = period
         mod = UnobservedComponents(y, **kwargs)
         fit = mod.fit(disp=False)
         mu = np.asarray(fit.level["smoothed"])
-        season = (np.asarray(fit.seasonal["smoothed"])
-                  if period and period > 1 else np.zeros(n))
+        season = np.asarray(fit.seasonal["smoothed"]) if period and period > 1 else np.zeros(n)
         irr = y - mu - season
-        return RichResult(payload={
-            "trend": mu, "seasonal": season, "irregular": irr,
-            "loglik": float(fit.llf), "n": int(n),
-            "period": int(period),
-            "method": "Structural UCM via statsmodels",
-        })
+        return RichResult(
+            payload={
+                "trend": mu,
+                "seasonal": season,
+                "irregular": irr,
+                "loglik": float(fit.llf),
+                "n": int(n),
+                "period": int(period),
+                "method": "Structural UCM via statsmodels",
+            }
+        )
     except Exception:
         pass
 
@@ -86,11 +92,17 @@ def unobserved_components(x, period=12, trend="local linear"):
         mu = np.convolve(y, np.ones(5) / 5, mode="same")
         season = np.zeros(n)
     irr = y - mu - season
-    return RichResult(payload={
-        "trend": mu, "seasonal": season, "irregular": irr,
-        "loglik": np.nan, "n": int(n), "period": int(period),
-        "method": "Additive trend+seasonal decomposition (numpy)",
-    })
+    return RichResult(
+        payload={
+            "trend": mu,
+            "seasonal": season,
+            "irregular": irr,
+            "loglik": np.nan,
+            "n": int(n),
+            "period": int(period),
+            "method": "Additive trend+seasonal decomposition (numpy)",
+        }
+    )
 
 
 def cheatsheet():

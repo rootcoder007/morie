@@ -1,6 +1,7 @@
 """Effective parameters from WAIC (p_WAIC)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["effective_parameters_waic"]
@@ -30,7 +31,9 @@ def effective_parameters_waic(log_lik):
     n = len(log_lik)
     result = float(np.mean(log_lik))
     se = float(np.std(log_lik, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Effective parameters from WAIC (p_WAIC)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Effective parameters from WAIC (p_WAIC)"}
+    )
 
 
 def cheatsheet():

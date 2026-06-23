@@ -1,4 +1,5 @@
 """Polynomial feature expansion + OLS."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -48,14 +49,16 @@ def polynomial_regression(x, y, *, degree=2):
     except np.linalg.LinAlgError:
         se = np.full(p + 1, np.nan)
     names = ["(intercept)"] + list(poly.get_feature_names_out([f"x{i}" for i in range(X.shape[1])]))
-    return RichResult(payload={
-        "estimate": coef.tolist(),
-        "se": se.tolist(),
-        "feature_names": names,
-        "degree": int(degree),
-        "n": int(n),
-        "method": f"Polynomial regression (degree={degree})",
-    })
+    return RichResult(
+        payload={
+            "estimate": coef.tolist(),
+            "se": se.tolist(),
+            "feature_names": names,
+            "degree": int(degree),
+            "n": int(n),
+            "method": f"Polynomial regression (degree={degree})",
+        }
+    )
 
 
 def cheatsheet():

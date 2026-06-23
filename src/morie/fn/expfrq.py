@@ -1,13 +1,16 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Expected frequencies under independence with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
 
 
 def expfrq(table: Union[Sequence, np.ndarray]):
     """Expected frequency under independence: E_ij = (row_i * col_j) / N."""
     from ._richresult import RichResult
+
     t = np.asarray(table, dtype=float)
     if t.ndim != 2:
         raise ValueError(f"table must be 2D, got shape {t.shape}.")
@@ -21,12 +24,13 @@ def expfrq(table: Union[Sequence, np.ndarray]):
     warnings = []
     if low_count_cells > 0:
         pct = 100 * low_count_cells / expected.size
-        warnings.append(f"{low_count_cells} of {expected.size} cells "
-                        f"({pct:.0f}%) have expected count < 5; "
-                        "chi-squared approximation may be poor. "
-                        "Consider Fisher's exact (`fishex`).")
-    expected_rows = [["Row " + str(i)] + [f"{v:.2f}" for v in expected[i]]
-                     for i in range(expected.shape[0])]
+        warnings.append(
+            f"{low_count_cells} of {expected.size} cells "
+            f"({pct:.0f}%) have expected count < 5; "
+            "chi-squared approximation may be poor. "
+            "Consider Fisher's exact (`fishex`)."
+        )
+    expected_rows = [["Row " + str(i)] + [f"{v:.2f}" for v in expected[i]] for i in range(expected.shape[0])]
     return RichResult(
         title="Expected frequencies (independence)",
         summary_lines=[
@@ -36,12 +40,18 @@ def expfrq(table: Union[Sequence, np.ndarray]):
             ("Min expected", float(expected.min())),
             ("Max expected", float(expected.max())),
         ],
-        tables=[{
-            "title": "Expected counts under independence:",
-            "headers": [""] + [f"Col {j}" for j in range(expected.shape[1])],
-            "rows": expected_rows,
-        }],
+        tables=[
+            {
+                "title": "Expected counts under independence:",
+                "headers": [""] + [f"Col {j}" for j in range(expected.shape[1])],
+                "rows": expected_rows,
+            }
+        ],
         warnings=warnings,
-        payload={"expected": expected.tolist(), "row_totals": rows.flatten().tolist(),
-                 "col_totals": cols.flatten().tolist(), "total": float(n)},
+        payload={
+            "expected": expected.tolist(),
+            "row_totals": rows.flatten().tolist(),
+            "col_totals": cols.flatten().tolist(),
+            "total": float(n),
+        },
     )

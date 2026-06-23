@@ -13,6 +13,7 @@ arXiv preprint arXiv:1607.06450.
 __all__ = ["lnorm"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 

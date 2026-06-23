@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.fried import friedman, fried
+
 from morie.fn._containers import TestResult
+from morie.fn.fried import fried, friedman
 
 
 class TestFried:

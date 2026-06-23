@@ -51,20 +51,12 @@ def lrfor(
 
         if theta > 0:
             if abs(pi - pj) < 1e-10:
-                prob = (
-                    (2 * theta + (1 - theta) * pi)
-                    * (3 * theta + (1 - theta) * pi)
-                    / ((1 + theta) * (1 + 2 * theta))
-                )
+                prob = (2 * theta + (1 - theta) * pi) * (3 * theta + (1 - theta) * pi) / ((1 + theta) * (1 + 2 * theta))
             else:
-                prob = (
-                    2 * (theta + (1 - theta) * pi)
-                    * (theta + (1 - theta) * pj)
-                    / ((1 + theta) * (1 + 2 * theta))
-                )
+                prob = 2 * (theta + (1 - theta) * pi) * (theta + (1 - theta) * pj) / ((1 + theta) * (1 + 2 * theta))
         else:
             if abs(pi - pj) < 1e-10:
-                prob = pi ** 2
+                prob = pi**2
             else:
                 prob = 2 * pi * pj
 

@@ -1,6 +1,7 @@
 """Tests for karpV.genetic_programming."""
+
 import numpy as np
-import pytest
+
 from morie.fn.karpV import genetic_programming
 
 
@@ -11,7 +12,7 @@ def test_karpV_basic():
     gens = np.random.default_rng(42).normal(0, 1, 100)
     result = genetic_programming(fitness, ops, gens)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_karpV_edge():

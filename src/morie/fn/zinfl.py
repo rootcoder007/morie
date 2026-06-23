@@ -112,12 +112,15 @@ def zero_inflated_poisson(
         if y[i] == 0:
             ll += np.log(psi_f[i] + (1 - psi_f[i]) * np.exp(-mu_f[i]) + 1e-300)
         else:
-            ll += np.log(1 - psi_f[i] + 1e-300) + y[i] * np.log(mu_f[i] + 1e-300) - mu_f[i] - float(special.gammaln(y[i] + 1))
+            ll += (
+                np.log(1 - psi_f[i] + 1e-300)
+                + y[i] * np.log(mu_f[i] + 1e-300)
+                - mu_f[i]
+                - float(special.gammaln(y[i] + 1))
+            )
     aic = -2 * ll + 2 * (kx + kz)
 
-    count_names = (["count_(Intercept)"] if add_intercept else []) + [
-        f"count_x{j}" for j in range(p_raw)
-    ]
+    count_names = (["count_(Intercept)"] if add_intercept else []) + [f"count_x{j}" for j in range(p_raw)]
     inflate_names = (["inflate_(Intercept)"] if add_intercept else []) + [
         f"inflate_z{j}" for j in range(Z.shape[1] - (1 if add_intercept else 0))
     ]

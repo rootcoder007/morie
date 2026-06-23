@@ -1,6 +1,7 @@
 """Test ksmsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksmsp import ksmsp
 
 

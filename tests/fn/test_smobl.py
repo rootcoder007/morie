@@ -1,7 +1,9 @@
 """Test mobility (smobl)."""
+
 import numpy as np
-from morie.fn.smobl import mobility, smobl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.smobl import mobility, smobl
 
 
 class TestMobility:

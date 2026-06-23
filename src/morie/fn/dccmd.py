@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DCC multivariate GARCH (Engle 2002)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -24,10 +25,11 @@ def _univariate_garch11(r):
         for t in range(1, n):
             s2[t] = w + a * r[t - 1] ** 2 + b * s2[t - 1]
             s2[t] = max(s2[t], 1e-12)
-        return 0.5 * np.sum(np.log(2 * np.pi * s2) + r ** 2 / s2)
+        return 0.5 * np.sum(np.log(2 * np.pi * s2) + r**2 / s2)
 
     fit = optimize.minimize(
-        nll, [var_r * 0.05, 0.05, 0.9],
+        nll,
+        [var_r * 0.05, 0.05, 0.9],
         bounds=[(1e-10, var_r * 10), (1e-8, 0.5), (1e-8, 0.999)],
         method="L-BFGS-B",
     )
@@ -107,7 +109,8 @@ def dcc_multivariate_garch(x):
         return ll
 
     fit = optimize.minimize(
-        dcc_nll, [0.02, 0.95],
+        dcc_nll,
+        [0.02, 0.95],
         bounds=[(1e-6, 0.5), (1e-6, 0.999)],
         method="L-BFGS-B",
     )
@@ -121,15 +124,19 @@ def dcc_multivariate_garch(x):
         R_path[t] = Q / np.outer(d, d)
         Q = (1 - a - b) * Q_bar + a * np.outer(Z[t], Z[t]) + b * Q
 
-    return RichResult(payload={
-        "a": float(a), "b": float(b),
-        "unconditional_correlation": Q_bar,
-        "conditional_correlation": R_path,
-        "conditional_variance": H,
-        "loglik": float(-fit.fun),
-        "n": int(n), "k": int(k),
-        "method": "DCC(1,1) two-step Gaussian MLE (numpy)",
-    })
+    return RichResult(
+        payload={
+            "a": float(a),
+            "b": float(b),
+            "unconditional_correlation": Q_bar,
+            "conditional_correlation": R_path,
+            "conditional_variance": H,
+            "loglik": float(-fit.fun),
+            "n": int(n),
+            "k": int(k),
+            "method": "DCC(1,1) two-step Gaussian MLE (numpy)",
+        }
+    )
 
 
 def cheatsheet():

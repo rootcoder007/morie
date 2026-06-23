@@ -1,6 +1,7 @@
 """Tests for wsmund.wasserman_undirected_graph."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmund import wasserman_undirected_graph
 
 
@@ -10,7 +11,7 @@ def test_wsmund_basic():
     psi = np.random.default_rng(42).normal(0, 1, 100)
     result = wasserman_undirected_graph(graph, psi)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmund_edge():

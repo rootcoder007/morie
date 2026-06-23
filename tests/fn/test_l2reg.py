@@ -1,6 +1,7 @@
 """Tests for l2reg.l2_weight_regularization."""
+
 import numpy as np
-import pytest
+
 from morie.fn.l2reg import l2_weight_regularization
 
 
@@ -11,7 +12,7 @@ def test_l2reg_basic():
     lam = 0.1
     result = l2_weight_regularization(loss, weights, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_l2reg_edge():

@@ -1,12 +1,11 @@
 """Tests for morie.fn.brcc — Bayesian reliable change index."""
 
 import numpy as np
-import pytest
+
 from morie.fn.brcc import bayesian_rci
 
 
 class TestBayesianRci:
-
     def test_returns_dict(self, rng):
         pre = rng.normal(50, 10, 50)
         post = pre + rng.normal(5, 3, 50)

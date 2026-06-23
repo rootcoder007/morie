@@ -1,6 +1,7 @@
 """Test abspor."""
+
 import numpy as np
-import pytest
+
 from morie.fn.abspor import abspor
 
 

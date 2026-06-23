@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Asymptotic normality of deconvolution estimator."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_deconv_normality"]
@@ -35,14 +37,27 @@ def horowitz_deconv_normality(w, eps_density, bandwidth, u):
     w = np.asarray(w, dtype=float)
     n = int(w) if w.ndim == 0 else len(w)
     if w.ndim == 0:
-        return RichResult(payload={"statistic": float('nan'), "p_value": float('nan'), "n": 1, "method": "scalar-input placeholder"})
+        return RichResult(
+            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+        )
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Asymptotic normality of deconvolution estimator"})
+        return RichResult(
+            payload={"estimate": np.nan, "n": 0, "method": "Asymptotic normality of deconvolution estimator"}
+        )
     estimate = np.median(w)
     se = 1.2533 * np.std(w, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Asymptotic normality of deconvolution estimator"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Asymptotic normality of deconvolution estimator",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dirichlet moments: E[X_j]=alpha_j/alpha_0, Var[X_j]=alpha_j(alpha_0-alpha_j)/(alpha_0^2*(alpha_0+1))."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_dir_moments"]
@@ -30,8 +32,17 @@ def ghosal_dir_moments(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Dirichlet moments: E[X_j]=alpha_j/alpha_0, Var[X_j]=alpha_j(alpha_0-alpha_j)/(alpha_0^2*(alpha_0+1))"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Dirichlet moments: E[X_j]=alpha_j/alpha_0, Var[X_j]=alpha_j(alpha_0-alpha_j)/(alpha_0^2*(alpha_0+1))",
+        }
+    )
 
 
 def cheatsheet():
-    return "gh_ap_g2: Dirichlet moments: E[X_j]=alpha_j/alpha_0, Var[X_j]=alpha_j(alpha_0-alpha_j)/(alpha_0^2*(alpha_0+1))"
+    return (
+        "gh_ap_g2: Dirichlet moments: E[X_j]=alpha_j/alpha_0, Var[X_j]=alpha_j(alpha_0-alpha_j)/(alpha_0^2*(alpha_0+1))"
+    )

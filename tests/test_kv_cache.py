@@ -5,7 +5,6 @@ import pytest
 
 from morie.kv_cache import CacheStats, TurboQuantKVCache, UncompressedKVCache
 
-
 RNG = np.random.default_rng(42)
 
 

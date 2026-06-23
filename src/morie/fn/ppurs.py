@@ -56,11 +56,11 @@ def projection_pursuit(
         for _ in range(max_iter):
             proj = Z @ a
             if index == "kurtosis":
-                idx_val = float(np.mean(proj ** 4) - 3)
-                grad = 4 * Z.T @ (proj ** 3) / n
+                idx_val = float(np.mean(proj**4) - 3)
+                grad = 4 * Z.T @ (proj**3) / n
             else:
-                idx_val = float(np.mean(-np.exp(-proj ** 2 / 2)))
-                grad = Z.T @ (proj * np.exp(-proj ** 2 / 2)) / n
+                idx_val = float(np.mean(-np.exp(-(proj**2) / 2)))
+                grad = Z.T @ (proj * np.exp(-(proj**2) / 2)) / n
 
             a_new = grad.copy()
             for j in range(comp):

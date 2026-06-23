@@ -1,6 +1,7 @@
 """Tests for tinfo.test_information."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tinfo import test_information as _test_information
 
 
@@ -12,7 +13,7 @@ def test_tinfo_basic():
     b = np.random.default_rng(42).normal(0, 1, 100)
     result = _test_information(y, theta, a, b)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_tinfo_edge():

@@ -1,10 +1,13 @@
 """Tests for Kolmogorov complexity."""
+
 import pytest
-from morie.fn.kolcm import kolmogorov_complexity, kolcm
+
+from morie.fn.kolcm import kolcm, kolmogorov_complexity
 
 
 def test_random_high():
     import os
+
     data = os.urandom(1000)
     r = kolmogorov_complexity(data)
     assert r.estimate > 0.5

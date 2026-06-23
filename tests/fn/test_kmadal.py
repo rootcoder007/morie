@@ -1,6 +1,7 @@
 """Tests for kmadal.kamath_adalora_rank_allocation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmadal import kamath_adalora_rank_allocation
 
 
@@ -13,7 +14,7 @@ def test_kmadal_basic():
     target_rank = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_adalora_rank_allocation(P, s, Q, importance, target_rank)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmadal_edge():

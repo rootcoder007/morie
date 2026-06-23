@@ -34,4 +34,4 @@ crdsc = scale_coordinates
 
 
 def cheatsheet() -> str:
-    return 'scale_coordinates({}) -> Scale coordinates Z = V * sqrt(Lambda).'
+    return "scale_coordinates({}) -> Scale coordinates Z = V * sqrt(Lambda)."

@@ -1,6 +1,7 @@
 """Tests for lassj.lasso_objective."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lassj import lasso_objective
 
 
@@ -12,7 +13,7 @@ def test_lassj_basic():
     lam = 0.1
     result = lasso_objective(y, X, beta, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lassj_edge():

@@ -11,7 +11,9 @@ import numpy as np
 
 from ._containers import SignalResult
 
-__all__ = ['dcblk']
+__all__ = ["dcblk"]
+
+
 def dcblk(
     x: np.ndarray,
     fs: float = 1.0,

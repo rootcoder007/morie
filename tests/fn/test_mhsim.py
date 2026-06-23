@@ -1,6 +1,7 @@
 """Test mhsim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mhsim import mhsim
 
 

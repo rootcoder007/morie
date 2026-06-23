@@ -1,7 +1,9 @@
 """Test nested_cv."""
+
 import numpy as np
-from morie.fn.nestc import nested_cv, nestc
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.nestc import nestc, nested_cv
 
 
 class TestNestedCv:

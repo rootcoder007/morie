@@ -1,6 +1,7 @@
 """Tests for alldat.alammar_lda_topic_distribution."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alldat import alammar_lda_topic_distribution
 
 
@@ -12,7 +13,7 @@ def test_alldat_basic():
     documents = np.random.default_rng(42).normal(0, 1, 100)
     result = alammar_lda_topic_distribution(alpha, beta, n_topics, documents)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alldat_edge():

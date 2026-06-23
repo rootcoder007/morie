@@ -1,6 +1,7 @@
 """Test wlctf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wlctf import wlctf
 
 

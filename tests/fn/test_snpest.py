@@ -1,6 +1,7 @@
 """Tests for snpest.sn_pseudo_estimate."""
+
 import numpy as np
-import pytest
+
 from morie.fn.snpest import sn_pseudo_estimate
 
 
@@ -10,7 +11,7 @@ def test_snpest_basic():
     alpha = 0.05
     result = sn_pseudo_estimate(y_stream, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_snpest_edge():

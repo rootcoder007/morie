@@ -1,6 +1,7 @@
 """Dirac delta as the limit of a power-function as a tends to 0.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_dirac_delta_limit_form"]
@@ -32,7 +33,14 @@ def rangayyan_ch3_dirac_delta_limit_form(t, a):
     n = len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Dirac delta as the limit of a power-function as a tends to 0."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Dirac delta as the limit of a power-function as a tends to 0.",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test clfc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clfc import clfc
 
 

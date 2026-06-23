@@ -40,9 +40,7 @@ def granger_test(y: np.ndarray, x: np.ndarray, max_lag: int = 4, cdf=None) -> De
         T = n - lag
         dep = y[lag:]
         X_r = np.column_stack([np.ones(T)] + [y[lag - i - 1 : n - i - 1] for i in range(lag)])
-        X_u = np.column_stack(
-            [X_r] + [x[lag - i - 1 : n - i - 1] for i in range(lag)]
-        )
+        X_u = np.column_stack([X_r] + [x[lag - i - 1 : n - i - 1] for i in range(lag)])
         rss_r = float(np.sum((dep - X_r @ np.linalg.lstsq(X_r, dep, rcond=None)[0]) ** 2))
         rss_u = float(np.sum((dep - X_u @ np.linalg.lstsq(X_u, dep, rcond=None)[0]) ** 2))
         df1 = lag

@@ -3,7 +3,6 @@
 Category: Spatial
 """
 
-
 import numpy as np
 
 from ._containers import DescriptiveResult

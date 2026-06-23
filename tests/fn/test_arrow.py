@@ -1,8 +1,9 @@
 """Tests for morie.fn.arrow -- Directed graph layout."""
 
 import numpy as np
-from morie.fn.arrow import directed_layout, arrow
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.arrow import arrow, directed_layout
 
 
 class TestArrow:

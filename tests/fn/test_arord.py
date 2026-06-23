@@ -1,6 +1,7 @@
 """Tests for arord.py - AR order selection."""
+
 import numpy as np
-import pytest
+
 from morie.fn.arord import ar_order_select, arord
 
 

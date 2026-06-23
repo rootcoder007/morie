@@ -1,8 +1,7 @@
 """Tests for morie.fn.jamste -- James-Stein shrinkage."""
 
-import numpy as np
-from morie.fn.jamste import james_stein, jamste
 from morie.fn._containers import DescriptiveResult
+from morie.fn.jamste import james_stein, jamste
 
 
 class TestJamste:
@@ -17,5 +16,6 @@ class TestJamste:
 
     def test_needs_three(self):
         import pytest
+
         with pytest.raises(ValueError, match="requires >= 3"):
             james_stein([1.0, 2.0])

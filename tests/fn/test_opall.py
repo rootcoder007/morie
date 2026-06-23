@@ -1,6 +1,7 @@
 """Test opall."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opall import opall
 
 

@@ -80,9 +80,9 @@ def robns(
         diff = Z - z_i[None, :]
         u = np.linalg.norm(diff, axis=1) / bandwidth
         if kernel == "epanechnikov":
-            w = np.where(u <= 1, 0.75 * (1 - u ** 2), 0.0)
+            w = np.where(u <= 1, 0.75 * (1 - u**2), 0.0)
         else:
-            w = np.exp(-0.5 * u ** 2)
+            w = np.exp(-0.5 * u**2)
         s = w.sum()
         return w / s if s > 0 else np.ones(n) / n
 
@@ -98,7 +98,7 @@ def robns(
 
     theta, residuals, _, _ = np.linalg.lstsq(X_tilde, Y_tilde, rcond=None)
     eps = Y_tilde - X_tilde @ theta
-    sigma2 = float(np.sum(eps ** 2) / max(n - p, 1))
+    sigma2 = float(np.sum(eps**2) / max(n - p, 1))
 
     XtX_inv = np.linalg.inv(X_tilde.T @ X_tilde + 1e-10 * np.eye(p))
     se = np.sqrt(sigma2 * np.diag(XtX_inv))

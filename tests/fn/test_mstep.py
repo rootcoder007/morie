@@ -1,7 +1,9 @@
 """Test max_step_size (mstep)."""
+
 import numpy as np
-from morie.fn.mstep import max_step_size, mstep
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mstep import max_step_size, mstep
 
 
 class TestMstep:

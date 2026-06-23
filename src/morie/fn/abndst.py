@@ -1,6 +1,7 @@
 """Abundance estimation (Bracken)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["abundance_estimation"]
@@ -36,7 +37,16 @@ def abundance_estimation(kraken_output, kmer_distribution):
     se = 1.2533 * np.std(kraken_output, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Abundance estimation (Bracken)"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Abundance estimation (Bracken)",
+        }
+    )
 
 
 def cheatsheet():

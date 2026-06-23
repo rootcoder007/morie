@@ -1,6 +1,7 @@
 """Tests for rgvf.rangayyan_vf_detect."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgvf import rangayyan_vf_detect
 
 
@@ -10,7 +11,7 @@ def test_rgvf_basic():
     fs = 100.0
     result = rangayyan_vf_detect(ecg, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgvf_edge():

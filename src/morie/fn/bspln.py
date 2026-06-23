@@ -66,6 +66,7 @@ def bayesian_spline(
     pred_sd = np.sqrt(pred_var)
 
     from scipy import stats as st
+
     z = st.norm.ppf(1 - (1 - prob) / 2)
 
     return {

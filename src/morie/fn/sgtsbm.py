@@ -1,6 +1,7 @@
 """Two-cluster spectral partition via Fiedler sign."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sgt_spectral_clustering_2"]
@@ -30,7 +31,9 @@ def sgt_spectral_clustering_2(A):
     n = len(A)
     result = float(np.mean(A))
     se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Two-cluster spectral partition via Fiedler sign"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Two-cluster spectral partition via Fiedler sign"}
+    )
 
 
 def cheatsheet():

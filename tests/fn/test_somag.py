@@ -1,6 +1,7 @@
 """Test somag."""
+
 import numpy as np
-import pytest
+
 from morie.fn.somag import somag
 
 

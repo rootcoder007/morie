@@ -1,6 +1,7 @@
 """Tests for km126.kamath_ch8_smd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km126 import kamath_ch8_smd
 
 
@@ -11,7 +12,7 @@ def test_km126_basic():
     E = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ch8_smd(x, y, E)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km126_edge():

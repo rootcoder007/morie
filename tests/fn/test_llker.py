@@ -61,12 +61,13 @@ def test_too_few_raises():
 def test_boundary_bias_less_than_nw():
     rng = np.random.default_rng(7)
     x = rng.uniform(0, 5, 150)
-    y = x ** 2 + rng.normal(0, 0.5, 150)
+    y = x**2 + rng.normal(0, 0.5, 150)
     x_boundary = np.array([0.1, 4.9])
     from morie.fn.nwker import nwker
+
     nw = nwker(x, y, x_eval=x_boundary, bandwidth=0.5)
     ll = llker(x, y, x_eval=x_boundary, bandwidth=0.5)
-    true_vals = x_boundary ** 2
+    true_vals = x_boundary**2
     nw_err = np.abs(nw["y_hat"] - true_vals).mean()
     ll_err = np.abs(ll["y_hat"] - true_vals).mean()
     assert ll_err <= nw_err * 1.5

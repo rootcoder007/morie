@@ -1,6 +1,8 @@
 """Tests for spcmat."""
+
 import numpy as np
 import pytest
+
 from morie.fn.spcmat import spcmat
 
 
@@ -28,4 +30,5 @@ def test_spcmat_no_data():
 
 def test_spcmat_alias():
     from morie.fn.spcmat import spcmat
+
     assert spcmat is spcmat

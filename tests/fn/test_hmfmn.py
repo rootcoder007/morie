@@ -1,6 +1,7 @@
 """Tests for hmfmn.geron_fashion_mnist."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmfmn import geron_fashion_mnist
 
 
@@ -10,7 +11,7 @@ def test_hmfmn_basic():
     lr = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_fashion_mnist(epochs, lr)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmfmn_edge():

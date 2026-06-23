@@ -1,6 +1,7 @@
 """Test srbpn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srbpn import srbpn
 
 

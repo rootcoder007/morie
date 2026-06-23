@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsrgf -- Random Gaussian field"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsrgf import random_gauss_field
 

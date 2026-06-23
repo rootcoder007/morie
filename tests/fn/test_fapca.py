@@ -1,6 +1,9 @@
 """Tests for factor_pca_compare."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.fapca import factor_pca_compare
+
 
 class TestFaPca:
     def test_basic(self):

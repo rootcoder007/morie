@@ -1,6 +1,5 @@
 """Tests for morie.fn.iv_wk -- Weak instrument diagnostics."""
 
-import pytest
 from morie.fn.iv_wk import weak_instrument_test
 
 

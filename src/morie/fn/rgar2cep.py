@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """AR coefficient to cepstral coefficient conversion."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ar_to_cepstrum"]
@@ -32,7 +34,9 @@ def rangayyan_ar_to_cepstrum(a_coeffs, sigma_sq):
     n = int(a_coeffs) if a_coeffs.ndim == 0 else len(a_coeffs)
     result = float(np.mean(a_coeffs))
     se = float(np.std(a_coeffs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AR coefficient to cepstral coefficient conversion"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "AR coefficient to cepstral coefficient conversion"}
+    )
 
 
 def cheatsheet():

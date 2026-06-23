@@ -55,6 +55,7 @@ def local_dirichlet_density_estimate(
 
     # Normalize to integrate to 1
     from scipy.integrate import trapz
+
     norm = trapz(density, x_eval)
     if norm > 0:
         density /= norm

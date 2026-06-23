@@ -1,6 +1,7 @@
 """VAR impulse response function."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["var_impulse_response"]

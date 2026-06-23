@@ -1,6 +1,7 @@
 """Tests for vqgdec.vqgan_decode."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vqgdec import vqgan_decode
 
 
@@ -11,7 +12,7 @@ def test_vqgdec_basic():
     decoder = np.random.default_rng(42).normal(0, 1, 100)
     result = vqgan_decode(indices, codebook, decoder)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_vqgdec_edge():

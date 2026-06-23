@@ -1,8 +1,9 @@
 """Tests for morie.fn.ultra -- ensemble aggregation."""
 
 import numpy as np
-from morie.fn.ultra import ensemble_aggregate, ultra
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ultra import ensemble_aggregate, ultra
 
 
 class TestUltra:

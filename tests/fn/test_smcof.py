@@ -1,5 +1,5 @@
 """Test smcof."""
-import numpy as np
+
 from morie.fn.smcof import smacof_scale
 
 

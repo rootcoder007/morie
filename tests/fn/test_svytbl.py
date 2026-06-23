@@ -1,6 +1,7 @@
 """Tests for svytbl.survey_xtab."""
+
 import numpy as np
-import pytest
+
 from morie.fn.svytbl import survey_xtab
 
 
@@ -11,7 +12,7 @@ def test_svytbl_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = survey_xtab(x, y, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_svytbl_edge():

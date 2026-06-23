@@ -70,9 +70,7 @@ def bicgstab(
         rho = rho_new
         rel_res = np.linalg.norm(r) / bnorm
         if rel_res < tol:
-            return DescriptiveResult(
-                name="BiCGSTAB", value=float(rel_res), extra={"x": x, "iterations": it}
-            )
+            return DescriptiveResult(name="BiCGSTAB", value=float(rel_res), extra={"x": x, "iterations": it})
     return DescriptiveResult(
         name="BiCGSTAB",
         value=float(np.linalg.norm(b - A @ x) / bnorm),

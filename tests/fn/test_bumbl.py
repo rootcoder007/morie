@@ -1,8 +1,9 @@
 """Tests for morie.fn.bumbl -- spectral centroid."""
 
 import numpy as np
-from morie.fn.bumbl import spectral_centroid, bumbl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.bumbl import bumbl, spectral_centroid
 
 
 class TestBumbl:

@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Agreement score matrix from roll call votes."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["agreement_score_matrix"]
@@ -30,7 +32,9 @@ def agreement_score_matrix(vote_matrix):
     n = int(vote_matrix) if vote_matrix.ndim == 0 else len(vote_matrix)
     result = float(np.mean(vote_matrix))
     se = float(np.std(vote_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Agreement score matrix from roll call votes"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Agreement score matrix from roll call votes"}
+    )
 
 
 def cheatsheet():

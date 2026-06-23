@@ -1,6 +1,7 @@
 """Tests for alsmc.alammar_simcse_dropout_aug."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alsmc import alammar_simcse_dropout_aug
 
 
@@ -11,7 +12,7 @@ def test_alsmc_basic():
     tau = 0.1
     result = alammar_simcse_dropout_aug(embeddings_dropout1, embeddings_dropout2, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alsmc_edge():

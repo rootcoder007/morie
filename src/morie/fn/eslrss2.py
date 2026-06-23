@@ -1,6 +1,7 @@
 """Total sum of squares TSS."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["esl_total_sum_squares"]

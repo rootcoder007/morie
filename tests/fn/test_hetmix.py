@@ -1,6 +1,7 @@
 """Tests for hetmix.heterogeneous_mixing."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hetmix import heterogeneous_mixing
 
 
@@ -10,7 +11,7 @@ def test_hetmix_basic():
     gamma = 1.0
     result = heterogeneous_mixing(contact_matrix, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hetmix_edge():

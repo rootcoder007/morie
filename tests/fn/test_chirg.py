@@ -1,6 +1,6 @@
 """Tests for chirg.py - Chirp generation."""
-import numpy as np
-from morie.fn.chirg import chirp_generate, chirg
+
+from morie.fn.chirg import chirg, chirp_generate
 
 
 def test_chirg_returns_descriptive_result():

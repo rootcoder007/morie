@@ -1,6 +1,8 @@
 """Tests for morie.fn.bamth -- chain thinning."""
+
 import numpy as np
-from morie.fn.bamth import bayesian_thinning, bamth
+
+from morie.fn.bamth import bamth, bayesian_thinning
 
 
 def test_alias():

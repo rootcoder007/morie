@@ -1,6 +1,7 @@
 """Test cshmn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cshmn import cshmn
 
 

@@ -1,6 +1,7 @@
 """Tests for ksr048.kosorok_ch2_z_master_stochastic_equicontinuity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr048 import kosorok_ch2_z_master_stochastic_equicontinuity
 
 
@@ -13,7 +14,7 @@ def test_ksr048_basic():
     n = 100
     result = kosorok_ch2_z_master_stochastic_equicontinuity(Psi_n, Psi, theta_n, theta_0, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr048_edge():

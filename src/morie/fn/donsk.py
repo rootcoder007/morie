@@ -37,7 +37,15 @@ class DonskerResult:
     n_boot: int
 
 
-def donsk(x: np.ndarray, cdf=None, *, cdf_fn: object | None = None, n_boot: int = 500, alpha: float = 0.05, seed: int | None = None) -> DonskerResult:
+def donsk(
+    x: np.ndarray,
+    cdf=None,
+    *,
+    cdf_fn: object | None = None,
+    n_boot: int = 500,
+    alpha: float = 0.05,
+    seed: int | None = None,
+) -> DonskerResult:
     r"""
     Test Donsker class membership via multiplier bootstrap of the empirical process.
 

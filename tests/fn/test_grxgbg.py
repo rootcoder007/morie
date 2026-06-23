@@ -1,6 +1,7 @@
 """Tests for grxgbg.geron_xgboost_gain."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grxgbg import geron_xgboost_gain
 
 
@@ -14,7 +15,7 @@ def test_grxgbg_basic():
     gamma = 1.0
     result = geron_xgboost_gain(GL, HL, GR, HR, lam, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grxgbg_edge():

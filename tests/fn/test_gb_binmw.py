@@ -1,6 +1,7 @@
 """Tests for gb_binmw.gibbons_mw_binomial_link."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb_binmw import gibbons_mw_binomial_link
 
 
@@ -10,7 +11,7 @@ def test_gb_binmw_basic():
     m = 10
     result = gibbons_mw_binomial_link(W, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb_binmw_edge():

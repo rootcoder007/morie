@@ -25,10 +25,12 @@ def _load_deps():
     import pandas as pd
 
     from morie import envhealth
+
     return np, pd, envhealth
 
 
 # -------------------- synthetic demo data --------------------
+
 
 def _demo_exposure_and_outcome(pollutant: str):
     """Synthesize a plausible exposure + outcome dataset.
@@ -50,19 +52,23 @@ def _demo_exposure_and_outcome(pollutant: str):
     # Income quintile: 1 = lowest, 5 = highest. Numeric so
     # envhealth.pollution_equity_analysis can rank directly.
     income = rng.choice(
-        [1, 2, 3, 4, 5], size=n,
+        [1, 2, 3, 4, 5],
+        size=n,
         p=[0.18, 0.22, 0.22, 0.20, 0.18],
     )
     income_mult = {1: 1.25, 2: 1.12, 3: 1.00, 4: 0.93, 5: 0.85}
     exposure *= np.array([income_mult[int(q)] for q in income])
 
-    return pd.DataFrame({
-        "exposure": exposure,
-        "income": income,
-    })
+    return pd.DataFrame(
+        {
+            "exposure": exposure,
+            "income": income,
+        }
+    )
 
 
 # -------------------- assumption gates --------------------
+
 
 def _check_assumptions(
     *,
@@ -103,13 +109,13 @@ def _check_assumptions(
     _add(
         "pollutant supported by envhealth CRF",
         pollutant.lower() in ("no2", "pm25"),
-        "Current CRFs: NO2 (log-linear), PM2.5 (Burnett IER). "
-        "Other pollutants reject.",
+        "Current CRFs: NO2 (log-linear), PM2.5 (Burnett IER). Other pollutants reject.",
     )
     return assumptions
 
 
 # -------------------- main handler --------------------
+
 
 def handle_verify_pollution(args: argparse.Namespace) -> int:
     """Dispatch for ``morie verify-pollution``.
@@ -195,11 +201,15 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
     # --- Pipeline stage 1: concentration-response ---
     if pollutant == "no2":
         crf = envhealth.concentration_response_no2(
-            exposure_mean, outcome=outcome, reference_conc=reference,
+            exposure_mean,
+            outcome=outcome,
+            reference_conc=reference,
         )
     else:  # pm25
         crf = envhealth.concentration_response_pm25(
-            exposure_mean, outcome=outcome, reference_conc=reference,
+            exposure_mean,
+            outcome=outcome,
+            reference_conc=reference,
         )
 
     # --- Stage 2: attributable fraction ---
@@ -236,20 +246,22 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
     equity: Any = None
     if equity_df is not None and "income" in equity_df.columns:
         equity = envhealth.pollution_equity_analysis(
-            equity_df, exposure="exposure", income="income",
+            equity_df,
+            exposure="exposure",
+            income="income",
         )
 
     report["status"] = "ok"
     report["pipeline"] = {
-        "crf":       _dump(crf),
-        "paf":       paf,
+        "crf": _dump(crf),
+        "paf": paf,
         "displaced": {
-            "deaths_displaced":  float(displaced_n),
-            "exposure_delta":    exposure_delta,
-            "beta_per_unit":     beta_per_unit,
+            "deaths_displaced": float(displaced_n),
+            "exposure_delta": exposure_delta,
+            "beta_per_unit": beta_per_unit,
         },
-        "burden":    _dump(burden),
-        "equity":    _dump(equity) if equity is not None else None,
+        "burden": _dump(burden),
+        "equity": _dump(equity) if equity is not None else None,
     }
 
     _emit(report, as_json=args.json)
@@ -257,6 +269,7 @@ def handle_verify_pollution(args: argparse.Namespace) -> int:
 
 
 # -------------------- output helpers --------------------
+
 
 def _dump(obj: Any) -> Any:
     if obj is None:
@@ -272,8 +285,7 @@ def _emit(report: dict[str, Any], *, as_json: bool) -> None:
         return
 
     print("=" * 66)
-    print(f"  morie verify-pollution -- {report['pollutant'].upper()}"
-          f" -> {report['outcome']}")
+    print(f"  morie verify-pollution -- {report['pollutant'].upper()} -> {report['outcome']}")
     if report.get("region"):
         print(f"  region: {report['region']}")
     if report.get("years"):
@@ -331,37 +343,27 @@ def _emit(report: dict[str, Any], *, as_json: bool) -> None:
 
 # -------------------- argparse registration --------------------
 
+
 def register_subparser(subparsers) -> None:
     """Called from morie.runner.build_parser() to register this command."""
     p = subparsers.add_parser(
         "verify-pollution",
         help="Run a pollution -> health causal pipeline and print a report.",
     )
-    p.add_argument("--pollutant", required=True,
-                    choices=["no2", "pm25", "NO2", "PM25"],
-                    help="Pollutant to analyze.")
-    p.add_argument("--outcome", default="all_cause_mortality",
-                    help="Outcome name passed to concentration_response_*.")
-    p.add_argument("--region", default=None,
-                    help="Region label for reporting (e.g. ON-FSA-M6H).")
-    p.add_argument("--years", default=None,
-                    help="Year range label for reporting (e.g. 2019-2023).")
+    p.add_argument("--pollutant", required=True, choices=["no2", "pm25", "NO2", "PM25"], help="Pollutant to analyze.")
+    p.add_argument("--outcome", default="all_cause_mortality", help="Outcome name passed to concentration_response_*.")
+    p.add_argument("--region", default=None, help="Region label for reporting (e.g. ON-FSA-M6H).")
+    p.add_argument("--years", default=None, help="Year range label for reporting (e.g. 2019-2023).")
 
     src = p.add_mutually_exclusive_group()
-    src.add_argument("--demo", action="store_true",
-                     help="Use synthetic demo data.")
-    src.add_argument("--exposure-csv", default=None,
-                     help="CSV with 'exposure' (+ optional 'income') columns.")
+    src.add_argument("--demo", action="store_true", help="Use synthetic demo data.")
+    src.add_argument("--exposure-csv", default=None, help="CSV with 'exposure' (+ optional 'income') columns.")
 
-    p.add_argument("--exposure-mean", type=float, default=0.0,
-                    help="Scalar exposure mean (µg/m³). Used if no csv/demo.")
-    p.add_argument("--exposure-prevalence", type=float, default=0.0,
-                    help="Fraction of population above reference.")
-    p.add_argument("--reference", type=float, default=5.8,
-                    help="Counterfactual reference concentration (µg/m³).")
-    p.add_argument("--baseline-rate", type=float, default=500.0,
-                    help="Baseline outcome rate per 100,000 per year.")
-    p.add_argument("--population", type=int, default=1_000_000,
-                    help="Population at risk.")
-    p.add_argument("--json", action="store_true",
-                    help="Emit machine-readable JSON instead of the text report.")
+    p.add_argument(
+        "--exposure-mean", type=float, default=0.0, help="Scalar exposure mean (µg/m³). Used if no csv/demo."
+    )
+    p.add_argument("--exposure-prevalence", type=float, default=0.0, help="Fraction of population above reference.")
+    p.add_argument("--reference", type=float, default=5.8, help="Counterfactual reference concentration (µg/m³).")
+    p.add_argument("--baseline-rate", type=float, default=500.0, help="Baseline outcome rate per 100,000 per year.")
+    p.add_argument("--population", type=int, default=1_000_000, help="Population at risk.")
+    p.add_argument("--json", action="store_true", help="Emit machine-readable JSON instead of the text report.")

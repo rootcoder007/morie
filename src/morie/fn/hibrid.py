@@ -1,6 +1,7 @@
 """Hybrid genomic prediction (parental GCA + SCA)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["hibrid_prediction"]
@@ -34,7 +35,9 @@ def hibrid_prediction(y, p1_geno, p2_geno):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hybrid genomic prediction (parental GCA + SCA)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Hybrid genomic prediction (parental GCA + SCA)"}
+    )
 
 
 def cheatsheet():

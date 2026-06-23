@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmapr -- Aggregate PRE"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmapr import apre_stat
 

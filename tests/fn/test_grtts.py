@@ -1,6 +1,7 @@
 """Tests for grtts.geron_train_test_split."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grtts import geron_train_test_split
 
 
@@ -12,7 +13,7 @@ def test_grtts_basic():
     seed = 42
     result = geron_train_test_split(X, y, test_size, seed)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_grtts_edge():

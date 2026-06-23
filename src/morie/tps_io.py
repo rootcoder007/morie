@@ -42,24 +42,22 @@ import pandas as pd
 from .tps_datasets import TPS_DATA_DIR, TPS_REGISTRY
 
 SUPPORTED_FORMATS = (
-    "csv", "excel",
-    "geojson", "featurecollection",
+    "csv",
+    "excel",
+    "geojson",
+    "featurecollection",
     "kml",
-    "geopackage", "sqlitegeodatabase",
+    "geopackage",
+    "sqlitegeodatabase",
 )
 NEEDS_LIB_FORMATS = ("shapefile", "filegeodatabase")
 ALL_FORMATS = SUPPORTED_FORMATS + NEEDS_LIB_FORMATS
 
 
 def _category_dir(name: str, fmt_subdir: str) -> Path:
-    canonical = next(
-        (k for k in TPS_REGISTRY if k.lower() == name.lower()), None
-    )
+    canonical = next((k for k in TPS_REGISTRY if k.lower() == name.lower()), None)
     if canonical is None:
-        raise KeyError(
-            f"unknown TPS dataset {name!r}; "
-            f"valid: {sorted(TPS_REGISTRY.keys())}"
-        )
+        raise KeyError(f"unknown TPS dataset {name!r}; valid: {sorted(TPS_REGISTRY.keys())}")
     return TPS_DATA_DIR / canonical / fmt_subdir
 
 
@@ -100,8 +98,7 @@ def _read_geojson_text(text: str, nrows: int | None) -> pd.DataFrame:
     if not feats and "layers" in data and data["layers"]:
         # ESRI Layer-JSON: peel down to layer[0].featureSet.features
         layer0 = data["layers"][0]
-        feats = (layer0.get("featureSet") or {}).get("features", []) \
-                or layer0.get("features", [])
+        feats = (layer0.get("featureSet") or {}).get("features", []) or layer0.get("features", [])
     if nrows:
         feats = feats[:nrows]
     rows = []
@@ -131,8 +128,7 @@ def _read_geojson(name: str, nrows: int | None) -> pd.DataFrame:
 
 def _read_featurecollection(name: str, nrows: int | None) -> pd.DataFrame:
     # ESRI FeatureCollection exports are .txt with JSON inside
-    p = _pick_one(_category_dir(name, "FeatureCollection"),
-                  "txt", "json", "geojson")
+    p = _pick_one(_category_dir(name, "FeatureCollection"), "txt", "json", "geojson")
     return _read_geojson_text(p.read_text(encoding="utf-8"), nrows)
 
 
@@ -166,10 +162,7 @@ def _kml_to_dataframe(xml_text: str, nrows: int | None) -> pd.DataFrame:
             poly = pm.find(".//kml:Polygon//kml:coordinates", _KML_NS)
             if poly is not None and poly.text:
                 try:
-                    coords = [
-                        tuple(float(x) for x in c.split(","))[:2]
-                        for c in poly.text.strip().split()
-                    ]
+                    coords = [tuple(float(x) for x in c.split(","))[:2] for c in poly.text.strip().split()]
                     row["geometry_type"] = "Polygon"
                     row["geometry"] = coords
                 except Exception:
@@ -190,9 +183,7 @@ def _read_kml(name: str, nrows: int | None) -> pd.DataFrame:
             if not kml_names:
                 raise FileNotFoundError(f"no .kml inside {p}")
             with zf.open(kml_names[0]) as fp:
-                return _kml_to_dataframe(
-                    fp.read().decode("utf-8", errors="replace"), nrows
-                )
+                return _kml_to_dataframe(fp.read().decode("utf-8", errors="replace"), nrows)
     return _kml_to_dataframe(p.read_text(encoding="utf-8"), nrows)
 
 
@@ -232,8 +223,7 @@ def _wkb_point(blob: bytes) -> tuple[float, float] | None:
     return None
 
 
-def _read_sqlite_geo(name: str, fmt_subdir: str, ext: str,
-                    nrows: int | None) -> pd.DataFrame:
+def _read_sqlite_geo(name: str, fmt_subdir: str, ext: str, nrows: int | None) -> pd.DataFrame:
     p = _pick_one(_category_dir(name, fmt_subdir), ext)
     con = sqlite3.connect(p)
     try:
@@ -255,9 +245,7 @@ def _read_sqlite_geo(name: str, fmt_subdir: str, ext: str,
         best, best_n = None, -1
         for t in tables:
             try:
-                n = cur.execute(
-                    f'SELECT COUNT(*) FROM "{t}";'
-                ).fetchone()[0]
+                n = cur.execute(f'SELECT COUNT(*) FROM "{t}";').fetchone()[0]
             except sqlite3.DatabaseError:
                 continue
             if n > best_n:
@@ -268,14 +256,8 @@ def _read_sqlite_geo(name: str, fmt_subdir: str, ext: str,
         df = pd.read_sql(f'SELECT * FROM "{best}"{limit};', con)
         # Decode geometry blob if a geometry column exists
         for col in df.columns:
-            if df[col].dtype == object and df[col].iloc[:1].apply(
-                lambda v: isinstance(v, (bytes, bytearray))
-            ).any():
-                df["geometry"] = df[col].apply(
-                    lambda b: _wkb_point(b) if isinstance(
-                        b, (bytes, bytearray)
-                    ) else None
-                )
+            if df[col].dtype == object and df[col].iloc[:1].apply(lambda v: isinstance(v, (bytes, bytearray))).any():
+                df["geometry"] = df[col].apply(lambda b: _wkb_point(b) if isinstance(b, (bytes, bytearray)) else None)
                 break
         return df
     finally:
@@ -298,20 +280,19 @@ def _read_shapefile(name: str, nrows: int | None) -> pd.DataFrame:
         import shapefile  # pyshp
     except ImportError:
         raise ImportError(
-            "Shapefile reading needs `pyshp` (pip install pyshp). "
-            "Falling back to CSV is recommended for now."
+            "Shapefile reading needs `pyshp` (pip install pyshp). Falling back to CSV is recommended for now."
         ) from None
     p = _pick_one(_category_dir(name, "Shapefile"), "zip", "shp")
     # If zip, extract in-memory
     if p.suffix.lower() == ".zip":
         with zipfile.ZipFile(p) as zf:
             shp = next(n for n in zf.namelist() if n.endswith(".shp"))
-            with zf.open(shp) as shp_fp, \
-                 zf.open(shp.replace(".shp", ".dbf")) as dbf_fp, \
-                 zf.open(shp.replace(".shp", ".shx")) as shx_fp:
-                reader = shapefile.Reader(
-                    shp=shp_fp, dbf=dbf_fp, shx=shx_fp
-                )
+            with (
+                zf.open(shp) as shp_fp,
+                zf.open(shp.replace(".shp", ".dbf")) as dbf_fp,
+                zf.open(shp.replace(".shp", ".shx")) as shx_fp,
+            ):
+                reader = shapefile.Reader(shp=shp_fp, dbf=dbf_fp, shx=shx_fp)
                 fields = [f[0] for f in reader.fields[1:]]
                 rows = []
                 for i, sr in enumerate(reader.iterShapeRecords()):
@@ -348,8 +329,7 @@ _DISPATCH = {
 }
 
 
-def load_tps(name: str, format: str = "csv",
-             nrows: int | None = None) -> pd.DataFrame:
+def load_tps(name: str, format: str = "csv", nrows: int | None = None) -> pd.DataFrame:
     """Load TPS dataset `name` in the given `format`.
 
     Parameters
@@ -363,14 +343,9 @@ def load_tps(name: str, format: str = "csv",
     """
     fmt = format.lower()
     if fmt == "filegeodatabase":
-        raise NotImplementedError(
-            "FileGeoDatabase requires fiona/gdal. "
-            "Install via `pip install fiona` and re-run."
-        )
+        raise NotImplementedError("FileGeoDatabase requires fiona/gdal. Install via `pip install fiona` and re-run.")
     if fmt not in _DISPATCH:
-        raise ValueError(
-            f"unknown format {format!r}; valid: {SUPPORTED_FORMATS}"
-        )
+        raise ValueError(f"unknown format {format!r}; valid: {SUPPORTED_FORMATS}")
     return _DISPATCH[fmt](name, nrows)
 
 
@@ -379,9 +354,7 @@ def list_tps_formats(name: str) -> dict[str, Path]:
     For formats not present on disk, the path is omitted from the dict.
     """
     out: dict[str, Path] = {}
-    canonical = next(
-        (k for k in TPS_REGISTRY if k.lower() == name.lower()), None
-    )
+    canonical = next((k for k in TPS_REGISTRY if k.lower() == name.lower()), None)
     if canonical is None:
         return out
     base = TPS_DATA_DIR / canonical
@@ -389,8 +362,7 @@ def list_tps_formats(name: str) -> dict[str, Path]:
         "csv": ("CSV", ["csv"]),
         "excel": ("Excel", ["xlsx", "xls"]),
         "geojson": ("GeoJSON", ["geojson", "json"]),
-        "featurecollection": ("FeatureCollection",
-                              ["txt", "json", "geojson"]),
+        "featurecollection": ("FeatureCollection", ["txt", "json", "geojson"]),
         "kml": ("KML", ["kmz", "kml"]),
         "geopackage": ("GeoPackage", ["gpkg"]),
         "sqlitegeodatabase": ("SQLiteGeodatabase", ["geodatabase"]),
@@ -414,6 +386,7 @@ def available_formats() -> list[str]:
     out = list(SUPPORTED_FORMATS)
     try:
         import shapefile  # noqa: F401
+
         out.append("shapefile")
     except ImportError:
         pass

@@ -1,6 +1,7 @@
 """Test gemnf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gemnf import gemnf
 
 

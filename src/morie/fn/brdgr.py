@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bridge observations for cross-chamber comparison (Armstrong Ch 6)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["bridge_observations", "brdgr"]
@@ -30,34 +32,42 @@ def bridge_observations(x, y=None):
         return RichResult(
             title="Bridge observations (single-arg shortcut)",
             summary_lines=[("n bridges", n_bridges), ("n", int(x.size))],
-            payload={"n_bridges": n_bridges,
-                     "bridge_ids": np.where(np.asarray(x, dtype=bool))[0],
-                     "share": float(n_bridges / max(x.size, 1)),
-                     "n1": int(x.size), "n2": int(x.size),
-                     "method": "bridge_observations"},
+            payload={
+                "n_bridges": n_bridges,
+                "bridge_ids": np.where(np.asarray(x, dtype=bool))[0],
+                "share": float(n_bridges / max(x.size, 1)),
+                "n1": int(x.size),
+                "n2": int(x.size),
+                "method": "bridge_observations",
+            },
         )
     # Two-arg: matrices or ID lists
-    xa = np.asarray(x); ya = np.asarray(y)
+    xa = np.asarray(x)
+    ya = np.asarray(y)
     if xa.ndim == 1 and ya.ndim == 1:
-        s1 = set(xa.tolist()); s2 = set(ya.tolist())
+        s1 = set(xa.tolist())
+        s2 = set(ya.tolist())
         common = sorted(s1 & s2)
         return RichResult(
             title="Bridge legislators across sessions",
-            summary_lines=[("n bridges", len(common)),
-                           ("n session 1", len(s1)),
-                           ("n session 2", len(s2)),
-                           ("share of session 1",
-                            len(common) / max(len(s1), 1))],
-            payload={"n_bridges": len(common),
-                     "bridge_ids": np.array(common),
-                     "share": float(len(common) / max(len(s1), 1)),
-                     "n1": len(s1), "n2": len(s2),
-                     "method": "bridge_observations"},
+            summary_lines=[
+                ("n bridges", len(common)),
+                ("n session 1", len(s1)),
+                ("n session 2", len(s2)),
+                ("share of session 1", len(common) / max(len(s1), 1)),
+            ],
+            payload={
+                "n_bridges": len(common),
+                "bridge_ids": np.array(common),
+                "share": float(len(common) / max(len(s1), 1)),
+                "n1": len(s1),
+                "n2": len(s2),
+                "method": "bridge_observations",
+            },
         )
     # Matrix mode: bridges = rows non-empty in both
     if xa.ndim != 2 or ya.ndim != 2 or xa.shape[0] != ya.shape[0]:
-        raise ValueError("x and y must be 2-D matrices with the same n rows "
-                         "(or 1-D ID vectors).")
+        raise ValueError("x and y must be 2-D matrices with the same n rows (or 1-D ID vectors).")
     n = xa.shape[0]
     has1 = np.any(~np.isnan(xa.astype(float)), axis=1)
     has2 = np.any(~np.isnan(ya.astype(float)), axis=1)
@@ -65,13 +75,15 @@ def bridge_observations(x, y=None):
     n_b = int(np.sum(bridges))
     return RichResult(
         title="Bridge observations (panel intersection)",
-        summary_lines=[("n bridges", n_b), ("n legislators", n),
-                       ("share", float(n_b / max(n, 1)))],
-        payload={"n_bridges": n_b,
-                 "bridge_ids": np.where(bridges)[0],
-                 "share": float(n_b / max(n, 1)),
-                 "n1": int(has1.sum()), "n2": int(has2.sum()),
-                 "method": "bridge_observations"},
+        summary_lines=[("n bridges", n_b), ("n legislators", n), ("share", float(n_b / max(n, 1)))],
+        payload={
+            "n_bridges": n_b,
+            "bridge_ids": np.where(bridges)[0],
+            "share": float(n_b / max(n, 1)),
+            "n1": int(has1.sum()),
+            "n2": int(has2.sum()),
+            "method": "bridge_observations",
+        },
     )
 
 

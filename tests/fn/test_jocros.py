@@ -1,6 +1,7 @@
 """Tests for jocros.joseph_croston_intermittent."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jocros import joseph_croston_intermittent
 
 
@@ -10,7 +11,7 @@ def test_jocros_basic():
     alpha = 0.05
     result = joseph_croston_intermittent(y, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jocros_edge():

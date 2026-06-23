@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Transformer encoder block: MHA + FFN with residual connections + LayerNorm."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_transformer_encoder_block"]
@@ -34,7 +36,14 @@ def geron_transformer_encoder_block(x, mha_weights, ffn_weights):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Transformer encoder block: MHA + FFN with residual connections + LayerNorm"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Transformer encoder block: MHA + FFN with residual connections + LayerNorm",
+        }
+    )
 
 
 def cheatsheet():

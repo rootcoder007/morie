@@ -1,6 +1,8 @@
 """Tests for glmmsar."""
+
 import numpy as np
 import pytest
+
 from morie.fn.glmmsar import glmmsar
 
 
@@ -28,4 +30,5 @@ def test_glmmsar_no_data():
 
 def test_glmmsar_alias():
     from morie.fn.glmmsar import glmmsar
+
     assert glmmsar is glmmsar

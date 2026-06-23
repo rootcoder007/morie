@@ -1,7 +1,6 @@
 """Tests for morie.fn.svrcl -- Roll call logit model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svrcl import roll_call_logit
 

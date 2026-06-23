@@ -1,6 +1,7 @@
 """Tests for grca.geron_cross_attention."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grca import geron_cross_attention
 
 
@@ -13,7 +14,7 @@ def test_grca_basic():
     WV = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_cross_attention(X_dec, X_enc, WQ, WK, WV)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grca_edge():

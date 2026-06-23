@@ -41,7 +41,7 @@ def unfolding_model(
 
     def _loss(X, Y):
         diff = X[:, None, :] - Y[None, :, :]
-        d2 = (diff ** 2).sum(axis=-1)
+        d2 = (diff**2).sum(axis=-1)
         return ((d2 - R) ** 2).sum()
 
     prev_loss = _loss(X, Y)
@@ -58,7 +58,7 @@ def unfolding_model(
         prev_loss = cur_loss
 
     coords = np.vstack([X, Y])
-    stress = np.sqrt(prev_loss / max((R ** 2).sum(), 1e-14))
+    stress = np.sqrt(prev_loss / max((R**2).sum(), 1e-14))
     return MdsRes(coordinates=coords, stress=stress, eigenvalues=np.array([]))
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Output SNR of matched filter (maximum SNR theorem)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_matched_filter_snr"]
@@ -32,7 +34,9 @@ def rangayyan_matched_filter_snr(signal, noise_psd):
     n = int(signal) if signal.ndim == 0 else len(signal)
     result = float(np.mean(signal))
     se = float(np.std(signal, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Output SNR of matched filter (maximum SNR theorem)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Output SNR of matched filter (maximum SNR theorem)"}
+    )
 
 
 def cheatsheet():

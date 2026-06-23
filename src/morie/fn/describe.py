@@ -42,7 +42,6 @@ def describe(name: str):
     >>> from morie.fn import describe
     >>> print(describe("welcht"))
     """
-    from ._richresult import RichResult
     from ._registry import REGISTRY
 
     name = name.lstrip("/")  # tolerant of "/welcht" etc.
@@ -61,8 +60,7 @@ def describe(name: str):
             if entry is None:
                 avail = ", ".join(sorted(REGISTRY.keys())[:20])
                 raise ValueError(
-                    f"unknown callable: {name!r}. Try one of: {avail}, …  "
-                    f"(REGISTRY has {len(REGISTRY)} entries)."
+                    f"unknown callable: {name!r}. Try one of: {avail}, …  (REGISTRY has {len(REGISTRY)} entries)."
                 )
 
     # Find the markdown file
@@ -82,6 +80,7 @@ def _synthesize_entry_from_module(name: str):
     if not py_path.exists():
         return None
     from ._registry import FnEntry
+
     text = py_path.read_text(encoding="utf-8", errors="replace")
     # First docstring line is the description
     desc = ""
@@ -109,10 +108,12 @@ def _render_from_md(md_text: str, entry, md_path: Path):
     for label in _STANDARD_SECTIONS:
         body = sections.get(label, "")
         if body.strip():
-            rich_sections.append({
-                "title": label,
-                "text": body.strip(),
-            })
+            rich_sections.append(
+                {
+                    "title": label,
+                    "text": body.strip(),
+                }
+            )
 
     return RichResult(
         title=f"describe({entry.short!r}) -- {entry.description or entry.full}",
@@ -123,10 +124,13 @@ def _render_from_md(md_text: str, entry, md_path: Path):
         ],
         sections=rich_sections,
         extras=[f"Source: {md_path.name}"],
-        payload={"name": entry.short, "full_name": entry.full,
-                 "category": entry.category,
-                 "description": entry.description,
-                 "sections": sections},
+        payload={
+            "name": entry.short,
+            "full_name": entry.full,
+            "category": entry.category,
+            "description": entry.description,
+            "sections": sections,
+        },
     )
 
 
@@ -143,20 +147,24 @@ def _render_skeleton(entry):
             ("Description", entry.description),
             ("Quote", entry.quote or "--"),
         ],
-        sections=[{
-            "title": "WHAT IT DOES",
-            "text": (entry.description or "(no description provided)") + "\n\n"
-                    "We are what we repeatedly do. Excellence is a habit. -- Aristotle"
-                    f"`describe_{entry.short}.md` next to its source file.)",
-        }],
-        warnings=[
-            f"No describe_{entry.short}.md file found. Showing skeleton "
-            "from REGISTRY metadata only.",
+        sections=[
+            {
+                "title": "WHAT IT DOES",
+                "text": (entry.description or "(no description provided)") + "\n\n"
+                "We are what we repeatedly do. Excellence is a habit. -- Aristotle"
+                f"`describe_{entry.short}.md` next to its source file.)",
+            }
         ],
-        payload={"name": entry.short, "full_name": entry.full,
-                 "category": entry.category,
-                 "description": entry.description,
-                 "is_skeleton": True},
+        warnings=[
+            f"No describe_{entry.short}.md file found. Showing skeleton from REGISTRY metadata only.",
+        ],
+        payload={
+            "name": entry.short,
+            "full_name": entry.full,
+            "category": entry.category,
+            "description": entry.description,
+            "is_skeleton": True,
+        },
     )
 
 

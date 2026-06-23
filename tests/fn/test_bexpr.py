@@ -1,4 +1,5 @@
 """Tests for bexpr (boolean expression evaluator)."""
+
 from morie.fn.bexpr import boolean_eval
 
 

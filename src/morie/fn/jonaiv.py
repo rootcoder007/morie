@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Naive forecast: last observed value carried forward."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_naive_forecast"]
@@ -32,7 +34,9 @@ def joseph_naive_forecast(y, horizon):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Naive forecast: last observed value carried forward"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Naive forecast: last observed value carried forward"}
+    )
 
 
 def cheatsheet():

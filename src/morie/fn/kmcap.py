@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Per-expert token capacity with capacity factor C."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_expert_capacity_factor"]
@@ -34,7 +36,9 @@ def kamath_expert_capacity_factor(tokens_per_batch, num_experts, C):
     n = len(tokens_per_batch)
     result = float(np.mean(tokens_per_batch))
     se = float(np.std(tokens_per_batch, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Per-expert token capacity with capacity factor C"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Per-expert token capacity with capacity factor C"}
+    )
 
 
 def cheatsheet():

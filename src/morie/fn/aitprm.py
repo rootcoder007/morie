@@ -1,6 +1,7 @@
 """PERMANOVA F using Aitchison distances."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["compositional_permanova"]

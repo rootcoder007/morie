@@ -1,14 +1,16 @@
 """Spatiotemporal ordinary kriging (separable covariance)."""
+
 import numpy as np
 from scipy.spatial.distance import cdist
+
 from ._richresult import RichResult
 
 __all__ = ["spatiotemporal_kriging"]
 
 
-def spatiotemporal_kriging(x, coords, times, target,
-                           sill: float = 1.0, nugget: float = 0.0,
-                           range_s: float = 1.0, range_t: float = 1.0):
+def spatiotemporal_kriging(
+    x, coords, times, target, sill: float = 1.0, nugget: float = 0.0, range_s: float = 1.0, range_t: float = 1.0
+):
     """
     Ordinary spatiotemporal kriging with a separable exponential
     covariance:
@@ -46,17 +48,21 @@ def spatiotemporal_kriging(x, coords, times, target,
         raise ValueError("target coords dim mismatch")
     if s0.shape[0] != t0.size:
         raise ValueError("target s0 and t0 must align")
-    c0 = float(nugget); c1 = float(sill - nugget)
+    c0 = float(nugget)
+    c1 = float(sill - nugget)
     Dnn = cdist(coords, coords)
     Tnn = np.abs(t[:, None] - t[None, :])
     C = c1 * np.exp(-Dnn / range_s) * np.exp(-Tnn / range_t) + c0 * np.eye(n)
     A = np.zeros((n + 1, n + 1))
-    A[:n, :n] = C; A[:n, n] = 1.0; A[n, :n] = 1.0
+    A[:n, :n] = C
+    A[:n, n] = 1.0
+    A[n, :n] = 1.0
     var_total = sill
 
-    ests = []; ses = []
+    ests = []
+    ses = []
     for k in range(s0.shape[0]):
-        d0s = cdist(s0[k:k+1], coords).ravel()
+        d0s = cdist(s0[k : k + 1], coords).ravel()
         d0t = np.abs(t0[k] - t)
         c_vec = c1 * np.exp(-d0s / range_s) * np.exp(-d0t / range_t)
         rhs = np.append(c_vec, 1.0)
@@ -64,7 +70,8 @@ def spatiotemporal_kriging(x, coords, times, target,
             sol = np.linalg.solve(A, rhs)
         except np.linalg.LinAlgError:
             sol = np.linalg.lstsq(A, rhs, rcond=None)[0]
-        lam = sol[:n]; mu = float(sol[n])
+        lam = sol[:n]
+        mu = float(sol[n])
         z_hat = float(lam @ x)
         var = float(var_total - lam @ c_vec - mu)
         ests.append(z_hat)
@@ -74,12 +81,14 @@ def spatiotemporal_kriging(x, coords, times, target,
         est_out, se_out = ests[0], ses[0]
     else:
         est_out, se_out = ests, ses
-    return RichResult(payload={
-        "estimate": est_out,
-        "se": se_out,
-        "n": int(n),
-        "method": "Spatiotemporal ordinary kriging (separable exponential)",
-    })
+    return RichResult(
+        payload={
+            "estimate": est_out,
+            "se": se_out,
+            "n": int(n),
+            "method": "Spatiotemporal ordinary kriging (separable exponential)",
+        }
+    )
 
 
 def cheatsheet():

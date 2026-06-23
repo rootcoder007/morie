@@ -1,7 +1,7 @@
 """Tests for morie.fn.dtbic."""
 
 import numpy as np
-import pytest
+
 from morie.fn.dtbic import dtbic
 
 

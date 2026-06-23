@@ -1,6 +1,8 @@
 """Tests for idwrad."""
+
 import numpy as np
 import pytest
+
 from morie.fn.idwrad import idwrad
 
 
@@ -28,4 +30,5 @@ def test_idwrad_no_data():
 
 def test_idwrad_alias():
     from morie.fn.idwrad import idwrad
+
     assert idwrad is idwrad

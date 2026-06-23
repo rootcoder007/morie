@@ -1,13 +1,13 @@
 """Tests for morie.fn.snttm — sentence time served."""
 
-import pytest
 import numpy as np
-from morie.fn.snttm import sentence_time_served
+import pytest
+
 from morie.fn._containers import ESRes
+from morie.fn.snttm import sentence_time_served
 
 
 class TestSentenceTimeServed:
-
     def test_returns_esres(self):
         served = np.array([15, 30, 45])
         sentence = np.array([30, 60, 90])

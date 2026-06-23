@@ -1,6 +1,7 @@
 """Tests for rgemgf.rangayyan_emg_force."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgemgf import rangayyan_emg_force
 
 
@@ -12,7 +13,7 @@ def test_rgemgf_basic():
     window = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_emg_force(emg, force, fs, window)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgemgf_edge():

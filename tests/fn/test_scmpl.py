@@ -1,7 +1,9 @@
 """Test complexity (scmpl)."""
+
 import numpy as np
-from morie.fn.scmpl import complexity, scmpl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.scmpl import complexity, scmpl
 
 
 class TestComplexity:

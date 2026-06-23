@@ -1,6 +1,7 @@
 """Tests for malrr.ma_log_risk_ratio."""
+
 import numpy as np
-import pytest
+
 from morie.fn.malrr import ma_log_risk_ratio
 
 
@@ -12,7 +13,7 @@ def test_malrr_basic():
     d = 5
     result = ma_log_risk_ratio(a, b, c, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_malrr_edge():

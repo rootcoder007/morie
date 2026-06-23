@@ -1,6 +1,7 @@
 """Tests for dpgaus.dp_gaussian_mechanism."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpgaus import dp_gaussian_mechanism
 
 
@@ -12,7 +13,7 @@ def test_dpgaus_basic():
     delta = np.random.default_rng(42).normal(0, 1, 100)
     result = dp_gaussian_mechanism(y, sensitivity, epsilon, delta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpgaus_edge():

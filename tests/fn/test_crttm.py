@@ -1,9 +1,10 @@
 """Tests for morie.fn.crttm — time to trial."""
 
-import pytest
 import numpy as np
-from morie.fn.crttm import court_time_to_trial
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.crttm import court_time_to_trial
 
 
 class TestTimeToTrial:

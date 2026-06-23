@@ -1,8 +1,11 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Total sum of squares."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
+
 
 def sst(y: Union[Sequence[float], np.ndarray]) -> float:
     """Total sum of squares: Σᵢ (yᵢ − ȳ)².

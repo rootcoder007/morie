@@ -81,8 +81,10 @@ def hadamard_differentiability(
         diff = abs(quotients[i] - quotients[i - 1])
         ratios.append(float(diff))
 
-    is_diff = len(ratios) > 0 and all(r < tol for r in ratios[-2:]) if len(ratios) >= 2 else (
-        len(ratios) > 0 and ratios[-1] < tol
+    is_diff = (
+        len(ratios) > 0 and all(r < tol for r in ratios[-2:])
+        if len(ratios) >= 2
+        else (len(ratios) > 0 and ratios[-1] < tol)
     )
 
     return {

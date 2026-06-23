@@ -6,6 +6,7 @@ import pytest
 
 try:
     import doubleml  # noqa: F401
+
     HAS_DML = True
 except ImportError:
     HAS_DML = False
@@ -29,9 +30,7 @@ def plr_data():
 
 def test_returns_dict(plr_data):
     """estimate_plr returns a dict with required keys."""
-    result = estimate_plr(
-        plr_data, treatment="d", outcome="y", covariates=["x1", "x2"]
-    )
+    result = estimate_plr(plr_data, treatment="d", outcome="y", covariates=["x1", "x2"])
     assert isinstance(result, dict)
     for key in ("ate", "se", "ci_lower", "ci_upper", "pval", "n_obs"):
         assert key in result, f"Missing key: {key}"
@@ -39,9 +38,7 @@ def test_returns_dict(plr_data):
 
 def test_ate_finite(plr_data):
     """ATE and SE should be finite."""
-    result = estimate_plr(
-        plr_data, treatment="d", outcome="y", covariates=["x1", "x2"]
-    )
+    result = estimate_plr(plr_data, treatment="d", outcome="y", covariates=["x1", "x2"])
     assert np.isfinite(result["ate"])
     assert np.isfinite(result["se"])
     assert result["se"] > 0
@@ -49,9 +46,7 @@ def test_ate_finite(plr_data):
 
 def test_ci_contains_ate(plr_data):
     """95% CI should contain the point estimate."""
-    result = estimate_plr(
-        plr_data, treatment="d", outcome="y", covariates=["x1", "x2"]
-    )
+    result = estimate_plr(plr_data, treatment="d", outcome="y", covariates=["x1", "x2"])
     assert result["ci_lower"] <= result["ate"] <= result["ci_upper"]
 
 

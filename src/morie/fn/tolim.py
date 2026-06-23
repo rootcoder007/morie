@@ -57,18 +57,21 @@ def tolerance_limits(x, coverage: float = 0.90, confidence: float = 0.95):
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n < 2:
-        return RichResult(payload={
-            "lower": np.nan, "upper": np.nan,
-            "coverage_requested": float(coverage),
-            "confidence_achieved": np.nan,
-            "n": n,
-            "method": "Distribution-free tolerance limits (Wilks)",
-        })
+        return RichResult(
+            payload={
+                "lower": np.nan,
+                "upper": np.nan,
+                "coverage_requested": float(coverage),
+                "confidence_achieved": np.nan,
+                "n": n,
+                "method": "Distribution-free tolerance limits (Wilks)",
+            }
+        )
 
     beta = float(coverage)
     # Wilks (1941): P(coverage of [X_(1), X_(n)] >= beta)
     #            = 1 - n * beta^(n-1) + (n - 1) * beta^n
-    confidence_achieved = 1.0 - n * beta ** (n - 1) + (n - 1) * beta ** n
+    confidence_achieved = 1.0 - n * beta ** (n - 1) + (n - 1) * beta**n
     confidence_achieved = float(max(0.0, min(1.0, confidence_achieved)))
 
     lower = float(np.min(x))
@@ -80,14 +83,17 @@ def tolerance_limits(x, coverage: float = 0.90, confidence: float = 0.95):
             f"{confidence_achieved:.4f} < requested {confidence:.4f} "
             f"for coverage {beta:.2f}."
         )
-    return RichResult(payload={
-        "lower": lower,
-        "upper": upper,
-        "coverage_requested": beta,
-        "confidence_achieved": confidence_achieved,
-        "n": n,
-        "method": "Distribution-free tolerance limits (Wilks)",
-    }, warnings=warnings)
+    return RichResult(
+        payload={
+            "lower": lower,
+            "upper": upper,
+            "coverage_requested": beta,
+            "confidence_achieved": confidence_achieved,
+            "n": n,
+            "method": "Distribution-free tolerance limits (Wilks)",
+        },
+        warnings=warnings,
+    )
 
 
 def cheatsheet():

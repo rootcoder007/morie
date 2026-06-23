@@ -1,6 +1,7 @@
 """Test wqfsh."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wqfsh import wqfsh
 
 

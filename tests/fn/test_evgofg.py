@@ -1,6 +1,7 @@
 """Tests for evgofg.evt_gpd_anderson_darling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evgofg import evt_gpd_anderson_darling
 
 
@@ -11,7 +12,7 @@ def test_evgofg_basic():
     xi = np.random.default_rng(42).normal(0, 1, 100)
     result = evt_gpd_anderson_darling(y, sigma, xi)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_evgofg_edge():

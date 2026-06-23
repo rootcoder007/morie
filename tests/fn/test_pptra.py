@@ -1,6 +1,7 @@
 """Test pptra."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pptra import pptra
 
 

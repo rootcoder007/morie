@@ -1,6 +1,7 @@
 """Tests for didfst.did_forest."""
+
 import numpy as np
-import pytest
+
 from morie.fn.didfst import did_forest
 
 
@@ -12,7 +13,7 @@ def test_didfst_basic():
     time = np.linspace(0, 10, 100)
     result = did_forest(y, D, X, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_didfst_edge():

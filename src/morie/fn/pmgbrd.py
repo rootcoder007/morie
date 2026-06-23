@@ -16,9 +16,7 @@ def pm_gemm_burden(
     population: int | np.ndarray,
     baseline_rate: float,
     *,
-    outcome: Literal[
-        "ncd_lri", "ihd", "stroke", "copd", "lung_cancer", "lri"
-    ] = "ncd_lri",
+    outcome: Literal["ncd_lri", "ihd", "stroke", "copd", "lung_cancer", "lri"] = "ncd_lri",
     reference_ugm3: float = 2.4,
     theta: float | None = None,
     alpha: float | None = None,
@@ -128,10 +126,7 @@ def pm_gemm_burden(
         try:
             N = np.broadcast_to(N, C.shape)
         except ValueError as exc:
-            raise ValueError(
-                f"population shape {N.shape} does not broadcast to "
-                f"concentration shape {C.shape}"
-            ) from exc
+            raise ValueError(f"population shape {N.shape} does not broadcast to concentration shape {C.shape}") from exc
 
     if np.any(N < 0):
         raise ValueError("population must be non-negative.")
@@ -141,11 +136,17 @@ def pm_gemm_burden(
         C,
         outcome=outcome,
         reference_ugm3=reference_ugm3,
-        theta=theta, alpha=alpha, mu=mu, nu=nu,
+        theta=theta,
+        alpha=alpha,
+        mu=mu,
+        nu=nu,
     )
-    rr_arr = np.atleast_1d(np.asarray(
-        rr_result.extra["rr"], dtype=float,
-    ))
+    rr_arr = np.atleast_1d(
+        np.asarray(
+            rr_result.extra["rr"],
+            dtype=float,
+        )
+    )
 
     # PAF = (RR - 1) / RR.  When RR=1, PAF=0 exactly.
     paf = np.where(rr_arr > 1.0, (rr_arr - 1.0) / rr_arr, 0.0)
@@ -155,21 +156,18 @@ def pm_gemm_burden(
     total_pop = float(N.sum())
 
     extra: dict = {
-        "rr":                rr_arr.tolist() if rr_arr.size > 1 else float(rr_arr.item()),
-        "paf":               paf.tolist() if paf.size > 1 else float(paf.item()),
-        "deaths_per_unit":   deaths_per_unit.tolist() if deaths_per_unit.size > 1
-                             else float(deaths_per_unit.item()),
-        "total_deaths":      total_deaths,
-        "total_population":  total_pop,
-        "outcome":           outcome,
-        "baseline_rate":     baseline_rate,
-        "reference_ugm3":    reference_ugm3,
-        "source":            "Burnett 2018 PNAS GEMM + Levin 1953 PAF",
+        "rr": rr_arr.tolist() if rr_arr.size > 1 else float(rr_arr.item()),
+        "paf": paf.tolist() if paf.size > 1 else float(paf.item()),
+        "deaths_per_unit": deaths_per_unit.tolist() if deaths_per_unit.size > 1 else float(deaths_per_unit.item()),
+        "total_deaths": total_deaths,
+        "total_population": total_pop,
+        "outcome": outcome,
+        "baseline_rate": baseline_rate,
+        "reference_ugm3": reference_ugm3,
+        "source": "Burnett 2018 PNAS GEMM + Levin 1953 PAF",
     }
     if total_pop > 0:
-        extra["crude_attributable_rate_per_100k"] = (
-            total_deaths / total_pop * 100_000
-        )
+        extra["crude_attributable_rate_per_100k"] = total_deaths / total_pop * 100_000
 
     return DescriptiveResult(
         name="pm_gemm_burden",

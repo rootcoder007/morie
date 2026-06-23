@@ -1,6 +1,7 @@
 """Test prwfp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.prwfp import prwfp
 
 

@@ -10,6 +10,7 @@ the second-order difference matrix.  Closed-form solution
 
     b_hat = (B'B + lambda D'D)^{-1} B' y
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -23,6 +24,7 @@ def _bspline_basis(x, knots, degree=3):
     """Cox-de Boor recursion (vectorised); returns (n, n_basis) array."""
     x = np.asarray(x, dtype=float)
     t = np.asarray(knots, dtype=float)
+
     # number of basis functions = len(t) - degree - 1
     def N(i, k, t, x):
         if k == 0:
@@ -32,6 +34,7 @@ def _bspline_basis(x, knots, degree=3):
         a = ((x - t[i]) / denom1) * N(i, k - 1, t, x) if denom1 > 0 else 0
         b = ((t[i + k + 1] - x) / denom2) * N(i + 1, k - 1, t, x) if denom2 > 0 else 0
         return a + b
+
     n_basis = len(t) - degree - 1
     B = np.column_stack([N(i, degree, t, x) for i in range(n_basis)])
     # close at upper boundary
@@ -39,8 +42,7 @@ def _bspline_basis(x, knots, degree=3):
     return B
 
 
-def penalized_spline(x, y, n_knots: int = 20, degree: int = 3,
-                     lam: float = 1.0):
+def penalized_spline(x, y, n_knots: int = 20, degree: int = 3, lam: float = 1.0):
     """P-spline regression (Eilers-Marx).
 
     Parameters
@@ -62,18 +64,19 @@ def penalized_spline(x, y, n_knots: int = 20, degree: int = 3,
     y = np.asarray(y, dtype=float).ravel()
     n = x.size
     if n < degree + 2 or y.size != n:
-        return RichResult(payload={"estimate": float("nan"), "n": int(n),
-                                   "method": "P-spline (n too small)"})
+        return RichResult(payload={"estimate": float("nan"), "n": int(n), "method": "P-spline (n too small)"})
     x_min, x_max = x.min(), x.max()
     if x_max == x_min:
         x_max = x_min + 1.0
     h = (x_max - x_min) / max(1, n_knots - 1)
     # extended knot vector for B-spline of given degree
-    knots = np.concatenate([
-        np.full(degree, x_min - h),
-        np.linspace(x_min, x_max, n_knots),
-        np.full(degree, x_max + h),
-    ])
+    knots = np.concatenate(
+        [
+            np.full(degree, x_min - h),
+            np.linspace(x_min, x_max, n_knots),
+            np.full(degree, x_max + h),
+        ]
+    )
     B = _bspline_basis(x, knots, degree=degree)
     k = B.shape[1]
     D = np.diff(np.eye(k), n=2, axis=0)
@@ -82,19 +85,28 @@ def penalized_spline(x, y, n_knots: int = 20, degree: int = 3,
     coef = np.linalg.solve(BtB + lam * (D.T @ D), BtY)
     fitted = B @ coef
     resid = y - fitted
-    sse = float(np.sum(resid ** 2))
+    sse = float(np.sum(resid**2))
     sst = float(np.sum((y - y.mean()) ** 2))
     r2 = 1.0 - sse / sst if sst > 0 else float("nan")
     # effective d.f. = trace of hat matrix
     H = B @ np.linalg.solve(BtB + lam * (D.T @ D), B.T)
     edf = float(np.trace(H))
     se = float(np.sqrt(sse / max(1, n - edf)) / np.sqrt(n))
-    return RichResult(payload={
-        "coef": coef, "fitted": fitted, "residuals": resid,
-        "sse": sse, "r2": float(r2), "edf": edf, "lambda": float(lam),
-        "estimate": float(fitted.mean()), "se": se, "n": int(n),
-        "method": "P-spline (Eilers & Marx 1996)",
-    })
+    return RichResult(
+        payload={
+            "coef": coef,
+            "fitted": fitted,
+            "residuals": resid,
+            "sse": sse,
+            "r2": float(r2),
+            "edf": edf,
+            "lambda": float(lam),
+            "estimate": float(fitted.mean()),
+            "se": se,
+            "n": int(n),
+            "method": "P-spline (Eilers & Marx 1996)",
+        }
+    )
 
 
 # CANONICAL TEST

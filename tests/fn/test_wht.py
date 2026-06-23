@@ -7,7 +7,6 @@ from morie.fn.wht import walsh_hadamard
 
 
 class TestWalshHadamard:
-
     def test_returns_result(self):
         x = np.random.default_rng(42).standard_normal(16)
         res = walsh_hadamard(x)
@@ -26,9 +25,9 @@ class TestWalshHadamard:
         x = np.random.default_rng(1).standard_normal(32)
         res = walsh_hadamard(x)
         h = res.extra["full"]
-        assert np.linalg.norm(h) == pytest.approx(np.linalg.norm(
-            np.concatenate([x, np.zeros(32 - len(x))]) if len(x) < 32 else x
-        ), abs=1e-10)
+        assert np.linalg.norm(h) == pytest.approx(
+            np.linalg.norm(np.concatenate([x, np.zeros(32 - len(x))]) if len(x) < 32 else x), abs=1e-10
+        )
 
     def test_padding(self):
         x = np.random.default_rng(2).standard_normal(10)

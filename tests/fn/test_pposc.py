@@ -1,6 +1,7 @@
 """Tests for pposc.posterior_predictive_check."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pposc import posterior_predictive_check
 
 
@@ -10,7 +11,7 @@ def test_pposc_basic():
     y_rep = np.random.default_rng(42).normal(0, 1, 100)
     result = posterior_predictive_check(y, y_rep)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pposc_edge():

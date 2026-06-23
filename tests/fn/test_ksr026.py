@@ -1,6 +1,7 @@
 """Tests for ksr026.kosorok_ch2_empirical_distribution_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr026 import kosorok_ch2_empirical_distribution_function
 
 
@@ -11,7 +12,7 @@ def test_ksr026_basic():
     n = 100
     result = kosorok_ch2_empirical_distribution_function(X, t, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr026_edge():

@@ -1,6 +1,7 @@
 """Confidence interval for partially identified parameter."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bound_credible_interval"]
@@ -34,7 +35,14 @@ def bound_credible_interval(lower, upper, alpha):
     n = len(lower)
     result = float(np.mean(lower))
     se = float(np.std(lower, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Confidence interval for partially identified parameter"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Confidence interval for partially identified parameter",
+        }
+    )
 
 
 def cheatsheet():

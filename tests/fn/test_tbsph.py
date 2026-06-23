@@ -1,6 +1,8 @@
 """Tests for tbsph."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tbsph import tbsph
 
 
@@ -28,4 +30,5 @@ def test_tbsph_no_data():
 
 def test_tbsph_alias():
     from morie.fn.tbsph import tbsph
+
     assert tbsph is tbsph

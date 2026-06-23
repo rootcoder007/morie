@@ -1,7 +1,6 @@
 """Tests for morie.fn.svqud -- Quadratic spatial utility function"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svqud import quad_utility
 

@@ -1,6 +1,7 @@
 """Tests for spmath.schabenberger_matheron_estimator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spmath import schabenberger_matheron_estimator
 
 
@@ -11,7 +12,7 @@ def test_spmath_basic():
     lag_bins = np.random.default_rng(42).normal(0, 1, 100)
     result = schabenberger_matheron_estimator(coords, z, lag_bins)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spmath_edge():

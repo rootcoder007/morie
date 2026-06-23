@@ -1,6 +1,7 @@
 """Tests for nbeats.n_beats."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nbeats import n_beats
 
 
@@ -11,7 +12,7 @@ def test_nbeats_basic():
     blocks = np.random.default_rng(42).normal(0, 1, 100)
     result = n_beats(y, stacks, blocks)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_nbeats_edge():

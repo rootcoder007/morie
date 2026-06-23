@@ -1,8 +1,8 @@
 """Nonparametric expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["density_estimation_for_statistics_and_data_analysis_silverma_chapter_2_unnumbered_54"]
 

@@ -1,6 +1,7 @@
 """Test gafdir."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gafdir import gafdir
 
 

@@ -1,6 +1,7 @@
 """Test saldf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.saldf import saldf
 
 

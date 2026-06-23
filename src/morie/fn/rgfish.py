@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fisher's criterion for feature separability."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_fisher_criterion"]
@@ -32,7 +34,9 @@ def rangayyan_fisher_criterion(X, y):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fisher's criterion for feature separability"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Fisher's criterion for feature separability"}
+    )
 
 
 def cheatsheet():

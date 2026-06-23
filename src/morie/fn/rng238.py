@@ -1,6 +1,7 @@
 """Complex cepstra of a convolution decompose as a sum.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_complex_cepstra_sum"]
@@ -34,7 +35,9 @@ def rangayyan_ch4_complex_cepstra_sum(x_hat, h_hat, n):
     n = len(x_hat)
     result = float(np.mean(x_hat))
     se = float(np.std(x_hat, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Complex cepstra of a convolution decompose as a sum."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Complex cepstra of a convolution decompose as a sum."}
+    )
 
 
 def cheatsheet():

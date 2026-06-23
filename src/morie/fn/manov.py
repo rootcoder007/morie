@@ -61,8 +61,8 @@ def manova(data: np.ndarray, groups: np.ndarray, cdf=None) -> DescriptiveResult:
     df1 = p * (k - 1)
     df2 = max(n - k - p + 1, 1)
     if wilks > 0:
-        num = p ** 2 * (k - 1) ** 2 - 4
-        den = p ** 2 + (k - 1) ** 2 - 5
+        num = p**2 * (k - 1) ** 2 - 4
+        den = p**2 + (k - 1) ** 2 - 5
         if den == 0 or num < 0:
             t = 1.0
         else:

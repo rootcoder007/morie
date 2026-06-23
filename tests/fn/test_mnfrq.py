@@ -1,7 +1,9 @@
 """Test mean_frequency (mnfrq)."""
+
 import numpy as np
-from morie.fn.mnfrq import mean_frequency, mnfrq
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mnfrq import mean_frequency, mnfrq
 
 
 class TestMnfrq:

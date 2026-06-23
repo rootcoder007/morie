@@ -1,6 +1,7 @@
 """Tests for spgwrb.schabenberger_gwr_bandwidth."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spgwrb import schabenberger_gwr_bandwidth
 
 
@@ -11,7 +12,7 @@ def test_spgwrb_basic():
     coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
     result = schabenberger_gwr_bandwidth(x, y, coords)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spgwrb_edge():

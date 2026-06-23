@@ -1,6 +1,7 @@
 """Tests for swsmp.systematic_with_random_start."""
+
 import numpy as np
-import pytest
+
 from morie.fn.swsmp import systematic_with_random_start
 
 
@@ -11,7 +12,7 @@ def test_swsmp_basic():
     n = 100
     result = systematic_with_random_start(y, N, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_swsmp_edge():

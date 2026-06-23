@@ -1,7 +1,6 @@
 """Tests for morie.fn.msgof -- MDS goodness of fit"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msgof import mds_gof
 
@@ -14,5 +13,5 @@ class TestMdsGof:
         assert result.value is not None
 
     def test_output_type(self):
-        result = mds_gof(np.random.default_rng(0).standard_normal((5,2)))
+        result = mds_gof(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

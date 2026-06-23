@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptcrs -- Cross-type point pattern"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptcrs import cross_pp
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svhtd -- Hotelling-Downs convergence equilibrium"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svhtd import hotelling_downs
 

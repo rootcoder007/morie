@@ -1,6 +1,7 @@
 """Tests for morie.fn.grm — genomic relationship matrix."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grm import genetic_relatedness
 
 

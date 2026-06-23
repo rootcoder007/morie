@@ -1,7 +1,9 @@
 """Test cascade_classify (cscde)."""
+
 import numpy as np
-from morie.fn.cscde import cascade_classify, cscde
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cscde import cascade_classify, cscde
 
 
 class TestCscde:

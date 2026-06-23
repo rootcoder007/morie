@@ -1,6 +1,7 @@
 """Tests for morie.fn.rcagr -- agreement scores."""
 
 import numpy as np
+
 from morie.fn.rcagr import agreement_scores, rcagr
 
 

@@ -57,4 +57,4 @@ lrpos = likelihood_ratio
 
 
 def cheatsheet() -> str:
-    return 'likelihood_ratio({}) -> Likelihood ratios (LR+ / LR-).'
+    return "likelihood_ratio({}) -> Likelihood ratios (LR+ / LR-)."

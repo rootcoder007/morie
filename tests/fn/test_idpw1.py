@@ -1,7 +1,7 @@
 """Tests for morie.fn.idpw1."""
 
 import numpy as np
-import pytest
+
 from morie.fn.idpw1 import idpw1
 
 

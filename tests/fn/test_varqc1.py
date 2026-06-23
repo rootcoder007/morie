@@ -1,6 +1,7 @@
 """Tests for varqc1.vcf_filter."""
+
 import numpy as np
-import pytest
+
 from morie.fn.varqc1 import vcf_filter
 
 
@@ -10,7 +11,7 @@ def test_varqc1_basic():
     thresholds = [0.25, 0.5, 0.75]
     result = vcf_filter(vcf, thresholds)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_varqc1_edge():

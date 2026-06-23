@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.wolvn import mice_impute, wolvn
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.wolvn import mice_impute, wolvn
 
 
 class TestWolvn:

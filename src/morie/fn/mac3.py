@@ -1,6 +1,7 @@
 """Centre study-level predictors on weighted mean."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_centered_predictors"]
@@ -32,7 +33,9 @@ def ma_centered_predictors(X, weights):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Centre study-level predictors on weighted mean"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Centre study-level predictors on weighted mean"}
+    )
 
 
 def cheatsheet():

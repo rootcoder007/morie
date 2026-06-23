@@ -1,6 +1,7 @@
 """Dirichlet regression of compositions on covariates."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dirichlet_regression"]
@@ -34,7 +35,9 @@ def dirichlet_regression(X_cov, Y_comp, ref):
     n = len(X_cov)
     result = float(np.mean(X_cov))
     se = float(np.std(X_cov, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Dirichlet regression of compositions on covariates"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Dirichlet regression of compositions on covariates"}
+    )
 
 
 def cheatsheet():

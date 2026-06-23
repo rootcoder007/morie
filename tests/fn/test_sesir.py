@@ -1,6 +1,7 @@
 """Test sesir."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sesir import sesir
 
 

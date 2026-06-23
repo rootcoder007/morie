@@ -1,6 +1,7 @@
 """Test percs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.percs import percs
 
 

@@ -1,7 +1,10 @@
 """Tests for neighborhood_structures_and_crime_a_spatial_analysis_george_2u2.neighborhood_structures_and_crime_a_spatial_analysis_george__chapter_2_unnumbered_2."""
+
 import numpy as np
-import pytest
-from morie.fn.neighborhood_structures_and_crime_a_spatial_analysis_george_2u2 import neighborhood_structures_and_crime_a_spatial_analysis_george__chapter_2_unnumbered_2
+
+from morie.fn.neighborhood_structures_and_crime_a_spatial_analysis_george_2u2 import (
+    neighborhood_structures_and_crime_a_spatial_analysis_george__chapter_2_unnumbered_2,
+)
 
 
 def test_neighborhood_structures_and_crime_a_spatial_analysis_george_2u2_basic():
@@ -9,7 +12,7 @@ def test_neighborhood_structures_and_crime_a_spatial_analysis_george_2u2_basic()
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = neighborhood_structures_and_crime_a_spatial_analysis_george__chapter_2_unnumbered_2(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_neighborhood_structures_and_crime_a_spatial_analysis_george_2u2_edge():

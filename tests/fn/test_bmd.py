@@ -1,6 +1,7 @@
 """Tests for morie.fn.bmd — benchmark dose estimation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bmd import benchmark_dose
 
 

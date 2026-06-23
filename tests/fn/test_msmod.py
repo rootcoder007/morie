@@ -1,6 +1,8 @@
 """Tests for morie.fn.msmod — Marginal structural model."""
+
 import numpy as np
 import pytest
+
 from morie.fn.msmod import msmod
 
 
@@ -53,4 +55,5 @@ def test_ci_valid(data):
 
 def test_cheatsheet():
     from morie.fn.msmod import cheatsheet
+
     assert len(cheatsheet()) > 0

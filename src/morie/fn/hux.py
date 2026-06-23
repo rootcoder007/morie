@@ -69,4 +69,4 @@ hux = huber_regression
 
 
 def cheatsheet() -> str:
-    return 'huber_regression({}) -> Huber robust regression.'
+    return "huber_regression({}) -> Huber robust regression."

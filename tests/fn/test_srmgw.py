@@ -1,6 +1,7 @@
 """Test srmgw."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srmgw import srmgw
 
 

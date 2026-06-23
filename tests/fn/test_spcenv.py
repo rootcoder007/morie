@@ -1,6 +1,8 @@
 """Tests for spcenv."""
+
 import numpy as np
 import pytest
+
 from morie.fn.spcenv import spcenv
 
 
@@ -28,4 +30,5 @@ def test_spcenv_no_data():
 
 def test_spcenv_alias():
     from morie.fn.spcenv import spcenv
+
     assert spcenv is spcenv

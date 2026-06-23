@@ -1,7 +1,9 @@
 """Test mlp_classify (mlpcl)."""
+
 import numpy as np
-from morie.fn.mlpcl import mlp_classify, mlpcl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mlpcl import mlp_classify, mlpcl
 
 
 class TestMlpcl:

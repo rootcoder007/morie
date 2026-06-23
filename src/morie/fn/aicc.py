@@ -39,4 +39,4 @@ aicc = corrected_aic
 
 
 def cheatsheet() -> str:
-    return 'corrected_aic({}) -> Corrected AIC.'
+    return "corrected_aic({}) -> Corrected AIC."

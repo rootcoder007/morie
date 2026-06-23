@@ -1,6 +1,7 @@
 """Ensemble mean of a random process at instant t1 from M observations.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_ensemble_mean"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_ensemble_mean(x_k, t1, M):
     n = len(x_k)
     result = float(np.mean(x_k))
     se = float(np.std(x_k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Ensemble mean of a random process at instant t1 from M observations."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Ensemble mean of a random process at instant t1 from M observations.",
+        }
+    )
 
 
 def cheatsheet():

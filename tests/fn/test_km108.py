@@ -1,6 +1,7 @@
 """Tests for km108.kamath_ch6_differential_privacy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km108 import kamath_ch6_differential_privacy
 
 
@@ -13,7 +14,7 @@ def test_km108_basic():
     epsilon = 1e-6
     result = kamath_ch6_differential_privacy(M, A, B, S, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km108_edge():

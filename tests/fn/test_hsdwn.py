@@ -1,7 +1,7 @@
 """Tests for morie.fn.hsdwn."""
 
 import numpy as np
-import pytest
+
 from morie.fn.hsdwn import hsdwn
 
 

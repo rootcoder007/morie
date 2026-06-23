@@ -1,34 +1,34 @@
 """Tests for morie.engine and morie.tokenizer."""
 
 import struct
+
 import numpy as np
 import pytest
 
 from morie.engine import (
-    MORIEEngine,
     GenerationResult,
+    MORIEEngine,
     _rmsnorm,
-    _softmax,
-    _silu,
     _rope,
+    _silu,
+    _softmax,
     backend,
 )
-from morie.tokenizer import Tokenizer
 from morie.gguf_loader import (
-    GGML_TYPE_F32,
-    GGUF_MAGIC,
     _GGUF_TYPE_ARRAY,
     _GGUF_TYPE_FLOAT32,
     _GGUF_TYPE_INT32,
     _GGUF_TYPE_STRING,
     _GGUF_TYPE_UINT32,
+    GGUF_MAGIC,
     GGUFModel,
 )
-
+from morie.tokenizer import Tokenizer
 
 # ---------------------------------------------------------------------------
 # Helpers to build synthetic GGUF files with tokenizer metadata
 # ---------------------------------------------------------------------------
+
 
 def _write_string(buf, s):
     encoded = s.encode("utf-8")
@@ -115,6 +115,7 @@ def _build_gguf_with_tokenizer(tmp_path, vocab=None):
 # Backend tests
 # ---------------------------------------------------------------------------
 
+
 class TestBackend:
     def test_backend_is_string(self):
         assert backend() in ("mlx", "numpy")
@@ -123,6 +124,7 @@ class TestBackend:
 # ---------------------------------------------------------------------------
 # Math primitives
 # ---------------------------------------------------------------------------
+
 
 class TestMathPrimitives:
     def test_rmsnorm_shape(self):
@@ -135,7 +137,7 @@ class TestMathPrimitives:
         x = np.array([3.0, 4.0], dtype=np.float32)
         w = np.ones(2, dtype=np.float32)
         result = _rmsnorm(x, w)
-        rms = np.sqrt(np.mean(result ** 2))
+        rms = np.sqrt(np.mean(result**2))
         assert abs(rms - 1.0) < 0.01
 
     def test_softmax_sums_to_one(self):
@@ -179,6 +181,7 @@ class TestMathPrimitives:
 # ---------------------------------------------------------------------------
 # Tokenizer tests
 # ---------------------------------------------------------------------------
+
 
 class TestTokenizer:
     def test_load_from_gguf(self, tmp_path):
@@ -235,12 +238,17 @@ class TestTokenizer:
 # GenerationResult
 # ---------------------------------------------------------------------------
 
+
 class TestGenerationResult:
     def test_fields(self):
         r = GenerationResult(
-            text="hello", tokens=[1, 2], n_tokens=1,
-            time_seconds=0.5, tokens_per_second=2.0,
-            kv_compression_ratio=4.9, backend="numpy",
+            text="hello",
+            tokens=[1, 2],
+            n_tokens=1,
+            time_seconds=0.5,
+            tokens_per_second=2.0,
+            kv_compression_ratio=4.9,
+            backend="numpy",
         )
         assert r.text == "hello"
         assert r.backend == "numpy"
@@ -250,6 +258,7 @@ class TestGenerationResult:
 # ---------------------------------------------------------------------------
 # Sampling
 # ---------------------------------------------------------------------------
+
 
 class TestSampling:
     def test_greedy(self):

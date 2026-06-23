@@ -1,5 +1,7 @@
 """Tests for morie.fn.amfit — A-M fit statistic."""
+
 import numpy as np
+
 from morie.fn.amfit import amfit
 
 
@@ -15,6 +17,7 @@ def test_amfit_smoke():
 
 def test_cheatsheet():
     from morie.fn.amfit import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

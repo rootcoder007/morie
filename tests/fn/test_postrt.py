@@ -1,6 +1,7 @@
 """Tests for postrt.post_stratification."""
+
 import numpy as np
-import pytest
+
 from morie.fn.postrt import post_stratification
 
 
@@ -12,7 +13,7 @@ def test_postrt_basic():
     N_h = np.random.default_rng(42).normal(0, 1, 100)
     result = post_stratification(y, weights, stratum, N_h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_postrt_edge():

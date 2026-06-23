@@ -1,6 +1,7 @@
 """Tests for hotcld.hot_cold_spots."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hotcld import hot_cold_spots
 
 
@@ -11,7 +12,7 @@ def test_hotcld_basic():
     alpha = 0.05
     result = hot_cold_spots(x, W, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hotcld_edge():

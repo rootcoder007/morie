@@ -1,6 +1,7 @@
 """Shor's quantum factoring (period-finding)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["shor_factoring"]
@@ -30,7 +31,9 @@ def shor_factoring(N):
     n = len(N)
     result = float(np.mean(N))
     se = float(np.std(N, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Shor's quantum factoring (period-finding)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Shor's quantum factoring (period-finding)"}
+    )
 
 
 def cheatsheet():

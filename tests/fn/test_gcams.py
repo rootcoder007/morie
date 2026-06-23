@@ -1,6 +1,7 @@
 """Test gcams."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcams import gcams
 
 

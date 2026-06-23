@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.smpsl import smpsl
 
 
@@ -32,5 +33,4 @@ def test_n_selected_correct():
 
 def test_non_binary_d_raises():
     with pytest.raises(ValueError, match="binary"):
-        smpsl(np.ones(10), np.ones((10, 1)), np.ones((10, 1)),
-              np.array([0, 1, 2] * 3 + [0]))
+        smpsl(np.ones(10), np.ones((10, 1)), np.ones((10, 1)), np.array([0, 1, 2] * 3 + [0]))

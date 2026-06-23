@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Curse of dimensionality in nonparametric regression: rate degrades with dimension."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_curse_dimensionality"]
@@ -32,7 +34,14 @@ def horowitz_curse_dimensionality(d, n):
     n = int(d) if d.ndim == 0 else len(d)
     result = float(np.mean(d))
     se = float(np.std(d, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Curse of dimensionality in nonparametric regression: rate degrades with dimension"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Curse of dimensionality in nonparametric regression: rate degrades with dimension",
+        }
+    )
 
 
 def cheatsheet():

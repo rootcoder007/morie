@@ -1,4 +1,5 @@
 """Tests for morie.fn.uncrt — utility with uncertainty."""
+
 from morie.fn.uncrt import uncrt
 
 
@@ -11,6 +12,7 @@ def test_uncrt_smoke():
 
 def test_cheatsheet():
     from morie.fn.uncrt import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

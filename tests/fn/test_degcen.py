@@ -1,6 +1,7 @@
 """Tests for degcen.degree_centrality."""
+
 import numpy as np
-import pytest
+
 from morie.fn.degcen import degree_centrality
 
 
@@ -9,7 +10,7 @@ def test_degcen_basic():
     G = np.eye(10)
     result = degree_centrality(G)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_degcen_edge():

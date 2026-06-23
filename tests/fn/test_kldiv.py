@@ -1,6 +1,8 @@
 """Tests for morie.fn.kldiv — KL divergence."""
+
 import numpy as np
 import pytest
+
 from morie.fn.kldiv import kl_divergence
 
 

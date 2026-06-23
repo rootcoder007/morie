@@ -1,6 +1,7 @@
 """Studentised bootstrap (bootstrap-t) CI."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_studentized_ci"]
@@ -36,7 +37,9 @@ def boot_studentized_ci(theta_hat, se_hat, t_b, alpha):
     n = len(theta_hat)
     result = float(np.mean(theta_hat))
     se = float(np.std(theta_hat, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Studentised bootstrap (bootstrap-t) CI"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Studentised bootstrap (bootstrap-t) CI"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 """Tests for rndist."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rndist import rndist
 
 
@@ -28,4 +30,5 @@ def test_rndist_no_data():
 
 def test_rndist_alias():
     from morie.fn.rndist import rndist
+
     assert rndist is rndist

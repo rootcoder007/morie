@@ -40,4 +40,5 @@ def test_cum_coef_shape(surv_data):
 
 def test_cheatsheet():
     from morie.fn.aalen import cheatsheet
+
     assert "aalen" in cheatsheet().lower()

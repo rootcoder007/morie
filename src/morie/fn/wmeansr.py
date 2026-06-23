@@ -1,6 +1,7 @@
 """Horvitz-Thompson weighted mean."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["weighted_mean_survey"]

@@ -1,6 +1,7 @@
 """Tests for grgmll.geron_gmm_log_likelihood."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grgmll import geron_gmm_log_likelihood
 
 
@@ -12,7 +13,7 @@ def test_grgmll_basic():
     covars = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_gmm_log_likelihood(X, pi, means, covars)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grgmll_edge():

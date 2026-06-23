@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from morie.fn.sugpln import sugpln, suggest_analysis_plan
-from morie.dataset import profile_dataset, DatasetProfile
+from morie.dataset import profile_dataset
+from morie.fn.sugpln import suggest_analysis_plan, sugpln
 
 
 def test_alias_is_same_function():
@@ -18,13 +18,15 @@ def epi_profile():
     """Profile from a dataset with treatment, outcome, covariates."""
     rng = np.random.default_rng(42)
     n = 100
-    df = pd.DataFrame({
-        "treatment": rng.choice([0, 1], n),
-        "outcome": rng.standard_normal(n),
-        "age": rng.integers(18, 80, n),
-        "survey_wt": rng.uniform(0.5, 2.0, n),
-        "gender": rng.choice(["M", "F"], n),
-    })
+    df = pd.DataFrame(
+        {
+            "treatment": rng.choice([0, 1], n),
+            "outcome": rng.standard_normal(n),
+            "age": rng.integers(18, 80, n),
+            "survey_wt": rng.uniform(0.5, 2.0, n),
+            "gender": rng.choice(["M", "F"], n),
+        }
+    )
     return profile_dataset(df)
 
 

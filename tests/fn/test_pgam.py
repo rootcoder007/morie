@@ -1,6 +1,5 @@
 """Tests for morie.fn.pgam — gamma CDF."""
 
-import numpy as np
 import pytest
 
 from morie.fn.pgam import pgamma

@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Largest Lyapunov exponent (Rosenstein) -- Rangayyan Ch 7."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -40,7 +41,7 @@ def rangayyan_lyapunov(x, m=3, tau=1, max_t=None, theiler=10):
         raise ValueError("Series too short for embedding.")
     Y = np.empty((M, m))
     for i in range(m):
-        Y[:, i] = x[i * tau:i * tau + M]
+        Y[:, i] = x[i * tau : i * tau + M]
     if max_t is None:
         max_t = min(M // 4, 100)
     d = np.linalg.norm(Y[:, None, :] - Y[None, :, :], axis=2)
@@ -66,8 +67,7 @@ def rangayyan_lyapunov(x, m=3, tau=1, max_t=None, theiler=10):
         lam = float(slope)
     res = RichResult(
         title="Largest Lyapunov exponent (Rosenstein)",
-        summary_lines=[("m", m), ("τ", tau),
-                       ("Theiler", theiler), ("λ₁", lam)],
+        summary_lines=[("m", m), ("τ", tau), ("Theiler", theiler), ("λ₁", lam)],
         interpretation=f"λ₁ = {lam:.4g}. >0 chaotic, ~0 marginal, <0 stable.",
         payload={"lyapunov": lam, "divergence_curve": div, "t": np.arange(max_t)},
     )

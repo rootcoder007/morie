@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.bane import structural_break, bane
+
 from morie.fn._containers import TestResult
+from morie.fn.bane import bane, structural_break
 
 
 class TestBane:

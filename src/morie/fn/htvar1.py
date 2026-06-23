@@ -1,6 +1,7 @@
 """HT variance via second-order inclusion."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ht_variance"]
@@ -34,7 +35,9 @@ def ht_variance(y, pi, pi_ij):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "HT variance via second-order inclusion"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "HT variance via second-order inclusion"}
+    )
 
 
 def cheatsheet():

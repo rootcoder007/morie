@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exponential link function for density: f = exp(psi)/Z normalizes log-density."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_exp_link"]
@@ -30,7 +32,14 @@ def ghosal_exp_link(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Exponential link function for density: f = exp(psi)/Z normalizes log-density"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Exponential link function for density: f = exp(psi)/Z normalizes log-density",
+        }
+    )
 
 
 def cheatsheet():

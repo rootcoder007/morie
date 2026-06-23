@@ -10,7 +10,13 @@ import scipy.stats as stats
 from ._containers import ESRes
 
 
-def random_effects_meta(estimates: Union[np.ndarray, list[float]], standard_errors: Union[np.ndarray, list[float]], confidence: float = 0.95, method: str = "DL", cdf=None) -> ESRes:
+def random_effects_meta(
+    estimates: Union[np.ndarray, list[float]],
+    standard_errors: Union[np.ndarray, list[float]],
+    confidence: float = 0.95,
+    method: str = "DL",
+    cdf=None,
+) -> ESRes:
     """Random-effects meta-analytic pooling.
 
     Parameters

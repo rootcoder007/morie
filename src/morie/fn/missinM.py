@@ -1,6 +1,7 @@
 """Missing-mechanism sensitivity (NMAR)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["missing_mechanism_sensitivity"]

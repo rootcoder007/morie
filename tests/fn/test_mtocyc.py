@@ -1,9 +1,10 @@
 """Tests for morie.fn.mtocyc — cyclist."""
 
-import pytest
 import pandas as pd
-from morie.fn.mtocyc import mto_cyclist
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mtocyc import mto_cyclist
 
 
 class TestCyclist:

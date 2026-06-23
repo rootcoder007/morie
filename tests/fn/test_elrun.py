@@ -1,7 +1,7 @@
 """Tests for morie.fn.elrun."""
 
 import numpy as np
-import pytest
+
 from morie.fn.elrun import elrun
 
 

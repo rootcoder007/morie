@@ -1,6 +1,7 @@
 """DFFITS leverage-residual diagnostic."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dffits"]

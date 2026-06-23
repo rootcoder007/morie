@@ -1,6 +1,7 @@
 """Tests for joboxc.joseph_box_cox_transform."""
+
 import numpy as np
-import pytest
+
 from morie.fn.joboxc import joseph_box_cox_transform
 
 
@@ -10,7 +11,7 @@ def test_joboxc_basic():
     lam = 0.1
     result = joseph_box_cox_transform(y, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_joboxc_edge():

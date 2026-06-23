@@ -89,4 +89,4 @@ omsup = minimax_solve
 
 
 def cheatsheet() -> str:
-    return 'minimax_solve({}) -> Minimax optimization.'
+    return "minimax_solve({}) -> Minimax optimization."

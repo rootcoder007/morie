@@ -1,5 +1,7 @@
 """Tests for Cramer-Rao bound."""
+
 import pytest
+
 from morie.fn.cramr import cramer_rao_bound, cramr
 
 

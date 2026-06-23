@@ -1,6 +1,7 @@
 """Indirect comparison via Bucher's adjusted method."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_network_indirect"]
@@ -36,7 +37,9 @@ def ma_network_indirect(d_AB, v_AB, d_CB, v_CB):
     n = len(d_AB)
     result = float(np.mean(d_AB))
     se = float(np.std(d_AB, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Indirect comparison via Bucher's adjusted method"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Indirect comparison via Bucher's adjusted method"}
+    )
 
 
 def cheatsheet():

@@ -97,4 +97,4 @@ mnero = cellular_automaton
 
 
 def cheatsheet() -> str:
-    return 'cellular_automaton({}) -> Cellular automata urban growth model.'
+    return "cellular_automaton({}) -> Cellular automata urban growth model."

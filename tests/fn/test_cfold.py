@@ -2,7 +2,8 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.cfold import cross_fit, cfold
+
+from morie.fn.cfold import cfold, cross_fit
 
 
 class TestCrossFit:

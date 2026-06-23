@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsrbf -- Multiquadric RBF interpolation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsrbf import rbf_multiquad
 

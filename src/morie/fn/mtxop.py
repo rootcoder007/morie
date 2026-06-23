@@ -72,4 +72,4 @@ mtxop = matrix_function
 
 
 def cheatsheet() -> str:
-    return 'mtxop() -> Compute a matrix function f(A) via eigendecomposition'
+    return "mtxop() -> Compute a matrix function f(A) via eigendecomposition"

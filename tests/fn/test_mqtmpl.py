@@ -1,6 +1,7 @@
 """Tests for mqtmpl.multi_qtl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mqtmpl import multi_qtl
 
 
@@ -11,7 +12,7 @@ def test_mqtmpl_basic():
     positions = np.random.default_rng(42).uniform(0, 1, (100, 2))
     result = multi_qtl(y, markers, positions)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mqtmpl_edge():

@@ -1,6 +1,7 @@
 """Tests for alsR.als."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alsR import als
 
 
@@ -12,7 +13,7 @@ def test_alsR_basic():
     iters = np.random.default_rng(42).normal(0, 1, 100)
     result = als(R, K, reg, iters)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alsR_edge():

@@ -1,6 +1,8 @@
 """Test entan."""
-import pytest
+
 import numpy as np
+import pytest
+
 from morie.fn.entan import entanglement_entropy
 
 

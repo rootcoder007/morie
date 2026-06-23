@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PPO-based RLHF policy objective with reward-model + KL penalty."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ppo_rlhf_objective"]
@@ -36,7 +38,14 @@ def kamath_ppo_rlhf_objective(rewards, logp_theta, logp_ref, beta):
     n = len(rewards)
     result = float(np.mean(rewards))
     se = float(np.std(rewards, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PPO-based RLHF policy objective with reward-model + KL penalty"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PPO-based RLHF policy objective with reward-model + KL penalty",
+        }
+    )
 
 
 def cheatsheet():

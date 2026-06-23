@@ -1,7 +1,6 @@
 """Tests for morie.fn.msprg -- Generalized Procrustes analysis"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msprg import procrustes_gen
 
@@ -14,5 +13,5 @@ class TestProcrustesGen:
         assert result.value is not None
 
     def test_output_type(self):
-        result = procrustes_gen(np.random.default_rng(0).standard_normal((5,2)))
+        result = procrustes_gen(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

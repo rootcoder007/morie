@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Grid search for DNN hyperparameter tuning with cross-validation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["hyperparameter_tuning_grid"]
@@ -32,7 +34,14 @@ def hyperparameter_tuning_grid(param_grid, cv_data):
     n = int(param_grid) if param_grid.ndim == 0 else len(param_grid)
     result = float(np.mean(param_grid))
     se = float(np.std(param_grid, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Grid search for DNN hyperparameter tuning with cross-validation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Grid search for DNN hyperparameter tuning with cross-validation",
+        }
+    )
 
 
 def cheatsheet():

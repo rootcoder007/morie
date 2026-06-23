@@ -1,6 +1,6 @@
 """Tests for morie.fn.zcrdt — zero-crossing rate detection."""
+
 import numpy as np
-import pytest
 
 from morie.fn.zcrdt import zcr_detect, zcrdt
 

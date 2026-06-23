@@ -81,4 +81,4 @@ short = trie_operations
 
 
 def cheatsheet() -> str:
-    return 'trie_operations({}) -> Prefix trie operations.'
+    return "trie_operations({}) -> Prefix trie operations."

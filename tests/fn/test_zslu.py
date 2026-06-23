@@ -1,7 +1,6 @@
 """Tests for morie.fn.zslu -- LU decomposition simulation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zslu import lu_sim
 

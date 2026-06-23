@@ -1,6 +1,7 @@
 """Tests for chtchg.changeover_dr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.chtchg import changeover_dr
 
 
@@ -12,7 +13,7 @@ def test_chtchg_basic():
     unit = np.random.default_rng(42).normal(0, 1, 100)
     result = changeover_dr(y, D, period, unit)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_chtchg_edge():

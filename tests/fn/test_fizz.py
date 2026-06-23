@@ -1,6 +1,9 @@
 """Tests for fizzbuzz_stats."""
+
 import pytest
+
 from morie.fn.fizz import fizzbuzz_stats
+
 
 class TestFizz:
     def test_15(self):
@@ -11,4 +14,4 @@ class TestFizz:
 
     def test_proportions(self):
         r = fizzbuzz_stats(300)
-        assert r.extra["fizzbuzz_pct"] == pytest.approx(100/15, abs=1)
+        assert r.extra["fizzbuzz_pct"] == pytest.approx(100 / 15, abs=1)

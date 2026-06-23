@@ -1,6 +1,8 @@
 """Moran's I global spatial autocorrelation."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["morans_i"]
@@ -32,9 +34,23 @@ def morans_i(x, W):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Moran's I global spatial autocorrelation"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Moran's I global spatial autocorrelation",
+            }
+        )
     result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Moran's I global spatial autocorrelation"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Moran's I global spatial autocorrelation",
+        }
+    )
 
 
 def cheatsheet():

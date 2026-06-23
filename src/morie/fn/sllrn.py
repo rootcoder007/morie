@@ -85,6 +85,7 @@ def sllrn(
             Z[val_idx, k] = predict_fn(X[train_idx], y[train_idx], X[val_idx])
 
     from scipy.optimize import minimize
+
     def cv_loss(w):
         pred = Z @ w
         return float(np.mean((y - pred) ** 2))

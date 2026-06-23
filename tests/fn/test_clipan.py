@@ -1,6 +1,7 @@
 """Test clipan."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clipan import clipan
 
 

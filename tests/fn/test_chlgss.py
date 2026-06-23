@@ -1,6 +1,8 @@
 """Tests for chlgss."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chlgss import chlgss
 
 
@@ -28,4 +30,5 @@ def test_chlgss_no_data():
 
 def test_chlgss_alias():
     from morie.fn.chlgss import chlgss
+
     assert chlgss is chlgss

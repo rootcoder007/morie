@@ -55,4 +55,5 @@ def test_length_mismatch():
 
 def test_cheatsheet():
     from morie.fn.kmsrv import cheatsheet
+
     assert "kaplan" in cheatsheet().lower()

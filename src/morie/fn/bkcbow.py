@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """CBOW: predict center word from averaged context embeddings."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_cbow"]
@@ -35,12 +37,23 @@ def burkov_cbow(context_indices, center_index, V, U):
     context_indices = np.atleast_1d(np.asarray(context_indices, dtype=float))
     n = len(context_indices)
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "CBOW: predict center word from averaged context embeddings"})
+        return RichResult(
+            payload={"estimate": np.nan, "n": 0, "method": "CBOW: predict center word from averaged context embeddings"}
+        )
     estimate = np.median(context_indices)
     se = 1.2533 * np.std(context_indices, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "CBOW: predict center word from averaged context embeddings"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "CBOW: predict center word from averaged context embeddings",
+        }
+    )
 
 
 def cheatsheet():

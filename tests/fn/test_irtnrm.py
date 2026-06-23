@@ -1,6 +1,7 @@
 """Tests for irtnrm.nominal_response."""
+
 import numpy as np
-import pytest
+
 from morie.fn.irtnrm import nominal_response
 
 
@@ -10,7 +11,7 @@ def test_irtnrm_basic():
     ncats = np.random.default_rng(42).normal(0, 1, 100)
     result = nominal_response(X, ncats)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_irtnrm_edge():

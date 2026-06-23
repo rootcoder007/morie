@@ -1,7 +1,9 @@
 """Test cepstral_distance (cepds)."""
+
 import numpy as np
-from morie.fn.cepds import cepstral_distance, cepds
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cepds import cepds, cepstral_distance
 
 
 class TestCepds:

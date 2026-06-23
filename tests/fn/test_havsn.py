@@ -1,5 +1,7 @@
 """Tests for morie.fn.havsn."""
+
 import numpy as np
+
 from morie.fn.havsn import havsn
 
 
@@ -13,6 +15,7 @@ def test_havsn_smoke():
 
 def test_cheatsheet():
     from morie.fn.havsn import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

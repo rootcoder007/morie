@@ -57,6 +57,7 @@ def csmix(
 
     def neg_loglik(beta):
         from scipy.special import expit
+
         eta = X_aug @ beta
         prob = expit(eta)
         prob = np.clip(prob, 1e-10, 1 - 1e-10)
@@ -73,7 +74,12 @@ def csmix(
             ei, ej = np.zeros(d), np.zeros(d)
             ei[i] = eps
             ej[j] = eps
-            hessian[i, j] = (neg_loglik(beta_hat + ei + ej) - neg_loglik(beta_hat + ei - ej) - neg_loglik(beta_hat - ei + ej) + neg_loglik(beta_hat - ei - ej)) / (4 * eps ** 2)
+            hessian[i, j] = (
+                neg_loglik(beta_hat + ei + ej)
+                - neg_loglik(beta_hat + ei - ej)
+                - neg_loglik(beta_hat - ei + ej)
+                + neg_loglik(beta_hat - ei - ej)
+            ) / (4 * eps**2)
 
     try:
         var = np.linalg.inv(hessian)

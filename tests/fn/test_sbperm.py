@@ -1,6 +1,8 @@
 """Tests for sbperm."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sbperm import sbperm
 
 
@@ -28,4 +30,5 @@ def test_sbperm_no_data():
 
 def test_sbperm_alias():
     from morie.fn.sbperm import sbperm
+
     assert sbperm is sbperm

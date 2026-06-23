@@ -1,6 +1,7 @@
 """Posterior covariance between the j-th and j'-th weights of a countable Dirichlet process given n observations.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_dirichlet_posterior_cov"]
@@ -38,7 +39,14 @@ def ghosal_ch3_dirichlet_posterior_cov(alpha_j, alpha_jprime, N_j, N_jprime, n):
     n = len(alpha_j)
     result = float(np.mean(alpha_j))
     se = float(np.std(alpha_j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Posterior covariance between the j-th and j'-th weights of a countable Dirichlet process given n observations."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Posterior covariance between the j-th and j'-th weights of a countable Dirichlet process given n observations.",
+        }
+    )
 
 
 def cheatsheet():

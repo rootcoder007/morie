@@ -69,6 +69,7 @@ def kdens(
 
     if bandwidth is None:
         from morie.fn.nwker import _silverman_bw
+
         bandwidth = _silverman_bw(x)
 
     if bandwidth <= 0:
@@ -82,6 +83,7 @@ def kdens(
         x_eval = np.asarray(x_eval, dtype=float).ravel()
 
     from morie.fn.nwker import _get_kernel
+
     k_fn = _get_kernel(kernel)
 
     u = (x_eval[:, None] - x[None, :]) / bandwidth

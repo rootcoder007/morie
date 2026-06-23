@@ -1,6 +1,8 @@
 """Tests for gpexp."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gpexp import gpexp
 
 
@@ -28,4 +30,5 @@ def test_gpexp_no_data():
 
 def test_gpexp_alias():
     from morie.fn.gpexp import gpexp
+
     assert gpexp is gpexp

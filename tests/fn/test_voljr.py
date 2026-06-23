@@ -1,6 +1,7 @@
 """Tests for voljr.vol_jump_robust_var."""
+
 import numpy as np
-import pytest
+
 from morie.fn.voljr import vol_jump_robust_var
 
 
@@ -10,7 +11,7 @@ def test_voljr_basic():
     theta = 0.0
     result = vol_jump_robust_var(r_intraday, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_voljr_edge():

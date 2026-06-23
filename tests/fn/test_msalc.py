@@ -1,7 +1,6 @@
 """Tests for morie.fn.msalc -- Alienation coefficient"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msalc import alienation
 

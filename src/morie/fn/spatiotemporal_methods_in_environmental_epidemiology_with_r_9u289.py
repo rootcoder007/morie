@@ -1,8 +1,8 @@
 """Dispersion expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_9_unnumbered_289"]
 

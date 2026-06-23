@@ -1,8 +1,9 @@
 """Tests for morie.fn.pcsvd -- PCA via SVD."""
 
 import numpy as np
-from morie.fn.pcsvd import pca_svd, pcsvd
+
 from morie.fn._containers import PcaRes
+from morie.fn.pcsvd import pca_svd, pcsvd
 
 
 class TestPcaSvd:
@@ -24,13 +25,12 @@ class TestPcaSvd:
 
     def test_agrees_with_eigen(self):
         from morie.fn.pcaev import pca_eigen
+
         rng = np.random.default_rng(42)
         X = rng.standard_normal((80, 4))
         r1 = pca_eigen(X, n_components=2)
         r2 = pca_svd(X, n_components=2)
-        np.testing.assert_allclose(
-            r1.explained_variance, r2.explained_variance, atol=1e-8
-        )
+        np.testing.assert_allclose(r1.explained_variance, r2.explained_variance, atol=1e-8)
 
     def test_variance_ratio_valid(self):
         rng = np.random.default_rng(42)

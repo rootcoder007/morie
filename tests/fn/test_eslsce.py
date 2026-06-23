@@ -1,6 +1,7 @@
 """Tests for eslsce.esl_score_match."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslsce import esl_score_match
 
 
@@ -11,7 +12,7 @@ def test_eslsce_basic():
     p = 5
     result = esl_score_match(q, theta, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslsce_edge():

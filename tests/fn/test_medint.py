@@ -1,6 +1,7 @@
 """Tests for medint.mediated_interaction."""
+
 import numpy as np
-import pytest
+
 from morie.fn.medint import mediated_interaction
 
 
@@ -11,7 +12,7 @@ def test_medint_basic():
     M = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = mediated_interaction(Y, X, M)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_medint_edge():

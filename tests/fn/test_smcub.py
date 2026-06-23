@@ -1,5 +1,7 @@
 """Tests for morie.fn.smcub — SMACOF unfolding."""
+
 import numpy as np
+
 from morie.fn.smcub import smcub
 
 

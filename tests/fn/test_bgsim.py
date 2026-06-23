@@ -1,6 +1,7 @@
 """Test bgsim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bgsim import bgsim
 
 

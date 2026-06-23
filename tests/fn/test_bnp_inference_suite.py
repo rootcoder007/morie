@@ -1,24 +1,75 @@
 """Integration tests for 30 Bayesian nonparametric inference functions."""
 
 import numpy as np
-import pytest
 
 
 def test_all_bnp_functions_importable():
     """Test that all 30 BNP functions can be imported."""
     from morie.fn import (
-        dpgen, dpprr, dpmix, pyprr, crpst, ibprc, stbrk, polya,
-        bferg, bbstr, dpkde, gprgr, gpclf, gpkrn, gphyp, bspln,
-        bwavl, lddst, bnpht, polyt, brnst, dpmdn, crppr, ewens,
-        neale, slcmx, hdprc, bnpqs, postc, bcntr
+        bbstr,
+        bcntr,
+        bferg,
+        bnpht,
+        bnpqs,
+        brnst,
+        bspln,
+        bwavl,
+        crppr,
+        crpst,
+        dpgen,
+        dpkde,
+        dpmdn,
+        dpmix,
+        dpprr,
+        ewens,
+        gpclf,
+        gphyp,
+        gpkrn,
+        gprgr,
+        hdprc,
+        ibprc,
+        lddst,
+        neale,
+        polya,
+        polyt,
+        postc,
+        pyprr,
+        slcmx,
+        stbrk,
     )
 
     # Verify they're callable
     functions = [
-        dpgen, dpprr, dpmix, pyprr, crpst, ibprc, stbrk, polya,
-        bferg, bbstr, dpkde, gprgr, gpclf, gpkrn, gphyp, bspln,
-        bwavl, lddst, bnpht, polyt, brnst, dpmdn, crppr, ewens,
-        neale, slcmx, hdprc, bnpqs, postc, bcntr
+        dpgen,
+        dpprr,
+        dpmix,
+        pyprr,
+        crpst,
+        ibprc,
+        stbrk,
+        polya,
+        bferg,
+        bbstr,
+        dpkde,
+        gprgr,
+        gpclf,
+        gpkrn,
+        gphyp,
+        bspln,
+        bwavl,
+        lddst,
+        bnpht,
+        polyt,
+        brnst,
+        dpmdn,
+        crppr,
+        ewens,
+        neale,
+        slcmx,
+        hdprc,
+        bnpqs,
+        postc,
+        bcntr,
     ]
 
     assert len(functions) == 30
@@ -100,10 +151,7 @@ def test_dpmix_basic():
     """Test DP mixture model."""
     from morie.fn.dpmix import dirichlet_process_mixture
 
-    x = np.concatenate([
-        np.random.normal(-3, 1, 25),
-        np.random.normal(3, 1, 25)
-    ])
+    x = np.concatenate([np.random.normal(-3, 1, 25), np.random.normal(3, 1, 25)])
 
     result = dirichlet_process_mixture(x, alpha=1.0, n_iter=50)
 
@@ -116,11 +164,7 @@ def test_polya_basic():
     """Test Pólya urn."""
     from morie.fn.polya import polya_urn
 
-    result = polya_urn(
-        n_draws=100,
-        initial_colors={'red': 5, 'blue': 5},
-        reinforcement=1
-    )
+    result = polya_urn(n_draws=100, initial_colors={"red": 5, "blue": 5}, reinforcement=1)
 
     assert len(result["draws"]) == 100
     assert "proportions" in result
@@ -151,10 +195,7 @@ def test_neale_basic():
     """Test Neal's Algorithm 8."""
     from morie.fn.neale import neal_algorithm_8
 
-    x = np.concatenate([
-        np.random.normal(-2, 1, 20),
-        np.random.normal(2, 1, 20)
-    ])
+    x = np.concatenate([np.random.normal(-2, 1, 20), np.random.normal(2, 1, 20)])
 
     result = neal_algorithm_8(x, alpha=1.0, n_iter=20)
 
@@ -167,9 +208,7 @@ def test_bnpqs_basic():
     from morie.fn.bnpqs import bayesian_nonparametric_quantiles
 
     x = np.random.exponential(2, 100)
-    result = bayesian_nonparametric_quantiles(
-        x, quantiles=np.array([0.5]), n_boot=50
-    )
+    result = bayesian_nonparametric_quantiles(x, quantiles=np.array([0.5]), n_boot=50)
 
     assert "quantile_estimates" in result
     assert 0.5 in {float(k) for k in result["quantile_estimates"].keys()}

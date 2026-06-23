@@ -1,6 +1,7 @@
 """Tests for wsmbgn.wasserman_bagging."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmbgn import wasserman_bagging
 
 
@@ -12,7 +13,7 @@ def test_wsmbgn_basic():
     B = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = wasserman_bagging(X, y, model, B)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmbgn_edge():

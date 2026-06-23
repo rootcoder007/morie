@@ -16,8 +16,10 @@ Asymptotic bias and variance of the KDFE (Fauzi Ch 2, Eqn 2.x):
 with mu_2(K) = integral u^2 K(u) du, r(K) = integral u K(u) W(u) du.
 For Gaussian K: mu_2 = 1, r(K) = 1/(2*sqrt(pi)).
 """
+
 import numpy as np
 from scipy import stats as _sps
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_kdfe_properties"]
@@ -63,8 +65,7 @@ def fauzi_kdfe_properties(x, t=None, h=None):
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 2:
-        return RichResult(payload={"estimate": np.nan, "n": n,
-                                    "method": "KDFE -- too few obs"})
+        return RichResult(payload={"estimate": np.nan, "n": n, "method": "KDFE -- too few obs"})
     if t is None:
         t = float(np.median(x))
     if h is None:
@@ -82,16 +83,18 @@ def fauzi_kdfe_properties(x, t=None, h=None):
     var = max(var, 0.0)
     se = np.sqrt(var)
 
-    return RichResult(payload={
-        "estimate": F_hat,
-        "bias": bias,
-        "variance": var,
-        "se": se,
-        "h": h,
-        "t": t,
-        "n": n,
-        "method": "Fauzi KDFE bias-variance (Ch 2)",
-    })
+    return RichResult(
+        payload={
+            "estimate": F_hat,
+            "bias": bias,
+            "variance": var,
+            "se": se,
+            "h": h,
+            "t": t,
+            "n": n,
+            "method": "Fauzi KDFE bias-variance (Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

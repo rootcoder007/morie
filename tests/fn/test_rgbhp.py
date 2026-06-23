@@ -1,6 +1,7 @@
 """Tests for rgbhp.rangayyan_butterworth_hp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgbhp import rangayyan_butterworth_hp
 
 
@@ -11,7 +12,7 @@ def test_rgbhp_basic():
     fs = 100.0
     result = rangayyan_butterworth_hp(cutoff_hz, order, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgbhp_edge():

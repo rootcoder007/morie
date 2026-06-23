@@ -1,6 +1,7 @@
 """Test nbwnd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nbwnd import nbwnd
 
 

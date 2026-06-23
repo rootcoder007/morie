@@ -1,6 +1,7 @@
 """Without music, life would be a mistake. — Friedrich Nietzsche"""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmfa import geron_flash_attention
 
 
@@ -12,7 +13,7 @@ def test_hmfa_basic():
     block_size = 100
     result = geron_flash_attention(Q, K, V, block_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmfa_edge():

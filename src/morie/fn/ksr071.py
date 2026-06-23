@@ -1,6 +1,7 @@
 """Quadratic expansion of the log-profile likelihood used for chi-square inference."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch3_log_profile_expansion"]
@@ -36,7 +37,14 @@ def kosorok_ch3_log_profile_expansion(theta_bar_n, theta_hat_n, I_tilde, n):
     n = len(theta_bar_n)
     result = float(np.mean(theta_bar_n))
     se = float(np.std(theta_bar_n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Quadratic expansion of the log-profile likelihood used for chi-square inference"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Quadratic expansion of the log-profile likelihood used for chi-square inference",
+        }
+    )
 
 
 def cheatsheet():

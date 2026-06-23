@@ -1,6 +1,7 @@
 """Tests for berkly.berkeley_earth."""
+
 import numpy as np
-import pytest
+
 from morie.fn.berkly import berkeley_earth
 
 
@@ -9,7 +10,7 @@ def test_berkly_basic():
     stations = np.random.default_rng(42).normal(0, 1, 100)
     result = berkeley_earth(stations)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_berkly_edge():

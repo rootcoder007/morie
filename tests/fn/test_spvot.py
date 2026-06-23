@@ -1,5 +1,5 @@
 """Tests for morie.fn.spvot — spatial vote."""
-import numpy as np
+
 from morie.fn.spvot import spvot
 
 

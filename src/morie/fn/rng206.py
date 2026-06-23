@@ -1,6 +1,7 @@
 """Magnitude coherence spectrum between two signals from CSD and PSDs.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_coherence_spectrum"]
@@ -36,7 +37,14 @@ def rangayyan_ch4_coherence_spectrum(S_xy, S_xx, S_yy, f):
     n = len(S_xy)
     result = float(np.mean(S_xy))
     se = float(np.std(S_xy, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Magnitude coherence spectrum between two signals from CSD and PSDs."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Magnitude coherence spectrum between two signals from CSD and PSDs.",
+        }
+    )
 
 
 def cheatsheet():

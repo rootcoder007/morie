@@ -1,8 +1,9 @@
 """Test lll_reduce."""
+
 import numpy as np
-import pytest
-from morie.fn.lll import lll_reduce
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lll import lll_reduce
 
 
 class TestLllReduce:

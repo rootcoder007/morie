@@ -80,9 +80,7 @@ def splrg(
         P = np.zeros((2 + K, 2 + K))
         for i in range(K):
             for j in range(K):
-                P[2 + i, 2 + j] = 36 * np.mean(
-                    np.maximum(x - knots[i], 0) * np.maximum(x - knots[j], 0)
-                )
+                P[2 + i, 2 + j] = 36 * np.mean(np.maximum(x - knots[i], 0) * np.maximum(x - knots[j], 0))
         XtX = X.T @ X + penalty * P
     else:
         XtX = X.T @ X

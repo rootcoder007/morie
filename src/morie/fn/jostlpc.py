@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """STL (Seasonal and Trend decomposition using LOESS): Y = Trend + Seasonal + Remainder."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_stl_decomposition"]
@@ -36,7 +38,14 @@ def joseph_stl_decomposition(y, period, seasonal_window, trend_window):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "STL (Seasonal and Trend decomposition using LOESS): Y = Trend + Seasonal + Remainder"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "STL (Seasonal and Trend decomposition using LOESS): Y = Trend + Seasonal + Remainder",
+        }
+    )
 
 
 def cheatsheet():

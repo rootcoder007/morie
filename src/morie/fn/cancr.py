@@ -70,7 +70,7 @@ def canonical_correlation(
 def _matrix_power(A: np.ndarray, power: float) -> np.ndarray:
     eigvals, eigvecs = np.linalg.eigh(A)
     eigvals = np.maximum(eigvals, 1e-12)
-    return eigvecs @ np.diag(eigvals ** power) @ eigvecs.T
+    return eigvecs @ np.diag(eigvals**power) @ eigvecs.T
 
 
 cancr = canonical_correlation

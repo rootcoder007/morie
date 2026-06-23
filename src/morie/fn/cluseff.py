@@ -1,6 +1,8 @@
 """Intracluster correlation rho for survey design."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["intracluster_correlation_rho"]
@@ -32,9 +34,23 @@ def intracluster_correlation_rho(y, cluster):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(y), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Intracluster correlation rho for survey design"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Intracluster correlation rho for survey design",
+            }
+        )
     result = stats.spearmanr(y[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Intracluster correlation rho for survey design"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Intracluster correlation rho for survey design",
+        }
+    )
 
 
 def cheatsheet():

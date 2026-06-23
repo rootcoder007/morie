@@ -34,7 +34,7 @@ def bwkrn(u: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
         Table 2.1.
     """
     u = np.asarray(u, dtype=float)
-    result = np.where(np.abs(u) <= 1.0, (15.0 / 16.0) * (1.0 - u ** 2) ** 2, 0.0)
+    result = np.where(np.abs(u) <= 1.0, (15.0 / 16.0) * (1.0 - u**2) ** 2, 0.0)
     return float(result) if result.ndim == 0 else result
 
 

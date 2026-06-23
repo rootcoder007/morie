@@ -1,6 +1,7 @@
 """Frequency-domain optimal matched-filter response for EEG spike-and-wave detection.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_matched_filter_optimal_H_eeg"]
@@ -36,7 +37,14 @@ def rangayyan_ch4_matched_filter_optimal_H_eeg(X, K, f, t_0):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Frequency-domain optimal matched-filter response for EEG spike-and-wave detection."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Frequency-domain optimal matched-filter response for EEG spike-and-wave detection.",
+        }
+    )
 
 
 def cheatsheet():

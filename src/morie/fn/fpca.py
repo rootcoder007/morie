@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Functional principal components analysis (FPCA)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["functional_pca"]
@@ -32,7 +34,9 @@ def functional_pca(data_functions, n_components):
     n = int(data_functions) if data_functions.ndim == 0 else len(data_functions)
     result = float(np.mean(data_functions))
     se = float(np.std(data_functions, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Functional principal components analysis (FPCA)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Functional principal components analysis (FPCA)"}
+    )
 
 
 def cheatsheet():

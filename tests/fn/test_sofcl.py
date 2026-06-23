@@ -1,6 +1,7 @@
 """Test sofcl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sofcl import sofcl
 
 

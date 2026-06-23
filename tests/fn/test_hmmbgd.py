@@ -1,6 +1,7 @@
 """Tests for hmmbgd.geron_minibatch_gd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmmbgd import geron_minibatch_gd
 
 
@@ -13,7 +14,7 @@ def test_hmmbgd_basic():
     b = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_minibatch_gd(X, y, theta, eta, b)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmmbgd_edge():

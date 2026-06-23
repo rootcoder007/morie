@@ -4,12 +4,22 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kscvs"]
 
 
-def kscvs(data: np.ndarray, cdf=None, *, cdf_func: str = "normal", bw: float | None = None, n_grid: int = 1024, n_boot: int = 999, seed: int = 42) -> dict:
+def kscvs(
+    data: np.ndarray,
+    cdf=None,
+    *,
+    cdf_func: str = "normal",
+    bw: float | None = None,
+    n_grid: int = 1024,
+    n_boot: int = 999,
+    seed: int = 42,
+) -> dict:
     r"""
     Kolmogorov-Smirnov test using a kernel-smoothed empirical CDF.
 
@@ -88,8 +98,7 @@ def kscvs(data: np.ndarray, cdf=None, *, cdf_func: str = "normal", bw: float | N
             bmu, bsig = np.mean(boot_sample), np.std(boot_sample, ddof=1)
             bref = norm.cdf(x_grid, loc=bmu, scale=max(bsig, 1e-10))
         else:
-            bref = uniform.cdf(x_grid, loc=boot_sample.min(),
-                               scale=max(boot_sample.max() - boot_sample.min(), 1e-10))
+            bref = uniform.cdf(x_grid, loc=boot_sample.min(), scale=max(boot_sample.max() - boot_sample.min(), 1e-10))
         boot_stats[b_idx] = np.max(np.abs(bkcdf - bref))
 
     p_value = float(np.mean(boot_stats >= stat))

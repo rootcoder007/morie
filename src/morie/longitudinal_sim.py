@@ -42,11 +42,10 @@ References:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal, Optional
+from typing import Literal
 
 import numpy as np
 import pandas as pd
-
 
 __all__ = [
     "sync_rng",
@@ -127,8 +126,7 @@ def generate_var_coefficients(
         raise ValueError("lags must be >= 1")
     out = np.zeros((p, p, lags))
     for l in range(lags):
-        A = generate_ar_coefficients(p, rng=rng,
-                                     spectral_radius=spectral_radius * decay ** l)
+        A = generate_ar_coefficients(p, rng=rng, spectral_radius=spectral_radius * decay**l)
         out[:, :, l] = A
     return out
 
@@ -153,7 +151,7 @@ def mvn_with_covariance(
     rng: np.random.Generator,
     kernel: CovarianceKernel = "ar1",
     rho: float = 0.5,
-    mean: Optional[np.ndarray] = None,
+    mean: np.ndarray | None = None,
 ) -> np.ndarray:
     """Draw n samples from N_p(mean, Σ) with structured Σ.
 
@@ -220,7 +218,8 @@ def simulate_longitudinal_panel(spec: LongitudinalSimSpec) -> pd.DataFrame:
     """
     rng = sync_rng(spec.seed)
     A = generate_var_coefficients(
-        spec.p_variables, spec.ar_lags,
+        spec.p_variables,
+        spec.ar_lags,
         rng=rng,
         spectral_radius=spec.ar_spectral_radius,
         decay=spec.ar_decay,
@@ -229,8 +228,11 @@ def simulate_longitudinal_panel(spec: LongitudinalSimSpec) -> pd.DataFrame:
     panel = np.zeros((spec.n_individuals, spec.n_timepoints, spec.p_variables))
     for i in range(spec.n_individuals):
         eps = mvn_with_covariance(
-            spec.n_timepoints, spec.p_variables,
-            rng=rng, kernel=spec.cov_kernel, rho=spec.cov_rho,
+            spec.n_timepoints,
+            spec.p_variables,
+            rng=rng,
+            kernel=spec.cov_kernel,
+            rho=spec.cov_rho,
         )
         x = np.zeros(spec.p_variables)
         history = []

@@ -1,4 +1,5 @@
 """Model collision impact force using impulse-momentum theorem."""
+
 from __future__ import annotations
 
 from ._containers import DescriptiveResult
@@ -62,4 +63,4 @@ impfor = impact_force
 
 
 def cheatsheet() -> str:
-    return 'impact_force({}) -> Impact force modeling.'
+    return "impact_force({}) -> Impact force modeling."

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svpld -- Dimensional polarization decomposition"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svpld import polarization_dim
 

@@ -4,6 +4,8 @@
 import numpy as np
 
 from ._containers import ESRes
+
+
 def chebyshev_dist(x, y, **kwargs) -> ESRes:
     r"""
     Compute Chebyshev (L-infinity) distance.

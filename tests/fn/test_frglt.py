@@ -42,4 +42,5 @@ def test_n_clusters(frailty_data):
 
 def test_cheatsheet():
     from morie.fn.frglt import cheatsheet
+
     assert "frailty" in cheatsheet().lower()

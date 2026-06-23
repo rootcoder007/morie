@@ -1,6 +1,7 @@
 """Tests for mrkcsr.csr_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mrkcsr import csr_test
 
 
@@ -11,7 +12,7 @@ def test_mrkcsr_basic():
     nsim = np.random.default_rng(42).normal(0, 1, 100)
     result = csr_test(coords, window, nsim)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_mrkcsr_edge():

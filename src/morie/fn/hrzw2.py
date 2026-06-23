@@ -8,6 +8,7 @@ bootstrap MISE on a grid of candidate bandwidths and pick the
 minimiser.  Bootstrap draws use the wild (Rademacher) scheme on
 leave-one-out residuals.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -49,8 +50,7 @@ def horowitz_bandwidth_bootstrap(x, y, B=50, n_h=15, seed=0):
     y = np.asarray(y, dtype=float).ravel()
     n = x.size
     if n < 30 or y.size != n:
-        return RichResult(payload={"estimate": np.nan, "n": n,
-                                   "method": "bw-bootstrap (insufficient data)"})
+        return RichResult(payload={"estimate": np.nan, "n": n, "method": "bw-bootstrap (insufficient data)"})
     h_sil = _silverman(x)
     h_grid = np.linspace(0.5 * h_sil, 2.5 * h_sil, n_h)
     # Pilot fit + residuals at the pilot bandwidth
@@ -67,14 +67,17 @@ def horowitz_bandwidth_bootstrap(x, y, B=50, n_h=15, seed=0):
             ise += float(((m_star - m_pilot) ** 2).mean())
         mise[j] = ise / B
     j_star = int(np.argmin(mise))
-    return RichResult(payload={
-        "estimate": float(h_grid[j_star]),
-        "h_silverman": float(h_sil),
-        "mise_curve": mise.astype(float),
-        "h_grid": h_grid.astype(float),
-        "n": n, "B": B,
-        "method": "Wild-bootstrap MISE bandwidth selection (Faraway-Jhun)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(h_grid[j_star]),
+            "h_silverman": float(h_sil),
+            "mise_curve": mise.astype(float),
+            "h_grid": h_grid.astype(float),
+            "n": n,
+            "B": B,
+            "method": "Wild-bootstrap MISE bandwidth selection (Faraway-Jhun)",
+        }
+    )
 
 
 def cheatsheet():

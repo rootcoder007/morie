@@ -1,6 +1,7 @@
 """TMLE for path-specific effects."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_path_specific"]

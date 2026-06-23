@@ -1,6 +1,9 @@
 """Tests for runs_test."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.rnsum import runs_test
+
 
 class TestRuns:
     def test_random(self):

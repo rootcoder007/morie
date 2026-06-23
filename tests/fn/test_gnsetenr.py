@@ -1,6 +1,7 @@
 """Tests for gnsetenr.geneset_enrichment."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gnsetenr import geneset_enrichment
 
 
@@ -10,7 +11,7 @@ def test_gnsetenr_basic():
     gene_set = np.random.default_rng(42).normal(0, 1, 100)
     result = geneset_enrichment(ranked_genes, gene_set)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gnsetenr_edge():

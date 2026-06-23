@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """BCI EEG channel selection via NMF spatial decomposition."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_bci_nmf"]
@@ -34,7 +36,14 @@ def rangayyan_bci_nmf(eeg, n_components, fs):
     n = int(eeg) if eeg.ndim == 0 else len(eeg)
     result = float(np.mean(eeg))
     se = float(np.std(eeg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BCI EEG channel selection via NMF spatial decomposition"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "BCI EEG channel selection via NMF spatial decomposition",
+        }
+    )
 
 
 def cheatsheet():

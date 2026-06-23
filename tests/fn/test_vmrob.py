@@ -1,6 +1,7 @@
 """Test vmrob."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmrob import vmrob
 
 

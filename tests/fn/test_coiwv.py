@@ -1,5 +1,5 @@
 """Tests for coiwv.py - Coiflet wavelet."""
-import numpy as np
+
 from morie.fn.coiwv import coiflet_wavelet, coiwv
 
 
@@ -17,6 +17,7 @@ def test_coif_has_filters():
 
 def test_coif_invalid_order():
     import pytest
+
     with pytest.raises(ValueError):
         coiflet_wavelet(99)
 

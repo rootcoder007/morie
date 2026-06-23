@@ -1,7 +1,9 @@
 """Test energy_density (enrgy)."""
+
 import numpy as np
-from morie.fn.enrgy import energy_density, enrgy
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.enrgy import energy_density, enrgy
 
 
 class TestEnrgy:

@@ -1,6 +1,7 @@
 """Tests for kmswig.kamath_swiglu_activation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmswig import kamath_swiglu_activation
 
 
@@ -13,7 +14,7 @@ def test_kmswig_basic():
     c = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_swiglu_activation(x, W, V, b, c)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmswig_edge():

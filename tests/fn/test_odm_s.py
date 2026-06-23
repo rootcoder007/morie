@@ -1,13 +1,13 @@
 """Tests for morie.fn.odm_s — OTIS demo standardize."""
 
-import pytest
 import numpy as np
-from morie.fn.odm_s import otis_demo_standardize
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.odm_s import otis_demo_standardize
 
 
 class TestOtisDemoStandardize:
-
     def test_returns_descriptive(self):
         obs = np.array([10, 20, 30])
         std = np.array([1000, 2000, 3000])

@@ -1,6 +1,7 @@
 """Algebraic connectivity (lambda_2 of L)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["algebraic_connectivity"]
@@ -30,7 +31,9 @@ def algebraic_connectivity(G):
     n = len(G)
     result = float(np.mean(G))
     se = float(np.std(G, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Algebraic connectivity (lambda_2 of L)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Algebraic connectivity (lambda_2 of L)"}
+    )
 
 
 def cheatsheet():

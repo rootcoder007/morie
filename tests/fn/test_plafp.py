@@ -1,7 +1,7 @@
 """Tests for morie.fn.plafp."""
 
 import numpy as np
-import pytest
+
 from morie.fn.plafp import plafp
 
 

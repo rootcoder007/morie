@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """He/Kaiming weight initialization for ReLU networks."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -9,8 +10,9 @@ from ._richresult import RichResult
 __all__ = ["he_initialization"]
 
 
-def he_initialization(fan_in, fan_out=None, seed: int = 42, mode: str = "normal",
-                      deterministic_seed: "int | None" = None):
+def he_initialization(
+    fan_in, fan_out=None, seed: int = 42, mode: str = "normal", deterministic_seed: int | None = None
+):
     r"""He/Kaiming weight initialization.
 
     For ReLU activations the recommended scheme is:
@@ -56,6 +58,7 @@ def he_initialization(fan_in, fan_out=None, seed: int = 42, mode: str = "normal"
     shape = (fan_in,) if fan_out is None else (int(fan_out), fan_in)
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("heinz", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)

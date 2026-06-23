@@ -7,7 +7,6 @@ from morie.fn.spgee import spgee
 
 
 class TestSpgee:
-
     def test_gaussian_output(self):
         rng = np.random.default_rng(42)
         n = 30

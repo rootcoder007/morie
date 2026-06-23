@@ -1,6 +1,7 @@
 """Tests for rgspr.rangayyan_spectral_power_ratio."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgspr import rangayyan_spectral_power_ratio
 
 
@@ -10,7 +11,7 @@ def test_rgspr_basic():
     freqs = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_spectral_power_ratio(rr_psd, freqs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgspr_edge():

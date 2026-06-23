@@ -1,6 +1,7 @@
 """Test balsmp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.balsmp import balsmp
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.mssmm -- SMACOF with missing data"""
 
 import numpy as np
-import pytest
 
 from morie.fn.mssmm import smacof_missing
 

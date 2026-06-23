@@ -1,6 +1,7 @@
 """Tests for clusmd.butina_cluster."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clusmd import butina_cluster
 
 
@@ -10,7 +11,7 @@ def test_clusmd_basic():
     cutoff = 10.0
     result = butina_cluster(fps, cutoff)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_clusmd_edge():

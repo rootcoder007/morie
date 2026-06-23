@@ -1,6 +1,7 @@
 """Tests for ordtm.ordinal_threshold_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ordtm import ordinal_threshold_model
 
 
@@ -12,7 +13,7 @@ def test_ordtm_basic():
     n_categories = np.random.default_rng(42).normal(0, 1, 100)
     result = ordinal_threshold_model(y_ord, X, Z, n_categories)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ordtm_edge():

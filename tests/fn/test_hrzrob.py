@@ -1,6 +1,7 @@
 """Tests for hrzrob.horowitz_rate_beta_estimation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzrob import horowitz_rate_beta_estimation
 
 
@@ -11,7 +12,7 @@ def test_hrzrob_basic():
     bandwidth = 0.3
     result = horowitz_rate_beta_estimation(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzrob_edge():

@@ -1,6 +1,7 @@
 """Test csvnd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csvnd import csvnd
 
 

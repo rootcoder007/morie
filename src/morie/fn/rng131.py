@@ -1,6 +1,7 @@
 """Digital Butterworth transfer function after bilinear transform (IIR form).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_butterworth_digital_transfer_function"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_butterworth_digital_transfer_function(z, a_k, G_prime, N):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Digital Butterworth transfer function after bilinear transform (IIR form)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Digital Butterworth transfer function after bilinear transform (IIR form).",
+        }
+    )
 
 
 def cheatsheet():

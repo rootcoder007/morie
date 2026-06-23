@@ -11,8 +11,7 @@ def test_returns_dict():
     B = np.array([0, 0, 1e-3])
     r = maxwl(E, B)
     assert isinstance(r, dict)
-    for k in ("field_tensor", "dual_tensor", "invariant_1",
-              "invariant_2", "energy_density", "poynting_vector"):
+    for k in ("field_tensor", "dual_tensor", "invariant_1", "invariant_2", "energy_density", "poynting_vector"):
         assert k in r
 
 
@@ -29,7 +28,7 @@ def test_pure_E_invariants():
     B = np.array([0, 0, 0])
     r = maxwl(E, B)
     c = 299792458.0
-    assert r["invariant_1"] == pytest.approx(-E[0] ** 2 / c ** 2, rel=1e-6)
+    assert r["invariant_1"] == pytest.approx(-(E[0] ** 2) / c**2, rel=1e-6)
     assert r["invariant_2"] == pytest.approx(0.0, abs=1e-10)
 
 

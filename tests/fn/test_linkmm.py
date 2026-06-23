@@ -1,6 +1,7 @@
 """Tests for linkmm.linking_meanmean."""
+
 import numpy as np
-import pytest
+
 from morie.fn.linkmm import linking_meanmean
 
 
@@ -11,7 +12,7 @@ def test_linkmm_basic():
     common_items = np.random.default_rng(42).normal(0, 1, 100)
     result = linking_meanmean(params_form_a, params_form_b, common_items)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_linkmm_edge():

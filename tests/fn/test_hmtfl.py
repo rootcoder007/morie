@@ -1,6 +1,7 @@
 """Tests for hmtfl.geron_transfer_learning."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmtfl import geron_transfer_learning
 
 
@@ -12,7 +13,7 @@ def test_hmtfl_basic():
     n_frozen = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_transfer_learning(pretrained_model, X, y, n_frozen)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmtfl_edge():

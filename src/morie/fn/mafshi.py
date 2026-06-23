@@ -1,6 +1,8 @@
 """Inverse Fisher z back to correlation r."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_fishers_z_inverse"]
@@ -30,9 +32,18 @@ def ma_fishers_z_inverse(z):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(z), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Inverse Fisher z back to correlation r"})
+        return RichResult(
+            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Inverse Fisher z back to correlation r"}
+        )
     result = stats.spearmanr(z[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Inverse Fisher z back to correlation r"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Inverse Fisher z back to correlation r",
+        }
+    )
 
 
 def cheatsheet():

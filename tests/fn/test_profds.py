@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from morie.fn.profds import profds, profile_dataset
 from morie.dataset import DatasetProfile
+from morie.fn.profds import profds, profile_dataset
 
 
 def test_alias_is_same_function():
@@ -18,13 +18,15 @@ def sample_df():
     """Synthetic dataset with treatment, outcome, weight, covariate."""
     rng = np.random.default_rng(42)
     n = 100
-    return pd.DataFrame({
-        "treatment": rng.choice([0, 1], n),
-        "outcome": rng.standard_normal(n),
-        "age": rng.integers(18, 80, n),
-        "survey_wt": rng.uniform(0.5, 2.0, n),
-        "province": rng.choice(["ON", "QC", "BC", "AB"], n),
-    })
+    return pd.DataFrame(
+        {
+            "treatment": rng.choice([0, 1], n),
+            "outcome": rng.standard_normal(n),
+            "age": rng.integers(18, 80, n),
+            "survey_wt": rng.uniform(0.5, 2.0, n),
+            "province": rng.choice(["ON", "QC", "BC", "AB"], n),
+        }
+    )
 
 
 def test_returns_dataset_profile(sample_df):

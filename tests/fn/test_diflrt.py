@@ -1,6 +1,7 @@
 """Tests for diflrt.dif_likelihood_ratio."""
+
 import numpy as np
-import pytest
+
 from morie.fn.diflrt import dif_likelihood_ratio
 
 
@@ -11,7 +12,7 @@ def test_diflrt_basic():
     theta = 0.0
     result = dif_likelihood_ratio(y, group, theta)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_diflrt_edge():

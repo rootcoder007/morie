@@ -1,6 +1,8 @@
 """Tests for gphyp."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gphyp import gphyp
 
 
@@ -28,4 +30,5 @@ def test_gphyp_no_data():
 
 def test_gphyp_alias():
     from morie.fn.gphyp import gphyp
+
     assert gphyp is gphyp

@@ -1,6 +1,7 @@
 """Tests for rng169.rangayyan_ch3_abcd_matrix_inversion_lemma."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng169 import rangayyan_ch3_abcd_matrix_inversion_lemma
 
 
@@ -12,7 +13,7 @@ def test_rng169_basic():
     D = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_ch3_abcd_matrix_inversion_lemma(A, B, C, D)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng169_edge():

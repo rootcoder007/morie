@@ -7,7 +7,6 @@ from morie.fn.gstat import semivariogram
 
 
 class TestSemivariogram:
-
     def test_semivariance_increases_with_lag(self):
         """Spatially autocorrelated data shows increasing semivariance."""
         rng = np.random.default_rng(42)

@@ -1,6 +1,7 @@
 """Tests for rghrvar.rangayyan_hrv_ar_ratio."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rghrvar import rangayyan_hrv_ar_ratio
 
 
@@ -10,7 +11,7 @@ def test_rghrvar_basic():
     ar_order = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_hrv_ar_ratio(rr_intervals, ar_order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rghrvar_edge():

@@ -136,7 +136,7 @@ def rstml(
                 idx_j = np.searchsorted(km_t, t_j, side="right") - 1
                 S_j = km_s[min(idx_j, len(km_s) - 1)]
                 # (tau - t_j)^2 * dH(t_j) * S(t_j)^2 (Aalen variance)
-                variance += (tau_val - t_j) ** 2 * n_e / (n_r * (n_r - n_e)) * S_j ** 2
+                variance += (tau_val - t_j) ** 2 * n_e / (n_r * (n_r - n_e)) * S_j**2
                 # Note: simpler Greenwood formula for RMST variance:
                 # Var(RMST) = sum[(tau - t_j)^2 * d_j / (n_j * (n_j - d_j))] * (S(t_j^-))^2
                 # but we use the more standard form above
@@ -165,7 +165,7 @@ def rstml(
         r0, s0 = _rmst_single(time[m0], event[m0], tau)
         r1, s1 = _rmst_single(time[m1], event[m1], tau)
         diff = r1 - r0
-        se_diff = float(np.sqrt(s0 ** 2 + s1 ** 2))
+        se_diff = float(np.sqrt(s0**2 + s1**2))
         ci_lo_d = diff - z_alpha * se_diff
         ci_hi_d = diff + z_alpha * se_diff
         z_stat = diff / se_diff if se_diff > 0 else 0.0

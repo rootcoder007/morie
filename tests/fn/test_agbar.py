@@ -1,6 +1,7 @@
 """Test agbar."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agbar import agbar
 
 

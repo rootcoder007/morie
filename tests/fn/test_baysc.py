@@ -1,7 +1,8 @@
 """Tests for baysc.py - Bayesian classifier."""
+
 import numpy as np
-import pytest
-from morie.fn.baysc import baysc_fn, baysc
+
+from morie.fn.baysc import baysc, baysc_fn
 
 
 def _two_class_data():
@@ -9,7 +10,7 @@ def _two_class_data():
     X0 = rng.standard_normal((30, 2)) + np.array([0, 0])
     X1 = rng.standard_normal((30, 2)) + np.array([5, 5])
     X = np.vstack([X0, X1])
-    y = np.array([0]*30 + [1]*30)
+    y = np.array([0] * 30 + [1] * 30)
     return X, y
 
 

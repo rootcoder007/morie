@@ -1,7 +1,9 @@
 """Tests for morie.fn.dor -- Diagnostic Odds Ratio."""
 
 import math
+
 import pytest
+
 from morie.fn.dor import diagnostic_odds_ratio
 
 

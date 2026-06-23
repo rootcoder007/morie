@@ -1,8 +1,8 @@
 """Regression expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_unnumbered_62"]
 

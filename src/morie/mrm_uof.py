@@ -45,14 +45,14 @@ mrm_uof_data_quality_audit
 from __future__ import annotations
 
 import math
-from typing import Any, Iterable, Mapping, Optional, Sequence
+from collections.abc import Mapping
+from typing import Any
 
 import numpy as np
 import pandas as pd
 from scipy import stats
 
 from morie.fn._richresult import RichResult
-
 
 __all__ = [
     "mrm_uof_force_concentration",
@@ -137,12 +137,8 @@ def _wilson_ci(k: int, n: int, z: float = 1.959963984540054) -> tuple[float, flo
     centre = (p + z2 / (2.0 * n)) / denom
     # Continuity-corrected half-width
     try:
-        half_lo = (
-            z * math.sqrt(z2 - 1.0 / n + 4.0 * n * p * (1 - p) + (4 * p - 2)) + 1.0
-        ) / (2.0 * (n + z2))
-        half_hi = (
-            z * math.sqrt(z2 - 1.0 / n + 4.0 * n * p * (1 - p) - (4 * p - 2)) + 1.0
-        ) / (2.0 * (n + z2))
+        half_lo = (z * math.sqrt(z2 - 1.0 / n + 4.0 * n * p * (1 - p) + (4 * p - 2)) + 1.0) / (2.0 * (n + z2))
+        half_hi = (z * math.sqrt(z2 - 1.0 / n + 4.0 * n * p * (1 - p) - (4 * p - 2)) + 1.0) / (2.0 * (n + z2))
         lo = max(0.0, centre - half_lo) if n * p >= 1 else 0.0
         hi = min(1.0, centre + half_hi) if n * (1 - p) >= 1 else 1.0
     except ValueError:
@@ -181,7 +177,7 @@ def _fmt_pct(p: float) -> str:
 def mrm_uof_force_concentration(
     df: pd.DataFrame,
     force_col: str,
-    count_col: Optional[str] = None,
+    count_col: str | None = None,
 ) -> RichResult:
     """Concentration of UOF incidents across forces / services.
 
@@ -217,10 +213,7 @@ def mrm_uof_force_concentration(
     >>> r.n_forces
     2
     """
-    call = (
-        f"mrm_uof_force_concentration(df=<{len(df)} rows>, "
-        f"force_col={force_col!r}, count_col={count_col!r})"
-    )
+    call = f"mrm_uof_force_concentration(df=<{len(df)} rows>, force_col={force_col!r}, count_col={count_col!r})"
     warnings: list[str] = []
 
     if force_col not in df.columns:
@@ -228,10 +221,7 @@ def mrm_uof_force_concentration(
             title="MRM-UOF Force Concentration",
             call=call,
             warnings=[f"force_col {force_col!r} not in dataframe columns"],
-            interpretation=(
-                f"No analysis: column {force_col!r} is absent from the "
-                f"supplied dataframe."
-            ),
+            interpretation=(f"No analysis: column {force_col!r} is absent from the supplied dataframe."),
             payload={"n": 0, "n_forces": 0, "n_incidents": 0},
         )
 
@@ -243,14 +233,10 @@ def mrm_uof_force_concentration(
                 title="MRM-UOF Force Concentration",
                 call=call,
                 warnings=[f"count_col {count_col!r} not in dataframe columns"],
-                interpretation=(
-                    f"No analysis: count column {count_col!r} is absent."
-                ),
+                interpretation=(f"No analysis: count column {count_col!r} is absent."),
                 payload={"n": 0, "n_forces": 0, "n_incidents": 0},
             )
-        counts_series = (
-            df.groupby(force_col)[count_col].sum(min_count=1).fillna(0)
-        )
+        counts_series = df.groupby(force_col)[count_col].sum(min_count=1).fillna(0)
 
     counts_series = counts_series.sort_values(ascending=False)
     x = counts_series.to_numpy(dtype=np.float64)
@@ -263,10 +249,7 @@ def mrm_uof_force_concentration(
             title="MRM-UOF Force Concentration",
             call=call,
             warnings=warnings,
-            interpretation=(
-                "All per-force counts are zero, so no concentration "
-                "statistics can be computed."
-            ),
+            interpretation=("All per-force counts are zero, so no concentration statistics can be computed."),
             payload={
                 "n": 0,
                 "n_forces": n_forces,
@@ -281,8 +264,7 @@ def mrm_uof_force_concentration(
 
     if n_forces < 10:
         warnings.append(
-            f"Only {n_forces} force(s); concentration statistics with "
-            f"n<10 categories are descriptive at best."
+            f"Only {n_forces} force(s); concentration statistics with n<10 categories are descriptive at best."
         )
 
     pareto_alpha = _hill_alpha(x, x_min=1.0)
@@ -301,8 +283,7 @@ def mrm_uof_force_concentration(
 
     # Per-force table (capped to top 25)
     head_rows: list[list[Any]] = [
-        [str(name), int(c), float(c) / n_incidents]
-        for name, c in counts_series.head(25).items()
+        [str(name), int(c), float(c) / n_incidents] for name, c in counts_series.head(25).items()
     ]
 
     sections = [
@@ -344,14 +325,10 @@ def mrm_uof_force_concentration(
     if math.isfinite(gini_val):
         if gini_val < 0.30:
             gini_text = (
-                "A Gini coefficient below 0.30 indicates an approximately "
-                "even distribution of incidents across forces."
+                "A Gini coefficient below 0.30 indicates an approximately even distribution of incidents across forces."
             )
         elif gini_val < 0.60:
-            gini_text = (
-                "A Gini coefficient between 0.30 and 0.60 indicates "
-                "moderate concentration."
-            )
+            gini_text = "A Gini coefficient between 0.30 and 0.60 indicates moderate concentration."
         else:
             gini_text = (
                 "A Gini coefficient at or above 0.60 indicates strong "
@@ -401,10 +378,7 @@ def mrm_uof_weapon_diversity(
     of independence, computes Cramer's V, and reports the top-3
     (weapon, force) cells by standardised Pearson residual.
     """
-    call = (
-        f"mrm_uof_weapon_diversity(df=<{len(df)} rows>, "
-        f"weapon_col={weapon_col!r}, force_col={force_col!r})"
-    )
+    call = f"mrm_uof_weapon_diversity(df=<{len(df)} rows>, weapon_col={weapon_col!r}, force_col={force_col!r})"
     warnings: list[str] = []
 
     for col in (weapon_col, force_col):
@@ -413,9 +387,7 @@ def mrm_uof_weapon_diversity(
                 title="MRM-UOF Weapon Diversity",
                 call=call,
                 warnings=[f"column {col!r} not in dataframe"],
-                interpretation=(
-                    f"No analysis: required column {col!r} is missing."
-                ),
+                interpretation=(f"No analysis: required column {col!r} is missing."),
                 payload={"n": 0},
             )
 
@@ -510,10 +482,7 @@ def mrm_uof_weapon_diversity(
     else:
         assoc_text = "Association strength could not be computed."
 
-    sig_text = (
-        f"The chi-square test on a {r} x {c} table yields chi2={chi2:.4f} "
-        f"on {dof} df (p={pvalue:.4g})."
-    )
+    sig_text = f"The chi-square test on a {r} x {c} table yields chi2={chi2:.4f} on {dof} df (p={pvalue:.4g})."
 
     interpretation = (
         f"{sig_text} {assoc_text} The strongest deviation from "
@@ -548,10 +517,10 @@ def mrm_uof_weapon_diversity(
 
 
 def mrm_uof_yoy_change(
-    dfs_by_year: Optional[Mapping[int, pd.DataFrame]] = None,
-    df: Optional[pd.DataFrame] = None,
-    year_col: Optional[str] = None,
-    count_col: Optional[str] = None,
+    dfs_by_year: Mapping[int, pd.DataFrame] | None = None,
+    df: pd.DataFrame | None = None,
+    year_col: str | None = None,
+    count_col: str | None = None,
 ) -> RichResult:
     """Year-on-year change in incident counts with optional change-point.
 
@@ -585,9 +554,7 @@ def mrm_uof_yoy_change(
                 counts.append(int(len(sub)))
             else:
                 if count_col not in sub.columns:
-                    warnings.append(
-                        f"Year {y}: count_col {count_col!r} missing; treated as 0."
-                    )
+                    warnings.append(f"Year {y}: count_col {count_col!r} missing; treated as 0.")
                     counts.append(0)
                 else:
                     counts.append(int(sub[count_col].sum()))
@@ -598,10 +565,7 @@ def mrm_uof_yoy_change(
                 title="MRM-UOF Year-on-Year Change",
                 call=call,
                 warnings=[f"year_col {year_col!r} missing from dataframe."],
-                interpretation=(
-                    f"No analysis: year column {year_col!r} is absent from the "
-                    f"supplied dataframe."
-                ),
+                interpretation=(f"No analysis: year column {year_col!r} is absent from the supplied dataframe."),
                 payload={"n": 0},
             )
         if count_col is None:
@@ -612,14 +576,10 @@ def mrm_uof_yoy_change(
                     title="MRM-UOF Year-on-Year Change",
                     call=call,
                     warnings=[f"count_col {count_col!r} missing from dataframe."],
-                    interpretation=(
-                        f"No analysis: count column {count_col!r} is absent."
-                    ),
+                    interpretation=(f"No analysis: count column {count_col!r} is absent."),
                     payload={"n": 0},
                 )
-            grouped = (
-                df.groupby(year_col)[count_col].sum(min_count=1).fillna(0).sort_index()
-            )
+            grouped = df.groupby(year_col)[count_col].sum(min_count=1).fillna(0).sort_index()
         years_sorted = [int(y) for y in grouped.index.tolist()]
         counts = [int(c) for c in grouped.tolist()]
 
@@ -635,7 +595,7 @@ def mrm_uof_yoy_change(
         )
 
     counts_arr = np.asarray(counts, dtype=np.float64)
-    yoy_pct: list[Optional[float]] = [None]
+    yoy_pct: list[float | None] = [None]
     for i in range(1, n_years):
         prev = counts_arr[i - 1]
         if prev == 0:
@@ -644,13 +604,10 @@ def mrm_uof_yoy_change(
             yoy_pct.append(float((counts_arr[i] - prev) / prev * 100.0))
 
     # Change-point detection
-    change_point_year: Optional[int] = None
+    change_point_year: int | None = None
     change_point_method = "none"
     if n_years < 3:
-        warnings.append(
-            f"Only {n_years} year(s) supplied; too few for change-point "
-            f"detection."
-        )
+        warnings.append(f"Only {n_years} year(s) supplied; too few for change-point detection.")
     else:
         try:
             import ruptures as rpt  # type: ignore
@@ -701,18 +658,12 @@ def mrm_uof_yoy_change(
     ]
 
     if change_point_year is not None:
-        cp_text = (
-            f"A structural break was identified at year "
-            f"{change_point_year} using {change_point_method}."
-        )
+        cp_text = f"A structural break was identified at year {change_point_year} using {change_point_method}."
     else:
         cp_text = "No change-point could be identified."
 
     if math.isfinite(mean_abs_yoy):
-        vol_text = (
-            f"Mean absolute year-on-year change across {len(finite_yoy)} "
-            f"transition(s) is {mean_abs_yoy:.2f}%."
-        )
+        vol_text = f"Mean absolute year-on-year change across {len(finite_yoy)} transition(s) is {mean_abs_yoy:.2f}%."
     else:
         vol_text = "Year-on-year volatility is undefined (insufficient transitions)."
 
@@ -764,9 +715,7 @@ def mrm_uof_region_locality(
                 title="MRM-UOF Region Locality",
                 call=call,
                 warnings=[f"column {col!r} missing"],
-                interpretation=(
-                    f"No analysis: required column {col!r} is absent."
-                ),
+                interpretation=(f"No analysis: required column {col!r} is absent."),
                 payload={"n": 0},
             )
 
@@ -775,18 +724,14 @@ def mrm_uof_region_locality(
     pair = pair.dropna()
     n_dropped = n_pre - int(len(pair))
     if n_dropped > 0:
-        warnings.append(
-            f"Dropped {n_dropped} row(s) with NaN in region columns."
-        )
+        warnings.append(f"Dropped {n_dropped} row(s) with NaN in region columns.")
 
     if len(pair) == 0:
         return RichResult(
             title="MRM-UOF Region Locality",
             call=call,
             warnings=warnings + ["Empty contingency after NaN drop."],
-            interpretation=(
-                "No analysis: no rows remain after dropping NaN region values."
-            ),
+            interpretation=("No analysis: no rows remain after dropping NaN region values."),
             payload={"n": 0, "n_dropped": n_dropped},
         )
 
@@ -807,10 +752,7 @@ def mrm_uof_region_locality(
         dof = int(dof)
         v = _cramers_v(chi2, n, r, c)
         if (expected < 5).any():
-            warnings.append(
-                "One or more expected cell counts below 5; chi-square "
-                "approximation may be unreliable."
-            )
+            warnings.append("One or more expected cell counts below 5; chi-square approximation may be unreliable.")
     else:
         chi2 = float("nan")
         pvalue = float("nan")
@@ -819,9 +761,7 @@ def mrm_uof_region_locality(
         warnings.append("Contingency table too small for chi-square test.")
 
     if n < 30:
-        warnings.append(
-            f"Sample size n={n} is small; locality statistics are descriptive only."
-        )
+        warnings.append(f"Sample size n={n} is small; locality statistics are descriptive only.")
 
     summary_lines: list[tuple[str, Any]] = [
         ("N pairs", n),
@@ -833,9 +773,7 @@ def mrm_uof_region_locality(
         ("Cramer's V", v),
     ]
 
-    table_rows: list[list[Any]] = [
-        [str(lab)] + [int(v) for v in row] for lab, row in zip(table.index, obs)
-    ]
+    table_rows: list[list[Any]] = [[str(lab)] + [int(v) for v in row] for lab, row in zip(table.index, obs)]
     sections = [
         {
             "title": "Region contingency (at-time x now)",
@@ -852,15 +790,9 @@ def mrm_uof_region_locality(
                 f"original region."
             )
         elif diagonal_share >= 0.50:
-            loc_text = (
-                f"Diagonal share is {_fmt_pct(diagonal_share)}, indicating "
-                f"moderate locality stability."
-            )
+            loc_text = f"Diagonal share is {_fmt_pct(diagonal_share)}, indicating moderate locality stability."
         else:
-            loc_text = (
-                f"Diagonal share is {_fmt_pct(diagonal_share)}, indicating "
-                f"substantial cross-regional movement."
-            )
+            loc_text = f"Diagonal share is {_fmt_pct(diagonal_share)}, indicating substantial cross-regional movement."
     else:
         loc_text = "Diagonal share could not be computed."
 
@@ -899,7 +831,7 @@ def mrm_uof_demographic_disparity(
     df: pd.DataFrame,
     demo_col: str,
     outcome_col: str,
-    baseline: Optional[str] = None,
+    baseline: str | None = None,
     bootstrap_reps: int = 0,
 ) -> RichResult:
     """Demographic disparity in outcome rates with risk-ratio CIs."""
@@ -916,9 +848,7 @@ def mrm_uof_demographic_disparity(
                 title="MRM-UOF Demographic Disparity",
                 call=call,
                 warnings=[f"column {col!r} missing"],
-                interpretation=(
-                    f"No analysis: required column {col!r} is absent."
-                ),
+                interpretation=(f"No analysis: required column {col!r} is absent."),
                 payload={"n": 0},
             )
 
@@ -939,10 +869,7 @@ def mrm_uof_demographic_disparity(
         try:
             y_int = y.astype(np.int64)
         except (TypeError, ValueError):
-            warnings.append(
-                f"outcome_col {outcome_col!r} could not be coerced to int; "
-                f"treating non-zero as 1."
-            )
+            warnings.append(f"outcome_col {outcome_col!r} could not be coerced to int; treating non-zero as 1.")
             y_int = (y.astype(float) != 0).astype(np.int64)
     sub = sub.assign(**{outcome_col: y_int})
 
@@ -958,9 +885,7 @@ def mrm_uof_demographic_disparity(
             title="MRM-UOF Demographic Disparity",
             call=call,
             warnings=[f"baseline {baseline!r} not present in demo column"],
-            interpretation=(
-                f"No analysis: baseline category {baseline!r} is absent."
-            ),
+            interpretation=(f"No analysis: baseline category {baseline!r} is absent."),
             payload={"n": int(len(sub))},
         )
 
@@ -983,14 +908,11 @@ def mrm_uof_demographic_disparity(
             rr = rate / baseline_rate
         else:
             rr = float("nan")
-        rr_lo: Optional[float] = None
-        rr_hi: Optional[float] = None
+        rr_lo: float | None = None
+        rr_hi: float | None = None
 
         if n_i < 30:
-            warnings.append(
-                f"Group {cat!r} has n={n_i} < 30; confidence intervals "
-                f"are wide."
-            )
+            warnings.append(f"Group {cat!r} has n={n_i} < 30; confidence intervals are wide.")
 
         if bootstrap_reps > 0 and cat != baseline:
             sub_cat = sub[sub[demo_col] == cat][outcome_col].to_numpy()
@@ -1056,10 +978,7 @@ def mrm_uof_demographic_disparity(
     rr_values = [c["rr"] for c in per_cat if not c["baseline"] and math.isfinite(c["rr"])]
     if rr_values:
         max_rr = max(rr_values)
-        max_rr_cat = next(
-            c["category"] for c in per_cat
-            if not c["baseline"] and c["rr"] == max_rr
-        )
+        max_rr_cat = next(c["category"] for c in per_cat if not c["baseline"] and c["rr"] == max_rr)
         rr_text = (
             f"The largest disparity is for group {max_rr_cat!r} with a "
             f"risk ratio of {max_rr:.3f} relative to the baseline "
@@ -1075,10 +994,7 @@ def mrm_uof_demographic_disparity(
             f"replications (seed=0)."
         )
     else:
-        boot_text = (
-            "Bootstrap was not requested (bootstrap_reps=0); only Wilson "
-            "intervals for raw rates are reported."
-        )
+        boot_text = "Bootstrap was not requested (bootstrap_reps=0); only Wilson intervals for raw rates are reported."
 
     interpretation = f"{rr_text} {boot_text}"
 
@@ -1104,13 +1020,13 @@ def mrm_uof_demographic_disparity(
 # ─── 6. data quality audit ───────────────────────────────────────────
 
 
-def _schema_columns(schema: Any) -> Optional[list[tuple[str, Optional[str]]]]:
+def _schema_columns(schema: Any) -> list[tuple[str, str | None]] | None:
     """Duck-typed extraction of (name, dtype) from a schema object."""
     cols = getattr(schema, "columns", None)
     if cols is None:
         return None
     try:
-        out: list[tuple[str, Optional[str]]] = []
+        out: list[tuple[str, str | None]] = []
         for c in cols:
             name = getattr(c, "name", None)
             if name is None:
@@ -1124,7 +1040,7 @@ def _schema_columns(schema: Any) -> Optional[list[tuple[str, Optional[str]]]]:
 
 def mrm_uof_data_quality_audit(
     df: pd.DataFrame,
-    sidecar: Optional[Mapping[str, Any]] = None,
+    sidecar: Mapping[str, Any] | None = None,
     expected_schema: Any = None,
 ) -> RichResult:
     """Schema + null + suspect-value audit of a UOF dataframe."""
@@ -1170,31 +1086,23 @@ def mrm_uof_data_quality_audit(
                 entry["mode"] = None
         per_column.append(entry)
 
-    expected_cols: Optional[list[tuple[str, Optional[str]]]] = None
+    expected_cols: list[tuple[str, str | None]] | None = None
     if sidecar is not None:
         fields = sidecar.get("fields") if isinstance(sidecar, Mapping) else None
         if isinstance(fields, list):
             try:
-                expected_cols = [
-                    (str(f["id"]), str(f.get("type")) if f.get("type") else None)
-                    for f in fields
-                ]
+                expected_cols = [(str(f["id"]), str(f.get("type")) if f.get("type") else None) for f in fields]
             except (KeyError, TypeError):
                 warnings.append(
-                    "Sidecar 'fields' present but did not duck-type as "
-                    "CKAN; expected schema comparison skipped."
+                    "Sidecar 'fields' present but did not duck-type as CKAN; expected schema comparison skipped."
                 )
         else:
-            warnings.append(
-                "Sidecar is not a CKAN-shaped mapping with a 'fields' list; "
-                "ignored for schema comparison."
-            )
+            warnings.append("Sidecar is not a CKAN-shaped mapping with a 'fields' list; ignored for schema comparison.")
     if expected_cols is None and expected_schema is not None:
         expected_cols = _schema_columns(expected_schema)
         if expected_cols is None:
             warnings.append(
-                "expected_schema did not duck-type (needs .columns of "
-                "objects with .name); schema comparison skipped."
+                "expected_schema did not duck-type (needs .columns of objects with .name); schema comparison skipped."
             )
 
     missing_columns: list[str] = []
@@ -1208,31 +1116,20 @@ def mrm_uof_data_quality_audit(
         extra_columns = [c for c in actual if c not in expected_names]
         for name, exp_dt in expected_cols:
             if name in actual and exp_dt is not None:
-                if (
-                    exp_dt.lower() not in actual[name].lower()
-                    and actual[name].lower() not in exp_dt.lower()
-                ):
-                    dtype_mismatches.append(
-                        {"column": name, "expected": exp_dt, "actual": actual[name]}
-                    )
+                if exp_dt.lower() not in actual[name].lower() and actual[name].lower() not in exp_dt.lower():
+                    dtype_mismatches.append({"column": name, "expected": exp_dt, "actual": actual[name]})
 
     suspect_flags: list[str] = []
     for entry in per_column:
         if entry["pct_null"] > 0.50:
-            suspect_flags.append(
-                f"{entry['column']}: {_fmt_pct(entry['pct_null'])} null"
-            )
+            suspect_flags.append(f"{entry['column']}: {_fmt_pct(entry['pct_null'])} null")
         if pd.api.types.is_numeric_dtype(df[entry["column"]]):
             if entry.get("min") == entry.get("max") and n_rows > 1:
                 if math.isfinite(entry.get("min", float("nan"))):
-                    suspect_flags.append(
-                        f"{entry['column']}: constant value ({entry['min']})"
-                    )
+                    suspect_flags.append(f"{entry['column']}: constant value ({entry['min']})")
         else:
             if entry["n_unique"] == n_rows and n_rows > 1:
-                suspect_flags.append(
-                    f"{entry['column']}: every value unique -- possible identifier"
-                )
+                suspect_flags.append(f"{entry['column']}: every value unique -- possible identifier")
 
     summary_lines: list[tuple[str, Any]] = [
         ("Rows", n_rows),
@@ -1244,10 +1141,7 @@ def mrm_uof_data_quality_audit(
     ]
 
     top_null_sorted = sorted(per_column, key=lambda e: e["pct_null"], reverse=True)[:3]
-    top_null_rows: list[list[Any]] = [
-        [e["column"], e["dtype"], e["n_null"], e["pct_null"]]
-        for e in top_null_sorted
-    ]
+    top_null_rows: list[list[Any]] = [[e["column"], e["dtype"], e["n_null"], e["pct_null"]] for e in top_null_sorted]
 
     sections: list[dict[str, Any]] = [
         {
@@ -1278,10 +1172,7 @@ def mrm_uof_data_quality_audit(
             {
                 "title": "Dtype mismatches",
                 "headers": ["column", "expected", "actual"],
-                "table": [
-                    [m["column"], m["expected"], m["actual"]]
-                    for m in dtype_mismatches
-                ],
+                "table": [[m["column"], m["expected"], m["actual"]] for m in dtype_mismatches],
             }
         )
     if suspect_flags:
@@ -1352,31 +1243,33 @@ def mrm_uof_data_quality_audit(
 
 
 if __name__ == "__main__":
-    import pandas as pd
     import numpy as np
+    import pandas as pd
 
     np.random.seed(0)
-    df = pd.DataFrame({
-        'force': np.random.choice(['TPS', 'OPP', 'HRPS', 'PRPS', 'YRP'], 1000),
-        'weapon': np.random.choice(['Firearm', 'Taser', 'Baton', 'OC', 'None'], 1000),
-        'region_now': np.random.choice(
-            ['Central', 'Eastern', 'Northern', 'Toronto', 'Western'], 1000
-        ),
-        'region_at': np.random.choice(
-            ['Central', 'Eastern', 'Northern', 'Toronto', 'Western'], 1000
-        ),
-        'demo': np.random.choice(['A', 'B', 'C'], 1000),
-        'outcome': np.random.binomial(1, 0.3, 1000),
-    })
-    print(mrm_uof_force_concentration(df, 'force'))
-    print(mrm_uof_weapon_diversity(df, 'weapon', 'force'))
-    print(mrm_uof_region_locality(df, 'region_at', 'region_now'))
-    print(mrm_uof_demographic_disparity(df, 'demo', 'outcome'))
+    df = pd.DataFrame(
+        {
+            "force": np.random.choice(["TPS", "OPP", "HRPS", "PRPS", "YRP"], 1000),
+            "weapon": np.random.choice(["Firearm", "Taser", "Baton", "OC", "None"], 1000),
+            "region_now": np.random.choice(["Central", "Eastern", "Northern", "Toronto", "Western"], 1000),
+            "region_at": np.random.choice(["Central", "Eastern", "Northern", "Toronto", "Western"], 1000),
+            "demo": np.random.choice(["A", "B", "C"], 1000),
+            "outcome": np.random.binomial(1, 0.3, 1000),
+        }
+    )
+    print(mrm_uof_force_concentration(df, "force"))
+    print(mrm_uof_weapon_diversity(df, "weapon", "force"))
+    print(mrm_uof_region_locality(df, "region_at", "region_now"))
+    print(mrm_uof_demographic_disparity(df, "demo", "outcome"))
     print(mrm_uof_data_quality_audit(df))
-    print(mrm_uof_yoy_change({
-        2020: df,
-        2021: df.sample(900),
-        2022: df.sample(1100),
-        2023: df.sample(950),
-        2024: df.sample(1050),
-    }))
+    print(
+        mrm_uof_yoy_change(
+            {
+                2020: df,
+                2021: df.sample(900),
+                2022: df.sample(1100),
+                2023: df.sample(950),
+                2024: df.sample(1050),
+            }
+        )
+    )

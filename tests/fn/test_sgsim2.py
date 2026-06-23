@@ -1,6 +1,8 @@
 """Tests for sgsim2."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sgsim2 import sgsim2
 
 
@@ -28,4 +30,5 @@ def test_sgsim2_no_data():
 
 def test_sgsim2_alias():
     from morie.fn.sgsim2 import sgsim2
+
     assert sgsim2 is sgsim2

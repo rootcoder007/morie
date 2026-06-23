@@ -1,6 +1,7 @@
 """Black-Scholes implied volatility via Brent root."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_implied_volatility_bs"]
@@ -40,7 +41,9 @@ def vol_implied_volatility_bs(S, K, T, r, C_obs, kind):
     n = len(S)
     result = float(np.mean(S))
     se = float(np.std(S, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Black-Scholes implied volatility via Brent root"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Black-Scholes implied volatility via Brent root"}
+    )
 
 
 def cheatsheet():

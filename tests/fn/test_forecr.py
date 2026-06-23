@@ -1,6 +1,7 @@
 """Test forecr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.forecr import forecr
 
 

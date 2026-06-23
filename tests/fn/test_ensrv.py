@@ -1,7 +1,9 @@
 """Test ensemble_variance (ensrv)."""
+
 import numpy as np
-from morie.fn.ensrv import ensemble_variance, ensrv
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ensrv import ensemble_variance, ensrv
 
 
 class TestEnsembleVariance:

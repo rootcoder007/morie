@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PY universal sequence via GEM distribution: residual allocation from PY."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_py_universal_sequence"]
@@ -30,7 +32,14 @@ def ghosal_py_universal_sequence(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PY universal sequence via GEM distribution: residual allocation from PY"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PY universal sequence via GEM distribution: residual allocation from PY",
+        }
+    )
 
 
 def cheatsheet():

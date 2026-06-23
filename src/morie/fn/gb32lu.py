@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Recursive frequency relation for runs up and down in sequence of n numbers."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_runs_up_down_recur"]
@@ -30,7 +32,14 @@ def gibbons_runs_up_down_recur(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Recursive frequency relation for runs up and down in sequence of n numbers"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Recursive frequency relation for runs up and down in sequence of n numbers",
+        }
+    )
 
 
 def cheatsheet():

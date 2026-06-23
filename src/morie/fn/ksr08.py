@@ -7,7 +7,9 @@ multiplier process converges to the same limit as G_n.  We compute
 the Monte-Carlo standard deviation of the multiplier statistic
 applied to f(x)=x.
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_multiplier_bootstrap"]
@@ -37,6 +39,7 @@ def kosorok_multiplier_bootstrap(x, B=1000, seed=0, deterministic_seed: int | No
     n = len(x)
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("ksr08", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -44,12 +47,14 @@ def kosorok_multiplier_bootstrap(x, B=1000, seed=0, deterministic_seed: int | No
     centred = x - pn
     xi = rng.normal(size=(B, n))
     g_xi = (xi @ centred) / np.sqrt(n)
-    return RichResult(payload={
-        "estimate": float(g_xi.mean()),
-        "se":       float(g_xi.std(ddof=1)),
-        "n":        n,
-        "method":   "Multiplier bootstrap G_n^xi = n^{-1/2} sum xi (f-Pf)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(g_xi.mean()),
+            "se": float(g_xi.std(ddof=1)),
+            "n": n,
+            "method": "Multiplier bootstrap G_n^xi = n^{-1/2} sum xi (f-Pf)",
+        }
+    )
 
 
 def cheatsheet():

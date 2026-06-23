@@ -1,7 +1,7 @@
 """Tests for morie.fn.svhyb."""
 
 import numpy as np
-import pytest
+
 from morie.fn.svhyb import svhyb
 
 

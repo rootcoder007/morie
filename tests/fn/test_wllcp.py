@@ -1,6 +1,7 @@
 """Test wllcp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wllcp import wllcp
 
 

@@ -1,7 +1,8 @@
 """Tests for morie.fn.ave — Average Variance Extracted."""
 
-import pytest
 import numpy as np
+import pytest
+
 from morie.fn import ave
 
 

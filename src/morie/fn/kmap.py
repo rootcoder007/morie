@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """AutoPrompt: gradient-based discrete trigger-token search."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_autoprompt_gradient_search"]
@@ -34,7 +36,14 @@ def kamath_autoprompt_gradient_search(template, dataset, model):
     n = len(template)
     result = float(np.mean(template))
     se = float(np.std(template, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AutoPrompt: gradient-based discrete trigger-token search"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "AutoPrompt: gradient-based discrete trigger-token search",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 """Tests for sgcdf."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sgcdf import sgcdf
 
 
@@ -28,4 +30,5 @@ def test_sgcdf_no_data():
 
 def test_sgcdf_alias():
     from morie.fn.sgcdf import sgcdf
+
     assert sgcdf is sgcdf

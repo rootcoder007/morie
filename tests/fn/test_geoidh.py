@@ -1,6 +1,7 @@
 """Test geoidh."""
+
 import numpy as np
-import pytest
+
 from morie.fn.geoidh import geoidh
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """CLIP: contrastive image-text pretraining."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_clip"]
@@ -32,7 +34,9 @@ def geron_clip(images, texts):
     n = len(images)
     result = float(np.mean(images))
     se = float(np.std(images, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "CLIP: contrastive image-text pretraining"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "CLIP: contrastive image-text pretraining"}
+    )
 
 
 def cheatsheet():

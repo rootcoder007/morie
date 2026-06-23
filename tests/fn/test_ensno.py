@@ -1,6 +1,7 @@
 """Test ensno."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ensno import ensno
 
 

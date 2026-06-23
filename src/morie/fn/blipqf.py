@@ -1,6 +1,7 @@
 """BLIP Q-Former bridge."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["blip_qformer"]

@@ -1,7 +1,9 @@
 """Test activity (sactv)."""
+
 import numpy as np
-from morie.fn.sactv import activity, sactv
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sactv import activity, sactv
 
 
 class TestActivity:

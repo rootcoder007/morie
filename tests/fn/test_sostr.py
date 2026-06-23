@@ -1,6 +1,7 @@
 """Test sostr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sostr import sostr
 
 

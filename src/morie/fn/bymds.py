@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bayesian metric MDS with posterior credible regions (Bakker-Poole 2013)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["bayesian_mds"]
@@ -34,7 +36,14 @@ def bayesian_mds(D_matrix, n_dims, n_iter):
     n = int(D_matrix) if D_matrix.ndim == 0 else len(D_matrix)
     result = float(np.mean(D_matrix))
     se = float(np.std(D_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian metric MDS with posterior credible regions (Bakker-Poole 2013)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bayesian metric MDS with posterior credible regions (Bakker-Poole 2013)",
+        }
+    )
 
 
 def cheatsheet():

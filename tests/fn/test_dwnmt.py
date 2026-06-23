@@ -1,5 +1,5 @@
 """Test dwnmt."""
-import numpy as np
+
 from morie.fn.dwnmt import dw_nominate_score
 
 

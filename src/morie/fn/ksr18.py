@@ -6,7 +6,9 @@ time t_i and Y_i the at-risk size just before t_i.  Aalen variance
 estimator: sum d_i / Y_i^2.  Returns Lambda_hat at the largest
 event time plus sqrt-variance SE.
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_nelson_aalen"]
@@ -18,7 +20,8 @@ def kosorok_nelson_aalen(t, event):
     e = np.asarray(event, dtype=int)
     n = len(t)
     order = np.argsort(t, kind="mergesort")
-    t = t[order]; e = e[order]
+    t = t[order]
+    e = e[order]
     # Aggregate ties: distinct ordered times, count events & risk-set.
     cum_h = 0.0
     cum_v = 0.0
@@ -32,14 +35,16 @@ def kosorok_nelson_aalen(t, event):
         Y = n - i  # at-risk count just before t[i]
         if d > 0:
             cum_h += d / Y
-            cum_v += d / (Y ** 2)
+            cum_v += d / (Y**2)
         i = j
-    return RichResult(payload={
-        "estimate": float(cum_h),
-        "se":       float(np.sqrt(cum_v)),
-        "n":        n,
-        "method":   "Nelson-Aalen cumulative hazard at t_max",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(cum_h),
+            "se": float(np.sqrt(cum_v)),
+            "n": n,
+            "method": "Nelson-Aalen cumulative hazard at t_max",
+        }
+    )
 
 
 def cheatsheet():

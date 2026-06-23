@@ -1,6 +1,7 @@
 """Shannon entropy of a discrete process with L quantized values.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_shannon_entropy_discrete"]
@@ -32,7 +33,14 @@ def rangayyan_ch3_shannon_entropy_discrete(p_eta, L):
     n = len(p_eta)
     result = float(np.mean(p_eta))
     se = float(np.std(p_eta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Shannon entropy of a discrete process with L quantized values."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Shannon entropy of a discrete process with L quantized values.",
+        }
+    )
 
 
 def cheatsheet():

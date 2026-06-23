@@ -1,6 +1,7 @@
 """Multi-marginal Sinkhorn on K marginals."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_multimarginal_iter"]
@@ -36,7 +37,9 @@ def ot_multimarginal_iter(margins, C_tensor, epsilon, max_iter):
     n = len(margins)
     result = float(np.mean(margins))
     se = float(np.std(margins, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multi-marginal Sinkhorn on K marginals"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Multi-marginal Sinkhorn on K marginals"}
+    )
 
 
 def cheatsheet():

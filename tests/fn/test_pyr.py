@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.pyr import person_years_at_risk
 
 

@@ -1,6 +1,7 @@
 """Tests for hrzmim.horowitz_multiple_index_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzmim import horowitz_multiple_index_model
 
 
@@ -11,7 +12,7 @@ def test_hrzmim_basic():
     k = 5
     result = horowitz_multiple_index_model(x, y, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzmim_edge():

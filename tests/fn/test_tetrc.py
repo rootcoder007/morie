@@ -1,6 +1,7 @@
 """Tests for tetrachoric_corr."""
-import pytest
+
 from morie.fn.tetrc import tetrachoric_corr
+
 
 class TestTetrachoric:
     def test_positive(self):

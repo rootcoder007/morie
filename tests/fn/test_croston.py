@@ -1,6 +1,7 @@
 """Tests for croston.croston."""
+
 import numpy as np
-import pytest
+
 from morie.fn.croston import croston
 
 
@@ -10,7 +11,7 @@ def test_croston_basic():
     alpha = 0.05
     result = croston(y, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_croston_edge():

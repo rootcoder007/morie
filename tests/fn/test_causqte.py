@@ -1,6 +1,7 @@
 """Tests for causqte.causal_quantile_treatment_effect."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causqte import causal_quantile_treatment_effect
 
 
@@ -12,7 +13,7 @@ def test_causqte_basic():
     tau = 0.1
     result = causal_quantile_treatment_effect(y, T, ps, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causqte_edge():

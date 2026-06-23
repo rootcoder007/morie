@@ -1,6 +1,7 @@
 """Test csrob."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csrob import csrob
 
 

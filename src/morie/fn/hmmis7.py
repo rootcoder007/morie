@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mistral-7B: open-weights 7B-parameter decoder-only LLM."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_mistral7b"]
@@ -32,7 +34,14 @@ def geron_mistral7b(prompt, n_tokens):
     n = len(prompt)
     result = float(np.mean(prompt))
     se = float(np.std(prompt, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mistral-7B: open-weights 7B-parameter decoder-only LLM"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mistral-7B: open-weights 7B-parameter decoder-only LLM",
+        }
+    )
 
 
 def cheatsheet():

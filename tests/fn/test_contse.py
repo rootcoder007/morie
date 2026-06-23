@@ -1,6 +1,7 @@
 """Tests for contse.contrastive_sent."""
+
 import numpy as np
-import pytest
+
 from morie.fn.contse import contrastive_sent
 
 
@@ -10,7 +11,7 @@ def test_contse_basic():
     tau = 0.1
     result = contrastive_sent(sentences, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_contse_edge():

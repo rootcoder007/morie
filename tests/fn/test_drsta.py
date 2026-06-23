@@ -1,6 +1,7 @@
 """Tests for drsta.dr_staggered_design."""
+
 import numpy as np
-import pytest
+
 from morie.fn.drsta import dr_staggered_design
 
 
@@ -13,7 +14,7 @@ def test_drsta_basic():
     cohort = np.random.default_rng(42).normal(0, 1, 100)
     result = dr_staggered_design(y, D, unit, time, cohort)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_drsta_edge():

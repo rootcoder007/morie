@@ -1,6 +1,7 @@
 """MSM for continuous/dose time-varying exposures."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["msm_time_varying_exposure"]
@@ -36,7 +37,9 @@ def msm_time_varying_exposure(y, exposure_history, covariate_history, time):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MSM for continuous/dose time-varying exposures"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "MSM for continuous/dose time-varying exposures"}
+    )
 
 
 def cheatsheet():

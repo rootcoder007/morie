@@ -21,28 +21,46 @@ import numpy as np
 import pytest
 
 from morie.inference import (
-    # Normal
-    dnorm, pnorm, qnorm, rnorm,
-    # t
-    dt, pt, qt,
-    # chi-squared
-    dchisq, pchisq, qchisq,
-    # Binomial
-    dbinom, pbinom, qbinom, rbinom,
-    # Poisson
-    dpois, ppois, qpois, rpois,
     # Beta
-    dbeta, pbeta, qbeta,
+    dbeta,
+    # Binomial
+    dbinom,
+    # chi-squared
+    dchisq,
     # Gamma
-    dgamma, pgamma,
+    dgamma,
+    # Normal
+    dnorm,
+    # Poisson
+    dpois,
+    # t
+    dt,
     # Uniform
-    dunif, punif, runif,
+    dunif,
+    pbeta,
+    pbinom,
+    pchisq,
+    pgamma,
+    pnorm,
+    ppois,
+    pt,
+    punif,
+    qbeta,
+    qbinom,
+    qchisq,
+    qnorm,
+    qpois,
+    qt,
+    rbinom,
+    rnorm,
+    rpois,
+    runif,
 )
-
 
 # ===========================================================================
 # Normal distribution
 # ===========================================================================
+
 
 class TestDnorm:
     """Tests for dnorm — normal PDF."""
@@ -175,8 +193,8 @@ class TestRnorm:
 # Student's t-distribution
 # ===========================================================================
 
-class TestTDistribution:
 
+class TestTDistribution:
     def test_dt_at_zero_with_1df(self):
         """dt(0, df=1) = 1/pi for Cauchy."""
         expected = 1.0 / math.pi
@@ -213,8 +231,8 @@ class TestTDistribution:
 # Chi-squared distribution
 # ===========================================================================
 
-class TestChiSquaredDistribution:
 
+class TestChiSquaredDistribution:
     def test_pchisq_at_zero_is_zero(self):
         """chi-squared CDF at 0 is 0 for any df."""
         assert abs(pchisq(0.0, df=5)) < 1e-10
@@ -242,8 +260,8 @@ class TestChiSquaredDistribution:
 # Binomial distribution
 # ===========================================================================
 
-class TestBinomialDistribution:
 
+class TestBinomialDistribution:
     def test_dbinom_known_pmf(self):
         """P(X=3 | n=10, p=0.5) = C(10,3) * 0.5^10 = 120/1024 = 0.1171875."""
         assert abs(dbinom(3, size=10, prob=0.5) - 0.1171875) < 1e-8
@@ -269,8 +287,7 @@ class TestBinomialDistribution:
         # pbinom(3) + pbinom(4, lower_tail=False) should = 1 (x=3 step)
         # Test: P(X <= k) = 1 - P(X > k)
         for k in [2, 5, 8]:
-            assert abs(pbinom(k, size=10, prob=0.5) -
-                       (1.0 - pbinom(k, size=10, prob=0.5, lower_tail=False))) < 1e-12
+            assert abs(pbinom(k, size=10, prob=0.5) - (1.0 - pbinom(k, size=10, prob=0.5, lower_tail=False))) < 1e-12
 
     def test_qbinom_round_trip(self):
         """qbinom gives the correct quantile for the CDF."""
@@ -295,8 +312,8 @@ class TestBinomialDistribution:
 # Poisson distribution
 # ===========================================================================
 
-class TestPoissonDistribution:
 
+class TestPoissonDistribution:
     def test_dpois_known_value(self):
         """P(X=0 | lambda=1) = exp(-1) ≈ 0.36787944."""
         assert abs(dpois(0, lambda_=1.0) - math.exp(-1.0)) < 1e-10
@@ -337,8 +354,8 @@ class TestPoissonDistribution:
 # Beta distribution
 # ===========================================================================
 
-class TestBetaDistribution:
 
+class TestBetaDistribution:
     def test_dbeta_at_half_with_equal_params(self):
         """Beta(1,1) is Uniform(0,1) so PDF = 1 everywhere on (0,1)."""
         for x in [0.1, 0.5, 0.9]:
@@ -367,8 +384,8 @@ class TestBetaDistribution:
 # Gamma distribution
 # ===========================================================================
 
-class TestGammaDistribution:
 
+class TestGammaDistribution:
     def test_dgamma_exponential_special_case(self):
         """Gamma(1, rate=1) = Exponential(1); PDF at x=1 = exp(-1)."""
         expected = math.exp(-1.0)
@@ -380,8 +397,7 @@ class TestGammaDistribution:
     def test_pgamma_scale_vs_rate(self):
         """pgamma with scale=2 should equal pgamma with rate=0.5."""
         for x in [1.0, 5.0, 10.0]:
-            assert abs(pgamma(x, shape=2.0, rate=0.5) -
-                       pgamma(x, shape=2.0, scale=2.0)) < 1e-12
+            assert abs(pgamma(x, shape=2.0, rate=0.5) - pgamma(x, shape=2.0, scale=2.0)) < 1e-12
 
     def test_dgamma_log_consistency(self):
         for x in [0.5, 1.0, 3.0]:
@@ -397,8 +413,8 @@ class TestGammaDistribution:
 # Uniform distribution
 # ===========================================================================
 
-class TestUniformDistribution:
 
+class TestUniformDistribution:
     def test_dunif_standard(self):
         """dunif on (0,1) = 1 everywhere in support."""
         for x in [0.1, 0.5, 0.99]:

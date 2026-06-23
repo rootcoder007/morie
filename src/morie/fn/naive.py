@@ -65,4 +65,4 @@ naive = naive_forecast
 
 
 def cheatsheet() -> str:
-    return 'naive() -> Naive forecasting methods'
+    return "naive() -> Naive forecasting methods"

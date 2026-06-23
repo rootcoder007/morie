@@ -1,7 +1,6 @@
 """Tests for morie.fn.zecon -- Concentration index spatial"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zecon import concentration_idx
 

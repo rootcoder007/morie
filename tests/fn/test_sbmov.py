@@ -1,6 +1,8 @@
 """Tests for sbmov."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sbmov import sbmov
 
 
@@ -28,4 +30,5 @@ def test_sbmov_no_data():
 
 def test_sbmov_alias():
     from morie.fn.sbmov import sbmov
+
     assert sbmov is sbmov

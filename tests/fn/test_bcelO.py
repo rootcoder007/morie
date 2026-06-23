@@ -1,6 +1,7 @@
 """Tests for bcelO.binary_crossentropy_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bcelO import binary_crossentropy_loss
 
 
@@ -10,7 +11,7 @@ def test_bcelO_basic():
     p = 5
     result = binary_crossentropy_loss(y, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bcelO_edge():

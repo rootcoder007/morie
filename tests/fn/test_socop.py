@@ -1,6 +1,7 @@
 """Test socop."""
+
 import numpy as np
-import pytest
+
 from morie.fn.socop import socop
 
 

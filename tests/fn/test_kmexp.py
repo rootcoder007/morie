@@ -1,6 +1,7 @@
 """Tests for kmexp.kamath_memorization_exposure."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmexp import kamath_memorization_exposure
 
 
@@ -10,7 +11,7 @@ def test_kmexp_basic():
     candidate_lls = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_memorization_exposure(canary_ll, candidate_lls)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmexp_edge():

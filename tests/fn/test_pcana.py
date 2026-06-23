@@ -1,7 +1,7 @@
 """Test PCA via eigendecomposition."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pcana import pcana
 
 

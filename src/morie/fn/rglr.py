@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Logistic regression for binary classification."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_logistic_regression"]
@@ -36,7 +38,9 @@ def rangayyan_logistic_regression(X, y, lr, max_iter):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Logistic regression for binary classification"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Logistic regression for binary classification"}
+    )
 
 
 def cheatsheet():

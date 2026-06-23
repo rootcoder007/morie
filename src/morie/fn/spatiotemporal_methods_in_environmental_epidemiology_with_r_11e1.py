@@ -1,8 +1,9 @@
 """Multilevel equation extracted from spatiotemporal-methods-in-environmental-epidemiology-with-r-chapman-amp-hall-crc-texts-in-statistical-science-2nbsped-1032397810-9781032397818.."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_11_equation_1"]
 
@@ -41,7 +42,11 @@ def spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_11_equa
             pvalue=float("nan"),
             warnings=["n<2: insufficient data."],
             extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Multilevel equation extracted from spatiotemporal-methods-in-environmental-epidemiology-with-r-chapman-amp-hall-crc-texts-in-statistical-science-2nbsped-1032397810-9781032397818.", "p_value": float("nan")},
+            extra_payload={
+                "n": n,
+                "method": "Multilevel equation extracted from spatiotemporal-methods-in-environmental-epidemiology-with-r-chapman-amp-hall-crc-texts-in-statistical-science-2nbsped-1032397810-9781032397818.",
+                "p_value": float("nan"),
+            },
         )
     x_sorted = np.sort(x)
     if cdf is None:
@@ -57,14 +62,18 @@ def spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_11_equa
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
     return hypothesis_test_result(
         test_name="Multilevel equation extracted from spatiotemporal-methods-in-environmental-epidemiology-with-r-chapman-amp-hall-crc-texts-in-statistical-science-2nbsped-1032397810-9781032397818.",
         statistic=float(statistic),
         pvalue=float(p_value),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Multilevel equation extracted from spatiotemporal-methods-in-environmental-epidemiology-with-r-chapman-amp-hall-crc-texts-in-statistical-science-2nbsped-1032397810-9781032397818.", "p_value": float(p_value)},
+        extra_payload={
+            "n": n,
+            "method": "Multilevel equation extracted from spatiotemporal-methods-in-environmental-epidemiology-with-r-chapman-amp-hall-crc-texts-in-statistical-science-2nbsped-1032397810-9781032397818.",
+            "p_value": float(p_value),
+        },
     )
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """3H alignment scoring rubric: helpful, harmless, honest."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_3h_alignment"]
@@ -36,7 +38,14 @@ def kamath_3h_alignment(helpful_score, harmless_score, honest_score, weights):
     n = len(helpful_score)
     result = float(np.mean(helpful_score))
     se = float(np.std(helpful_score, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "3H alignment scoring rubric: helpful, harmless, honest"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "3H alignment scoring rubric: helpful, harmless, honest",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fractal analysis of VAG signals via power spectral slope."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_fractal_vag"]
@@ -32,7 +34,14 @@ def rangayyan_fractal_vag(vag, fs):
     n = int(vag) if vag.ndim == 0 else len(vag)
     result = float(np.mean(vag))
     se = float(np.std(vag, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fractal analysis of VAG signals via power spectral slope"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Fractal analysis of VAG signals via power spectral slope",
+        }
+    )
 
 
 def cheatsheet():

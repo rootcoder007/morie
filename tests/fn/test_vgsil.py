@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgsil -- Sill estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgsil import sill_est
 

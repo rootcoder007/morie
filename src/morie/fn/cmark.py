@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Causal Markov condition: each node independent of non-descendants given parents."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["causal_markov_condition"]
@@ -29,12 +31,19 @@ def causal_markov_condition(dag, P):
     Molak Ch 2,5
     """
     if isinstance(dag, dict):
-        dag = [len(v) if hasattr(v, '__len__') else float(v) for v in dag.values()] or [0.0]
+        dag = [len(v) if hasattr(v, "__len__") else float(v) for v in dag.values()] or [0.0]
     dag = np.asarray(dag, dtype=float)
     n = int(dag) if dag.ndim == 0 else len(dag)
     result = float(np.mean(dag))
     se = float(np.std(dag, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Causal Markov condition: each node independent of non-descendants given parents"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Causal Markov condition: each node independent of non-descendants given parents",
+        }
+    )
 
 
 def cheatsheet():

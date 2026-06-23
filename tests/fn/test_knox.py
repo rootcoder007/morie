@@ -1,5 +1,7 @@
 """Tests for morie.fn.knox — Knox test."""
+
 import numpy as np
+
 from morie.fn.knox import knox_test
 
 

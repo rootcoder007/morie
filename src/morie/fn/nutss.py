@@ -28,20 +28,17 @@ def _build_tree(theta, r, u, v, j, epsilon, log_target, grad_fn, rng):
         s_p = 1 if np.log(u) < H + 1000.0 else 0
         return theta_p, r_p, theta_p, r_p, theta_p, n_p, s_p
 
-    (theta_m, r_m, theta_p, r_p, theta_prime,
-     n_prime, s_prime) = _build_tree(
+    (theta_m, r_m, theta_p, r_p, theta_prime, n_prime, s_prime) = _build_tree(
         theta, r, u, v, j - 1, epsilon, log_target, grad_fn, rng
     )
 
     if s_prime == 1:
         if v == -1:
-            (theta_m, r_m, _, _, theta_dbl,
-             n_dbl, s_dbl) = _build_tree(
+            (theta_m, r_m, _, _, theta_dbl, n_dbl, s_dbl) = _build_tree(
                 theta_m, r_m, u, v, j - 1, epsilon, log_target, grad_fn, rng
             )
         else:
-            (_, _, theta_p, r_p, theta_dbl,
-             n_dbl, s_dbl) = _build_tree(
+            (_, _, theta_p, r_p, theta_dbl, n_dbl, s_dbl) = _build_tree(
                 theta_p, r_p, u, v, j - 1, epsilon, log_target, grad_fn, rng
             )
 
@@ -130,16 +127,12 @@ def nuts_sampler(
         while s == 1 and j < max_tree_depth:
             v = 2 * int(rng.uniform() < 0.5) - 1
             if v == -1:
-                (theta_m, r_m, _, _, theta_cand,
-                 n_cand, s_cand) = _build_tree(
-                    theta_m, r_m, u, v, j, epsilon, log_target,
-                    grad_log_target, rng
+                (theta_m, r_m, _, _, theta_cand, n_cand, s_cand) = _build_tree(
+                    theta_m, r_m, u, v, j, epsilon, log_target, grad_log_target, rng
                 )
             else:
-                (_, _, theta_p, r_p, theta_cand,
-                 n_cand, s_cand) = _build_tree(
-                    theta_p, r_p, u, v, j, epsilon, log_target,
-                    grad_log_target, rng
+                (_, _, theta_p, r_p, theta_cand, n_cand, s_cand) = _build_tree(
+                    theta_p, r_p, u, v, j, epsilon, log_target, grad_log_target, rng
                 )
 
             if s_cand == 1 and n_cand > 0 and rng.uniform() < min(1.0, n_cand / n):

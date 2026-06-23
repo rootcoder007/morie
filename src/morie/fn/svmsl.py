@@ -1,5 +1,7 @@
 """SVM soft margin with slack variables (C-SVM)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["svm_soft_margin"]
@@ -33,7 +35,9 @@ def svm_soft_margin(X, y, C):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SVM soft margin with slack variables (C-SVM)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "SVM soft margin with slack variables (C-SVM)"}
+    )
 
 
 def cheatsheet():

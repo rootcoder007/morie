@@ -1,7 +1,6 @@
 """Tests for morie.fn.suffx — sufficient statistic test."""
 
 import numpy as np
-import pytest
 
 from morie.fn.suffx import suffx
 

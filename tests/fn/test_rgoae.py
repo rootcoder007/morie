@@ -1,6 +1,7 @@
 """Tests for rgoae.rangayyan_oae."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgoae import rangayyan_oae
 
 
@@ -10,7 +11,7 @@ def test_rgoae_basic():
     fs = 100.0
     result = rangayyan_oae(oae, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgoae_edge():

@@ -1,5 +1,7 @@
 """Tests for lvdrb.py - Levinson-Durbin recursion."""
+
 import numpy as np
+
 from morie.fn.lvdrb import levinson_durbin_fn, lvdrb
 
 
@@ -7,7 +9,7 @@ def test_lvdrb_returns_result():
     x = np.random.default_rng(42).standard_normal(256)
     r = np.correlate(x, x, mode="full")
     n = len(x)
-    acf = r[n - 1:n + 5] / n
+    acf = r[n - 1 : n + 5] / n
     result = levinson_durbin_fn(acf, order=4)
     assert result.name == "levinson_durbin"
     assert len(result.extra["coefficients"]) == 4
@@ -17,7 +19,7 @@ def test_lvdrb_sigma2_positive():
     x = np.random.default_rng(42).standard_normal(256)
     r = np.correlate(x, x, mode="full")
     n = len(x)
-    acf = r[n - 1:n + 5] / n
+    acf = r[n - 1 : n + 5] / n
     result = levinson_durbin_fn(acf, order=4)
     assert result.extra["sigma2"] > 0
 

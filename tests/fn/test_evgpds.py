@@ -1,6 +1,7 @@
 """Tests for evgpds.evt_gpd_sample."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evgpds import evt_gpd_sample
 
 
@@ -11,7 +12,7 @@ def test_evgpds_basic():
     n = 100
     result = evt_gpd_sample(sigma, xi, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evgpds_edge():

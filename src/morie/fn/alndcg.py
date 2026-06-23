@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Normalized Discounted Cumulative Gain at k."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_ndcg_at_k"]
@@ -32,7 +34,9 @@ def alammar_ndcg_at_k(relevances, k):
     n = len(relevances)
     result = float(np.mean(relevances))
     se = float(np.std(relevances, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Normalized Discounted Cumulative Gain at k"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Normalized Discounted Cumulative Gain at k"}
+    )
 
 
 def cheatsheet():

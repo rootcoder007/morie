@@ -1,6 +1,7 @@
 """Tests for cvxgd1.boyd_grad_proj."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxgd1 import boyd_grad_proj
 
 
@@ -13,7 +14,7 @@ def test_cvxgd1_basic():
     t = np.linspace(0, 10, 100)
     result = boyd_grad_proj(f, grad_f, x0, C, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxgd1_edge():

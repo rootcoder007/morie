@@ -1,6 +1,5 @@
 """Tests for gb7381.gibbons_cs_null_var."""
-import numpy as np
-import pytest
+
 from morie.fn.gb7381 import gibbons_cs_null_var
 
 
@@ -10,7 +9,7 @@ def test_gb7381_basic():
     lam = 0.1
     result = gibbons_cs_null_var(J, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb7381_edge():

@@ -1,13 +1,13 @@
 """Tests for morie.fn.rskbs — risk Brier score."""
 
-import pytest
 import numpy as np
-from morie.fn.rskbs import risk_brier
+import pytest
+
 from morie.fn._containers import ESRes
+from morie.fn.rskbs import risk_brier
 
 
 class TestRiskBrier:
-
     def test_returns_esres(self):
         probs = np.array([0.1, 0.9, 0.3, 0.8])
         outcomes = np.array([0, 1, 0, 1])

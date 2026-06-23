@@ -1,6 +1,7 @@
 """Tests for a2cv.a2c."""
+
 import numpy as np
-import pytest
+
 from morie.fn.a2cv import a2c
 
 
@@ -12,7 +13,7 @@ def test_a2cv_basic():
     n_steps = np.random.default_rng(42).normal(0, 1, 100)
     result = a2c(env, actor, critic, n_steps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_a2cv_edge():

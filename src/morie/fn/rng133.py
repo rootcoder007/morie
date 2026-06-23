@@ -1,6 +1,7 @@
 """Direct discrete-domain specification of the Butterworth lowpass response.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_butterworth_lowpass_direct_specification"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_butterworth_lowpass_direct_specification(omega, omega_c, N):
     n = len(omega)
     result = float(np.mean(omega))
     se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Direct discrete-domain specification of the Butterworth lowpass response."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Direct discrete-domain specification of the Butterworth lowpass response.",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,5 @@
 """Test nmmds."""
-import numpy as np
+
 from morie.fn.nmmds import nonmetric_mds
 
 

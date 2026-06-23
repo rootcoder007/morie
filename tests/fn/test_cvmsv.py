@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.cvmsv import cramer_von_mises
 
 

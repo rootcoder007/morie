@@ -1,9 +1,9 @@
 """Tests for morie.fn.eqcon — concentration index."""
 
 import pytest
-import numpy as np
-from morie.fn.eqcon import concentration_index
+
 from morie.fn._containers import ESRes
+from morie.fn.eqcon import concentration_index
 
 
 class TestConcentration:

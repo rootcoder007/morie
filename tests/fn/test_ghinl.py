@@ -1,6 +1,7 @@
 """Test ghinl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghinl import ghinl
 
 

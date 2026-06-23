@@ -1,6 +1,7 @@
 """Tests for trnfen.transfer_entropy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trnfen import transfer_entropy
 
 
@@ -11,7 +12,7 @@ def test_trnfen_basic():
     lag = 10
     result = transfer_entropy(x, y, lag)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_trnfen_edge():

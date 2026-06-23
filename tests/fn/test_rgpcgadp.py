@@ -1,6 +1,7 @@
 """Tests for rgpcgadp.rangayyan_pcg_adaptive_seg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgpcgadp import rangayyan_pcg_adaptive_seg
 
 
@@ -11,7 +12,7 @@ def test_rgpcgadp_basic():
     ar_order = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_pcg_adaptive_seg(pcg, fs, ar_order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgpcgadp_edge():

@@ -1,4 +1,5 @@
 from ._richresult import RichResult
+
 # morie.fn -- function file (rootcoder007/morie)
 """Binary erasure channel capacity."""
 

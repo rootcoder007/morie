@@ -1,6 +1,7 @@
 """Tests for dphis.dp_histogram."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dphis import dp_histogram
 
 
@@ -11,7 +12,7 @@ def test_dphis_basic():
     epsilon = 1e-6
     result = dp_histogram(x, bins, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dphis_edge():

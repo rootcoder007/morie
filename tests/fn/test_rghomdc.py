@@ -1,6 +1,7 @@
 """Tests for rghomdc.rangayyan_homomorphic_deconv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rghomdc import rangayyan_homomorphic_deconv
 
 
@@ -11,7 +12,7 @@ def test_rghomdc_basic():
     lifter_high = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_homomorphic_deconv(x, lifter_low, lifter_high)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rghomdc_edge():

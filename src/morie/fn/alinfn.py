@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """InfoNCE contrastive loss with in-batch negatives."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_infonce_loss"]
@@ -36,7 +38,9 @@ def alammar_infonce_loss(anchor, positive, negatives, tau):
     n = len(anchor)
     result = float(np.mean(anchor))
     se = float(np.std(anchor, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "InfoNCE contrastive loss with in-batch negatives"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "InfoNCE contrastive loss with in-batch negatives"}
+    )
 
 
 def cheatsheet():

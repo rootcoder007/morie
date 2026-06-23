@@ -1,6 +1,7 @@
 """Tests for morie.fn.hewtp -- willingness to pay."""
 
 import pytest
+
 from morie.fn.hewtp import willingness_to_pay
 
 

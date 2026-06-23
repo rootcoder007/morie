@@ -1,6 +1,7 @@
 """Test csenv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csenv import csenv
 
 

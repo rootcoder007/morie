@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Maximum likelihood log-likelihood for linear regression."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ml_log_likelihood_regression"]
@@ -36,7 +38,14 @@ def ml_log_likelihood_regression(y, X, beta, sigma2):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Maximum likelihood log-likelihood for linear regression"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Maximum likelihood log-likelihood for linear regression",
+        }
+    )
 
 
 def cheatsheet():

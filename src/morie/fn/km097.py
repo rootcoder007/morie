@@ -1,6 +1,7 @@
 r"""Ear entropy reg.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_ear_entropy_reg"]

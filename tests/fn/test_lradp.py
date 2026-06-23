@@ -1,5 +1,7 @@
 """Test learning rate scheduler."""
+
 import numpy as np
+
 from morie.fn.lradp import lradp
 
 

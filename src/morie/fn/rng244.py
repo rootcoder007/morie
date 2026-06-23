@@ -1,6 +1,7 @@
 """Closed-form complex cepstrum from poles/zeros (inside/outside unit circle).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_complex_cepstrum_closed_form"]
@@ -48,7 +49,14 @@ def rangayyan_ch4_complex_cepstrum_closed_form(A, a_k, b_k, c_k, d_k, M_I, M_O, 
     n = len(A)
     result = float(np.mean(A))
     se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Closed-form complex cepstrum from poles/zeros (inside/outside unit circle)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Closed-form complex cepstrum from poles/zeros (inside/outside unit circle).",
+        }
+    )
 
 
 def cheatsheet():

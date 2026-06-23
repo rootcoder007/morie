@@ -1,6 +1,7 @@
 """Tests for morie.fn.smr -- Standardized Mortality Ratio."""
 
 import pytest
+
 from morie.fn.smr import standardized_mortality_ratio
 
 

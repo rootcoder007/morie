@@ -1,6 +1,7 @@
 """Tests for brcls.brier_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.brcls import brier_score
 
 
@@ -10,7 +11,7 @@ def test_brcls_basic():
     y_true = np.random.default_rng(43).integers(0, 2, 100)
     result = brier_score(y_prob, y_true)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_brcls_edge():

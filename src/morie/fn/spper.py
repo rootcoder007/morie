@@ -50,7 +50,7 @@ def spper(
             phase = coords[:, 0] * fx + coords[:, 1] * fy
             real_part = np.sum(z * np.cos(phase))
             imag_part = np.sum(z * np.sin(phase))
-            power[i, j] = (real_part ** 2 + imag_part ** 2) / n
+            power[i, j] = (real_part**2 + imag_part**2) / n
 
     return {
         "freq_x": freq_x,

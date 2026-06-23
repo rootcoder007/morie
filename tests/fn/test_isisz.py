@@ -1,4 +1,5 @@
 """Tests for morie.fn.isisz — inter-spike interval analysis."""
+
 import numpy as np
 import pytest
 

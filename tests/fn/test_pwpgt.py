@@ -1,6 +1,7 @@
 """Tests for pwpgt.pwp_gap_time."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pwpgt import pwp_gap_time
 
 
@@ -13,7 +14,7 @@ def test_pwpgt_basic():
     occurrence = np.random.default_rng(42).normal(0, 1, 100)
     result = pwp_gap_time(start, stop, event, X, occurrence)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pwpgt_edge():

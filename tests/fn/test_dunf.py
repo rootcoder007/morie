@@ -1,6 +1,5 @@
 """Tests for morie.fn.dunf — uniform PDF."""
 
-import numpy as np
 import pytest
 
 from morie.fn.dunf import dunif

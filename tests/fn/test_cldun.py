@@ -1,6 +1,7 @@
 """Test cldun."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cldun import cldun
 
 

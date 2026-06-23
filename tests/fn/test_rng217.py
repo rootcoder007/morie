@@ -1,6 +1,7 @@
 """Tests for rng217.rangayyan_ch4_schwarz_inequality_real."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng217 import rangayyan_ch4_schwarz_inequality_real
 
 
@@ -11,7 +12,7 @@ def test_rng217_basic():
     t = np.linspace(0, 10, 100)
     result = rangayyan_ch4_schwarz_inequality_real(a, b, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng217_edge():

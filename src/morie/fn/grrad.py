@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Reverse-mode autodiff: forward pass stores activations; backward pass applies chain rule."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_reverse_mode_autodiff"]
@@ -32,7 +34,14 @@ def geron_reverse_mode_autodiff(graph, loss_grad):
     n = len(graph)
     result = float(np.mean(graph))
     se = float(np.std(graph, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Reverse-mode autodiff: forward pass stores activations; backward pass applies chain rule"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Reverse-mode autodiff: forward pass stores activations; backward pass applies chain rule",
+        }
+    )
 
 
 def cheatsheet():

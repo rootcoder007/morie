@@ -1,5 +1,7 @@
 """Test witin."""
+
 import pytest
+
 from morie.fn.witin import witten_index
 
 

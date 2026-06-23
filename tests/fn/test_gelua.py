@@ -1,5 +1,7 @@
 """Test GELU activation."""
+
 import numpy as np
+
 from morie.fn.gelua import gelua
 
 

@@ -1,6 +1,7 @@
 """Tests for wsmfis.wasserman_fisher_info."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmfis import wasserman_fisher_info
 
 
@@ -10,7 +11,7 @@ def test_wsmfis_basic():
     theta = 0.0
     result = wasserman_fisher_info(f, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmfis_edge():

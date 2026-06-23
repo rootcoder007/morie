@@ -30,7 +30,7 @@ def durbin_watson(residuals: np.ndarray) -> DescriptiveResult:
     n = len(e)
     if n < 3:
         raise ValueError(f"Need at least 3 observations, got {n}.")
-    ss = float(np.sum(e ** 2))
+    ss = float(np.sum(e**2))
     if ss < 1e-15:
         return DescriptiveResult(name="durbin_watson", value=2.0, extra={"dw": 2.0, "n": n})
     dw = float(np.sum(np.diff(e) ** 2) / ss)

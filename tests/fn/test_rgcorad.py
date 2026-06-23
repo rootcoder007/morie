@@ -1,6 +1,7 @@
 """Tests for rgcorad.rangayyan_coronary_ad."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgcorad import rangayyan_coronary_ad
 
 
@@ -11,7 +12,7 @@ def test_rgcorad_basic():
     order = 4
     result = rangayyan_coronary_ad(coronary_sound, fs, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgcorad_edge():

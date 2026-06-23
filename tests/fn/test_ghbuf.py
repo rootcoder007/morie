@@ -1,6 +1,7 @@
 """Test ghbuf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghbuf import ghbuf
 
 

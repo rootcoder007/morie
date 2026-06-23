@@ -1,8 +1,8 @@
 """CentralTendency expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["neighborhood_structures_and_crime_a_spatial_analysis_george__chapter_2_unnumbered_4"]
 
@@ -41,7 +41,12 @@ def neighborhood_structures_and_crime_a_spatial_analysis_george__chapter_2_unnum
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "CentralTendency expression (auto-extracted; see ref)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "CentralTendency expression (auto-extracted; see ref).",
+        },
     )
 
 

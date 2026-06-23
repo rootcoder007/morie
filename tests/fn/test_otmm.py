@@ -1,6 +1,7 @@
 """Tests for otmm.ot_minibatch_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otmm import ot_minibatch_loss
 
 
@@ -13,7 +14,7 @@ def test_otmm_basic():
     epsilon = 1e-6
     result = ot_minibatch_loss(X, Y, batch_size, n_batches, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otmm_edge():

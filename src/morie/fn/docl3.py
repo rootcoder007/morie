@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pearl's three rules of do-calculus for identification."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["do_calculus_rules"]
@@ -29,12 +31,19 @@ def do_calculus_rules(dag, query):
     Molak Ch 6
     """
     if isinstance(dag, dict):
-        dag = [len(v) if hasattr(v, '__len__') else float(v) for v in dag.values()] or [0.0]
+        dag = [len(v) if hasattr(v, "__len__") else float(v) for v in dag.values()] or [0.0]
     dag = np.asarray(dag, dtype=float)
     n = int(dag) if dag.ndim == 0 else len(dag)
     result = float(np.mean(dag))
     se = float(np.std(dag, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pearl's three rules of do-calculus for identification"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pearl's three rules of do-calculus for identification",
+        }
+    )
 
 
 def cheatsheet():

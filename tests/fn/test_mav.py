@@ -1,7 +1,9 @@
 """Test mean_abs_value."""
+
 import numpy as np
-from morie.fn.mav import mean_abs_value, alias
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mav import alias, mean_abs_value
 
 
 class TestMeanAbsValue:

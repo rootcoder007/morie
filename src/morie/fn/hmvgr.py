@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Vanishing gradients: small gradients shrink through many layers."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_vanishing_gradients"]
@@ -30,7 +32,14 @@ def geron_vanishing_gradients(grads):
     n = len(grads)
     result = float(np.mean(grads))
     se = float(np.std(grads, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Vanishing gradients: small gradients shrink through many layers"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Vanishing gradients: small gradients shrink through many layers",
+        }
+    )
 
 
 def cheatsheet():

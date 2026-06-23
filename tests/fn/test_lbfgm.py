@@ -1,8 +1,9 @@
 """Tests for morie.fn.lbfgm -- L-BFGS optimizer."""
 
 import numpy as np
-from morie.fn.lbfgm import lbfgs_optimize, lbfgm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lbfgm import lbfgm, lbfgs_optimize
 
 
 class TestLbfgm:
@@ -18,10 +19,12 @@ class TestLbfgm:
         assert r.extra["converged"]
 
     def test_rosenbrock(self):
-        f = lambda x: (1 - x[0])**2 + 100 * (x[1] - x[0]**2)**2
-        g = lambda x: np.array([
-            -2 * (1 - x[0]) - 400 * x[0] * (x[1] - x[0]**2),
-            200 * (x[1] - x[0]**2),
-        ])
+        f = lambda x: (1 - x[0]) ** 2 + 100 * (x[1] - x[0] ** 2) ** 2
+        g = lambda x: np.array(
+            [
+                -2 * (1 - x[0]) - 400 * x[0] * (x[1] - x[0] ** 2),
+                200 * (x[1] - x[0] ** 2),
+            ]
+        )
         r = lbfgs_optimize(f, g, np.array([0.0, 0.0]), maxiter=500)
         assert r.value < 1.0

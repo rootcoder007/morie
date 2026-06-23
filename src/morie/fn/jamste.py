@@ -61,4 +61,4 @@ jamste = james_stein
 
 
 def cheatsheet() -> str:
-    return 'james_stein({}) -> James-Stein shrinkage estimator.'
+    return "james_stein({}) -> James-Stein shrinkage estimator."

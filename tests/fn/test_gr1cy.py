@@ -1,6 +1,7 @@
 """Tests for gr1cy.geron_1cycle_schedule."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gr1cy import geron_1cycle_schedule
 
 
@@ -12,7 +13,7 @@ def test_gr1cy_basic():
     T = np.random.default_rng(43).integers(0, 2, 100)
     result = geron_1cycle_schedule(eta_min, eta_max, t, T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gr1cy_edge():

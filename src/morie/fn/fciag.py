@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fast Causal Inference (FCI) algorithm for hidden confounders."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fci_algorithm"]
@@ -34,7 +36,14 @@ def fci_algorithm(data, alpha, ci_test):
     n = int(data) if data.ndim == 0 else len(data)
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fast Causal Inference (FCI) algorithm for hidden confounders"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Fast Causal Inference (FCI) algorithm for hidden confounders",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for mafsn.ma_fail_safe_n."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mafsn import ma_fail_safe_n
 
 
@@ -10,7 +11,7 @@ def test_mafsn_basic():
     alpha = 0.05
     result = ma_fail_safe_n(z_scores, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mafsn_edge():

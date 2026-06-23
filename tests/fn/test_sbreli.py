@@ -1,6 +1,5 @@
 """Tests for sbreli.spearman_brown."""
-import numpy as np
-import pytest
+
 from morie.fn.sbreli import spearman_brown
 
 
@@ -10,7 +9,7 @@ def test_sbreli_basic():
     k = 5
     result = spearman_brown(r, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sbreli_edge():

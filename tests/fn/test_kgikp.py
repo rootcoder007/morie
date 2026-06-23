@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgikp -- Indicator kriging probability"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgikp import ik_probability
 

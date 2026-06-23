@@ -1,6 +1,8 @@
 """Standard normal homogeneity test."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["snht"]
@@ -31,7 +33,9 @@ def snht(x, cdf=None):
     x = np.asarray(x, dtype=float)
     n = len(x)
     if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Standard normal homogeneity test"})
+        return RichResult(
+            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Standard normal homogeneity test"}
+        )
     x_sorted = np.sort(x)
     if cdf is None:
         cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
@@ -46,9 +50,16 @@ def snht(x, cdf=None):
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
-    return RichResult(payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Standard normal homogeneity test"})
+    return RichResult(
+        payload={
+            "statistic": float(statistic),
+            "p_value": float(p_value),
+            "n": n,
+            "method": "Standard normal homogeneity test",
+        }
+    )
 
 
 def cheatsheet():

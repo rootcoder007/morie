@@ -1,6 +1,7 @@
 """Tests for fzt11.fauzi_thm1_1_bias_mgkde."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fzt11 import fauzi_thm1_1_bias_mgkde
 
 
@@ -10,7 +11,7 @@ def test_fzt11_basic():
     bandwidth = 0.3
     result = fauzi_thm1_1_bias_mgkde(x, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fzt11_edge():

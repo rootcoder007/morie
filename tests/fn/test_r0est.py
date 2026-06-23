@@ -1,6 +1,7 @@
 """Tests for morie.fn.r0est -- R0 via next-generation matrix."""
 
 import pytest
+
 from morie.fn.r0est import r0_next_generation
 
 

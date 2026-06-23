@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ewens sampling formula: EPPF for DP, p(n1..nk) = alpha^k prod(n_j-1)! / alpha^{[n]}."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ewens_esf"]
@@ -30,7 +32,14 @@ def ghosal_ewens_esf(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Ewens sampling formula: EPPF for DP, p(n1..nk) = alpha^k prod(n_j-1)! / alpha^{[n]}"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Ewens sampling formula: EPPF for DP, p(n1..nk) = alpha^k prod(n_j-1)! / alpha^{[n]}",
+        }
+    )
 
 
 def cheatsheet():

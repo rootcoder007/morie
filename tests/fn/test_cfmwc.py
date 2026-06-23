@@ -1,7 +1,7 @@
 """Tests for morie.fn.cfmwc."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cfmwc import cfmwc
 
 

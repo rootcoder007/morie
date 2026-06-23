@@ -7,7 +7,7 @@ Splits problem into subproblems; solves via alternating proximal updates.
 
 import numpy as np
 
-__all__ = ['admm']
+__all__ = ["admm"]
 
 
 def admm(f, g, A, b, rho=1.0, max_iter=1000, tol=1e-4, full_output=False):
@@ -68,9 +68,11 @@ def admm(f, g, A, b, rho=1.0, max_iter=1000, tol=1e-4, full_output=False):
     for it in range(max_iter):
         # x-update
         from scipy.optimize import minimize
+
         def obj_x(x_):
-            return f(x_) + 0.5 * rho * np.sum((A @ x_ + z - b + u / rho)**2)
-        res = minimize(obj_x, x, method='BFGS', options={'maxiter': 20})
+            return f(x_) + 0.5 * rho * np.sum((A @ x_ + z - b + u / rho) ** 2)
+
+        res = minimize(obj_x, x, method="BFGS", options={"maxiter": 20})
         x = res.x
 
         # z-update (proximal operator of g)
@@ -85,15 +87,9 @@ def admm(f, g, A, b, rho=1.0, max_iter=1000, tol=1e-4, full_output=False):
         residual = np.linalg.norm(u - u_old)
         if residual < tol:
             if full_output:
-                return x, {
-                    'iterations': it + 1,
-                    'converged': True
-                }
+                return x, {"iterations": it + 1, "converged": True}
             return x
 
     if full_output:
-        return x, {
-            'iterations': max_iter,
-            'converged': False
-        }
+        return x, {"iterations": max_iter, "converged": False}
     return x

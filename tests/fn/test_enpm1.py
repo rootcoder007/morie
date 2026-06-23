@@ -1,6 +1,7 @@
 """Test enpm1."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enpm1 import enpm1
 
 

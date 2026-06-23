@@ -1,6 +1,7 @@
 """Tests for morie.fn.gbdsb -- GBD subgroup."""
 
 import pytest
+
 from morie.fn.gbdsb import gbd_subgroup
 
 
@@ -16,6 +17,7 @@ class TestGBDSubgroup:
 
 def test_cheatsheet():
     from morie.fn.gbdsb import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

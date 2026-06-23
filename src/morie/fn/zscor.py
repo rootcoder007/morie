@@ -1,8 +1,12 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Z-score / standard score."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
+
+
 def zscor(x: Union[Sequence, np.ndarray]) -> np.ndarray:
     """Z-score: (x − x̄) / s. Sample-SD (ddof=1)."""
     a = np.asarray(x, dtype=float)

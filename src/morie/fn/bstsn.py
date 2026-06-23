@@ -19,6 +19,7 @@ Brodersen, K. H., Gallusser, F., Koehler, J., Remy, N., & Scott, S. L.
 (2015). Inferring causal impact using Bayesian structural time-series
 models. *Annals of Applied Statistics*, 9(1), 247-274.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -85,13 +86,13 @@ def bstsn(
     trend_samples = np.zeros((n_iter - burn, T_len))
     sigma_obs_samples = np.zeros(n_iter - burn)
 
-    alpha_state = np.zeros(T_len)     # current smoothed trend
+    alpha_state = np.zeros(T_len)  # current smoothed trend
     alpha_state[0] = y[0]
 
     for it in range(n_iter):
         # Kalman filter forward pass
-        mu_f = np.zeros(T_len)        # filtered means
-        P_f = np.zeros(T_len)         # filtered variances
+        mu_f = np.zeros(T_len)  # filtered means
+        P_f = np.zeros(T_len)  # filtered variances
 
         mu_pred, P_pred = y[0], sigma2_obs + sigma2_mu
         for t in range(T_len):
@@ -142,10 +143,13 @@ def bstsn(
                 mu_now = rng.normal(mu_now, np.sqrt(sigma2_mu))
                 fcast_samples[s, h] = rng.normal(mu_now, np.sqrt(sigma_now))
         forecast_mean = fcast_samples.mean(axis=0)
-        forecast_ci = np.stack([
-            np.percentile(fcast_samples, 2.5, axis=0),
-            np.percentile(fcast_samples, 97.5, axis=0),
-        ], axis=1)
+        forecast_ci = np.stack(
+            [
+                np.percentile(fcast_samples, 2.5, axis=0),
+                np.percentile(fcast_samples, 97.5, axis=0),
+            ],
+            axis=1,
+        )
 
     return {
         "trend_mean": trend_mean,

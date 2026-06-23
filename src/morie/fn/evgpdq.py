@@ -1,6 +1,7 @@
 """GPD quantile function."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_gpd_quantile"]

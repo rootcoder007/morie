@@ -1,6 +1,8 @@
 """Tests for stlin."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stlin import stlin
 
 
@@ -28,4 +30,5 @@ def test_stlin_no_data():
 
 def test_stlin_alias():
     from morie.fn.stlin import stlin
+
     assert stlin is stlin

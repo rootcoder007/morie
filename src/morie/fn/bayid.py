@@ -49,9 +49,9 @@ def bayesian_ideal_points(
     Z_nay = rng.standard_normal((n_votes, n_dims)) * 0.5
 
     def _logpost(X, Z_yea, Z_nay):
-        lp = -0.5 * np.sum(X ** 2) / (prior_sd ** 2)
-        lp -= 0.5 * np.sum(Z_yea ** 2) / (prior_sd ** 2)
-        lp -= 0.5 * np.sum(Z_nay ** 2) / (prior_sd ** 2)
+        lp = -0.5 * np.sum(X**2) / (prior_sd**2)
+        lp -= 0.5 * np.sum(Z_yea**2) / (prior_sd**2)
+        lp -= 0.5 * np.sum(Z_nay**2) / (prior_sd**2)
         for j in range(n_votes):
             valid = ~np.isnan(V[:, j])
             d_yea = np.sum((X[valid] - Z_yea[j]) ** 2, axis=1)

@@ -1,6 +1,7 @@
 """Tests for morie.fn.clump — LD clumping."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clump import ld_clumping
 
 

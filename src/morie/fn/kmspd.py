@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Speculative decoding: draft model proposes tokens, target model accepts/rejects per-token."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_speculative_decoding"]
@@ -32,7 +34,14 @@ def kamath_speculative_decoding(draft_probs, target_probs):
     n = len(draft_probs)
     result = float(np.mean(draft_probs))
     se = float(np.std(draft_probs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Speculative decoding: draft model proposes tokens, target model accepts/rejects per-token"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Speculative decoding: draft model proposes tokens, target model accepts/rejects per-token",
+        }
+    )
 
 
 def cheatsheet():

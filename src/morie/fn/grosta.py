@@ -34,4 +34,4 @@ grosta = grouped_stats
 
 
 def cheatsheet() -> str:
-    return 'grouped_stats({}) -> Grouped summary statistics.'
+    return "grouped_stats({}) -> Grouped summary statistics."

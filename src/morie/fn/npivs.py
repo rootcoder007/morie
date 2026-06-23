@@ -70,10 +70,8 @@ def npivs(
     def _build_basis(v: np.ndarray, k: int) -> np.ndarray:
         v_std = (v - v.mean()) / (v.std() + 1e-12)
         if basis == "cosine":
-            return np.column_stack(
-                [np.cos(np.pi * j * (v_std + 1) / 2) for j in range(k)]
-            )
-        return np.column_stack([v_std ** j for j in range(k)])
+            return np.column_stack([np.cos(np.pi * j * (v_std + 1) / 2) for j in range(k)])
+        return np.column_stack([v_std**j for j in range(k)])
 
     Phi_x = _build_basis(X, n_basis_x)
     Phi_z = _build_basis(Z, n_basis_z)

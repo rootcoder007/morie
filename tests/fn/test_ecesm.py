@@ -1,6 +1,8 @@
 """Tests for morie.fn.ecesm — Expected calibration error."""
+
 import numpy as np
 import pytest
+
 from morie.fn.ecesm import ecesm
 
 
@@ -64,4 +66,5 @@ def test_n_bins_stored(data):
 
 def test_cheatsheet():
     from morie.fn.ecesm import cheatsheet
+
     assert len(cheatsheet()) > 0

@@ -1,6 +1,7 @@
 """Sample from a logistic-normal on the simplex via ALR^-1."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["logistic_normal_sample"]
@@ -34,7 +35,14 @@ def logistic_normal_sample(mu, Sigma, n):
     n = len(mu)
     result = float(np.mean(mu))
     se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sample from a logistic-normal on the simplex via ALR^-1"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Sample from a logistic-normal on the simplex via ALR^-1",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Credit assignment problem: which past actions caused reward."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_credit_assignment"]
@@ -30,7 +32,14 @@ def geron_credit_assignment(trajectory):
     n = len(trajectory)
     result = float(np.mean(trajectory))
     se = float(np.std(trajectory, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Credit assignment problem: which past actions caused reward"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Credit assignment problem: which past actions caused reward",
+        }
+    )
 
 
 def cheatsheet():

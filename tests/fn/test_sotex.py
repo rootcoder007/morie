@@ -1,6 +1,7 @@
 """Test sotex."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sotex import sotex
 
 

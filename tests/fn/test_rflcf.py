@@ -1,5 +1,7 @@
 """Tests for rflcf.py - Reflection coefficients."""
+
 import numpy as np
+
 from morie.fn.rflcf import reflection_coefficients_fn, rflcf
 
 

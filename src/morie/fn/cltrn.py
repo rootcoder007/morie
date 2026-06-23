@@ -58,9 +58,9 @@ def cluster_trial_size(
     z_beta = stats.norm.ppf(power)
 
     p_bar = (p1 + p2) / 2
-    n_ind = ((z_alpha * np.sqrt(2 * p_bar * (1 - p_bar)) +
-              z_beta * np.sqrt(p1 * (1 - p1) + p2 * (1 - p2))) /
-             (p1 - p2)) ** 2
+    n_ind = (
+        (z_alpha * np.sqrt(2 * p_bar * (1 - p_bar)) + z_beta * np.sqrt(p1 * (1 - p1) + p2 * (1 - p2))) / (p1 - p2)
+    ) ** 2
 
     deff = 1 + (cluster_size - 1) * icc
     n_adj = n_ind * deff

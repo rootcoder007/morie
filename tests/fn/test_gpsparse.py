@@ -1,6 +1,8 @@
 """Tests for gpsparse."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gpsparse import gpsparse
 
 
@@ -28,4 +30,5 @@ def test_gpsparse_no_data():
 
 def test_gpsparse_alias():
     from morie.fn.gpsparse import gpsparse
+
     assert gpsparse is gpsparse

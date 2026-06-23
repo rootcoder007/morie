@@ -1,6 +1,7 @@
 """Mantel-Haenszel pooled odds ratio."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_mantel_haenszel"]

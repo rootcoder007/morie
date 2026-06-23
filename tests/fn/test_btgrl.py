@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.btgrl import bagplot_outliers, btgrl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.btgrl import bagplot_outliers, btgrl
 
 
 class TestBtgrl:

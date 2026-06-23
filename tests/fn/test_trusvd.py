@@ -1,8 +1,9 @@
 """Tests for morie.fn.trusvd -- truncated SVD decomposition."""
 
 import numpy as np
-from morie.fn.trusvd import svd_rank_reduce, trusvd
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.trusvd import svd_rank_reduce, trusvd
 
 
 class TestTrusvd:

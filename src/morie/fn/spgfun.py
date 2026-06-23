@@ -1,5 +1,7 @@
 """G-function: nearest-neighbor distance CDF."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_g_function"]
@@ -31,7 +33,9 @@ def schabenberger_g_function(points, r):
     n = int(points) if points.ndim == 0 else len(points)
     result = float(np.mean(points))
     se = float(np.std(points, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "G-function: nearest-neighbor distance CDF"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "G-function: nearest-neighbor distance CDF"}
+    )
 
 
 def cheatsheet():

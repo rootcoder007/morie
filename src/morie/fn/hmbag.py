@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bagging (bootstrap aggregating): train on bootstrap samples, aggregate outputs."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_bagging"]
@@ -38,7 +40,14 @@ def geron_bagging(X, y, base_estimator, n_estimators, seed):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bagging (bootstrap aggregating): train on bootstrap samples, aggregate outputs"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bagging (bootstrap aggregating): train on bootstrap samples, aggregate outputs",
+        }
+    )
 
 
 def cheatsheet():

@@ -2,13 +2,13 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.silh import silhouette_score
 
 
 class TestSilhouetteScore:
     def test_well_separated(self):
-        X = np.array([[0, 0], [0.1, 0], [0, 0.1],
-                       [10, 10], [10.1, 10], [10, 10.1]], dtype=float)
+        X = np.array([[0, 0], [0.1, 0], [0, 0.1], [10, 10], [10.1, 10], [10, 10.1]], dtype=float)
         labels = np.array([0, 0, 0, 1, 1, 1])
         result = silhouette_score(X, labels)
         assert result["mean_score"] > 0.8

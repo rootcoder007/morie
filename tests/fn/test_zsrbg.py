@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsrbg -- Gaussian RBF interpolation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsrbg import rbf_gaussian
 

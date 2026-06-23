@@ -1,7 +1,7 @@
 """Tests for morie.fn.mdsta."""
 
 import numpy as np
-import pytest
+
 from morie.fn.mdsta import mdsta
 
 

@@ -1,7 +1,7 @@
 """Tests for morie.fn.jukrat -- Jukes-Cantor mutation rate."""
 
-from morie.fn.jukrat import jukes_cantor_rate, jukrat
 from morie.fn._containers import DescriptiveResult
+from morie.fn.jukrat import jukes_cantor_rate, jukrat
 
 
 class TestJukrat:

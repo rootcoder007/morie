@@ -1,7 +1,7 @@
 """Tests for morie.fn.mddim."""
 
 import numpy as np
-import pytest
+
 from morie.fn.mddim import mddim
 
 

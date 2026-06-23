@@ -1,6 +1,7 @@
 """Tests for spsmsh.spsm_shifted_intervention."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spsmsh import spsm_shifted_intervention
 
 
@@ -9,10 +10,10 @@ def test_spsmsh_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     A = np.random.default_rng(42).normal(0, 1, (10, 10))
     H = np.random.default_rng(42).normal(0, 1, 100)
-    shift_fn = (lambda v: v)
+    shift_fn = lambda v: v
     result = spsm_shifted_intervention(y, A, H, shift_fn)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spsmsh_edge():
@@ -20,6 +21,6 @@ def test_spsmsh_edge():
     y = np.random.default_rng(43).normal(0, 1, 100)
     A = np.random.default_rng(42).normal(0, 1, (10, 10))
     H = np.random.default_rng(42).normal(0, 1, 100)
-    shift_fn = (lambda v: v)
+    shift_fn = lambda v: v
     result = spsm_shifted_intervention(y, A, H, shift_fn)
     assert isinstance(result, dict)

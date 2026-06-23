@@ -1,6 +1,7 @@
 """Tests for intlpa.interior_point_lp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.intlpa import interior_point_lp
 
 
@@ -13,7 +14,7 @@ def test_intlpa_basic():
     tau = 0.1
     result = interior_point_lp(c, A, b, x0, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_intlpa_edge():

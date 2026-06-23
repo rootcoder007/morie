@@ -1,6 +1,7 @@
 """Tests for grepl.geron_epsilon_greedy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grepl import geron_epsilon_greedy
 
 
@@ -11,7 +12,7 @@ def test_grepl_basic():
     seed = 42
     result = geron_epsilon_greedy(Q_s, eps, seed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grepl_edge():

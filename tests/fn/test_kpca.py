@@ -1,8 +1,9 @@
 """Tests for morie.fn.kpca -- Kernel PCA."""
 
 import numpy as np
-from morie.fn.kpca import kernel_pca, kpca
+
 from morie.fn._containers import PcaRes
+from morie.fn.kpca import kernel_pca, kpca
 
 
 class TestKernelPca:

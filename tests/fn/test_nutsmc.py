@@ -1,6 +1,7 @@
 """Tests for nutsmc.nuts_sampler."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nutsmc import nuts_sampler
 
 
@@ -12,7 +13,7 @@ def test_nutsmc_basic():
     n_iter = 50
     result = nuts_sampler(log_p, grad_log_p, x0, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_nutsmc_edge():

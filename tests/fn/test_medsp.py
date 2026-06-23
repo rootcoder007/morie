@@ -1,6 +1,7 @@
 """Test medsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.medsp import medsp
 
 

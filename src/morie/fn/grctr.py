@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """InfoNCE contrastive loss: pulls positives together, pushes negatives apart."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_contrastive_infonce"]
@@ -36,7 +38,14 @@ def geron_contrastive_infonce(anchors, positives, negatives, tau):
     n = len(anchors)
     result = float(np.mean(anchors))
     se = float(np.std(anchors, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "InfoNCE contrastive loss: pulls positives together, pushes negatives apart"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "InfoNCE contrastive loss: pulls positives together, pushes negatives apart",
+        }
+    )
 
 
 def cheatsheet():

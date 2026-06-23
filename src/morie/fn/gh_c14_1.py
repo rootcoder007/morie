@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exchangeable partition probability function (EPPF): p(n1,...,nk) for partition of n."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_eppf_def"]
@@ -30,7 +32,14 @@ def ghosal_eppf_def(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Exchangeable partition probability function (EPPF): p(n1,...,nk) for partition of n"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Exchangeable partition probability function (EPPF): p(n1,...,nk) for partition of n",
+        }
+    )
 
 
 def cheatsheet():

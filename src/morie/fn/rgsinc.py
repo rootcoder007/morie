@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ideal sinc (low-pass) filter impulse response."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_sinc_kernel"]
@@ -34,7 +36,9 @@ def rangayyan_sinc_kernel(fc, fs, M):
     n = int(fc) if fc.ndim == 0 else len(fc)
     result = float(np.mean(fc))
     se = float(np.std(fc, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Ideal sinc (low-pass) filter impulse response"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Ideal sinc (low-pass) filter impulse response"}
+    )
 
 
 def cheatsheet():

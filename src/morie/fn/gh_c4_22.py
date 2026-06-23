@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Constrained Dirichlet process: DP conditioned on linear constraint integral f dG = c."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_constr_dp"]
@@ -30,7 +32,14 @@ def ghosal_constr_dp(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Constrained Dirichlet process: DP conditioned on linear constraint integral f dG = c"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Constrained Dirichlet process: DP conditioned on linear constraint integral f dG = c",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Chebyshev inequality P(|X-mu|>=k sigma) <= 1/k^2."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["wasserman_chebyshev_ineq"]
@@ -30,7 +31,9 @@ def wasserman_chebyshev_ineq(k):
     n = len(k)
     result = float(np.mean(k))
     se = float(np.std(k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Chebyshev inequality P(|X-mu|>=k sigma) <= 1/k^2"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Chebyshev inequality P(|X-mu|>=k sigma) <= 1/k^2"}
+    )
 
 
 def cheatsheet():

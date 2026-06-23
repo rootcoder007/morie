@@ -31,6 +31,7 @@ emulation via ``utils::sha256`` (R >= 4.3 ships ``tools::md5sum``;
 the helper falls back to the ``digest`` / ``openssl`` packages when
 present).
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -45,7 +46,7 @@ def sha_digest_hex(name: str, seed: int) -> str:
 
     Exposed so R-side tests can cross-check identical hex digests.
     """
-    return hashlib.sha256(f"{name}:{seed}".encode("utf-8")).hexdigest()
+    return hashlib.sha256(f"{name}:{seed}".encode()).hexdigest()
 
 
 def from_seed(name: str, seed: int) -> np.random.Generator:
@@ -64,7 +65,7 @@ def from_seed(name: str, seed: int) -> np.random.Generator:
         Philox-backed Generator whose stream is fully determined by
         SHA-256(name || ':' || seed).
     """
-    digest = hashlib.sha256(f"{name}:{seed}".encode("utf-8")).digest()
+    digest = hashlib.sha256(f"{name}:{seed}".encode()).digest()
     py_key = int.from_bytes(digest[:8], "big")  # 64-bit unsigned key
     bg = np.random.Philox(py_key)
     return np.random.Generator(bg)
@@ -89,5 +90,5 @@ def r_seed(name: str, seed: int) -> int:
     int
         Positive integer in ``[0, 2**31 - 1)`` suitable for ``set.seed``.
     """
-    digest = hashlib.sha256(f"{name}:{seed}".encode("utf-8")).digest()
+    digest = hashlib.sha256(f"{name}:{seed}".encode()).digest()
     return int.from_bytes(digest[8:12], "big") % (2**31 - 1)

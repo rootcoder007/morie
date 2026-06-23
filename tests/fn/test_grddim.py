@@ -1,6 +1,7 @@
 """Tests for grddim.geron_ddim_sampling_step."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grddim import geron_ddim_sampling_step
 
 
@@ -13,7 +14,7 @@ def test_grddim_basic():
     alpha_bar = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_ddim_sampling_step(x_t, t, t_prev, eps_pred, alpha_bar)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grddim_edge():

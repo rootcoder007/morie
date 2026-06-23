@@ -1,6 +1,8 @@
 """Tests for mcsbs."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mcsbs import mcsbs
 
 
@@ -28,4 +30,5 @@ def test_mcsbs_no_data():
 
 def test_mcsbs_alias():
     from morie.fn.mcsbs import mcsbs
+
     assert mcsbs is mcsbs

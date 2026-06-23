@@ -1,6 +1,7 @@
 """DR for changeover designs."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["changeover_dr"]

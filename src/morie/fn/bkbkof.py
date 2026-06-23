@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """N-gram backoff: fall back to lower-order n-gram when higher-order count is zero."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_ngram_backoff"]
@@ -32,7 +34,14 @@ def burkov_ngram_backoff(counts_by_order, alpha):
     n = len(counts_by_order)
     result = float(np.mean(counts_by_order))
     se = float(np.std(counts_by_order, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "N-gram backoff: fall back to lower-order n-gram when higher-order count is zero"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "N-gram backoff: fall back to lower-order n-gram when higher-order count is zero",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,7 @@
 """Tests for morie.fn.citym — City-block spatial model."""
+
 import numpy as np
+
 from morie.fn.citym import citym
 
 

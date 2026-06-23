@@ -1,6 +1,7 @@
 """Mini-batch OT loss over random subsets (for SGD training)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_minibatch_loss"]
@@ -38,7 +39,14 @@ def ot_minibatch_loss(X, Y, batch_size, n_batches, epsilon):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mini-batch OT loss over random subsets (for SGD training)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mini-batch OT loss over random subsets (for SGD training)",
+        }
+    )
 
 
 def cheatsheet():

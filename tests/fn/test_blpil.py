@@ -1,8 +1,9 @@
 """Tests for morie.fn.blpil -- naive baseline estimator."""
 
 import pandas as pd
-from morie.fn.blpil import naive_baseline, blpil
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.blpil import blpil, naive_baseline
 
 
 class TestBlpil:

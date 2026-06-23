@@ -1,6 +1,7 @@
 """Equivalent discrete-time causal convolution with swapped arguments.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_discrete_convolution_causal_alt"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_discrete_convolution_causal_alt(x, h, n):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Equivalent discrete-time causal convolution with swapped arguments."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Equivalent discrete-time causal convolution with swapped arguments.",
+        }
+    )
 
 
 def cheatsheet():

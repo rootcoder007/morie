@@ -1,6 +1,7 @@
 """Tests for otpr.ot_partial_ot."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otpr import ot_partial_ot
 
 
@@ -12,7 +13,7 @@ def test_otpr_basic():
     m = 10
     result = ot_partial_ot(a, b, C, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otpr_edge():

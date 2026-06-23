@@ -1,6 +1,7 @@
 """Differential entropy of a continuous PDF in bits.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_entropy_continuous"]
@@ -32,7 +33,9 @@ def rangayyan_ch3_entropy_continuous(eta, p_eta):
     n = len(eta)
     result = float(np.mean(eta))
     se = float(np.std(eta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Differential entropy of a continuous PDF in bits."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Differential entropy of a continuous PDF in bits."}
+    )
 
 
 def cheatsheet():

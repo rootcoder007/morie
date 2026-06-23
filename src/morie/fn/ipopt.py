@@ -8,7 +8,7 @@ Solves constrained optimization via logarithmic barrier penalties.
 import numpy as np
 from scipy.optimize import minimize
 
-__all__ = ['ipopt']
+__all__ = ["ipopt"]
 
 
 def ipopt(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, mu_init=1.0, full_output=False):
@@ -67,11 +67,12 @@ def ipopt(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, mu_init=1.0, full_
     rho = 0.1
 
     for iteration in range(max_iter):
+
         def barrier_f(x_):
             # f(x) - mu * sum(log(c_i(x)))
             barrier_val = f(x_)
             for c_dict in constraints:
-                c_val = c_dict['fun'](x_)
+                c_val = c_dict["fun"](x_)
                 if c_val <= 0:
                     return 1e10
                 barrier_val -= mu * np.log(c_val)
@@ -81,30 +82,22 @@ def ipopt(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, mu_init=1.0, full_
             # grad f - mu * sum(grad(log(c_i)))
             g = grad_f(x_)
             for c_dict in constraints:
-                c_val = c_dict['fun'](x_)
-                jac = c_dict.get('jac', lambda x: np.gradient(c_dict['fun'](x)))
+                c_val = c_dict["fun"](x_)
+                jac = c_dict.get("jac", lambda x: np.gradient(c_dict["fun"](x)))
                 g -= mu * jac(x_) / (c_val + 1e-14)
             return g
 
         # Minimize barrier subproblem
-        result = minimize(barrier_f, x, method='BFGS', jac=barrier_grad, options={'maxiter': 50})
+        result = minimize(barrier_f, x, method="BFGS", jac=barrier_grad, options={"maxiter": 50})
         x = result.x
 
         if mu < tol:
             if full_output:
-                return x, {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_value': f(x)
-                }
+                return x, {"iterations": iteration + 1, "converged": True, "final_value": f(x)}
             return x
 
         mu *= rho
 
     if full_output:
-        return x, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_value': f(x)
-        }
+        return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x

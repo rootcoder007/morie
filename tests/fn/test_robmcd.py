@@ -1,8 +1,9 @@
 """Tests for morie.fn.robmcd -- MCD robust covariance."""
 
 import numpy as np
-from morie.fn.robmcd import robust_covariance_mcd, robmcd
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.robmcd import robmcd, robust_covariance_mcd
 
 
 class TestRobmcd:

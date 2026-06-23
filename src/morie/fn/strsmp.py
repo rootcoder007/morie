@@ -7,4 +7,4 @@ stratified_sample = _fn
 
 
 def cheatsheet() -> str:
-    return 'strsmp() -> Stratified random sample.'
+    return "strsmp() -> Stratified random sample."

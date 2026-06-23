@@ -1,6 +1,7 @@
 """Tests for wbcide.wooldridge_bjs_estimator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wbcide import wooldridge_bjs_estimator
 
 
@@ -13,7 +14,7 @@ def test_wbcide_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = wooldridge_bjs_estimator(y, D, unit, time, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wbcide_edge():

@@ -1,8 +1,9 @@
 """Tests for morie.fn.drstr -- multiverse bootstrap."""
 
 import numpy as np
-from morie.fn.drstr import multiverse_bootstrap, drstr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.drstr import drstr, multiverse_bootstrap
 
 
 class TestDrstr:

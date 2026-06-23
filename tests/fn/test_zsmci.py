@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsmci -- Monte Carlo spatial integration"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsmci import mc_spatial_int
 

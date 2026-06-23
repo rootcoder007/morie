@@ -1,6 +1,7 @@
 """Test cshts."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cshts import cshts
 
 

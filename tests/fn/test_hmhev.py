@@ -1,6 +1,7 @@
 """Tests for hmhev.geron_heaviside."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmhev import geron_heaviside
 
 
@@ -9,7 +10,7 @@ def test_hmhev_basic():
     z = np.random.default_rng(44).normal(0, 1, 100)
     result = geron_heaviside(z)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmhev_edge():

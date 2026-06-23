@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Procrustes rotation to align two MDS configurations."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["procrustes_rotation"]
@@ -32,7 +34,9 @@ def procrustes_rotation(A, Z):
     n = int(A) if A.ndim == 0 else len(A)
     result = float(np.mean(A))
     se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Procrustes rotation to align two MDS configurations"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Procrustes rotation to align two MDS configurations"}
+    )
 
 
 def cheatsheet():

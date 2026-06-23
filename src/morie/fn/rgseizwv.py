@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """EEG epileptic seizure detection via wavelet energy."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_seizure_wavelet"]
@@ -36,7 +38,9 @@ def rangayyan_seizure_wavelet(eeg, fs, wavelet, levels):
     n = int(eeg) if eeg.ndim == 0 else len(eeg)
     result = float(np.mean(eeg))
     se = float(np.std(eeg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "EEG epileptic seizure detection via wavelet energy"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "EEG epileptic seizure detection via wavelet energy"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for sirtdy.sir_age_structured."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sirtdy import sir_age_structured
 
 
@@ -13,7 +14,7 @@ def test_sirtdy_basic():
     gamma = 1.0
     result = sir_age_structured(S, I, R, contact_matrix, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sirtdy_edge():

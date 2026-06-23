@@ -1,6 +1,7 @@
 """Test dlaumn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dlaumn import dlaumn
 
 

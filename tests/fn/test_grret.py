@@ -1,6 +1,7 @@
 """Tests for grret.geron_discounted_return."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grret import geron_discounted_return
 
 
@@ -10,7 +11,7 @@ def test_grret_basic():
     gamma = 1.0
     result = geron_discounted_return(rewards, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grret_edge():

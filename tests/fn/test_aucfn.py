@@ -1,7 +1,9 @@
 """Test auc_compute (aucfn)."""
+
 import numpy as np
-from morie.fn.aucfn import auc_compute, aucfn
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.aucfn import auc_compute, aucfn
 
 
 class TestAucfn:

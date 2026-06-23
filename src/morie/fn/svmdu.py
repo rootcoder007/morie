@@ -1,5 +1,7 @@
 """SVM Wolfe dual formulation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["svm_dual_wolfe"]

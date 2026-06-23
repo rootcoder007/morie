@@ -1,6 +1,7 @@
 """Least median of squares regression."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["least_median_squares"]

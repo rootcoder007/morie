@@ -1,6 +1,7 @@
 """Tests for wfrep.weighted_frequency."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wfrep import weighted_frequency
 
 
@@ -11,7 +12,7 @@ def test_wfrep_basic():
     cells = np.random.default_rng(42).normal(0, 1, 100)
     result = weighted_frequency(y, weights, cells)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wfrep_edge():

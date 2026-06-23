@@ -1,4 +1,5 @@
 """Tests for asymptotic z-test."""
+
 from morie.fn.sgzts import sgzts
 
 

@@ -1,6 +1,8 @@
 """Tests for morie.fn.xlear — X-learner CATE."""
+
 import numpy as np
 import pytest
+
 from morie.fn.xlear import xlear
 
 
@@ -52,4 +54,5 @@ def test_finite(data):
 
 def test_cheatsheet():
     from morie.fn.xlear import cheatsheet
+
     assert len(cheatsheet()) > 0

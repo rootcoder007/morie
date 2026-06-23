@@ -1,6 +1,7 @@
 """Test vmswt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmswt import vmswt
 
 

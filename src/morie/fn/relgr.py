@@ -98,4 +98,4 @@ relgr = reliability_growth
 
 
 def cheatsheet() -> str:
-    return 'reliability_growth({}) -> Reliability growth (Duane/AMSAA model).'
+    return "reliability_growth({}) -> Reliability growth (Duane/AMSAA model)."

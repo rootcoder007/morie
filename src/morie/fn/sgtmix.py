@@ -1,6 +1,7 @@
 """Mixing time from spectral gap of L_rw."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sgt_mixing_time"]

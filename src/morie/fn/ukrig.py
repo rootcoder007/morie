@@ -1,6 +1,8 @@
 """Universal kriging with polynomial trend (Schabenberger & Gotway Ch 4)."""
+
 import numpy as np
 from scipy.spatial.distance import cdist
+
 from ._richresult import RichResult
 
 __all__ = ["universal_kriging"]
@@ -11,7 +13,7 @@ def _cov(h, c0, c1, a, model):
     if model == "exponential":
         return c1 * np.exp(-h / a) + np.where(h == 0, c0, 0.0)
     if model == "gaussian":
-        return c1 * np.exp(-(h ** 2) / (a ** 2)) + np.where(h == 0, c0, 0.0)
+        return c1 * np.exp(-(h**2) / (a**2)) + np.where(h == 0, c0, 0.0)
     if model == "spherical":
         c = np.where(h <= a, c1 * (1.0 - 1.5 * h / a + 0.5 * (h / a) ** 3), 0.0)
         return c + np.where(h == 0, c0, 0.0)
@@ -26,18 +28,24 @@ def _trend(c, order):
         return np.hstack([np.ones((c.shape[0], 1)), c])
     if order == 2:
         ones = np.ones((c.shape[0], 1))
-        sq = c ** 2
+        sq = c**2
         if c.shape[1] >= 2:
-            cross = (c[:, 0:1] * c[:, 1:2])
+            cross = c[:, 0:1] * c[:, 1:2]
             return np.hstack([ones, c, sq, cross])
         return np.hstack([ones, c, sq])
     raise ValueError("trend_order must be 0, 1, or 2")
 
 
-def universal_kriging(x, coords, target,
-                      model: str = "exponential",
-                      nugget: float = 0.0, sill: float = 1.0, range_: float = 1.0,
-                      trend_order: int = 1):
+def universal_kriging(
+    x,
+    coords,
+    target,
+    model: str = "exponential",
+    nugget: float = 0.0,
+    sill: float = 1.0,
+    range_: float = 1.0,
+    trend_order: int = 1,
+):
     """
     Universal kriging.
 
@@ -70,12 +78,13 @@ def universal_kriging(x, coords, target,
     if target.ndim == 1:
         target = target.reshape(1, -1)
     if target.shape[1] != coords.shape[1]:
-        raise ValueError(
-            f"target dim {target.shape[1]} must match coords dim {coords.shape[1]}")
+        raise ValueError(f"target dim {target.shape[1]} must match coords dim {coords.shape[1]}")
     n = x.size
     if coords.shape[0] != n:
         raise ValueError(f"coords rows ({coords.shape[0]}) must match x ({n})")
-    c0 = float(nugget); c1 = float(sill - nugget); a = float(range_)
+    c0 = float(nugget)
+    c1 = float(sill - nugget)
+    a = float(range_)
     if c1 < 0:
         raise ValueError("sill must be >= nugget")
 
@@ -110,12 +119,14 @@ def universal_kriging(x, coords, target,
         est_out, se_out = estimates[0], ses[0]
     else:
         est_out, se_out = estimates, ses
-    return RichResult(payload={
-        "estimate": est_out,
-        "se": se_out,
-        "n": int(n),
-        "method": f"Universal kriging ({model}, trend_order={trend_order})",
-    })
+    return RichResult(
+        payload={
+            "estimate": est_out,
+            "se": se_out,
+            "n": int(n),
+            "method": f"Universal kriging ({model}, trend_order={trend_order})",
+        }
+    )
 
 
 def cheatsheet():

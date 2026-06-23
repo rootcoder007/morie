@@ -1,7 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sample mean -- canonical x̄ notation."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
 
 import numpy as np
 

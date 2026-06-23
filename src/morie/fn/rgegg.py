@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Electrogastrogram (EGG) feature extraction (dominant frequency, power)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_egg"]
@@ -32,7 +34,14 @@ def rangayyan_egg(egg, fs):
     n = int(egg) if egg.ndim == 0 else len(egg)
     result = float(np.mean(egg))
     se = float(np.std(egg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Electrogastrogram (EGG) feature extraction (dominant frequency, power)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Electrogastrogram (EGG) feature extraction (dominant frequency, power)",
+        }
+    )
 
 
 def cheatsheet():

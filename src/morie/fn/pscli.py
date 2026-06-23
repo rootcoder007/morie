@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """pscl ideal() function for Bayesian IRT roll call scaling."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["pscl_ideal"]
@@ -34,7 +36,14 @@ def pscl_ideal(rollcall_obj, n_dims, n_iter):
     n = int(rollcall_obj) if rollcall_obj.ndim == 0 else len(rollcall_obj)
     result = float(np.mean(rollcall_obj))
     se = float(np.std(rollcall_obj, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "pscl ideal() function for Bayesian IRT roll call scaling"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "pscl ideal() function for Bayesian IRT roll call scaling",
+        }
+    )
 
 
 def cheatsheet():

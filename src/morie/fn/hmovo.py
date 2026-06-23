@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multiclass one-vs-one: train K(K-1)/2 pairwise binary classifiers."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_one_vs_one"]
@@ -34,7 +36,14 @@ def geron_one_vs_one(X, y, base_estimator):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multiclass one-vs-one: train K(K-1)/2 pairwise binary classifiers"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multiclass one-vs-one: train K(K-1)/2 pairwise binary classifiers",
+        }
+    )
 
 
 def cheatsheet():

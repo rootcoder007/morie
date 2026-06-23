@@ -78,4 +78,4 @@ def fft_peaks(
 
 
 def cheatsheet() -> str:
-    return 'fftpk() -> Identify dominant frequency peaks in a signal using the FFT'
+    return "fftpk() -> Identify dominant frequency peaks in a signal using the FFT"

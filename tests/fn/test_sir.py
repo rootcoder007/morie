@@ -1,6 +1,7 @@
 """Tests for morie.fn.sir -- Standardized Incidence Ratio."""
 
 import pytest
+
 from morie.fn.sir import standardized_incidence_ratio
 
 

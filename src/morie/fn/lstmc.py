@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """LSTM cell forward pass."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -13,9 +14,17 @@ def _sigmoid(z):
     return 1.0 / (1.0 + np.exp(-z))
 
 
-def lstm_cell(x, h_prev=None, c_prev=None, W=None, U=None, b=None,
-              hidden_size: "int | None" = None, seed: int = 0,
-              deterministic_seed: "int | None" = None):
+def lstm_cell(
+    x,
+    h_prev=None,
+    c_prev=None,
+    W=None,
+    U=None,
+    b=None,
+    hidden_size: int | None = None,
+    seed: int = 0,
+    deterministic_seed: int | None = None,
+):
     """Single-step LSTM cell (Hochreiter & Schmidhuber 1997).
 
     Gates::
@@ -70,6 +79,7 @@ def lstm_cell(x, h_prev=None, c_prev=None, W=None, U=None, b=None,
 
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("lstmc", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -85,9 +95,9 @@ def lstm_cell(x, h_prev=None, c_prev=None, W=None, U=None, b=None,
 
     gates = W @ x + U @ h_prev + b  # (4H,)
     i = _sigmoid(gates[0:H])
-    f = _sigmoid(gates[H:2 * H])
-    g = np.tanh(gates[2 * H:3 * H])
-    o = _sigmoid(gates[3 * H:4 * H])
+    f = _sigmoid(gates[H : 2 * H])
+    g = np.tanh(gates[2 * H : 3 * H])
+    o = _sigmoid(gates[3 * H : 4 * H])
 
     c = f * c_prev + i * g
     h = o * np.tanh(c)
@@ -99,7 +109,10 @@ def lstm_cell(x, h_prev=None, c_prev=None, W=None, U=None, b=None,
             "h": h,
             "c": c,
             "estimate": h,
-            "i": i, "f": f, "g": g, "o": o,
+            "i": i,
+            "f": f,
+            "g": g,
+            "o": o,
             "method": "LSTM cell forward",
         },
     )

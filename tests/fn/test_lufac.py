@@ -1,5 +1,7 @@
 """Tests for morie.fn.lufac."""
+
 import numpy as np
+
 from morie.fn.lufac import lu_factorize
 
 
@@ -13,6 +15,7 @@ def test_lufac_smoke():
 
 def test_cheatsheet():
     from morie.fn.lufac import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

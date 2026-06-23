@@ -1,5 +1,7 @@
 """Tests for morie.fn.csmtx."""
+
 import numpy as np
+
 from morie.fn.csmtx import csmtx
 
 
@@ -13,6 +15,7 @@ def test_csmtx_smoke():
 
 def test_cheatsheet():
     from morie.fn.csmtx import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

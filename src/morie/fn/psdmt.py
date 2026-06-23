@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['psdmt']
+__all__ = ["psdmt"]
 
 _QUOTE = "Many windows reveal the truth. -- Mace Windu"
 
@@ -63,7 +63,7 @@ def psdmt(
         xk = tapers[k] * x
         Xk = np.fft.rfft(xk, n=nfft)
         psd += concentrations[k] * np.abs(Xk) ** 2
-    psd /= (fs * np.sum(concentrations))
+    psd /= fs * np.sum(concentrations)
 
     freqs = np.fft.rfftfreq(nfft, d=1.0 / fs)
 

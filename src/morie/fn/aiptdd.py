@@ -1,6 +1,7 @@
 """AIPW estimator for DiD with covariates."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["aipw_did"]
@@ -40,7 +41,16 @@ def aipw_did(y_pre, y_post, D, X):
     se = 1.2533 * np.std(y_pre, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "AIPW estimator for DiD with covariates"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "AIPW estimator for DiD with covariates",
+        }
+    )
 
 
 def cheatsheet():

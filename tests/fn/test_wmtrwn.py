@@ -1,6 +1,7 @@
 """Tests for wmtrwn.weights_row_normalize."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wmtrwn import weights_row_normalize
 
 
@@ -9,7 +10,7 @@ def test_wmtrwn_basic():
     W = np.random.default_rng(42).normal(0, 1, 100)
     result = weights_row_normalize(W)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wmtrwn_edge():

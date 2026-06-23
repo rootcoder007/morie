@@ -1,6 +1,7 @@
 """Tests for gpsps.gp_spectral_mixture."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gpsps import gp_spectral_mixture
 
 
@@ -12,7 +13,7 @@ def test_gpsps_basic():
     Q = np.random.default_rng(42).normal(0, 1, 100)
     result = gp_spectral_mixture(X, y, X_test, Q)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gpsps_edge():

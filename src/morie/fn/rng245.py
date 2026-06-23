@@ -1,6 +1,7 @@
 """Decay bound for the complex cepstrum: at least as fast as 1/n.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_complex_cepstrum_decay_bound"]
@@ -34,7 +35,14 @@ def rangayyan_ch4_complex_cepstrum_decay_bound(K, alpha, n):
     n = len(K)
     result = float(np.mean(K))
     se = float(np.std(K, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Decay bound for the complex cepstrum: at least as fast as 1/n."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Decay bound for the complex cepstrum: at least as fast as 1/n.",
+        }
+    )
 
 
 def cheatsheet():

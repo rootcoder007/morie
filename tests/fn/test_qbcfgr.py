@@ -1,6 +1,7 @@
 """Tests for qbcfgr.quantile_balanced_cf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.qbcfgr import quantile_balanced_cf
 
 
@@ -12,7 +13,7 @@ def test_qbcfgr_basic():
     quantile = np.random.default_rng(42).normal(0, 1, 100)
     result = quantile_balanced_cf(y, D, X, quantile)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_qbcfgr_edge():

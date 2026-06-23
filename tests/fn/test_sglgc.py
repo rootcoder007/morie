@@ -1,5 +1,7 @@
 """Tests for lag class binning."""
+
 import numpy as np
+
 from morie.fn.sglgc import sglgc
 
 
@@ -13,6 +15,7 @@ def test_sglgc_smoke():
 
 def test_cheatsheet():
     from morie.fn.sglgc import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

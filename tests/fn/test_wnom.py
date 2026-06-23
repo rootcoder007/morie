@@ -1,6 +1,6 @@
 """Tests for morie.fn.wnom — W-NOMINATE scaling."""
+
 import numpy as np
-import pytest
 
 from morie.fn.wnom import wnom
 
@@ -16,6 +16,7 @@ def test_wnom_smoke():
 
 def test_cheatsheet():
     from morie.fn.wnom import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

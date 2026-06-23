@@ -1,6 +1,7 @@
 """HITS hubs + authorities scores."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["Confine yourself to the present. -- Marcus Aurelius"]
@@ -34,8 +35,10 @@ def hits_hubs_authorities(y, A, tol):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Confine yourself to the present. -- Marcus Aurelius"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Confine yourself to the present. -- Marcus Aurelius"}
+    )
 
 
 def cheatsheet():
-    return 'hubsa() -> HITS hubs + authorities scores'
+    return "hubsa() -> HITS hubs + authorities scores"

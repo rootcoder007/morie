@@ -1,6 +1,7 @@
 """Tests for hmlcos.geron_cosine_annealing."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmlcos import geron_cosine_annealing
 
 
@@ -12,7 +13,7 @@ def test_hmlcos_basic():
     eta_min = 0
     result = geron_cosine_annealing(t, T, eta_max, eta_min)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmlcos_edge():

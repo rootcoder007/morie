@@ -1,6 +1,7 @@
 r"""Rlhf optimal policy.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch5_rlhf_optimal_policy"]

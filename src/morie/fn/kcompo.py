@@ -1,6 +1,7 @@
 """Sequential composition of k epsilon-DP mechanisms."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["k_step_dp_composition"]
@@ -32,7 +33,9 @@ def k_step_dp_composition(y, epsilons):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sequential composition of k epsilon-DP mechanisms"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Sequential composition of k epsilon-DP mechanisms"}
+    )
 
 
 def cheatsheet():

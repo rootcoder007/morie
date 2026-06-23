@@ -1,7 +1,7 @@
 """Tests for morie.fn.anova -- One-way ANOVA F-test."""
 
-import numpy as np
 import pytest
+
 from morie.fn.anova import anova_one_way
 
 

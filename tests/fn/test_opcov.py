@@ -1,6 +1,7 @@
 """Test opcov."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opcov import opcov
 
 

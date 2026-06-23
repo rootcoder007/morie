@@ -1,6 +1,7 @@
 """Test convhl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.convhl import convhl
 
 

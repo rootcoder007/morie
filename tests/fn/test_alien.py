@@ -1,4 +1,5 @@
 """Tests for morie.fn.alien — alienation index."""
+
 from morie.fn.alien import alien
 
 
@@ -11,6 +12,7 @@ def test_alien_smoke():
 
 def test_cheatsheet():
     from morie.fn.alien import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

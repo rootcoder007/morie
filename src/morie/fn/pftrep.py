@@ -1,6 +1,7 @@
 """Particle filter for partially observed Markov."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["particle_filter_epi"]
@@ -34,7 +35,9 @@ def particle_filter_epi(pomp_model, data, n_particles):
     n = len(data)
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Particle filter for partially observed Markov"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Particle filter for partially observed Markov"}
+    )
 
 
 def cheatsheet():

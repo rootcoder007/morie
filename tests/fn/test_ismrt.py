@@ -1,6 +1,7 @@
 """Tests for morie.fn.ismrt -- Indirect standardization."""
 
 import pytest
+
 from morie.fn.ismrt import indirect_standardization
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Skip-gram with negative sampling loss: positive pair + k negatives."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_negative_sampling_skipgram"]
@@ -36,7 +38,14 @@ def alammar_negative_sampling_skipgram(center, word, negatives, V):
     n = len(center)
     result = float(np.mean(center))
     se = float(np.std(center, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Skip-gram with negative sampling loss: positive pair + k negatives"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Skip-gram with negative sampling loss: positive pair + k negatives",
+        }
+    )
 
 
 def cheatsheet():

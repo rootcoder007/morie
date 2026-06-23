@@ -1,7 +1,7 @@
 """Test hamming_window (wnhmm)."""
-import numpy as np
-from morie.fn.wnhmm import hamming_window, wnhmm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.wnhmm import hamming_window, wnhmm
 
 
 class TestWnhmm:

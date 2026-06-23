@@ -81,4 +81,4 @@ adwdri = adwin_drift
 
 
 def cheatsheet() -> str:
-    return 'adwin_drift({}) -> Concept drift detection (ADWIN).'
+    return "adwin_drift({}) -> Concept drift detection (ADWIN)."

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Frame TS forecasting as tabular regression via lag and window features."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_ts_as_regression"]
@@ -38,7 +40,14 @@ def joseph_ts_as_regression(y, lags, rolling_windows, seasonal_m, fourier_K):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Frame TS forecasting as tabular regression via lag and window features"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Frame TS forecasting as tabular regression via lag and window features",
+        }
+    )
 
 
 def cheatsheet():

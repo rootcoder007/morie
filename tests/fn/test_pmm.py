@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-import pytest
+
 from morie.fn.pmm import pmm_impute
 
 
@@ -16,10 +16,12 @@ class TestPMMImpute:
     def test_imputed_values_from_observed(self, rng):
         """PMM should only use observed values -- no out-of-range imputations."""
         n = 200
-        df = pd.DataFrame({
-            "a": rng.uniform(0, 10, n),
-            "b": rng.standard_normal(n),
-        })
+        df = pd.DataFrame(
+            {
+                "a": rng.uniform(0, 10, n),
+                "b": rng.standard_normal(n),
+            }
+        )
         mask = rng.random(n) < 0.15
         df.loc[mask, "a"] = np.nan
         observed_a = df.loc[~mask, "a"].values

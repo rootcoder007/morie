@@ -1,6 +1,7 @@
 r"""Positional encoding cos.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_positional_encoding_cos"]

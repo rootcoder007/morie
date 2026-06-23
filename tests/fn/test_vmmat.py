@@ -1,6 +1,7 @@
 """Test vmmat."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmmat import vmmat
 
 

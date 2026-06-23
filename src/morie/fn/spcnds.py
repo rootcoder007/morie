@@ -1,5 +1,7 @@
 """Conditional simulation of Gaussian random field given data."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_conditional_sim"]
@@ -35,7 +37,14 @@ def schabenberger_conditional_sim(coords, z_obs, cov_model, sim_grid):
     n = int(coords) if coords.ndim == 0 else len(coords)
     result = float(np.mean(coords))
     se = float(np.std(coords, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Conditional simulation of Gaussian random field given data"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Conditional simulation of Gaussian random field given data",
+        }
+    )
 
 
 def cheatsheet():

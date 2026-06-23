@@ -1,6 +1,7 @@
 """Tests for epsg.epsilon_greedy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.epsg import epsilon_greedy
 
 
@@ -11,7 +12,7 @@ def test_epsg_basic():
     T = np.random.default_rng(43).integers(0, 2, 100)
     result = epsilon_greedy(arms, epsilon, T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_epsg_edge():

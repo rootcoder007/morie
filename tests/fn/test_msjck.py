@@ -1,7 +1,6 @@
 """Tests for morie.fn.msjck -- MDS jackknife stability"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msjck import mds_jackknife
 
@@ -14,5 +13,5 @@ class TestMdsJackknife:
         assert result.value is not None
 
     def test_output_type(self):
-        result = mds_jackknife(np.random.default_rng(0).standard_normal((5,2)))
+        result = mds_jackknife(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

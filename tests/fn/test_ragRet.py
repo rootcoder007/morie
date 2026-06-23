@@ -1,6 +1,7 @@
 """Tests for ragRet.rag_retrieval."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ragRet import rag_retrieval
 
 
@@ -10,7 +11,7 @@ def test_ragRet_basic():
     docs = np.random.default_rng(42).normal(0, 1, 100)
     result = rag_retrieval(query, docs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ragRet_edge():

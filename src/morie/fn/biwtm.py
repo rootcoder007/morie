@@ -55,4 +55,4 @@ biwtm = biweight_midcorrelation
 
 
 def cheatsheet() -> str:
-    return 'biweight_midcorrelation({}) -> Biweight midcorrelation.'
+    return "biweight_midcorrelation({}) -> Biweight midcorrelation."

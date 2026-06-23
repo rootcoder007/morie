@@ -1,5 +1,5 @@
 """Test dyirt."""
-import numpy as np
+
 from morie.fn.dyirt import dynamic_irt_estimate
 
 

@@ -1,5 +1,7 @@
 """Tests for morie.fn.mlp — simple MLP."""
+
 import numpy as np
+
 from morie.fn.mlp import mlp_simple
 
 

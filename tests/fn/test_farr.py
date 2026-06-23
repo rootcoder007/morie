@@ -1,6 +1,5 @@
 """Tests for morie.fn.farr — Farrington algorithm."""
 
-import numpy as np
 import pytest
 
 from morie.fn.farr import farrington_detect

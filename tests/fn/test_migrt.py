@@ -1,6 +1,7 @@
 """Tests for morie.fn.migrt -- net migration rate."""
 
 import pytest
+
 from morie.fn.migrt import net_migration_rate
 
 

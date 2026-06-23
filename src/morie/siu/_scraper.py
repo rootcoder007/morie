@@ -13,14 +13,14 @@ Caching policy:
 from __future__ import annotations
 
 import time
+from collections.abc import Iterator
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterator, Optional
 
 import httpx
 import stamina
 
-from ._parser import parse_html, parse_news_html, PARSER_VERSION
+from ._parser import PARSER_VERSION, parse_html, parse_news_html
 from ._schema import BLANK_ROW
 
 SIU_BASE = "https://www.siu.on.ca"
@@ -33,12 +33,9 @@ NEWS_URL = SIU_BASE + "/en/news_template.php?drid={drid}"
 # parents[6] climbs back to dev/sphinx/project/.
 DEFAULT_CACHE = Path(__file__).resolve().parents[6] / "data" / "cache" / "siu"
 
-USER_AGENT = (
-    "morie-siu-scraper/0.1 "
-    "(+https://github.com/rootcoder007/morie; research; rate-limited)"
-)
+USER_AGENT = "morie-siu-scraper/0.1 (+https://github.com/rootcoder007/morie; research; rate-limited)"
 DEFAULT_TIMEOUT = httpx.Timeout(15.0, connect=10.0)
-POLITE_DELAY_S = 0.25       # sequential floor between requests
+POLITE_DELAY_S = 0.25  # sequential floor between requests
 RETRY_ATTEMPTS = 3
 
 
@@ -65,9 +62,9 @@ def _fetch(client: httpx.Client, url: str) -> httpx.Response:
 def scrape_drid(
     drid: int,
     *,
-    client: Optional[httpx.Client] = None,
+    client: httpx.Client | None = None,
     cache: bool = True,
-    cache_dir: Optional[Path] = None,
+    cache_dir: Path | None = None,
     fetch_news: bool = True,
 ) -> dict:
     """Fetch + parse one director's report. Returns a SIU.csv row dict.
@@ -80,7 +77,7 @@ def scrape_drid(
     fields are merged into the row (news_release_title, _date_iso, _raw,
     _summary, directors_name).
     """
-    cache_dir = (cache_dir or DEFAULT_CACHE)
+    cache_dir = cache_dir or DEFAULT_CACHE
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     html_path = _cache_path(cache_dir, drid, ".html")
@@ -92,8 +89,7 @@ def scrape_drid(
 
     owns = client is None
     if owns and not (cache and html_path.exists()):
-        client = httpx.Client(timeout=DEFAULT_TIMEOUT,
-                              headers={"User-Agent": USER_AGENT})
+        client = httpx.Client(timeout=DEFAULT_TIMEOUT, headers={"User-Agent": USER_AGENT})
 
     try:
         if cache and html_path.exists():
@@ -113,16 +109,18 @@ def scrape_drid(
         # ── paired news release fetch + merge ───────────────────────
         if fetch_news and row.get("nrid"):
             try:
-                news = _scrape_news(row["nrid"], client=client,
-                                    cache=cache, cache_dir=cache_dir)
+                news = _scrape_news(row["nrid"], client=client, cache=cache, cache_dir=cache_dir)
                 # Cross-validate case_number; warn if mismatch
-                if news.get("case_number") and row.get("case_number") and \
-                   news["case_number"] != row["case_number"]:
+                if news.get("case_number") and row.get("case_number") and news["case_number"] != row["case_number"]:
                     row["_news_case_number_mismatch"] = news["case_number"]
                 # Merge news-page fields (don't overwrite if already set)
-                for k in ("news_release_title", "news_release_date_iso",
-                          "news_release_date_raw", "news_release_summary",
-                          "directors_name"):
+                for k in (
+                    "news_release_title",
+                    "news_release_date_iso",
+                    "news_release_date_raw",
+                    "news_release_summary",
+                    "directors_name",
+                ):
                     if news.get(k) and not row.get(k):
                         row[k] = news[k]
             except Exception as e:  # noqa: BLE001
@@ -135,12 +133,11 @@ def scrape_drid(
             client.close()
 
 
-def _scrape_news(nrid: int,
-                 *, client: Optional[httpx.Client] = None,
-                 cache: bool = True,
-                 cache_dir: Optional[Path] = None) -> dict:
+def _scrape_news(
+    nrid: int, *, client: httpx.Client | None = None, cache: bool = True, cache_dir: Path | None = None
+) -> dict:
     """Fetch + parse one news-release page (`news_template.php?nrid=N`)."""
-    cache_dir = (cache_dir or DEFAULT_CACHE)
+    cache_dir = cache_dir or DEFAULT_CACHE
     cache_dir.mkdir(parents=True, exist_ok=True)
     html_path = cache_dir / f"news_{nrid}.html"
     url = f"{SIU_BASE}/en/news_template.php?nrid={nrid}"
@@ -150,8 +147,7 @@ def _scrape_news(nrid: int,
     else:
         owns = client is None
         if owns:
-            client = httpx.Client(timeout=DEFAULT_TIMEOUT,
-                                  headers={"User-Agent": USER_AGENT})
+            client = httpx.Client(timeout=DEFAULT_TIMEOUT, headers={"User-Agent": USER_AGENT})
         try:
             r = _fetch(client, url)
             if r.status_code == 404:
@@ -172,7 +168,7 @@ def scrape_range(
     drid_max: int,
     *,
     cache: bool = True,
-    cache_dir: Optional[Path] = None,
+    cache_dir: Path | None = None,
     delay_s: float = POLITE_DELAY_S,
     progress: bool = True,
 ) -> Iterator[dict]:
@@ -182,8 +178,7 @@ def scrape_range(
     network -- cache hits don't sleep). Phase-2a default; Phase-2c will
     introduce a concurrent variant behind the same name.
     """
-    with httpx.Client(timeout=DEFAULT_TIMEOUT,
-                      headers={"User-Agent": USER_AGENT}) as client:
+    with httpx.Client(timeout=DEFAULT_TIMEOUT, headers={"User-Agent": USER_AGENT}) as client:
         last_was_network = False
         for drid in range(drid_min, drid_max + 1):
             if last_was_network:
@@ -208,7 +203,7 @@ def _empty_404_row(drid: int, url: str) -> dict:
     return row
 
 
-def check_robots_txt(*, client: Optional[httpx.Client] = None) -> dict:
+def check_robots_txt(*, client: httpx.Client | None = None) -> dict:
     """Fetch siu.on.ca/robots.txt and return parsed disallow rules.
 
     Call this once at the start of any large scrape. If the site disallows
@@ -216,8 +211,7 @@ def check_robots_txt(*, client: Optional[httpx.Client] = None) -> dict:
     """
     owns = client is None
     if owns:
-        client = httpx.Client(timeout=DEFAULT_TIMEOUT,
-                              headers={"User-Agent": USER_AGENT})
+        client = httpx.Client(timeout=DEFAULT_TIMEOUT, headers={"User-Agent": USER_AGENT})
     try:
         r = client.get(SIU_BASE + "/robots.txt", follow_redirects=True)
         if r.status_code != 200:

@@ -1,6 +1,7 @@
 """Tests for tqang.turboquant_angle_quantization."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tqang import turboquant_angle_quantization
 
 
@@ -10,7 +11,7 @@ def test_tqang_basic():
     bits = np.random.default_rng(42).normal(0, 1, 100)
     result = turboquant_angle_quantization(theta, bits)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tqang_edge():

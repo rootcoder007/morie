@@ -1,6 +1,7 @@
 """Tests for alggap.algebraic_connectivity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alggap import algebraic_connectivity
 
 
@@ -9,7 +10,7 @@ def test_alggap_basic():
     G = np.eye(10)
     result = algebraic_connectivity(G)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alggap_edge():

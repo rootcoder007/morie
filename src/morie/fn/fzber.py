@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Berry-Esseen bound improvement for kernel quantile: O(n^{-1/2}) vs O(n^{-7/17})."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_berry_esseen_quantile"]
@@ -36,7 +38,14 @@ def fauzi_berry_esseen_quantile(data, p, bandwidth, x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Berry-Esseen bound improvement for kernel quantile: O(n^{-1/2}) vs O(n^{-7/17})"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Berry-Esseen bound improvement for kernel quantile: O(n^{-1/2}) vs O(n^{-7/17})",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Back-door adjustment formula (causal effect via covariate adjustment)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["backdoor_adjustment_formula"]
@@ -36,7 +38,14 @@ def backdoor_adjustment_formula(X, Y, Z, data):
     n = int(data) if data.ndim == 0 else len(data)
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Back-door adjustment formula (causal effect via covariate adjustment)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Back-door adjustment formula (causal effect via covariate adjustment)",
+        }
+    )
 
 
 def cheatsheet():

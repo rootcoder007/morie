@@ -1,6 +1,7 @@
 """Test geoda."""
+
 import numpy as np
-import pytest
+
 from morie.fn.geoda import geoda
 
 

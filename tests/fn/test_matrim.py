@@ -1,6 +1,7 @@
 """Tests for matrim.ma_trim_fill."""
+
 import numpy as np
-import pytest
+
 from morie.fn.matrim import ma_trim_fill
 
 
@@ -11,7 +12,7 @@ def test_matrim_basic():
     side = np.random.default_rng(42).normal(0, 1, 100)
     result = ma_trim_fill(yi, vi, side)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_matrim_edge():

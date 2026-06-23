@@ -1,6 +1,7 @@
 """Tests for morie.fn.chng — changepoint detection."""
+
 import numpy as np
-import pytest
+
 from morie.fn.chng import changepoint_detect
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptffn -- Empty space F-function"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptffn import f_function
 

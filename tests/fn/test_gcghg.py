@@ -1,6 +1,7 @@
 """Test gcghg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcghg import gcghg
 
 

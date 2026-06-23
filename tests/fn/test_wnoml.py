@@ -1,6 +1,7 @@
 """Tests for wnoml.wnominate_logit."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wnoml import wnominate_logit
 
 
@@ -12,7 +13,7 @@ def test_wnoml_basic():
     beta = 0.8
     result = wnominate_logit(votes, ideal_points, yea_nay_positions, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wnoml_edge():

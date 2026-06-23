@@ -1,6 +1,7 @@
 """Tests for ghs031.ghosal_ch3_polya_tree_mixture_post_density."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghs031 import ghosal_ch3_polya_tree_mixture_post_density
 
 
@@ -14,7 +15,7 @@ def test_ghs031_basic():
     n = 100
     result = ghosal_ch3_polya_tree_mixture_post_density(g_theta, a_j, N, theta, x, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ghs031_edge():

@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['icasg']
+__all__ = ["icasg"]
 
 _QUOTE = "Separate the light from the dark. -- Mace Windu"
 
@@ -73,7 +73,7 @@ def icasg(
     for _ in range(max_iter):
         WX = W @ Xw
         g = np.tanh(WX)
-        gp = 1 - g ** 2
+        gp = 1 - g**2
         W_new = g @ Xw.T / n_samp - gp.mean(axis=1, keepdims=True) * W
         W_new, _ = np.linalg.qr(W_new)
         if np.max(np.abs(np.abs(np.diag(W_new @ W.T)) - 1)) < tol:

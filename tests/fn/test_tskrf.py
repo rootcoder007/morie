@@ -1,6 +1,7 @@
 """Test tskrf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tskrf import tskrf
 
 

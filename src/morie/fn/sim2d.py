@@ -46,4 +46,4 @@ sim2d = simulate_2d_unfolding
 
 
 def cheatsheet() -> str:
-    return 'simulate_2d_unfolding({}) -> Simulate 2D unfolding data.'
+    return "simulate_2d_unfolding({}) -> Simulate 2D unfolding data."

@@ -1,6 +1,7 @@
 """Tests for morie.fn.prev -- Point prevalence."""
 
 import pytest
+
 from morie.fn.prev import point_prevalence
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Box-Cox regression model: T_lambda(Y) = X'beta + U."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_box_cox"]
@@ -32,7 +34,9 @@ def horowitz_box_cox(x, y):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Box-Cox regression model: T_lambda(Y) = X'beta + U"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Box-Cox regression model: T_lambda(Y) = X'beta + U"}
+    )
 
 
 def cheatsheet():

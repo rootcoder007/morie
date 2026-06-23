@@ -1,6 +1,7 @@
 """Honest random forest with sample-splitting (Wager-Athey 2018)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["honest_random_forest"]
@@ -36,7 +37,14 @@ def honest_random_forest(y, X, n_trees, min_node):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Honest random forest with sample-splitting (Wager-Athey 2018)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Honest random forest with sample-splitting (Wager-Athey 2018)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,7 @@
 """Tests for morie.fn.agcyc."""
 
 import numpy as np
-import pytest
+
 from morie.fn.agcyc import agcyc
 
 

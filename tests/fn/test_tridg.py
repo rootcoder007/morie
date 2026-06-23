@@ -1,8 +1,9 @@
 """Tests for morie.fn.tridg -- Thomas algorithm."""
 
 import numpy as np
-from morie.fn.tridg import thomas_solve, tridg
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.tridg import thomas_solve, tridg
 
 
 class TestTridg:
@@ -25,5 +26,6 @@ class TestTridg:
         c = np.array([1.0])
         d = np.array([5.0, 7.0])
         r = thomas_solve(a, b, c, d)
-        np.testing.assert_allclose(r.extra["x"], np.linalg.solve(
-            np.array([[2, 1], [1, 3]], dtype=float), d), atol=1e-10)
+        np.testing.assert_allclose(
+            r.extra["x"], np.linalg.solve(np.array([[2, 1], [1, 3]], dtype=float), d), atol=1e-10
+        )

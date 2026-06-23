@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmwnw -- W-NOMINATE dimension weights"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmwnw import wnominate_weight
 

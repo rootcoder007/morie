@@ -7,7 +7,6 @@ from morie.fn.stide import stide
 
 
 class TestStide:
-
     def test_prediction_shape(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (8, 2))

@@ -42,4 +42,4 @@ swplt = solar_orbit_summary
 
 
 def cheatsheet() -> str:
-    return 'swplt() -> Summary statistics for Solar System orbital data'
+    return "swplt() -> Summary statistics for Solar System orbital data"

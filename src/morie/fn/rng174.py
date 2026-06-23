@@ -1,6 +1,7 @@
 """Compact RLS tap-weight update using a priori error alpha(n).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_rls_weight_update_compact"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_rls_weight_update_compact(w_tilde, k, alpha, n):
     n = len(w_tilde)
     result = float(np.mean(w_tilde))
     se = float(np.std(w_tilde, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Compact RLS tap-weight update using a priori error alpha(n)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Compact RLS tap-weight update using a priori error alpha(n).",
+        }
+    )
 
 
 def cheatsheet():

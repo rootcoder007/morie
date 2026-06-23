@@ -10,6 +10,7 @@ Ribeiro, M. T., Singh, S., & Guestrin, C. (2018). Anchors: High-
 precision model-agnostic explanations.
 *Proceedings of AAAI*, 32(1), 1527-1535.
 """
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -123,7 +124,7 @@ def anchr(
             if j not in feature_set:
                 X_sample[:, j] = instance[j] + rng.normal(0, 0.01, size=len(sample_idx))
         preds = predict_fn(X_sample)
-        if hasattr(preds[0], '__round__'):
+        if hasattr(preds[0], "__round__"):
             same = np.mean(np.round(preds) == round(pred_instance))
         else:
             same = np.mean(np.abs(preds - pred_instance) < 0.5)

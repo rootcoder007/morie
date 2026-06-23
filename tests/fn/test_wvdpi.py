@@ -1,7 +1,7 @@
 """Tests for morie.fn.wvdpi."""
 
 import numpy as np
-import pytest
+
 from morie.fn.wvdpi import wvdpi
 
 

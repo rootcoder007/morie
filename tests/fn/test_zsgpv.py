@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsgpv -- GP predictive variance"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsgpv import gp_variance
 

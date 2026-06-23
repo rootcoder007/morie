@@ -1,7 +1,9 @@
 """Test ewma_detect (ewmdt)."""
+
 import numpy as np
-from morie.fn.ewmdt import ewma_detect, ewmdt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ewmdt import ewma_detect, ewmdt
 
 
 class TestEwmaDetect:

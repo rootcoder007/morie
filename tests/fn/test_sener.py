@@ -1,7 +1,9 @@
 """Test signal_energy (sener)."""
+
 import numpy as np
-from morie.fn.sener import signal_energy, sener
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sener import sener, signal_energy
 
 
 class TestSignalEnergy:

@@ -1,6 +1,7 @@
 """Tests for famusm.family_based_assoc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.famusm import family_based_assoc
 
 
@@ -9,7 +10,7 @@ def test_famusm_basic():
     trios = np.random.default_rng(42).normal(0, 1, 100)
     result = family_based_assoc(trios)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_famusm_edge():

@@ -1,6 +1,7 @@
 """Tests for gae.gae."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gae import gae
 
 
@@ -12,7 +13,7 @@ def test_gae_basic():
     lam = 0.1
     result = gae(traj, V, gamma, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gae_edge():

@@ -38,8 +38,8 @@ def paget(data, axis=0, cdf=None):
     L = np.sum(j_vals * R)
 
     # Expected value and variance
-    E_L = b * k * (k + 1)**2 / 4
-    Var_L = b * k * (k - 1) * (k + 1)**2 / 12
+    E_L = b * k * (k + 1) ** 2 / 4
+    Var_L = b * k * (k - 1) * (k + 1) ** 2 / 12
 
     # Standardized statistic
     z_stat = (L - E_L) / np.sqrt(Var_L)

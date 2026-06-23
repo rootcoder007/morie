@@ -1,6 +1,7 @@
 """Tests for gradds.gradient_descent."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gradds import gradient_descent
 
 
@@ -13,7 +14,7 @@ def test_gradds_basic():
     steps = np.random.default_rng(42).normal(0, 1, 100)
     result = gradient_descent(f, grad_f, x0, lr, steps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gradds_edge():

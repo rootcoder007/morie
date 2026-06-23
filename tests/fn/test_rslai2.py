@@ -1,6 +1,7 @@
 """Test rslai2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rslai2 import rslai2
 
 

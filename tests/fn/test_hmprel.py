@@ -1,6 +1,7 @@
 """Tests for hmprel.geron_prelu."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmprel import geron_prelu
 
 
@@ -10,7 +11,7 @@ def test_hmprel_basic():
     alpha = 0.05
     result = geron_prelu(z, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmprel_edge():

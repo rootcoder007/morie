@@ -1,6 +1,7 @@
 """Test gaprox."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gaprox import gaprox
 
 

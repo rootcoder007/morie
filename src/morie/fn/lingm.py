@@ -14,6 +14,7 @@ Hyvarinen, A., Zhang, K., Shimizu, S., & Hoyer, P. O. (2010).
 Estimation of a structural vector autoregression model using non-
 Gaussianity. *Journal of Machine Learning Research*, 11, 1709-1731.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -115,9 +116,9 @@ def _fastica(X: np.ndarray, n_comp: int, max_iter: int, seed: int) -> np.ndarray
     W = W.T[:n_comp]
 
     for _ in range(max_iter):
-        WX = W @ X.T                          # (n_comp, n)
-        g = np.tanh(WX)                       # logcosh derivative
-        gp = 1.0 - g**2                       # second derivative
+        WX = W @ X.T  # (n_comp, n)
+        g = np.tanh(WX)  # logcosh derivative
+        gp = 1.0 - g**2  # second derivative
         W_new = (g @ X) / n - gp.mean(axis=1, keepdims=True) * W
         # Symmetric orthogonalisation
         U, s, Vt = np.linalg.svd(W_new)

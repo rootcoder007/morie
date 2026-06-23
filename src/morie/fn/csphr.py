@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cutting plane / cutting sphere for vote classification (Armstrong Ch 3)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["cutting_plane_sphere", "csphr"]
@@ -29,25 +31,38 @@ def cutting_plane_sphere(x, votes=None):
         X = X.reshape(-1, 1)
     n, p = X.shape
     if votes is None or n == 0:
-        return RichResult(payload={"w": np.zeros(p), "c": np.nan,
-                                   "midpoint": np.full(p, np.nan),
-                                   "correct_class": 0, "n": n, "p": p,
-                                   "method": "cutting_plane_sphere"})
+        return RichResult(
+            payload={
+                "w": np.zeros(p),
+                "c": np.nan,
+                "midpoint": np.full(p, np.nan),
+                "correct_class": 0,
+                "n": n,
+                "p": p,
+                "method": "cutting_plane_sphere",
+            }
+        )
     y = np.asarray(votes, dtype=int).ravel()
-    X_y = X[y == 1]; X_n = X[y == 0]
+    X_y = X[y == 1]
+    X_n = X[y == 0]
     if X_y.size == 0 or X_n.size == 0:
-        return RichResult(payload={"w": np.zeros(p), "c": np.nan,
-                                   "midpoint": np.full(p, np.nan),
-                                   "correct_class": int(np.sum(y == y[0])),
-                                   "n": n, "p": p,
-                                   "method": "cutting_plane_sphere"})
-    mu_y = X_y.mean(axis=0); mu_n = X_n.mean(axis=0)
+        return RichResult(
+            payload={
+                "w": np.zeros(p),
+                "c": np.nan,
+                "midpoint": np.full(p, np.nan),
+                "correct_class": int(np.sum(y == y[0])),
+                "n": n,
+                "p": p,
+                "method": "cutting_plane_sphere",
+            }
+        )
+    mu_y = X_y.mean(axis=0)
+    mu_n = X_n.mean(axis=0)
     # Pooled covariance
     S_y = np.cov(X_y, rowvar=False) if X_y.shape[0] > 1 else np.zeros((p, p))
     S_n = np.cov(X_n, rowvar=False) if X_n.shape[0] > 1 else np.zeros((p, p))
-    S = ((X_y.shape[0] - 1) * np.atleast_2d(S_y)
-         + (X_n.shape[0] - 1) * np.atleast_2d(S_n)) \
-        / max(n - 2, 1)
+    S = ((X_y.shape[0] - 1) * np.atleast_2d(S_y) + (X_n.shape[0] - 1) * np.atleast_2d(S_n)) / max(n - 2, 1)
     S = S + 1e-9 * np.eye(p)
     try:
         w = np.linalg.solve(S, mu_y - mu_n)
@@ -59,14 +74,21 @@ def cutting_plane_sphere(x, votes=None):
     cc = int(np.sum(pred == y))
     # Flip polarity if necessary
     if cc < n - cc:
-        w = -w; c = -c; cc = n - cc
+        w = -w
+        c = -c
+        cc = n - cc
     return RichResult(
         title="Cutting plane (linear discriminant)",
-        summary_lines=[("Correctly classified", cc), ("c (intercept)", c),
-                       ("dim", p), ("n", n)],
-        payload={"w": w, "c": c, "midpoint": midpoint,
-                 "correct_class": cc, "n": int(n), "p": int(p),
-                 "method": "cutting_plane_sphere"},
+        summary_lines=[("Correctly classified", cc), ("c (intercept)", c), ("dim", p), ("n", n)],
+        payload={
+            "w": w,
+            "c": c,
+            "midpoint": midpoint,
+            "correct_class": cc,
+            "n": int(n),
+            "p": int(p),
+            "method": "cutting_plane_sphere",
+        },
     )
 
 

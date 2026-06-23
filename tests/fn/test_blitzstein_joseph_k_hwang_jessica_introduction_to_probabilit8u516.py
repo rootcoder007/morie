@@ -1,7 +1,10 @@
 """Tests for blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit8u516.blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_8_unnumbered_516."""
+
 import numpy as np
-import pytest
-from morie.fn.blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit8u516 import blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_8_unnumbered_516
+
+from morie.fn.blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit8u516 import (
+    blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_8_unnumbered_516,
+)
 
 
 def test_blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit8u516_basic():
@@ -9,7 +12,7 @@ def test_blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit8u516_basic
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_8_unnumbered_516(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit8u516_edge():

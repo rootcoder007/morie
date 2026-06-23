@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """RLS lattice (ladder) adaptive filter."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_rls_lattice"]

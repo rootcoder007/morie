@@ -1,6 +1,7 @@
 """Tests for volyz.vol_yang_zhang."""
+
 import numpy as np
-import pytest
+
 from morie.fn.volyz import vol_yang_zhang
 
 
@@ -12,7 +13,7 @@ def test_volyz_basic():
     c = np.random.default_rng(42).normal(0, 1, 100)
     result = vol_yang_zhang(o, h, l, c)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_volyz_edge():

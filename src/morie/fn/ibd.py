@@ -79,8 +79,8 @@ def ibd(
                 else:
                     ibs2 += 1
 
-                e_ibs0 += (pk ** 2 * qk ** 2) * 2.0
-                e_ibs1 += 2.0 * pk * qk * (pk ** 2 + qk ** 2)
+                e_ibs0 += (pk**2 * qk**2) * 2.0
+                e_ibs1 += 2.0 * pk * qk * (pk**2 + qk**2)
 
             valid = p
             if valid > 0:

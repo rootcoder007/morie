@@ -1,6 +1,6 @@
 """Tests for morie.fn.nomut — NOMINATE utility."""
+
 import numpy as np
-import pytest
 
 from morie.fn.nomut import nomut
 
@@ -15,6 +15,7 @@ def test_nomut_smoke():
 
 def test_cheatsheet():
     from morie.fn.nomut import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

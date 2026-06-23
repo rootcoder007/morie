@@ -1,6 +1,7 @@
 """Tests for drblr.doubly_robust_learner."""
+
 import numpy as np
-import pytest
+
 from morie.fn.drblr import doubly_robust_learner
 
 
@@ -14,7 +15,7 @@ def test_drblr_basic():
     e_model = np.random.default_rng(42).normal(0, 1, 100)
     result = doubly_robust_learner(Y, T, X, mu0_model, mu1_model, e_model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_drblr_edge():

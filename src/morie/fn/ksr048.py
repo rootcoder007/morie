@@ -1,6 +1,7 @@
 """Stochastic equicontinuity condition needed in the Z-estimator master theorem."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_z_master_stochastic_equicontinuity"]
@@ -37,12 +38,27 @@ def kosorok_ch2_z_master_stochastic_equicontinuity(Psi_n, Psi, theta_n, theta_0,
     Psi_n = np.atleast_1d(np.asarray(Psi_n, dtype=float))
     n = len(Psi_n)
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Stochastic equicontinuity condition needed in the Z-estimator master theorem"})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "Stochastic equicontinuity condition needed in the Z-estimator master theorem",
+            }
+        )
     estimate = np.median(Psi_n)
     se = 1.2533 * np.std(Psi_n, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Stochastic equicontinuity condition needed in the Z-estimator master theorem"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Stochastic equicontinuity condition needed in the Z-estimator master theorem",
+        }
+    )
 
 
 def cheatsheet():

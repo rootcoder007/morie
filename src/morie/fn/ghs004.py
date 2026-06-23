@@ -1,6 +1,7 @@
 """Density induced from a real-valued function f via the exponential link, normalized by c(f) = log integral exp(f) d mu.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch2_exponential_link_density"]
@@ -34,7 +35,14 @@ def ghosal_ch2_exponential_link_density(f, x, mu):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Density induced from a real-valued function f via the exponential link, normalized by c(f) = log integral exp(f) d mu."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Density induced from a real-valued function f via the exponential link, normalized by c(f) = log integral exp(f) d mu.",
+        }
+    )
 
 
 def cheatsheet():

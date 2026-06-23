@@ -1,6 +1,7 @@
 """Tests for grffn.geron_transformer_feedforward."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grffn import geron_transformer_feedforward
 
 
@@ -13,7 +14,7 @@ def test_grffn_basic():
     b2 = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_transformer_feedforward(x, W1, b1, W2, b2)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grffn_edge():

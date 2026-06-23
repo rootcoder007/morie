@@ -1,6 +1,7 @@
 """Tests for mivbnd.monotone_iv_bounds."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mivbnd import monotone_iv_bounds
 
 
@@ -13,7 +14,7 @@ def test_mivbnd_basic():
     y_max = 100
     result = monotone_iv_bounds(y, D, Z, y_min, y_max)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mivbnd_edge():

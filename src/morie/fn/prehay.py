@@ -1,6 +1,7 @@
 """Preacher-Hayes bootstrap multiple-mediator."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["preacher_hayes_indirect"]
@@ -36,7 +37,9 @@ def preacher_hayes_indirect(X, M, Y, B):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Preacher-Hayes bootstrap multiple-mediator"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Preacher-Hayes bootstrap multiple-mediator"}
+    )
 
 
 def cheatsheet():

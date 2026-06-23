@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgexp -- Exponential variogram model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgexp import vario_exponential
 
@@ -15,5 +14,5 @@ class TestVarioExponential:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = vario_exponential(np.random.default_rng(0).uniform(0,1,(5,2)), np.ones(5))
+        result = vario_exponential(np.random.default_rng(0).uniform(0, 1, (5, 2)), np.ones(5))
         assert hasattr(result, "statistic")

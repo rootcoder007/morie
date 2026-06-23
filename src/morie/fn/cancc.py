@@ -71,4 +71,4 @@ cancc = canonical_correlation
 
 
 def cheatsheet() -> str:
-    return 'cancc() -> Canonical Correlation Analysis (CCA)'
+    return "cancc() -> Canonical Correlation Analysis (CCA)"

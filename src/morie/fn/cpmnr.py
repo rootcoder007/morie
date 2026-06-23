@@ -59,4 +59,4 @@ cpmnr = mean_changepoint
 
 
 def cheatsheet() -> str:
-    return 'mean_changepoint({}) -> Mean change-point detection via CUSUM.'
+    return "mean_changepoint({}) -> Mean change-point detection via CUSUM."

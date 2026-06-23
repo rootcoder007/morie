@@ -1,6 +1,7 @@
 """Test trigen."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trigen import trigen
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svgau -- Gaussian spatial utility function"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svgau import gauss_utility
 

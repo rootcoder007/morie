@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multilayer perceptron forward pass (L hidden layers with activation phi)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_mlp_forward"]
@@ -34,7 +36,14 @@ def geron_mlp_forward(x, weights, biases):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multilayer perceptron forward pass (L hidden layers with activation phi)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multilayer perceptron forward pass (L hidden layers with activation phi)",
+        }
+    )
 
 
 def cheatsheet():

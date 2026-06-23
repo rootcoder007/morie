@@ -1,7 +1,10 @@
 """Tests for spatiotemporal_methods_in_environmental_epidemiology_with_r_7e46.spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_7_equation_46."""
+
 import numpy as np
-import pytest
-from morie.fn.spatiotemporal_methods_in_environmental_epidemiology_with_r_7e46 import spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_7_equation_46
+
+from morie.fn.spatiotemporal_methods_in_environmental_epidemiology_with_r_7e46 import (
+    spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_7_equation_46,
+)
 
 
 def test_spatiotemporal_methods_in_environmental_epidemiology_with_r_7e46_basic():
@@ -9,7 +12,7 @@ def test_spatiotemporal_methods_in_environmental_epidemiology_with_r_7e46_basic(
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_7_equation_46(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_spatiotemporal_methods_in_environmental_epidemiology_with_r_7e46_edge():

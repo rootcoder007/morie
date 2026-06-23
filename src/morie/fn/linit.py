@@ -68,4 +68,4 @@ linit = line_intersect
 
 
 def cheatsheet() -> str:
-    return 'line_intersect({}) -> Line segment intersection.'
+    return "line_intersect({}) -> Line segment intersection."

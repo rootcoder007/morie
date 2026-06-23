@@ -25,7 +25,6 @@ from morie.agent import (
 
 
 class TestToolReadFile:
-
     def test_read_existing_file(self, tmp_path):
         f = tmp_path / "hello.txt"
         f.write_text("line one\nline two\n")
@@ -54,7 +53,6 @@ class TestToolReadFile:
 
 
 class TestToolWriteFile:
-
     def test_write_creates_file(self, tmp_path):
         target = tmp_path / "out.txt"
         result = tool_write_file(str(target), "hello world", sandbox=tmp_path)
@@ -85,7 +83,6 @@ class TestToolWriteFile:
 
 
 class TestToolExecuteCode:
-
     def test_simple_expression(self):
         result = tool_execute_code("print(2 + 3)")
         assert "5" in result
@@ -113,7 +110,6 @@ class TestToolExecuteCode:
 
 
 class TestToolSearchFunctions:
-
     def test_search_ttest(self):
         result = tool_search_functions("t-test")
         assert isinstance(result, str)
@@ -137,7 +133,6 @@ class TestToolSearchFunctions:
 
 
 class TestToolRunMorieFunction:
-
     def test_run_dnorm(self):
         result = tool_run_morie_function("dnorm", {"x": 0.0, "mean": 0.0, "sd": 1.0})
         assert isinstance(result, str)
@@ -157,7 +152,6 @@ class TestToolRunMorieFunction:
 
 
 class TestToolListFiles:
-
     def test_list_directory(self, tmp_path):
         (tmp_path / "a.py").write_text("")
         (tmp_path / "b.csv").write_text("")
@@ -181,7 +175,6 @@ class TestToolListFiles:
 
 
 class TestToolInspectError:
-
     def test_inspect_returns_string(self):
         result = tool_inspect_error()
         assert isinstance(result, str)
@@ -192,7 +185,6 @@ class TestToolInspectError:
 
 
 class TestAgentResponse:
-
     def test_fields_present(self):
         resp = AgentResponse(
             text="Here is the answer.",
@@ -227,7 +219,6 @@ class TestAgentResponse:
 
 
 class TestPerseusAgent:
-
     def test_init_default(self):
         agent = PerseusAgent()
         assert agent._max_iterations > 0
@@ -346,7 +337,6 @@ class TestPerseusAgent:
 
 
 class TestToolGetCheatsheet:
-
     def test_known_function(self):
         result = tool_get_cheatsheet("dnorm")
         assert "dnorm" in result.lower() or "normal" in result.lower()
@@ -357,7 +347,6 @@ class TestToolGetCheatsheet:
 
 
 class TestToolSearchCodebase:
-
     def test_finds_pattern(self, tmp_path):
         src = tmp_path / "example.py"
         src.write_text("def moran_i(data):\n    pass\n")
@@ -372,7 +361,6 @@ class TestToolSearchCodebase:
 
 
 class TestToolRunShell:
-
     def test_basic_command(self):
         result = tool_run_shell("echo hello")
         assert "hello" in result
@@ -387,7 +375,6 @@ class TestToolRunShell:
 
 
 class TestToolDescribeData:
-
     def test_basic_dataframe(self):
         result = tool_describe_data("df = pd.DataFrame({'x': [1, 2, 3], 'y': [4, 5, 6]})")
         assert "Shape" in result
@@ -399,22 +386,25 @@ class TestToolDescribeData:
 
 
 class TestToolDispatchNewTools:
-
     def test_dispatch_has_all_tools(self):
         from morie.agent import _CORE_TOOLS, _TOOL_DISPATCH
+
         tool_names = {t["function"]["name"] for t in _CORE_TOOLS}
         dispatch_names = set(_TOOL_DISPATCH.keys())
-        assert tool_names == dispatch_names, f"Mismatch: defined={tool_names - dispatch_names}, dispatch={dispatch_names - tool_names}"
+        assert tool_names == dispatch_names, (
+            f"Mismatch: defined={tool_names - dispatch_names}, dispatch={dispatch_names - tool_names}"
+        )
 
     def test_tool_count_is_20(self):
         from morie.agent import _CORE_TOOLS
+
         assert len(_CORE_TOOLS) == 20
 
 
 class TestFreeAPIAgent:
-
     def test_parse_tool_calls_valid(self):
         from morie.agent import FreeAPIAgent
+
         agent = FreeAPIAgent()
         text = 'Let me search. <tool_call>{"name": "search_functions", "arguments": {"query": "moran"}}</tool_call>'
         calls = agent._parse_tool_calls(text)
@@ -424,24 +414,28 @@ class TestFreeAPIAgent:
 
     def test_parse_tool_calls_no_match(self):
         from morie.agent import FreeAPIAgent
+
         agent = FreeAPIAgent()
         calls = agent._parse_tool_calls("No tool calls here.")
         assert calls == []
 
     def test_parse_tool_calls_invalid_json(self):
         from morie.agent import FreeAPIAgent
+
         agent = FreeAPIAgent()
         calls = agent._parse_tool_calls("<tool_call>not json</tool_call>")
         assert calls == []
 
     def test_parse_tool_calls_unknown_tool_ignored(self):
         from morie.agent import FreeAPIAgent
+
         agent = FreeAPIAgent()
         calls = agent._parse_tool_calls('<tool_call>{"name": "evil_tool", "arguments": {}}</tool_call>')
         assert calls == []
 
     def test_parse_multiple_tool_calls(self):
         from morie.agent import FreeAPIAgent
+
         agent = FreeAPIAgent()
         text = (
             '<tool_call>{"name": "search_functions", "arguments": {"query": "t-test"}}</tool_call> '
@@ -453,6 +447,7 @@ class TestFreeAPIAgent:
     @patch("morie.agent.FreeAPIAgent._send")
     def test_chat_no_tool_calls(self, mock_send):
         from morie.agent import FreeAPIAgent
+
         mock_send.return_value = "The ATE is the average treatment effect."
         agent = FreeAPIAgent()
         resp = agent.chat("What is ATE?")
@@ -463,6 +458,7 @@ class TestFreeAPIAgent:
     @patch("morie.agent.FreeAPIAgent._send")
     def test_chat_with_tool_call(self, mock_send):
         from morie.agent import FreeAPIAgent
+
         mock_send.side_effect = [
             'Let me search. <tool_call>{"name": "search_functions", "arguments": {"query": "propensity"}}</tool_call>',
             "Found ipw and aipw functions for propensity score analysis.",
@@ -475,34 +471,39 @@ class TestFreeAPIAgent:
 
     def test_create_agent_freeapi_provider(self):
         from morie.agent import FreeAPIAgent, create_agent
+
         agent = create_agent(provider="freeapi")
         assert isinstance(agent, FreeAPIAgent)
 
     def test_text_tool_prompt_exists(self):
         from morie.agent import _TEXT_TOOL_PROMPT
+
         assert "tool_call" in _TEXT_TOOL_PROMPT
         assert "search_functions" in _TEXT_TOOL_PROMPT
 
 
 class TestDomainKnowledge:
-
     def test_domain_knowledge_has_20_domains(self):
         from morie.agent import _DOMAIN_KNOWLEDGE
+
         assert len(_DOMAIN_KNOWLEDGE) >= 20
 
     def test_each_domain_has_core_functions(self):
         from morie.agent import _DOMAIN_KNOWLEDGE
+
         for domain, info in _DOMAIN_KNOWLEDGE.items():
             assert "core" in info, f"{domain} missing core"
             assert len(info["core"]) >= 1, f"{domain} has empty core"
 
     def test_each_domain_has_workflows(self):
         from morie.agent import _DOMAIN_KNOWLEDGE
+
         for domain, info in _DOMAIN_KNOWLEDGE.items():
             assert "workflows" in info, f"{domain} missing workflows"
 
     def test_domain_guide_spatial(self):
         from morie.agent import tool_domain_guide
+
         result = tool_domain_guide("spatial")
         assert "SPATIAL" in result
         assert "moran" in result
@@ -510,69 +511,83 @@ class TestDomainKnowledge:
 
     def test_domain_guide_causal(self):
         from morie.agent import tool_domain_guide
+
         result = tool_domain_guide("causal")
         assert "CAUSAL" in result
         assert "ipw" in result
 
     def test_domain_guide_unknown_falls_back(self):
         from morie.agent import tool_domain_guide
+
         result = tool_domain_guide("nonexistent_domain_xyz")
         assert "Unknown domain" in result or "Available" in result
 
     def test_domain_guide_substring_match(self):
         from morie.agent import tool_domain_guide
+
         result = tool_domain_guide("signal")
         assert "biomedical" in result.lower() or "BIOMEDICAL" in result
 
     def test_recommend_analysis_spatial(self):
         from morie.agent import tool_recommend_analysis
+
         result = tool_recommend_analysis("How do I compute spatial autocorrelation?")
         assert "spatial" in result.lower()
 
     def test_recommend_analysis_causal(self):
         from morie.agent import tool_recommend_analysis
+
         result = tool_recommend_analysis("What is the average treatment effect?")
         assert "causal" in result.lower()
 
     def test_recommend_analysis_unknown(self):
         from morie.agent import tool_recommend_analysis
+
         result = tool_recommend_analysis("xyzzy plugh")
         assert "search_functions" in result
 
     def test_category_tree(self):
         from morie.agent import tool_category_tree
+
         result = tool_category_tree()
         assert "TAXONOMY" in result
         assert "categories" in result.lower()
 
     def test_similar_functions_existing(self):
         from morie.agent import tool_similar_functions
+
         result = tool_similar_functions("ate")
         assert "Similar" in result or "similar" in result
 
     def test_similar_functions_missing(self):
         from morie.agent import tool_similar_functions
+
         result = tool_similar_functions("nonexistent_xyz")
         assert "not found" in result.lower()
 
     def test_textbook_reference_spatial(self):
         from morie.agent import tool_textbook_reference
+
         result = tool_textbook_reference("kriging")
         assert "Schabenberger" in result
 
     def test_textbook_reference_emg(self):
         from morie.agent import tool_textbook_reference
+
         result = tool_textbook_reference("emg")
         assert "Rangayyan" in result
 
     def test_textbook_reference_unknown(self):
         from morie.agent import tool_textbook_reference
+
         result = tool_textbook_reference("xyzzy")
         assert "No specific reference" in result
 
     def test_run_pipeline_valid(self):
-        from morie.agent import tool_run_pipeline
         import json
+
+        from morie.agent import tool_run_pipeline
+
         steps = json.dumps([{"fn": "dnorm", "kwargs": {"x": 0.0}}])
         result = tool_run_pipeline(steps)
         assert "Step 1" in result
@@ -580,39 +595,53 @@ class TestDomainKnowledge:
 
     def test_run_pipeline_invalid_json(self):
         from morie.agent import tool_run_pipeline
+
         result = tool_run_pipeline("not json")
         assert "Invalid JSON" in result
 
     def test_run_pipeline_empty(self):
         from morie.agent import tool_run_pipeline
+
         result = tool_run_pipeline("[]")
         assert "empty" in result.lower()
 
     def test_compare_methods_empty(self):
         from morie.agent import tool_compare_methods
+
         result = tool_compare_methods("")
         assert "Provide" in result
 
     def test_run_suite_unknown_domain(self):
         from morie.agent import tool_run_suite
+
         result = tool_run_suite("nonexistent_xyz")
         assert "Unknown domain" in result
 
     def test_run_suite_distributions(self):
         from morie.agent import tool_run_suite
+
         result = tool_run_suite("distributions")
         assert "DISTRIBUTIONS" in result
 
     def test_dispatch_has_all_new_tools(self):
         from morie.agent import _TOOL_DISPATCH
-        new_tools = ["domain_guide", "recommend_analysis", "category_tree",
-                     "similar_functions", "textbook_reference", "run_pipeline",
-                     "compare_methods", "run_suite"]
+
+        new_tools = [
+            "domain_guide",
+            "recommend_analysis",
+            "category_tree",
+            "similar_functions",
+            "textbook_reference",
+            "run_pipeline",
+            "compare_methods",
+            "run_suite",
+        ]
         for tool in new_tools:
             assert tool in _TOOL_DISPATCH, f"{tool} missing from dispatch"
 
     def test_small_model_gets_8_tools(self):
         from morie.agent import PerseusAgent
+
         agent = PerseusAgent(model="functiongemma:270m")
         tools = agent._build_tool_definitions()
         assert len(tools) == 8
@@ -623,16 +652,19 @@ class TestDomainKnowledge:
 
     def test_large_model_gets_20_tools(self):
         from morie.agent import PerseusAgent
+
         agent = PerseusAgent(model="perseus:e2b")
         tools = agent._build_tool_definitions()
         assert len(tools) == 20
 
     def test_system_prompt_mentions_demigod(self):
         from morie.agent import _SYSTEM_PROMPT_FULL
+
         assert "demigod" in _SYSTEM_PROMPT_FULL
 
     def test_system_prompt_mentions_domains(self):
         from morie.agent import _SYSTEM_PROMPT_FULL
+
         assert "domain_guide" in _SYSTEM_PROMPT_FULL
         assert "recommend_analysis" in _SYSTEM_PROMPT_FULL
         assert "run_suite" in _SYSTEM_PROMPT_FULL

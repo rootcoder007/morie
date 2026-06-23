@@ -123,7 +123,7 @@ def wlcst(time: np.ndarray, event: np.ndarray, group: np.ndarray, weight: str = 
             w_j = km_map.get(t_j, 1.0)
 
         numerator += w_j * (d_1j - e_1j)
-        variance += w_j ** 2 * n_1j * n_2j * d_j * (n_j - d_j) / (n_j ** 2 * (n_j - 1))
+        variance += w_j**2 * n_1j * n_2j * d_j * (n_j - d_j) / (n_j**2 * (n_j - 1))
 
     if variance <= 0:
         return {
@@ -135,7 +135,7 @@ def wlcst(time: np.ndarray, event: np.ndarray, group: np.ndarray, weight: str = 
         }
 
     z = numerator / np.sqrt(variance)
-    chi2 = z ** 2
+    chi2 = z**2
     p_val = float(1 - _stats.chi2.cdf(chi2, df=1))
 
     return {

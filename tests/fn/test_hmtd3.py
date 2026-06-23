@@ -1,6 +1,7 @@
 """Tests for hmtd3.geron_td3."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmtd3 import geron_td3
 
 
@@ -14,7 +15,7 @@ def test_hmtd3_basic():
     lr = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_td3(env, policy, Q1, Q2, epochs, lr)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmtd3_edge():

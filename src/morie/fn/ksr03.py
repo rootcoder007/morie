@@ -6,8 +6,10 @@ standard normal), i.e. the one-sample Kolmogorov-Smirnov statistic,
 plus its exact KS asymptotic p-value (Marsaglia-Tsang-Wang series).
 By Glivenko-Cantelli the statistic -> 0 a.s. when F is correct.
 """
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_glivenko_cantelli"]
@@ -31,12 +33,14 @@ def kosorok_glivenko_cantelli(x, cdf="norm"):
     x = np.asarray(x, dtype=float)
     n = len(x)
     res = stats.kstest(x, cdf)
-    return RichResult(payload={
-        "statistic": float(res.statistic),
-        "p_value":   float(res.pvalue),
-        "n":         n,
-        "method":    "Glivenko-Cantelli / KS sup|F_n - F|",
-    })
+    return RichResult(
+        payload={
+            "statistic": float(res.statistic),
+            "p_value": float(res.pvalue),
+            "n": n,
+            "method": "Glivenko-Cantelli / KS sup|F_n - F|",
+        }
+    )
 
 
 def cheatsheet():

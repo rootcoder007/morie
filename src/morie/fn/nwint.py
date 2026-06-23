@@ -65,4 +65,4 @@ short = newton_interp
 
 
 def cheatsheet() -> str:
-    return 'newton_interp({}) -> Newton divided-difference interpolation.'
+    return "newton_interp({}) -> Newton divided-difference interpolation."

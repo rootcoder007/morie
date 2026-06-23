@@ -1,6 +1,7 @@
 """Test cstrr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cstrr import cstrr
 
 

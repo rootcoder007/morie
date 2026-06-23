@@ -1,13 +1,12 @@
 """Tests for morie.fn.rcdsr — recidivism survival."""
 
-import pytest
 import numpy as np
-from morie.fn.rcdsr import recidivism_survival
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rcdsr import recidivism_survival
 
 
 class TestRecidivismSurvival:
-
     def test_returns_descriptive(self):
         times = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=float)
         events = np.array([1, 0, 1, 0, 1, 0, 0, 1, 0, 1], dtype=float)

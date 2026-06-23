@@ -9,7 +9,9 @@ import numpy as np
 from scipy.stats import nbinom
 
 
-def pnbm(q: Union[int, np.ndarray], size: float, prob: float, lower_tail: bool = True, cdf=None) -> Union[float, np.ndarray]:
+def pnbm(
+    q: Union[int, np.ndarray], size: float, prob: float, lower_tail: bool = True, cdf=None
+) -> Union[float, np.ndarray]:
     """
     Negative binomial distribution cumulative distribution function.
 

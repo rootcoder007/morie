@@ -1,6 +1,7 @@
 """Tests for morie.fn.hecea -- CE plane."""
 
 import numpy as np
+
 from morie.fn.hecea import cost_effectiveness_plane
 
 
@@ -17,5 +18,6 @@ class TestCEPlane:
 
     def test_mismatch(self):
         import pytest
+
         with pytest.raises(ValueError):
             cost_effectiveness_plane([1, 2], [1])

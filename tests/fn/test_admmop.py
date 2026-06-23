@@ -1,6 +1,7 @@
 """Tests for admmop.admm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.admmop import admm
 
 
@@ -14,7 +15,7 @@ def test_admmop_basic():
     rho = 0.5
     result = admm(f, g, A, B, c, rho)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_admmop_edge():

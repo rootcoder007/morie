@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rolling-window aggregate feature over window W."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_rolling_window_feature"]
@@ -34,7 +36,9 @@ def joseph_rolling_window_feature(y, W, agg):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rolling-window aggregate feature over window W"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Rolling-window aggregate feature over window W"}
+    )
 
 
 def cheatsheet():

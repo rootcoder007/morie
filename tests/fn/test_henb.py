@@ -1,6 +1,7 @@
 """Tests for morie.fn.henb -- net monetary benefit."""
 
 import pytest
+
 from morie.fn.henb import net_monetary_benefit
 
 

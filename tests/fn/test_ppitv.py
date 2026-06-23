@@ -1,6 +1,7 @@
 """Test ppitv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppitv import ppitv
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxfpc -- Spatial functional PCA"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxfpc import fpca_spatial
 

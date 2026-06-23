@@ -64,4 +64,5 @@ def test_coef_index_range():
 
 def test_cheatsheet():
     from morie.fn.wldbt import cheatsheet
+
     assert "wild" in cheatsheet().lower()

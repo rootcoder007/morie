@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wishart prior on covariance in Gaussian DPM: full covariance contraction rate."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_wishart_dpm"]
@@ -30,7 +32,14 @@ def ghosal_wishart_dpm(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Wishart prior on covariance in Gaussian DPM: full covariance contraction rate"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Wishart prior on covariance in Gaussian DPM: full covariance contraction rate",
+        }
+    )
 
 
 def cheatsheet():

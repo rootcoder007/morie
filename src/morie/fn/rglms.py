@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Least-mean-squares (LMS) adaptive filter."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_lms_filter"]
@@ -36,7 +38,9 @@ def rangayyan_lms_filter(x, d, mu, order):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Least-mean-squares (LMS) adaptive filter"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Least-mean-squares (LMS) adaptive filter"}
+    )
 
 
 def cheatsheet():

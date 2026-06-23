@@ -1,6 +1,7 @@
 """Tests for linkPr.link_prediction."""
+
 import numpy as np
-import pytest
+
 from morie.fn.linkpr import link_prediction
 
 
@@ -9,10 +10,10 @@ def test_linkpr_basic():
     G = np.eye(10)
     u = np.random.default_rng(44).normal(0, 1, 100)
     v = np.random.default_rng(44).normal(0, 1, 100)
-    method = 'auto'
+    method = "auto"
     result = link_prediction(G, u, v, method)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_linkpr_edge():
@@ -20,6 +21,6 @@ def test_linkpr_edge():
     G = np.eye(10)
     u = np.random.default_rng(44).normal(0, 1, 100)
     v = np.random.default_rng(44).normal(0, 1, 100)
-    method = 'auto'
+    method = "auto"
     result = link_prediction(G, u, v, method)
     assert isinstance(result, dict)

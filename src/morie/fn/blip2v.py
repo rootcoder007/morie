@@ -1,6 +1,7 @@
 """BLIP-2 Q-Former vision-language alignment."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["blip2_qformer"]
@@ -34,7 +35,9 @@ def blip2_qformer(image_features, queries, llm):
     n = len(image_features)
     result = float(np.mean(image_features))
     se = float(np.std(image_features, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BLIP-2 Q-Former vision-language alignment"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "BLIP-2 Q-Former vision-language alignment"}
+    )
 
 
 def cheatsheet():

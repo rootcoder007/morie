@@ -92,14 +92,14 @@ def croston_method(
         )
 
     # Initialise with the first demand observation.
-    a = float(y[nonzero_idx[0]])   # smoothed demand size
+    a = float(y[nonzero_idx[0]])  # smoothed demand size
     q_prev_idx = nonzero_idx[0]
     # Initial interval: distance from time 0 to first demand (at least 1).
     p = float(nonzero_idx[0] + 1)
 
     # Update at each subsequent demand occurrence.
     for idx in nonzero_idx[1:]:
-        q = float(idx - q_prev_idx)   # observed inter-arrival time
+        q = float(idx - q_prev_idx)  # observed inter-arrival time
         a = alpha * float(y[idx]) + (1.0 - alpha) * a
         p = alpha * q + (1.0 - alpha) * p
         q_prev_idx = idx

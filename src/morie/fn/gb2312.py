@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """S_n(x) is a consistent estimator of F(x); converges in probability."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_edf_consistent"]
@@ -29,14 +31,31 @@ def gibbons_edf_consistent(x):
     x = np.asarray(x, dtype=float)
     n = int(x) if x.ndim == 0 else len(x)
     if x.ndim == 0:
-        return RichResult(payload={"statistic": float('nan'), "p_value": float('nan'), "n": 1, "method": "scalar-input placeholder"})
+        return RichResult(
+            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+        )
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "S_n(x) is a consistent estimator of F(x); converges in probability"})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "S_n(x) is a consistent estimator of F(x); converges in probability",
+            }
+        )
     estimate = np.median(x)
     se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "S_n(x) is a consistent estimator of F(x); converges in probability"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "S_n(x) is a consistent estimator of F(x); converges in probability",
+        }
+    )
 
 
 def cheatsheet():

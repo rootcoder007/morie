@@ -1,6 +1,7 @@
 """Tests for modlar.modularity_newman."""
+
 import numpy as np
-import pytest
+
 from morie.fn.modlar import modularity_newman
 
 
@@ -11,7 +12,7 @@ def test_modlar_basic():
     communities = np.random.default_rng(42).normal(0, 1, 100)
     result = modularity_newman(y, A, communities)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_modlar_edge():

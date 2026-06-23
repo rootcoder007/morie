@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spectral clustering: eigenvectors of graph Laplacian."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_spectral_clustering"]
@@ -34,7 +36,9 @@ def geron_spectral_clustering(X, n_clusters, affinity):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spectral clustering: eigenvectors of graph Laplacian"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Spectral clustering: eigenvectors of graph Laplacian"}
+    )
 
 
 def cheatsheet():

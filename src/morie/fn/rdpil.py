@@ -51,4 +51,4 @@ rdpil = red_pill_test
 
 
 def cheatsheet() -> str:
-    return 'rdpil() -> Red pill test'
+    return "rdpil() -> Red pill test"

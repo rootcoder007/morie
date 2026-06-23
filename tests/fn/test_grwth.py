@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.grwth import exponential_growth_rate
 
 

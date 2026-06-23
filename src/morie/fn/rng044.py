@@ -1,6 +1,7 @@
 """Output of the first branch in a parallel LSI configuration.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_lsi_parallel_branch_1"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_lsi_parallel_branch_1(x, h_1, n):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Output of the first branch in a parallel LSI configuration."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Output of the first branch in a parallel LSI configuration.",
+        }
+    )
 
 
 def cheatsheet():

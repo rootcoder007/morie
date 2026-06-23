@@ -1,7 +1,7 @@
 """Tests for morie.fn.pabrd."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pabrd import pabrd
 
 

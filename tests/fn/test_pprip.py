@@ -1,6 +1,7 @@
 """Test pprip."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pprip import pprip
 
 

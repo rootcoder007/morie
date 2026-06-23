@@ -1,6 +1,7 @@
 """Tests for eslmrf.esl_markov_rf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslmrf import esl_markov_rf
 
 
@@ -10,7 +11,7 @@ def test_eslmrf_basic():
     psi = np.random.default_rng(42).normal(0, 1, 100)
     result = esl_markov_rf(graph, psi)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslmrf_edge():

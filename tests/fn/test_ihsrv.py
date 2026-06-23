@@ -1,6 +1,7 @@
 """Tests for morie.fn.ihsrv -- indigenous service access."""
 
 import pytest
+
 from morie.fn.ihsrv import indigenous_service_access
 
 

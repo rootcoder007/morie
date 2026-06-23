@@ -1,6 +1,7 @@
 r"""Closed-form gradients of binary cross-entropy with respect to each weight and the bias for logistic regression.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_bce_gradients"]
@@ -38,7 +39,14 @@ def burkov_lm_ch1_bce_gradients(y_hat, y, x, N, j):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Closed-form gradients of binary cross-entropy with respect to each weight and the bias for logistic regression."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Closed-form gradients of binary cross-entropy with respect to each weight and the bias for logistic regression.",
+        }
+    )
 
 
 def cheatsheet():

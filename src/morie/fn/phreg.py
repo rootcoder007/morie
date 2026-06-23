@@ -10,7 +10,15 @@ from scipy.stats import norm
 __all__ = ["phreg"]
 
 
-def phreg(time: np.ndarray, event: np.ndarray, X: np.ndarray, cdf=None, *, breaks: np.ndarray | None = None, n_intervals: int = 5) -> dict:
+def phreg(
+    time: np.ndarray,
+    event: np.ndarray,
+    X: np.ndarray,
+    cdf=None,
+    *,
+    breaks: np.ndarray | None = None,
+    n_intervals: int = 5,
+) -> dict:
     """Piecewise constant hazard regression model.
 
     Parameters
@@ -73,13 +81,16 @@ def phreg(time: np.ndarray, event: np.ndarray, X: np.ndarray, cdf=None, *, break
 
     try:
         from scipy.optimize import approx_fprime
+
         hess_diag = np.zeros(p + K)
         eps = 1e-5
         for i in range(p + K):
+
             def f_i(xi):
                 params = result.x.copy()
                 params[i] = xi
                 return neg_loglik(params)
+
             h = approx_fprime([result.x[i]], f_i, eps)[0]
             hess_diag[i] = max(h, 1e-10)
         se = 1.0 / np.sqrt(hess_diag[:p])

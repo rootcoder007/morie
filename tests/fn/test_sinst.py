@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.sinst import vol_of_vol, sinst
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sinst import sinst, vol_of_vol
 
 
 class TestSinst:

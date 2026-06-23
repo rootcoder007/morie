@@ -12,6 +12,7 @@ the saddle-point system
 
 where K_ij = phi(||x_i - x_j||) and T = [1 x].
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -48,11 +49,10 @@ def thin_plate_spline(x, y, lam: float = 0.0):
         x = x.reshape(-1, 1)
     n, d = x.shape
     if n < d + 2 or y.size != n:
-        return RichResult(payload={"estimate": float("nan"), "n": int(n),
-                                   "method": "TPS (n too small)"})
+        return RichResult(payload={"estimate": float("nan"), "n": int(n), "method": "TPS (n too small)"})
     # pairwise distances
     diff = x[:, None, :] - x[None, :, :]
-    R = np.sqrt(np.sum(diff ** 2, axis=2))
+    R = np.sqrt(np.sum(diff**2, axis=2))
     K = _phi(R) + lam * np.eye(n)
     T = np.column_stack([np.ones(n), x])
     A = np.block([[K, T], [T.T, np.zeros((d + 1, d + 1))]])
@@ -62,16 +62,24 @@ def thin_plate_spline(x, y, lam: float = 0.0):
     beta = sol[n:]
     fitted = K @ a + T @ beta
     resid = y - fitted
-    sse = float(np.sum(resid ** 2))
+    sse = float(np.sum(resid**2))
     sst = float(np.sum((y - y.mean()) ** 2))
     r2 = 1.0 - sse / sst if sst > 0 else float("nan")
-    return RichResult(payload={
-        "a": a, "beta": beta, "fitted": fitted, "residuals": resid,
-        "sse": sse, "r2": float(r2), "lambda": float(lam),
-        "estimate": float(fitted.mean()),
-        "n": int(n), "d": int(d),
-        "method": "Thin-plate spline (Duchon 1977)",
-    })
+    return RichResult(
+        payload={
+            "a": a,
+            "beta": beta,
+            "fitted": fitted,
+            "residuals": resid,
+            "sse": sse,
+            "r2": float(r2),
+            "lambda": float(lam),
+            "estimate": float(fitted.mean()),
+            "n": int(n),
+            "d": int(d),
+            "method": "Thin-plate spline (Duchon 1977)",
+        }
+    )
 
 
 # CANONICAL TEST

@@ -1,6 +1,8 @@
 """Tests for morie.fn.bstsn — Bayesian structural time series."""
+
 import numpy as np
 import pytest
+
 from morie.fn.bstsn import bstsn
 
 
@@ -58,4 +60,5 @@ def test_trend_captures_direction(series):
 
 def test_cheatsheet():
     from morie.fn.bstsn import cheatsheet
+
     assert len(cheatsheet()) > 0

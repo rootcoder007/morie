@@ -1,6 +1,8 @@
 """Tests for Tsallis entropy."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tsent import tsallis_entropy, tsent
 
 

@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['hrmns']
+__all__ = ["hrmns"]
 
 _QUOTE = "He who has a why to live can bear almost any how. -- Friedrich Nietzsche"
 
@@ -55,7 +55,8 @@ def hrmns(
     mask = (freqs >= min_freq) & (freqs <= max_freq)
     if not np.any(mask):
         return DescriptiveResult(
-            name="hrmns", value=0.0,
+            name="hrmns",
+            value=0.0,
             extra={"fundamental": 0.0, "harmonics": [], "amplitudes": []},
         )
 

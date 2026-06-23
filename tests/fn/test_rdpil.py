@@ -1,8 +1,9 @@
 """Statistics is the grammar of science. — Karl Pearson"""
 
 import numpy as np
-from morie.fn.rdpil import red_pill_test, rdpil
+
 from morie.fn._containers import TestResult
+from morie.fn.rdpil import rdpil, red_pill_test
 
 
 class TestRdpil:

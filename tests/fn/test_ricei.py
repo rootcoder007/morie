@@ -1,6 +1,7 @@
 """Tests for ricei.rice_index."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ricei import rice_index
 
 
@@ -10,7 +11,7 @@ def test_ricei_basic():
     party_id = np.random.default_rng(42).normal(0, 1, 100)
     result = rice_index(votes, party_id)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ricei_edge():

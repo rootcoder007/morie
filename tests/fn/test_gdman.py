@@ -1,5 +1,7 @@
 """Tests for goodman_kruskal_gamma."""
-import numpy as np, pytest
+
+import pytest
+
 from morie.fn.gdman import goodman_kruskal_gamma
 
 

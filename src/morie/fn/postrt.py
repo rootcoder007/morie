@@ -1,6 +1,7 @@
 """Post-stratification weight adjustment."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["post_stratification"]

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Individual treatment effect (ITE) using potential outcomes notation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["potential_outcomes_individual"]
@@ -32,7 +34,14 @@ def potential_outcomes_individual(Y1, Y0):
     n = int(Y1) if Y1.ndim == 0 else len(Y1)
     result = float(np.mean(Y1))
     se = float(np.std(Y1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Individual treatment effect (ITE) using potential outcomes notation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Individual treatment effect (ITE) using potential outcomes notation",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for dpkmn.dp_kmeans."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpkmn import dp_kmeans
 
 
@@ -10,7 +11,7 @@ def test_dpkmn_basic():
     lam = 0.1
     result = dp_kmeans(y, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpkmn_edge():

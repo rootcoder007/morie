@@ -1,6 +1,7 @@
 """Tests for km033.kamath_ch2_dae_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km033 import kamath_ch2_dae_loss
 
 
@@ -10,7 +11,7 @@ def test_km033_basic():
     xhat = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ch2_dae_loss(x, xhat)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km033_edge():

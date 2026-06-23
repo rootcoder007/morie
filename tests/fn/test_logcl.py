@@ -1,7 +1,8 @@
 """Tests for logcl.py - Logistic classifier."""
+
 import numpy as np
-import pytest
-from morie.fn.logcl import logcl_fn, logcl
+
+from morie.fn.logcl import logcl, logcl_fn
 
 
 def _separable_data():
@@ -9,7 +10,7 @@ def _separable_data():
     X0 = rng.standard_normal((50, 2)) + np.array([-3, -3])
     X1 = rng.standard_normal((50, 2)) + np.array([3, 3])
     X = np.vstack([X0, X1])
-    y = np.array([0.0]*50 + [1.0]*50)
+    y = np.array([0.0] * 50 + [1.0] * 50)
     return X, y
 
 

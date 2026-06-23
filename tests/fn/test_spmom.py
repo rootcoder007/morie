@@ -1,6 +1,7 @@
 """Tests for spmom.py - spectral moment."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spmom import spectral_moment_fn, spmom
 
 

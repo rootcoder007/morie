@@ -1,6 +1,7 @@
 """Tests for evextidx.evt_extremal_index_runs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evextidx import evt_extremal_index_runs
 
 
@@ -11,7 +12,7 @@ def test_evextidx_basic():
     r = 10
     result = evt_extremal_index_runs(x, u, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evextidx_edge():

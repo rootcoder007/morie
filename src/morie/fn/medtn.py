@@ -9,7 +9,9 @@ from typing import Any, Union
 import numpy as np
 
 
-def causal_mediation(X: Union[list, np.ndarray], M: Union[list, np.ndarray], Y: Union[list, np.ndarray], cdf=None) -> dict[str, Any]:
+def causal_mediation(
+    X: Union[list, np.ndarray], M: Union[list, np.ndarray], Y: Union[list, np.ndarray], cdf=None
+) -> dict[str, Any]:
     """
     Causal mediation analysis using the Baron-Kenny (1986) approach.
 

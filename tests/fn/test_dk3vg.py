@@ -1,6 +1,7 @@
 """Test dk3vg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dk3vg import dk3vg
 
 

@@ -1,6 +1,7 @@
 """Test eneqk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eneqk import eneqk
 
 

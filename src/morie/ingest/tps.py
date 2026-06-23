@@ -55,32 +55,21 @@ LAYER_REGISTRY: dict[str, str] = {
         "Shooting_and_Firearm_Discharges_Open_Data/FeatureServer/0"
     ),
     "homicide": (
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/"
-        "Homicides_Open_Data/FeatureServer/0"
+        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Homicides_Open_Data/FeatureServer/0"
     ),
-    "robbery": (
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/"
-        "Robbery_Open_Data/FeatureServer/0"
-    ),
-    "assault": (
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/"
-        "Assault_Open_Data/FeatureServer/0"
-    ),
+    "robbery": ("https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Robbery_Open_Data/FeatureServer/0"),
+    "assault": ("https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Assault_Open_Data/FeatureServer/0"),
     "auto-theft": (
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/"
-        "Auto_Theft_Open_Data/FeatureServer/0"
+        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Auto_Theft_Open_Data/FeatureServer/0"
     ),
     "break-and-enter": (
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/"
-        "Break_and_Enter_Open_Data/FeatureServer/0"
+        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Break_and_Enter_Open_Data/FeatureServer/0"
     ),
     "theft-over": (
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/"
-        "Theft_Over_Open_Data/FeatureServer/0"
+        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Theft_Over_Open_Data/FeatureServer/0"
     ),
     "bicycle-thefts": (
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/"
-        "Bicycle_Thefts_Open_Data/FeatureServer/0"
+        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Bicycle_Thefts_Open_Data/FeatureServer/0"
     ),
 }
 
@@ -200,9 +189,7 @@ def discover_layers() -> pd.DataFrame:
     Use this to discover layer names without leaving Python; pass an
     entry's ``url`` field to :func:`fetch_feature_layer`.
     """
-    return pd.DataFrame(
-        [{"name": k, "url": v} for k, v in LAYER_REGISTRY.items()]
-    )
+    return pd.DataFrame([{"name": k, "url": v} for k, v in LAYER_REGISTRY.items()])
 
 
 # ----------------------------------------------------------------------
@@ -215,8 +202,7 @@ def cli(args: list[str]) -> int:
     import sys
     from pathlib import Path
 
-    p = argparse.ArgumentParser(prog="morie ingest tps",
-                                description="Pull a Toronto Police Service open-data layer.")
+    p = argparse.ArgumentParser(prog="morie ingest tps", description="Pull a Toronto Police Service open-data layer.")
     p.add_argument("--layer", help=f"Built-in layer name: {sorted(LAYER_REGISTRY)}")
     p.add_argument("--url", help="Direct FeatureServer layer URL (overrides --layer)")
     p.add_argument("--year", type=int, help="Filter to a single OCC_YEAR")
@@ -242,8 +228,7 @@ def cli(args: list[str]) -> int:
         return 2
 
     where = ns.where or (f"OCC_YEAR = {ns.year}" if ns.year else "1=1")
-    df = fetch_feature_layer(url, where=where, return_geometry=ns.geometry,
-                             max_features=ns.max_features)
+    df = fetch_feature_layer(url, where=where, return_geometry=ns.geometry, max_features=ns.max_features)
     if ns.out:
         df.to_csv(ns.out, index=False)
         sys.stderr.write(f"wrote {ns.out}  ({len(df):,} rows, {len(df.columns)} cols)\n")

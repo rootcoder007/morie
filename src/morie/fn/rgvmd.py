@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Variational mode decomposition (VMD) into K band-limited modes."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_vmd"]
@@ -40,7 +42,14 @@ def rangayyan_vmd(x, K, alpha, tau, init, tol):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Variational mode decomposition (VMD) into K band-limited modes"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Variational mode decomposition (VMD) into K band-limited modes",
+        }
+    )
 
 
 def cheatsheet():

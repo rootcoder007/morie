@@ -1,8 +1,7 @@
 """Tests for morie.vertex — mocked gcloud + httpx."""
 
-import json
 import subprocess
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -58,26 +57,28 @@ def test_access_token_propagates_gcloud_error(monkeypatch):
     monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", "test-project")
     cfg = vertex.resolve_config()
     with patch.object(vertex.subprocess, "run") as mock_run:
-        mock_run.side_effect = subprocess.CalledProcessError(
-            1, "gcloud", stderr="reauth required"
-        )
+        mock_run.side_effect = subprocess.CalledProcessError(1, "gcloud", stderr="reauth required")
         with pytest.raises(RuntimeError, match="reauth required"):
             vertex._access_token(cfg)
 
 
 def test_ask_gemini_sends_correct_payload(monkeypatch):
     monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", "test-project")
-    with patch.object(vertex, "_access_token", return_value="ya29.mock"), \
-         patch.object(vertex._httpx, "Client") as mock_client_cls:
+    with (
+        patch.object(vertex, "_access_token", return_value="ya29.mock"),
+        patch.object(vertex._httpx, "Client") as mock_client_cls,
+    ):
         mock_resp = MagicMock()
         mock_resp.status_code = 200
         mock_resp.json.return_value = {
-            "candidates": [{
-                "content": {
-                    "parts": [{"text": "hello back"}],
-                    "role": "model",
-                },
-            }],
+            "candidates": [
+                {
+                    "content": {
+                        "parts": [{"text": "hello back"}],
+                        "role": "model",
+                    },
+                }
+            ],
         }
         mock_client = MagicMock()
         mock_client.__enter__ = MagicMock(return_value=mock_client)
@@ -98,8 +99,10 @@ def test_ask_gemini_sends_correct_payload(monkeypatch):
 
 def test_ask_gemini_raises_on_non_200(monkeypatch):
     monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", "test-project")
-    with patch.object(vertex, "_access_token", return_value="ya29.mock"), \
-         patch.object(vertex._httpx, "Client") as mock_client_cls:
+    with (
+        patch.object(vertex, "_access_token", return_value="ya29.mock"),
+        patch.object(vertex._httpx, "Client") as mock_client_cls,
+    ):
         mock_resp = MagicMock()
         mock_resp.status_code = 403
         mock_resp.text = "Permission denied on resource project/test-project"

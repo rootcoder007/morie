@@ -1,6 +1,7 @@
 """Tests for drrct.dr_rct_assisted_did."""
+
 import numpy as np
-import pytest
+
 from morie.fn.drrct import dr_rct_assisted_did
 
 
@@ -12,7 +13,7 @@ def test_drrct_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = dr_rct_assisted_did(y_obs, y_rct, D, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_drrct_edge():

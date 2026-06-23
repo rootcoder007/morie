@@ -1,8 +1,9 @@
 """Tests for morie.fn.profl -- Procrustes rotation."""
 
 import numpy as np
-from morie.fn.profl import procrustes, profl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.profl import procrustes, profl
 
 
 class TestProcrustes:
@@ -20,8 +21,7 @@ class TestProcrustes:
         rng = np.random.default_rng(42)
         S = rng.standard_normal((30, 2))
         theta = 0.5
-        R = np.array([[np.cos(theta), -np.sin(theta)],
-                       [np.sin(theta), np.cos(theta)]])
+        R = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
         T = S @ R
         res = procrustes(S, T)
         assert res.extra["disparity"] < 1e-6

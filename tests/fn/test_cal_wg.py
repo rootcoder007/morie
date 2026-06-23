@@ -12,11 +12,13 @@ def cal_data():
     """DataFrame with two numeric auxiliary variables."""
     rng = np.random.default_rng(42)
     n = 200
-    return pd.DataFrame({
-        "age": rng.uniform(20, 70, size=n),
-        "income": rng.uniform(20000, 100000, size=n),
-        "y": rng.standard_normal(n),
-    })
+    return pd.DataFrame(
+        {
+            "age": rng.uniform(20, 70, size=n),
+            "income": rng.uniform(20000, 100000, size=n),
+            "y": rng.standard_normal(n),
+        }
+    )
 
 
 def test_returns_series(cal_data):

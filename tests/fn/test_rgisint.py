@@ -1,6 +1,7 @@
 """Tests for rgisint.rangayyan_isometric_contraction."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgisint import rangayyan_isometric_contraction
 
 
@@ -11,7 +12,7 @@ def test_rgisint_basic():
     fs = 100.0
     result = rangayyan_isometric_contraction(emg, force, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgisint_edge():

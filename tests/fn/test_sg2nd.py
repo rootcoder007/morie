@@ -1,5 +1,7 @@
 """Tests for second-order intensity."""
+
 import numpy as np
+
 from morie.fn.sg2nd import sg2nd
 
 
@@ -14,6 +16,7 @@ def test_sg2nd_smoke():
 
 def test_cheatsheet():
     from morie.fn.sg2nd import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

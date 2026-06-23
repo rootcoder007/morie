@@ -1,6 +1,7 @@
 """Max-stable process simulation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["max_exceedance_curve"]

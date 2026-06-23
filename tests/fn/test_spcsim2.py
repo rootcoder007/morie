@@ -1,6 +1,8 @@
 """Tests for spcsim2."""
+
 import numpy as np
 import pytest
+
 from morie.fn.spcsim2 import spcsim2
 
 
@@ -28,4 +30,5 @@ def test_spcsim2_no_data():
 
 def test_spcsim2_alias():
     from morie.fn.spcsim2 import spcsim2
+
     assert spcsim2 is spcsim2

@@ -1,6 +1,7 @@
 """Tests for cvxqpdl.boyd_qp_dual."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxqpdl import boyd_qp_dual
 
 
@@ -12,7 +13,7 @@ def test_cvxqpdl_basic():
     h = 0.3
     result = boyd_qp_dual(P, q, G, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxqpdl_edge():

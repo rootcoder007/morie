@@ -1,6 +1,7 @@
 """Tests for cmlmer.compressed_lmm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cmlmer import compressed_lmm
 
 
@@ -12,7 +13,7 @@ def test_cmlmer_basic():
     clusters = np.random.default_rng(42).normal(0, 1, 100)
     result = compressed_lmm(y, M, K, clusters)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cmlmer_edge():

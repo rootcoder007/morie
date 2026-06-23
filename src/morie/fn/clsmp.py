@@ -8,4 +8,4 @@ cluster_sample = _fn
 
 
 def cheatsheet() -> str:
-    return 'clsmp() -> Cluster sampling: select clusters, take all units within.'
+    return "clsmp() -> Cluster sampling: select clusters, take all units within."

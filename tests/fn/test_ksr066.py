@@ -1,6 +1,7 @@
 """Tests for ksr066.kosorok_ch3_z_estimator_no_bias."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr066 import kosorok_ch3_z_estimator_no_bias
 
 
@@ -13,7 +14,7 @@ def test_ksr066_basic():
     n = 100
     result = kosorok_ch3_z_estimator_no_bias(theta_n, eta_n, theta, l_tilde, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr066_edge():

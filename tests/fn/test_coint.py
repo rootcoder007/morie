@@ -1,5 +1,7 @@
 """Tests for morie.fn.coint — cointegration test."""
+
 import numpy as np
+
 from morie.fn.coint import cointegration_test
 
 

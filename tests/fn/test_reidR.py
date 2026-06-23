@@ -1,6 +1,7 @@
 """Tests for reidR.reidentification_risk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.reidR import reidentification_risk
 
 
@@ -11,7 +12,7 @@ def test_reidR_basic():
     quasi_ids = np.arange(100, dtype=int)
     result = reidentification_risk(sample, population, quasi_ids)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_reidR_edge():

@@ -1,6 +1,7 @@
 """Tests for eslsig.esl_residual_variance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslsig import esl_residual_variance
 
 
@@ -11,7 +12,7 @@ def test_eslsig_basic():
     beta = 0.8
     result = esl_residual_variance(X, y, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslsig_edge():

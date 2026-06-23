@@ -1,6 +1,7 @@
 """Tests for ghs023.ghosal_ch3_tailfree_abs_continuity_cond."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghs023 import ghosal_ch3_tailfree_abs_continuity_cond
 
 
@@ -11,7 +12,7 @@ def test_ghs023_basic():
     m = 10
     result = ghosal_ch3_tailfree_abs_continuity_cond(V, mu, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ghs023_edge():

@@ -26,7 +26,15 @@ from typing import Any
 import numpy as np
 
 
-def npmle(data: np.ndarray, cdf=None, *, left: np.ndarray | None = None, right: np.ndarray | None = None, max_iter: int = 500, tol: float = 1e-8) -> dict[str, Any]:
+def npmle(
+    data: np.ndarray,
+    cdf=None,
+    *,
+    left: np.ndarray | None = None,
+    right: np.ndarray | None = None,
+    max_iter: int = 500,
+    tol: float = 1e-8,
+) -> dict[str, Any]:
     r"""Compute the NPMLE for a distribution function.
 
     For uncensored data, this reduces to the empirical CDF.

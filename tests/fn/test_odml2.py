@@ -1,6 +1,7 @@
 """Tests for morie.fn.odml2 — DML for alert treatment effect."""
 
 import numpy as np
+
 from morie.fn.odml2 import otis_dml_alert
 
 

@@ -1,6 +1,7 @@
 """ECFP6 / Morgan radius 3."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ecfp_6_fingerprint"]

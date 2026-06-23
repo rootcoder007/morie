@@ -1,6 +1,6 @@
 """Tests for morie.fn.idlpt — Ideal point estimation."""
+
 import numpy as np
-import pytest
 
 from morie.fn.idlpt import idlpt
 
@@ -14,6 +14,7 @@ def test_idlpt_smoke():
 
 def test_cheatsheet():
     from morie.fn.idlpt import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

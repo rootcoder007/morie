@@ -1,6 +1,7 @@
 """Test opazt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opazt import opazt
 
 

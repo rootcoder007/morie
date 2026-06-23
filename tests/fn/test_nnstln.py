@@ -1,6 +1,8 @@
 """Tests for nnstln."""
+
 import numpy as np
 import pytest
+
 from morie.fn.nnstln import nnstln
 
 
@@ -28,4 +30,5 @@ def test_nnstln_no_data():
 
 def test_nnstln_alias():
     from morie.fn.nnstln import nnstln
+
     assert nnstln is nnstln

@@ -1,5 +1,7 @@
 """Tests for simple kriging."""
+
 import numpy as np
+
 from morie.fn.sgsk import sgsk
 
 

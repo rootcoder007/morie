@@ -87,12 +87,7 @@ def effsc(
 
     psi_init = float(np.mean(mu1 - mu0))
 
-    scores = (
-        T * (Y - mu1) / ps
-        - (1 - T) * (Y - mu0) / (1 - ps)
-        + mu1 - mu0
-        - psi_init
-    )
+    scores = T * (Y - mu1) / ps - (1 - T) * (Y - mu0) / (1 - ps) + mu1 - mu0 - psi_init
 
     estimate = psi_init + float(np.mean(scores))
 
@@ -114,6 +109,7 @@ def effsc(
 
 def _logistic_predict(X, y):
     from scipy import special
+
     beta = np.zeros(X.shape[1])
     for _ in range(25):
         p = special.expit(X @ beta)

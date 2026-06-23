@@ -4,6 +4,7 @@
 Mood's two-sample median test: count how many of each sample lie
 above the pooled-sample median, test the resulting 2x2 table.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -38,23 +39,30 @@ def control_median_test(x, y):
     y = np.asarray(y, dtype=float).ravel()
     m, n = int(x.size), int(y.size)
     if m < 2 or n < 2:
-        return RichResult(payload={
-            "statistic": np.nan, "p_value": np.nan, "df": 1,
-            "n": m + n, "grand_median": np.nan,
-            "method": "Control-median (Mood's median) test",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "df": 1,
+                "n": m + n,
+                "grand_median": np.nan,
+                "method": "Control-median (Mood's median) test",
+            }
+        )
     stat, p, med, tbl = stats.median_test(x, y, ties="below")
-    return RichResult(payload={
-        "statistic": float(stat),
-        "p_value": float(p),
-        "df": 1,
-        "n": m + n,
-        "m": m,
-        "n_y": n,
-        "grand_median": float(med),
-        "table": tbl.tolist(),
-        "method": "Control-median (Mood's median) test",
-    })
+    return RichResult(
+        payload={
+            "statistic": float(stat),
+            "p_value": float(p),
+            "df": 1,
+            "n": m + n,
+            "m": m,
+            "n_y": n,
+            "grand_median": float(med),
+            "table": tbl.tolist(),
+            "method": "Control-median (Mood's median) test",
+        }
+    )
 
 
 def cheatsheet():

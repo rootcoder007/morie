@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-import pytest
+
 from morie.fn.md_pat import missing_data_patterns
 
 

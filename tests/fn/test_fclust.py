@@ -1,6 +1,7 @@
 """Tests for fclust.functional_clustering."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fclust import functional_clustering
 
 
@@ -11,7 +12,7 @@ def test_fclust_basic():
     basis = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = functional_clustering(Y, K, basis)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fclust_edge():

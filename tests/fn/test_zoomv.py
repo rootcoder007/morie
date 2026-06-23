@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.zoomv import velocity_profile, zoomv
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.zoomv import velocity_profile, zoomv
 
 
 class TestZoomv:

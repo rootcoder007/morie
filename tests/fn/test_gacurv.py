@@ -1,6 +1,7 @@
 """Test gacurv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gacurv import gacurv
 
 

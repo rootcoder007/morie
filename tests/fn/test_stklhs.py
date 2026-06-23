@@ -1,6 +1,8 @@
 """Tests for stklhs."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stklhs import stklhs
 
 
@@ -28,4 +30,5 @@ def test_stklhs_no_data():
 
 def test_stklhs_alias():
     from morie.fn.stklhs import stklhs
+
     assert stklhs is stklhs

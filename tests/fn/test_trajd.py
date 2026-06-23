@@ -1,5 +1,7 @@
 """Tests for morie.fn.trajd."""
+
 import numpy as np
+
 from morie.fn.trajd import trajectory_distance
 
 
@@ -13,6 +15,7 @@ def test_trajd_smoke():
 
 def test_cheatsheet():
     from morie.fn.trajd import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """AdaGrad update: per-parameter learning rate inversely proportional to sqrt of accumulated squared gradients."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_adagrad_update"]
@@ -38,7 +40,14 @@ def geron_adagrad_update(theta, grad, s, eta, eps):
     n = int(theta) if theta.ndim == 0 else len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AdaGrad update: per-parameter learning rate inversely proportional to sqrt of accumulated squared gradients"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "AdaGrad update: per-parameter learning rate inversely proportional to sqrt of accumulated squared gradients",
+        }
+    )
 
 
 def cheatsheet():

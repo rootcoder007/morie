@@ -1,6 +1,7 @@
 """DINO output centering (collapse-prevention)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dino_centering"]
@@ -34,7 +35,9 @@ def dino_centering(p_t, C, momentum):
     n = len(p_t)
     result = float(np.mean(p_t))
     se = float(np.std(p_t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DINO output centering (collapse-prevention)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DINO output centering (collapse-prevention)"}
+    )
 
 
 def cheatsheet():

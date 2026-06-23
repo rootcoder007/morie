@@ -1,7 +1,7 @@
 """Tests for morie.fn.dtcnf."""
 
 import numpy as np
-import pytest
+
 from morie.fn.dtcnf import dtcnf
 
 

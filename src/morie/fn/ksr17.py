@@ -4,7 +4,9 @@
 N(t) = sum_i 1{T_i <= t, delta_i = 1}.  Returns total events
 N(infty), event times array, and risk-set-size at each event.
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_counting_process"]
@@ -27,11 +29,13 @@ def kosorok_counting_process(t, event):
     e = np.asarray(event, dtype=int)
     n = len(t)
     total_events = int(e.sum())
-    return RichResult(payload={
-        "estimate": total_events,
-        "n":        n,
-        "method":   "Counting process N(infty) = sum 1{T_i finite, delta_i=1}",
-    })
+    return RichResult(
+        payload={
+            "estimate": total_events,
+            "n": n,
+            "method": "Counting process N(infty) = sum 1{T_i finite, delta_i=1}",
+        }
+    )
 
 
 def cheatsheet():

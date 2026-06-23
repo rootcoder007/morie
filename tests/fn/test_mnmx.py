@@ -1,6 +1,7 @@
 """Tests for morie.fn.mnmx — minimax."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mnmx import minimax
 
 

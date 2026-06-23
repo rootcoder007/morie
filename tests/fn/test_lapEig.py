@@ -1,6 +1,7 @@
 """Tests for lapEig.laplacian_eigenmaps."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lapEig import laplacian_eigenmaps
 
 
@@ -10,7 +11,7 @@ def test_lapEig_basic():
     k = 5
     result = laplacian_eigenmaps(A, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lapEig_edge():

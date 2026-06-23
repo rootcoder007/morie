@@ -25,7 +25,8 @@ def test_smokpm_combines_smoke_and_ambient():
     # 50 smoke + 10 ambient, respiratory
     # log_rr = 10*log(1.010)*5 + log(1.010)*1 = log(1.010)*(50+1)/1 ≈ 0.507
     r = smokpm(
-        smoke_pm25_ugm3=50, ambient_pm25_ugm3=10,
+        smoke_pm25_ugm3=50,
+        ambient_pm25_ugm3=10,
         outcome="respiratory",
     )
     log_rr_amb = math.log(1.010)
@@ -61,8 +62,7 @@ def test_smokpm_array_size_1_broadcasts_to_array():
 def test_smokpm_array_shape_mismatch_raises():
     # Incompatible non-scalar shapes raise
     with pytest.raises(ValueError, match="match in shape"):
-        smokpm(np.array([10, 20, 30]),
-               ambient_pm25_ugm3=np.array([5, 6]))
+        smokpm(np.array([10, 20, 30]), ambient_pm25_ugm3=np.array([5, 6]))
 
 
 def test_smokpm_negative_concentration_raises():

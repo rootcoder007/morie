@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Stick-breaking DP: V_k ~ Beta(1,alpha), G = sum_k w_k delta_{theta_k}."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_dp_stickbr"]
@@ -30,7 +32,14 @@ def ghosal_dp_stickbr(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Stick-breaking DP: V_k ~ Beta(1,alpha), G = sum_k w_k delta_{theta_k}"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Stick-breaking DP: V_k ~ Beta(1,alpha), G = sum_k w_k delta_{theta_k}",
+        }
+    )
 
 
 def cheatsheet():

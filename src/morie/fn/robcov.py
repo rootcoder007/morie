@@ -1,6 +1,7 @@
 """HC0/HC1/HC2/HC3 sandwich SE."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sandwich_robust_se"]

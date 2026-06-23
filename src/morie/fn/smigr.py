@@ -1,6 +1,7 @@
 """SMILES parser -> atom-bond graph."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["smiles_grammar_parse"]

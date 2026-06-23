@@ -1,6 +1,7 @@
 """Test ghsir."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghsir import ghsir
 
 

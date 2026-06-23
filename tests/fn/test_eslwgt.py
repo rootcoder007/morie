@@ -1,6 +1,7 @@
 """Tests for eslwgt.esl_weight_decay."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslwgt import esl_weight_decay
 
 
@@ -10,7 +11,7 @@ def test_eslwgt_basic():
     lambda_ = np.random.default_rng(42).normal(0, 1, 100)
     result = esl_weight_decay(weights, lambda_)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslwgt_edge():

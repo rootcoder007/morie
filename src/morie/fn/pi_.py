@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nucleotide diversity (pi) from a sequence alignment."""
 
-
 from ._containers import GenomicsResult
 
 

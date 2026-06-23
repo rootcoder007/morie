@@ -10,6 +10,7 @@ and rebuilds Y_i* = X_i' beta_hat + e_i*.  This estimator returns the
 bootstrap distribution of OLS beta (or a user-supplied statistic) and
 its standard error.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -19,8 +20,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_wild_bootstrap"]
 
 
-def horowitz_wild_bootstrap(x, y, residuals=None, B=500, statistic="ols",
-                             seed=0):
+def horowitz_wild_bootstrap(x, y, residuals=None, B=500, statistic="ols", seed=0):
     """Rademacher wild bootstrap for OLS coefficients.
 
     Parameters
@@ -40,8 +40,9 @@ def horowitz_wild_bootstrap(x, y, residuals=None, B=500, statistic="ols",
         X = X.T
     n, p = X.shape
     if n < max(10, 2 * p):
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                   "method": "wild-bootstrap (insufficient data)"})
+        return RichResult(
+            payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "wild-bootstrap (insufficient data)"}
+        )
     if residuals is None:
         beta0, *_ = np.linalg.lstsq(X, y, rcond=None)
         residuals = y - X @ beta0
@@ -52,7 +53,7 @@ def horowitz_wild_bootstrap(x, y, residuals=None, B=500, statistic="ols",
     boot = np.zeros((B, p))
     XtX_inv = np.linalg.pinv(X.T @ X)
     for b in range(B):
-        v = rng.choice([-1.0, 1.0], size=n)        # Rademacher
+        v = rng.choice([-1.0, 1.0], size=n)  # Rademacher
         e_star = residuals * v
         y_star = X @ beta0 + e_star
         boot[b] = XtX_inv @ (X.T @ y_star)
@@ -61,24 +62,30 @@ def horowitz_wild_bootstrap(x, y, residuals=None, B=500, statistic="ols",
     ci_lo = np.percentile(boot, 2.5, axis=0)
     ci_hi = np.percentile(boot, 97.5, axis=0)
     if p == 1:
-        return RichResult(payload={
-            "estimate": float(beta0[0]),
-            "se": float(se[0]),
-            "ci_lower": float(ci_lo[0]),
-            "ci_upper": float(ci_hi[0]),
-            "boot_mean": float(mean[0]),
-            "B": B, "n": n,
+        return RichResult(
+            payload={
+                "estimate": float(beta0[0]),
+                "se": float(se[0]),
+                "ci_lower": float(ci_lo[0]),
+                "ci_upper": float(ci_hi[0]),
+                "boot_mean": float(mean[0]),
+                "B": B,
+                "n": n,
+                "method": "Rademacher wild bootstrap (Mammen 1993)",
+            }
+        )
+    return RichResult(
+        payload={
+            "estimate": beta0.astype(float),
+            "se": se.astype(float),
+            "ci_lower": ci_lo.astype(float),
+            "ci_upper": ci_hi.astype(float),
+            "boot_mean": mean.astype(float),
+            "B": B,
+            "n": n,
             "method": "Rademacher wild bootstrap (Mammen 1993)",
-        })
-    return RichResult(payload={
-        "estimate": beta0.astype(float),
-        "se": se.astype(float),
-        "ci_lower": ci_lo.astype(float),
-        "ci_upper": ci_hi.astype(float),
-        "boot_mean": mean.astype(float),
-        "B": B, "n": n,
-        "method": "Rademacher wild bootstrap (Mammen 1993)",
-    })
+        }
+    )
 
 
 def cheatsheet():

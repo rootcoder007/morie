@@ -1,6 +1,8 @@
 """Pair correlation function g(r) for point patterns."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["pair_correlation_function"]
@@ -34,9 +36,23 @@ def pair_correlation_function(points, window, r):
     y = points  # generator-template fallback (no second array param in spec)
     n = min(len(points), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Pair correlation function g(r) for point patterns"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Pair correlation function g(r) for point patterns",
+            }
+        )
     result = stats.spearmanr(points[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Pair correlation function g(r) for point patterns"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Pair correlation function g(r) for point patterns",
+        }
+    )
 
 
 def cheatsheet():

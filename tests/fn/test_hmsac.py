@@ -1,6 +1,7 @@
 """Tests for hmsac.geron_sac."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmsac import geron_sac
 
 
@@ -14,7 +15,7 @@ def test_hmsac_basic():
     alpha = 0.05
     result = geron_sac(env, policy, critic, epochs, lr, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmsac_edge():

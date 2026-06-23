@@ -1,6 +1,8 @@
 """Test hyphy."""
+
 import numpy as np
 import pytest
+
 from morie.fn.hyphy import hyphy
 
 

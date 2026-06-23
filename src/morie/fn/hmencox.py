@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Encoder-only transformer (BERT-family)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_encoder_only"]
@@ -34,7 +36,9 @@ def geron_encoder_only(X, n_layers, n_heads):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Encoder-only transformer (BERT-family)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Encoder-only transformer (BERT-family)"}
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,5 @@
 """Tests for morie.fn.simpe — simulate perceptions."""
-import numpy as np
+
 from morie.fn.simpe import simpe
 
 
@@ -13,6 +13,7 @@ def test_simpe_smoke():
 
 def test_cheatsheet():
     from morie.fn.simpe import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

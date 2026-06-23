@@ -1,6 +1,7 @@
 """Tests for gb2311.gibbons_edf_mean_var."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb2311 import gibbons_edf_mean_var
 
 
@@ -10,7 +11,7 @@ def test_gb2311_basic():
     n = 100
     result = gibbons_edf_mean_var(x, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb2311_edge():

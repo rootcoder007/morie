@@ -5,9 +5,19 @@ import pandas as pd
 import pytest
 
 from morie.otis import (
-    RplRes, AstRes, VolRes, OtDmlR,
-    rplace, astcmb, volat, rctrnd, otdesc, otdml,
-    REGIONS, AGE_GROUPS, ALERT_COMBOS,
+    AGE_GROUPS,
+    ALERT_COMBOS,
+    REGIONS,
+    AstRes,
+    OtDmlR,
+    RplRes,
+    VolRes,
+    astcmb,
+    otdesc,
+    otdml,
+    rctrnd,
+    rplace,
+    volat,
 )
 
 
@@ -16,20 +26,22 @@ def otis_df():
     """Synthetic OTIS-like correctional placement data."""
     rng = np.random.default_rng(42)
     n = 500
-    return pd.DataFrame({
-        "unique_individual_id": [f"P{i:04d}" for i in rng.choice(100, n)],
-        "end_fiscal_year": rng.choice([2023, 2024, 2025], n),
-        "region_at_time_of_placement": rng.choice(REGIONS, n),
-        "region_most_recent_placement": rng.choice(REGIONS, n),
-        "gender": rng.choice(["Male", "Female"], n),
-        "age_category": rng.choice(AGE_GROUPS, n),
-        "mental_health_alert": rng.choice(["Yes", "No"], n, p=[0.3, 0.7]),
-        "suicide_risk_alert": rng.choice(["Yes", "No"], n, p=[0.15, 0.85]),
-        "suicide_watch_alert": rng.choice(["Yes", "No"], n, p=[0.05, 0.95]),
-        "number_of_placements": rng.integers(1, 10, n),
-        "Y": rng.choice([0, 1], n, p=[0.85, 0.15]),
-        "D": rng.choice([0, 1], n, p=[0.7, 0.3]),
-    })
+    return pd.DataFrame(
+        {
+            "unique_individual_id": [f"P{i:04d}" for i in rng.choice(100, n)],
+            "end_fiscal_year": rng.choice([2023, 2024, 2025], n),
+            "region_at_time_of_placement": rng.choice(REGIONS, n),
+            "region_most_recent_placement": rng.choice(REGIONS, n),
+            "gender": rng.choice(["Male", "Female"], n),
+            "age_category": rng.choice(AGE_GROUPS, n),
+            "mental_health_alert": rng.choice(["Yes", "No"], n, p=[0.3, 0.7]),
+            "suicide_risk_alert": rng.choice(["Yes", "No"], n, p=[0.15, 0.85]),
+            "suicide_watch_alert": rng.choice(["Yes", "No"], n, p=[0.05, 0.95]),
+            "number_of_placements": rng.integers(1, 10, n),
+            "Y": rng.choice([0, 1], n, p=[0.85, 0.15]),
+            "D": rng.choice([0, 1], n, p=[0.7, 0.3]),
+        }
+    )
 
 
 class TestConstants:
@@ -114,8 +126,7 @@ class TestOtdesc:
 
 class TestOtdml:
     def test_returns_otdmlr(self, otis_df):
-        r = otdml(otis_df, outcome="Y", treatment="D",
-                  covariates=["gender", "age_category"])
+        r = otdml(otis_df, outcome="Y", treatment="D", covariates=["gender", "age_category"])
         assert isinstance(r, OtDmlR)
 
     def test_has_ate_and_att(self, otis_df):

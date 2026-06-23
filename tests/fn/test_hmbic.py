@@ -1,6 +1,7 @@
 """Tests for hmbic.geron_bic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmbic import geron_bic
 
 
@@ -11,7 +12,7 @@ def test_hmbic_basic():
     n = 100
     result = geron_bic(log_lik, k, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmbic_edge():

@@ -86,29 +86,46 @@ def _load_lib() -> ctypes.CDLL | None:
 
         lib.nw_regression.restype = ctypes.c_int
         lib.nw_regression.argtypes = [
-            c_double_p, c_double_p, ctypes.c_int,
-            c_double_p, c_double_p, ctypes.c_int,
+            c_double_p,
+            c_double_p,
+            ctypes.c_int,
+            c_double_p,
+            c_double_p,
+            ctypes.c_int,
             ctypes.c_double,
         ]
 
         lib.local_linear.restype = ctypes.c_int
         lib.local_linear.argtypes = [
-            c_double_p, c_double_p, ctypes.c_int,
-            c_double_p, c_double_p, c_double_p, ctypes.c_int,
+            c_double_p,
+            c_double_p,
+            ctypes.c_int,
+            c_double_p,
+            c_double_p,
+            c_double_p,
+            ctypes.c_int,
             ctypes.c_double,
         ]
 
         lib.kde.restype = ctypes.c_int
         lib.kde.argtypes = [
-            c_double_p, ctypes.c_int,
-            c_double_p, c_double_p, ctypes.c_int,
-            ctypes.c_double, ctypes.c_int,
+            c_double_p,
+            ctypes.c_int,
+            c_double_p,
+            c_double_p,
+            ctypes.c_int,
+            ctypes.c_double,
+            ctypes.c_int,
         ]
 
         lib.loocv_bandwidth.restype = ctypes.c_double
         lib.loocv_bandwidth.argtypes = [
-            c_double_p, c_double_p, ctypes.c_int,
-            ctypes.c_double, ctypes.c_double, ctypes.c_int,
+            c_double_p,
+            c_double_p,
+            ctypes.c_int,
+            ctypes.c_double,
+            ctypes.c_double,
+            ctypes.c_int,
         ]
 
         lib.silverman_bandwidth.restype = ctypes.c_double
@@ -116,8 +133,13 @@ def _load_lib() -> ctypes.CDLL | None:
 
         lib.kernel_cond_moments.restype = ctypes.c_int
         lib.kernel_cond_moments.argtypes = [
-            c_double_p, c_double_p, ctypes.c_int,
-            c_double_p, c_double_p, c_double_p, ctypes.c_int,
+            c_double_p,
+            c_double_p,
+            ctypes.c_int,
+            c_double_p,
+            c_double_p,
+            c_double_p,
+            ctypes.c_int,
             ctypes.c_double,
         ]
 
@@ -240,8 +262,12 @@ def nw_regression(
     lib = _load_lib()
     if lib is not None:
         rc = lib.nw_regression(
-            _ptr(x), _ptr(y), n,
-            _ptr(x_eval), _ptr(y_hat), n_eval,
+            _ptr(x),
+            _ptr(y),
+            n,
+            _ptr(x_eval),
+            _ptr(y_hat),
+            n_eval,
             ctypes.c_double(bandwidth),
         )
         if rc == SEMIPAR_OK:
@@ -310,8 +336,13 @@ def local_linear(
     if lib is not None:
         beta_ptr = _ptr(beta_hat) if beta_hat is not None else None
         rc = lib.local_linear(
-            _ptr(x), _ptr(y), n,
-            _ptr(x_eval), _ptr(y_hat), beta_ptr, n_eval,
+            _ptr(x),
+            _ptr(y),
+            n,
+            _ptr(x_eval),
+            _ptr(y_hat),
+            beta_ptr,
+            n_eval,
             ctypes.c_double(bandwidth),
         )
         if rc == SEMIPAR_OK:
@@ -389,9 +420,13 @@ def kde(
     lib = _load_lib()
     if lib is not None:
         rc = lib.kde(
-            _ptr(x), n,
-            _ptr(x_eval), _ptr(density), n_eval,
-            ctypes.c_double(bandwidth), kernel_type,
+            _ptr(x),
+            n,
+            _ptr(x_eval),
+            _ptr(density),
+            n_eval,
+            ctypes.c_double(bandwidth),
+            kernel_type,
         )
         if rc == SEMIPAR_OK:
             return density
@@ -514,8 +549,12 @@ def loocv_bandwidth(
     lib = _load_lib()
     if lib is not None:
         result = lib.loocv_bandwidth(
-            _ptr(x), _ptr(y), n,
-            ctypes.c_double(bw_min), ctypes.c_double(bw_max), n_grid,
+            _ptr(x),
+            _ptr(y),
+            n,
+            ctypes.c_double(bw_min),
+            ctypes.c_double(bw_max),
+            n_grid,
         )
         if result > 0.0:
             return result
@@ -596,8 +635,13 @@ def kernel_cond_moments(
     if lib is not None:
         var_ptr = _ptr(var_out) if var_out is not None else None
         rc = lib.kernel_cond_moments(
-            _ptr(x), _ptr(y), n,
-            _ptr(x_eval), _ptr(mean_out), var_ptr, n_eval,
+            _ptr(x),
+            _ptr(y),
+            n,
+            _ptr(x_eval),
+            _ptr(mean_out),
+            var_ptr,
+            n_eval,
             ctypes.c_double(bandwidth),
         )
         if rc == SEMIPAR_OK:
@@ -695,10 +739,7 @@ class SemiparKernels:
         }
         ktype = _name_map.get(kernel.lower())
         if ktype is None:
-            raise ValueError(
-                f"Unknown kernel '{kernel}'. "
-                f"Choose from: {', '.join(sorted(_name_map))}"
-            )
+            raise ValueError(f"Unknown kernel '{kernel}'. Choose from: {', '.join(sorted(_name_map))}")
         return kde(x, x_eval, bandwidth, kernel_type=ktype)
 
     def loocv_bandwidth(

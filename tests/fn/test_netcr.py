@@ -1,12 +1,11 @@
 """Tests for morie.fn.netcr — Partial correlation network."""
 
 import numpy as np
-import pytest
+
 from morie.fn.netcr import network_correlation
 
 
 class TestNetworkCorrelation:
-
     def test_returns_ndarray(self, mapq_df):
         items = [c for c in mapq_df.columns if c not in ("gender", "age_group")]
         result = network_correlation(mapq_df[items])

@@ -1,6 +1,7 @@
 """DR-DiD with baseline outcome shift."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sc_with_baseline_shift"]

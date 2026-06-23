@@ -1,6 +1,7 @@
 r"""Rrf score.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch7_rrf_score"]

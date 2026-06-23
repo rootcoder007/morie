@@ -1,6 +1,7 @@
 """Test dlasm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dlasm import dlasm
 
 

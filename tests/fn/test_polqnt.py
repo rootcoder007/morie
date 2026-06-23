@@ -1,6 +1,7 @@
 """Tests for polqnt.polar_quantization."""
+
 import numpy as np
-import pytest
+
 from morie.fn.polqnt import polar_quantization
 
 
@@ -10,7 +11,7 @@ def test_polqnt_basic():
     bits = np.random.default_rng(42).normal(0, 1, 100)
     result = polar_quantization(x, bits)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_polqnt_edge():

@@ -1,7 +1,8 @@
 """Tests for eemd.py - Ensemble Empirical Mode Decomposition."""
+
 import numpy as np
-import pytest
-from morie.fn.eemd import eemd_fn, eemd
+
+from morie.fn.eemd import eemd, eemd_fn
 
 
 def test_eemd_returns_descriptive_result():

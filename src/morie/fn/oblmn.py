@@ -44,7 +44,7 @@ def oblimin(
 
     for it in range(max_iter):
         B = A @ np.linalg.inv(T).T
-        B2 = B ** 2
+        B2 = B**2
 
         if I_gamma is not None:
             grad = A.T @ (B2 @ N - I_gamma @ B @ N)

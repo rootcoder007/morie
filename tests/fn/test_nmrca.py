@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmrca -- Roll call agreement score"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmrca import roll_call_agree
 

@@ -46,4 +46,4 @@ bfdr = bayesian_fdr
 
 
 def cheatsheet() -> str:
-    return 'bayesian_fdr({}) -> Bayesian FDR.'
+    return "bayesian_fdr({}) -> Bayesian FDR."

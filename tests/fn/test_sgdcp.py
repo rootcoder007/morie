@@ -1,5 +1,7 @@
 """Tests for spatial data decomposition."""
+
 import numpy as np
+
 from morie.fn.sgdcp import sgdcp
 
 

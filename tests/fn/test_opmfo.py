@@ -1,6 +1,7 @@
 """Test opmfo."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opmfo import opmfo
 
 

@@ -1,6 +1,7 @@
 """Test affrt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.affrt import affrt
 
 

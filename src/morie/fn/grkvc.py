@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """KV-cache compression for autoregressive LLMs (bits per value)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_kv_cache_compression"]
@@ -38,7 +40,14 @@ def geron_kv_cache_compression(seq_len, num_layers, num_heads, d_head, bits):
     n = len(seq_len)
     result = float(np.mean(seq_len))
     se = float(np.std(seq_len, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "KV-cache compression for autoregressive LLMs (bits per value)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "KV-cache compression for autoregressive LLMs (bits per value)",
+        }
+    )
 
 
 def cheatsheet():

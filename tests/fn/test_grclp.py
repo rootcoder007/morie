@@ -1,6 +1,7 @@
 """Tests for grclp.geron_clip_contrastive_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grclp import geron_clip_contrastive_loss
 
 
@@ -11,7 +12,7 @@ def test_grclp_basic():
     tau = 0.1
     result = geron_clip_contrastive_loss(image_embeddings, text_embeddings, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grclp_edge():

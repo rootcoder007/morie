@@ -1,6 +1,7 @@
 """Tests for sglm.spatial_glm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sglm import spatial_glm
 
 
@@ -11,7 +12,7 @@ def test_sglm_basic():
     coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
     result = spatial_glm(x, y, coords)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sglm_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Scaled ELU (SELU) for self-normalizing networks."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_selu"]
@@ -30,7 +32,9 @@ def geron_selu(z):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Scaled ELU (SELU) for self-normalizing networks"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Scaled ELU (SELU) for self-normalizing networks"}
+    )
 
 
 def cheatsheet():

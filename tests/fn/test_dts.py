@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.dts import dip_test
+
 from morie.fn._containers import TestResult
+from morie.fn.dts import dip_test
 
 
 class TestDip:

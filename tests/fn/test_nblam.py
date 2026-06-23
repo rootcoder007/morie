@@ -1,8 +1,9 @@
 """Tests for morie.fn.nblam -- cloud mass function."""
 
 import numpy as np
-from morie.fn.nblam import cloud_mass_function, nblam
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.nblam import cloud_mass_function, nblam
 
 
 class TestNblam:

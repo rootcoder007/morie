@@ -1,6 +1,7 @@
 """Realised kernel volatility with Bartlett weighting."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_realised_kernel"]
@@ -32,7 +33,9 @@ def vol_realised_kernel(r_intraday, H):
     n = len(r_intraday)
     result = float(np.mean(r_intraday))
     se = float(np.std(r_intraday, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Realised kernel volatility with Bartlett weighting"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Realised kernel volatility with Bartlett weighting"}
+    )
 
 
 def cheatsheet():

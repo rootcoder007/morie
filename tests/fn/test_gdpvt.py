@@ -1,6 +1,7 @@
 """Test gdpvt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdpvt import gdpvt
 
 

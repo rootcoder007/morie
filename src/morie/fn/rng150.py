@@ -1,6 +1,7 @@
 """Wiener filter frequency response as ratio of CSD to PSD of input.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_wiener_frequency_response"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_wiener_frequency_response(S_xd, S_xx, omega):
     n = len(S_xd)
     result = float(np.mean(S_xd))
     se = float(np.std(S_xd, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Wiener filter frequency response as ratio of CSD to PSD of input."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Wiener filter frequency response as ratio of CSD to PSD of input.",
+        }
+    )
 
 
 def cheatsheet():

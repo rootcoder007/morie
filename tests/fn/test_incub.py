@@ -1,7 +1,8 @@
 """Tests for morie.fn.incub -- Incubation period distribution."""
 
-import pytest
 import numpy as np
+import pytest
+
 from morie.fn.incub import incubation_period
 
 

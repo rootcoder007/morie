@@ -1,7 +1,8 @@
 """Tests for morie.fn.balan — balanced accuracy."""
-import numpy as np
+
 import pytest
-from morie.fn.balan import balanced_accuracy, balan
+
+from morie.fn.balan import balan, balanced_accuracy
 
 
 def test_perfect():

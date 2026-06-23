@@ -1,6 +1,7 @@
 """Test sohc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sohc import sohc
 
 

@@ -1,6 +1,7 @@
 """Tests for tolim.tolerance_limits."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tolim import tolerance_limits
 
 
@@ -11,7 +12,7 @@ def test_tolim_basic():
     confidence = np.random.default_rng(42).normal(0, 1, 100)
     result = tolerance_limits(x, coverage, confidence)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tolim_edge():

@@ -1,6 +1,7 @@
 """Test mnfsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mnfsp import mnfsp
 
 

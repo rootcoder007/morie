@@ -1,6 +1,7 @@
 """AlphaFold pLDDT per-residue confidence."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphafold_confidence"]
@@ -32,7 +33,9 @@ def alphafold_confidence(frames, s):
     n = len(frames)
     result = float(np.mean(frames))
     se = float(np.std(frames, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AlphaFold pLDDT per-residue confidence"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "AlphaFold pLDDT per-residue confidence"}
+    )
 
 
 def cheatsheet():

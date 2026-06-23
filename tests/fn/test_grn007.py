@@ -1,6 +1,7 @@
 """Tests for grn007.geron_ch4_mse_gradient_vector."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grn007 import geron_ch4_mse_gradient_vector
 
 
@@ -11,7 +12,7 @@ def test_grn007_basic():
     theta = 0.0
     result = geron_ch4_mse_gradient_vector(X, y, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grn007_edge():

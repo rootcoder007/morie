@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Zero-shot learning: LLM generalizes to unseen tasks from prompt only."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_zero_shot"]
@@ -32,7 +34,14 @@ def geron_zero_shot(model, prompt):
     n = len(model)
     result = float(np.mean(model))
     se = float(np.std(model, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Zero-shot learning: LLM generalizes to unseen tasks from prompt only"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Zero-shot learning: LLM generalizes to unseen tasks from prompt only",
+        }
+    )
 
 
 def cheatsheet():

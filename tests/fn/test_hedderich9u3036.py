@@ -1,6 +1,7 @@
 """Tests for hedderich9u3036.hedderich_chapter_9_unnumbered_3036."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hedderich9u3036 import hedderich_chapter_9_unnumbered_3036
 
 
@@ -9,7 +10,7 @@ def test_hedderich9u3036_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = hedderich_chapter_9_unnumbered_3036(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hedderich9u3036_edge():

@@ -58,4 +58,4 @@ imedg = edge_detect
 
 
 def cheatsheet() -> str:
-    return 'edge_detect({}) -> Edge detection via Sobel or Prewitt operators.'
+    return "edge_detect({}) -> Edge detection via Sobel or Prewitt operators."

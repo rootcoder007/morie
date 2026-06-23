@@ -1,6 +1,7 @@
 """Tests for km086.kamath_ch6_pll."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km086 import kamath_ch6_pll
 
 
@@ -10,7 +11,7 @@ def test_km086_basic():
     theta = 0.0
     result = kamath_ch6_pll(S, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km086_edge():

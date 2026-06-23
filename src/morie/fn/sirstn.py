@@ -1,6 +1,7 @@
 """Stochastic SIR (Gillespie)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sir_stochastic"]

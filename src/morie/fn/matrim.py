@@ -1,6 +1,7 @@
 """Duval-Tweedie trim-and-fill missing-study correction."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_trim_fill"]
@@ -34,7 +35,9 @@ def ma_trim_fill(yi, vi, side):
     n = len(yi)
     result = float(np.mean(yi))
     se = float(np.std(yi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Duval-Tweedie trim-and-fill missing-study correction"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Duval-Tweedie trim-and-fill missing-study correction"}
+    )
 
 
 def cheatsheet():

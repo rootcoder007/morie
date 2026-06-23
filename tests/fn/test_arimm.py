@@ -1,6 +1,8 @@
 """Tests for morie.fn.arimm -- ARIMA(p,d,q)."""
+
 import numpy as np
 import pytest
+
 from morie.fn.arimm import arima_fit
 
 
@@ -18,4 +20,5 @@ class TestARIMAFit:
 
     def test_cheatsheet(self):
         from morie.fn.arimm import cheatsheet
+
         assert isinstance(cheatsheet(), str)

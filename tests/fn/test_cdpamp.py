@@ -1,6 +1,7 @@
 """Tests for cdpamp.cdp_subgaussian_amplification."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cdpamp import cdp_subgaussian_amplification
 
 
@@ -12,7 +13,7 @@ def test_cdpamp_basic():
     k_compositions = np.random.default_rng(42).normal(0, 1, 100)
     result = cdp_subgaussian_amplification(y, epsilon, delta, k_compositions)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cdpamp_edge():

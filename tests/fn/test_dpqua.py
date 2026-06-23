@@ -1,6 +1,7 @@
 """Tests for dpqua.dp_quantile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpqua import dp_quantile
 
 
@@ -11,7 +12,7 @@ def test_dpqua_basic():
     epsilon = 1e-6
     result = dp_quantile(x, q, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpqua_edge():

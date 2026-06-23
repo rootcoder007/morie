@@ -1,8 +1,8 @@
 """PowerAndDesign expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["from_impact_to_action_final_report_into_anti_black_racism_by_chapter_9_unnumbered_18"]
 
@@ -41,7 +41,12 @@ def from_impact_to_action_final_report_into_anti_black_racism_by_chapter_9_unnum
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "PowerAndDesign expression (auto-extracted; see ref)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PowerAndDesign expression (auto-extracted; see ref).",
+        },
     )
 
 

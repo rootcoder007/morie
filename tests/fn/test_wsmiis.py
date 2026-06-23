@@ -1,6 +1,7 @@
 """Tests for wsmiis.wasserman_importance_sampling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmiis import wasserman_importance_sampling
 
 
@@ -12,7 +13,7 @@ def test_wsmiis_basic():
     n = 100
     result = wasserman_importance_sampling(f, p, q, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmiis_edge():

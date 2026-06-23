@@ -1,6 +1,7 @@
 """Tests for mapeto.ma_peto_or."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mapeto import ma_peto_or
 
 
@@ -12,7 +13,7 @@ def test_mapeto_basic():
     d = 5
     result = ma_peto_or(a, b, c, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mapeto_edge():

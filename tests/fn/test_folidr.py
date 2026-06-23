@@ -1,6 +1,7 @@
 """Test folidr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.folidr import folidr
 
 

@@ -1,13 +1,12 @@
 """Tests for morie.fn.rcdmx — recidivism mixture model."""
 
-import pytest
 import numpy as np
-from morie.fn.rcdmx import recidivism_mixture
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rcdmx import recidivism_mixture
 
 
 class TestRecidivismMixture:
-
     def test_returns_descriptive(self):
         rng = np.random.default_rng(42)
         t = np.concatenate([rng.exponential(1, 50), rng.exponential(5, 50)])

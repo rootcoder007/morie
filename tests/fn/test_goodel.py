@@ -1,6 +1,7 @@
 """Test goodel."""
+
 import numpy as np
-import pytest
+
 from morie.fn.goodel import goodel
 
 

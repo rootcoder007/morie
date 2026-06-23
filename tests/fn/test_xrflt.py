@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrflt -- Eigenvector spatial filtering"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrflt import spatial_filter
 

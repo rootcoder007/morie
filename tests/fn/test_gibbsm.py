@@ -1,6 +1,7 @@
 """Tests for gibbsm.gibbs_sampler."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gibbsm import gibbs_sampler
 
 
@@ -11,7 +12,7 @@ def test_gibbsm_basic():
     n_iter = 50
     result = gibbs_sampler(conditionals, x0, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gibbsm_edge():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsstc -- Separable space-time covariance"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsstc import st_cov_sep
 

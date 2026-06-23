@@ -1,6 +1,7 @@
 """Tests for drctf.dr_continuous_treatment."""
+
 import numpy as np
-import pytest
+
 from morie.fn.drctf import dr_continuous_treatment
 
 
@@ -11,7 +12,7 @@ def test_drctf_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = dr_continuous_treatment(y, D_dose, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_drctf_edge():

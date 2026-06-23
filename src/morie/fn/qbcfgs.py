@@ -1,6 +1,7 @@
 """Quantile-balanced score for forests."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["qb_cf_score"]

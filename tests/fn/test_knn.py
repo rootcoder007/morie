@@ -2,14 +2,14 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.knn import knn_classify
 
 
 class TestKnnClassify:
     def test_perfect_classification(self):
         """Identical train/test on well-separated clusters."""
-        X_train = np.array([[0, 0], [0, 1], [1, 0],
-                            [10, 10], [10, 11], [11, 10]], dtype=float)
+        X_train = np.array([[0, 0], [0, 1], [1, 0], [10, 10], [10, 11], [11, 10]], dtype=float)
         y_train = np.array([0, 0, 0, 1, 1, 1])
         X_test = np.array([[0.5, 0.5], [10.5, 10.5]], dtype=float)
         result = knn_classify(X_train, y_train, X_test, k=3)
@@ -25,5 +25,4 @@ class TestKnnClassify:
 
     def test_k_too_large_raises(self):
         with pytest.raises(ValueError, match="exceeds"):
-            knn_classify(np.zeros((2, 1)), np.array([0, 1]),
-                         np.zeros((1, 1)), k=5)
+            knn_classify(np.zeros((2, 1)), np.array([0, 1]), np.zeros((1, 1)), k=5)

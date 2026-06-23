@@ -1,6 +1,7 @@
 """Tests for alinfn.alammar_infonce_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alinfn import alammar_infonce_loss
 
 
@@ -12,7 +13,7 @@ def test_alinfn_basic():
     tau = 0.1
     result = alammar_infonce_loss(anchor, positive, negatives, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alinfn_edge():

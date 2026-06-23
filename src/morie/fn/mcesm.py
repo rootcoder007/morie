@@ -14,6 +14,7 @@ Guo, C., Pleiss, G., Sun, Y., & Weinberger, K. Q. (2017). On
 calibration of modern neural networks.
 *Proceedings of ICML*, 70, 1321-1330.
 """
+
 from __future__ import annotations
 
 from typing import Any

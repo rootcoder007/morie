@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bhattacharyya bound on Bayes classification error."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_bayes_error_bound"]
@@ -40,7 +42,9 @@ def rangayyan_bayes_error_bound(mu1, sigma1, p1, mu2, sigma2, p2):
     n = int(mu1) if mu1.ndim == 0 else len(mu1)
     result = float(np.mean(mu1))
     se = float(np.std(mu1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bhattacharyya bound on Bayes classification error"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bhattacharyya bound on Bayes classification error"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for lambopt.lamb_optimizer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lambopt import lamb_optimizer
 
 
@@ -11,7 +12,7 @@ def test_lambopt_basic():
     lr = np.random.default_rng(42).normal(0, 1, 100)
     result = lamb_optimizer(g, layer_idx, lr)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lambopt_edge():

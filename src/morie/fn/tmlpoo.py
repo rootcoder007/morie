@@ -1,6 +1,7 @@
 """Pooled TMLE for multi-site data."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_pooled"]

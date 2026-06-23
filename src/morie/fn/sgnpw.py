@@ -13,6 +13,7 @@ size-alpha rejection region under H0.
 Function: given the observed sample x, computes the achieved
 power at user-supplied ``p_alt`` (default 0.7).
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -51,11 +52,15 @@ def sign_test_power(x, mu0: float = 0.0, p_alt: float = 0.7, alpha: float = 0.05
     x = np.asarray(x, dtype=float).ravel()
     n = int((x != mu0).sum())
     if n < 1 or not (0 < p_alt < 1):
-        return RichResult(payload={
-            "statistic": np.nan, "n": n,
-            "p_alt": float(p_alt), "alpha": float(alpha),
-            "method": "Sign-test power",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "n": n,
+                "p_alt": float(p_alt),
+                "alpha": float(alpha),
+                "method": "Sign-test power",
+            }
+        )
     # Build the two-sided rejection region under H0 (p=0.5)
     k_grid = np.arange(0, n + 1)
     null_pmf = stats.binom.pmf(k_grid, n, 0.5)
@@ -72,25 +77,32 @@ def sign_test_power(x, mu0: float = 0.0, p_alt: float = 0.7, alpha: float = 0.05
     size = float(cum)
     if not reject.any():
         # Can't reject at this alpha (sample too small) -- power undefined
-        return RichResult(payload={
-            "statistic": 0.0, "n": n, "p_alt": float(p_alt),
-            "alpha": float(alpha), "size": 0.0,
-            "method": "Sign-test power",
-            "warnings": [f"No rejection region of size <= {alpha} exists for n={n}"]
-        })
+        return RichResult(
+            payload={
+                "statistic": 0.0,
+                "n": n,
+                "p_alt": float(p_alt),
+                "alpha": float(alpha),
+                "size": 0.0,
+                "method": "Sign-test power",
+                "warnings": [f"No rejection region of size <= {alpha} exists for n={n}"],
+            }
+        )
     alt_pmf = stats.binom.pmf(k_grid, n, p_alt)
     power = float(alt_pmf[reject].sum())
     rej_ks = k_grid[reject]
-    return RichResult(payload={
-        "statistic": power,
-        "n": n,
-        "p_alt": float(p_alt),
-        "alpha": float(alpha),
-        "size": size,
-        "k_lower": int(rej_ks.min()),
-        "k_upper": int(rej_ks.max()),
-        "method": "Two-sided sign-test power function",
-    })
+    return RichResult(
+        payload={
+            "statistic": power,
+            "n": n,
+            "p_alt": float(p_alt),
+            "alpha": float(alpha),
+            "size": size,
+            "k_lower": int(rej_ks.min()),
+            "k_upper": int(rej_ks.max()),
+            "method": "Two-sided sign-test power function",
+        }
+    )
 
 
 def cheatsheet():

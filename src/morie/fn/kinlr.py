@@ -81,12 +81,12 @@ def kinlr(
         pb1, pb2 = _f(b1), _f(b2)
 
         if a1 == a2:
-            p_geno_a = pa1 ** 2
+            p_geno_a = pa1**2
         else:
             p_geno_a = 2 * pa1 * pa2
 
         if b1 == b2:
-            p_geno_b = pb1 ** 2
+            p_geno_b = pb1**2
         else:
             p_geno_b = 2 * pb1 * pb2
 

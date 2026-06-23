@@ -1,6 +1,7 @@
 """Tests for morie.fn.odm_y — Demographic profile per year."""
 
 import pandas as pd
+
 from morie.fn.odm_y import otis_demo_year
 
 

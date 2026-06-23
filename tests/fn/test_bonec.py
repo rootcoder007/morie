@@ -1,8 +1,9 @@
 """Tests for morie.fn.bonec -- Weibull failure analysis."""
 
 import numpy as np
-from morie.fn.bonec import weibull_analysis, bonec
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.bonec import bonec, weibull_analysis
 
 
 class TestBonec:
@@ -12,6 +13,7 @@ class TestBonec:
     def test_basic_fit(self):
         rng = np.random.default_rng(42)
         from scipy import stats
+
         t = stats.weibull_min.rvs(2.0, scale=10.0, size=100, random_state=rng)
         r = weibull_analysis(t)
         assert isinstance(r, DescriptiveResult)

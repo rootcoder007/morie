@@ -1,8 +1,7 @@
 """Test snr_threshold (snrth)."""
-import numpy as np
 
-from morie.fn.snrth import snr_threshold, snrth
 from morie.fn._containers import DescriptiveResult
+from morie.fn.snrth import snr_threshold, snrth
 
 
 class TestSnrThreshold:

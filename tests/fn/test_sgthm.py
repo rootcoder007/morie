@@ -1,4 +1,5 @@
 """Tests for Thomas process."""
+
 from morie.fn.sgthm import sgthm
 
 
@@ -11,6 +12,7 @@ def test_sgthm_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgthm import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

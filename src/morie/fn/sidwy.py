@@ -69,4 +69,4 @@ sidwy = adversarial_perturb
 
 
 def cheatsheet() -> str:
-    return 'adversarial_perturb({}) -> Adversarial perturbation (FGSM-style).'
+    return "adversarial_perturb({}) -> Adversarial perturbation (FGSM-style)."

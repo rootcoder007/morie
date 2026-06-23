@@ -1,6 +1,7 @@
 """Tests for hmpas.geron_pasting."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmpas import geron_pasting
 
 
@@ -13,7 +14,7 @@ def test_hmpas_basic():
     sample_size = 100
     result = geron_pasting(X, y, base_estimator, n_estimators, sample_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmpas_edge():

@@ -1,6 +1,7 @@
 """AlphaFold-3 diffusion step."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["af3_diffusion_step"]

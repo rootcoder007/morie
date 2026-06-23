@@ -1,6 +1,7 @@
 """Feller-style approximation of a density by an integral mixture of kernels h_k weighted by the mixing distribution F.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch2_feller_density_approximation"]
@@ -40,7 +41,14 @@ def ghosal_ch2_feller_density_approximation(x, k, F, h_k, g_k, V):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Feller-style approximation of a density by an integral mixture of kernels h_k weighted by the mixing distribution F."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Feller-style approximation of a density by an integral mixture of kernels h_k weighted by the mixing distribution F.",
+        }
+    )
 
 
 def cheatsheet():

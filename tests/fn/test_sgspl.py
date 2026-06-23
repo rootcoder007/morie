@@ -1,7 +1,9 @@
 """Test split_signal (sgspl)."""
+
 import numpy as np
-from morie.fn.sgspl import split_signal, sgspl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sgspl import sgspl, split_signal
 
 
 class TestSplitSignal:

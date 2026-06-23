@@ -1,6 +1,7 @@
 """Tests for cvxcvv.boyd_cvxlin_complement."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxcvv import boyd_cvxlin_complement
 
 
@@ -11,7 +12,7 @@ def test_cvxcvv_basic():
     C = np.random.default_rng(42).normal(0, 1, 100)
     result = boyd_cvxlin_complement(A, B, C)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxcvv_edge():

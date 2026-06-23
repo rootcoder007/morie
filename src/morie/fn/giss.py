@@ -1,6 +1,7 @@
 """GISS surface temp anomaly."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["giss_anomaly"]

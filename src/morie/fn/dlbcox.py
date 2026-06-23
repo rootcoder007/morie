@@ -1,6 +1,7 @@
 """DFBETA leverage diagnostic for Cox PH."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dfbeta_cox"]

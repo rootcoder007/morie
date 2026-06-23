@@ -1,6 +1,7 @@
 """Continuous wavelet transform (Morlet)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["cwt_morlet"]

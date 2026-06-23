@@ -1,6 +1,7 @@
 """Proximal gradient for sparse models."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["proximal_gradient_method"]

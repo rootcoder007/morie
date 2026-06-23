@@ -1,6 +1,7 @@
 """Wooldridge ETWFE event-time weighted DiD."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_did_wooldridge_eta"]
@@ -34,7 +35,9 @@ def causal_did_wooldridge_eta(Y_panel, G_first_treat, X):
     n = len(Y_panel)
     result = float(np.mean(Y_panel))
     se = float(np.std(Y_panel, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Wooldridge ETWFE event-time weighted DiD"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Wooldridge ETWFE event-time weighted DiD"}
+    )
 
 
 def cheatsheet():

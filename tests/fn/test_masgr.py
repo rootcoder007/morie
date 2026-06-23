@@ -1,6 +1,7 @@
 """Test masgr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.masgr import masgr
 
 

@@ -1,6 +1,7 @@
 """Tests for hrzfneps.horowitz_panel_density_estimators."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzfneps import horowitz_panel_density_estimators
 
 
@@ -11,7 +12,7 @@ def test_hrzfneps_basic():
     bandwidth = 0.3
     result = horowitz_panel_density_estimators(y_panel, x_panel, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzfneps_edge():

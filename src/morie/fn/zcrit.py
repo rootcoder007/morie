@@ -2,6 +2,8 @@
 """z critical value."""
 
 from scipy.stats import norm
+
+
 def zcrit(alpha: float = 0.05, two_sided: bool = True) -> float:
     """Two-sided z critical value at significance level α."""
     if not 0 < alpha < 1:

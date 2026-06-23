@@ -1,6 +1,7 @@
 """Tests for agmunw.muzero_n_step_value."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agmunw import muzero_n_step_value
 
 
@@ -12,7 +13,7 @@ def test_agmunw_basic():
     gamma = 1.0
     result = muzero_n_step_value(rewards, values, n, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_agmunw_edge():

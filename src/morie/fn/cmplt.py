@@ -58,6 +58,7 @@ def capture_recapture(
     se = np.sqrt(var_N)
 
     import scipy.stats as st
+
     z = st.norm.ppf((1 + confidence) / 2)
 
     observed = n1 + n2 - m

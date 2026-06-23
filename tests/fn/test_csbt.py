@@ -1,6 +1,7 @@
 """Test csbt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csbt import csbt
 
 

@@ -1,6 +1,7 @@
 """Tests for brnstn.bernstein_inequality."""
+
 import numpy as np
-import pytest
+
 from morie.fn.brnstn import bernstein_inequality
 
 
@@ -12,7 +13,7 @@ def test_brnstn_basic():
     t = np.linspace(0, 10, 100)
     result = bernstein_inequality(sigma2, M, n, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_brnstn_edge():

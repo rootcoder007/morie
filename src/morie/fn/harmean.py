@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Harmonic mean with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
 from scipy.stats import hmean
 
@@ -9,6 +11,7 @@ from scipy.stats import hmean
 def harmean(x: Union[Sequence[float], np.ndarray]):
     """Harmonic mean = n / Σ (1/x_i)."""
     from ._richresult import RichResult
+
     a = np.asarray(x, dtype=float)
     if a.size == 0:
         raise ValueError("empty input.")
@@ -24,7 +27,6 @@ def harmean(x: Union[Sequence[float], np.ndarray]):
             ("AM/HM ratio (>=1)", arith / h),
             ("n", int(a.size)),
         ],
-        interpretation=("HM <= GM <= AM always. Use HM for averaging rates "
-                        "(e.g., mph over equal distances)."),
+        interpretation=("HM <= GM <= AM always. Use HM for averaging rates (e.g., mph over equal distances)."),
         payload={"value": h, "statistic": h, "arithmetic_mean": arith},
     )

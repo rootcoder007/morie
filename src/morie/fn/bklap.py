@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Add-1 (Laplace) smoothing for n-gram probabilities."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_laplace_add_one"]
@@ -34,7 +36,9 @@ def burkov_laplace_add_one(counts_ngram, counts_prefix, V):
     n = len(counts_ngram)
     result = float(np.mean(counts_ngram))
     se = float(np.std(counts_ngram, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Add-1 (Laplace) smoothing for n-gram probabilities"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Add-1 (Laplace) smoothing for n-gram probabilities"}
+    )
 
 
 def cheatsheet():

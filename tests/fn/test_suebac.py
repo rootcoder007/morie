@@ -1,6 +1,7 @@
 """Tests for morie.fn.suebac -- eBAC distribution."""
 
 import pytest
+
 from morie.fn.suebac import ebac_dist
 
 

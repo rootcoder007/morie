@@ -1,6 +1,7 @@
 """TMLE for cross-lagged panel models."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_cross_lagged"]

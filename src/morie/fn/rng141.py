@@ -1,6 +1,8 @@
 """MSE cost function of the Wiener filter expanded to autocorrelation/cross-correlation form.."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_mse_cost_function"]
@@ -36,9 +38,23 @@ def rangayyan_ch3_mse_cost_function(w, Theta, Phi, sigma_d):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(w), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "MSE cost function of the Wiener filter expanded to autocorrelation/cross-correlation form."})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "MSE cost function of the Wiener filter expanded to autocorrelation/cross-correlation form.",
+            }
+        )
     result = stats.spearmanr(w[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "MSE cost function of the Wiener filter expanded to autocorrelation/cross-correlation form."})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "MSE cost function of the Wiener filter expanded to autocorrelation/cross-correlation form.",
+        }
+    )
 
 
 def cheatsheet():

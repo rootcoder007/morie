@@ -26,11 +26,11 @@ from ._containers import DescriptiveResult
 # risk is more commonly used.
 _EPA_LIFETIME_RISK_PER_PCIL: dict[str, float] = {
     # Deaths per 1,000 persons over 70-year lifetime exposure
-    "smoker":     7.0e-3,
+    "smoker": 7.0e-3,
     "never_smoker": 7.0e-4,
 }
 
-_BQ_M3_PER_PCIL = 37.0   # Conversion factor
+_BQ_M3_PER_PCIL = 37.0  # Conversion factor
 
 
 def radon_cancer_risk(
@@ -136,17 +136,16 @@ def radon_cancer_risk(
         name="radon_cancer_risk",
         value=val,
         extra={
-            "lifetime_cancer_risk": (risk.tolist() if risk.size > 1
-                                      else float(risk.item())),
+            "lifetime_cancer_risk": (risk.tolist() if risk.size > 1 else float(risk.item())),
             "radon_pCi_per_L": pci.tolist() if pci.size > 1 else float(pci.item()),
             "radon_Bq_per_m3": bq.tolist() if bq.size > 1 else float(bq.item()),
             "smoker": smoker,
             "exposure_years": exposure_years,
             "risk_factor_per_pCiL": per_pcil,
-            "above_epa_action_level": (epa_action.tolist() if epa_action.size > 1
-                                        else bool(epa_action.item())),
-            "above_who_reference_level": (who_reference.tolist() if who_reference.size > 1
-                                           else bool(who_reference.item())),
+            "above_epa_action_level": (epa_action.tolist() if epa_action.size > 1 else bool(epa_action.item())),
+            "above_who_reference_level": (
+                who_reference.tolist() if who_reference.size > 1 else bool(who_reference.item())
+            ),
             "source": "US EPA 402-R-03-003 / BEIR VI 1999 / WHO 2009",
         },
     )

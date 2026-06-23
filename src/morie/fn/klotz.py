@@ -36,7 +36,7 @@ def klotz(x, y, axis=0, cdf=None):
 
     # Klotz scores (squared normal scores): (Φ⁻¹(rank/(n+1)))²
     van_der_waerden = sp_stats.norm.ppf(ranks / (n + 1))
-    klotz_scores = van_der_waerden ** 2
+    klotz_scores = van_der_waerden**2
 
     # Sum of squared normal scores for x
     T = np.sum(klotz_scores[:n_x])

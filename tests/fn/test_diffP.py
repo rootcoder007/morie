@@ -1,6 +1,7 @@
 """Tests for diffP.diffpool."""
+
 import numpy as np
-import pytest
+
 from morie.fn.diffP import diffpool
 
 
@@ -11,7 +12,7 @@ def test_diffP_basic():
     K_clusters = np.random.default_rng(42).normal(0, 1, 100)
     result = diffpool(A, X, K_clusters)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_diffP_edge():

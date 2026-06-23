@@ -1,7 +1,9 @@
 """Test variational_mode_decompose (vmdfn)."""
+
 import numpy as np
-from morie.fn.vmdfn import variational_mode_decompose, vmdfn
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.vmdfn import variational_mode_decompose, vmdfn
 
 
 class TestVmdfn:

@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmwnl -- W-NOMINATE log-likelihood"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmwnl import wnominate_loglik
 

@@ -88,4 +88,4 @@ short = spring_mass
 
 
 def cheatsheet() -> str:
-    return 'spring_mass({}) -> Damped spring-mass system.'
+    return "spring_mass({}) -> Damped spring-mass system."

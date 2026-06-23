@@ -1,6 +1,7 @@
 """AlphaFold predicted aligned error (PAE)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphafold_pae_predict"]
@@ -32,7 +33,9 @@ def alphafold_pae_predict(s, z):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AlphaFold predicted aligned error (PAE)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "AlphaFold predicted aligned error (PAE)"}
+    )
 
 
 def cheatsheet():

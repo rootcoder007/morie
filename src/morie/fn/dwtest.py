@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Durbin-Watson statistic with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
 
 
@@ -13,13 +15,17 @@ def dwtest(residuals: Union[Sequence, np.ndarray]):
     Range: 0 (positive autocorr) - 2 (none) - 4 (negative).
     """
     from ._richresult import RichResult
+
     e = np.asarray(residuals, dtype=float)
     if e.size < 2:
         raise ValueError(f"need at least 2 residuals, got {e.size}.")
-    dw = float(np.sum(np.diff(e) ** 2) / np.sum(e ** 2))
-    if dw < 1.5: verdict = "positive autocorrelation likely"
-    elif dw > 2.5: verdict = "negative autocorrelation likely"
-    else: verdict = "no clear evidence of autocorrelation"
+    dw = float(np.sum(np.diff(e) ** 2) / np.sum(e**2))
+    if dw < 1.5:
+        verdict = "positive autocorrelation likely"
+    elif dw > 2.5:
+        verdict = "negative autocorrelation likely"
+    else:
+        verdict = "no clear evidence of autocorrelation"
     return RichResult(
         title="Durbin-Watson test",
         summary_lines=[

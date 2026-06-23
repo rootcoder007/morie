@@ -1,4 +1,5 @@
 """Grid search with cross-validation."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -6,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["grid_search_cv"]
 
 
-def grid_search_cv(x, y, *, estimator=None, param_grid=None, cv=5,
-                    scoring=None, seed=0, task="auto"):
+def grid_search_cv(x, y, *, estimator=None, param_grid=None, cv=5, scoring=None, seed=0, task="auto"):
     """Exhaustive grid search via sklearn.model_selection.GridSearchCV.
 
     best_params = argmin CV_error(params).  Defaults illustrate a
@@ -41,7 +41,11 @@ def grid_search_cv(x, y, *, estimator=None, param_grid=None, cv=5,
     n = X.shape[0]
 
     if task == "auto":
-        task = "classification" if np.issubdtype(y.dtype, np.integer) or set(np.unique(y)).issubset({0, 1}) else "regression"
+        task = (
+            "classification"
+            if np.issubdtype(y.dtype, np.integer) or set(np.unique(y)).issubset({0, 1})
+            else "regression"
+        )
 
     if estimator is None:
         if task == "classification":
@@ -53,16 +57,18 @@ def grid_search_cv(x, y, *, estimator=None, param_grid=None, cv=5,
 
     gs = GridSearchCV(estimator, param_grid=param_grid, cv=cv, scoring=scoring)
     gs.fit(X, y)
-    return RichResult(payload={
-        "estimate": float(gs.best_score_),
-        "best_params": gs.best_params_,
-        "best_score": float(gs.best_score_),
-        "cv_results_params": [dict(p) for p in gs.cv_results_["params"]],
-        "cv_results_mean_score": gs.cv_results_["mean_test_score"].tolist(),
-        "task": task,
-        "n": int(n),
-        "method": "Grid search CV",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(gs.best_score_),
+            "best_params": gs.best_params_,
+            "best_score": float(gs.best_score_),
+            "cv_results_params": [dict(p) for p in gs.cv_results_["params"]],
+            "cv_results_mean_score": gs.cv_results_["mean_test_score"].tolist(),
+            "task": task,
+            "n": int(n),
+            "method": "Grid search CV",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for jomimi.joseph_missing_data_imputation_ts."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jomimi import joseph_missing_data_imputation_ts
 
 
@@ -11,7 +12,7 @@ def test_jomimi_basic():
     m = 10
     result = joseph_missing_data_imputation_ts(y, strategy, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jomimi_edge():

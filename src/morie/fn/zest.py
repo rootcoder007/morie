@@ -79,7 +79,7 @@ def zest(
 
     psi_vals = np.array([psi(x_obs[i], theta_hat) for i in range(n)])
     if psi_vals.ndim == 1:
-        B = float(np.mean(psi_vals ** 2))
+        B = float(np.mean(psi_vals**2))
     else:
         B = psi_vals.T @ psi_vals / n
 
@@ -93,7 +93,7 @@ def zest(
             A = (sp - sm) / (2 * eps)
         if abs(A) < 1e-12:
             A = 1.0
-        var = B / (A ** 2 * n)
+        var = B / (A**2 * n)
         se = float(np.sqrt(var))
         z = stats.norm.ppf(1.0 - alpha / 2.0)
         return {

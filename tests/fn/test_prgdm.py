@@ -1,10 +1,11 @@
 """Tests for morie.fn.prgdm — program DML."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.prgdm import program_dml
+import pytest
+
 from morie.fn._containers import ESRes
+from morie.fn.prgdm import program_dml
 
 
 class TestProgramDml:

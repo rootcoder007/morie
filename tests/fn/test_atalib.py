@@ -1,6 +1,7 @@
 """Tests for atalib.alibi_position_bias."""
+
 import numpy as np
-import pytest
+
 from morie.fn.atalib import alibi_position_bias
 
 
@@ -13,7 +14,7 @@ def test_atalib_basic():
     slopes = np.random.default_rng(42).normal(0, 1, 100)
     result = alibi_position_bias(y, Q, K, V, slopes)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_atalib_edge():

@@ -1,7 +1,7 @@
 """Tests for morie.fn.pafuz."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pafuz import pafuz
 
 

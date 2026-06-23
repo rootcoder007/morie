@@ -1,6 +1,8 @@
 """Tests for mcstrat."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mcstrat import mcstrat
 
 
@@ -28,4 +30,5 @@ def test_mcstrat_no_data():
 
 def test_mcstrat_alias():
     from morie.fn.mcstrat import mcstrat
+
     assert mcstrat is mcstrat

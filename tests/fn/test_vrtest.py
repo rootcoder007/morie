@@ -1,6 +1,7 @@
 """Tests for vrtest.variance_component_lr_boundary."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vrtest import variance_component_lr_boundary
 
 
@@ -12,7 +13,7 @@ def test_vrtest_basic():
     cluster = np.random.default_rng(42).normal(0, 1, 100)
     result = variance_component_lr_boundary(y, X, Z, cluster)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_vrtest_edge():

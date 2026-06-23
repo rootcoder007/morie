@@ -1,6 +1,7 @@
 """Test mtfpt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtfpt import mtfpt
 
 

@@ -1,6 +1,7 @@
 """PP-plot diagnostic for a fitted GEV."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_gev_pp_plot"]

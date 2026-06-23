@@ -1,6 +1,7 @@
 """Tests for tukrr.tukey_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tukrr import tukey_regression
 
 
@@ -11,7 +12,7 @@ def test_tukrr_basic():
     c = np.random.default_rng(42).normal(0, 1, 100)
     result = tukey_regression(X, y, c)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tukrr_edge():

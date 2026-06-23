@@ -1,6 +1,7 @@
 """Test geinq."""
+
 import numpy as np
-import pytest
+
 from morie.fn.geinq import geinq
 
 

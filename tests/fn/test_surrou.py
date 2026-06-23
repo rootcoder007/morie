@@ -1,8 +1,9 @@
 """Tests for morie.fn.surrou -- surface roughness."""
 
 import numpy as np
-from morie.fn.surrou import surface_roughness, surrou
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.surrou import surface_roughness, surrou
 
 
 class TestSurrou:

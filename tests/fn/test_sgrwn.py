@@ -1,5 +1,7 @@
 """Tests for row normalize weights."""
+
 import numpy as np
+
 from morie.fn.sgrwn import sgrwn
 
 
@@ -13,6 +15,7 @@ def test_sgrwn_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgrwn import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

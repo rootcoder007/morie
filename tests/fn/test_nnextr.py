@@ -1,6 +1,8 @@
 """Tests for nnextr."""
+
 import numpy as np
 import pytest
+
 from morie.fn.nnextr import nnextr
 
 
@@ -28,4 +30,5 @@ def test_nnextr_no_data():
 
 def test_nnextr_alias():
     from morie.fn.nnextr import nnextr
+
     assert nnextr is nnextr

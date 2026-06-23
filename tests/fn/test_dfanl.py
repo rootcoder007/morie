@@ -1,7 +1,9 @@
 """Tests for dfanl -- Detrended fluctuation analysis."""
+
 import numpy as np
-from morie.fn.dfanl import dfanl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.dfanl import dfanl
 
 
 def test_dfanl_basic():

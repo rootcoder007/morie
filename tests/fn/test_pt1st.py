@@ -1,7 +1,6 @@
 """Tests for morie.fn.pt1st -- First-order point pattern stats"""
 
 import numpy as np
-import pytest
 
 from morie.fn.pt1st import first_order_pp
 

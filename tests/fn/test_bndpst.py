@@ -1,6 +1,7 @@
 """Tests for bndpst.bound_post_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndpst import bound_post_test
 
 
@@ -11,7 +12,7 @@ def test_bndpst_basic():
     spec_test = np.random.default_rng(43).normal(0, 1, 30)
     result = bound_post_test(lower, upper, spec_test)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_bndpst_edge():

@@ -1,6 +1,7 @@
 """OLC long-read assembly."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["olc_assembly"]

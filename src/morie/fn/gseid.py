@@ -53,9 +53,7 @@ def gauss_seidel(
             x[i] = s / A[i, i]
         rel_res = np.linalg.norm(x - x_old) / (np.linalg.norm(x) + 1e-15)
         if rel_res < tol:
-            return DescriptiveResult(
-                name="Gauss-Seidel", value=float(rel_res), extra={"x": x, "iterations": it}
-            )
+            return DescriptiveResult(name="Gauss-Seidel", value=float(rel_res), extra={"x": x, "iterations": it})
     return DescriptiveResult(
         name="Gauss-Seidel",
         value=float(np.linalg.norm(b - A @ x) / bnorm),

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svutm -- Spatial utility maximizer"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svutm import utility_max
 

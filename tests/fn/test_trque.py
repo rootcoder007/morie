@@ -1,6 +1,7 @@
 """Test trque."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trque import trque
 
 

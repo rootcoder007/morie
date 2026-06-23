@@ -1,6 +1,7 @@
 """Tests for morie.fn.unfst -- unfolding stress diagnostic."""
 
 import numpy as np
+
 from morie.fn.unfst import unfolding_stress_diagnostic, unfst
 
 

@@ -25,15 +25,14 @@ indirect-effect direction without a full SDM ML fit.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal
 
 import numpy as np
-import pandas as pd
 
 
 @dataclass(frozen=True)
 class SpilloverDecomposition:
     """Direct / indirect / total marginal effects from a spatial model."""
+
     coefficient: str
     direct: float
     indirect: float
@@ -110,8 +109,7 @@ def spatial_spillover_decomposition(
         S = np.linalg.inv(I - rho * W)
     except np.linalg.LinAlgError as exc:
         raise ValueError(
-            f"Could not invert (I - rho*W) at rho={rho}; "
-            "spatial multiplier is singular (rho near 1/lambda_max?)"
+            f"Could not invert (I - rho*W) at rho={rho}; spatial multiplier is singular (rho near 1/lambda_max?)"
         ) from exc
 
     out: list[SpilloverDecomposition] = []
@@ -123,14 +121,15 @@ def spatial_spillover_decomposition(
         row_sums = M_k.sum(axis=1)
         indirect = float(np.mean(row_sums - np.diag(M_k)))
         total = direct + indirect
-        out.append(SpilloverDecomposition(
-            coefficient=coefficient_names[k],
-            direct=direct,
-            indirect=indirect,
-            total=total,
-            note=("Per-observation marginal effects averaged across N "
-                  f"tracts (rho={rho:.4f})."),
-        ))
+        out.append(
+            SpilloverDecomposition(
+                coefficient=coefficient_names[k],
+                direct=direct,
+                indirect=indirect,
+                total=total,
+                note=(f"Per-observation marginal effects averaged across N tracts (rho={rho:.4f})."),
+            )
+        )
     return out
 
 

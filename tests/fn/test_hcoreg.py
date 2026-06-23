@@ -1,6 +1,7 @@
 """Tests for hcoreg.hardcore_process."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hcoreg import hardcore_process
 
 
@@ -11,7 +12,7 @@ def test_hcoreg_basic():
     lam = 0.1
     result = hardcore_process(coords, r, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hcoreg_edge():

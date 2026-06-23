@@ -1,6 +1,7 @@
 """Tests for nrgmwd.normalized_random_measure."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nrgmwd import normalized_random_measure
 
 
@@ -11,7 +12,7 @@ def test_nrgmwd_basic():
     tau = 0.1
     result = normalized_random_measure(y, alpha, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_nrgmwd_edge():

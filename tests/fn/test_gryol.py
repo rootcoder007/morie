@@ -1,6 +1,7 @@
 """Tests for gryol.geron_yolo_grid_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gryol import geron_yolo_grid_loss
 
 
@@ -12,7 +13,7 @@ def test_gryol_basic():
     lam_noobj = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_yolo_grid_loss(predictions, targets, lam_coord, lam_noobj)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gryol_edge():

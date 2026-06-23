@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kbias"]
@@ -73,7 +74,7 @@ def kbias(
 
     def _kde(h):
         u = (x_eval[:, None] - data[None, :]) / h
-        k = np.exp(-0.5 * u ** 2) / np.sqrt(2 * np.pi)
+        k = np.exp(-0.5 * u**2) / np.sqrt(2 * np.pi)
         return k.mean(axis=1) / h
 
     c = np.sqrt(2.0)
@@ -84,8 +85,8 @@ def kbias(
     f_h = np.maximum(f_h, eps)
     f_hc = np.maximum(f_hc, eps)
 
-    alpha = c ** 2 / (c ** 2 - 1)
-    beta = 1.0 / (c ** 2 - 1)
+    alpha = c**2 / (c**2 - 1)
+    beta = 1.0 / (c**2 - 1)
     density = np.exp(alpha * np.log(f_hc) - beta * np.log(f_h))
 
     return RichResult(payload={"x_eval": x_eval, "density": density, "bw": bw})

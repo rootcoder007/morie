@@ -7,18 +7,20 @@ from morie.fn.moran import morans_i
 
 
 class TestMoransI:
-
     def test_clustered_positive_I(self):
         """Clustered values produce positive Moran's I."""
         values = np.array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
-        W = np.array([
-            [0, 1, 0, 0, 0, 0],
-            [1, 0, 1, 0, 0, 0],
-            [0, 1, 0, 1, 0, 0],
-            [0, 0, 1, 0, 1, 0],
-            [0, 0, 0, 1, 0, 1],
-            [0, 0, 0, 0, 1, 0],
-        ], dtype=float)
+        W = np.array(
+            [
+                [0, 1, 0, 0, 0, 0],
+                [1, 0, 1, 0, 0, 0],
+                [0, 1, 0, 1, 0, 0],
+                [0, 0, 1, 0, 1, 0],
+                [0, 0, 0, 1, 0, 1],
+                [0, 0, 0, 0, 1, 0],
+            ],
+            dtype=float,
+        )
         result = morans_i(values, W, nperm=499, seed=42)
         assert result.statistic > 0, f"Expected positive I, got {result.statistic}"
         assert result.name == "Moran's I"

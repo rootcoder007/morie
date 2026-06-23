@@ -1,6 +1,7 @@
 """Long-read consensus polishing (medaka)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["long_read_polish"]
@@ -32,7 +33,9 @@ def long_read_polish(assembly, reads):
     n = len(assembly)
     result = float(np.mean(assembly))
     se = float(np.std(assembly, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Long-read consensus polishing (medaka)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Long-read consensus polishing (medaka)"}
+    )
 
 
 def cheatsheet():

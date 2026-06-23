@@ -1,6 +1,7 @@
 """Tests for kmalbi.kamath_alibi_bias."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmalbi import kamath_alibi_bias
 
 
@@ -12,7 +13,7 @@ def test_kmalbi_basic():
     slopes = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_alibi_bias(Q, K, V, slopes)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmalbi_edge():

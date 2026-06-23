@@ -1,6 +1,7 @@
 """Posterior mean of the j-th weight in a countable Dirichlet process given n observations with cell counts N_j.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_dirichlet_posterior_mean"]
@@ -36,7 +37,14 @@ def ghosal_ch3_dirichlet_posterior_mean(alpha_j, N_j, j, n):
     n = len(alpha_j)
     result = float(np.mean(alpha_j))
     se = float(np.std(alpha_j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Posterior mean of the j-th weight in a countable Dirichlet process given n observations with cell counts N_j."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Posterior mean of the j-th weight in a countable Dirichlet process given n observations with cell counts N_j.",
+        }
+    )
 
 
 def cheatsheet():

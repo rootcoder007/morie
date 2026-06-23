@@ -1,6 +1,7 @@
 """KR-20 reliability for binary items."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kuder_richardson_20"]

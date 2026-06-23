@@ -1,6 +1,7 @@
 """Tests for stfta.py - STFT analysis."""
+
 import numpy as np
-import pytest
+
 from morie.fn.stfta import stft_analysis, stfta
 
 

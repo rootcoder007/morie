@@ -4,6 +4,7 @@
 __all__ = ["chcap"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 

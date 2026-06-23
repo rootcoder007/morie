@@ -7,10 +7,19 @@ import numpy as np
 import pandas as pd
 from numpy.linalg import lstsq
 from scipy import stats
+
 from ._richresult import RichResult
 
 
-def otis_aipw(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", covariates: list[str] | None = None, seed: int = 123) -> dict:
+def otis_aipw(
+    df: pd.DataFrame,
+    cdf=None,
+    *,
+    outcome: str = "Y",
+    treatment: str = "D",
+    covariates: list[str] | None = None,
+    seed: int = 123,
+) -> dict:
     """Estimate ATE via Augmented Inverse Probability Weighting.
 
     Doubly-robust: consistent if either the outcome model or the
@@ -60,7 +69,9 @@ def otis_aipw(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str 
     idx0 = d == 0
 
     if idx1.sum() < 2 or idx0.sum() < 2:
-        return RichResult(payload={"ate": np.nan, "se": np.nan, "pval": np.nan, "ci_lower": np.nan, "ci_upper": np.nan, "n": n})
+        return RichResult(
+            payload={"ate": np.nan, "se": np.nan, "pval": np.nan, "ci_lower": np.nan, "ci_upper": np.nan, "n": n}
+        )
 
     beta1, _, _, _ = lstsq(X[idx1], y[idx1], rcond=None)
     mu1 = X @ beta1  # predicted Y(1)

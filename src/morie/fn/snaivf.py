@@ -1,6 +1,7 @@
 """Seasonal naive ŷ_{t+h}=y_{t+h-m}."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["seasonal_naive"]

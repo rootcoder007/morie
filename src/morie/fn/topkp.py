@@ -12,6 +12,7 @@ arXiv preprint arXiv:1910.14599.
 __all__ = ["topkp"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 

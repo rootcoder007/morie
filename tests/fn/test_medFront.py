@@ -1,6 +1,7 @@
 """Tests for medFront.front_door."""
+
 import numpy as np
-import pytest
+
 from morie.fn.medFront import front_door
 
 
@@ -12,7 +13,7 @@ def test_medFront_basic():
     C = np.random.default_rng(42).normal(0, 1, 100)
     result = front_door(Y, X, M, C)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_medFront_edge():

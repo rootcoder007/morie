@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Muscle contraction artifact removal from VAG signals."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_muscle_artifact"]
@@ -34,7 +36,9 @@ def rangayyan_muscle_artifact(vag, emg_ref, fs):
     n = int(vag) if vag.ndim == 0 else len(vag)
     result = float(np.mean(vag))
     se = float(np.std(vag, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Muscle contraction artifact removal from VAG signals"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Muscle contraction artifact removal from VAG signals"}
+    )
 
 
 def cheatsheet():

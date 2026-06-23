@@ -86,4 +86,4 @@ deja = detect_duplicates
 
 
 def cheatsheet() -> str:
-    return 'detect_duplicates({}) -> Near-duplicate detection.'
+    return "detect_duplicates({}) -> Near-duplicate detection."

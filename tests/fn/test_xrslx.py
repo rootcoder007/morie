@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrslx -- SLX model OLS estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrslx import slx_ols
 

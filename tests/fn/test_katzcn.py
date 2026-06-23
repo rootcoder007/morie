@@ -1,6 +1,7 @@
 """Tests for katzcn.katz_centrality."""
+
 import numpy as np
-import pytest
+
 from morie.fn.katzcn import katz_centrality
 
 
@@ -11,7 +12,7 @@ def test_katzcn_basic():
     beta = 0.8
     result = katz_centrality(G, alpha, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_katzcn_edge():

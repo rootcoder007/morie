@@ -1,6 +1,8 @@
 """Tests for computable complexity."""
+
 import pytest
-from morie.fn.cmpls import computable_complexity, cmpls
+
+from morie.fn.cmpls import cmpls, computable_complexity
 
 
 def test_repetitive():
@@ -10,6 +12,7 @@ def test_repetitive():
 
 def test_random():
     import os
+
     r = computable_complexity(os.urandom(1000))
     assert r.estimate > 0
 

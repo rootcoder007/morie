@@ -1,8 +1,8 @@
 """Tests for morie.fn.ampcl — amplitude classification."""
-import numpy as np
-import pytest
 
-from morie.fn.ampcl import amplitude_classify, ampcl
+import numpy as np
+
+from morie.fn.ampcl import ampcl, amplitude_classify
 
 
 def test_default_terciles():

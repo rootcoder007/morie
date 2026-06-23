@@ -81,8 +81,7 @@ def ordered_logit(
     raw_alpha0 = np.concatenate([[alpha0[0]], np.log(np.diff(alpha0) + 0.1)])
     x0 = np.concatenate([raw_alpha0, np.zeros(p)])
 
-    res = optimize.minimize(neg_loglik, x0, method="BFGS",
-                            options={"maxiter": max_iter})
+    res = optimize.minimize(neg_loglik, x0, method="BFGS", options={"maxiter": max_iter})
     raw_alpha = res.x[:n_cut]
     alpha = np.cumsum(np.concatenate([[raw_alpha[0]], np.exp(raw_alpha[1:])]))
     beta = res.x[n_cut:]
@@ -146,11 +145,16 @@ def ordered_alternatives_test(groups):
     arrs = [np.asarray(g, dtype=float).ravel() for g in groups]
     k = len(arrs)
     if k < 2 or any(a.size < 1 for a in arrs):
-        return RichResult(payload={
-            "statistic": np.nan, "p_value": np.nan, "z": np.nan,
-            "n": 0, "k": k,
-            "method": "Jonckheere-Terpstra ordered-alternatives test",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "z": np.nan,
+                "n": 0,
+                "k": k,
+                "method": "Jonckheere-Terpstra ordered-alternatives test",
+            }
+        )
     J = 0.0
     for i in range(k - 1):
         for j in range(i + 1, k):
@@ -159,20 +163,22 @@ def ordered_alternatives_test(groups):
             J += float(np.sum(xi < yj) + 0.5 * np.sum(xi == yj))
     ns = np.array([a.size for a in arrs], dtype=float)
     N = float(ns.sum())
-    E_J = (N ** 2 - np.sum(ns ** 2)) / 4.0
-    Var_J = (N ** 2 * (2 * N + 3) - np.sum(ns ** 2 * (2 * ns + 3))) / 72.0
+    E_J = (N**2 - np.sum(ns**2)) / 4.0
+    Var_J = (N**2 * (2 * N + 3) - np.sum(ns**2 * (2 * ns + 3))) / 72.0
     z = (J - E_J) / np.sqrt(Var_J) if Var_J > 0 else np.nan
     p = 2.0 * (1.0 - stats.norm.cdf(abs(z))) if np.isfinite(z) else np.nan
-    return RichResult(payload={
-        "statistic": float(J),
-        "p_value": float(p),
-        "z": float(z),
-        "E_J": float(E_J),
-        "Var_J": float(Var_J),
-        "n": int(N),
-        "k": k,
-        "method": "Jonckheere-Terpstra ordered-alternatives test",
-    })
+    return RichResult(
+        payload={
+            "statistic": float(J),
+            "p_value": float(p),
+            "z": float(z),
+            "E_J": float(E_J),
+            "Var_J": float(Var_J),
+            "n": int(N),
+            "k": k,
+            "method": "Jonckheere-Terpstra ordered-alternatives test",
+        }
+    )
 
 
 # CANONICAL TEST (Jonckheere)
@@ -181,5 +187,7 @@ def ordered_alternatives_test(groups):
 
 
 def cheatsheet() -> str:
-    return ("ordered_logit({}) -> Ordered logit (proportional odds) model. "
-            "ordered_alternatives_test([groups]) -> Jonckheere-Terpstra test.")
+    return (
+        "ordered_logit({}) -> Ordered logit (proportional odds) model. "
+        "ordered_alternatives_test([groups]) -> Jonckheere-Terpstra test."
+    )

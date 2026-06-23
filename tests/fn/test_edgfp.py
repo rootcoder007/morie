@@ -1,6 +1,7 @@
 """Test edgfp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.edgfp import edgfp
 
 

@@ -1,8 +1,10 @@
 """Test tensor_decompose (tndcm)."""
+
 import numpy as np
 import pytest
-from morie.fn.tndcm import tensor_decompose, tndcm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.tndcm import tensor_decompose, tndcm
 
 
 class TestTndcm:

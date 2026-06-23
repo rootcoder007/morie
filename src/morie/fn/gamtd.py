@@ -1,6 +1,7 @@
 """n-step TD return."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["n_step_td"]

@@ -51,4 +51,4 @@ imblr = gaussian_blur
 
 
 def cheatsheet() -> str:
-    return 'gaussian_blur({}) -> Gaussian blur via convolution.'
+    return "gaussian_blur({}) -> Gaussian blur via convolution."

@@ -1,6 +1,8 @@
 """Tests for morie.fn.rgknd — Regression kink design."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rgknd import rgknd
 
 
@@ -9,7 +11,7 @@ def data():
     rng = np.random.default_rng(13)
     n = 400
     R = rng.uniform(-2, 2, n)
-    T = np.where(R < 0, 0.5 * R, 1.5 * R)   # kink at R=0
+    T = np.where(R < 0, 0.5 * R, 1.5 * R)  # kink at R=0
     true_tau = 2.0
     Y = true_tau * T + 0.3 * R + rng.standard_normal(n) * 0.3
     return Y, T, R
@@ -54,4 +56,5 @@ def test_slope_signs(data):
 
 def test_cheatsheet():
     from morie.fn.rgknd import cheatsheet
+
     assert len(cheatsheet()) > 0

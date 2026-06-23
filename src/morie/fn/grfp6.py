@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mixed-precision training: FP16 forward/backward, FP32 master weights + loss scaling."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_fp16_mixed_precision"]
@@ -32,7 +34,14 @@ def geron_fp16_mixed_precision(loss, S):
     n = len(loss)
     result = float(np.mean(loss))
     se = float(np.std(loss, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mixed-precision training: FP16 forward/backward, FP32 master weights + loss scaling"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mixed-precision training: FP16 forward/backward, FP32 master weights + loss scaling",
+        }
+    )
 
 
 def cheatsheet():

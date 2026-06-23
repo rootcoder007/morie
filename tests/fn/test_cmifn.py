@@ -1,7 +1,9 @@
 """Tests for conditional mutual information."""
+
 import numpy as np
 import pytest
-from morie.fn.cmifn import conditional_mutual_information, cmifn
+
+from morie.fn.cmifn import cmifn, conditional_mutual_information
 
 
 def test_basic():

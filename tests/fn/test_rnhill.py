@@ -1,6 +1,8 @@
 """Tests for rnhill."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rnhill import rnhill
 
 
@@ -28,4 +30,5 @@ def test_rnhill_no_data():
 
 def test_rnhill_alias():
     from morie.fn.rnhill import rnhill
+
     assert rnhill is rnhill

@@ -1,7 +1,7 @@
 """Tests for morie.fn.irtdp — distractor analysis."""
 
-import numpy as np
 import pandas as pd
+
 from morie.fn.irtdp import irt_distractor
 
 
@@ -20,7 +20,7 @@ class TestIrtDistractor:
             assert "option" in df.columns
 
     def test_with_answer_key(self, mapq_binary_df):
-        key = {f"item_{i+1}": 1 for i in range(10)}
+        key = {f"item_{i + 1}": 1 for i in range(10)}
         result = irt_distractor(mapq_binary_df, key=key)
         for item, df in result.items():
             if item in key:

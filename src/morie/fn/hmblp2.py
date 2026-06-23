@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """BLIP-2: frozen image encoder + lightweight Q-Former."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_blip2"]
@@ -32,7 +34,9 @@ def geron_blip2(image, text):
     n = len(image)
     result = float(np.mean(image))
     se = float(np.std(image, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BLIP-2: frozen image encoder + lightweight Q-Former"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "BLIP-2: frozen image encoder + lightweight Q-Former"}
+    )
 
 
 def cheatsheet():

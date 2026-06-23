@@ -1,6 +1,7 @@
 """Tests for morie.fn.daly -- Disability-Adjusted Life Years."""
 
 import pytest
+
 from morie.fn.daly import disability_adjusted_life_years
 
 

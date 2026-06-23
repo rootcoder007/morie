@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsgps -- Gaussian process spatial"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsgps import gp_spatial
 

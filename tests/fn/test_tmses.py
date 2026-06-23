@@ -1,6 +1,8 @@
 """Tests for tmses."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tmses import tmses
 
 
@@ -28,4 +30,5 @@ def test_tmses_no_data():
 
 def test_tmses_alias():
     from morie.fn.tmses import tmses
+
     assert tmses is tmses

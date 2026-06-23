@@ -40,4 +40,5 @@ def test_perfect_prediction():
 
 def test_cheatsheet():
     from morie.fn.brscr import cheatsheet
+
     assert "brier" in cheatsheet().lower()

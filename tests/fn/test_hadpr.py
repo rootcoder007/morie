@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.hadpr import hadamard_product, hadpr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.hadpr import hadamard_product, hadpr
 
 
 class TestHadpr:

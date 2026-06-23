@@ -1,8 +1,7 @@
 """Tests for morie.fn.detmet -- detection metrics."""
 
-import numpy as np
-from morie.fn.detmet import detection_metrics, detmet
 from morie.fn._containers import DescriptiveResult
+from morie.fn.detmet import detection_metrics, detmet
 
 
 class TestDetmet:

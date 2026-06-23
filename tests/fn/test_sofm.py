@@ -1,7 +1,9 @@
 """Test self_org_map (sofm)."""
+
 import numpy as np
-from morie.fn.sofm import self_org_map, sofm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sofm import self_org_map, sofm
 
 
 class TestSofm:

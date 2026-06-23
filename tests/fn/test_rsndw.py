@@ -1,6 +1,7 @@
 """Test rsndw."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsndw import rsndw
 
 

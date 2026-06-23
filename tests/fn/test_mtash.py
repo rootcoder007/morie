@@ -1,6 +1,7 @@
 """Test mtash."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtash import mtash
 
 

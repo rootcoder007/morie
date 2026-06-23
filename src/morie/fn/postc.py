@@ -10,7 +10,7 @@ def posterior_consistency_rate(
     n: int,
     dimension: int = 1,
     smoothness: float = 2.0,
-    metric: str = 'hellinger',
+    metric: str = "hellinger",
 ) -> float:
     r"""
     Compute minimax posterior consistency rate for nonparametric models.
@@ -40,23 +40,23 @@ def posterior_consistency_rate(
     exponent = -smoothness / (2 * smoothness + dimension)
 
     # Metric-specific constants
-    if metric == 'hellinger':
+    if metric == "hellinger":
         const = 1.0
-    elif metric == 'l2':
+    elif metric == "l2":
         const = 1.0  # Similar to Hellinger for densities
-    elif metric == 'linf':
+    elif metric == "linf":
         const = 1.2  # Slightly worse for sup norm
     else:
         const = 1.0
 
-    rate = const * (n ** exponent)
+    rate = const * (n**exponent)
 
     return float(rate)
 
 
 def posterior_contraction_analysis(
     n: int,
-    prior_type: str = 'dp',
+    prior_type: str = "dp",
     alpha: float = 1.0,
     dimension: int = 1,
 ) -> dict:
@@ -71,17 +71,17 @@ def posterior_contraction_analysis(
     :param dimension: Problem dimension.
     :return: Dictionary with contraction rate and theory details.
     """
-    if prior_type == 'dp':
+    if prior_type == "dp":
         # DP mixture: rate n^{-1/(2+d)}
         rate = (n ** (-1.0 / (2.0 + dimension))) / np.sqrt(np.log(n))
         notes = "DP mixture (L2 metric, smooth density)"
-    elif prior_type == 'polya_tree':
+    elif prior_type == "polya_tree":
         # Polya tree: adaptive to smoothness
         rate = (n ** (-2.0 / (4.0 + dimension))) / np.log(n)
         notes = "Polya tree (adaptive to smoothness)"
-    elif prior_type == 'histogram':
+    elif prior_type == "histogram":
         # Histogram: slower rate
-        rate = (n ** (-1.0 / (1.0 + dimension)))
+        rate = n ** (-1.0 / (1.0 + dimension))
         notes = "Histogram (naive binning)"
     else:
         rate = np.nan

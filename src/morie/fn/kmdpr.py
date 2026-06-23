@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dense passage retrieval: bi-encoder dot-product similarity."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_dense_passage_retrieval"]
@@ -34,7 +36,14 @@ def kamath_dense_passage_retrieval(q_embed, p_embeds, k):
     n = len(q_embed)
     result = float(np.mean(q_embed))
     se = float(np.std(q_embed, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Dense passage retrieval: bi-encoder dot-product similarity"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Dense passage retrieval: bi-encoder dot-product similarity",
+        }
+    )
 
 
 def cheatsheet():

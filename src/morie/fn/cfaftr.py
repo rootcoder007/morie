@@ -1,6 +1,7 @@
 """Confirmatory factor analysis 1-factor."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["cfa_one_factor"]

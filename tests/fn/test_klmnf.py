@@ -1,6 +1,7 @@
 """Tests for klmnf.py - Kalman filter."""
+
 import numpy as np
-import pytest
+
 from morie.fn.klmnf import kalman_fn, klmnf
 
 

@@ -14,6 +14,7 @@ Cole, S. R., & Hernan, M. A. (2008). Constructing inverse probability
 weights for marginal structural models.
 *American Journal of Epidemiology*, 168(6), 656-664.
 """
+
 from __future__ import annotations
 
 from typing import Any

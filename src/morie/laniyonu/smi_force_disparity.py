@@ -59,6 +59,7 @@ from ..mrm_primitives.synthetic_exposure import synthetic_area_exposure
 @dataclass
 class SMIForceDisparityCoefficient:
     """Single coefficient with point estimate, SE, and Wald 95% CI."""
+
     name: str
     estimate: float
     std_error: float
@@ -117,6 +118,7 @@ class SMIForceDisparityResult:
     note : str
         Caveats / methodology notes for the user.
     """
+
     alpha_v: SMIForceDisparityCoefficient
     intercept: SMIForceDisparityCoefficient
     year_effects: list[SMIForceDisparityCoefficient]
@@ -144,9 +146,7 @@ class SMIForceDisparityResult:
             f"  NB dispersion phi = {self.dispersion:.3f}; "
             f"area random-intercept SD ~= {self.area_random_effect_sd:.3f}."
         )
-        comp = (
-            f"  Compare paper's headline RR = 11.6x (tract) / 10.2x (precinct)."
-        )
+        comp = "  Compare paper's headline RR = 11.6x (tract) / 10.2x (precinct)."
         conv = "" if self.converged else "  WARNING: optimiser did not converge."
         return head + rr_line + disp_line + comp + conv
 
@@ -264,17 +264,11 @@ def smi_force_disparity(
     if area_covariate_cols is None:
         area_covariate_cols = list(survey_covariate_cols)
     if len(area_covariate_cols) != len(survey_covariate_cols):
-        raise ValueError(
-            "area_covariate_cols must have the same length as "
-            "survey_covariate_cols (one per covariate)."
-        )
+        raise ValueError("area_covariate_cols must have the same length as survey_covariate_cols (one per covariate).")
 
     # --- 2. Build the SAE exposure offset ------------------------------
     # The SAE primitive expects ONE row per area; collapse df by geog.
-    area_frame = (
-        df.groupby(geog_col)[area_covariate_cols + [population_col]]
-        .mean(numeric_only=True)
-    )
+    area_frame = df.groupby(geog_col)[area_covariate_cols + [population_col]].mean(numeric_only=True)
     # Rename area-frame columns to match survey covariate names so the
     # primitive sees consistent column names.
     rename_map = dict(zip(area_covariate_cols, survey_covariate_cols))
@@ -290,34 +284,26 @@ def smi_force_disparity(
     # smi_exposure: Series indexed by geog
     df = df.copy()
     df["_smi_exposure"] = df[geog_col].map(smi_exposure)
-    df["_non_smi_exposure"] = (
-        df[population_col].astype(float) - df["_smi_exposure"]
-    ).clip(lower=1.0)
+    df["_non_smi_exposure"] = (df[population_col].astype(float) - df["_smi_exposure"]).clip(lower=1.0)
     df["_smi_exposure"] = df["_smi_exposure"].clip(lower=1.0)
 
     # --- 3. Resolve the non-SMI count column ---------------------------
     if non_smi_count_col is None:
         if "total_force_events" not in df.columns:
-            raise ValueError(
-                "non_smi_count_col is None but df has no "
-                "'total_force_events' column to subtract from."
-            )
-        df["_non_smi_count"] = (
-            df["total_force_events"].astype(float)
-            - df[force_count_col].astype(float)
-        ).clip(lower=0)
+            raise ValueError("non_smi_count_col is None but df has no 'total_force_events' column to subtract from.")
+        df["_non_smi_count"] = (df["total_force_events"].astype(float) - df[force_count_col].astype(float)).clip(
+            lower=0
+        )
         non_smi_col_resolved = "_non_smi_count"
     else:
         non_smi_col_resolved = non_smi_count_col
 
     # --- 4. Stack into a long (area x year x vulnerability) frame ------
-    smi_rows = df[[geog_col, year_col, force_count_col,
-                   "_smi_exposure"]].copy()
+    smi_rows = df[[geog_col, year_col, force_count_col, "_smi_exposure"]].copy()
     smi_rows.columns = [geog_col, year_col, "_count", "_offset"]
     smi_rows["_v"] = 1  # PwSMI
 
-    non_smi_rows = df[[geog_col, year_col, non_smi_col_resolved,
-                       "_non_smi_exposure"]].copy()
+    non_smi_rows = df[[geog_col, year_col, non_smi_col_resolved, "_non_smi_exposure"]].copy()
     non_smi_rows.columns = [geog_col, year_col, "_count", "_offset"]
     non_smi_rows["_v"] = 0  # non-SMI
 
@@ -348,9 +334,7 @@ def smi_force_disparity(
         baseline_area = area_levels[0]
         non_baseline_areas = area_levels[1:]
         for a in non_baseline_areas:
-            X_pieces.append(
-                (long_df[geog_col] == a).to_numpy(dtype=float)
-            )
+            X_pieces.append((long_df[geog_col] == a).to_numpy(dtype=float))
             design_cols.append(f"_area_{a}")
     else:
         non_baseline_areas = []
@@ -382,10 +366,7 @@ def smi_force_disparity(
     init = np.zeros(n_free)
     # Sensible intercept seed: log(mean rate) net of offset
     with np.errstate(divide="ignore"):
-        init[idx_intercept] = float(
-            np.log((y_count.sum() + 1.0)
-                   / (np.exp(offset).sum() + 1.0))
-        )
+        init[idx_intercept] = float(np.log((y_count.sum() + 1.0) / (np.exp(offset).sum() + 1.0)))
     init[-1] = 0.0  # log_phi = 0 -> phi = 1
 
     def neg_log_lik(params: np.ndarray) -> float:
@@ -403,6 +384,7 @@ def smi_force_disparity(
         #   log Gamma(y+phi) - log Gamma(phi) - log Gamma(y+1)
         #     + phi*log(phi/(phi+mu)) + y*log(mu/(phi+mu))
         from scipy.special import gammaln
+
         ll = (
             gammaln(y_count + phi)
             - gammaln(phi)
@@ -415,7 +397,7 @@ def smi_force_disparity(
         # Ridge penalty on area dummies (random-intercept approximation)
         if n_area_re > 0:
             area_block = beta[idx_area_start:idx_area_end]
-            ss = float(np.sum(area_block ** 2))
+            ss = float(np.sum(area_block**2))
             tau2 = (ss + 2.0) / (n_area_re + 6.0)
             nll += 0.5 * ss / max(tau2, 1e-6)
 
@@ -437,9 +419,7 @@ def smi_force_disparity(
     # --- 7. Approximate SEs via numerical Hessian on the focal block ---
     # Full-Hessian SEs over thousands of area dummies are expensive and
     # not the point — we want SEs on (intercept, alpha_v, year FE).
-    focal_idx = [idx_intercept, idx_alpha_v] + list(
-        range(idx_year_start, idx_year_end)
-    )
+    focal_idx = [idx_intercept, idx_alpha_v] + list(range(idx_year_start, idx_year_end))
 
     def neg_log_lik_focal(focal_params: np.ndarray) -> float:
         p = params_hat.copy()
@@ -479,11 +459,13 @@ def smi_force_disparity(
     if include_year_fe:
         for k, y in enumerate(non_baseline_years):
             ix = idx_year_start + k
-            year_effects.append(SMIForceDisparityCoefficient(
-                name=f"delta_{y}",
-                estimate=float(params_hat[ix]),
-                std_error=float(se_lookup.get(ix, float("nan"))),
-            ))
+            year_effects.append(
+                SMIForceDisparityCoefficient(
+                    name=f"delta_{y}",
+                    estimate=float(params_hat[ix]),
+                    std_error=float(se_lookup.get(ix, float("nan"))),
+                )
+            )
 
     dispersion = float(np.exp(np.clip(params_hat[-1], -10.0, 10.0)))
 
@@ -536,10 +518,18 @@ def _numerical_hessian(
     f0 = fn(x)
     for i in range(n):
         for j in range(i, n):
-            x_pp = x.copy(); x_pp[i] += eps; x_pp[j] += eps
-            x_pm = x.copy(); x_pm[i] += eps; x_pm[j] -= eps
-            x_mp = x.copy(); x_mp[i] -= eps; x_mp[j] += eps
-            x_mm = x.copy(); x_mm[i] -= eps; x_mm[j] -= eps
+            x_pp = x.copy()
+            x_pp[i] += eps
+            x_pp[j] += eps
+            x_pm = x.copy()
+            x_pm[i] += eps
+            x_pm[j] -= eps
+            x_mp = x.copy()
+            x_mp[i] -= eps
+            x_mp[j] += eps
+            x_mm = x.copy()
+            x_mm[i] -= eps
+            x_mm[j] -= eps
             val = (fn(x_pp) - fn(x_pm) - fn(x_mp) + fn(x_mm)) / (4 * eps * eps)
             H[i, j] = val
             H[j, i] = val

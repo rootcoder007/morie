@@ -1,6 +1,7 @@
 """Inverse-variance fixed-effect pooled mean."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_fixed_effect"]
@@ -32,7 +33,9 @@ def ma_fixed_effect(yi, vi):
     n = len(yi)
     result = float(np.mean(yi))
     se = float(np.std(yi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Inverse-variance fixed-effect pooled mean"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Inverse-variance fixed-effect pooled mean"}
+    )
 
 
 def cheatsheet():

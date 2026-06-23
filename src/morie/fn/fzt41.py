@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 4.1: biases and variances of S_tilde_X and S_tilde_X,1."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_thm4_1_surv_bias_var"]
@@ -34,7 +36,14 @@ def fauzi_thm4_1_surv_bias_var(t, bandwidth, g_func):
     n = int(t) if t.ndim == 0 else len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Theorem 4.1: biases and variances of S_tilde_X and S_tilde_X,1"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Theorem 4.1: biases and variances of S_tilde_X and S_tilde_X,1",
+        }
+    )
 
 
 def cheatsheet():

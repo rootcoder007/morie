@@ -1,6 +1,7 @@
 """Tests for jowink.joseph_winkler_interval_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jowink import joseph_winkler_interval_score
 
 
@@ -12,7 +13,7 @@ def test_jowink_basic():
     alpha = 0.05
     result = joseph_winkler_interval_score(y, l, u, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jowink_edge():

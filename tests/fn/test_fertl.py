@@ -1,6 +1,7 @@
 """Tests for morie.fn.fertl -- total fertility rate."""
 
 import pytest
+
 from morie.fn.fertl import fertility_rate
 
 

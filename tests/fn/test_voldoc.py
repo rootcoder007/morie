@@ -1,6 +1,7 @@
 """Tests for voldoc.vol_decomposed_realised."""
+
 import numpy as np
-import pytest
+
 from morie.fn.voldoc import vol_decomposed_realised
 
 
@@ -10,7 +11,7 @@ def test_voldoc_basic():
     BPV = np.random.default_rng(42).normal(0, 1, 100)
     result = vol_decomposed_realised(RV, BPV)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_voldoc_edge():

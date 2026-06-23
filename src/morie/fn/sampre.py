@@ -1,6 +1,7 @@
 """SAM prompt encoder (points/boxes/masks)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sam_prompt_encoder"]
@@ -30,7 +31,9 @@ def sam_prompt_encoder(prompts):
     n = len(prompts)
     result = float(np.mean(prompts))
     se = float(np.std(prompts, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SAM prompt encoder (points/boxes/masks)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "SAM prompt encoder (points/boxes/masks)"}
+    )
 
 
 def cheatsheet():

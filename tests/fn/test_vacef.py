@@ -1,6 +1,7 @@
 """Tests for morie.fn.vacef -- vaccine efficacy."""
 
 import pytest
+
 from morie.fn.vacef import vaccine_efficacy
 
 

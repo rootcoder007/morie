@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pasting: train base models on samples drawn without replacement."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_pasting"]
@@ -38,7 +40,14 @@ def geron_pasting(X, y, base_estimator, n_estimators, sample_size):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pasting: train base models on samples drawn without replacement"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pasting: train base models on samples drawn without replacement",
+        }
+    )
 
 
 def cheatsheet():

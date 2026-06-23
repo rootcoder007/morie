@@ -1,6 +1,7 @@
 """Tests for cvxqp.boyd_quadratic_program."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxqp import boyd_quadratic_program
 
 
@@ -14,7 +15,7 @@ def test_cvxqp_basic():
     b = np.random.default_rng(42).normal(0, 1, 100)
     result = boyd_quadratic_program(P, q, G, h, A, b)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxqp_edge():

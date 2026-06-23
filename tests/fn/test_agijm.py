@@ -1,6 +1,7 @@
 """Test agijm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agijm import agijm
 
 

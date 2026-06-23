@@ -1,6 +1,7 @@
 """Test clcha."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clcha import clcha
 
 

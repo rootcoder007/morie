@@ -1,8 +1,9 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bell number and partition count."""
 
-
 from ._containers import DescriptiveResult
+
+
 def bell_polynomial(n: int, **kwargs) -> DescriptiveResult:
     r"""
     Compute the n-th Bell number :math:`B_n`.

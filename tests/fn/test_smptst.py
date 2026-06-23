@@ -1,6 +1,7 @@
 """Tests for smptst.sample_test_msm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.smptst import sample_test_msm
 
 
@@ -12,7 +13,7 @@ def test_smptst_basic():
     K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
     result = sample_test_msm(y, A, H, K)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_smptst_edge():

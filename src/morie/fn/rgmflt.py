@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Matched filter transfer function for signal detection in noise."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_matched_filter"]
@@ -34,7 +36,14 @@ def rangayyan_matched_filter(signal_spectrum, noise_psd, t0):
     n = int(signal_spectrum) if signal_spectrum.ndim == 0 else len(signal_spectrum)
     result = float(np.mean(signal_spectrum))
     se = float(np.std(signal_spectrum, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Matched filter transfer function for signal detection in noise"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Matched filter transfer function for signal detection in noise",
+        }
+    )
 
 
 def cheatsheet():

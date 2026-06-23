@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.asr import age_standardized_rate
 
 

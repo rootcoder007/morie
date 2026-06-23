@@ -209,9 +209,7 @@ def fetch_crime(
 
 def discover_resources() -> pd.DataFrame:
     """Return the built-in Chicago resource registry as a DataFrame."""
-    return pd.DataFrame(
-        [{"name": k, "url": v} for k, v in RESOURCE_REGISTRY.items()]
-    )
+    return pd.DataFrame([{"name": k, "url": v} for k, v in RESOURCE_REGISTRY.items()])
 
 
 # ----------------------------------------------------------------------
@@ -227,18 +225,15 @@ def cli(args: list[str]) -> int:
     import sys
     from pathlib import Path
 
-    p = argparse.ArgumentParser(prog="morie ingest chicago",
-                                description="Pull a City of Chicago Socrata feed.")
-    p.add_argument("--resource",
-                   help=f"Built-in resource name: {sorted(RESOURCE_REGISTRY)}")
+    p = argparse.ArgumentParser(prog="morie ingest chicago", description="Pull a City of Chicago Socrata feed.")
+    p.add_argument("--resource", help=f"Built-in resource name: {sorted(RESOURCE_REGISTRY)}")
     p.add_argument("--url", help="Direct Socrata resource URL (overrides --resource)")
     p.add_argument("--year", type=int, help="Filter to a single year (uses SoQL 'year =')")
     p.add_argument("--where", help="Raw SoQL $where clause (overrides --year)")
     p.add_argument("--max", type=int, dest="max_features", help="Cap returned rows")
     p.add_argument("--token", help="Socrata X-App-Token for higher rate limits")
     p.add_argument("--out", type=Path, help="CSV output path (stdout if omitted)")
-    p.add_argument("--list", action="store_true",
-                   help="List the built-in resource names and exit")
+    p.add_argument("--list", action="store_true", help="List the built-in resource names and exit")
     ns = p.parse_args(args)
 
     if ns.list:
@@ -255,8 +250,7 @@ def cli(args: list[str]) -> int:
         url = CRIME_RESOURCE  # default for the bare `morie ingest chicago` call
 
     where = ns.where or (f"year = {ns.year}" if ns.year else None)
-    df = fetch_socrata(url, where=where, max_features=ns.max_features,
-                       app_token=ns.token)
+    df = fetch_socrata(url, where=where, max_features=ns.max_features, app_token=ns.token)
     if ns.out:
         df.to_csv(ns.out, index=False)
         sys.stderr.write(f"wrote {ns.out}  ({len(df):,} rows, {len(df.columns)} cols)\n")

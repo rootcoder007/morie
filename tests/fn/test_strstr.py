@@ -1,8 +1,9 @@
 """Tests for morie.fn.strstr -- stress-strain curve analysis."""
 
 import numpy as np
-from morie.fn.strstr import stress_strain, strstr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.strstr import stress_strain, strstr
 
 
 class TestStrstr:

@@ -1,6 +1,8 @@
 """Tests for morie.fn.sphet — spatial heterogeneity."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sphet import spatial_heterogeneity
 
 

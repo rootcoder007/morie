@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cifarelli-Regazzini theorem: distribution of mean of DP via characteristic function."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_dp_mean_dist"]
@@ -30,7 +32,14 @@ def ghosal_dp_mean_dist(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cifarelli-Regazzini theorem: distribution of mean of DP via characteristic function"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Cifarelli-Regazzini theorem: distribution of mean of DP via characteristic function",
+        }
+    )
 
 
 def cheatsheet():

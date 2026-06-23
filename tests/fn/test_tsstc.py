@@ -1,6 +1,7 @@
 """Test tsstc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tsstc import tsstc
 
 

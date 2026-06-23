@@ -1,6 +1,7 @@
 """Test dkmvv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkmvv import dkmvv
 
 

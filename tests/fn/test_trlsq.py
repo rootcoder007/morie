@@ -1,8 +1,9 @@
 """Tests for morie.fn.trlsq -- Total least squares."""
 
 import numpy as np
-from morie.fn.trlsq import total_least_squares, trlsq
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.trlsq import total_least_squares, trlsq
 
 
 class TestTrlsq:

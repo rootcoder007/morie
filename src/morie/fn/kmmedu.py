@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Medusa multi-head speculative decoding: K extra heads predict K future tokens."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_medusa_heads"]
@@ -34,7 +36,14 @@ def kamath_medusa_heads(hidden_state, medusa_heads, k):
     n = len(hidden_state)
     result = float(np.mean(hidden_state))
     se = float(np.std(hidden_state, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Medusa multi-head speculative decoding: K extra heads predict K future tokens"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Medusa multi-head speculative decoding: K extra heads predict K future tokens",
+        }
+    )
 
 
 def cheatsheet():

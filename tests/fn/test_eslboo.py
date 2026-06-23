@@ -1,6 +1,7 @@
 """Tests for eslboo.esl_bootstrap_err."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslboo import esl_bootstrap_err
 
 
@@ -12,7 +13,7 @@ def test_eslboo_basic():
     B = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = esl_bootstrap_err(X, y, model, B)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslboo_edge():

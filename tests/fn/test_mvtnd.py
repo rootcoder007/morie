@@ -1,7 +1,7 @@
 """Tests for morie.fn.mvtnd."""
 
 import numpy as np
-import pytest
+
 from morie.fn.mvtnd import mvtnd
 
 

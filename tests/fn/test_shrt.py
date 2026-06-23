@@ -1,6 +1,7 @@
 """Tests for shrt.shortest_path_dijkstra."""
+
 import numpy as np
-import pytest
+
 from morie.fn.shrt import shortest_path_dijkstra
 
 
@@ -12,7 +13,7 @@ def test_shrt_basic():
     t = np.linspace(0, 10, 100)
     result = shortest_path_dijkstra(y, A, s, t)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_shrt_edge():

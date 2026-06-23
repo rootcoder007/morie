@@ -1,6 +1,7 @@
 """Tests for backDR.back_door."""
+
 import numpy as np
-import pytest
+
 from morie.fn.backDR import back_door
 
 
@@ -11,7 +12,7 @@ def test_backDR_basic():
     C = np.random.default_rng(42).normal(0, 1, 100)
     result = back_door(Y, X, C)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_backDR_edge():

@@ -1,7 +1,9 @@
 """Test frame_signal (sgfrm)."""
+
 import numpy as np
-from morie.fn.sgfrm import frame_signal, sgfrm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sgfrm import frame_signal, sgfrm
 
 
 class TestFrameSignal:

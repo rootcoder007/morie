@@ -1,6 +1,8 @@
 """Indicator kriging for exceedance probability."""
+
 import numpy as np
 from scipy.spatial.distance import cdist
+
 from ._richresult import RichResult
 
 __all__ = ["indicator_kriging"]
@@ -11,10 +13,7 @@ def _cov_exp(h, c0, c1, a):
     return c1 * np.exp(-h / a) + np.where(h == 0, c0, 0.0)
 
 
-def indicator_kriging(x, coords, threshold,
-                      target=None,
-                      nugget: float = 0.0, sill: float = 0.25,
-                      range_: float = 1.0):
+def indicator_kriging(x, coords, threshold, target=None, nugget: float = 0.0, sill: float = 0.25, range_: float = 1.0):
     """
     Indicator kriging (Journel 1983; Schabenberger & Gotway Ch 4).
 
@@ -54,11 +53,15 @@ def indicator_kriging(x, coords, threshold,
         raise ValueError("target/coords dim mismatch")
 
     I_obs = (x <= float(threshold)).astype(float)
-    c0 = float(nugget); c1 = float(sill - nugget); a = float(range_)
+    c0 = float(nugget)
+    c1 = float(sill - nugget)
+    a = float(range_)
     D = cdist(coords, coords)
     C = _cov_exp(D, c0, c1, a)
     A = np.zeros((n + 1, n + 1))
-    A[:n, :n] = C; A[:n, n] = 1.0; A[n, :n] = 1.0
+    A[:n, :n] = C
+    A[:n, n] = 1.0
+    A[n, :n] = 1.0
 
     probs = []
     for s0 in target:
@@ -77,12 +80,14 @@ def indicator_kriging(x, coords, threshold,
         out = probs[0]
     else:
         out = probs
-    return RichResult(payload={
-        "estimate": out,
-        "threshold": float(threshold),
-        "n": int(n),
-        "method": "Indicator kriging (ordinary, exp. cov)",
-    })
+    return RichResult(
+        payload={
+            "estimate": out,
+            "threshold": float(threshold),
+            "n": int(n),
+            "method": "Indicator kriging (ordinary, exp. cov)",
+        }
+    )
 
 
 def cheatsheet():

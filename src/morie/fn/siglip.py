@@ -1,6 +1,7 @@
 """SigLIP sigmoid loss (per-pair, not softmax)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["siglip_pairwise"]
@@ -32,7 +33,9 @@ def siglip_pairwise(image_emb, text_emb):
     n = len(image_emb)
     result = float(np.mean(image_emb))
     se = float(np.std(image_emb, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SigLIP sigmoid loss (per-pair, not softmax)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "SigLIP sigmoid loss (per-pair, not softmax)"}
+    )
 
 
 def cheatsheet():

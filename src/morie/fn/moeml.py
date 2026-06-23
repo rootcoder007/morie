@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mixture-of-Experts gating (Shazeer et al. 2017)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -56,20 +57,16 @@ def mixture_of_experts(x, W_gate=None, experts=None, top_k: int = 2):
     k = max(1, min(int(top_k), n_experts))
     topk_idx = np.argsort(-gate, axis=-1)[:, :k]
     sparse = np.zeros_like(gate)
-    np.put_along_axis(sparse, topk_idx,
-                      np.take_along_axis(gate, topk_idx, axis=-1), axis=-1)
+    np.put_along_axis(sparse, topk_idx, np.take_along_axis(gate, topk_idx, axis=-1), axis=-1)
     sparse = sparse / np.sum(sparse, axis=-1, keepdims=True)
-    expert_outs = [x @ np.asarray(W_i) + np.asarray(b_i)
-                   for W_i, b_i in experts]
+    expert_outs = [x @ np.asarray(W_i) + np.asarray(b_i) for W_i, b_i in experts]
     E = np.stack(expert_outs, axis=0)  # (n_experts, B, d_out)
     y = np.einsum("be,ebd->bd", sparse, E)
     load = sparse.sum(axis=0) / B
     return RichResult(
         title="Sparsely-Gated MoE (Shazeer 2017)",
-        summary_lines=[("n_experts", n_experts), ("top_k", k),
-                       ("batch", B)],
-        payload={"tensor": y, "gate": sparse, "topk_idx": topk_idx,
-                 "load": load, "method": "MoE"},
+        summary_lines=[("n_experts", n_experts), ("top_k", k), ("batch", B)],
+        payload={"tensor": y, "gate": sparse, "topk_idx": topk_idx, "load": load, "method": "MoE"},
     )
 
 

@@ -1,15 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hierarchical Bayes nonparametric -- alpha-integrated DP."""
+
 import numpy as np
-from scipy.special import gammaln
-from scipy.stats import gamma as gamma_dist, norm
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_hierarchical_bayes"]
 
 
-def ghosal_hierarchical_bayes(x, a_prior=1.0, b_prior=1.0, M=400, seed=0,
-                                deterministic_seed: int | None = None):
+def ghosal_hierarchical_bayes(x, a_prior=1.0, b_prior=1.0, M=400, seed=0, deterministic_seed: int | None = None):
     """Hierarchical-DP with a Gamma(a, b) hyperprior on the concentration.
 
     Model::
@@ -51,16 +50,20 @@ def ghosal_hierarchical_bayes(x, a_prior=1.0, b_prior=1.0, M=400, seed=0,
     """
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("ghhbp", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n < 2:
-        return RichResult(payload={
-            "estimate": float("nan"), "n": n,
-            "method": "Hierarchical NP-Bayes (n<2)",
-        })
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "n": n,
+                "method": "Hierarchical NP-Bayes (n<2)",
+            }
+        )
     K_n = int(np.unique(x).size)
     if K_n == n:
         K_n = max(2, int(np.ceil(np.log2(n) + 1)))
@@ -81,14 +84,16 @@ def ghosal_hierarchical_bayes(x, a_prior=1.0, b_prior=1.0, M=400, seed=0,
         draws[m] = alpha
     burn = M // 4
     chain = draws[burn:]
-    return RichResult(payload={
-        "estimate": float(np.mean(chain)),
-        "alpha_se": float(np.std(chain, ddof=1)),
-        "alpha_draws": chain.tolist(),
-        "K_n": int(K_n),
-        "n": n,
-        "method": "Escobar-West augmentation for alpha | K_n",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(chain)),
+            "alpha_se": float(np.std(chain, ddof=1)),
+            "alpha_draws": chain.tolist(),
+            "K_n": int(K_n),
+            "n": n,
+            "method": "Escobar-West augmentation for alpha | K_n",
+        }
+    )
 
 
 def cheatsheet():

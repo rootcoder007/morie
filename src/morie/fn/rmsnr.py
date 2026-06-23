@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Root-mean-square normalisation (Zhang & Sennrich 2019)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -28,17 +29,15 @@ def rms_norm(x, gamma=None, eps: float = 1e-6):
     RichResult with keys: tensor (y), rms.
     """
     x = np.asarray(x, dtype=float)
-    rms = np.sqrt(np.mean(x ** 2, axis=-1, keepdims=True) + eps)
+    rms = np.sqrt(np.mean(x**2, axis=-1, keepdims=True) + eps)
     y = x / rms
     if gamma is not None:
         gamma = np.asarray(gamma, dtype=float)
         y = y * gamma
     return RichResult(
         title="RMSNorm (Zhang & Sennrich 2019)",
-        summary_lines=[("shape", y.shape),
-                       ("rms_mean", float(np.mean(rms)))],
-        payload={"tensor": y, "rms": np.squeeze(rms, axis=-1),
-                 "eps": eps, "method": "RMSNorm"},
+        summary_lines=[("shape", y.shape), ("rms_mean", float(np.mean(rms)))],
+        payload={"tensor": y, "rms": np.squeeze(rms, axis=-1), "eps": eps, "method": "RMSNorm"},
     )
 
 

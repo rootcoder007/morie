@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MIDAS mixed-frequency regression (Ghysels, Santa-Clara & Valkanov 2004)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -56,13 +57,12 @@ def midas_regression(x, y, K=None):
             raise ValueError("Pass K when x is a flat 1-D array.")
         nT = Y.size
         if Xf.size < K + nT - 1:
-            raise ValueError(
-                f"x too short: need >= K + n_y - 1 = {K + nT - 1}.")
+            raise ValueError(f"x too short: need >= K + n_y - 1 = {K + nT - 1}.")
         # Stack: row t = [x[nT-1-t+K-1] … x[nT-1-t]] (most recent first).
         rows = []
         for t in range(nT):
             end = Xf.size - (nT - 1 - t)
-            rows.append(Xf[end - K:end][::-1])
+            rows.append(Xf[end - K : end][::-1])
         X = np.asarray(rows)
     else:
         X = Xf
@@ -80,7 +80,7 @@ def midas_regression(x, y, K=None):
         w = _beta_weights(t1, t2, K)
         yhat = b0 + b1 * (X @ w)
         resid = Y - yhat
-        sse = float(np.sum(resid ** 2))
+        sse = float(np.sum(resid**2))
         return sse if np.isfinite(sse) else 1e10
 
     fit = optimize.minimize(
@@ -94,17 +94,21 @@ def midas_regression(x, y, K=None):
     yhat = b0 + b1 * (X @ w)
     resid = Y - yhat
     ss_tot = float(np.sum((Y - Y.mean()) ** 2))
-    r2 = 1.0 - float(np.sum(resid ** 2)) / ss_tot if ss_tot > 0 else np.nan
-    return RichResult(payload={
-        "beta0": float(b0), "beta1": float(b1),
-        "theta1": float(t1), "theta2": float(t2),
-        "weights": w,
-        "loglik": -0.5 * nT * (np.log(2 * np.pi)
-                               + np.log(np.var(resid) + 1e-12) + 1.0),
-        "r2": float(r2),
-        "n": int(nT), "K": int(K),
-        "method": "MIDAS Beta-polynomial via L-BFGS-B (numpy)",
-    })
+    r2 = 1.0 - float(np.sum(resid**2)) / ss_tot if ss_tot > 0 else np.nan
+    return RichResult(
+        payload={
+            "beta0": float(b0),
+            "beta1": float(b1),
+            "theta1": float(t1),
+            "theta2": float(t2),
+            "weights": w,
+            "loglik": -0.5 * nT * (np.log(2 * np.pi) + np.log(np.var(resid) + 1e-12) + 1.0),
+            "r2": float(r2),
+            "n": int(nT),
+            "K": int(K),
+            "method": "MIDAS Beta-polynomial via L-BFGS-B (numpy)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 """Tests for stsim."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stsim import stsim
 
 
@@ -28,4 +30,5 @@ def test_stsim_no_data():
 
 def test_stsim_alias():
     from morie.fn.stsim import stsim
+
     assert stsim is stsim

@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """N-BEATS-style basis-expansion forecasting (Oreshkin et al. 2020)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -50,11 +51,10 @@ def nbeats_basis(x, horizon=1, n_trend=3, n_season=5, period=12):
     y = np.asarray(x, dtype=float).ravel()
     n = y.size
     if n < n_trend + 2 * n_season + 2:
-        raise ValueError(
-            f"Need at least P+2H+2 obs (={n_trend + 2*n_season + 2}); have {n}.")
+        raise ValueError(f"Need at least P+2H+2 obs (={n_trend + 2 * n_season + 2}); have {n}.")
 
     t = np.arange(n, dtype=float)
-    T_cols = [t ** k for k in range(n_trend + 1)]
+    T_cols = [t**k for k in range(n_trend + 1)]
     S_cols = []
     for j in range(1, n_season + 1):
         S_cols.append(np.sin(2 * np.pi * j * t / period))
@@ -65,7 +65,7 @@ def nbeats_basis(x, horizon=1, n_trend=3, n_season=5, period=12):
 
     # Forecast.
     tf = np.arange(n, n + horizon, dtype=float)
-    Tf = [tf ** k for k in range(n_trend + 1)]
+    Tf = [tf**k for k in range(n_trend + 1)]
     Sf = []
     for j in range(1, n_season + 1):
         Sf.append(np.sin(2 * np.pi * j * tf / period))
@@ -74,23 +74,25 @@ def nbeats_basis(x, horizon=1, n_trend=3, n_season=5, period=12):
     forecast = Xf @ coef
 
     theta_trend = coef[: n_trend + 1]
-    theta_season = coef[n_trend + 1:]
+    theta_season = coef[n_trend + 1 :]
     trend = np.column_stack(T_cols) @ theta_trend
     seasonal = np.column_stack(S_cols) @ theta_season
     ss_tot = float(np.sum((y - y.mean()) ** 2))
     r2 = 1.0 - float(np.sum((y - fitted) ** 2)) / ss_tot if ss_tot > 0 else np.nan
-    return RichResult(payload={
-        "forecast": forecast,
-        "fitted": fitted,
-        "trend": trend,
-        "seasonal": seasonal,
-        "theta_trend": theta_trend,
-        "theta_seasonal": theta_season,
-        "r2": float(r2),
-        "n": int(n), "horizon": int(horizon),
-        "method": (f"N-BEATS basis: polynomial(P={n_trend}) + "
-                   f"Fourier(H={n_season}, period={period})"),
-    })
+    return RichResult(
+        payload={
+            "forecast": forecast,
+            "fitted": fitted,
+            "trend": trend,
+            "seasonal": seasonal,
+            "theta_trend": theta_trend,
+            "theta_seasonal": theta_season,
+            "r2": float(r2),
+            "n": int(n),
+            "horizon": int(horizon),
+            "method": (f"N-BEATS basis: polynomial(P={n_trend}) + Fourier(H={n_season}, period={period})"),
+        }
+    )
 
 
 def cheatsheet():

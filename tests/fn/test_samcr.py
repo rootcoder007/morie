@@ -1,6 +1,7 @@
 """Test samcr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.samcr import samcr
 
 

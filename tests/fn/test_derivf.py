@@ -1,6 +1,7 @@
 """Tests for derivf.derivative_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.derivf import derivative_function
 
 
@@ -11,7 +12,7 @@ def test_derivf_basic():
     order = 4
     result = derivative_function(coef, basis, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_derivf_edge():

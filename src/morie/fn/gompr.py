@@ -59,8 +59,7 @@ def gompr(
 
     x0 = np.zeros(2 + p)
     x0[0] = np.log(np.sum(event) / np.sum(time) + 1e-300)
-    result = minimize(neg_loglik, x0, method="Nelder-Mead",
-                      options={"maxiter": 5000})
+    result = minimize(neg_loglik, x0, method="Nelder-Mead", options={"maxiter": 5000})
 
     lam = np.exp(result.x[0])
     gamma = result.x[1]

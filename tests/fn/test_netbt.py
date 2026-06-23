@@ -1,12 +1,11 @@
 """Tests for morie.fn.netbt — Node betweenness centrality."""
 
 import numpy as np
-import pytest
+
 from morie.fn.netbt import network_betweenness
 
 
 class TestNetworkBetweenness:
-
     def test_returns_dict(self):
         A = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]])
         result = network_betweenness(A)
@@ -14,12 +13,15 @@ class TestNetworkBetweenness:
 
     def test_bridge_node_highest(self):
         # Star topology: center node should have highest betweenness
-        A = np.array([
-            [0, 1, 1, 1],
-            [1, 0, 0, 0],
-            [1, 0, 0, 0],
-            [1, 0, 0, 0],
-        ], dtype=float)
+        A = np.array(
+            [
+                [0, 1, 1, 1],
+                [1, 0, 0, 0],
+                [1, 0, 0, 0],
+                [1, 0, 0, 0],
+            ],
+            dtype=float,
+        )
         result = network_betweenness(A)
         assert result["betweenness"]["n0"] >= result["betweenness"]["n1"]
 

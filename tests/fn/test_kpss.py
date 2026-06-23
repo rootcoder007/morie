@@ -1,8 +1,9 @@
 """Tests for morie.fn.kpss — KPSS stationarity test."""
+
 import numpy as np
 import pytest
 
-from morie.fn.kpss import kpss_test, kpss
+from morie.fn.kpss import kpss, kpss_test
 
 
 def test_stationary_series():

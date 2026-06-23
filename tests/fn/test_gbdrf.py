@@ -1,6 +1,7 @@
 """Tests for morie.fn.gbdrf -- GBD risk factor."""
 
 import pytest
+
 from morie.fn.gbdrf import gbd_risk_factor
 
 

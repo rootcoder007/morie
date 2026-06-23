@@ -13,8 +13,6 @@ from __future__ import annotations
 import os
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from morie.llm import (
     _PROVIDER_API,
     _PROVIDER_LOCAL,
@@ -23,13 +21,12 @@ from morie.llm import (
     _build_messages,
     _format_context_block,
     _local_fallback,
-    ask,
     agent_available,
+    ask,
     assistant_available,
     build_morie_context,
     detect_available_provider,
 )
-
 
 # ---------------------------------------------------------------------------
 # Provider detection
@@ -54,8 +51,10 @@ class TestDetectAvailableProvider:
         monkeypatch.setenv("LLM_API_KEY", "test-key-123")
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
-        with patch("morie.llm._probe_ollama", return_value=False), \
-             patch("morie.llm._probe_freeapi", return_value=False):
+        with (
+            patch("morie.llm._probe_ollama", return_value=False),
+            patch("morie.llm._probe_freeapi", return_value=False),
+        ):
             assert detect_available_provider() == _PROVIDER_API
 
     def test_openai_detected_when_key_set(self, monkeypatch):
@@ -64,8 +63,10 @@ class TestDetectAvailableProvider:
         monkeypatch.delenv("LLM_API_KEY", raising=False)
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test-key")
 
-        with patch("morie.llm._probe_ollama", return_value=False), \
-             patch("morie.llm._probe_freeapi", return_value=False):
+        with (
+            patch("morie.llm._probe_ollama", return_value=False),
+            patch("morie.llm._probe_freeapi", return_value=False),
+        ):
             assert detect_available_provider() == _PROVIDER_OPENAI
 
     def test_local_when_nothing_configured(self, monkeypatch):
@@ -75,8 +76,10 @@ class TestDetectAvailableProvider:
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
         monkeypatch.delenv("OLLAMA_BASE_URL", raising=False)
 
-        with patch("morie.llm._probe_ollama", return_value=False), \
-             patch("morie.llm._probe_freeapi", return_value=False):
+        with (
+            patch("morie.llm._probe_ollama", return_value=False),
+            patch("morie.llm._probe_freeapi", return_value=False),
+        ):
             assert detect_available_provider() == _PROVIDER_LOCAL
 
     def test_ollama_takes_priority_over_api(self, monkeypatch):
@@ -94,8 +97,10 @@ class TestDetectAvailableProvider:
         monkeypatch.setenv("LLM_API_KEY", "test-key")
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
 
-        with patch("morie.llm._probe_ollama", return_value=False), \
-             patch("morie.llm._probe_freeapi", return_value=False):
+        with (
+            patch("morie.llm._probe_ollama", return_value=False),
+            patch("morie.llm._probe_freeapi", return_value=False),
+        ):
             assert detect_available_provider() == _PROVIDER_API
 
     def test_empty_string_env_vars_ignored(self, monkeypatch):
@@ -104,8 +109,10 @@ class TestDetectAvailableProvider:
         monkeypatch.setenv("LLM_API_KEY", "")
         monkeypatch.setenv("OPENAI_API_KEY", "  ")
 
-        with patch("morie.llm._probe_ollama", return_value=False), \
-             patch("morie.llm._probe_freeapi", return_value=False):
+        with (
+            patch("morie.llm._probe_ollama", return_value=False),
+            patch("morie.llm._probe_freeapi", return_value=False),
+        ):
             assert detect_available_provider() == _PROVIDER_LOCAL
 
 
@@ -167,9 +174,7 @@ class TestFormatContextBlock:
         assert "causal-estimators" in block
 
     def test_includes_cpads_variables(self):
-        context = {
-            "cpads_schema": {"required_variables": ["weight", "gender"]}
-        }
+        context = {"cpads_schema": {"required_variables": ["weight", "gender"]}}
         block = _format_context_block(context)
         assert "weight" in block
         assert "gender" in block
@@ -247,8 +252,10 @@ class TestAsk:
         monkeypatch.delenv("LLM_API_KEY", raising=False)
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
-        with patch("morie.llm._probe_ollama", return_value=False), \
-             patch("morie.llm._probe_freeapi", return_value=False):
+        with (
+            patch("morie.llm._probe_ollama", return_value=False),
+            patch("morie.llm._probe_freeapi", return_value=False),
+        ):
             result = ask("What is TMLE?")
             assert isinstance(result, str)
             assert "MORIE" in result
@@ -259,8 +266,10 @@ class TestAsk:
         monkeypatch.delenv("LLM_API_KEY", raising=False)
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
-        with patch("morie.llm._probe_ollama", return_value=False), \
-             patch("morie.llm._probe_freeapi", return_value=False):
+        with (
+            patch("morie.llm._probe_ollama", return_value=False),
+            patch("morie.llm._probe_freeapi", return_value=False),
+        ):
             result = ask("What is TMLE?", stream=True)
             chunks = list(result)
             assert len(chunks) == 1
@@ -280,11 +289,7 @@ class TestAsk:
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.raise_for_status = MagicMock()
-        mock_response.json.return_value = {
-            "choices": [
-                {"message": {"content": "TMLE is a semiparametric estimator."}}
-            ]
-        }
+        mock_response.json.return_value = {"choices": [{"message": {"content": "TMLE is a semiparametric estimator."}}]}
 
         with (
             patch("morie.llm._probe_ollama", return_value=True),
@@ -305,11 +310,7 @@ class TestAsk:
         mock_response_ok = MagicMock()
         mock_response_ok.status_code = 200
         mock_response_ok.raise_for_status = MagicMock()
-        mock_response_ok.json.return_value = {
-            "choices": [
-                {"message": {"content": "Answer from API"}}
-            ]
-        }
+        mock_response_ok.json.return_value = {"choices": [{"message": {"content": "Answer from API"}}]}
 
         call_count = 0
 
@@ -342,8 +343,10 @@ class TestAgentAvailable:
         monkeypatch.delenv("LLM_API_KEY", raising=False)
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
-        with patch("morie.llm._probe_ollama", return_value=False), \
-             patch("morie.llm._probe_freeapi", return_value=False):
+        with (
+            patch("morie.llm._probe_ollama", return_value=False),
+            patch("morie.llm._probe_freeapi", return_value=False),
+        ):
             assert agent_available() is False
             assert assistant_available() is False
 
@@ -360,6 +363,8 @@ class TestAgentAvailable:
         monkeypatch.delenv("LLM_API_KEY", raising=False)
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
 
-        with patch("morie.llm._probe_ollama", return_value=False), \
-             patch("morie.llm._probe_freeapi", return_value=False):
+        with (
+            patch("morie.llm._probe_ollama", return_value=False),
+            patch("morie.llm._probe_freeapi", return_value=False),
+        ):
             assert agent_available() is True

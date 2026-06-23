@@ -1,8 +1,9 @@
 """Tests for morie.fn.krncr -- Kronecker product."""
 
 import numpy as np
-from morie.fn.krncr import kronecker, krncr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.krncr import krncr, kronecker
 
 
 class TestKrncr:

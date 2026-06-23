@@ -1,5 +1,5 @@
 """Test odirt."""
-import numpy as np
+
 from morie.fn.odirt import ordinal_irt_estimate
 
 

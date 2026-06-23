@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.hdi import highest_density_interval
 
 

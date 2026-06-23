@@ -1,6 +1,7 @@
 """Test krgwt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.krgwt import krgwt
 
 

@@ -1,7 +1,5 @@
 """Tests for morie.fn.htidx — Heat index."""
 
-import pytest
-
 from morie.fn.htidx import heat_index
 
 

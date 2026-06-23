@@ -8,7 +8,9 @@ import numpy as np
 from ._containers import SpatialResult
 
 
-def spatial_error_ml(X: np.ndarray, y: np.ndarray, W: np.ndarray, max_iter: int = 50, tol: float = 1e-6, cdf=None) -> SpatialResult:
+def spatial_error_ml(
+    X: np.ndarray, y: np.ndarray, W: np.ndarray, max_iter: int = 50, tol: float = 1e-6, cdf=None
+) -> SpatialResult:
     r"""Spatial error model estimated by concentrated maximum likelihood.
 
     Fits:

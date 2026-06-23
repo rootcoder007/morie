@@ -1,6 +1,7 @@
 """Test srgns."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srgns import srgns
 
 

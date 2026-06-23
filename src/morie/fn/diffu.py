@@ -73,8 +73,7 @@ def heat_diffusion(
     )
 
 
-def diffusion_forward(x0, t: int, betas=None, num_steps: int = 1000,
-                      noise=None, seed: int = 0):
+def diffusion_forward(x0, t: int, betas=None, num_steps: int = 1000, noise=None, seed: int = 0):
     r"""DDPM forward (noising) process (Ho et al. 2020).
 
     .. math::
@@ -128,8 +127,7 @@ def diffusion_forward(x0, t: int, betas=None, num_steps: int = 1000,
     x_t = np.sqrt(alpha_bar) * x0 + np.sqrt(1.0 - alpha_bar) * noise
     return RichResult(
         title=f"Diffusion forward (DDPM, t={t})",
-        summary_lines=[("t", t), ("alpha_bar_t", alpha_bar),
-                       ("beta_t", float(betas[t - 1]))],
+        summary_lines=[("t", t), ("alpha_bar_t", alpha_bar), ("beta_t", float(betas[t - 1]))],
         payload={
             "x_t": x_t,
             "estimate": x_t,

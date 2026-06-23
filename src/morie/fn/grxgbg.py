@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """XGBoost split-gain formula with regularization."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_xgboost_gain"]
@@ -40,7 +42,9 @@ def geron_xgboost_gain(GL, HL, GR, HR, lam, gamma):
     n = int(GL) if GL.ndim == 0 else len(GL)
     result = float(np.mean(GL))
     se = float(np.std(GL, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "XGBoost split-gain formula with regularization"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "XGBoost split-gain formula with regularization"}
+    )
 
 
 def cheatsheet():

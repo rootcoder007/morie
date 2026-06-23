@@ -52,7 +52,7 @@ def stkey(x, y, axis=0, cdf=None):
 
     # Expected and variance
     E_T = n_x * (n + 1) / 2
-    Var_T = (n_x * n_y * (n + 1)**2) / (12 * (n - 1))
+    Var_T = (n_x * n_y * (n + 1) ** 2) / (12 * (n - 1))
 
     # Standardized statistic
     z_stat = (T - E_T) / np.sqrt(Var_T)

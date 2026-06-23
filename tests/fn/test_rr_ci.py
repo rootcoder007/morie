@@ -1,6 +1,7 @@
 """Tests for morie.fn.rr_ci -- incidence rate ratio with CI."""
 
 import pytest
+
 from morie.fn.rr_ci import rate_ratio_ci
 
 

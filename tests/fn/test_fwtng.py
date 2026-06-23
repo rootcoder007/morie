@@ -1,7 +1,9 @@
 """Test feature_whiten (fwtng)."""
+
 import numpy as np
-from morie.fn.fwtng import feature_whiten, fwtng
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.fwtng import feature_whiten, fwtng
 
 
 class TestFwtng:

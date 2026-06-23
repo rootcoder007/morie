@@ -1,6 +1,7 @@
 """Tests for hmmha.geron_multihead_attention."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmmha import geron_multihead_attention
 
 
@@ -13,7 +14,7 @@ def test_hmmha_basic():
     W_O = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_multihead_attention(Q, K, V, n_heads, W_O)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmmha_edge():

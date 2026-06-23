@@ -1,6 +1,8 @@
 """Tests for rbfcv."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rbfcv import rbfcv
 
 
@@ -28,4 +30,5 @@ def test_rbfcv_no_data():
 
 def test_rbfcv_alias():
     from morie.fn.rbfcv import rbfcv
+
     assert rbfcv is rbfcv

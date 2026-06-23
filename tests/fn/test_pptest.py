@@ -1,6 +1,7 @@
 """Tests for pptest.phillips_perron_unit_root."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pptest import phillips_perron_unit_root
 
 
@@ -10,7 +11,7 @@ def test_pptest_basic():
     lags = 10
     result = phillips_perron_unit_root(x, lags)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_pptest_edge():

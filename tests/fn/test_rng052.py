@@ -1,6 +1,7 @@
 """Tests for rng052.rangayyan_ch3_z_transform_definition."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng052 import rangayyan_ch3_z_transform_definition
 
 
@@ -11,7 +12,7 @@ def test_rng052_basic():
     z = np.random.default_rng(44).normal(0, 1, 100)
     result = rangayyan_ch3_z_transform_definition(x, n, z)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng052_edge():

@@ -1,6 +1,7 @@
 """Tests for hml1c.geron_one_cycle."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hml1c import geron_one_cycle
 
 
@@ -12,7 +13,7 @@ def test_hml1c_basic():
     lr_min = 0
     result = geron_one_cycle(t, T, lr_max, lr_min)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hml1c_edge():

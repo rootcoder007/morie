@@ -1,6 +1,7 @@
 """Multi-stage probability sampling weight composition."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["multi_stage_sampling"]
@@ -32,7 +33,9 @@ def multi_stage_sampling(y, stage_probs):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multi-stage probability sampling weight composition"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Multi-stage probability sampling weight composition"}
+    )
 
 
 def cheatsheet():

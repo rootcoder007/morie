@@ -1,7 +1,6 @@
 """Tests for morie.fn.svchy -- Cauchy kernel spatial voting"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svchy import cauchy_vote
 

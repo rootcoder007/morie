@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Conditional probability."""
 
-
 from ._containers import ESRes
 
 _QUOTE = "Measure what is measurable, and make measurable what is not. -- Galileo Galilei"

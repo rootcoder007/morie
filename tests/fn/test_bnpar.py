@@ -1,6 +1,7 @@
 """Tests for morie.fn.bnpar -- Dirichlet process density."""
 
 import numpy as np
+
 from morie.fn.bnpar import dp_density
 
 

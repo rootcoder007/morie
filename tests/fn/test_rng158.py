@@ -1,6 +1,7 @@
 """Tests for rng158.rangayyan_ch3_lms_steepest_descent."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng158 import rangayyan_ch3_lms_steepest_descent
 
 
@@ -11,7 +12,7 @@ def test_rng158_basic():
     n = 100
     result = rangayyan_ch3_lms_steepest_descent(w, mu, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng158_edge():

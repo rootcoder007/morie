@@ -1,7 +1,9 @@
 """Tests for irtnm -- Nominal Response Model."""
+
 import numpy as np
-from morie.fn.irtnm import irt_nominal
+
 from morie.fn._containers import IRTResult
+from morie.fn.irtnm import irt_nominal
 
 
 class TestIrtNominal:

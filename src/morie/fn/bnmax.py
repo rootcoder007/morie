@@ -67,8 +67,7 @@ def bnmax(
         return -float(np.mean(signs * (idx >= 0).astype(float)))
 
     bounds = [(-1, 1)] * p
-    res = differential_evolution(neg_score, bounds, seed=seed,
-                                 maxiter=200, tol=1e-8, polish=True)
+    res = differential_evolution(neg_score, bounds, seed=seed, maxiter=200, tol=1e-8, polish=True)
     beta = res.x / (np.linalg.norm(res.x) + 1e-15)
     score = -float(res.fun)
 

@@ -1,6 +1,7 @@
 """Optimal Huber k for given efficiency."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["optimal_huber_k"]

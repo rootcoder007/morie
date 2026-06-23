@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Conditions for identification of beta and G in single-index model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_sim_identification"]
@@ -32,7 +34,14 @@ def horowitz_sim_identification(x, beta):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Conditions for identification of beta and G in single-index model"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Conditions for identification of beta and G in single-index model",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for ksr059.kosorok_ch2_kmt_strong_approximation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr059 import kosorok_ch2_kmt_strong_approximation
 
 
@@ -13,7 +14,7 @@ def test_ksr059_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = kosorok_ch2_kmt_strong_approximation(G_n, B_n, F, n, x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr059_edge():

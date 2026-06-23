@@ -1,6 +1,7 @@
 """PySR symbolic regression."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["pysr_regression"]

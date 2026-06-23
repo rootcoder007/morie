@@ -1,9 +1,10 @@
 """Tests for morie.fn.tpsmj — major crime."""
 
-import pytest
 import pandas as pd
-from morie.fn.tpsmj import tps_major_crime
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.tpsmj import tps_major_crime
 
 
 class TestMajorCrime:

@@ -1,6 +1,7 @@
 """Test csaor."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csaor import csaor
 
 

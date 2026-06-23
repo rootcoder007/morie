@@ -1,8 +1,9 @@
 """Correlation equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_5"]
 
@@ -40,7 +41,10 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_5(x):
             pvalue=float("nan"),
             warnings=["n<3: insufficient pairs for correlation."],
             extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Correlation equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."},
+            extra_payload={
+                "n": n,
+                "method": "Correlation equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
+            },
         )
     result = stats.spearmanr(x[:n], y[:n])
     return hypothesis_test_result(
@@ -48,7 +52,11 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_5(x):
         statistic=float(result.statistic),
         pvalue=float(result.pvalue),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Correlation equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.", "p_value": float(result.pvalue)},
+        extra_payload={
+            "n": n,
+            "method": "Correlation equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
+            "p_value": float(result.pvalue),
+        },
     )
 
 

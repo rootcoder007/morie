@@ -1,6 +1,7 @@
 """Normal equation for the RLS algorithm.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_rls_normal_equation"]
@@ -36,7 +37,9 @@ def rangayyan_ch3_rls_normal_equation(Phi, w_tilde, Theta, n):
     n = len(Phi)
     result = float(np.mean(Phi))
     se = float(np.std(Phi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Normal equation for the RLS algorithm."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Normal equation for the RLS algorithm."}
+    )
 
 
 def cheatsheet():

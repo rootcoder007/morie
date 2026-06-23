@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Posterior contraction rate."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_contraction_rate"]
@@ -42,21 +44,26 @@ def ghosal_contraction_rate(x, beta=1.0, d=1):
     x = np.asarray(x).ravel()
     n = int(x.size)
     if n <= 1:
-        return RichResult(payload={
-            "estimate": float("nan"), "n": n,
-            "method": "Contraction rate (n too small)",
-        })
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "n": n,
+                "method": "Contraction rate (n too small)",
+            }
+        )
     eps_n = float(n ** (-beta / (2.0 * beta + d)))
     log_corr = float((np.log(n)) ** (beta / (2.0 * beta + d))) * eps_n
-    return RichResult(payload={
-        "estimate": eps_n,
-        "log_rate_correction": log_corr,
-        "parametric_rate": float(n ** -0.5),
-        "n": n,
-        "beta": float(beta),
-        "d": int(d),
-        "method": "Minimax contraction rate n^{-beta/(2beta+d)}",
-    })
+    return RichResult(
+        payload={
+            "estimate": eps_n,
+            "log_rate_correction": log_corr,
+            "parametric_rate": float(n**-0.5),
+            "n": n,
+            "beta": float(beta),
+            "d": int(d),
+            "method": "Minimax contraction rate n^{-beta/(2beta+d)}",
+        }
+    )
 
 
 def cheatsheet():

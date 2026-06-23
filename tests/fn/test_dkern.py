@@ -7,7 +7,6 @@ from morie.fn.dkern import dkern
 
 
 class TestDkern:
-
     def test_output_keys(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (20, 2))

@@ -1,6 +1,7 @@
 """Tests for morie.fn.ocate — CATE by risk score tercile."""
 
 import pandas as pd
+
 from morie.fn.ocate import otis_cate_risk
 
 

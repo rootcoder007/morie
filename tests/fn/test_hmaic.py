@@ -1,6 +1,7 @@
 """Tests for hmaic.geron_aic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmaic import geron_aic
 
 
@@ -10,7 +11,7 @@ def test_hmaic_basic():
     k = 5
     result = geron_aic(log_lik, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmaic_edge():

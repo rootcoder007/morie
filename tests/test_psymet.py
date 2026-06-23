@@ -7,8 +7,21 @@ import pandas as pd
 import pytest
 
 from morie.psymet import (
-    RlbRes, OmgRes, KmoRes, BrtRes,
-    crba, mcdo, kmo, bart, paran, splhf, itcor, adel, idisc, crel, ave,
+    BrtRes,
+    KmoRes,
+    OmgRes,
+    RlbRes,
+    adel,
+    ave,
+    bart,
+    crba,
+    crel,
+    idisc,
+    itcor,
+    kmo,
+    mcdo,
+    paran,
+    splhf,
 )
 
 
@@ -17,9 +30,10 @@ def mapq():
     """Load MAPQII from morie.db (works in CI) or xlsx fallback."""
     try:
         from morie.data import load_dataset
+
         df = load_dataset("mapq")
         # load_dataset returns the full survey — filter to MAPQII 20 items
-        mapq_cols = [f"{s}{i}" for s in ("EE","EA","UA","ER") for i in range(1,6)]
+        mapq_cols = [f"{s}{i}" for s in ("EE", "EA", "UA", "ER") for i in range(1, 6)]
         if all(c in df.columns for c in mapq_cols):
             return df[mapq_cols]
         return df.select_dtypes(include="number")

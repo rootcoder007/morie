@@ -1,6 +1,5 @@
 """Tests for fpcadj.finite_population_corr."""
-import numpy as np
-import pytest
+
 from morie.fn.fpcadj import finite_population_corr
 
 
@@ -10,7 +9,7 @@ def test_fpcadj_basic():
     N = 100
     result = finite_population_corr(n, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fpcadj_edge():

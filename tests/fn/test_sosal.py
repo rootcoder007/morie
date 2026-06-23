@@ -1,6 +1,7 @@
 """Test sosal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sosal import sosal
 
 

@@ -1,6 +1,7 @@
 """Tests for hmenet.geron_elastic_net."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmenet import geron_elastic_net
 
 
@@ -13,7 +14,7 @@ def test_hmenet_basic():
     r = 10
     result = geron_elastic_net(X, y, theta, alpha, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmenet_edge():

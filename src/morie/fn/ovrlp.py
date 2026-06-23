@@ -18,6 +18,7 @@ Zhou, Y., Matsouaka, R. A., & Thomas, L. E. (2020). Propensity score
 weighting under limited overlap and model misspecification.
 *Statistical Methods in Medical Research*, 29(12), 3721-3756.
 """
+
 from __future__ import annotations
 
 from typing import Any

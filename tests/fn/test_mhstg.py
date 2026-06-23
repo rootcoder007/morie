@@ -1,6 +1,7 @@
 """Tests for morie.fn.mhstg -- stigma index."""
 
 import pytest
+
 from morie.fn.mhstg import stigma_index
 
 

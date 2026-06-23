@@ -1,9 +1,9 @@
 """Tests for morie.fn.fa — Exploratory Factor Analysis."""
 
 import numpy as np
-import pytest
-from morie.fn.fa import fa
+
 from morie.fn._containers import FaRes
+from morie.fn.fa import fa
 
 
 class TestFa:
@@ -14,14 +14,16 @@ class TestFa:
         n = 300
         f1 = rng.standard_normal(n)
         f2 = rng.standard_normal(n)
-        X = np.column_stack([
-            f1 + rng.standard_normal(n) * 0.3,
-            f1 + rng.standard_normal(n) * 0.3,
-            f1 + rng.standard_normal(n) * 0.3,
-            f2 + rng.standard_normal(n) * 0.3,
-            f2 + rng.standard_normal(n) * 0.3,
-            f2 + rng.standard_normal(n) * 0.3,
-        ])
+        X = np.column_stack(
+            [
+                f1 + rng.standard_normal(n) * 0.3,
+                f1 + rng.standard_normal(n) * 0.3,
+                f1 + rng.standard_normal(n) * 0.3,
+                f2 + rng.standard_normal(n) * 0.3,
+                f2 + rng.standard_normal(n) * 0.3,
+                f2 + rng.standard_normal(n) * 0.3,
+            ]
+        )
         result = fa(X, n_factors=2)
         assert isinstance(result, FaRes)
         assert result.loadings.shape == (6, 2)
@@ -38,8 +40,9 @@ class TestFa:
         """When n_factors=None, parallel analysis should pick something."""
         n = 200
         f = rng.standard_normal(n)
-        X = np.column_stack([f + rng.standard_normal(n) * 0.3 for _ in range(4)]
-                           + [rng.standard_normal(n) for _ in range(2)])
+        X = np.column_stack(
+            [f + rng.standard_normal(n) * 0.3 for _ in range(4)] + [rng.standard_normal(n) for _ in range(2)]
+        )
         result = fa(X, n_factors=None)
         assert result.n_factors >= 1
 

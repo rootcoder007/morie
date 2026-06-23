@@ -1,6 +1,7 @@
 """Tests for wsmbst.wasserman_boosting."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmbst import wasserman_boosting
 
 
@@ -12,7 +13,7 @@ def test_wsmbst_basic():
     T = np.random.default_rng(43).integers(0, 2, 100)
     result = wasserman_boosting(X, y, model, T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmbst_edge():

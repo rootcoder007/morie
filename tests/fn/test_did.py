@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.did import diff_in_diff, did
+
 from morie.fn._containers import ESRes
+from morie.fn.did import did, diff_in_diff
 
 
 class TestDiD:
@@ -20,11 +21,13 @@ class TestDiD:
                 base = 10 + 2 * treat + 1 * post_val
                 effect = 3 * treat * post_val  # DiD effect = 3
                 for _ in range(n_per_cell):
-                    rows.append({
-                        "outcome": base + effect + rng.normal(0, 1),
-                        "treatment": treat,
-                        "post": post_val,
-                    })
+                    rows.append(
+                        {
+                            "outcome": base + effect + rng.normal(0, 1),
+                            "treatment": treat,
+                            "post": post_val,
+                        }
+                    )
         df = pd.DataFrame(rows)
         result = diff_in_diff(df)
         assert isinstance(result, ESRes)
@@ -39,11 +42,13 @@ class TestDiD:
         for treat in [0, 1]:
             for post_val in [0, 1]:
                 for _ in range(100):
-                    rows.append({
-                        "outcome": 5 + 1 * post_val + rng.normal(0, 1),
-                        "treatment": treat,
-                        "post": post_val,
-                    })
+                    rows.append(
+                        {
+                            "outcome": 5 + 1 * post_val + rng.normal(0, 1),
+                            "treatment": treat,
+                            "post": post_val,
+                        }
+                    )
         df = pd.DataFrame(rows)
         result = diff_in_diff(df)
         assert abs(result.estimate) < 1.0

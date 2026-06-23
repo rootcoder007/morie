@@ -1,6 +1,7 @@
 """Tests for hrzplrq.horowitz_plr_quantile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzplrq import horowitz_plr_quantile
 
 
@@ -13,7 +14,7 @@ def test_hrzplrq_basic():
     tau = 0.1
     result = horowitz_plr_quantile(x, y, z, bandwidth, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzplrq_edge():

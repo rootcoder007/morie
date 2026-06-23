@@ -1,6 +1,7 @@
 """Test difanl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.difanl import difanl
 
 

@@ -1,6 +1,7 @@
 """Tests for rgparmod.rangayyan_parametric_sysid."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgparmod import rangayyan_parametric_sysid
 
 
@@ -10,7 +11,7 @@ def test_rgparmod_basic():
     order = 4
     result = rangayyan_parametric_sysid(x, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgparmod_edge():

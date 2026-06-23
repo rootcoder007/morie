@@ -1,6 +1,7 @@
 """Tests for hrzfnu.horowitz_deconv_estimator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzfnu import horowitz_deconv_estimator
 
 
@@ -12,7 +13,7 @@ def test_hrzfnu_basic():
     nu_n = np.random.default_rng(42).normal(0, 1, 100)
     result = horowitz_deconv_estimator(w, eps_cf, bandwidth, nu_n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzfnu_edge():

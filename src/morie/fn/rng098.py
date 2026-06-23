@@ -1,6 +1,7 @@
 """Impulse response of the 8-point MA filter as a sum of shifted deltas.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_ma_8point_impulse_response"]
@@ -30,7 +31,14 @@ def rangayyan_ch3_ma_8point_impulse_response(n):
     n = len(n)
     result = float(np.mean(n))
     se = float(np.std(n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Impulse response of the 8-point MA filter as a sum of shifted deltas."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Impulse response of the 8-point MA filter as a sum of shifted deltas.",
+        }
+    )
 
 
 def cheatsheet():

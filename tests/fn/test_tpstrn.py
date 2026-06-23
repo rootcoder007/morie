@@ -1,9 +1,10 @@
 """Tests for morie.fn.tpstrn — crime trend."""
 
-import pytest
 import numpy as np
-from morie.fn.tpstrn import tps_crime_trend
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.tpstrn import tps_crime_trend
 
 
 class TestCrimeTrend:

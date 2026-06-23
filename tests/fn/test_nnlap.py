@@ -1,6 +1,8 @@
 """Tests for nnlap."""
+
 import numpy as np
 import pytest
+
 from morie.fn.nnlap import nnlap
 
 
@@ -28,4 +30,5 @@ def test_nnlap_no_data():
 
 def test_nnlap_alias():
     from morie.fn.nnlap import nnlap
+
     assert nnlap is nnlap

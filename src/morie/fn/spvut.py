@@ -40,7 +40,7 @@ def spatial_utility(
         Z = Z.reshape(-1, 1)
 
     diff = X[:, None, :] - Z[None, :, :]
-    dist_sq = (diff ** 2).sum(axis=-1)
+    dist_sq = (diff**2).sum(axis=-1)
 
     if model == "quadratic":
         utility = -beta * dist_sq

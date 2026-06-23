@@ -1,6 +1,7 @@
 """Tests for binmed.binary_outcome_mediation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.binmed import binary_outcome_mediation
 
 
@@ -11,7 +12,7 @@ def test_binmed_basic():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     result = binary_outcome_mediation(X, M, Y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_binmed_edge():

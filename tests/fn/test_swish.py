@@ -1,5 +1,7 @@
 """Test Swish activation."""
+
 import numpy as np
+
 from morie.fn.swish import swish
 
 

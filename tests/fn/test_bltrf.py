@@ -1,7 +1,7 @@
 """Test bilinear_transform (bltrf)."""
-import numpy as np
-from morie.fn.bltrf import bilinear_transform, bltrf
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.bltrf import bilinear_transform, bltrf
 
 
 class TestBilinearTransform:

@@ -1,8 +1,9 @@
 """We suffer more often in imagination than in reality. — Seneca"""
 
 import numpy as np
-from morie.fn.fasann import fast_ann, fasann
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.fasann import fasann, fast_ann
 
 
 class TestFasann:

@@ -79,7 +79,7 @@ def roc_optimal_cutoff(
         j = tpr - fpr
         best = int(np.argmax(j))
     elif method == "closest":
-        dist = np.sqrt(fpr**2 + (1 - tpr)**2)
+        dist = np.sqrt(fpr**2 + (1 - tpr) ** 2)
         best = int(np.argmin(dist))
     elif method == "cost":
         total_cost = cost_fp * fpr * n_neg + cost_fn * (1 - tpr) * n_pos

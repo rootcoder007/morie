@@ -1,5 +1,7 @@
 """Tests for morie.fn.gcd_."""
+
 import numpy as np
+
 from morie.fn.gcd_ import gcd_
 
 
@@ -13,6 +15,7 @@ def test_gcd__smoke():
 
 def test_cheatsheet():
     from morie.fn.gcd_ import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

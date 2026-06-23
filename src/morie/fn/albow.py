@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bag-of-words vector: per-document term-count vector over the fixed vocabulary."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_bag_of_words"]
@@ -32,7 +34,14 @@ def alammar_bag_of_words(tokens, vocab):
     n = len(tokens)
     result = float(np.mean(tokens))
     se = float(np.std(tokens, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bag-of-words vector: per-document term-count vector over the fixed vocabulary"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bag-of-words vector: per-document term-count vector over the fixed vocabulary",
+        }
+    )
 
 
 def cheatsheet():

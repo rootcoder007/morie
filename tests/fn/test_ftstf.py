@@ -1,13 +1,15 @@
 """Tests for f_test_features."""
+
 import numpy as np
 import pytest
+
 from morie.fn.ftstf import f_test_features, ftstf
 
 
 def test_basic():
     rng = np.random.default_rng(42)
     X = np.column_stack([rng.normal(0, 1, 100), rng.normal(0, 0.01, 100)])
-    y = np.array([0]*50 + [1]*50)
+    y = np.array([0] * 50 + [1] * 50)
     X[:50, 0] += 5
     r = f_test_features(X, y)
     assert r.extra["ranking"][0] == 0

@@ -1,6 +1,7 @@
 """Test gdadr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdadr import gdadr
 
 

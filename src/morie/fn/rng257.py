@@ -1,6 +1,7 @@
 """Log power spectrum of a signal with wavelet plus echo, showing sinusoidal modulation.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_log_power_spectrum_signal_echo"]
@@ -36,7 +37,14 @@ def rangayyan_ch4_log_power_spectrum_signal_echo(H, a, n_0, omega):
     n = len(H)
     result = float(np.mean(H))
     se = float(np.std(H, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Log power spectrum of a signal with wavelet plus echo, showing sinusoidal modulation."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Log power spectrum of a signal with wavelet plus echo, showing sinusoidal modulation.",
+        }
+    )
 
 
 def cheatsheet():

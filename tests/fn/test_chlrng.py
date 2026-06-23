@@ -1,6 +1,8 @@
 """Tests for chlrng."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chlrng import chlrng
 
 
@@ -28,4 +30,5 @@ def test_chlrng_no_data():
 
 def test_chlrng_alias():
     from morie.fn.chlrng import chlrng
+
     assert chlrng is chlrng

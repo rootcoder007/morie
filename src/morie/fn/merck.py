@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mercer's theorem: kernel expansion via eigenfunctions."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["mercer_theorem"]
@@ -30,7 +32,14 @@ def mercer_theorem(K_matrix):
     n = int(K_matrix) if K_matrix.ndim == 0 else len(K_matrix)
     result = float(np.mean(K_matrix))
     se = float(np.std(K_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mercer's theorem: kernel expansion via eigenfunctions"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mercer's theorem: kernel expansion via eigenfunctions",
+        }
+    )
 
 
 def cheatsheet():

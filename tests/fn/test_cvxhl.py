@@ -1,5 +1,7 @@
 """Tests for morie.fn.cvxhl."""
+
 import numpy as np
+
 from morie.fn.cvxhl import cvxhl
 
 
@@ -13,6 +15,7 @@ def test_cvxhl_smoke():
 
 def test_cheatsheet():
     from morie.fn.cvxhl import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

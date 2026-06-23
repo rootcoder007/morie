@@ -1,6 +1,7 @@
 """Tests for rgperio.rangayyan_periodogram."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgperio import rangayyan_periodogram
 
 
@@ -10,7 +11,7 @@ def test_rgperio_basic():
     fs = 100.0
     result = rangayyan_periodogram(x, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgperio_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Closed-form KL( N(mu, sigma^2) || N(0, I) ) per dimension."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_kl_divergence_gaussian"]
@@ -32,7 +34,14 @@ def geron_kl_divergence_gaussian(mu, logvar):
     n = len(mu)
     result = float(np.mean(mu))
     se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Closed-form KL( N(mu, sigma^2) || N(0, I) ) per dimension"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Closed-form KL( N(mu, sigma^2) || N(0, I) ) per dimension",
+        }
+    )
 
 
 def cheatsheet():

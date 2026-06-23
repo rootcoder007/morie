@@ -1,6 +1,7 @@
 """Tests for morie.fn.epcrv -- Epidemic curve analysis."""
 
 import pytest
+
 from morie.fn.epcrv import epidemic_curve_analysis
 
 

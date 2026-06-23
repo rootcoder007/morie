@@ -1,6 +1,9 @@
 """Tests for finite_mixture."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.fmm import finite_mixture
+
 
 class TestFMM:
     def test_two_clusters(self):

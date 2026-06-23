@@ -1,9 +1,9 @@
 """Tests for morie.fn.umap_ — UMAP dimensionality reduction."""
 
 import numpy as np
-import pytest
-from morie.fn.umap_ import umap_
+
 from morie.fn._containers import UmapRes
+from morie.fn.umap_ import umap_
 
 
 class TestUmap:

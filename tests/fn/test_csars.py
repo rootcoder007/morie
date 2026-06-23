@@ -1,6 +1,7 @@
 """Test csars."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csars import csars
 
 

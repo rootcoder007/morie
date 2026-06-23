@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Repetition penalty: discount logits of previously generated tokens."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_repetition_penalty"]
@@ -34,7 +36,14 @@ def burkov_repetition_penalty(logits, prev_tokens, penalty):
     n = len(logits)
     result = float(np.mean(logits))
     se = float(np.std(logits, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Repetition penalty: discount logits of previously generated tokens"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Repetition penalty: discount logits of previously generated tokens",
+        }
+    )
 
 
 def cheatsheet():

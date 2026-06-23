@@ -1,7 +1,8 @@
 """Test firth."""
+
 import numpy as np
 import pandas as pd
-import pytest
+
 from morie.fn.firth import firth_logistic
 
 

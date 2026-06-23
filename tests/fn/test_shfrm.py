@@ -1,6 +1,7 @@
 """Tests for shfrm.shared_frailty_marginal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.shfrm import shared_frailty_marginal
 
 
@@ -12,7 +13,7 @@ def test_shfrm_basic():
     cluster = np.random.default_rng(42).normal(0, 1, 100)
     result = shared_frailty_marginal(time, event, X, cluster)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_shfrm_edge():

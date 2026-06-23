@@ -1,8 +1,9 @@
 """Tests for morie.fn.gam -- GAM (B-spline + OLS)."""
 
 import numpy as np
-from morie.fn.gam import fit_gam, gam
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.gam import fit_gam, gam
 
 
 class TestGam:
@@ -19,6 +20,6 @@ class TestGam:
 
     def test_returns_predicted(self):
         x = np.linspace(0, 1, 50)
-        y = x ** 2
+        y = x**2
         result = fit_gam(x, y)
         assert len(result.extra["predicted"]) == 50

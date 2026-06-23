@@ -1,6 +1,7 @@
 """Test clazp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clazp import clazp
 
 

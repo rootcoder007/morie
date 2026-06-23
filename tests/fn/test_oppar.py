@@ -1,6 +1,7 @@
 """Test oppar."""
+
 import numpy as np
-import pytest
+
 from morie.fn.oppar import oppar
 
 

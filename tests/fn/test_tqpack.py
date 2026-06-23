@@ -1,6 +1,7 @@
 """Tests for tqpack.turboquant_bit_pack_indices."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tqpack import turboquant_bit_pack_indices
 
 
@@ -10,7 +11,7 @@ def test_tqpack_basic():
     bits = np.random.default_rng(42).normal(0, 1, 100)
     result = turboquant_bit_pack_indices(indices, bits)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tqpack_edge():

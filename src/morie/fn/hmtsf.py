@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Time series forecasting with RNN."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_time_series_forecast"]

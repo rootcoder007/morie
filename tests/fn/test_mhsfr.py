@@ -1,6 +1,7 @@
 """Tests for morie.fn.mhsfr -- SF-12 mental component."""
 
 import pytest
+
 from morie.fn.mhsfr import sf12_mental
 
 

@@ -1,6 +1,7 @@
 """Tests for theils.theil_sen."""
+
 import numpy as np
-import pytest
+
 from morie.fn.theils import theil_sen
 
 
@@ -10,7 +11,7 @@ def test_theils_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = theil_sen(x, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_theils_edge():

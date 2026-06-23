@@ -1,7 +1,9 @@
 """Tests for cfawl -- WLSMV CFA."""
+
 import numpy as np
-from morie.fn.cfawl import cfa_wlsmv
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cfawl import cfa_wlsmv
 
 
 class TestCfaWlsmv:

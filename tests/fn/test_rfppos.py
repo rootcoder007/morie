@@ -1,6 +1,7 @@
 """Tests for rfppos.reactive_pose_filter."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rfppos import reactive_pose_filter
 
 
@@ -10,7 +11,7 @@ def test_rfppos_basic():
     cys_residue = np.random.default_rng(42).normal(0, 1, 100)
     result = reactive_pose_filter(pose, cys_residue)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rfppos_edge():

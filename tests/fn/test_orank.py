@@ -1,6 +1,7 @@
 """Tests for morie.fn.orank — OTIS rank regions."""
 
 import pandas as pd
+
 from morie.fn.orank import otis_rank_regions
 
 

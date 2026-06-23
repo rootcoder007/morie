@@ -70,4 +70,4 @@ short = ldlt_factorize
 
 
 def cheatsheet() -> str:
-    return 'ldlt_factorize({}) -> LDL^T factorization for symmetric matrices.'
+    return "ldlt_factorize({}) -> LDL^T factorization for symmetric matrices."

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Large-sample approximations to mean and variance of X_(r)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_large_sample_moments"]
@@ -36,7 +38,14 @@ def gibbons_large_sample_moments(r, n, f, F):
     n = int(r) if r.ndim == 0 else len(r)
     result = float(np.mean(r))
     se = float(np.std(r, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Large-sample approximations to mean and variance of X_(r)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Large-sample approximations to mean and variance of X_(r)",
+        }
+    )
 
 
 def cheatsheet():

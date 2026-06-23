@@ -1,6 +1,7 @@
 """Test ppjcq."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppjcq import ppjcq
 
 

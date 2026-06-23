@@ -82,4 +82,4 @@ wls = weighted_ls
 
 
 def cheatsheet() -> str:
-    return 'weighted_ls({}) -> Weighted least squares.'
+    return "weighted_ls({}) -> Weighted least squares."

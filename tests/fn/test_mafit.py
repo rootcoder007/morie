@@ -1,6 +1,8 @@
 """Test mafit."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mafit import mafit
 
 
@@ -12,7 +14,7 @@ def test_mafit_basic():
     y = np.zeros(100)
     y[0] = eps[0]
     for t in range(1, 100):
-        y[t] = eps[t] - 0.5 * eps[t-1]
+        y[t] = eps[t] - 0.5 * eps[t - 1]
 
     r = mafit(y, q=1)
     assert isinstance(r.ma_coeff, np.ndarray)
@@ -28,7 +30,7 @@ def test_mafit_higher_order():
     y[0] = eps[0]
     y[1] = eps[1]
     for t in range(2, 150):
-        y[t] = eps[t] - 0.3 * eps[t-1] + 0.2 * eps[t-2]
+        y[t] = eps[t] - 0.3 * eps[t - 1] + 0.2 * eps[t - 2]
 
     r = mafit(y, q=2)
     assert r.ma_coeff.shape == (2,)

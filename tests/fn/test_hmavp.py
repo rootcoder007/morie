@@ -1,6 +1,7 @@
 """Tests for hmavp.geron_average_pool."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmavp import geron_average_pool
 
 
@@ -11,7 +12,7 @@ def test_hmavp_basic():
     stride = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_average_pool(x, window, stride)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmavp_edge():

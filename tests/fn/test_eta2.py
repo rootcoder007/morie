@@ -1,6 +1,7 @@
 """Tests for morie.fn.eta2 -- Eta-squared from ANOVA F-statistic."""
 
 import pytest
+
 from morie.fn.eta2 import eta_squared
 
 

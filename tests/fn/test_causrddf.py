@@ -1,6 +1,7 @@
 """Tests for causrddf.causal_rdd_fuzzy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causrddf import causal_rdd_fuzzy
 
 
@@ -13,7 +14,7 @@ def test_causrddf_basic():
     h = 0.3
     result = causal_rdd_fuzzy(x, y, treat, cutoff, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causrddf_edge():

@@ -1,6 +1,8 @@
 """Tests for morie.fn.mavar -- Moving average smoother."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mavar import moving_average
 
 
@@ -21,4 +23,5 @@ class TestMovingAverage:
 
     def test_cheatsheet(self):
         from morie.fn.mavar import cheatsheet
+
         assert isinstance(cheatsheet(), str)

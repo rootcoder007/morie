@@ -1,6 +1,7 @@
 """Build ILR contrast matrix V from a sequential binary partition."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["aitchison_sbp_basis"]
@@ -30,7 +31,14 @@ def aitchison_sbp_basis(sign):
     n = len(sign)
     result = float(np.mean(sign))
     se = float(np.std(sign, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Build ILR contrast matrix V from a sequential binary partition"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Build ILR contrast matrix V from a sequential binary partition",
+        }
+    )
 
 
 def cheatsheet():

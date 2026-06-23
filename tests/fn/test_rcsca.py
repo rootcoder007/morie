@@ -1,7 +1,7 @@
 """Tests for morie.fn.rcsca."""
 
 import numpy as np
-import pytest
+
 from morie.fn.rcsca import rcsca
 
 

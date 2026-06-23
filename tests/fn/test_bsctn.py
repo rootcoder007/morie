@@ -4,6 +4,7 @@ Tests for bisection method.
 
 import numpy as np
 import pytest
+
 from morie.fn.bsctn import bsctn
 
 
@@ -32,8 +33,8 @@ class TestBsctn:
         """Test full_output flag."""
         f = lambda x: x - 2
         root, info = bsctn(f, 0.0, 3.0, full_output=True)
-        assert 'iterations' in info
-        assert 'converged' in info
+        assert "iterations" in info
+        assert "converged" in info
         assert np.isclose(root, 2.0, atol=1e-5)
 
     def test_bsctn_sign_error(self):

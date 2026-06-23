@@ -1,6 +1,7 @@
 """Spatial autoregressive lag model."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["spatial_ar_lag_model"]

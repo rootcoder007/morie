@@ -1,6 +1,7 @@
 """Tests for specS.speculative_decoding."""
+
 import numpy as np
-import pytest
+
 from morie.fn.specS import speculative_decoding
 
 
@@ -11,7 +12,7 @@ def test_specS_basic():
     target = np.random.default_rng(43).integers(0, 2, 100)
     result = speculative_decoding(prompt, draft, target)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_specS_edge():

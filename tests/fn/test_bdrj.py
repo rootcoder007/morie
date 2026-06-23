@@ -1,6 +1,7 @@
 """Tests for bdrj.backdoor_adjustment_formula."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bdrj import backdoor_adjustment_formula
 
 
@@ -12,7 +13,7 @@ def test_bdrj_basic():
     data = np.random.default_rng(42).normal(0, 1, 100)
     result = backdoor_adjustment_formula(X, Y, Z, data)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bdrj_edge():

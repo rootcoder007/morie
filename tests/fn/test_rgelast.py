@@ -1,6 +1,7 @@
 """Tests for rgelast.rangayyan_heart_elasticity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgelast import rangayyan_heart_elasticity
 
 
@@ -10,7 +11,7 @@ def test_rgelast_basic():
     fs = 100.0
     result = rangayyan_heart_elasticity(pcg, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgelast_edge():

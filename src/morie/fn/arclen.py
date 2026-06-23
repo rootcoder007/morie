@@ -66,4 +66,4 @@ arclen = arc_length
 
 
 def cheatsheet() -> str:
-    return 'arc_length({}) -> Arc length computation.'
+    return "arc_length({}) -> Arc length computation."

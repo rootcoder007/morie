@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sparse attention pattern (Child et al. 2019, Sparse Transformer)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -9,8 +10,7 @@ from ._richresult import RichResult
 __all__ = ["sparse_attention"]
 
 
-def sparse_attention(x, window: int = 4, stride: int = 8,
-                     n_random: int = 0, seed: int = 0):
+def sparse_attention(x, window: int = 4, stride: int = 8, n_random: int = 0, seed: int = 0):
     """Build a Child-2019 sparse attention mask: sliding window +
     strided global tokens + optional random connections.
 
@@ -49,7 +49,8 @@ def sparse_attention(x, window: int = 4, stride: int = 8,
     rng = np.random.default_rng(seed)
     M = np.zeros((N, N), dtype=bool)
     for i in range(N):
-        lo = max(0, i - window); hi = min(N, i + window + 1)
+        lo = max(0, i - window)
+        hi = min(N, i + window + 1)
         M[i, lo:hi] = True
         M[i, ::stride] = True
         if n_random > 0:
@@ -59,10 +60,8 @@ def sparse_attention(x, window: int = 4, stride: int = 8,
     density = float(M.sum() / (N * N))
     return RichResult(
         title="Sparse Attention (Child 2019)",
-        summary_lines=[("N", N), ("window", window), ("stride", stride),
-                       ("density", density)],
-        payload={"tensor": additive, "boolean": M, "density": density,
-                 "method": "sparse-attention"},
+        summary_lines=[("N", N), ("window", window), ("stride", stride), ("density", density)],
+        payload={"tensor": additive, "boolean": M, "density": density, "method": "sparse-attention"},
     )
 
 

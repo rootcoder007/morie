@@ -1,6 +1,7 @@
 """Tests for spmsim.schabenberger_mgwr_bandwidth."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spmsim import schabenberger_mgwr_bandwidth
 
 
@@ -11,7 +12,7 @@ def test_spmsim_basic():
     coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
     result = schabenberger_mgwr_bandwidth(x, y, coords)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spmsim_edge():

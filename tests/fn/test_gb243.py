@@ -1,6 +1,5 @@
 """Tests for gb243.gibbons_order_beta."""
-import numpy as np
-import pytest
+
 from morie.fn.gb243 import gibbons_order_beta
 
 
@@ -10,7 +9,7 @@ def test_gb243_basic():
     n = 100
     result = gibbons_order_beta(r, n)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb243_edge():

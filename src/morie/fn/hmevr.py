@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Explained variance ratio per principal component."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_explained_variance_ratio"]
@@ -32,7 +34,9 @@ def geron_explained_variance_ratio(X, n_components):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Explained variance ratio per principal component"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Explained variance ratio per principal component"}
+    )
 
 
 def cheatsheet():

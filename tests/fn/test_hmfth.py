@@ -1,6 +1,7 @@
 """Tests for hmfth.geron_finetune_lm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmfth import geron_finetune_lm
 
 
@@ -12,7 +13,7 @@ def test_hmfth_basic():
     lr = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_finetune_lm(model, dataset, epochs, lr)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmfth_edge():

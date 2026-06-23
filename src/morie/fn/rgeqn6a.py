@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mean frequency of a power spectrum."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch6_mean_freq"]

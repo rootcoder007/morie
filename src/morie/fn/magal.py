@@ -1,6 +1,7 @@
 """Galbraith plot z_i vs 1/se_i."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_galbraith"]

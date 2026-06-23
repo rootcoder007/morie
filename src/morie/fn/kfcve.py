@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """K-fold cross-validation prediction error."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["k_fold_cv_error"]
@@ -32,7 +34,9 @@ def k_fold_cv_error(y, y_hat_folds):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "K-fold cross-validation prediction error"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "K-fold cross-validation prediction error"}
+    )
 
 
 def cheatsheet():

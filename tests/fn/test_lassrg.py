@@ -1,6 +1,7 @@
 """Tests for lassrg.lasso_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lassrg import lasso_regression
 
 
@@ -11,7 +12,7 @@ def test_lassrg_basic():
     lam = 0.1
     result = lasso_regression(y, X, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lassrg_edge():

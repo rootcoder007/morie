@@ -1,6 +1,7 @@
 """Tests for ergmod.ergm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ergmod import ergm
 
 
@@ -11,7 +12,7 @@ def test_ergmod_basic():
     theta_init = 0.0
     result = ergm(G, statistics, theta_init)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ergmod_edge():

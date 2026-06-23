@@ -1,6 +1,7 @@
 """Cumulative meta-analysis ordered by some criterion."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_cumulative"]
@@ -34,7 +35,9 @@ def ma_cumulative(yi, vi, order):
     n = len(yi)
     result = float(np.mean(yi))
     se = float(np.std(yi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cumulative meta-analysis ordered by some criterion"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Cumulative meta-analysis ordered by some criterion"}
+    )
 
 
 def cheatsheet():

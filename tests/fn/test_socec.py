@@ -1,6 +1,7 @@
 """Test socec."""
+
 import numpy as np
-import pytest
+
 from morie.fn.socec import socec
 
 

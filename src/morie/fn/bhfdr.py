@@ -1,12 +1,13 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Benjamini-Hochberg FDR with R-style verbose result."""
 
-from typing import Sequence
+from collections.abc import Sequence
 
 
 def bhfdr(p_values: Sequence[float], alpha: float = 0.05):
     """BH FDR rejection vector."""
     from ._richresult import RichResult
+
     m = len(p_values)
     if m == 0:
         return RichResult(title="Benjamini-Hochberg FDR", summary_lines=[], payload={"rejects": []})
@@ -22,8 +23,7 @@ def bhfdr(p_values: Sequence[float], alpha: float = 0.05):
     rows = []
     for k, idx in enumerate(order, start=1):
         thresh = k * alpha / m
-        rows.append([k, idx, f"{p_values[idx]:.4g}", f"{thresh:.4g}",
-                     "REJECT" if out[idx] else "fail to reject"])
+        rows.append([k, idx, f"{p_values[idx]:.4g}", f"{thresh:.4g}", "REJECT" if out[idx] else "fail to reject"])
     n_reject = sum(out)
     return RichResult(
         title="Benjamini-Hochberg false discovery rate (FDR)",
@@ -32,13 +32,17 @@ def bhfdr(p_values: Sequence[float], alpha: float = 0.05):
             ("FDR target", alpha),
             ("Rejected", f"{n_reject} of {m}"),
         ],
-        tables=[{
-            "title": "Per-test results (sorted by p-value):",
-            "headers": ["Rank", "Test idx", "p-value", "Threshold (k*a/m)", "Decision"],
-            "rows": rows,
-        }],
-        interpretation=(f"BH controls expected FDR at {alpha}, NOT FWER -- more "
-                        "powerful than Bonferroni but allows some false positives "
-                        "in rejection set."),
+        tables=[
+            {
+                "title": "Per-test results (sorted by p-value):",
+                "headers": ["Rank", "Test idx", "p-value", "Threshold (k*a/m)", "Decision"],
+                "rows": rows,
+            }
+        ],
+        interpretation=(
+            f"BH controls expected FDR at {alpha}, NOT FWER -- more "
+            "powerful than Bonferroni but allows some false positives "
+            "in rejection set."
+        ),
         payload={"rejects": out, "n_reject": n_reject, "alpha": alpha},
     )

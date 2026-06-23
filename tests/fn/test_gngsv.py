@@ -39,4 +39,5 @@ def test_n_events_correct(surv_data):
 
 def test_cheatsheet():
     from morie.fn.gngsv import cheatsheet
+
     assert "gamma" in cheatsheet().lower()

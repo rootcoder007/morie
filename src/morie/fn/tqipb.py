@@ -1,5 +1,7 @@
 """Inner-product distortion bound (Lemma 3.5 applied to packed TurboQuant blocks)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_inner_product_distortion_bound"]
@@ -33,7 +35,14 @@ def turboquant_inner_product_distortion_bound(bits, norm_sq, d):
     n = len(bits)
     result = float(np.mean(bits))
     se = float(np.std(bits, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Inner-product distortion bound (Lemma 3.5 applied to packed TurboQuant blocks)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Inner-product distortion bound (Lemma 3.5 applied to packed TurboQuant blocks)",
+        }
+    )
 
 
 def cheatsheet():

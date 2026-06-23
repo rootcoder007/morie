@@ -1,7 +1,6 @@
 """Tests for morie.fn.cmprs — Competing risks."""
 
 import numpy as np
-import pytest
 
 from morie.fn.cmprs import competing_risks
 

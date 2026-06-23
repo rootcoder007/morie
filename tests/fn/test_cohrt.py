@@ -1,6 +1,7 @@
 """Tests for morie.fn.cohrt -- Cohort risk ratio."""
 
 import pytest
+
 from morie.fn.cohrt import cohort_risk_ratio
 
 

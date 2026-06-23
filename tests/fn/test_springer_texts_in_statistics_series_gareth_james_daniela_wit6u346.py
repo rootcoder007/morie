@@ -1,7 +1,10 @@
 """Tests for springer_texts_in_statistics_series_gareth_james_daniela_wit6u346.springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_6_unnumbered_346."""
+
 import numpy as np
-import pytest
-from morie.fn.springer_texts_in_statistics_series_gareth_james_daniela_wit6u346 import springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_6_unnumbered_346
+
+from morie.fn.springer_texts_in_statistics_series_gareth_james_daniela_wit6u346 import (
+    springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_6_unnumbered_346,
+)
 
 
 def test_springer_texts_in_statistics_series_gareth_james_daniela_wit6u346_basic():
@@ -9,7 +12,7 @@ def test_springer_texts_in_statistics_series_gareth_james_daniela_wit6u346_basic
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_6_unnumbered_346(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_springer_texts_in_statistics_series_gareth_james_daniela_wit6u346_edge():

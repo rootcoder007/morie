@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """RNNs with visual attention over spatial feature map."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_rnn_visual_attention"]
@@ -38,7 +40,9 @@ def geron_rnn_visual_attention(features, h, W, U, v):
     n = len(features)
     result = float(np.mean(features))
     se = float(np.std(features, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "RNNs with visual attention over spatial feature map"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "RNNs with visual attention over spatial feature map"}
+    )
 
 
 def cheatsheet():

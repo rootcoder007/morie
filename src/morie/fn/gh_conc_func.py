@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Concentration function phi_{f0}(eps) combines RKHS approximation and small ball prob."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_concentration_function"]
@@ -30,7 +32,14 @@ def ghosal_concentration_function(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Concentration function phi_{f0}(eps) combines RKHS approximation and small ball prob"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Concentration function phi_{f0}(eps) combines RKHS approximation and small ball prob",
+        }
+    )
 
 
 def cheatsheet():

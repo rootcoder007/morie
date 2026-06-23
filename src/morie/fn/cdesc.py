@@ -7,7 +7,7 @@ Updates one coordinate at a time, holding others fixed.
 
 import numpy as np
 
-__all__ = ['cdesc']
+__all__ = ["cdesc"]
 
 
 def cdesc(f, grad_f, x0, tol=1e-6, max_iter=1000, cyclic=True, full_output=False):
@@ -91,17 +91,9 @@ def cdesc(f, grad_f, x0, tol=1e-6, max_iter=1000, cyclic=True, full_output=False
         residual = np.linalg.norm(x - x_old)
         if residual < tol:
             if full_output:
-                return x, {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_value': f(x)
-                }
+                return x, {"iterations": iteration + 1, "converged": True, "final_value": f(x)}
             return x
 
     if full_output:
-        return x, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_value': f(x)
-        }
+        return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x

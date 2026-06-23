@@ -1,6 +1,7 @@
 """Test masis."""
+
 import numpy as np
-import pytest
+
 from morie.fn.masis import masis
 
 

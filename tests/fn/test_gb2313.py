@@ -1,6 +1,7 @@
 """Tests for gb2313.gibbons_edf_joint_moment."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb2313 import gibbons_edf_joint_moment
 
 
@@ -11,7 +12,7 @@ def test_gb2313_basic():
     n = 100
     result = gibbons_edf_joint_moment(x, y, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb2313_edge():

@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.srd import sharp_rd, srd
+
 from morie.fn._containers import RegressionResult
+from morie.fn.srd import sharp_rd, srd
 
 
 class TestSharpRD:

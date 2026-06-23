@@ -1,6 +1,8 @@
 """Tests for morie.fn.calbt — Calibration (Platt + isotonic)."""
+
 import numpy as np
 import pytest
+
 from morie.fn.calbt import calbt
 
 
@@ -18,8 +20,17 @@ def data():
 
 def test_keys_platt(data):
     r = calbt(*data, method="platt")
-    for k in ("calibrated_probs", "ece", "ece_before", "platt_A",
-              "platt_B", "reliability_before", "reliability_after", "n", "method"):
+    for k in (
+        "calibrated_probs",
+        "ece",
+        "ece_before",
+        "platt_A",
+        "platt_B",
+        "reliability_before",
+        "reliability_after",
+        "n",
+        "method",
+    ):
         assert k in r
 
 
@@ -58,4 +69,5 @@ def test_method_label(data):
 
 def test_cheatsheet():
     from morie.fn.calbt import cheatsheet
+
     assert len(cheatsheet()) > 0

@@ -1,6 +1,8 @@
 """Tests for morie.fn.tlear — T-learner CATE."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tlear import tlear
 
 
@@ -61,4 +63,5 @@ def test_logistic_model(data):
 
 def test_cheatsheet():
     from morie.fn.tlear import cheatsheet
+
     assert len(cheatsheet()) > 0

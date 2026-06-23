@@ -80,9 +80,7 @@ def prediction_intervals(
     y = np.asarray(y, dtype=float).ravel()
     fitted = np.asarray(fitted, dtype=float).ravel()
     if len(y) != len(fitted):
-        raise ValueError(
-            f"y and fitted must have the same length; got {len(y)} and {len(fitted)}."
-        )
+        raise ValueError(f"y and fitted must have the same length; got {len(y)} and {len(fitted)}.")
     if not (0.0 < alpha < 1.0):
         raise ValueError(f"alpha must be in (0, 1), got {alpha}.")
     if method not in ("residual", "block"):

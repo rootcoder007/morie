@@ -1,6 +1,7 @@
 """Tests for morie.fn.tpair -- Paired samples t-test."""
 
 import pytest
+
 from morie.fn.tpair import paired_t_test
 
 

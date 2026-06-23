@@ -1,5 +1,7 @@
 """Tests for Matern variogram."""
+
 import numpy as np
+
 from morie.fn.sgmat import sgmat
 
 

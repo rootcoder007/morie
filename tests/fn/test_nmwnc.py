@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmwnc -- W-NOMINATE classification"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmwnc import wnominate_class
 

@@ -1,6 +1,7 @@
 """Test sophs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sophs import sophs
 
 

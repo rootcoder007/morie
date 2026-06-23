@@ -1,6 +1,8 @@
 """Tests for sbblk."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sbblk import sbblk
 
 
@@ -28,4 +30,5 @@ def test_sbblk_no_data():
 
 def test_sbblk_alias():
     from morie.fn.sbblk import sbblk
+
     assert sbblk is sbblk

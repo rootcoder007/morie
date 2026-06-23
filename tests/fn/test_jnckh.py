@@ -1,6 +1,7 @@
 """Test jnckh."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jnckh import jonckheere_terpstra
 
 

@@ -1,6 +1,7 @@
 """Tests for tqunb.turboquant_prodqjl_unbiasedness."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tqunb import turboquant_prodqjl_unbiasedness
 
 
@@ -11,7 +12,7 @@ def test_tqunb_basic():
     m = 10
     result = turboquant_prodqjl_unbiasedness(q, k, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tqunb_edge():

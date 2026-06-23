@@ -1,6 +1,7 @@
 """Tests for ghs010.ghosal_ch3_discrete_hazard_rate."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghs010 import ghosal_ch3_discrete_hazard_rate
 
 
@@ -11,7 +12,7 @@ def test_ghs010_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = ghosal_ch3_discrete_hazard_rate(p_j, j, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ghs010_edge():

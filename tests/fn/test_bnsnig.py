@@ -1,6 +1,7 @@
 """Tests for bnsnig.bound_no_unobserved_inv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bnsnig import bound_no_unobserved_inv
 
 
@@ -12,7 +13,7 @@ def test_bnsnig_basic():
     X_inv = np.random.default_rng(42).normal(0, 1, 100)
     result = bound_no_unobserved_inv(y, D, X, X_inv)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bnsnig_edge():

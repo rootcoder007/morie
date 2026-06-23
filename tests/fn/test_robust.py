@@ -1,8 +1,9 @@
 """Tests for morie.fn.robust — Random Forest robustness evaluation."""
 
-import pytest
 import pandas as pd
+import pytest
 from sklearn.datasets import make_classification
+
 from morie.fn.robust import eval_robustness as robust
 
 
@@ -10,7 +11,9 @@ from morie.fn.robust import eval_robustness as robust
 def binary_data():
     """Simple binary classification dataset."""
     X, y = make_classification(
-        n_samples=200, n_features=5, n_informative=3,
+        n_samples=200,
+        n_features=5,
+        n_informative=3,
         random_state=42,
     )
     X_df = pd.DataFrame(X, columns=[f"f{i}" for i in range(5)])

@@ -1,6 +1,7 @@
 """Analog Butterworth transfer function from N left-half-plane poles.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_butterworth_analog_transfer_function"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_butterworth_analog_transfer_function(s, p_k, G, N):
     n = len(s)
     result = float(np.mean(s))
     se = float(np.std(s, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Analog Butterworth transfer function from N left-half-plane poles."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Analog Butterworth transfer function from N left-half-plane poles.",
+        }
+    )
 
 
 def cheatsheet():

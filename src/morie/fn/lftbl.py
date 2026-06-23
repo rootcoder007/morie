@@ -77,10 +77,18 @@ def life_table_complete(
     for i in range(k):
         ex[i] = Tx[i] / lx[i] if lx[i] > 0 else 0.0
 
-    df = pd.DataFrame({
-        "age": a, "mx": mx, "qx": qx, "lx": lx,
-        "dx": dx, "Lx": Lx, "Tx": Tx, "ex": ex,
-    })
+    df = pd.DataFrame(
+        {
+            "age": a,
+            "mx": mx,
+            "qx": qx,
+            "lx": lx,
+            "dx": dx,
+            "Lx": Lx,
+            "Tx": Tx,
+            "ex": ex,
+        }
+    )
 
     return ESRes(
         measure="life_table_complete",

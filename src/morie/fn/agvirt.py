@@ -1,6 +1,7 @@
 """AlphaZero virtual loss for parallel MCTS."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphazero_virtual_loss"]
@@ -32,7 +33,9 @@ def alphazero_virtual_loss(node, virtual_loss):
     n = len(node)
     result = float(np.mean(node))
     se = float(np.std(node, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AlphaZero virtual loss for parallel MCTS"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "AlphaZero virtual loss for parallel MCTS"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for quanrg.quantile_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.quanrg import quantile_regression
 
 
@@ -11,7 +12,7 @@ def test_quanrg_basic():
     tau = 0.1
     result = quantile_regression(y, X, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_quanrg_edge():

@@ -51,10 +51,9 @@ def _adjacency_knn(coords: np.ndarray, k: int = 5) -> np.ndarray:
     return W
 
 
-def morans_i_neighbourhood(df: pd.DataFrame, *,
-                            hood_col: str = "HOOD_158",
-                            ds_name: str = "?",
-                            k_neighbours: int = 5) -> RichResult:
+def morans_i_neighbourhood(
+    df: pd.DataFrame, *, hood_col: str = "HOOD_158", ds_name: str = "?", k_neighbours: int = 5
+) -> RichResult:
     """Compute global Moran's I on neighbourhood-level incident counts.
 
     Builds a k-NN spatial weights matrix from neighbourhood centroids
@@ -62,23 +61,22 @@ def morans_i_neighbourhood(df: pd.DataFrame, *,
     then runs Moran's I on the count vector.
     """
     if hood_col not in df.columns:
-        return RichResult(title=f"Moran's I -- {ds_name}",
-                          warnings=[f"{hood_col} missing"])
+        return RichResult(title=f"Moran's I -- {ds_name}", warnings=[f"{hood_col} missing"])
     if "LAT_WGS84" not in df.columns or "LONG_WGS84" not in df.columns:
-        return RichResult(title=f"Moran's I -- {ds_name}",
-                          warnings=["LAT/LONG_WGS84 missing -- cannot build "
-                                    "spatial weights"])
+        return RichResult(
+            title=f"Moran's I -- {ds_name}", warnings=["LAT/LONG_WGS84 missing -- cannot build spatial weights"]
+        )
 
     counts = _hood_counts(df, hood_col)
-    centroids = (df.dropna(subset=[hood_col, "LAT_WGS84", "LONG_WGS84"])
-                   .groupby(hood_col)[["LAT_WGS84", "LONG_WGS84"]].mean())
+    centroids = (
+        df.dropna(subset=[hood_col, "LAT_WGS84", "LONG_WGS84"]).groupby(hood_col)[["LAT_WGS84", "LONG_WGS84"]].mean()
+    )
     # Align
     common = counts.index.intersection(centroids.index)
     counts = counts.loc[common]
     centroids = centroids.loc[common]
     if counts.size < 5:
-        return RichResult(title=f"Moran's I -- {ds_name}",
-                          warnings=[f"only {counts.size} valid neighbourhoods"])
+        return RichResult(title=f"Moran's I -- {ds_name}", warnings=[f"only {counts.size} valid neighbourhoods"])
 
     coords = centroids[["LAT_WGS84", "LONG_WGS84"]].values
     W = _adjacency_knn(coords, k=min(k_neighbours, counts.size - 1))
@@ -89,8 +87,7 @@ def morans_i_neighbourhood(df: pd.DataFrame, *,
     # Moran's I = (n / S0) * (z'Wz) / (z'z)
     S0 = W.sum()
     if S0 == 0:
-        return RichResult(title=f"Moran's I -- {ds_name}",
-                          warnings=["empty spatial weights -- k too small"])
+        return RichResult(title=f"Moran's I -- {ds_name}", warnings=["empty spatial weights -- k too small"])
     num = z @ W @ z
     den = z @ z
     I = (n / S0) * (num / den) if den != 0 else float("nan")
@@ -100,12 +97,10 @@ def morans_i_neighbourhood(df: pd.DataFrame, *,
     # Var(I) = (n^2 * S1 - n*S2 + 3*S0^2) / ((n^2 - 1) * S0^2)
     # Simplified for symmetric W; use Cliff-Ord normal-assumption variance.
     W_sym = (W + W.T) / 2
-    S1 = 2 * (W_sym ** 2).sum()
+    S1 = 2 * (W_sym**2).sum()
     S2 = (W.sum(axis=0) + W.sum(axis=1)) ** 2
     S2 = float(S2.sum())
-    var_I = (n * (n - 2) * S1 - 2 * n * S2 + 6 * S0 ** 2) / (
-        (n - 1) * (n + 1) * (n - 2) * S0 ** 2 + 1e-300
-    )
+    var_I = (n * (n - 2) * S1 - 2 * n * S2 + 6 * S0**2) / ((n - 1) * (n + 1) * (n - 2) * S0**2 + 1e-300)
     if var_I <= 0:
         z_I = float("nan")
         p = float("nan")
@@ -113,6 +108,7 @@ def morans_i_neighbourhood(df: pd.DataFrame, *,
         z_I = (I - expected_I) / np.sqrt(var_I)
         # Two-sided
         from math import erfc, sqrt
+
         p = erfc(abs(z_I) / sqrt(2))
 
     return RichResult(
@@ -125,47 +121,47 @@ def morans_i_neighbourhood(df: pd.DataFrame, *,
             ("Expected I under null", round(expected_I, 4)),
             ("Variance(I)", round(float(var_I), 6)),
             ("z-score", round(float(z_I), 4) if np.isfinite(z_I) else "n/a"),
-            ("p-value (two-sided)",
-                round(float(p), 6) if np.isfinite(p) else "n/a"),
+            ("p-value (two-sided)", round(float(p), 6) if np.isfinite(p) else "n/a"),
         ],
         interpretation=(
             f"I={float(I):+.3f}, z={float(z_I):+.2f}, p={float(p):.4f}. "
             "Positive I = nearby neighbourhoods have similar counts "
             "(spatial clustering of crime); negative = checkerboard "
             "pattern; near zero = random."
-        ) if np.isfinite(z_I) else "Variance non-positive -- interpretation skipped.",
-        payload={"I": float(I), "expected_I": expected_I,
-                 "var_I": float(var_I),
-                 "z_score": float(z_I) if np.isfinite(z_I) else None,
-                 "p_value": float(p) if np.isfinite(p) else None,
-                 "n": int(n)},
+        )
+        if np.isfinite(z_I)
+        else "Variance non-positive -- interpretation skipped.",
+        payload={
+            "I": float(I),
+            "expected_I": expected_I,
+            "var_I": float(var_I),
+            "z_score": float(z_I) if np.isfinite(z_I) else None,
+            "p_value": float(p) if np.isfinite(p) else None,
+            "n": int(n),
+        },
     )
 
 
-def local_morans_i(df: pd.DataFrame, *,
-                    hood_col: str = "HOOD_158",
-                    ds_name: str = "?",
-                    k_neighbours: int = 5,
-                    top_n: int = 20) -> RichResult:
+def local_morans_i(
+    df: pd.DataFrame, *, hood_col: str = "HOOD_158", ds_name: str = "?", k_neighbours: int = 5, top_n: int = 20
+) -> RichResult:
     """LISA -- local Moran's Ii per neighbourhood, with hot/cold spot
     classification.
     """
     if hood_col not in df.columns:
-        return RichResult(title=f"LISA -- {ds_name}",
-                          warnings=[f"{hood_col} missing"])
+        return RichResult(title=f"LISA -- {ds_name}", warnings=[f"{hood_col} missing"])
     if "LAT_WGS84" not in df.columns:
-        return RichResult(title=f"LISA -- {ds_name}",
-                          warnings=["LAT/LONG_WGS84 missing"])
+        return RichResult(title=f"LISA -- {ds_name}", warnings=["LAT/LONG_WGS84 missing"])
 
     counts = _hood_counts(df, hood_col)
-    centroids = (df.dropna(subset=[hood_col, "LAT_WGS84", "LONG_WGS84"])
-                   .groupby(hood_col)[["LAT_WGS84", "LONG_WGS84"]].mean())
+    centroids = (
+        df.dropna(subset=[hood_col, "LAT_WGS84", "LONG_WGS84"]).groupby(hood_col)[["LAT_WGS84", "LONG_WGS84"]].mean()
+    )
     common = counts.index.intersection(centroids.index)
     counts = counts.loc[common]
     centroids = centroids.loc[common]
     if counts.size < 5:
-        return RichResult(title=f"LISA -- {ds_name}",
-                          warnings=[f"only {counts.size} valid neighbourhoods"])
+        return RichResult(title=f"LISA -- {ds_name}", warnings=[f"only {counts.size} valid neighbourhoods"])
 
     coords = centroids[["LAT_WGS84", "LONG_WGS84"]].values
     W = _adjacency_knn(coords, k=min(k_neighbours, counts.size - 1))
@@ -189,10 +185,16 @@ def local_morans_i(df: pd.DataFrame, *,
         else:
             quad.append("LH (low-high)")
 
-    out = pd.DataFrame({
-        "hood": counts.index, "count": counts.values,
-        "z": z_std, "Wz": Wz, "Ii": Ii, "quadrant": quad,
-    })
+    out = pd.DataFrame(
+        {
+            "hood": counts.index,
+            "count": counts.values,
+            "z": z_std,
+            "Wz": Wz,
+            "Ii": Ii,
+            "quadrant": quad,
+        }
+    )
     top = out.sort_values("Ii", ascending=False).head(top_n)
 
     return RichResult(
@@ -200,43 +202,44 @@ def local_morans_i(df: pd.DataFrame, *,
         summary_lines=[
             ("Spatial unit", hood_col),
             ("Neighbourhoods", int(counts.size)),
-            ("Hot spots (HH)",
-                int((out["quadrant"] == "HH (high-high)").sum())),
-            ("Cold spots (LL)",
-                int((out["quadrant"] == "LL (low-low)").sum())),
-            ("HL outliers (high in low context)",
-                int((out["quadrant"] == "HL (high-low)").sum())),
-            ("LH outliers (low in high context)",
-                int((out["quadrant"] == "LH (low-high)").sum())),
+            ("Hot spots (HH)", int((out["quadrant"] == "HH (high-high)").sum())),
+            ("Cold spots (LL)", int((out["quadrant"] == "LL (low-low)").sum())),
+            ("HL outliers (high in low context)", int((out["quadrant"] == "HL (high-low)").sum())),
+            ("LH outliers (low in high context)", int((out["quadrant"] == "LH (low-high)").sum())),
         ],
-        tables=[{
-            "title": f"Top {top_n} hoods by Local Moran's Ii (most clustered):",
-            "headers": ["HOOD_158", "Count", "z(count)", "W·z", "Ii",
-                        "Quadrant"],
-            "rows": [[str(r.hood), int(r.count), round(float(r.z), 3),
-                      round(float(r.Wz), 3), round(float(r.Ii), 3),
-                      r.quadrant]
-                     for r in top.itertuples()],
-        }],
+        tables=[
+            {
+                "title": f"Top {top_n} hoods by Local Moran's Ii (most clustered):",
+                "headers": ["HOOD_158", "Count", "z(count)", "W·z", "Ii", "Quadrant"],
+                "rows": [
+                    [
+                        str(r.hood),
+                        int(r.count),
+                        round(float(r.z), 3),
+                        round(float(r.Wz), 3),
+                        round(float(r.Ii), 3),
+                        r.quadrant,
+                    ]
+                    for r in top.itertuples()
+                ],
+            }
+        ],
     )
 
 
-def kde_density(df: pd.DataFrame, *,
-                bandwidth: float = 0.005,
-                ds_name: str = "?") -> RichResult:
+def kde_density(df: pd.DataFrame, *, bandwidth: float = 0.005, ds_name: str = "?") -> RichResult:
     """Kernel density estimate of incident lat/long.
 
     Returns summary stats; not the full grid (too big for a RichResult).
     """
     if "LAT_WGS84" not in df.columns or "LONG_WGS84" not in df.columns:
-        return RichResult(title=f"KDE -- {ds_name}",
-                          warnings=["LAT/LONG_WGS84 missing"])
+        return RichResult(title=f"KDE -- {ds_name}", warnings=["LAT/LONG_WGS84 missing"])
     coords = df[["LAT_WGS84", "LONG_WGS84"]].dropna()
     coords = coords[(coords["LAT_WGS84"] != 0) & (coords["LONG_WGS84"] != 0)]
     if coords.shape[0] < 50:
-        return RichResult(title=f"KDE -- {ds_name}",
-                          warnings=[f"only {coords.shape[0]} geocoded"])
+        return RichResult(title=f"KDE -- {ds_name}", warnings=[f"only {coords.shape[0]} geocoded"])
     from scipy.stats import gaussian_kde
+
     pts = coords.values.T
     kde = gaussian_kde(pts, bw_method=bandwidth)
     # Evaluate density at the points themselves to find max-density area
@@ -249,10 +252,8 @@ def kde_density(df: pd.DataFrame, *,
             ("Max density (at obs)", round(float(densities.max()), 4)),
             ("Mean density", round(float(densities.mean()), 4)),
             ("Median density", round(float(np.median(densities)), 4)),
-            ("Lat at max-density obs",
-                round(float(coords.iloc[densities.argmax()]["LAT_WGS84"]), 4)),
-            ("Lon at max-density obs",
-                round(float(coords.iloc[densities.argmax()]["LONG_WGS84"]), 4)),
+            ("Lat at max-density obs", round(float(coords.iloc[densities.argmax()]["LAT_WGS84"]), 4)),
+            ("Lon at max-density obs", round(float(coords.iloc[densities.argmax()]["LONG_WGS84"]), 4)),
         ],
         interpretation=(
             "KDE bandwidth controls smoothness -- smaller = more sensitive "

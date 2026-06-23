@@ -1,6 +1,7 @@
 """Tests for scfhop.scaffold_hop."""
+
 import numpy as np
-import pytest
+
 from morie.fn.scfhop import scaffold_hop
 
 
@@ -10,7 +11,7 @@ def test_scfhop_basic():
     scaffold_db = np.random.default_rng(42).normal(0, 1, 100)
     result = scaffold_hop(lead_smiles, scaffold_db)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_scfhop_edge():

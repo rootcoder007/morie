@@ -1,6 +1,7 @@
 """Tests for medstg.sequential_mediation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.medstg import sequential_mediation
 
 
@@ -11,7 +12,7 @@ def test_medstg_basic():
     c1 = np.random.default_rng(42).normal(0, 1, 100)
     result = sequential_mediation(a1, b1, c1)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_medstg_edge():

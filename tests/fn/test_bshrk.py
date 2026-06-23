@@ -1,6 +1,7 @@
 """Tests for morie.fn.bshrk -- Bayesian horseshoe."""
 
 import numpy as np
+
 from morie.fn.bshrk import bayesian_horseshoe
 
 

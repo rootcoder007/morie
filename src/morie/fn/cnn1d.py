@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """1D convolution forward pass (valid, cross-correlation convention)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -55,9 +56,13 @@ def conv1d_forward(x, w, b=0.0, stride: int = 1, padding: int = 0):
     y = windows @ w + b
     return RichResult(
         title="Conv1D forward",
-        summary_lines=[("input length", N), ("kernel length", K),
-                       ("output length", out_len), ("stride", stride),
-                       ("padding", padding)],
+        summary_lines=[
+            ("input length", N),
+            ("kernel length", K),
+            ("output length", out_len),
+            ("stride", stride),
+            ("padding", padding),
+        ],
         payload={
             "y": y,
             "estimate": y,

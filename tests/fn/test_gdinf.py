@@ -1,6 +1,7 @@
 """Test gdinf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdinf import gdinf
 
 

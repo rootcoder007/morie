@@ -1,6 +1,7 @@
 """Test vmsel."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmsel import vmsel
 
 

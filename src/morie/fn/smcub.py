@@ -40,11 +40,11 @@ def smacof_unfolding_basic(
 
     def _dists(X, Y):
         diff = X[:, None, :] - Y[None, :, :]
-        return np.sqrt((diff ** 2).sum(axis=-1) + 1e-14)
+        return np.sqrt((diff**2).sum(axis=-1) + 1e-14)
 
     def _stress(X, Y):
         d = _dists(X, Y)
-        return np.sqrt(((d - Delta) ** 2).sum() / max((Delta ** 2).sum(), 1e-14))
+        return np.sqrt(((d - Delta) ** 2).sum() / max((Delta**2).sum(), 1e-14))
 
     stress = _stress(X, Y)
     for _ in range(max_iter):

@@ -1,6 +1,7 @@
 """Tests for rgenvgm.rangayyan_envelogram."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgenvgm import rangayyan_envelogram
 
 
@@ -11,7 +12,7 @@ def test_rgenvgm_basic():
     fs = 100.0
     result = rangayyan_envelogram(pcg, ecg, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgenvgm_edge():

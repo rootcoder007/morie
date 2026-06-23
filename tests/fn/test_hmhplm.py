@@ -1,6 +1,7 @@
 """Tests for hmhplm.geron_hidden_layers_heuristic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmhplm import geron_hidden_layers_heuristic
 
 
@@ -11,7 +12,7 @@ def test_hmhplm_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = geron_hidden_layers_heuristic(model, X, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmhplm_edge():

@@ -21,11 +21,11 @@ from ._containers import DescriptiveResult
 # Multipliers (smoke-specific toxicity / ambient toxicity) per 10 µg/m³:
 _SMOKE_MULTIPLIER: dict[str, tuple[float, tuple[float, float]]] = {
     # outcome -> (central multiplier, 95% CI)
-    "respiratory":      (10.0, (4.0, 20.0)),   # Aguilera 2021
-    "asthma_ed":        (8.0, (3.0, 15.0)),    # Reid 2016
-    "copd":             (5.0, (2.0, 12.0)),
-    "all_cause":        (3.0, (1.5, 6.0)),     # Liu et al. 2017 meta
-    "cardiovascular":   (2.0, (1.0, 4.5)),
+    "respiratory": (10.0, (4.0, 20.0)),  # Aguilera 2021
+    "asthma_ed": (8.0, (3.0, 15.0)),  # Reid 2016
+    "copd": (5.0, (2.0, 12.0)),
+    "all_cause": (3.0, (1.5, 6.0)),  # Liu et al. 2017 meta
+    "cardiovascular": (2.0, (1.0, 4.5)),
 }
 
 
@@ -116,10 +116,7 @@ def wildfire_smoke_rr(
     """
     key = outcome.lower().strip().replace(" ", "_").replace("-", "_")
     if key not in _SMOKE_MULTIPLIER:
-        raise KeyError(
-            f"Unknown outcome {outcome!r}. Available: "
-            f"{sorted(_SMOKE_MULTIPLIER)}"
-        )
+        raise KeyError(f"Unknown outcome {outcome!r}. Available: {sorted(_SMOKE_MULTIPLIER)}")
     mult, (mult_lo, mult_hi) = _SMOKE_MULTIPLIER[key]
 
     if ambient_rr_per_10 <= 0:

@@ -1,6 +1,7 @@
 """CAT stopping rule (SE / SE_target)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["cat_stopping_rule"]

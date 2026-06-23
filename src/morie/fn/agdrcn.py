@@ -1,6 +1,7 @@
 """AlphaZero Dirichlet concentration parameter."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphazero_dirichlet_concentration"]
@@ -32,7 +33,9 @@ def alphazero_dirichlet_concentration(avg_legal, scale):
     n = len(avg_legal)
     result = float(np.mean(avg_legal))
     se = float(np.std(avg_legal, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AlphaZero Dirichlet concentration parameter"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "AlphaZero Dirichlet concentration parameter"}
+    )
 
 
 def cheatsheet():

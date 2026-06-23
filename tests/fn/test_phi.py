@@ -1,6 +1,7 @@
 """Tests for morie.fn.phi -- Phi coefficient for 2x2 tables."""
 
 import pytest
+
 from morie.fn.phi import phi_coefficient
 
 

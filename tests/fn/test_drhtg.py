@@ -1,6 +1,7 @@
 """Tests for drhtg.dr_did_heterogeneity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.drhtg import dr_did_heterogeneity
 
 
@@ -12,7 +13,7 @@ def test_drhtg_basic():
     strata = np.random.default_rng(42).normal(0, 1, 100)
     result = dr_did_heterogeneity(y, D, X, strata)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_drhtg_edge():

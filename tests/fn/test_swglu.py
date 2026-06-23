@@ -1,7 +1,9 @@
 """Test swiglu."""
+
 import numpy as np
-from morie.fn.swglu import swiglu, swglu
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.swglu import swglu, swiglu
 
 
 class TestSwiglu:

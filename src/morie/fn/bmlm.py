@@ -79,7 +79,7 @@ def bayesian_multilevel(
     theta_samples = np.empty((n_iter, J))
 
     for i in range(n_iter):
-        tau2 = tau_cur ** 2 + 1e-30
+        tau2 = tau_cur**2 + 1e-30
         for j in range(J):
             prec_data = 1.0 / s[j] ** 2
             prec_prior = 1.0 / tau2
@@ -87,7 +87,7 @@ def bayesian_multilevel(
             mean_post = (prec_data * y[j] + prec_prior * mu_cur) / prec_post
             theta[j] = rng.normal(mean_post, 1.0 / np.sqrt(prec_post))
 
-        prior_prec = 1.0 / prior_tau ** 2
+        prior_prec = 1.0 / prior_tau**2
         prec_theta = J / tau2
         mu_prec = prior_prec + prec_theta
         mu_mean = (prior_prec * prior_mu + prec_theta * np.mean(theta)) / mu_prec
@@ -106,7 +106,7 @@ def bayesian_multilevel(
     shrinkage = np.zeros(J)
     tau_mean = float(np.mean(tau_samples[burn:]))
     for j in range(J):
-        B_j = s[j] ** 2 / (s[j] ** 2 + tau_mean ** 2)
+        B_j = s[j] ** 2 / (s[j] ** 2 + tau_mean**2)
         shrinkage[j] = B_j
 
     return {

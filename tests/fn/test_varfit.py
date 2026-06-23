@@ -1,6 +1,8 @@
 """Tests for morie.fn.varfit — vector autoregression."""
+
 import numpy as np
 import pytest
+
 from morie.fn.varfit import var_fit
 
 

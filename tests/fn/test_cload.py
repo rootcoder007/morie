@@ -1,9 +1,8 @@
 """Tests for morie.fn.cload — cache load."""
 
 import pandas as pd
-import pytest
 
-from morie.fn.cload import cload, cache_load
+from morie.fn.cload import cache_load, cload
 from morie.fn.cstor import cstor
 
 

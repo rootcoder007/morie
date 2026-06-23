@@ -21,14 +21,15 @@ Public API: `cheatsheet(fn_name) -> str`. Used by:
   - `morie cheatsheet <fn>` CLI subcommand
   - the documentation generator (Sphinx pre-build hook)
 """
+
 from __future__ import annotations
 
 import importlib
 import inspect
 import json
 import re
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 # ── category quotes ──────────────────────────────────────────────────────────
 # Mapping from category-PREFIX to a themed line. Prefix matching means

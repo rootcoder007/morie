@@ -1,6 +1,7 @@
 """Tests for grdetr.geron_detr_hungarian_matching."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grdetr import geron_detr_hungarian_matching
 
 
@@ -12,7 +13,7 @@ def test_grdetr_basic():
     gt_classes = np.random.default_rng(43).integers(0, 2, 100)
     result = geron_detr_hungarian_matching(pred_boxes, pred_classes, gt_boxes, gt_classes)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grdetr_edge():

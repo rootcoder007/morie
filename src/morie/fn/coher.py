@@ -10,6 +10,8 @@ from __future__ import annotations
 import numpy as np
 
 from ._containers import DescriptiveResult
+
+
 def coherence(
     x: np.ndarray,
     y: np.ndarray,

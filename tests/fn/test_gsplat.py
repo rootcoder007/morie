@@ -1,6 +1,7 @@
 """Tests for gsplat.gaussian_splatting."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gsplat import gaussian_splatting
 
 
@@ -10,7 +11,7 @@ def test_gsplat_basic():
     camera = np.random.default_rng(42).normal(0, 1, 100)
     result = gaussian_splatting(gaussians, camera)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gsplat_edge():

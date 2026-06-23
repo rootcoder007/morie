@@ -1,7 +1,8 @@
 """Tests for morie.fn.simth -- simulate thermometer."""
 
 import numpy as np
-from morie.fn.simth import simulate_thermometer, simth
+
+from morie.fn.simth import simth, simulate_thermometer
 
 
 def test_simth_smoke():

@@ -1,5 +1,7 @@
 """Test positional encoding."""
+
 import numpy as np
+
 from morie.fn.posem import posem
 
 

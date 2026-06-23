@@ -1,7 +1,10 @@
 """Tests for bookadvanced_elementsofstatisticallearning4u95.bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_95."""
+
 import numpy as np
-import pytest
-from morie.fn.bookadvanced_elementsofstatisticallearning4u95 import bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_95
+
+from morie.fn.bookadvanced_elementsofstatisticallearning4u95 import (
+    bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_95,
+)
 
 
 def test_bookadvanced_elementsofstatisticallearning4u95_basic():
@@ -9,7 +12,7 @@ def test_bookadvanced_elementsofstatisticallearning4u95_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_95(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bookadvanced_elementsofstatisticallearning4u95_edge():

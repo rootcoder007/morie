@@ -1,6 +1,10 @@
 """Tests for median_abs_deviation."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.mad_ import median_abs_deviation
+
 
 class TestMAD:
     def test_normal(self):

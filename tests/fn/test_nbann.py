@@ -1,6 +1,7 @@
 """Test nbann."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nbann import nbann
 
 

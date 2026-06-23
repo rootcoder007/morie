@@ -1,7 +1,9 @@
 """Test rms_log_error (rmsle)."""
+
 import numpy as np
-from morie.fn.rmsle import rms_log_error, rmsle
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rmsle import rms_log_error, rmsle
 
 
 class TestRmsle:

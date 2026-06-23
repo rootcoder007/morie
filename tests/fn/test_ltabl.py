@@ -1,6 +1,7 @@
 """Tests for morie.fn.ltabl -- life table."""
 
 import pytest
+
 from morie.fn.ltabl import life_table_full
 
 

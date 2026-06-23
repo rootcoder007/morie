@@ -1,7 +1,6 @@
 """Tests for morie.fn.svipk -- Kernel smoothed ideal point"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svipk import ideal_point_kernel
 

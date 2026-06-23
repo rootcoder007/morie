@@ -1,12 +1,8 @@
 """Tests for morie.fn.cconn — SQLite cache connect."""
 
 import sqlite3
-import tempfile
-from pathlib import Path
 
-import pytest
-
-from morie.fn.cconn import cconn, cache_connect
+from morie.fn.cconn import cache_connect, cconn
 
 
 def test_alias_is_same_function():
@@ -29,9 +25,7 @@ def test_creates_metadata_table(tmp_path):
     db = tmp_path / "test_cache.db"
     conn = cconn(db)
     try:
-        tables = conn.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='_morie_metadata'"
-        ).fetchone()
+        tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='_morie_metadata'").fetchone()
         assert tables is not None
     finally:
         conn.close()

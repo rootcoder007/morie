@@ -1,6 +1,7 @@
 """Test ppstj."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppstj import ppstj
 
 

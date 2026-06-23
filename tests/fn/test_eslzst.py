@@ -1,6 +1,7 @@
 """Tests for eslzst.esl_z_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslzst import esl_z_score
 
 
@@ -11,7 +12,7 @@ def test_eslzst_basic():
     beta = 0.8
     result = esl_z_score(X, y, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslzst_edge():

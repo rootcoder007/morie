@@ -1,6 +1,7 @@
 """Tests for msm018.mvsml_linear_mixed_models_eq_5_4."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm018 import mvsml_linear_mixed_models_eq_5_4
 
 
@@ -14,7 +15,7 @@ def test_msm018_basic():
     could = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_linear_mixed_models_eq_5_4(marker, information, prediction, although, this, could)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm018_edge():

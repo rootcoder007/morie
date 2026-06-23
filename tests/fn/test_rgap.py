@@ -1,6 +1,7 @@
 """Tests for rgap.rangayyan_action_potential."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgap import rangayyan_action_potential
 
 
@@ -13,7 +14,7 @@ def test_rgap_basic():
     t_fall = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_action_potential(t, v_rest, v_peak, t_rise, t_fall)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgap_edge():

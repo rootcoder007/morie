@@ -1,6 +1,7 @@
 """Z-domain expression for the Hann filter output.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_hann_z_output"]
@@ -32,7 +33,9 @@ def rangayyan_ch3_hann_z_output(X, z):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Z-domain expression for the Hann filter output."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Z-domain expression for the Hann filter output."}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Coefficient of concordance for balanced incomplete block designs."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_balance_incomplete"]
@@ -36,7 +38,14 @@ def gibbons_balance_incomplete(rankings, lam, n, k):
     n = int(rankings) if rankings.ndim == 0 else len(rankings)
     result = float(np.mean(rankings))
     se = float(np.std(rankings, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Coefficient of concordance for balanced incomplete block designs"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Coefficient of concordance for balanced incomplete block designs",
+        }
+    )
 
 
 def cheatsheet():

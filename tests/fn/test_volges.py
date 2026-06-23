@@ -1,6 +1,7 @@
 """Tests for volges.vol_garch_es_impl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.volges import vol_garch_es_impl
 
 
@@ -13,7 +14,7 @@ def test_volges_basic():
     nu = np.random.default_rng(42).normal(0, 1, 100)
     result = vol_garch_es_impl(mu, sigma_next, alpha, dist, nu)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_volges_edge():

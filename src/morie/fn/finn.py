@@ -47,4 +47,4 @@ finn = find_patterns
 
 
 def cheatsheet() -> str:
-    return 'find_patterns({}) -> Correlation pattern finder.'
+    return "find_patterns({}) -> Correlation pattern finder."

@@ -1,6 +1,7 @@
 """Tests for bndpcb.bound_pseudo_credible."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndpcb import bound_pseudo_credible
 
 
@@ -11,7 +12,7 @@ def test_bndpcb_basic():
     alpha = 0.05
     result = bound_pseudo_credible(y, X, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndpcb_edge():

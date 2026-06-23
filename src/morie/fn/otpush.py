@@ -1,6 +1,7 @@
 """Pushforward density via change-of-variables and Jacobian."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_pushforward_density"]
@@ -34,7 +35,14 @@ def ot_pushforward_density(mu_grid, T_jac, T_inv_grid):
     n = len(mu_grid)
     result = float(np.mean(mu_grid))
     se = float(np.std(mu_grid, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pushforward density via change-of-variables and Jacobian"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pushforward density via change-of-variables and Jacobian",
+        }
+    )
 
 
 def cheatsheet():

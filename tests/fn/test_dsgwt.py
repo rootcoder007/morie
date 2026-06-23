@@ -1,9 +1,10 @@
 """Tests for fn/dsgwt.py -- Design weights."""
+
 import numpy as np
 import pandas as pd
 import pytest
 
-from morie.fn.dsgwt import dsgwt, compute_design_weights
+from morie.fn.dsgwt import compute_design_weights, dsgwt
 
 
 def test_dsgwt_returns_series():

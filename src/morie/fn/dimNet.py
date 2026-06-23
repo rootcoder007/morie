@@ -1,6 +1,7 @@
 """DimeNet -- directional message passing."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dimenet"]
@@ -32,7 +33,9 @@ def dimenet(coords, atom_types):
     n = len(coords)
     result = float(np.mean(coords))
     se = float(np.std(coords, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DimeNet -- directional message passing"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DimeNet -- directional message passing"}
+    )
 
 
 def cheatsheet():

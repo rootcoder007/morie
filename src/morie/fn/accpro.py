@@ -74,4 +74,4 @@ accpro = acceleration_profile
 
 
 def cheatsheet() -> str:
-    return 'acceleration_profile({}) -> Acceleration profile analysis.'
+    return "acceleration_profile({}) -> Acceleration profile analysis."

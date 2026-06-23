@@ -1,6 +1,8 @@
 """Cokriging (linear model of coregionalization, simple-cokriging form)."""
+
 import numpy as np
 from scipy.spatial.distance import cdist
+
 from ._richresult import RichResult
 
 __all__ = ["cokriging"]
@@ -11,11 +13,19 @@ def _cov_exp(h, c0, c1, a):
     return c1 * np.exp(-h / a) + np.where(h == 0, c0, 0.0)
 
 
-def cokriging(x, y, coords, target,
-              sill_p: float = 1.0, range_p: float = 1.0,
-              sill_s: float = 1.0, range_s: float = 1.0,
-              cross_sill: float = 0.5, cross_range: float = 1.0,
-              nugget: float = 0.0):
+def cokriging(
+    x,
+    y,
+    coords,
+    target,
+    sill_p: float = 1.0,
+    range_p: float = 1.0,
+    sill_s: float = 1.0,
+    range_s: float = 1.0,
+    cross_sill: float = 0.5,
+    cross_range: float = 1.0,
+    nugget: float = 0.0,
+):
     """
     Simple cokriging on co-located primary/secondary observations.
 
@@ -61,7 +71,8 @@ def cokriging(x, y, coords, target,
     z = np.concatenate([x, y])
     var0 = sill_p  # C_11(0)
 
-    ests = []; ses = []
+    ests = []
+    ses = []
     for s0 in target:
         d0 = cdist(s0.reshape(1, -1), coords).ravel()
         c0p = _cov_exp(d0, nugget, sill_p - nugget, range_p)
@@ -80,12 +91,14 @@ def cokriging(x, y, coords, target,
         ests_out, ses_out = ests[0], ses[0]
     else:
         ests_out, ses_out = ests, ses
-    return RichResult(payload={
-        "estimate": ests_out,
-        "se": ses_out,
-        "n": int(n),
-        "method": "Simple cokriging (linear coregionalization, exp. cov)",
-    })
+    return RichResult(
+        payload={
+            "estimate": ests_out,
+            "se": ses_out,
+            "n": int(n),
+            "method": "Simple cokriging (linear coregionalization, exp. cov)",
+        }
+    )
 
 
 def cheatsheet():

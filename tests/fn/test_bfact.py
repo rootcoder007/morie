@@ -1,6 +1,7 @@
 """Tests for morie.fn.bfact -- Savage-Dickey Bayes factor."""
 
 import numpy as np
+
 from morie.fn.bfact import bayes_factor_savage_dickey
 
 
@@ -16,18 +17,14 @@ def test_returns_dict():
 def test_null_true_favours_null():
     rng = np.random.default_rng(42)
     samples = rng.normal(0, 0.5, 2000)
-    result = bayes_factor_savage_dickey(
-        samples, prior_mean=0, prior_sd=1, null_value=0
-    )
+    result = bayes_factor_savage_dickey(samples, prior_mean=0, prior_sd=1, null_value=0)
     assert result["bf01"] > 1.0
 
 
 def test_null_false_favours_alt():
     rng = np.random.default_rng(42)
     samples = rng.normal(5, 0.3, 2000)
-    result = bayes_factor_savage_dickey(
-        samples, prior_mean=0, prior_sd=1, null_value=0
-    )
+    result = bayes_factor_savage_dickey(samples, prior_mean=0, prior_sd=1, null_value=0)
     assert result["bf10"] > 1.0
 
 

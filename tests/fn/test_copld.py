@@ -1,5 +1,7 @@
 """Tests for morie.fn.copld — Copeland method."""
+
 import numpy as np
+
 from morie.fn.copld import copld
 
 

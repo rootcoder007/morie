@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Transformer encoder block (Vaswani et al. 2017)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -17,13 +18,12 @@ def _layer_norm(x, eps=1e-5):
 
 
 def _gelu(z):
-    return 0.5 * z * (1.0 + np.tanh(np.sqrt(2.0 / np.pi) *
-                                    (z + 0.044715 * z ** 3)))
+    return 0.5 * z * (1.0 + np.tanh(np.sqrt(2.0 / np.pi) * (z + 0.044715 * z**3)))
 
 
-def transformer_block(x, num_heads: int = 2, d_ff: "int | None" = None,
-                      seed: int = 0,
-                      deterministic_seed: "int | None" = None):
+def transformer_block(
+    x, num_heads: int = 2, d_ff: int | None = None, seed: int = 0, deterministic_seed: int | None = None
+):
     """Single Transformer encoder block (post-LN variant).
 
     .. math::
@@ -65,12 +65,12 @@ def transformer_block(x, num_heads: int = 2, d_ff: "int | None" = None,
     if d_ff is None:
         d_ff = 4 * d_model
 
-    attn = multi_head_attention_full(x, num_heads=num_heads, seed=seed,
-                                     deterministic_seed=deterministic_seed)
+    attn = multi_head_attention_full(x, num_heads=num_heads, seed=seed, deterministic_seed=deterministic_seed)
     h1 = _layer_norm(x + attn.payload["output"])
 
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("trfbl", deterministic_seed)
     else:
         rng = np.random.default_rng(seed + 1)
@@ -84,8 +84,7 @@ def transformer_block(x, num_heads: int = 2, d_ff: "int | None" = None,
 
     return RichResult(
         title=f"Transformer block (h={num_heads}, d_ff={d_ff})",
-        summary_lines=[("d_model", d_model), ("num_heads", num_heads),
-                       ("d_ff", d_ff), ("seq_len", seq_len)],
+        summary_lines=[("d_model", d_model), ("num_heads", num_heads), ("d_ff", d_ff), ("seq_len", seq_len)],
         payload={
             "output": h2,
             "estimate": h2,

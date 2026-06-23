@@ -1,5 +1,7 @@
 """Semivariogram definition as half mean-squared difference."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_semivariogram_def"]
@@ -31,7 +33,14 @@ def schabenberger_semivariogram_def(coords, z):
     n = int(z) if z.ndim == 0 else len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Semivariogram definition as half mean-squared difference"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Semivariogram definition as half mean-squared difference",
+        }
+    )
 
 
 def cheatsheet():

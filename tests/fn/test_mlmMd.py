@@ -1,6 +1,7 @@
 """Tests for mlmMd.multilevel_mediation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mlmMd import multilevel_mediation
 
 
@@ -12,7 +13,7 @@ def test_mlmMd_basic():
     cluster = np.random.default_rng(42).normal(0, 1, 100)
     result = multilevel_mediation(Y, X, M, cluster)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mlmMd_edge():

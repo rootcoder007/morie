@@ -1,6 +1,7 @@
 """Latent Dirichlet Allocation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["lda_topic"]

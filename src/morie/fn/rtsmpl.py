@@ -1,6 +1,7 @@
 """Rt from serial interval (Cori)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rt_serial_interval"]

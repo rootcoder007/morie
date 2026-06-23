@@ -1,10 +1,13 @@
 """Test beam search."""
+
 import numpy as np
+
 from morie.fn.beams import beams
 
 
 def test_beams_basic():
     """Test basic beam search."""
+
     def step_fn(tokens):
         return np.random.randn(100)
 
@@ -21,6 +24,7 @@ def test_beams_basic():
 
 def test_beams_sequences():
     """Test output sequences."""
+
     def step_fn(tokens):
         return np.random.randn(10)
 

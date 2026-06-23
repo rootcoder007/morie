@@ -1,5 +1,7 @@
 """Ripley's K-function: expected number of extra events within distance r of a random event."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_k_function"]
@@ -33,7 +35,14 @@ def schabenberger_k_function(points, lambda_est, r):
     n = int(points) if points.ndim == 0 else len(points)
     result = float(np.mean(points))
     se = float(np.std(points, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Ripley's K-function: expected number of extra events within distance r of a random event"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Ripley's K-function: expected number of extra events within distance r of a random event",
+        }
+    )
 
 
 def cheatsheet():

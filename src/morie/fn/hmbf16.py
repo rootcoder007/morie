@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Brain floating point (BF16): FP32-range with FP16-size."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_bf16"]
@@ -30,7 +32,14 @@ def geron_bf16(x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Brain floating point (BF16): FP32-range with FP16-size"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Brain floating point (BF16): FP32-range with FP16-size",
+        }
+    )
 
 
 def cheatsheet():

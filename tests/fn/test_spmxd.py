@@ -7,7 +7,6 @@ from morie.fn.spmxd import spmxd
 
 
 class TestSpmxd:
-
     def test_output_keys(self):
         rng = np.random.default_rng(42)
         n = 25

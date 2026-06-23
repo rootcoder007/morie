@@ -1,6 +1,7 @@
 """Tests for kmngrm.kamath_ngram_language_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmngrm import kamath_ngram_language_model
 
 
@@ -10,7 +11,7 @@ def test_kmngrm_basic():
     counts_prefix = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ngram_language_model(counts_ngram, counts_prefix)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmngrm_edge():

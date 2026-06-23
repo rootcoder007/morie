@@ -1,6 +1,7 @@
 """Donsker theorem via uniform entropy integral."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_donsker_uniform_entropy"]
@@ -32,7 +33,9 @@ def kosorok_ch2_donsker_uniform_entropy(F, P):
     n = len(F)
     result = float(np.mean(F))
     se = float(np.std(F, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Donsker theorem via uniform entropy integral"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Donsker theorem via uniform entropy integral"}
+    )
 
 
 def cheatsheet():

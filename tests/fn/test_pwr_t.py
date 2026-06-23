@@ -1,6 +1,7 @@
 """Tests for morie.fn.pwr_t -- power analysis for t-tests."""
 
 import pytest
+
 from morie.fn.pwr_t import power_t_test
 
 

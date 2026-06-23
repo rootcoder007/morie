@@ -1,7 +1,6 @@
 """Tests for morie.fn.maccr — multi-class precision."""
-import numpy as np
-import pytest
-from morie.fn.maccr import multiclass_precision, maccr
+
+from morie.fn.maccr import maccr, multiclass_precision
 
 
 def test_perfect_macro():

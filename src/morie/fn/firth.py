@@ -11,7 +11,9 @@ from ._containers import RegressionResult
 from ._helpers import _validate_df
 
 
-def firth_logistic(data: pd.DataFrame, cdf=None, *, y: str = "y", x: list[str] | str = "x", max_iter: int = 100, tol: float = 1e-6) -> RegressionResult:
+def firth_logistic(
+    data: pd.DataFrame, cdf=None, *, y: str = "y", x: list[str] | str = "x", max_iter: int = 100, tol: float = 1e-6
+) -> RegressionResult:
     """Firth penalized logistic regression for rare events.
 
     Applies Firth's (1993) bias-reduction via Jeffreys prior,
@@ -88,4 +90,4 @@ firth = firth_logistic
 
 
 def cheatsheet() -> str:
-    return 'firth_logistic({}) -> Firth penalized logistic regression.'
+    return "firth_logistic({}) -> Firth penalized logistic regression."

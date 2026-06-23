@@ -39,4 +39,5 @@ def test_events_sum(surv_data):
 
 def test_cheatsheet():
     from morie.fn.pchzr import cheatsheet
+
     assert "piecewise" in cheatsheet().lower()

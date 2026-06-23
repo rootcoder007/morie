@@ -1,7 +1,7 @@
 """Tests for morie.fn.sccut — score cutoffs."""
 
-import numpy as np
 import pytest
+
 from morie.fn.sccut import score_cutoffs
 
 

@@ -1,7 +1,9 @@
 """Tests for psdmt -- Multitaper PSD."""
+
 import numpy as np
-from morie.fn.psdmt import psdmt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.psdmt import psdmt
 
 
 def test_psdmt_basic():

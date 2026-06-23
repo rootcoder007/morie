@@ -1,6 +1,7 @@
 """Tests for morie.fn.rcdst -- distance from agreement."""
 
 import numpy as np
+
 from morie.fn.rcdst import distance_from_agreement, rcdst
 
 

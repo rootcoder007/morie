@@ -66,14 +66,9 @@ def aldrich_mckelvey(
             # heterogeneous respondent reliability.
             denom = float((beta[valid] ** 2).sum())
             if denom < 1e-12:
-                zhat[j] = float(
-                    ((Z[valid, j] - alpha[valid]) / beta[valid]).mean()
-                )
+                zhat[j] = float(((Z[valid, j] - alpha[valid]) / beta[valid]).mean())
             else:
-                zhat[j] = float(
-                    (beta[valid] * (Z[valid, j] - alpha[valid])).sum()
-                    / denom
-                )
+                zhat[j] = float((beta[valid] * (Z[valid, j] - alpha[valid])).sum() / denom)
 
         zhat = zhat - zhat.mean()
         if zhat.std() > 0:
@@ -281,11 +276,7 @@ def classical_mds(
         # sum(d_model^2) (which collapses to zero when the model is
         # underfit). Pre-v0.9.5.6 used d_model^2 denom.
         denom = (D[valid] ** 2).sum()
-        stress = (
-            np.sqrt(((d_model[valid] - D[valid]) ** 2).sum() / denom)
-            if denom > 0
-            else 0.0
-        )
+        stress = np.sqrt(((d_model[valid] - D[valid]) ** 2).sum() / denom) if denom > 0 else 0.0
 
     abs_eig = np.abs(eigenvalues)
     total = abs_eig.sum()
@@ -2337,8 +2328,8 @@ def wordfish_irt(
         m_om = omega.mean()
         s_om = omega.std() + 1e-12
         omega = (omega - m_om) / s_om
-        alpha = alpha + beta * m_om   # absorb mean shift
-        beta = beta * s_om            # rescale to standardised omega
+        alpha = alpha + beta * m_om  # absorb mean shift
+        beta = beta * s_om  # rescale to standardised omega
 
         for j in range(n_words):
             eta = psi + alpha[j] + beta[j] * omega

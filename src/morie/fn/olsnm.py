@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """OLS normal equations for multiple regression."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ols_normal_equations"]
@@ -32,7 +34,9 @@ def ols_normal_equations(X, y):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "OLS normal equations for multiple regression"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "OLS normal equations for multiple regression"}
+    )
 
 
 def cheatsheet():

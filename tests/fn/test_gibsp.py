@@ -1,6 +1,7 @@
 """Test gibsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gibsp import gibsp
 
 

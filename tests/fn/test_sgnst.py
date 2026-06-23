@@ -1,5 +1,7 @@
 """Tests for nested variogram."""
+
 import numpy as np
+
 from morie.fn.sgnst import sgnst
 
 
@@ -17,6 +19,7 @@ def test_sgnst_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgnst import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

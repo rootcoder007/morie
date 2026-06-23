@@ -43,4 +43,5 @@ def test_empty_raises():
 
 def test_cheatsheet():
     from morie.fn.naest import cheatsheet
+
     assert "nelson" in cheatsheet().lower()

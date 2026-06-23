@@ -1,6 +1,8 @@
 """Tests for gpwarp."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gpwarp import gpwarp
 
 
@@ -28,4 +30,5 @@ def test_gpwarp_no_data():
 
 def test_gpwarp_alias():
     from morie.fn.gpwarp import gpwarp
+
     assert gpwarp is gpwarp

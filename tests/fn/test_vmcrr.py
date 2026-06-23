@@ -1,6 +1,7 @@
 """Test vmcrr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmcrr import vmcrr
 
 

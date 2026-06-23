@@ -66,4 +66,4 @@ qreg = quantile_regression
 
 
 def cheatsheet() -> str:
-    return 'quantile_regression({}) -> Quantile regression.'
+    return "quantile_regression({}) -> Quantile regression."

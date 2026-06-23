@@ -1,6 +1,7 @@
 """Politis-Romano automatic block length selection."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_block_length_pr"]
@@ -32,7 +33,9 @@ def boot_block_length_pr(x, method):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Politis-Romano automatic block length selection"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Politis-Romano automatic block length selection"}
+    )
 
 
 def cheatsheet():

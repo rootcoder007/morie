@@ -1,8 +1,9 @@
 """Correlation equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_19"]
 
@@ -40,7 +41,10 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equat
             pvalue=float("nan"),
             warnings=["n<3: insufficient pairs for correlation."],
             extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Correlation equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M )."},
+            extra_payload={
+                "n": n,
+                "method": "Correlation equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
+            },
         )
     result = stats.spearmanr(x[:n], y[:n])
     return hypothesis_test_result(
@@ -48,7 +52,11 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equat
         statistic=float(result.statistic),
         pvalue=float(result.pvalue),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Correlation equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).", "p_value": float(result.pvalue)},
+        extra_payload={
+            "n": n,
+            "method": "Correlation equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
+            "p_value": float(result.pvalue),
+        },
     )
 
 

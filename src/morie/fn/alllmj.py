@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """LLM-as-judge automated evaluation via pairwise or pointwise prompting."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_llm_as_judge"]
@@ -34,7 +36,14 @@ def alammar_llm_as_judge(responses, rubric, judge_model):
     n = len(responses)
     result = float(np.mean(responses))
     se = float(np.std(responses, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "LLM-as-judge automated evaluation via pairwise or pointwise prompting"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "LLM-as-judge automated evaluation via pairwise or pointwise prompting",
+        }
+    )
 
 
 def cheatsheet():

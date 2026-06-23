@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """P-tuning v2: deep prompt (learnable prefix per layer, not just input)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_p_tuning_v2"]
@@ -32,7 +34,14 @@ def kamath_p_tuning_v2(prefixes_by_layer, inputs_by_layer):
     n = len(prefixes_by_layer)
     result = float(np.mean(prefixes_by_layer))
     se = float(np.std(prefixes_by_layer, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "P-tuning v2: deep prompt (learnable prefix per layer, not just input)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "P-tuning v2: deep prompt (learnable prefix per layer, not just input)",
+        }
+    )
 
 
 def cheatsheet():

@@ -61,4 +61,4 @@ ppvpr = ppv_prevalence
 
 
 def cheatsheet() -> str:
-    return 'ppvpr() -> Compute positive and negative predictive values from prevalence'
+    return "ppvpr() -> Compute positive and negative predictive values from prevalence"

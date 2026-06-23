@@ -1,7 +1,7 @@
 """Tests for morie.fn.lrfor -- Forensic likelihood ratio."""
 
-import numpy as np
 import pytest
+
 from morie.fn.lrfor import lrfor
 
 

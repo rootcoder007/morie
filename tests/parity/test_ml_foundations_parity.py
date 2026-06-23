@@ -5,11 +5,12 @@ Run as:
 
     python3 _smoke_ml.py [name1 name2 ...]
 """
-import sys
-import os
+
 import importlib.util
-import types
+import os
+import sys
 import traceback
+import types
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, "src")
@@ -24,9 +25,7 @@ sys.modules["morie.fn"] = fnpkg
 
 def _load(modname, relpath):
     full = f"morie.fn.{modname}" if modname != "_richresult" else "morie.fn._richresult"
-    spec = importlib.util.spec_from_file_location(
-        full, os.path.join(SRC, "morie", "fn", relpath)
-    )
+    spec = importlib.util.spec_from_file_location(full, os.path.join(SRC, "morie", "fn", relpath))
     m = importlib.util.module_from_spec(spec)
     sys.modules[full] = m
     spec.loader.exec_module(m)
@@ -58,10 +57,26 @@ def run_one(name):
 
 if __name__ == "__main__":
     names = sys.argv[1:] or [
-        "linrg", "grdds", "mbgrd", "polrg", "rgztn", "lrcvg",
-        "svmhg", "svmkr", "dtrsp", "rfens", "gbens", "xgbst",
-        "pcadm", "tsnrd", "kmnsc", "dbscl", "gsrch", "rndsr",
-        "confm", "rocau",
+        "linrg",
+        "grdds",
+        "mbgrd",
+        "polrg",
+        "rgztn",
+        "lrcvg",
+        "svmhg",
+        "svmkr",
+        "dtrsp",
+        "rfens",
+        "gbens",
+        "xgbst",
+        "pcadm",
+        "tsnrd",
+        "kmnsc",
+        "dbscl",
+        "gsrch",
+        "rndsr",
+        "confm",
+        "rocau",
     ]
     results = {n: run_one(n) for n in names}
     print()

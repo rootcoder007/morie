@@ -1,5 +1,7 @@
 """Tests for morie.fn.spvut — Spatial voting utility."""
+
 import numpy as np
+
 from morie.fn.spvut import spvut
 
 

@@ -1,6 +1,7 @@
 """Test hyefl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hyefl import hyefl
 
 

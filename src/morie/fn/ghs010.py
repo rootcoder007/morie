@@ -1,6 +1,7 @@
 """Discrete hazard rate V_j of the stick-breaking construction interpreted as the conditional probability that X equals j given X >= j.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_discrete_hazard_rate"]
@@ -34,7 +35,14 @@ def ghosal_ch3_discrete_hazard_rate(p_j, j, X):
     n = len(p_j)
     result = float(np.mean(p_j))
     se = float(np.std(p_j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Discrete hazard rate V_j of the stick-breaking construction interpreted as the conditional probability that X equals j given X >= j."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Discrete hazard rate V_j of the stick-breaking construction interpreted as the conditional probability that X equals j given X >= j.",
+        }
+    )
 
 
 def cheatsheet():

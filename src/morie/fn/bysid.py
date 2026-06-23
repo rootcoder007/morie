@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayesian ideal-point estimation (Armstrong Ch 5)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["bayesian_ideal_points", "bysid"]
@@ -10,9 +12,7 @@ def _logistic(z):
     return 1.0 / (1.0 + np.exp(-np.clip(z, -30, 30)))
 
 
-def bayesian_ideal_points(x, n_iter: int = 400, burn: int = 100,
-                          seed: int = 0,
-                          deterministic_seed: int | None = None):
+def bayesian_ideal_points(x, n_iter: int = 400, burn: int = 100, seed: int = 0, deterministic_seed: int | None = None):
     """Bayesian ideal-point estimation, Metropolis-within-Gibbs surrogate
     for Clinton-Jackman-Rivers (2004).
 
@@ -37,6 +37,7 @@ def bayesian_ideal_points(x, n_iter: int = 400, burn: int = 100,
     """
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("bysid", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -45,13 +46,17 @@ def bayesian_ideal_points(x, n_iter: int = 400, burn: int = 100,
         M = M.reshape(-1, 1)
     n, m = M.shape
     if n < 2:
-        return RichResult(payload={"x_mean": np.full(n, np.nan),
-                                   "x_sd": np.full(n, np.nan),
-                                   "x_ci": np.full((n, 2), np.nan),
-                                   "alpha": np.full(m, np.nan),
-                                   "beta": np.full(m, np.nan),
-                                   "n_iter": 0,
-                                   "method": "bayesian_ideal_points"})
+        return RichResult(
+            payload={
+                "x_mean": np.full(n, np.nan),
+                "x_sd": np.full(n, np.nan),
+                "x_ci": np.full((n, 2), np.nan),
+                "alpha": np.full(m, np.nan),
+                "beta": np.full(m, np.nan),
+                "n_iter": 0,
+                "method": "bayesian_ideal_points",
+            }
+        )
     # Init from SVD
     Mc = np.nan_to_num(M - np.nanmean(M, axis=0, keepdims=True))
     try:
@@ -72,9 +77,7 @@ def bayesian_ideal_points(x, n_iter: int = 400, burn: int = 100,
         Z = av[None, :] * (xv[:, None] - bv[None, :])
         P = _logistic(Z)
         mask = ~np.isnan(M)
-        ll = np.where(mask,
-                      M * np.log(P + 1e-12) + (1 - M) * np.log(1 - P + 1e-12),
-                      0.0)
+        ll = np.where(mask, M * np.log(P + 1e-12) + (1 - M) * np.log(1 - P + 1e-12), 0.0)
         return float(np.sum(ll))
 
     ll_cur = loglik(x_cur, a_cur, b_cur)
@@ -82,22 +85,19 @@ def bayesian_ideal_points(x, n_iter: int = 400, burn: int = 100,
         # Metropolis on x
         x_prop = x_cur + step_x * rng.normal(size=n)
         ll_prop = loglik(x_prop, a_cur, b_cur)
-        log_a = (ll_prop - 0.5 * np.sum(x_prop ** 2)) \
-              - (ll_cur - 0.5 * np.sum(x_cur ** 2))
+        log_a = (ll_prop - 0.5 * np.sum(x_prop**2)) - (ll_cur - 0.5 * np.sum(x_cur**2))
         if np.log(rng.uniform()) < log_a:
             x_cur, ll_cur = x_prop, ll_prop
         # Metropolis on alpha
         a_prop = a_cur + step_ab * rng.normal(size=m)
         ll_prop = loglik(x_cur, a_prop, b_cur)
-        log_a = (ll_prop - 0.5 * np.sum(a_prop ** 2) / 25.0) \
-              - (ll_cur - 0.5 * np.sum(a_cur ** 2) / 25.0)
+        log_a = (ll_prop - 0.5 * np.sum(a_prop**2) / 25.0) - (ll_cur - 0.5 * np.sum(a_cur**2) / 25.0)
         if np.log(rng.uniform()) < log_a:
             a_cur, ll_cur = a_prop, ll_prop
         # Metropolis on beta
         b_prop = b_cur + step_ab * rng.normal(size=m)
         ll_prop = loglik(x_cur, a_cur, b_prop)
-        log_a = (ll_prop - 0.5 * np.sum(b_prop ** 2) / 25.0) \
-              - (ll_cur - 0.5 * np.sum(b_cur ** 2) / 25.0)
+        log_a = (ll_prop - 0.5 * np.sum(b_prop**2) / 25.0) - (ll_cur - 0.5 * np.sum(b_cur**2) / 25.0)
         if np.log(rng.uniform()) < log_a:
             b_cur, ll_cur = b_prop, ll_prop
         if t >= burn:
@@ -114,12 +114,16 @@ def bayesian_ideal_points(x, n_iter: int = 400, burn: int = 100,
     b_mean = np.mean(b_samples, axis=0) if b_samples else np.full(m, np.nan)
     return RichResult(
         title="Bayesian ideal points (Metropolis-within-Gibbs)",
-        summary_lines=[("posterior draws", len(samples)),
-                       ("n legislators", n), ("m items", m)],
-        payload={"x_mean": x_mean, "x_sd": x_sd, "x_ci": x_ci,
-                 "alpha": a_mean, "beta": b_mean,
-                 "n_iter": int(n_iter),
-                 "method": "bayesian_ideal_points"},
+        summary_lines=[("posterior draws", len(samples)), ("n legislators", n), ("m items", m)],
+        payload={
+            "x_mean": x_mean,
+            "x_sd": x_sd,
+            "x_ci": x_ci,
+            "alpha": a_mean,
+            "beta": b_mean,
+            "n_iter": int(n_iter),
+            "method": "bayesian_ideal_points",
+        },
     )
 
 

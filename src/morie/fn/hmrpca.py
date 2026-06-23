@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Randomized PCA using random projection to approximate top components."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_randomized_pca"]
@@ -34,7 +36,14 @@ def geron_randomized_pca(X, n_components, seed):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Randomized PCA using random projection to approximate top components"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Randomized PCA using random projection to approximate top components",
+        }
+    )
 
 
 def cheatsheet():

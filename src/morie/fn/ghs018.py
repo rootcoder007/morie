@@ -1,6 +1,7 @@
 """Splitting variables V at level epsilon defined as the conditional probabilities of the offspring sets given the parent set in a tree-based prior.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_tree_splitting_variables"]
@@ -32,7 +33,14 @@ def ghosal_ch3_tree_splitting_variables(A_epsilon, epsilon):
     n = len(A_epsilon)
     result = float(np.mean(A_epsilon))
     se = float(np.std(A_epsilon, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Splitting variables V at level epsilon defined as the conditional probabilities of the offspring sets given the parent set in a tree-based prior."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Splitting variables V at level epsilon defined as the conditional probabilities of the offspring sets given the parent set in a tree-based prior.",
+        }
+    )
 
 
 def cheatsheet():

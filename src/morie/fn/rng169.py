@@ -1,6 +1,7 @@
 """Matrix inversion (ABCD) lemma used in RLS.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_abcd_matrix_inversion_lemma"]
@@ -36,7 +37,9 @@ def rangayyan_ch3_abcd_matrix_inversion_lemma(A, B, C, D):
     n = len(A)
     result = float(np.mean(A))
     se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Matrix inversion (ABCD) lemma used in RLS."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Matrix inversion (ABCD) lemma used in RLS."}
+    )
 
 
 def cheatsheet():

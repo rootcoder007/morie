@@ -1,6 +1,8 @@
 """Tests for glmmdiag."""
+
 import numpy as np
 import pytest
+
 from morie.fn.glmmdiag import glmmdiag
 
 
@@ -28,4 +30,5 @@ def test_glmmdiag_no_data():
 
 def test_glmmdiag_alias():
     from morie.fn.glmmdiag import glmmdiag
+
     assert glmmdiag is glmmdiag

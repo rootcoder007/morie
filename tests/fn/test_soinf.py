@@ -1,6 +1,7 @@
 """Test soinf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.soinf import soinf
 
 

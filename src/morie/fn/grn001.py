@@ -1,6 +1,7 @@
 """Simple one-feature linear model used in the life satisfaction example, predicting life satisfaction from GDP per capita.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ch4_simple_linear_life_satisfaction"]
@@ -34,7 +35,14 @@ def geron_ch4_simple_linear_life_satisfaction(theta_0, theta_1, GDP_per_capita):
     n = len(theta_0)
     result = float(np.mean(theta_0))
     se = float(np.std(theta_0, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Simple one-feature linear model used in the life satisfaction example, predicting life satisfaction from GDP per capita."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Simple one-feature linear model used in the life satisfaction example, predicting life satisfaction from GDP per capita.",
+        }
+    )
 
 
 def cheatsheet():

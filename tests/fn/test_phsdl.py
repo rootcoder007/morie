@@ -1,7 +1,7 @@
 """Test phase_delay (phsdl)."""
-import numpy as np
-from morie.fn.phsdl import phase_delay, phsdl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.phsdl import phase_delay, phsdl
 
 
 class TestPhaseDelay:

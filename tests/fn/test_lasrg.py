@@ -1,7 +1,6 @@
 """Tests for morie.fn.lasrg — LASSO regression."""
 
 import numpy as np
-import pytest
 
 from morie.fn.lasrg import lasso_regression
 
@@ -12,8 +11,7 @@ def test_lasso_sparsity():
     X = rng.standard_normal((n, 10))
     y = 3.0 * X[:, 0] + rng.standard_normal(n) * 0.5
     res = lasso_regression(y, X, lam=0.5)
-    n_zero = sum(1 for k, v in res.coefficients.items()
-                 if k != "(Intercept)" and abs(v) < 1e-8)
+    n_zero = sum(1 for k, v in res.coefficients.items() if k != "(Intercept)" and abs(v) < 1e-8)
     assert n_zero >= 5
 
 

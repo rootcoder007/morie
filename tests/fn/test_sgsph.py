@@ -1,5 +1,7 @@
 """Tests for spherical variogram."""
+
 import numpy as np
+
 from morie.fn.sgsph import sgsph
 
 

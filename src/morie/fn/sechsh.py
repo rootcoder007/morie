@@ -1,6 +1,7 @@
 """Hash-chained audit log entry."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["hash_chain_audit"]

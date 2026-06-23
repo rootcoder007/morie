@@ -1,6 +1,7 @@
 """Tests for randres.randomized_response."""
+
 import numpy as np
-import pytest
+
 from morie.fn.randres import randomized_response
 
 
@@ -11,7 +12,7 @@ def test_randres_basic():
     p = 5
     result = randomized_response(y, truth, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_randres_edge():

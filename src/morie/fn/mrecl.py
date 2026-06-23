@@ -6,6 +6,8 @@ from __future__ import annotations
 import numpy as np
 
 from ._containers import ESRes
+
+
 def multiclass_recall(y_true, y_pred, *, average="macro", labels=None, **kwargs) -> ESRes:
     """
     Compute recall averaged over multiple classes.

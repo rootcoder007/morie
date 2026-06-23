@@ -1,6 +1,7 @@
 """Tests for rng103.rangayyan_ch3_integral_causal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng103 import rangayyan_ch3_integral_causal
 
 
@@ -10,7 +11,7 @@ def test_rng103_basic():
     t = np.linspace(0, 10, 100)
     result = rangayyan_ch3_integral_causal(x, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng103_edge():

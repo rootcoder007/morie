@@ -44,7 +44,7 @@ def steng(
         raise ValueError("u must be (4,), metric must be (4,4).")
 
     ginv = np.linalg.inv(metric)
-    T = (rho + p / c ** 2) * np.outer(u, u) + p * ginv
+    T = (rho + p / c**2) * np.outer(u, u) + p * ginv
 
     trace = 0.0
     for mu in range(4):

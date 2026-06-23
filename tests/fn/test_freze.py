@@ -1,7 +1,7 @@
 """Tests for morie.fn.freze -- Freeze-thaw degradation."""
 
-from morie.fn.freze import freeze_thaw, freze
 from morie.fn._containers import DescriptiveResult
+from morie.fn.freze import freeze_thaw, freze
 
 
 class TestFreze:

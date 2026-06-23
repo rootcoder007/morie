@@ -1,6 +1,5 @@
 """Tests for morie.fn.rtefv -- Effective Rt."""
 
-import numpy as np
 from morie.fn.rtefv import rt_effective
 
 

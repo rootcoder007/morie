@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PatchTST: patch-based channel-independent Transformer for TS."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_patchtst"]
@@ -36,7 +38,14 @@ def joseph_patchtst(x, patch_len, stride, transformer):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PatchTST: patch-based channel-independent Transformer for TS"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PatchTST: patch-based channel-independent Transformer for TS",
+        }
+    )
 
 
 def cheatsheet():

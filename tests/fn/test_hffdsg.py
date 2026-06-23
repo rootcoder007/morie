@@ -1,6 +1,7 @@
 """Tests for hffdsg.hoeffding_inequality."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hffdsg import hoeffding_inequality
 
 
@@ -12,7 +13,7 @@ def test_hffdsg_basic():
     t = np.linspace(0, 10, 100)
     result = hoeffding_inequality(a, b, n, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hffdsg_edge():

@@ -1,6 +1,7 @@
 """Test geimp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.geimp import geimp
 
 

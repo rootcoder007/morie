@@ -1,9 +1,9 @@
 """Tests for morie.fn.swmpt -- Biomass estimation."""
 
-import numpy as np
 import pandas as pd
-from morie.fn.swmpt import biomass_estimate, swmpt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.swmpt import biomass_estimate, swmpt
 
 
 class TestSwmpt:

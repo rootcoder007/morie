@@ -1,6 +1,7 @@
 """Tests for kmnxtg.kamath_nextgpt_any2any."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmnxtg import kamath_nextgpt_any2any
 
 
@@ -12,7 +13,7 @@ def test_kmnxtg_basic():
     decoders = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_nextgpt_any2any(inputs_by_modality, encoders, llm, decoders)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmnxtg_edge():

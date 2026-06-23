@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.infgai import information_gain, infgai
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.infgai import infgai, information_gain
 
 
 class TestInfgai:

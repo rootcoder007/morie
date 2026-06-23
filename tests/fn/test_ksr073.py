@@ -1,6 +1,7 @@
 """Tests for ksr073.kosorok_ch3_max_likelihood_efficiency_corollary."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr073 import kosorok_ch3_max_likelihood_efficiency_corollary
 
 
@@ -15,7 +16,7 @@ def test_ksr073_basic():
     n = 100
     result = kosorok_ch3_max_likelihood_efficiency_corollary(theta_hat_n, theta_0, eta_hat_n, eta_0, Psi_dot_0, Z, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr073_edge():

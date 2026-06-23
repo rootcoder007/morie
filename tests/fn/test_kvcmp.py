@@ -7,7 +7,6 @@ from morie.fn.kvcmp import kv_cache_compress
 
 
 class TestKvCacheCompress:
-
     def test_returns_result(self):
         rng = np.random.default_rng(42)
         K = rng.standard_normal((2, 4, 16))

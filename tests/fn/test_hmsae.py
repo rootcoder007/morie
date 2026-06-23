@@ -1,6 +1,7 @@
 """Tests for hmsae.geron_stacked_autoencoder."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmsae import geron_stacked_autoencoder
 
 
@@ -12,7 +13,7 @@ def test_hmsae_basic():
     lr = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_stacked_autoencoder(X, hidden_sizes, epochs, lr)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmsae_edge():

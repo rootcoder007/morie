@@ -1,6 +1,7 @@
 """Tests for sgtdiff.sgt_diffusion_kernel."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sgtdiff import sgt_diffusion_kernel
 
 
@@ -10,7 +11,7 @@ def test_sgtdiff_basic():
     t = np.linspace(0, 10, 100)
     result = sgt_diffusion_kernel(A, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sgtdiff_edge():

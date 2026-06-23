@@ -1,6 +1,7 @@
 """mth order empirical U-process measure for symmetric kernels."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_u_process_measure"]
@@ -36,7 +37,14 @@ def kosorok_ch2_u_process_measure(f, X, n, m):
     n = len(f)
     result = float(np.mean(f))
     se = float(np.std(f, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "mth order empirical U-process measure for symmetric kernels"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "mth order empirical U-process measure for symmetric kernels",
+        }
+    )
 
 
 def cheatsheet():

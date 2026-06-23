@@ -1,6 +1,7 @@
 """GELU approximation via tanh."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["gelu_tanh_approx"]

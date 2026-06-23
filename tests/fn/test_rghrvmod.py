@@ -1,6 +1,7 @@
 """Tests for rghrvmod.rangayyan_hrv_ar_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rghrvmod import rangayyan_hrv_ar_model
 
 
@@ -10,7 +11,7 @@ def test_rghrvmod_basic():
     order = 4
     result = rangayyan_hrv_ar_model(rr_intervals, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rghrvmod_edge():

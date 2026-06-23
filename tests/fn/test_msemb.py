@@ -1,7 +1,6 @@
 """Tests for morie.fn.msemb -- Embedding quality measure"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msemb import embedding_qual
 

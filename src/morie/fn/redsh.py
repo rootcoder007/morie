@@ -4,7 +4,6 @@
 __all__ = ["redsh"]
 
 
-
 def redsh(
     z: float = None,
     wavelength_obs: float = None,
@@ -62,7 +61,7 @@ def redsh(
     v_approx = z * c_km_s
 
     zp1 = 1.0 + z
-    beta = (zp1 ** 2 - 1.0) / (zp1 ** 2 + 1.0)
+    beta = (zp1**2 - 1.0) / (zp1**2 + 1.0)
     v_rel = beta * c_km_s
 
     return {

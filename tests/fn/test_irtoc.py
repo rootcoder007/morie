@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+
 from morie.fn.irtoc import irt_option_curves
 
 
@@ -21,6 +22,7 @@ class TestIrtOptionCurves:
 
     def test_length_mismatch_raises(self, mapq_df):
         import pytest
+
         with pytest.raises(ValueError):
             irt_option_curves(mapq_df[["EE1"]], np.array([1, 2, 3]))
 

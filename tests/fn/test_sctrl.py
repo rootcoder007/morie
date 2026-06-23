@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.sctrl import synthetic_control, sctrl
+
 from morie.fn._containers import ESRes
+from morie.fn.sctrl import sctrl, synthetic_control
 
 
 def _make_sc_panel(n_ctrl=5, n_pre=8, n_post=4, effect=5.0, seed=42):

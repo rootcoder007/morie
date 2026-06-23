@@ -1,6 +1,7 @@
 """Test srml."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srml import srml
 
 

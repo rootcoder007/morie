@@ -1,6 +1,7 @@
 """Test cassni."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cassni import cassni
 
 

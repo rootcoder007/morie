@@ -9,7 +9,9 @@ import numpy as np
 from scipy.stats import weibull_min
 
 
-def pweib(q: Union[float, np.ndarray], shape: float, scale: float = 1.0, lower_tail: bool = True, cdf=None) -> Union[float, np.ndarray]:
+def pweib(
+    q: Union[float, np.ndarray], shape: float, scale: float = 1.0, lower_tail: bool = True, cdf=None
+) -> Union[float, np.ndarray]:
     """
     Weibull distribution cumulative distribution function.
 

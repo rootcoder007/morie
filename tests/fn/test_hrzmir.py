@@ -1,6 +1,7 @@
 """Tests for hrzmir.horowitz_marginal_integration."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzmir import horowitz_marginal_integration
 
 
@@ -12,7 +13,7 @@ def test_hrzmir_basic():
     j = np.random.default_rng(42).normal(0, 1, 100)
     result = horowitz_marginal_integration(x, y, bandwidth, j)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzmir_edge():

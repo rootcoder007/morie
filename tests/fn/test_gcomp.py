@@ -1,6 +1,8 @@
 """Tests for morie.fn.gcomp — G-computation time-varying."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gcomp import gcomp
 
 
@@ -53,4 +55,5 @@ def test_single_timepoint():
 
 def test_cheatsheet():
     from morie.fn.gcomp import cheatsheet
+
     assert len(cheatsheet()) > 0

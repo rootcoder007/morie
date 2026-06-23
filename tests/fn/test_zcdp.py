@@ -1,6 +1,7 @@
 """Tests for zcdp.zcdp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.zcdp import zcdp
 
 
@@ -10,7 +11,7 @@ def test_zcdp_basic():
     rho = 0.5
     result = zcdp(mech, rho)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_zcdp_edge():

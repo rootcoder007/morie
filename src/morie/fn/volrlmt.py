@@ -1,6 +1,7 @@
 """AR(1) on log realised volatility (HAR alternative)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_realised_log_vol_ar"]
@@ -30,7 +31,9 @@ def vol_realised_log_vol_ar(RV):
     n = len(RV)
     result = float(np.mean(RV))
     se = float(np.std(RV, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AR(1) on log realised volatility (HAR alternative)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "AR(1) on log realised volatility (HAR alternative)"}
+    )
 
 
 def cheatsheet():

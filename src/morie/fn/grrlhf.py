@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """RLHF PPO objective with KL penalty against reference model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_rlhf_reward_kl_objective"]
@@ -36,7 +38,14 @@ def geron_rlhf_reward_kl_objective(rewards, policy_logprobs, ref_logprobs, beta)
     n = len(rewards)
     result = float(np.mean(rewards))
     se = float(np.std(rewards, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "RLHF PPO objective with KL penalty against reference model"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "RLHF PPO objective with KL penalty against reference model",
+        }
+    )
 
 
 def cheatsheet():

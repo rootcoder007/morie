@@ -1,6 +1,7 @@
 """Tests for gamfr.gamma_frailty_cox."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gamfr import gamma_frailty_cox
 
 
@@ -12,7 +13,7 @@ def test_gamfr_basic():
     cluster = np.random.default_rng(42).normal(0, 1, 100)
     result = gamma_frailty_cox(time, event, X, cluster)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gamfr_edge():

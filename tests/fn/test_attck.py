@@ -1,7 +1,7 @@
 """Tests for morie.fn.attck -- attack rate and secondary attack rate."""
 
-import numpy as np
 import pytest
+
 from morie.fn.attck import attack_rate, secondary_attack_rate
 
 

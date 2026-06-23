@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """YOLO localization + classification loss per grid cell."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_yolo_grid_loss"]
@@ -36,7 +38,14 @@ def geron_yolo_grid_loss(predictions, targets, lam_coord, lam_noobj):
     n = len(predictions)
     result = float(np.mean(predictions))
     se = float(np.std(predictions, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "YOLO localization + classification loss per grid cell"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "YOLO localization + classification loss per grid cell",
+        }
+    )
 
 
 def cheatsheet():

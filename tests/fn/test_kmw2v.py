@@ -1,6 +1,7 @@
 """Tests for kmw2v.kamath_word2vec_skipgram."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmw2v import kamath_word2vec_skipgram
 
 
@@ -12,7 +13,7 @@ def test_kmw2v_basic():
     U = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_word2vec_skipgram(center_indices, context_indices, V, U)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmw2v_edge():

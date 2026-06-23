@@ -1,6 +1,7 @@
 """Tests for rng116.rangayyan_ch3_three_point_central_difference."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng116 import rangayyan_ch3_three_point_central_difference
 
 
@@ -11,7 +12,7 @@ def test_rng116_basic():
     n = 100
     result = rangayyan_ch3_three_point_central_difference(x, T, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng116_edge():

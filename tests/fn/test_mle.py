@@ -1,7 +1,9 @@
 """Tests for mle_gaussian."""
+
 import numpy as np
 import pytest
-from morie.fn.mle import mle_gaussian, mle
+
+from morie.fn.mle import mle, mle_gaussian
 
 
 def test_known():

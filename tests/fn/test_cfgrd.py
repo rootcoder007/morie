@@ -1,7 +1,7 @@
 """Tests for morie.fn.cfgrd."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cfgrd import cfgrd
 
 

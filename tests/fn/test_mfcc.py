@@ -1,7 +1,9 @@
 """Test mel_cepstral_coeffs (mfcc)."""
+
 import numpy as np
-from morie.fn.mfcc import mel_cepstral_coeffs, mfcc
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mfcc import mel_cepstral_coeffs, mfcc
 
 
 class TestMfcc:

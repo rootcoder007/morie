@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """KL property for exponential density families: log-series prior has KL support."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_exp_dens_kl"]
@@ -30,7 +32,14 @@ def ghosal_exp_dens_kl(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "KL property for exponential density families: log-series prior has KL support"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "KL property for exponential density families: log-series prior has KL support",
+        }
+    )
 
 
 def cheatsheet():

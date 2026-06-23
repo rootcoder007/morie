@@ -1,6 +1,7 @@
 """Test vmwht."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmwht import vmwht
 
 

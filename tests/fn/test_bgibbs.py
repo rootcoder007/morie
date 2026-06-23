@@ -1,7 +1,6 @@
 """Tests for morie.fn.bgibbs — Gibbs sampler for normal."""
 
 import numpy as np
-import pytest
 
 from morie.fn.bgibbs import gibbs_normal
 

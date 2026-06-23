@@ -1,7 +1,9 @@
 """Variogram model fitting (spherical/exponential/Gaussian)."""
+
 import numpy as np
 from scipy import optimize
 from scipy.spatial.distance import pdist, squareform
+
 from ._richresult import RichResult
 
 __all__ = ["variogram_fitting"]
@@ -38,7 +40,7 @@ def _model(h, c0, c1, a, kind):
     if kind == "exponential":
         return c0 + c1 * (1.0 - np.exp(-h / a))
     if kind == "gaussian":
-        return c0 + c1 * (1.0 - np.exp(-(h ** 2) / (a ** 2)))
+        return c0 + c1 * (1.0 - np.exp(-(h**2) / (a**2)))
     if kind == "spherical":
         return np.where(
             h <= a,
@@ -48,8 +50,7 @@ def _model(h, c0, c1, a, kind):
     raise ValueError(f"unknown model: {kind}")
 
 
-def variogram_fitting(x, coords, model: str = "exponential",
-                      n_bins: int = 10, max_dist: float | None = None):
+def variogram_fitting(x, coords, model: str = "exponential", n_bins: int = 10, max_dist: float | None = None):
     """
     Variogram model fitting by weighted least squares on the empirical
     semivariogram (Cressie weights ~ n_pairs / gamma^2).
@@ -106,11 +107,13 @@ def variogram_fitting(x, coords, model: str = "exponential",
         "params": [c0, c1, a],
         "converged": converged,
     }
-    return RichResult(payload={
-        "estimate": estimate,
-        "n": int(n),
-        "method": f"Variogram model fit ({model}, WLS)",
-    })
+    return RichResult(
+        payload={
+            "estimate": estimate,
+            "n": int(n),
+            "method": f"Variogram model fit ({model}, WLS)",
+        }
+    )
 
 
 def cheatsheet():

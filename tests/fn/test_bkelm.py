@@ -1,6 +1,7 @@
 """Tests for bkelm.burkov_elman_rnn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bkelm import burkov_elman_rnn
 
 
@@ -15,7 +16,7 @@ def test_bkelm_basic():
     by = np.random.default_rng(42).normal(0, 1, 100)
     result = burkov_elman_rnn(x_t, h_prev, Wh, Wx, Wy, bh, by)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bkelm_edge():

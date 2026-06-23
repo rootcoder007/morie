@@ -1,6 +1,7 @@
 """Synthetic control subset selection (LASSO-relaxed)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_synthetic_subset"]
@@ -34,7 +35,9 @@ def causal_synthetic_subset(X1_pre, X0_pre, lam):
     n = len(X1_pre)
     result = float(np.mean(X1_pre))
     se = float(np.std(X1_pre, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Synthetic control subset selection (LASSO-relaxed)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Synthetic control subset selection (LASSO-relaxed)"}
+    )
 
 
 def cheatsheet():

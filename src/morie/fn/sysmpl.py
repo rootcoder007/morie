@@ -1,6 +1,7 @@
 """Systematic sample with random start."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["systematic_sample"]

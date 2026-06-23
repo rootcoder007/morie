@@ -1,5 +1,7 @@
 """Tests for morie.fn.amres — A-M residuals."""
+
 import numpy as np
+
 from morie.fn.amres import amres
 
 
@@ -15,6 +17,7 @@ def test_amres_perfect():
 
 def test_cheatsheet():
     from morie.fn.amres import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,6 +1,7 @@
 """Tests for hmmnr.geron_max_norm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmmnr import geron_max_norm
 
 
@@ -10,7 +11,7 @@ def test_hmmnr_basic():
     r = 10
     result = geron_max_norm(w, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmmnr_edge():

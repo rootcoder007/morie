@@ -1,7 +1,6 @@
 """Tests for morie.fn.msstb -- Kruskal stress S2"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msstb import stress_s2
 
@@ -14,5 +13,5 @@ class TestStressS2:
         assert result.value is not None
 
     def test_output_type(self):
-        result = stress_s2(np.random.default_rng(0).standard_normal((5,2)))
+        result = stress_s2(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

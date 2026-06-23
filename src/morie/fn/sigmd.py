@@ -11,23 +11,23 @@ def sigmoid(
     x: np.ndarray,
 ) -> DescriptiveResult:
     r"""
-    Compute the sigmoid activation function and its gradient.
+        Compute the sigmoid activation function and its gradient.
 
-    .. math::
+        .. math::
 
-        \\sigma(x) = \\frac{1}{1 + e^{-x}}
+            \\sigma(x) = \\frac{1}{1 + e^{-x}}
 
-    .. math::
+        .. math::
 
-        \\sigma'(x) = \\sigma(x)(1 - \\sigma(x))
+            \\sigma'(x) = \\sigma(x)(1 - \\sigma(x))
 
-    :param x: Input array.
-    :return: DescriptiveResult with sigmoid output and gradient.
+        :param x: Input array.
+        :return: DescriptiveResult with sigmoid output and gradient.
 
-    References
-    ----------
-, J., & Moraga, C. (1995). The influence of the sigmoid function
-    parameters on the speed of backpropagation learning. *IWANN*.
+        References
+        ----------
+    , J., & Moraga, C. (1995). The influence of the sigmoid function
+        parameters on the speed of backpropagation learning. *IWANN*.
     """
     x_arr = np.asarray(x, dtype=np.float64)
     output = 1.0 / (1.0 + np.exp(-np.clip(x_arr, -500, 500)))
@@ -49,4 +49,4 @@ short = sigmoid
 
 
 def cheatsheet() -> str:
-    return 'sigmoid({}) -> Sigmoid activation with gradient.'
+    return "sigmoid({}) -> Sigmoid activation with gradient."

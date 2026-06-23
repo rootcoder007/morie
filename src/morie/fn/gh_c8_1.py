@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Posterior contraction rate definition: eps_n rate iff Pi(d>M*eps_n|data)->0 in P0-prob."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_crt_def"]
@@ -30,7 +32,14 @@ def ghosal_crt_def(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Posterior contraction rate definition: eps_n rate iff Pi(d>M*eps_n|data)->0 in P0-prob"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Posterior contraction rate definition: eps_n rate iff Pi(d>M*eps_n|data)->0 in P0-prob",
+        }
+    )
 
 
 def cheatsheet():

@@ -3,8 +3,8 @@
 import numpy as np
 import pytest
 
-from morie.fn.qf import qf
 from morie.fn.pf import pf
+from morie.fn.qf import qf
 
 
 class TestQf:

@@ -51,6 +51,7 @@ def epidemic_smooth(
 
     if method == "savgol":
         from scipy.signal import savgol_filter
+
         if window % 2 == 0:
             window += 1
         window = min(window, len(inc))

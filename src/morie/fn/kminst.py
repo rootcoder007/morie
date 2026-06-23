@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Instruction tuning CE loss over (instruction, response) pairs."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_instruction_tuning_loss"]
@@ -34,7 +36,14 @@ def kamath_instruction_tuning_loss(logits, response_mask, targets):
     n = len(logits)
     result = float(np.mean(logits))
     se = float(np.std(logits, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Instruction tuning CE loss over (instruction, response) pairs"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Instruction tuning CE loss over (instruction, response) pairs",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for mcdcv.min_covariance_determinant."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mcdcv import min_covariance_determinant
 
 
@@ -11,7 +12,7 @@ def test_mcdcv_basic():
     h = 0.3
     result = min_covariance_determinant(y, X, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mcdcv_edge():

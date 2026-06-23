@@ -1,6 +1,8 @@
 """Tests for tbmat."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tbmat import tbmat
 
 
@@ -28,4 +30,5 @@ def test_tbmat_no_data():
 
 def test_tbmat_alias():
     from morie.fn.tbmat import tbmat
+
     assert tbmat is tbmat

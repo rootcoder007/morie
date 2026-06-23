@@ -1,6 +1,8 @@
 """Tests for ctlbl."""
+
 import numpy as np
 import pytest
+
 from morie.fn.ctlbl import ctlbl
 
 
@@ -28,4 +30,5 @@ def test_ctlbl_no_data():
 
 def test_ctlbl_alias():
     from morie.fn.ctlbl import ctlbl
+
     assert ctlbl is ctlbl

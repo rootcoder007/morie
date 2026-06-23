@@ -92,4 +92,4 @@ pidtun = pid_tune
 
 
 def cheatsheet() -> str:
-    return 'pid_tune({}) -> PID controller tuning.'
+    return "pid_tune({}) -> PID controller tuning."

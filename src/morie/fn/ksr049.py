@@ -1,6 +1,7 @@
 """Linearization of Z-estimator deviation around the true parameter."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_z_master_linearization"]
@@ -39,12 +40,27 @@ def kosorok_ch2_z_master_linearization(Psi_dot, Psi_n, Psi, theta_n, theta_0, n)
     Psi_dot = np.atleast_1d(np.asarray(Psi_dot, dtype=float))
     n = len(Psi_dot)
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Linearization of Z-estimator deviation around the true parameter"})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "Linearization of Z-estimator deviation around the true parameter",
+            }
+        )
     estimate = np.median(Psi_dot)
     se = 1.2533 * np.std(Psi_dot, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Linearization of Z-estimator deviation around the true parameter"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Linearization of Z-estimator deviation around the true parameter",
+        }
+    )
 
 
 def cheatsheet():

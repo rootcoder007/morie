@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Baseline wander removal from ECG."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_baseline_wander"]

@@ -1,6 +1,7 @@
 """Test ppmks."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppmks import ppmks
 
 

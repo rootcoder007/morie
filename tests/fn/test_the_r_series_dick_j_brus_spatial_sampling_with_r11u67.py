@@ -1,7 +1,10 @@
 """Tests for the_r_series_dick_j_brus_spatial_sampling_with_r11u67.the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_unnumbered_67."""
+
 import numpy as np
-import pytest
-from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r11u67 import the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_unnumbered_67
+
+from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r11u67 import (
+    the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_unnumbered_67,
+)
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r11u67_basic():
@@ -9,7 +12,7 @@ def test_the_r_series_dick_j_brus_spatial_sampling_with_r11u67_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_unnumbered_67(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r11u67_edge():

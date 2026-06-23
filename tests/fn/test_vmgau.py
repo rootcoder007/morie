@@ -1,6 +1,7 @@
 """Test vmgau."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmgau import vmgau
 
 

@@ -1,6 +1,7 @@
 r"""Logistic regression model applying the sigmoid to a linear combination of inputs for binary classification.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_logistic_regression"]
@@ -34,7 +35,14 @@ def burkov_lm_ch1_logistic_regression(w, x, b):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Logistic regression model applying the sigmoid to a linear combination of inputs for binary classification."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Logistic regression model applying the sigmoid to a linear combination of inputs for binary classification.",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,7 @@
 """SMACOF (Scaling by MAjorizing a COmplicated Function) algorithm for MDS."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["smacof_algorithm"]
@@ -37,7 +39,14 @@ def smacof_algorithm(delta, n_dims, weights, max_iter, eps):
     n = int(delta) if delta.ndim == 0 else len(delta)
     result = float(np.mean(delta))
     se = float(np.std(delta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SMACOF (Scaling by MAjorizing a COmplicated Function) algorithm for MDS"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "SMACOF (Scaling by MAjorizing a COmplicated Function) algorithm for MDS",
+        }
+    )
 
 
 def cheatsheet():

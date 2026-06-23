@@ -59,4 +59,4 @@ shahas = sha256_hash
 
 
 def cheatsheet() -> str:
-    return 'sha256_hash({}) -> Cryptographic hash (SHA-256).'
+    return "sha256_hash({}) -> Cryptographic hash (SHA-256)."

@@ -1,5 +1,5 @@
 """Tests for wvbas.py - Wavelet basis."""
-import numpy as np
+
 from morie.fn.wvbas import wavelet_basis, wvbas
 
 
@@ -23,6 +23,7 @@ def test_basis_reconstruction_filters():
 
 def test_basis_invalid():
     import pytest
+
     with pytest.raises(ValueError):
         wavelet_basis("unsupported")
 

@@ -1,6 +1,10 @@
 """Tests for winsorize."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.winsz import winsorize
+
 
 class TestWinsorize:
     def test_basic(self):

@@ -1,6 +1,7 @@
 """Weight decay (L2) penalty."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["esl_weight_decay"]

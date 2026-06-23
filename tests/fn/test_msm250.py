@@ -1,6 +1,7 @@
 """Tests for msm250.mvsml_reproducing_kernel_eq_10_12."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm250 import mvsml_reproducing_kernel_eq_10_12
 
 
@@ -14,7 +15,7 @@ def test_msm250_basic():
     h = 0.3
     result = mvsml_reproducing_kernel_eq_10_12(g, l, z, w, V, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm250_edge():

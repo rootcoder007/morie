@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Membership inference attack: threshold on model loss to infer training-set membership."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_membership_inference"]
@@ -32,7 +34,14 @@ def kamath_membership_inference(losses, threshold):
     n = len(losses)
     result = float(np.mean(losses))
     se = float(np.std(losses, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Membership inference attack: threshold on model loss to infer training-set membership"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Membership inference attack: threshold on model loss to infer training-set membership",
+        }
+    )
 
 
 def cheatsheet():

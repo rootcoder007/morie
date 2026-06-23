@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Deep RL from human preferences (Christiano et al. 2017)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_christiano_deep_rl_feedback"]
@@ -32,7 +34,14 @@ def kamath_christiano_deep_rl_feedback(trajectory_pairs, r_phi):
     n = len(trajectory_pairs)
     result = float(np.mean(trajectory_pairs))
     se = float(np.std(trajectory_pairs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Deep RL from human preferences (Christiano et al. 2017)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Deep RL from human preferences (Christiano et al. 2017)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Density of a tail-free random measure as the infinite product of doubled splitting variables along the binary expansion of the point x.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_tailfree_density_product"]
@@ -32,7 +33,14 @@ def ghosal_ch3_tailfree_density_product(V, x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Density of a tail-free random measure as the infinite product of doubled splitting variables along the binary expansion of the point x."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Density of a tail-free random measure as the infinite product of doubled splitting variables along the binary expansion of the point x.",
+        }
+    )
 
 
 def cheatsheet():

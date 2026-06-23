@@ -1,5 +1,7 @@
 """Tests for trimmed_mean."""
-import numpy as np, pytest
+
+import pytest
+
 from morie.fn.tmean import trimmed_mean
 
 

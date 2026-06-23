@@ -1,6 +1,7 @@
 r"""Output of the second layer of the two-layer neural network, taking the first layer activations as input.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_layer2_output"]
@@ -36,8 +37,17 @@ def burkov_lm_ch1_layer2_output(W_2, y_1, b_2_1, phi):
     n = len(W_2)
     result = float(np.mean(W_2))
     se = float(np.std(W_2, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Output of the second layer of the two-layer neural network, taking the first layer activations as input."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Output of the second layer of the two-layer neural network, taking the first layer activations as input.",
+        }
+    )
 
 
 def cheatsheet():
-    return "b107: Output of the second layer of the two-layer neural network, taking the first layer activations as input."
+    return (
+        "b107: Output of the second layer of the two-layer neural network, taking the first layer activations as input."
+    )

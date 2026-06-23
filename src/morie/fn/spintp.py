@@ -1,5 +1,7 @@
 """Kernel intensity estimation for inhomogeneous Poisson process."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_intensity_estimation"]
@@ -32,14 +34,31 @@ def schabenberger_intensity_estimation(points, bandwidth, region):
     points = np.asarray(points, dtype=float)
     n = int(points) if points.ndim == 0 else len(points)
     if points.ndim == 0:
-        return RichResult(payload={"statistic": float('nan'), "p_value": float('nan'), "n": 1, "method": "scalar-input placeholder"})
+        return RichResult(
+            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+        )
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Kernel intensity estimation for inhomogeneous Poisson process"})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "Kernel intensity estimation for inhomogeneous Poisson process",
+            }
+        )
     estimate = np.median(points)
     se = 1.2533 * np.std(points, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Kernel intensity estimation for inhomogeneous Poisson process"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Kernel intensity estimation for inhomogeneous Poisson process",
+        }
+    )
 
 
 def cheatsheet():

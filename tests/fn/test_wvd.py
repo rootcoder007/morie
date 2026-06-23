@@ -1,6 +1,7 @@
 """Tests for wvd.py - Wigner-Ville distribution."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wvd import wigner_ville_fn, wvd
 
 

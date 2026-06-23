@@ -1,6 +1,7 @@
 """Tests for morie.fn.msswt -- missing data weights."""
 
 import numpy as np
+
 from morie.fn.msswt import missing_data_weights, msswt
 
 

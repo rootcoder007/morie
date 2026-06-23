@@ -1,6 +1,7 @@
 """Tests for drspr.dr_spillover."""
+
 import numpy as np
-import pytest
+
 from morie.fn.drspr import dr_spillover
 
 
@@ -12,7 +13,7 @@ def test_drspr_basic():
     exposure = np.random.default_rng(42).normal(0, 1, 100)
     result = dr_spillover(y, D, X, exposure)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_drspr_edge():

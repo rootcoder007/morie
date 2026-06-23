@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Heart rate variability (time-domain) -- Rangayyan Ch 6."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -41,14 +42,12 @@ def rangayyan_hrv(rr_ms):
     mean_nn = float(rr.mean())
     sdnn = float(rr.std(ddof=1))
     d = np.diff(rr)
-    rmssd = float(np.sqrt(np.mean(d ** 2)))
+    rmssd = float(np.sqrt(np.mean(d**2)))
     pnn50 = float(100.0 * np.mean(np.abs(d) > 50.0))
     hr = 60000.0 / mean_nn if mean_nn > 0 else float("nan")
     warnings = []
     if sdnn < 50:
-        warnings.append(
-            "SDNN below 50 ms -- reduced overall variability (Task Force 1996 reference)."
-        )
+        warnings.append("SDNN below 50 ms -- reduced overall variability (Task Force 1996 reference).")
     res = RichResult(
         title="Heart Rate Variability (time domain)",
         summary_lines=[
@@ -60,9 +59,7 @@ def rangayyan_hrv(rr_ms):
             ("Heart rate (bpm)", hr),
         ],
         warnings=warnings,
-        interpretation=(
-            f"Mean HR {hr:.1f} bpm; SDNN {sdnn:.2f} ms; RMSSD {rmssd:.2f} ms."
-        ),
+        interpretation=(f"Mean HR {hr:.1f} bpm; SDNN {sdnn:.2f} ms; RMSSD {rmssd:.2f} ms."),
         payload={
             "meanNN": mean_nn,
             "SDNN": sdnn,

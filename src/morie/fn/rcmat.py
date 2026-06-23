@@ -38,4 +38,4 @@ rcmat = rectangular_matrix
 
 
 def cheatsheet() -> str:
-    return 'rectangular_matrix({}) -> Rectangular matrix formatter.'
+    return "rectangular_matrix({}) -> Rectangular matrix formatter."

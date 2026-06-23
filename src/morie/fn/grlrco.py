@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cosine annealing LR schedule over T steps."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_lr_cosine_annealing"]
@@ -36,7 +38,9 @@ def geron_lr_cosine_annealing(eta_min, eta_max, t, T):
     n = len(eta_min)
     result = float(np.mean(eta_min))
     se = float(np.std(eta_min, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cosine annealing LR schedule over T steps"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Cosine annealing LR schedule over T steps"}
+    )
 
 
 def cheatsheet():

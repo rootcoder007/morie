@@ -1,6 +1,7 @@
 """Tests for bkcgr.burkov_computational_graph."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bkcgr import burkov_computational_graph
 
 
@@ -10,7 +11,7 @@ def test_bkcgr_basic():
     inputs = np.random.default_rng(42).normal(0, 1, 100)
     result = burkov_computational_graph(graph, inputs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bkcgr_edge():

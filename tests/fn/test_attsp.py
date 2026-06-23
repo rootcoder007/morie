@@ -1,6 +1,7 @@
 """Tests for attsp.sparse_attention."""
+
 import numpy as np
-import pytest
+
 from morie.fn.attsp import sparse_attention
 
 
@@ -13,7 +14,7 @@ def test_attsp_basic():
     S = np.random.default_rng(42).normal(0, 1, 100)
     result = sparse_attention(y, Q, K, V, S)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_attsp_edge():

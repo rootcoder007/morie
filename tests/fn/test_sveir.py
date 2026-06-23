@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.sveir import sveir_model
 
 
@@ -23,7 +24,7 @@ class TestSVEIR:
 
     def test_r0(self):
         res = sveir_model(beta=0.6, sigma=0.2, gamma=0.3, p=0.01)
-        assert res.R0 == pytest.approx(2.0, rel=1e-6)
+        assert pytest.approx(2.0, rel=1e-6) == res.R0
 
     def test_invalid_eta(self):
         with pytest.raises(ValueError):

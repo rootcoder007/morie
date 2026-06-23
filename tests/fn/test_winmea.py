@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.winmea import winsorized_mean, winmea
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.winmea import winmea, winsorized_mean
 
 
 class TestWinmea:

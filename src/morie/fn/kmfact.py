@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """FactScore: fraction of atomic claims in a generation that are factually supported."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_factscore"]
@@ -32,7 +34,14 @@ def kamath_factscore(atomic_claims, knowledge_base):
     n = len(atomic_claims)
     result = float(np.mean(atomic_claims))
     se = float(np.std(atomic_claims, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "FactScore: fraction of atomic claims in a generation that are factually supported"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "FactScore: fraction of atomic claims in a generation that are factually supported",
+        }
+    )
 
 
 def cheatsheet():

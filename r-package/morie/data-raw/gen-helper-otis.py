@@ -14,13 +14,14 @@ is extracted from the Ontario MCSCS publication
 `od-restrictiveconfinement-segregation-deaths-dd20251103-datadictionary.xlsx`
 (see audit/otis-dictionary-extract.json + the audit transcript).
 """
+
 from __future__ import annotations
+
 import json
-import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent      # r-package/morie
+ROOT = Path(__file__).resolve().parent.parent  # r-package/morie
 DICT_PATH = ROOT / "inst" / "extdata" / "otis_dictionary.json"
 OUT_PATH = ROOT / "tests" / "testthat" / "helper-otis.R"
 
@@ -54,9 +55,8 @@ def gen_column_expr(var: dict) -> str:
             return f"sample({r_chr_vec(values)}, n, replace = TRUE)"
         # Free-text id field — generate predictable IDs
         if name.endswith("_ID"):
-            return ('sprintf("syn-%05d", '
-                    "sample.int(max(2L, n %/% 4L), n, replace = TRUE))")
-        return f"rep(NA_character_, n)"
+            return 'sprintf("syn-%05d", sample.int(max(2L, n %/% 4L), n, replace = TRUE))'
+        return "rep(NA_character_, n)"
 
     if dtype == "Integer":
         # Counts/durations — modest non-negative integer range
@@ -96,8 +96,7 @@ def main() -> int:
     if not DICT_PATH.is_file():
         print(f"ERROR: dictionary not found at {DICT_PATH}", file=sys.stderr)
         return 2
-    dictionary: dict[str, list[dict]] = json.loads(
-        DICT_PATH.read_text(encoding="utf-8"))
+    dictionary: dict[str, list[dict]] = json.loads(DICT_PATH.read_text(encoding="utf-8"))
 
     # Sort ids so the generated file is deterministic
     ids = sorted(dictionary.keys())
@@ -158,11 +157,9 @@ make_synthetic_otis_datasets_complete <- function(n = 80L, seed = 2L) {
 }
 """
 
-    OUT_PATH.write_text(header + "\n".join(fixtures) + dispatcher,
-                        encoding="utf-8")
+    OUT_PATH.write_text(header + "\n".join(fixtures) + dispatcher, encoding="utf-8")
     print(f"Wrote {OUT_PATH}")
-    print(f"  {len(ids)} datasets, "
-          f"{sum(len(v) for v in dictionary.values())} variables")
+    print(f"  {len(ids)} datasets, {sum(len(v) for v in dictionary.values())} variables")
     return 0
 
 

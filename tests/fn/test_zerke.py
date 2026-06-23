@@ -1,7 +1,6 @@
 """Tests for morie.fn.zerke -- Risk exceedance probability"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zerke import risk_exceedance
 

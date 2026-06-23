@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Coronary artery sound generation model (turbulent flow)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_coronary_sound"]
@@ -34,7 +36,14 @@ def rangayyan_coronary_sound(diameter, flow_velocity, stenosis_pct):
     n = int(diameter) if diameter.ndim == 0 else len(diameter)
     result = float(np.mean(diameter))
     se = float(np.std(diameter, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Coronary artery sound generation model (turbulent flow)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Coronary artery sound generation model (turbulent flow)",
+        }
+    )
 
 
 def cheatsheet():

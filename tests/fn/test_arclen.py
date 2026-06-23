@@ -1,8 +1,9 @@
 """Tests for morie.fn.arclen -- arc length computation."""
 
 import numpy as np
-from morie.fn.arclen import arc_length, arclen
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.arclen import arc_length, arclen
 
 
 class TestArclen:

@@ -1,6 +1,7 @@
 """Tests for volpow.vol_power_variation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.volpow import vol_power_variation
 
 
@@ -10,7 +11,7 @@ def test_volpow_basic():
     p = 5
     result = vol_power_variation(r_intraday, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_volpow_edge():

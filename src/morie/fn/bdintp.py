@@ -1,6 +1,7 @@
 """Bound via intersection of moment conditions."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bound_intersection"]
@@ -34,7 +35,9 @@ def bound_intersection(y, D, moments):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bound via intersection of moment conditions"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bound via intersection of moment conditions"}
+    )
 
 
 def cheatsheet():

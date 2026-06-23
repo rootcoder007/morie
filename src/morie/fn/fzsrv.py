@@ -8,8 +8,10 @@ For non-negative X:
 with W(u) = Phi(u) for the Gaussian kernel.  Asymptotic variance is
 the KDFE variance: S(t)(1-S(t))/n + O(h/n).
 """
+
 import numpy as np
 from scipy import stats as _sps
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_survival_kernel"]
@@ -26,13 +28,11 @@ def _silverman_h(x):
 
 
 def fauzi_survival_kernel(x, t=None, h=None):
-    """Kernel survival estimate at ``t`` with asymptotic 95 percent CI.
-    """
+    """Kernel survival estimate at ``t`` with asymptotic 95 percent CI."""
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 2:
-        return RichResult(payload={"estimate": np.nan, "n": n,
-                                    "method": "fzsrv -- too few obs"})
+        return RichResult(payload={"estimate": np.nan, "n": n, "method": "fzsrv -- too few obs"})
     if t is None:
         t = float(np.median(x))
     if h is None:
@@ -45,16 +45,18 @@ def fauzi_survival_kernel(x, t=None, h=None):
     lo = max(0.0, S_hat - z * se)
     hi = min(1.0, S_hat + z * se)
 
-    return RichResult(payload={
-        "estimate": S_hat,
-        "se": se,
-        "ci_lower": lo,
-        "ci_upper": hi,
-        "t": t,
-        "h": h,
-        "n": n,
-        "method": "Fauzi kernel survival S_hat(t)=1-F_hat_h(t) (Ch 4)",
-    })
+    return RichResult(
+        payload={
+            "estimate": S_hat,
+            "se": se,
+            "ci_lower": lo,
+            "ci_upper": hi,
+            "t": t,
+            "h": h,
+            "n": n,
+            "method": "Fauzi kernel survival S_hat(t)=1-F_hat_h(t) (Ch 4)",
+        }
+    )
 
 
 def cheatsheet():

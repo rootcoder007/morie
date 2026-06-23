@@ -1,6 +1,7 @@
 """Laurent series (with negative powers)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["laurent_series"]

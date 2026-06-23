@@ -1,5 +1,7 @@
 """Isotropy: covariance depends only on lag distance ||h||, not direction."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_isotropy_condition"]
@@ -28,7 +30,14 @@ def schabenberger_isotropy_condition(x=None, *args, **kwargs):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Isotropy: covariance depends only on lag distance ||h||, not direction"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Isotropy: covariance depends only on lag distance ||h||, not direction",
+        }
+    )
 
 
 def cheatsheet():

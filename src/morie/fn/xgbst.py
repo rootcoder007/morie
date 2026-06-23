@@ -1,4 +1,5 @@
 """XGBoost regularized objective -- xgboost if available, sklearn HistGB fallback."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -6,10 +7,19 @@ from ._richresult import RichResult
 __all__ = ["xgboost_objective"]
 
 
-def xgboost_objective(x, y, *, n_estimators=100, learning_rate=0.1,
-                       max_depth=3, reg_lambda=1.0, reg_alpha=0.0,
-                       task="auto", seed=0,
-                       deterministic_seed: int | None = None):
+def xgboost_objective(
+    x,
+    y,
+    *,
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=3,
+    reg_lambda=1.0,
+    reg_alpha=0.0,
+    task="auto",
+    seed=0,
+    deterministic_seed: int | None = None,
+):
     """Boosted-trees with XGBoost's regularized objective.
 
     L = sum_i l(y_i, y_hat_i) + sum_k Omega(f_k),
@@ -49,10 +59,15 @@ def xgboost_objective(x, y, *, n_estimators=100, learning_rate=0.1,
         X = X.reshape(-1, 1)
     n = X.shape[0]
     if task == "auto":
-        task = "classification" if np.issubdtype(y.dtype, np.integer) or set(np.unique(y)).issubset({0, 1}) else "regression"
+        task = (
+            "classification"
+            if np.issubdtype(y.dtype, np.integer) or set(np.unique(y)).issubset({0, 1})
+            else "regression"
+        )
 
     if deterministic_seed is not None:
         from morie._det_rng import r_seed
+
         rs = r_seed("xgbst", deterministic_seed)
     else:
         rs = seed
@@ -60,44 +75,54 @@ def xgboost_objective(x, y, *, n_estimators=100, learning_rate=0.1,
     backend = "xgboost"
     try:
         import xgboost as xgb  # type: ignore[import-not-found]
+
         Cls = xgb.XGBClassifier if task == "classification" else xgb.XGBRegressor
         m = Cls(
-            n_estimators=n_estimators, learning_rate=learning_rate,
-            max_depth=max_depth, reg_lambda=reg_lambda, reg_alpha=reg_alpha,
-            random_state=rs, verbosity=0,
+            n_estimators=n_estimators,
+            learning_rate=learning_rate,
+            max_depth=max_depth,
+            reg_lambda=reg_lambda,
+            reg_alpha=reg_alpha,
+            random_state=rs,
+            verbosity=0,
             eval_metric="logloss" if task == "classification" else "rmse",
         )
         m.fit(X, y)
     except ImportError:
         backend = "sklearn_histgb"
         from sklearn.ensemble import (
-            HistGradientBoostingClassifier, HistGradientBoostingRegressor,
+            HistGradientBoostingClassifier,
+            HistGradientBoostingRegressor,
         )
+
         Cls = HistGradientBoostingClassifier if task == "classification" else HistGradientBoostingRegressor
         m = Cls(
-            max_iter=n_estimators, learning_rate=learning_rate,
-            max_depth=max_depth, l2_regularization=reg_lambda,
+            max_iter=n_estimators,
+            learning_rate=learning_rate,
+            max_depth=max_depth,
+            l2_regularization=reg_lambda,
             random_state=rs,
         )
         m.fit(X, y)
 
     score = float(m.score(X, y))
-    importances = (m.feature_importances_.tolist()
-                   if hasattr(m, "feature_importances_") else None)
-    return RichResult(payload={
-        "estimate": score,
-        "train_score": score,
-        "feature_importances": importances,
-        "backend": backend,
-        "n_estimators": int(n_estimators),
-        "learning_rate": float(learning_rate),
-        "max_depth": int(max_depth),
-        "reg_lambda": float(reg_lambda),
-        "reg_alpha": float(reg_alpha),
-        "task": task,
-        "n": int(n),
-        "method": f"XGBoost-style boosting ({backend}, {task})",
-    })
+    importances = m.feature_importances_.tolist() if hasattr(m, "feature_importances_") else None
+    return RichResult(
+        payload={
+            "estimate": score,
+            "train_score": score,
+            "feature_importances": importances,
+            "backend": backend,
+            "n_estimators": int(n_estimators),
+            "learning_rate": float(learning_rate),
+            "max_depth": int(max_depth),
+            "reg_lambda": float(reg_lambda),
+            "reg_alpha": float(reg_alpha),
+            "task": task,
+            "n": int(n),
+            "method": f"XGBoost-style boosting ({backend}, {task})",
+        }
+    )
 
 
 def cheatsheet():

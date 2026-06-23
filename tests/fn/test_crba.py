@@ -1,7 +1,8 @@
 """Tests for morie.fn.crba — Cronbach's coefficient alpha."""
 
-import pytest
 import numpy as np
+import pytest
+
 from morie.fn import crba
 from morie.fn._containers import RlbRes
 
@@ -11,10 +12,7 @@ def correlated_items():
     """5 items x 100 respondents from correlated normal."""
     rng = np.random.default_rng(42)
     latent = rng.standard_normal(100)
-    items = np.column_stack([
-        latent + rng.standard_normal(100) * 0.3
-        for _ in range(5)
-    ])
+    items = np.column_stack([latent + rng.standard_normal(100) * 0.3 for _ in range(5)])
     return items
 
 

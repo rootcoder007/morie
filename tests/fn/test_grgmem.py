@@ -1,6 +1,7 @@
 """Tests for grgmem.geron_gmm_em_step."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grgmem import geron_gmm_em_step
 
 
@@ -12,7 +13,7 @@ def test_grgmem_basic():
     covars = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_gmm_em_step(X, pi, means, covars)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grgmem_edge():

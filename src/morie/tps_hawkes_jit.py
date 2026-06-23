@@ -16,6 +16,7 @@ The caller (``_neg_loglik_general``) checks ``has_jit_path`` first and
 falls through to the original NumPy implementation only for
 parameter combinations no JIT path covers.
 """
+
 from __future__ import annotations
 
 import math
@@ -56,8 +57,7 @@ except ImportError:  # pragma: no cover -- source checkout w/o built ext
 
 
 @njit(cache=True, fastmath=False)
-def _ll_exp_const(t: np.ndarray, T: float, a0: float,
-                   eta: float, beta: float) -> float:
+def _ll_exp_const(t: np.ndarray, T: float, a0: float, eta: float, beta: float) -> float:
     # box constraints (mirror _neg_loglik_general)
     # beta ∈ [0.01, 100] avoids the well-known Hawkes spike-train
     # degeneracy where β -> ∞ pushes log-lik to +∞ on finite data.
@@ -98,10 +98,18 @@ def _ll_exp_const(t: np.ndarray, T: float, a0: float,
 
 
 @njit(cache=True, fastmath=False)
-def _ll_exp_sin(t: np.ndarray, T: float,
-                 a0: float, a1: float, a2: float, a3: float,
-                 eta: float, beta: float,
-                 grid: np.ndarray, grid_vals: np.ndarray) -> float:
+def _ll_exp_sin(
+    t: np.ndarray,
+    T: float,
+    a0: float,
+    a1: float,
+    a2: float,
+    a3: float,
+    eta: float,
+    beta: float,
+    grid: np.ndarray,
+    grid_vals: np.ndarray,
+) -> float:
     """Exponential kernel × sinusoidal baseline; ν integral via trapezoid grid."""
     if not (1e-6 < eta < 0.999):
         return 1e12
@@ -115,9 +123,7 @@ def _ll_exp_sin(t: np.ndarray, T: float,
     two_pi_y = 2.0 * math.pi / 365.25
     T_safe = T if T > 1.0 else 1.0
     for i in range(n):
-        nu_i = math.exp(a0 + a1 * (t[i] / T_safe)
-                         + a2 * math.sin(two_pi_y * t[i])
-                         + a3 * math.cos(two_pi_y * t[i]))
+        nu_i = math.exp(a0 + a1 * (t[i] / T_safe) + a2 * math.sin(two_pi_y * t[i]) + a3 * math.cos(two_pi_y * t[i]))
         if i == 0:
             lam_i = nu_i
         else:
@@ -141,8 +147,7 @@ def _ll_exp_sin(t: np.ndarray, T: float,
 
 
 @njit(cache=True, fastmath=False, parallel=True)
-def _ll_weibull_const(t: np.ndarray, T: float, a0: float,
-                       eta: float, alpha: float, lam: float) -> float:
+def _ll_weibull_const(t: np.ndarray, T: float, a0: float, eta: float, alpha: float, lam: float) -> float:
     if not (1e-6 < eta < 0.999):
         return 1e12
     if not (0.05 < alpha < 20.0):
@@ -160,7 +165,7 @@ def _ll_weibull_const(t: np.ndarray, T: float, a0: float,
         for j in range(i):
             x = (t[i] - t[j]) / lam
             if x > 1e-12:
-                z = x ** alpha
+                z = x**alpha
                 if z < 700.0:
                     s += (alpha / lam) * (x ** (alpha - 1.0)) * math.exp(-z)
         lam_at[i] = nu + eta * s
@@ -174,7 +179,7 @@ def _ll_weibull_const(t: np.ndarray, T: float, a0: float,
         u = T - t[i]
         if u > 0.0:
             x = u / lam
-            integral += eta * (1.0 - math.exp(-(x ** alpha)))
+            integral += eta * (1.0 - math.exp(-(x**alpha)))
     return -(log_sum - integral)
 
 
@@ -182,10 +187,19 @@ def _ll_weibull_const(t: np.ndarray, T: float, a0: float,
 
 
 @njit(cache=True, fastmath=False, parallel=False)
-def _ll_weibull_sin(t: np.ndarray, T: float,
-                     a0: float, a1: float, a2: float, a3: float,
-                     eta: float, alpha: float, lam: float,
-                     grid: np.ndarray, grid_vals: np.ndarray) -> float:
+def _ll_weibull_sin(
+    t: np.ndarray,
+    T: float,
+    a0: float,
+    a1: float,
+    a2: float,
+    a3: float,
+    eta: float,
+    alpha: float,
+    lam: float,
+    grid: np.ndarray,
+    grid_vals: np.ndarray,
+) -> float:
     if not (1e-6 < eta < 0.999):
         return 1e12
     if not (0.05 < alpha < 20.0):
@@ -199,14 +213,12 @@ def _ll_weibull_sin(t: np.ndarray, T: float,
     T_safe = T if T > 1.0 else 1.0
     log_sum = 0.0
     for i in range(n):
-        nu_i = math.exp(a0 + a1 * (t[i] / T_safe)
-                         + a2 * math.sin(two_pi_y * t[i])
-                         + a3 * math.cos(two_pi_y * t[i]))
+        nu_i = math.exp(a0 + a1 * (t[i] / T_safe) + a2 * math.sin(two_pi_y * t[i]) + a3 * math.cos(two_pi_y * t[i]))
         s = 0.0
         for j in range(i):
             x = (t[i] - t[j]) / lam
             if x > 1e-12:
-                z = x ** alpha
+                z = x**alpha
                 if z < 700.0:  # otherwise exp(-z) underflows; term ≈ 0
                     s += (alpha / lam) * (x ** (alpha - 1.0)) * math.exp(-z)
         lam_i = nu_i + eta * s
@@ -221,7 +233,7 @@ def _ll_weibull_sin(t: np.ndarray, T: float,
         u = T - t[i]
         if u > 0.0:
             x = u / lam
-            integral += eta * (1.0 - math.exp(-(x ** alpha)))
+            integral += eta * (1.0 - math.exp(-(x**alpha)))
     return -(log_sum - integral)
 
 
@@ -229,8 +241,7 @@ def _ll_weibull_sin(t: np.ndarray, T: float,
 
 
 @njit(cache=True, fastmath=False)
-def _ll_gamma_const(t: np.ndarray, T: float, a0: float,
-                     eta: float, alpha: float, beta: float) -> float:
+def _ll_gamma_const(t: np.ndarray, T: float, a0: float, eta: float, alpha: float, beta: float) -> float:
     if not (1e-6 < eta < 0.999):
         return 1e12
     if not (0.05 < alpha < 20.0):
@@ -308,8 +319,7 @@ def _gamma_cdf_regularized(a: float, x: float) -> float:
 
 
 @njit(cache=True, fastmath=False)
-def _ll_lomax_const(t: np.ndarray, T: float, a0: float,
-                     eta: float, alpha: float, c: float) -> float:
+def _ll_lomax_const(t: np.ndarray, T: float, a0: float, eta: float, alpha: float, c: float) -> float:
     n = t.size
     nu = math.exp(a0)
     log_sum = 0.0
@@ -336,10 +346,19 @@ def _ll_lomax_const(t: np.ndarray, T: float, a0: float,
 
 
 @njit(cache=True, fastmath=False, parallel=True)
-def _ll_lomax_sin(t: np.ndarray, T: float,
-                   a0: float, a1: float, a2: float, a3: float,
-                   eta: float, alpha: float, c: float,
-                   grid: np.ndarray, grid_vals: np.ndarray) -> float:
+def _ll_lomax_sin(
+    t: np.ndarray,
+    T: float,
+    a0: float,
+    a1: float,
+    a2: float,
+    a3: float,
+    eta: float,
+    alpha: float,
+    c: float,
+    grid: np.ndarray,
+    grid_vals: np.ndarray,
+) -> float:
     """Omori-type power-law kernel h(u) = (α-1)·c^{α-1}·(u+c)^{-α} (norm. density)
     with sinusoidal baseline.  Recommended for fat-tailed criminological
     excitation where exponential/Weibull misspecify (KS p ≪ 0.05)."""
@@ -357,9 +376,7 @@ def _ll_lomax_sin(t: np.ndarray, T: float,
     log_const = math.log(alpha - 1.0) + (alpha - 1.0) * math.log(c)
     lam_at = np.empty(n)
     for i in prange(n):
-        nu_i = math.exp(a0 + a1 * (t[i] / T_safe)
-                         + a2 * math.sin(two_pi_y * t[i])
-                         + a3 * math.cos(two_pi_y * t[i]))
+        nu_i = math.exp(a0 + a1 * (t[i] / T_safe) + a2 * math.sin(two_pi_y * t[i]) + a3 * math.cos(two_pi_y * t[i]))
         s = 0.0
         for j in range(i):
             u = t[i] - t[j]
@@ -409,38 +426,32 @@ def _gamma_trunc_cutoff(alpha, beta):
     whether the bit-exact truncation degrades to O(n^2) (slow decay),
     in which case the gamma hybrid takes over."""
     import math
+
     log_const = alpha * math.log(beta) - math.lgamma(alpha)
     if alpha > 1.0 + 1e-12:
-        k = ((alpha - 1.0) * math.log(2.0 * (alpha - 1.0) / beta)
-             - (alpha - 1.0))
+        k = (alpha - 1.0) * math.log(2.0 * (alpha - 1.0) / beta) - (alpha - 1.0)
         return 2.0 * (log_const + k + 745.2) / beta
     return max(1.0, (log_const + 745.2) / beta)
 
 
 def has_jit_path(kernel: str, baseline: str) -> bool:
-    if HAS_CORE and baseline == "constant" and kernel in (
-            "exponential", "weibull", "lomax", "gamma"):
+    if HAS_CORE and baseline == "constant" and kernel in ("exponential", "weibull", "lomax", "gamma"):
         return True
-    if HAS_CORE and baseline == "sinusoidal" and kernel in (
-            "exponential", "weibull", "lomax"):
+    if HAS_CORE and baseline == "sinusoidal" and kernel in ("exponential", "weibull", "lomax"):
         return True
     return HAS_NUMBA and (kernel, baseline) in _SUPPORTED
 
 
-def _sin_grid(T: float, a0: float, a1: float, a2: float, a3: float
-              ) -> tuple[np.ndarray, np.ndarray]:
+def _sin_grid(T: float, a0: float, a1: float, a2: float, a3: float) -> tuple[np.ndarray, np.ndarray]:
     n_grid = max(64, int(T) + 1)
     grid = np.linspace(0.0, T, n_grid)
     two_pi_y = 2.0 * math.pi / 365.25
     T_safe = T if T > 1.0 else 1.0
-    vals = np.exp(a0 + a1 * (grid / T_safe)
-                   + a2 * np.sin(two_pi_y * grid)
-                   + a3 * np.cos(two_pi_y * grid))
+    vals = np.exp(a0 + a1 * (grid / T_safe) + a2 * np.sin(two_pi_y * grid) + a3 * np.cos(two_pi_y * grid))
     return grid, vals
 
 
-def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float,
-                    kernel: str, baseline: str) -> float:
+def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, baseline: str) -> float:
     """JIT-routed negative log-likelihood.  Caller must check has_jit_path()."""
     # v0.9.1: constant-baseline kernels run on the compiled C++ core
     # when available -- no numba needed for these paths.
@@ -457,8 +468,7 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float,
             if eta <= 1e-6 or eta >= 0.999 or alpha <= 1e-6 or lam <= 1e-6:
                 return 1e12
             # the sliding-window form is bit-identical and sub-quadratic
-            return _core_ext.hawkes_ll_weibull_const_trunc(
-                t_c, float(T), a0, eta, alpha, lam)
+            return _core_ext.hawkes_ll_weibull_const_trunc(t_c, float(T), a0, eta, alpha, lam)
         if kernel == "lomax":
             a0, eta = float(theta[0]), float(theta[1])
             alpha, c = float(theta[2]), float(theta[3])
@@ -471,10 +481,8 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float,
             # crossover, where it is already cheap.
             if t_c.shape[0] >= _SOE_MIN_N:
                 w, beta_soe, _ = soe_fit_lomax(alpha, c, float(T), tol=1e-8)
-                return _core_ext.hawkes_ll_soe(
-                    t_c, float(T), float(np.exp(a0)), eta, w, beta_soe)
-            return _core_ext.hawkes_ll_lomax_const(
-                t_c, float(T), a0, eta, alpha, c)
+                return _core_ext.hawkes_ll_soe(t_c, float(T), float(np.exp(a0)), eta, w, beta_soe)
+            return _core_ext.hawkes_ll_lomax_const(t_c, float(T), a0, eta, alpha, c)
         if kernel == "gamma":
             a0, eta = float(theta[0]), float(theta[1])
             alpha, beta = float(theta[2]), float(theta[3])
@@ -485,21 +493,14 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float,
             # (exact peak window + matrix-pencil SoE tail). The hybrid
             # perturbs the likelihood by ~1e-6, below the optimizer's
             # tolerance. Truncation stays the exact path everywhere else.
-            if (alpha > 1.0 and t_c.shape[0] >= _SOE_MIN_N
-                    and _gamma_trunc_cutoff(alpha, beta)
-                        >= t_c[-1] - t_c[0]):
+            if alpha > 1.0 and t_c.shape[0] >= _SOE_MIN_N and _gamma_trunc_cutoff(alpha, beta) >= t_c[-1] - t_c[0]:
                 u_split = 2.0 * (alpha - 1.0) / beta
                 w, beta_soe, _ = soe_fit_gamma_tail(alpha, beta, u_split)
-                return _core_ext.hawkes_ll_gamma_hybrid(
-                    t_c, float(T), a0, eta, alpha, beta, u_split,
-                    w, beta_soe)
+                return _core_ext.hawkes_ll_gamma_hybrid(t_c, float(T), a0, eta, alpha, beta, u_split, w, beta_soe)
             # the sliding-window form is bit-identical and sub-quadratic
-            return _core_ext.hawkes_ll_gamma_const_trunc(
-                t_c, float(T), a0, eta, alpha, beta)
-    if HAS_CORE and baseline == "sinusoidal" and kernel in (
-            "exponential", "weibull", "lomax"):
-        a0, a1, a2, a3 = (float(theta[0]), float(theta[1]),
-                          float(theta[2]), float(theta[3]))
+            return _core_ext.hawkes_ll_gamma_const_trunc(t_c, float(T), a0, eta, alpha, beta)
+    if HAS_CORE and baseline == "sinusoidal" and kernel in ("exponential", "weibull", "lomax"):
+        a0, a1, a2, a3 = (float(theta[0]), float(theta[1]), float(theta[2]), float(theta[3]))
         eta = float(theta[4])
         grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
         t_c = np.ascontiguousarray(t, dtype=np.float64)
@@ -509,20 +510,17 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float,
             beta = float(theta[5])
             if eta <= 1e-6 or eta >= 0.999 or beta <= 1e-6:
                 return 1e12
-            return _core_ext.hawkes_ll_exp_sin(
-                t_c, float(T), a0, a1, a2, a3, eta, beta, g_c, gv_c)
+            return _core_ext.hawkes_ll_exp_sin(t_c, float(T), a0, a1, a2, a3, eta, beta, g_c, gv_c)
         if kernel == "weibull":
             alpha, lam = float(theta[5]), float(theta[6])
             if eta <= 1e-6 or eta >= 0.999 or alpha <= 1e-6 or lam <= 1e-6:
                 return 1e12
-            return _core_ext.hawkes_ll_weibull_sin(
-                t_c, float(T), a0, a1, a2, a3, eta, alpha, lam, g_c, gv_c)
+            return _core_ext.hawkes_ll_weibull_sin(t_c, float(T), a0, a1, a2, a3, eta, alpha, lam, g_c, gv_c)
         if kernel == "lomax":
             alpha, c = float(theta[5]), float(theta[6])
             if eta <= 1e-6 or eta >= 0.999 or alpha <= 1.001 or c <= 1e-6:
                 return 1e12
-            return _core_ext.hawkes_ll_lomax_sin(
-                t_c, float(T), a0, a1, a2, a3, eta, alpha, c, g_c, gv_c)
+            return _core_ext.hawkes_ll_lomax_sin(t_c, float(T), a0, a1, a2, a3, eta, alpha, c, g_c, gv_c)
     if not HAS_NUMBA:
         raise RuntimeError("neg_loglik_jit called without Numba available")
 
@@ -550,8 +548,7 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float,
                 return 1e12
             return _ll_lomax_const(t, T, a0, eta, alpha, c)
     elif baseline == "sinusoidal":
-        a0, a1, a2, a3 = (float(theta[0]), float(theta[1]),
-                            float(theta[2]), float(theta[3]))
+        a0, a1, a2, a3 = (float(theta[0]), float(theta[1]), float(theta[2]), float(theta[3]))
         eta = float(theta[4])
         grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
         if kernel == "exponential":
@@ -563,14 +560,12 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float,
             alpha, lam = float(theta[5]), float(theta[6])
             if eta <= 1e-6 or eta >= 0.999 or alpha <= 1e-6 or lam <= 1e-6:
                 return 1e12
-            return _ll_weibull_sin(t, T, a0, a1, a2, a3, eta, alpha, lam,
-                                    grid, grid_vals)
+            return _ll_weibull_sin(t, T, a0, a1, a2, a3, eta, alpha, lam, grid, grid_vals)
         if kernel == "lomax":
             alpha, c = float(theta[5]), float(theta[6])
             if eta <= 1e-6 or eta >= 0.999 or alpha <= 1.001 or c <= 1e-6:
                 return 1e12
-            return _ll_lomax_sin(t, T, a0, a1, a2, a3, eta, alpha, c,
-                                  grid, grid_vals)
+            return _ll_lomax_sin(t, T, a0, a1, a2, a3, eta, alpha, c, grid, grid_vals)
 
     raise ValueError(f"no JIT path for kernel={kernel}, baseline={baseline}")
 
@@ -599,7 +594,8 @@ def _as_cfunc(fn):
         raise ImportError(
             "hawkes_loglik_custom needs numba to compile a plain Python "
             "kernel -- install morie[callbacks], or pass a pre-built "
-            "numba @cfunc.") from exc
+            "numba @cfunc."
+        ) from exc
     return cfunc(types.float64(types.float64))(fn)
 
 
@@ -651,15 +647,16 @@ def hawkes_loglik_custom(t, T, nu, eta, kernel, kernel_integral):
     if not HAS_CORE:
         raise RuntimeError(
             "hawkes_loglik_custom requires the compiled morie C++ core "
-            "(morie._core), which is not available in this install.")
+            "(morie._core), which is not available in this install."
+        )
     # Hold the CFunc objects in locals -- they own the compiled native
     # code, and the synchronous C++ call below dereferences their
     # addresses.
     g_cf = _as_cfunc(kernel)
     G_cf = _as_cfunc(kernel_integral)
     return _core_ext.hawkes_ll_custom(
-        np.ascontiguousarray(t, dtype=np.float64), float(T),
-        float(nu), float(eta), int(g_cf.address), int(G_cf.address))
+        np.ascontiguousarray(t, dtype=np.float64), float(T), float(nu), float(eta), int(g_cf.address), int(G_cf.address)
+    )
 
 
 # --- sum-of-exponentials (SoE) fit, task #73 -------------------------------
@@ -724,15 +721,12 @@ def soe_fit_lomax(alpha, c, horizon, *, tol=1.0e-7, m_max=256):
     s_min = 1.0e-7 / horizon
     s_max = max(40.0 / c, 1.0e3 * s_min)
     log_smin, log_smax = math.log(s_min), math.log(s_max)
-    log_const = (math.log(alpha - 1.0) + (alpha - 1.0) * math.log(c)
-                 - math.lgamma(alpha))
+    log_const = math.log(alpha - 1.0) + (alpha - 1.0) * math.log(c) - math.lgamma(alpha)
 
     # exact kernel on a check grid over [0, horizon] -- the SoE error is
     # measured directly against it, so M is data-driven, not guessed.
-    u_chk = np.concatenate(([0.0],
-                            np.geomspace(horizon * 1e-5, horizon, 400)))
-    g_chk = np.exp(math.log(alpha - 1.0) - math.log(c)
-                   - alpha * np.log1p(u_chk / c))
+    u_chk = np.concatenate(([0.0], np.geomspace(horizon * 1e-5, horizon, 400)))
+    g_chk = np.exp(math.log(alpha - 1.0) - math.log(c) - alpha * np.log1p(u_chk / c))
 
     w = beta = None
     err = float("inf")
@@ -745,17 +739,15 @@ def soe_fit_lomax(alpha, c, horizon, *, tol=1.0e-7, m_max=256):
         trap[0] *= 0.5
         trap[-1] *= 0.5
         rho = np.exp(log_const + (alpha - 1.0) * v - s * c)
-        w = rho * s * trap                   # ds = s dv on the log grid
+        w = rho * s * trap  # ds = s dv on the log grid
         beta = s
         g_soe = (w[None, :] * np.exp(-np.outer(u_chk, s))).sum(axis=1)
         err = float(np.max(np.abs(g_soe - g_chk) / g_chk))
-        if err <= tol or M >= m_max:
+        if err <= tol or m_max <= M:
             break
         M *= 2
 
-    return (np.ascontiguousarray(w, dtype=np.float64),
-            np.ascontiguousarray(beta, dtype=np.float64),
-            err)
+    return (np.ascontiguousarray(w, dtype=np.float64), np.ascontiguousarray(beta, dtype=np.float64), err)
 
 
 # --- matrix-pencil exponential fitter, task #73 (gamma hybrid) -------------
@@ -794,22 +786,22 @@ def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
     if n < 4:
         raise ValueError("matrix pencil needs at least 4 samples")
 
-    pencil = n // 2                       # pencil parameter L
+    pencil = n // 2  # pencil parameter L
     rows = n - pencil
     hankel = np.empty((rows, pencil + 1))
     for i in range(rows):
-        hankel[i] = y[i:i + pencil + 1]
+        hankel[i] = y[i : i + pencil + 1]
 
     _, sv, vh = np.linalg.svd(hankel, full_matrices=False)
     if order is None:
         order = int(np.count_nonzero(sv > rank_tol * sv[0]))
     order = max(1, min(order, pencil))
 
-    v = vh[:order].conj().T               # (pencil+1) x order
+    v = vh[:order].conj().T  # (pencil+1) x order
     z = np.linalg.eigvals(np.linalg.pinv(v[:-1]) @ v[1:])
 
     k = np.arange(n)
-    vander = z[None, :] ** k[:, None]     # n x order
+    vander = z[None, :] ** k[:, None]  # n x order
     residue, *_ = np.linalg.lstsq(vander, y, rcond=None)
 
     with np.errstate(divide="ignore", invalid="ignore"):
@@ -858,17 +850,13 @@ def soe_fit_gamma_tail(alpha, beta, u_split, *, span=20.0, n_samples=240):
     # more singular values -> ~12 modes -> tail relative error ~1e-6;
     # the gamma tail's slowly-varying u**(alpha-1) factor needs them.
     scale = g[0]
-    pole_beta, pole_res = _soe_fit_matrix_pencil(
-        g / scale, dt, rank_tol=1.0e-13)
+    pole_beta, pole_res = _soe_fit_matrix_pencil(g / scale, dt, rank_tol=1.0e-13)
     w = pole_res * scale
 
     if np.any(pole_beta.real <= 0.0):
         raise ValueError("matrix-pencil fit produced a non-decaying mode")
 
     s = u - u_split
-    g_soe = (w[None, :] * np.exp(-pole_beta[None, :] * s[:, None])
-             ).sum(axis=1).real
+    g_soe = (w[None, :] * np.exp(-pole_beta[None, :] * s[:, None])).sum(axis=1).real
     err = float(np.max(np.abs(g_soe - g) / g))
-    return (np.ascontiguousarray(w, dtype=np.complex128),
-            np.ascontiguousarray(pole_beta, dtype=np.complex128),
-            err)
+    return (np.ascontiguousarray(w, dtype=np.complex128), np.ascontiguousarray(pole_beta, dtype=np.complex128), err)

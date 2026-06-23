@@ -1,6 +1,7 @@
 """Fine-Gray subdistribution hazard."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["fine_gray_subdistribution_hazard"]

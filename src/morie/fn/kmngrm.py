@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """N-gram language model conditional probability (MLE)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ngram_language_model"]
@@ -32,7 +34,9 @@ def kamath_ngram_language_model(counts_ngram, counts_prefix):
     n = len(counts_ngram)
     result = float(np.mean(counts_ngram))
     se = float(np.std(counts_ngram, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "N-gram language model conditional probability (MLE)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "N-gram language model conditional probability (MLE)"}
+    )
 
 
 def cheatsheet():

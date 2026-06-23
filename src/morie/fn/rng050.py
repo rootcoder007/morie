@@ -1,6 +1,7 @@
 """Frequency response obtained by evaluating the Laplace transform on the imaginary axis.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_frequency_response_from_laplace"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_frequency_response_from_laplace(h, omega, t, T):
     n = len(h)
     result = float(np.mean(h))
     se = float(np.std(h, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Frequency response obtained by evaluating the Laplace transform on the imaginary axis."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Frequency response obtained by evaluating the Laplace transform on the imaginary axis.",
+        }
+    )
 
 
 def cheatsheet():

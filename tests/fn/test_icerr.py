@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.icerr import incremental_cost_effectiveness_ratio
 
 
@@ -25,7 +26,6 @@ class TestICER:
         assert res["icer"] == np.inf
 
     def test_bootstrap(self):
-        res = incremental_cost_effectiveness_ratio(50000, 30000, 10.0, 8.0,
-                                                   n_bootstrap=100, seed=42)
+        res = incremental_cost_effectiveness_ratio(50000, 30000, 10.0, 8.0, n_bootstrap=100, seed=42)
         assert "bootstrap_icers" in res
         assert len(res["bootstrap_icers"]) == 100

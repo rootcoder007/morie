@@ -1,6 +1,7 @@
 """Test dlaunq."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dlaunq import dlaunq
 
 

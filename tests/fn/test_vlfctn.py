@@ -1,6 +1,7 @@
 """Tests for vlfctn.value_function_eval."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vlfctn import value_function_eval
 
 
@@ -12,7 +13,7 @@ def test_vlfctn_basic():
     regime = np.random.default_rng(42).normal(0, 1, 100)
     result = value_function_eval(y, D, W, regime)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_vlfctn_edge():

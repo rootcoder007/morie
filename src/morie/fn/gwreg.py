@@ -1,14 +1,14 @@
 """Geographically weighted regression (GWR)."""
+
 import numpy as np
 from scipy.spatial.distance import cdist
+
 from ._richresult import RichResult
 
 __all__ = ["geographically_weighted_regression"]
 
 
-def geographically_weighted_regression(x, y, coords,
-                                       bandwidth: float | None = None,
-                                       kernel: str = "gaussian"):
+def geographically_weighted_regression(x, y, coords, bandwidth: float | None = None, kernel: str = "gaussian"):
     """
     Geographically weighted regression (Brunsdon, Fotheringham, Charlton 1996).
 
@@ -57,7 +57,8 @@ def geographically_weighted_regression(x, y, coords,
         else:
             w = np.exp(-0.5 * (d / bandwidth) ** 2)
         sqrt_w = np.sqrt(w)
-        Xw = X * sqrt_w[:, None]; yw = y * sqrt_w
+        Xw = X * sqrt_w[:, None]
+        yw = y * sqrt_w
         XtWX = Xw.T @ Xw
         try:
             beta_i = np.linalg.solve(XtWX, Xw.T @ yw)
@@ -73,14 +74,16 @@ def geographically_weighted_regression(x, y, coords,
         except np.linalg.LinAlgError:
             local_ses[i] = np.nan
 
-    return RichResult(payload={
-        "estimate": local_betas.tolist(),
-        "se": local_ses.tolist(),
-        "bandwidth": float(bandwidth),
-        "kernel": kernel,
-        "n": int(n),
-        "method": f"GWR ({kernel} kernel)",
-    })
+    return RichResult(
+        payload={
+            "estimate": local_betas.tolist(),
+            "se": local_ses.tolist(),
+            "bandwidth": float(bandwidth),
+            "kernel": kernel,
+            "n": int(n),
+            "method": f"GWR ({kernel} kernel)",
+        }
+    )
 
 
 def cheatsheet():

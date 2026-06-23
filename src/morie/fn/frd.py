@@ -91,7 +91,7 @@ def fuzzy_rd(
     X_orig = np.column_stack([np.ones(n), R_loc, T_loc, R_loc * Z_loc])
     resid = Y_loc - X_orig @ beta
     p = 4
-    mse = float(np.sum(resid ** 2)) / max(n - p, 1)
+    mse = float(np.sum(resid**2)) / max(n - p, 1)
     try:
         cov = mse * np.linalg.inv(X_ss.T @ X_ss)
     except np.linalg.LinAlgError:

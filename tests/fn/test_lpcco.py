@@ -1,5 +1,7 @@
 """Tests for lpcco.py - LPC coefficients."""
+
 import numpy as np
+
 from morie.fn.lpcco import lpc_coefficients_fn, lpcco
 
 

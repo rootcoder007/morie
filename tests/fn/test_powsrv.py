@@ -1,6 +1,7 @@
 """Tests for powsrv.power_survey."""
+
 import numpy as np
-import pytest
+
 from morie.fn.powsrv import power_survey
 
 
@@ -12,7 +13,7 @@ def test_powsrv_basic():
     n = 100
     result = power_survey(effect_size, alpha, DEFF, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_powsrv_edge():

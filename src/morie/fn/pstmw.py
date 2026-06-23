@@ -76,4 +76,4 @@ pstmw = ps_trimmed_weights
 
 
 def cheatsheet() -> str:
-    return 'ps_trimmed_weights({}) -> Trimmed IPW weights.'
+    return "ps_trimmed_weights({}) -> Trimmed IPW weights."

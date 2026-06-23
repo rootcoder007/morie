@@ -1,6 +1,7 @@
 """Test opbat."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opbat import opbat
 
 

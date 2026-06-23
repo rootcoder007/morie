@@ -45,4 +45,4 @@ rcdrp = drop_influential_votes
 
 
 def cheatsheet() -> str:
-    return 'drop_influential_votes({}) -> Drop influential votes.'
+    return "drop_influential_votes({}) -> Drop influential votes."

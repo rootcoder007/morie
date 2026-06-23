@@ -1,6 +1,7 @@
 r"""Numbered display equation (10.14) from MVSML chapter 10.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_reproducing_kernel_eq_10_14"]
@@ -40,7 +41,14 @@ def mvsml_reproducing_kernel_eq_10_14(jk, Next, to, update, the, weights):
     n = len(jk)
     result = float(np.mean(jk))
     se = float(np.std(jk, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (10.14) from MVSML chapter 10."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (10.14) from MVSML chapter 10.",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Image-Text Contrastive loss (InfoNCE over a batch)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_image_text_contrastive"]
@@ -34,7 +36,9 @@ def kamath_image_text_contrastive(I_emb, T_emb, tau):
     n = len(I_emb)
     result = float(np.mean(I_emb))
     se = float(np.std(I_emb, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Image-Text Contrastive loss (InfoNCE over a batch)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Image-Text Contrastive loss (InfoNCE over a batch)"}
+    )
 
 
 def cheatsheet():

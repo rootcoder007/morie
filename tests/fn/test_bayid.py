@@ -1,5 +1,7 @@
 """Tests for morie.fn.bayid — Bayesian ideal points."""
+
 import numpy as np
+
 from morie.fn.bayid import bayid
 
 

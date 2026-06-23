@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsstv -- Space-time kriging variance"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsstv import st_kriging_var
 
@@ -14,5 +13,5 @@ class TestStKrigingVar:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = st_kriging_var(np.array([1.,2.,3.]), np.array([0.,1.,2.]))
+        result = st_kriging_var(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
         assert hasattr(result, "statistic")

@@ -1,13 +1,13 @@
 """Tests for morie.fn.cmpvl — compliance violation."""
 
-import pytest
 import numpy as np
-from morie.fn.cmpvl import compliance_violation
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cmpvl import compliance_violation
 
 
 class TestComplianceViolation:
-
     def test_returns_descriptive(self):
         vt = np.array(["curfew", "drug", "curfew", "assault", "drug"])
         result = compliance_violation(vt)

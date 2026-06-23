@@ -83,4 +83,4 @@ depmod = depletion_model
 
 
 def cheatsheet() -> str:
-    return 'depletion_model({}) -> Resource depletion model.'
+    return "depletion_model({}) -> Resource depletion model."

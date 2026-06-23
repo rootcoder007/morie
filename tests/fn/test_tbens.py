@@ -1,6 +1,8 @@
 """Tests for tbens."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tbens import tbens
 
 
@@ -28,4 +30,5 @@ def test_tbens_no_data():
 
 def test_tbens_alias():
     from morie.fn.tbens import tbens
+
     assert tbens is tbens

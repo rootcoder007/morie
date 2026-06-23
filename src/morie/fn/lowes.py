@@ -86,4 +86,4 @@ lowes = lowess
 
 
 def cheatsheet() -> str:
-    return 'lowess({}) -> LOWESS smoother.'
+    return "lowess({}) -> LOWESS smoother."

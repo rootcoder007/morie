@@ -1,6 +1,8 @@
 """Tests for rfchi2."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfchi2 import rfchi2
 
 
@@ -28,4 +30,5 @@ def test_rfchi2_no_data():
 
 def test_rfchi2_alias():
     from morie.fn.rfchi2 import rfchi2
+
     assert rfchi2 is rfchi2

@@ -1,11 +1,9 @@
 """Tests for morie.fn.s_ee -- EE subscale reliability."""
 
-import numpy as np
 from morie.fn.s_ee import subscale_ee
 
 
 class TestSubscaleEE:
-
     def test_returns_all_keys(self, mapq_df):
         result = subscale_ee(mapq_df)
         for key in ("alpha", "omega", "cr", "ave", "n_items", "n"):

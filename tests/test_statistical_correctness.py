@@ -17,10 +17,8 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-import pytest
 
 from morie.causal import (
-    calculate_ipw_weights,
     compute_propensity_scores,
     run_propensity_ipw_analysis,
 )
@@ -28,10 +26,10 @@ from morie.inference import bootstrap_ci, calculate_interaction_power
 from morie.investigation import run_treatment_effects_analysis
 from morie.survey import SurveyDesign
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _minimal_frame(n: int = 20, seed: int = 0) -> pd.DataFrame:
     """Reproducible small frame that satisfies all required columns."""
@@ -57,6 +55,7 @@ def _minimal_frame(n: int = 20, seed: int = 0) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 # DEFECT 1 — survey.py var_weights (probability weights, not freq_weights)
 # ---------------------------------------------------------------------------
+
 
 class TestSurveyWeights:
     """
@@ -102,9 +101,7 @@ class TestSurveyWeights:
         """np.average(y, weights=w) is the canonical weighted mean; cross-check."""
         rng = np.random.default_rng(3)
         n = 50
-        frame = pd.DataFrame(
-            {"v": rng.standard_normal(n), "w": rng.uniform(0.5, 2.0, n)}
-        )
+        frame = pd.DataFrame({"v": rng.standard_normal(n), "w": rng.uniform(0.5, 2.0, n)})
         design = SurveyDesign(frame, weights_col="w")
         result = design.weighted_mean("v")
         expected = float(np.average(frame["v"], weights=frame["w"]))
@@ -114,6 +111,7 @@ class TestSurveyWeights:
 # ---------------------------------------------------------------------------
 # DEFECT 2 — causal.py Hájek ATE estimator
 # ---------------------------------------------------------------------------
+
 
 class TestHajekATE:
     """
@@ -227,6 +225,7 @@ class TestHajekATE:
 # DEFECT 3 — investigation.py IPW-adjusted CATE
 # ---------------------------------------------------------------------------
 
+
 class TestIPWCATEInInvestigation:
     """
     Verify that run_treatment_effects_analysis uses the Hájek estimator
@@ -267,6 +266,7 @@ class TestIPWCATEInInvestigation:
 # DEFECT 4 — inference.py valid power formula
 # ---------------------------------------------------------------------------
 
+
 class TestCalculateInteractionPower:
     """
     Verify that calculate_interaction_power returns values consistent with
@@ -290,8 +290,8 @@ class TestCalculateInteractionPower:
         powers = [calculate_interaction_power(n) for n in sample_sizes]
         for i in range(len(powers) - 1):
             assert powers[i] <= powers[i + 1] + 1e-9, (
-                f"Power decreased from n={sample_sizes[i]} to n={sample_sizes[i+1]}: "
-                f"{powers[i]:.4f} -> {powers[i+1]:.4f}"
+                f"Power decreased from n={sample_sizes[i]} to n={sample_sizes[i + 1]}: "
+                f"{powers[i]:.4f} -> {powers[i + 1]:.4f}"
             )
 
     def test_power_approaches_1_at_large_n(self):
@@ -318,14 +318,14 @@ class TestCalculateInteractionPower:
         old_fabricated = 1.0 - np.exp(-(50 * 0.2) / 50)  # = 1 - exp(-0.2) ≈ 0.181
         # The correct value must differ from the fabricated value by > 0.01
         assert abs(correct_power - old_fabricated) > 0.01, (
-            "Correct power and old fabricated power are suspiciously identical. "
-            "Possible regression to the old formula."
+            "Correct power and old fabricated power are suspiciously identical. Possible regression to the old formula."
         )
 
 
 # ---------------------------------------------------------------------------
 # DEFECT 5 — inference.py bootstrap_ci reproducibility
 # ---------------------------------------------------------------------------
+
 
 class TestBootstrapCIReproducibility:
     """
@@ -380,6 +380,7 @@ class TestBootstrapCIReproducibility:
 # ---------------------------------------------------------------------------
 # DEFECT 2b — compute_propensity_scores preprocessing
 # ---------------------------------------------------------------------------
+
 
 class TestPropensityScorePreprocessing:
     """

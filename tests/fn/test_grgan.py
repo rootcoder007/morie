@@ -1,6 +1,7 @@
 """Tests for grgan.geron_gan_minimax."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grgan import geron_gan_minimax
 
 
@@ -12,7 +13,7 @@ def test_grgan_basic():
     D_fake = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_gan_minimax(real, fake, D_real, D_fake)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grgan_edge():

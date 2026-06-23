@@ -1,6 +1,7 @@
 """Tests for agclop.alphazero_optimizer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agclop import alphazero_optimizer
 
 
@@ -12,7 +13,7 @@ def test_agclop_basic():
     weight_decay = np.random.default_rng(42).normal(0, 1, 100)
     result = alphazero_optimizer(theta, grad, momentum, weight_decay)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_agclop_edge():

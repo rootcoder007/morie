@@ -122,4 +122,4 @@ thmss = record_linkage
 
 
 def cheatsheet() -> str:
-    return 'thmss() -> Probabilistic record linkage between two DataFrames'
+    return "thmss() -> Probabilistic record linkage between two DataFrames"

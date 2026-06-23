@@ -1,6 +1,7 @@
 """Tail effective sample size (5% / 95% quantiles)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["effective_sample_size_tail"]
@@ -30,7 +31,9 @@ def effective_sample_size_tail(chains):
     n = len(chains)
     result = float(np.mean(chains))
     se = float(np.std(chains, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Tail effective sample size (5% / 95% quantiles)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Tail effective sample size (5% / 95% quantiles)"}
+    )
 
 
 def cheatsheet():

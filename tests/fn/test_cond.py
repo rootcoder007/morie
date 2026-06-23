@@ -1,6 +1,8 @@
 """Tests for morie.fn.cond — condition number."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cond import condition_number
 
 

@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.neom import decision_split, neom
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.neom import decision_split, neom
 
 
 class TestNeom:

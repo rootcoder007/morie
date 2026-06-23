@@ -1,6 +1,7 @@
 """Tests for morie.fn.modr — moderation analysis."""
+
 import numpy as np
-import pytest
+
 from morie.fn.modr import moderation_analysis
 
 

@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.zestm import zestm, ZEstimatorResult
+from morie.fn.zestm import ZEstimatorResult, zestm
 
 
 def _mean_psi(xi, theta):

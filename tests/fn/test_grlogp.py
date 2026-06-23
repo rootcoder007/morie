@@ -1,6 +1,7 @@
 """Tests for grlogp.geron_logistic_regression_probability."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grlogp import geron_logistic_regression_probability
 
 
@@ -10,7 +11,7 @@ def test_grlogp_basic():
     theta = 0.0
     result = geron_logistic_regression_probability(X, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grlogp_edge():

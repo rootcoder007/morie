@@ -1,6 +1,8 @@
 """Tests for stkanim."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stkanim import stkanim
 
 
@@ -28,4 +30,5 @@ def test_stkanim_no_data():
 
 def test_stkanim_alias():
     from morie.fn.stkanim import stkanim
+
     assert stkanim is stkanim

@@ -1,7 +1,7 @@
 """Tests for morie.fn.ittab — full item analysis table."""
 
-import numpy as np
 import pandas as pd
+
 from morie.fn.ittab import item_table
 
 
@@ -15,8 +15,17 @@ class TestItemTable:
     def test_expected_columns(self, mapq_df):
         items = [c for c in mapq_df.columns if c.startswith("EE")]
         result = item_table(mapq_df[items])
-        expected_cols = {"item", "mean", "sd", "difficulty", "r_corrected",
-                         "alpha_if_deleted", "floor_pct", "ceiling_pct", "skewness"}
+        expected_cols = {
+            "item",
+            "mean",
+            "sd",
+            "difficulty",
+            "r_corrected",
+            "alpha_if_deleted",
+            "floor_pct",
+            "ceiling_pct",
+            "skewness",
+        }
         assert expected_cols.issubset(set(result.columns))
 
     def test_difficulty_range(self, mapq_df):

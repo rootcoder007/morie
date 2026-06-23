@@ -1,6 +1,7 @@
 """Test abblc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.abblc import abblc
 
 

@@ -1,6 +1,7 @@
 """ML log-likelihood evaluation for LMM."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ml_loglik"]

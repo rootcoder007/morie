@@ -46,7 +46,7 @@ def white_test(
     X_ols = np.column_stack([np.ones(n), X]) if add_intercept else X
     beta = np.linalg.lstsq(X_ols, y, rcond=None)[0]
     e = y - X_ols @ beta
-    e_sq = e ** 2
+    e_sq = e**2
 
     aux_cols = [np.ones(n)]
     for j in range(p):

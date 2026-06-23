@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgpxv -- Pseudo-cross-variogram"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgpxv import pseudo_cross_vario
 
@@ -15,5 +14,5 @@ class TestPseudoCrossVario:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = pseudo_cross_vario(np.random.default_rng(0).uniform(0,1,(5,2)), np.ones(5))
+        result = pseudo_cross_vario(np.random.default_rng(0).uniform(0, 1, (5, 2)), np.ones(5))
         assert hasattr(result, "statistic")

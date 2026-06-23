@@ -1,6 +1,7 @@
 """Tests for rng072.rangayyan_ch3_dft_via_twiddle."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng072 import rangayyan_ch3_dft_via_twiddle
 
 
@@ -13,7 +14,7 @@ def test_rng072_basic():
     N = 100
     result = rangayyan_ch3_dft_via_twiddle(x, n, k, W_N, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng072_edge():

@@ -1,6 +1,7 @@
 """Tests for rng087.rangayyan_ch3_ma_filter_general."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng087 import rangayyan_ch3_ma_filter_general
 
 
@@ -12,7 +13,7 @@ def test_rng087_basic():
     N = 100
     result = rangayyan_ch3_ma_filter_general(x, b_k, n, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng087_edge():

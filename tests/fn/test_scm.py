@@ -1,6 +1,8 @@
 """Tests for morie.fn.scm — structural causal model."""
+
 import numpy as np
 import pytest
+
 from morie.fn.scm import structural_causal_model
 
 

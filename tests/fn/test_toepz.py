@@ -1,5 +1,5 @@
 """Tests for toeplitz_matrix."""
-import numpy as np
+
 from morie.fn.toepz import toeplitz_matrix, toepz
 
 

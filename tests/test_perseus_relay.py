@@ -2,16 +2,12 @@
 
 from __future__ import annotations
 
-import json
-import threading
-import time
 from unittest.mock import patch
 
 from morie.agent import AgentResponse, PerseusCloudAgent
 
 
 class TestPerseusCloudAgent:
-
     @patch("morie.perseus_relay.PerseusCloudClient.ask")
     def test_chat_returns_agent_response(self, mock_ask):
         mock_ask.return_value = {
@@ -55,40 +51,43 @@ class TestPerseusCloudAgent:
 
 
 class TestPerseusCloudClient:
-
     def test_client_init(self):
         from morie.perseus_relay import PerseusCloudClient
+
         client = PerseusCloudClient("http://example.com:8421", token="secret")
         assert client.url == "http://example.com:8421"
         assert client.token == "secret"
 
     def test_client_strips_trailing_slash(self):
         from morie.perseus_relay import PerseusCloudClient
+
         client = PerseusCloudClient("http://example.com:8421/")
         assert client.url == "http://example.com:8421"
 
 
 class TestCreateAgentCloud:
-
     def test_create_agent_with_cloud_url(self):
         from morie.agent import PerseusCloudAgent, create_agent
+
         agent = create_agent(cloud_url="http://example.com:8421")
         assert isinstance(agent, PerseusCloudAgent)
 
     @patch.dict("os.environ", {"PERSEUS_CLOUD_URL": "http://test:8421"})
     def test_create_agent_from_env(self):
         from morie.agent import PerseusCloudAgent, create_agent
+
         agent = create_agent()
         assert isinstance(agent, PerseusCloudAgent)
 
 
 class TestRelayServer:
-
     def test_handler_import(self):
         from morie.perseus_relay import PerseusRelayHandler
+
         assert hasattr(PerseusRelayHandler, "do_POST")
         assert hasattr(PerseusRelayHandler, "do_GET")
 
     def test_serve_function_exists(self):
         from morie.perseus_relay import serve
+
         assert callable(serve)

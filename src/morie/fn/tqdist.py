@@ -1,5 +1,7 @@
 """Lemma 3.5: ProdQJL distortion bound via Bernstein."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_distortion_bound"]
@@ -31,7 +33,9 @@ def turboquant_distortion_bound(eps, delta):
     n = len(eps)
     result = float(np.mean(eps))
     se = float(np.std(eps, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Lemma 3.5: ProdQJL distortion bound via Bernstein"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Lemma 3.5: ProdQJL distortion bound via Bernstein"}
+    )
 
 
 def cheatsheet():

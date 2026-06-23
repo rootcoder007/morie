@@ -1,6 +1,7 @@
 """Test dtgpd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtgpd import dtgpd
 
 

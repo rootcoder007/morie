@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ECG waveform feature extraction (P, QRS, T amplitudes and durations)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ecg_features"]
@@ -34,7 +36,14 @@ def rangayyan_ecg_features(ecg, fs, r_peaks):
     n = int(ecg) if ecg.ndim == 0 else len(ecg)
     result = float(np.mean(ecg))
     se = float(np.std(ecg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ECG waveform feature extraction (P, QRS, T amplitudes and durations)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "ECG waveform feature extraction (P, QRS, T amplitudes and durations)",
+        }
+    )
 
 
 def cheatsheet():

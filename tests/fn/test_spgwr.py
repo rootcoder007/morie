@@ -1,6 +1,7 @@
 """Tests for spgwr.schabenberger_gwr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spgwr import schabenberger_gwr
 
 
@@ -12,7 +13,7 @@ def test_spgwr_basic():
     bandwidth = 0.3
     result = schabenberger_gwr(x, y, coords, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spgwr_edge():

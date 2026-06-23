@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.gcplx import gaussian_complexity
 
 
@@ -18,9 +19,7 @@ class TestGaussianComplexity:
         rng = np.random.default_rng(42)
         X = rng.standard_normal((100, 5))
         r = gaussian_complexity(X)
-        assert r["rademacher_upper"] == pytest.approx(
-            r["gaussian_complexity"] * np.sqrt(np.pi / 2)
-        )
+        assert r["rademacher_upper"] == pytest.approx(r["gaussian_complexity"] * np.sqrt(np.pi / 2))
 
     def test_1d_input(self):
         r = gaussian_complexity(np.array([1.0, 2.0, 3.0, 4.0]))

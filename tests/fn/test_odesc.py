@@ -1,6 +1,7 @@
 """Tests for morie.fn.odesc — OTIS demographic summary."""
 
 import pandas as pd
+
 from morie.fn.odesc import otis_demographic_summary
 
 

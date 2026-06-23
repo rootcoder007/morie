@@ -12,10 +12,11 @@ Deep learning. Nature, 521(7553), 436-444.
 __all__ = ["mxpl2"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 
-def mxpl2(x, pool_size=2, stride=None, padding='valid'):
+def mxpl2(x, pool_size=2, stride=None, padding="valid"):
     """
     2D max pooling.
 
@@ -43,15 +44,15 @@ def mxpl2(x, pool_size=2, stride=None, padding='valid'):
     batch, height, width = x.shape
     stride = stride or pool_size
 
-    if padding == 'valid':
+    if padding == "valid":
         pad_h, pad_w = 0, 0
-    elif padding == 'same':
+    elif padding == "same":
         pad_h = (pool_size - 1) // 2
         pad_w = (pool_size - 1) // 2
     else:
         raise ValueError("padding must be 'valid' or 'same'")
 
-    x_padded = np.pad(x, ((0, 0), (pad_h, pad_h), (pad_w, pad_w)), mode='constant', constant_values=-np.inf)
+    x_padded = np.pad(x, ((0, 0), (pad_h, pad_h), (pad_w, pad_w)), mode="constant", constant_values=-np.inf)
     out_h = (x_padded.shape[1] - pool_size) // stride + 1
     out_w = (x_padded.shape[2] - pool_size) // stride + 1
 
@@ -60,12 +61,10 @@ def mxpl2(x, pool_size=2, stride=None, padding='valid'):
 
     for i in range(out_h):
         for j in range(out_w):
-            window = x_padded[:, i*stride:i*stride+pool_size, j*stride:j*stride+pool_size]
+            window = x_padded[:, i * stride : i * stride + pool_size, j * stride : j * stride + pool_size]
             output[:, i, j] = np.max(window, axis=(1, 2))
             for b in range(batch):
-                max_idx = np.unravel_index(
-                    np.argmax(window[b]), window[b].shape
-                )
-                mask[b, i*stride+max_idx[0], j*stride+max_idx[1]] = 1
+                max_idx = np.unravel_index(np.argmax(window[b]), window[b].shape)
+                mask[b, i * stride + max_idx[0], j * stride + max_idx[1]] = 1
 
     return RichResult(payload={"output": output, "mask": mask})

@@ -1,6 +1,7 @@
 """Tests for hrzdeconv.horowitz_deconvolution_density."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzdeconv import horowitz_deconvolution_density
 
 
@@ -11,7 +12,7 @@ def test_hrzdeconv_basic():
     bandwidth = 0.3
     result = horowitz_deconvolution_density(w, eps_density, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzdeconv_edge():

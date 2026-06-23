@@ -1,6 +1,7 @@
 """Functional-Class Fingerprint radius 4 (FCFP4)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["fcfp_4_fingerprint"]
@@ -32,7 +33,9 @@ def fcfp_4_fingerprint(smiles, n_bits):
     n = len(smiles)
     result = float(np.mean(smiles))
     se = float(np.std(smiles, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Functional-Class Fingerprint radius 4 (FCFP4)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Functional-Class Fingerprint radius 4 (FCFP4)"}
+    )
 
 
 def cheatsheet():

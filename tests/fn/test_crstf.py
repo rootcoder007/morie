@@ -1,7 +1,9 @@
 """Test crest_factor_fn."""
+
 import numpy as np
-from morie.fn.crstf import crest_factor_fn, alias
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.crstf import alias, crest_factor_fn
 
 
 class TestCrestFactorFn:

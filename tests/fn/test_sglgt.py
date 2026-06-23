@@ -1,5 +1,7 @@
 """Tests for spatial logistic regression."""
+
 import numpy as np
+
 from morie.fn.sglgt import sglgt
 
 
@@ -18,6 +20,7 @@ def test_sglgt_smoke():
 
 def test_cheatsheet():
     from morie.fn.sglgt import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

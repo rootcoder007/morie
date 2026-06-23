@@ -1,6 +1,7 @@
 """Test buffr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.buffr import buffr
 
 

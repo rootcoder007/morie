@@ -1,6 +1,7 @@
 """Tests for evdedh.evt_dekkers_einmahl_dehaan."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evdedh import evt_dekkers_einmahl_dehaan
 
 
@@ -10,7 +11,7 @@ def test_evdedh_basic():
     k = 5
     result = evt_dekkers_einmahl_dehaan(x, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evdedh_edge():

@@ -1,7 +1,7 @@
 """Tests for morie.fn.isval."""
 
 import numpy as np
-import pytest
+
 from morie.fn.isval import isval
 
 

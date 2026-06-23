@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gradient of K-class softmax cross-entropy w.r.t. Theta_k."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_softmax_cost_gradient"]
@@ -34,7 +36,14 @@ def geron_softmax_cost_gradient(X, Y, theta):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gradient of K-class softmax cross-entropy w.r.t. Theta_k"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Gradient of K-class softmax cross-entropy w.r.t. Theta_k",
+        }
+    )
 
 
 def cheatsheet():

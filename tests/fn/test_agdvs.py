@@ -1,6 +1,7 @@
 """Test agdvs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agdvs import agdvs
 
 

@@ -1,6 +1,8 @@
 """Tests for vdpnts."""
+
 import numpy as np
 import pytest
+
 from morie.fn.vdpnts import vdpnts
 
 
@@ -28,4 +30,5 @@ def test_vdpnts_no_data():
 
 def test_vdpnts_alias():
     from morie.fn.vdpnts import vdpnts
+
     assert vdpnts is vdpnts

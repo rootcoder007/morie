@@ -1,6 +1,9 @@
 """Tests for propensity_match."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.psmch import propensity_match
+
 
 class TestPSMatch:
     def test_basic(self):

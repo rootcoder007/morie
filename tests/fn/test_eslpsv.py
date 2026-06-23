@@ -1,6 +1,7 @@
 """Tests for eslpsv.esl_pca_svd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslpsv import esl_pca_svd
 
 
@@ -10,7 +11,7 @@ def test_eslpsv_basic():
     k = 5
     result = esl_pca_svd(X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslpsv_edge():

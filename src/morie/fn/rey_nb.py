@@ -9,7 +9,9 @@ from scipy.stats import norm
 from morie.fn._containers import RegressionResult
 
 
-def rey_nb(df, y: str = "y", x: list | str = "x", alpha_nb: float = 1.0, alpha: float = 0.05, cdf=None) -> RegressionResult:
+def rey_nb(
+    df, y: str = "y", x: list | str = "x", alpha_nb: float = 1.0, alpha: float = 0.05, cdf=None
+) -> RegressionResult:
     r"""
     Negative binomial regression via maximum likelihood.
 

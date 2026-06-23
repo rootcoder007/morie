@@ -10,10 +10,12 @@ from morie.fn.holo_m import holo_mosaic
 
 class TestHoloMosaic:
     def test_returns_figure(self):
-        df = pd.DataFrame({
-            "row": ["A", "A", "B", "B", "B", "C"],
-            "col": ["x", "y", "x", "x", "y", "x"],
-        })
+        df = pd.DataFrame(
+            {
+                "row": ["A", "A", "B", "B", "B", "C"],
+                "col": ["x", "y", "x", "x", "y", "x"],
+            }
+        )
         fig = holo_mosaic(df, "row", "col")
         assert fig is not None
         assert type(fig).__name__ == "Figure"

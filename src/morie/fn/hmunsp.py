@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Unsupervised pretraining: learn representation via reconstruction before labels."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_unsupervised_pretraining"]
@@ -34,7 +36,14 @@ def geron_unsupervised_pretraining(X_unlab, X_lab, y_lab):
     n = len(X_unlab)
     result = float(np.mean(X_unlab))
     se = float(np.std(X_unlab, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Unsupervised pretraining: learn representation via reconstruction before labels"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Unsupervised pretraining: learn representation via reconstruction before labels",
+        }
+    )
 
 
 def cheatsheet():

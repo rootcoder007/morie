@@ -10,7 +10,9 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['spcgm']
+__all__ = ["spcgm"]
+
+
 def spcgm(
     x: np.ndarray,
     fs: float = 1.0,
@@ -46,8 +48,7 @@ def spcgm(
 
     x = np.asarray(x, dtype=float).ravel()
     seg = min(nperseg, len(x))
-    f, t, Sxx = spectrogram(x, fs=fs, nperseg=seg, noverlap=noverlap,
-                            window=window, nfft=nfft)
+    f, t, Sxx = spectrogram(x, fs=fs, nperseg=seg, noverlap=noverlap, window=window, nfft=nfft)
 
     return DescriptiveResult(
         name="spcgm",

@@ -1,6 +1,7 @@
 """Tests for joses.joseph_simple_exponential_smoothing."""
+
 import numpy as np
-import pytest
+
 from morie.fn.joses import joseph_simple_exponential_smoothing
 
 
@@ -11,7 +12,7 @@ def test_joses_basic():
     horizon = np.random.default_rng(42).normal(0, 1, 100)
     result = joseph_simple_exponential_smoothing(y, alpha, horizon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_joses_edge():

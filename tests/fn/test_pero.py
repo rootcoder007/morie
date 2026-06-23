@@ -1,6 +1,7 @@
 """Tests for pero.prioritized_experience_replay."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pero import prioritized_experience_replay
 
 
@@ -11,7 +12,7 @@ def test_pero_basic():
     beta = 0.8
     result = prioritized_experience_replay(buffer, alpha, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pero_edge():

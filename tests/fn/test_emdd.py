@@ -1,5 +1,7 @@
 """Tests for earth_mover_dist."""
+
 import pytest
+
 from morie.fn.emdd import earth_mover_dist, emdd
 
 

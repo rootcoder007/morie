@@ -1,6 +1,7 @@
 """Complex cepstrum of a signal with a basic wavelet and an echo (impulses at multiples of n_0).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_complex_cepstrum_signal_with_echo"]
@@ -36,7 +37,14 @@ def rangayyan_ch4_complex_cepstrum_signal_with_echo(h_hat, a, n_0, n):
     n = len(h_hat)
     result = float(np.mean(h_hat))
     se = float(np.std(h_hat, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Complex cepstrum of a signal with a basic wavelet and an echo (impulses at multiples of n_0)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Complex cepstrum of a signal with a basic wavelet and an echo (impulses at multiples of n_0).",
+        }
+    )
 
 
 def cheatsheet():

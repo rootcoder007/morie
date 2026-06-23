@@ -1,6 +1,7 @@
 """Test clfcm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clfcm import clfcm
 
 

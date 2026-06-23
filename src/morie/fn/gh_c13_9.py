@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Levy measure characterization of NTR process."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ntr_levy"]
@@ -30,7 +32,9 @@ def ghosal_ntr_levy(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Levy measure characterization of NTR process"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Levy measure characterization of NTR process"}
+    )
 
 
 def cheatsheet():

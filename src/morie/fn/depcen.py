@@ -1,6 +1,7 @@
 """Hazard model with dependent censoring (copula)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dependent_censoring_hazard"]
@@ -34,7 +35,9 @@ def dependent_censoring_hazard(time, event, X):
     n = len(time)
     result = float(np.mean(time))
     se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hazard model with dependent censoring (copula)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Hazard model with dependent censoring (copula)"}
+    )
 
 
 def cheatsheet():

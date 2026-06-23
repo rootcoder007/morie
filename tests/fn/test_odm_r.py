@@ -1,6 +1,7 @@
 """Tests for morie.fn.odm_r — Demographic profile per region."""
 
 import pandas as pd
+
 from morie.fn.odm_r import otis_demo_region
 
 

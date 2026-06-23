@@ -96,4 +96,4 @@ ssim1 = ssim
 
 
 def cheatsheet() -> str:
-    return 'ssim({}) -> Fidelity metric (SSIM).'
+    return "ssim({}) -> Fidelity metric (SSIM)."

@@ -1,6 +1,7 @@
 """Test masctc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.masctc import masctc
 
 

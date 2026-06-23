@@ -1,6 +1,7 @@
 """Tests for kmstgn.kamath_summarize_from_feedback."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmstgn import kamath_summarize_from_feedback
 
 
@@ -13,7 +14,7 @@ def test_kmstgn_basic():
     beta = 0.8
     result = kamath_summarize_from_feedback(preferences, rewards, pi_logprobs, ref_logprobs, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmstgn_edge():

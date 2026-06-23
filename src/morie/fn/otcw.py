@@ -1,6 +1,7 @@
 """Cyclical monotonicity check for a transport map."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_cyclical_weight"]
@@ -36,7 +37,9 @@ def ot_cyclical_weight(X, Y, C, perm):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cyclical monotonicity check for a transport map"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Cyclical monotonicity check for a transport map"}
+    )
 
 
 def cheatsheet():

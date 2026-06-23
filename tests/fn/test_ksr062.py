@@ -1,6 +1,7 @@
 """Tests for ksr062.kosorok_ch3_pathwise_derivative."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr062 import kosorok_ch3_pathwise_derivative
 
 
@@ -15,7 +16,7 @@ def test_ksr062_basic():
     eta = np.random.default_rng(42).normal(0, 1, 100)
     result = kosorok_ch3_pathwise_derivative(psi, P_t, l_dot, g, a, theta, eta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr062_edge():

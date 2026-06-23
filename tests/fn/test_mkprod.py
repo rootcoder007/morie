@@ -1,6 +1,7 @@
 """Tests for mkprod.mackinnon_distribution_products."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mkprod import mackinnon_distribution_products
 
 
@@ -12,7 +13,7 @@ def test_mkprod_basic():
     se_b = np.random.default_rng(42).normal(0, 1, 100)
     result = mackinnon_distribution_products(a, b, se_a, se_b)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_mkprod_edge():

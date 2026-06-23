@@ -1,6 +1,7 @@
 """Tests for moelyr.moe_layer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.moelyr import moe_layer
 
 
@@ -13,7 +14,7 @@ def test_moelyr_basic():
     top_k = np.random.default_rng(42).normal(0, 1, 100)
     result = moe_layer(y, x, W_g, experts, top_k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_moelyr_edge():

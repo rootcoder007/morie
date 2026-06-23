@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Word2Vec skip-gram log-likelihood (one center, context window c)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_word2vec_skipgram"]
@@ -36,7 +38,14 @@ def kamath_word2vec_skipgram(center_indices, context_indices, V, U):
     n = len(center_indices)
     result = float(np.mean(center_indices))
     se = float(np.std(center_indices, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Word2Vec skip-gram log-likelihood (one center, context window c)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Word2Vec skip-gram log-likelihood (one center, context window c)",
+        }
+    )
 
 
 def cheatsheet():

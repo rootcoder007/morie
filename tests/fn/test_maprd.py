@@ -1,6 +1,7 @@
 """Test maprd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.maprd import maprd
 
 

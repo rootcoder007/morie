@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptkda -- Adaptive kernel density"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptkda import kde_adaptive
 

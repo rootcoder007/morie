@@ -1,6 +1,7 @@
 """Tests for etsmod.ets."""
+
 import numpy as np
-import pytest
+
 from morie.fn.etsmod import ets
 
 
@@ -12,7 +13,7 @@ def test_etsmod_basic():
     season = np.random.default_rng(42).normal(0, 1, 100)
     result = ets(y, error, trend, season)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_etsmod_edge():

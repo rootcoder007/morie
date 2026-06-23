@@ -5,6 +5,7 @@ first sample.  Asymptotically equivalent to Terry-Hoeffding; the
 two differ only in the boundary correction used to invert the
 ranks back to the normal scale.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -33,27 +34,34 @@ def van_der_waerden_test(x, y):
     m, n = int(x.size), int(y.size)
     N = m + n
     if m < 2 or n < 2:
-        return RichResult(payload={
-            "statistic": np.nan, "p_value": np.nan, "z": np.nan,
-            "n": N, "m": m,
-            "method": "Van der Waerden normal-scores test",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "z": np.nan,
+                "n": N,
+                "m": m,
+                "method": "Van der Waerden normal-scores test",
+            }
+        )
     pooled = np.concatenate([x, y])
     ranks = stats.rankdata(pooled)
     scores = stats.norm.ppf(ranks / (N + 1.0))
     T = float(scores[:m].sum())
-    sum_s2 = float((scores ** 2).sum())
+    sum_s2 = float((scores**2).sum())
     Var_T = (m * n / float(N * (N - 1))) * sum_s2
     z = T / np.sqrt(Var_T) if Var_T > 0 else np.nan
     p = 2.0 * (1.0 - stats.norm.cdf(abs(z))) if np.isfinite(z) else np.nan
-    return RichResult(payload={
-        "statistic": T,
-        "p_value": float(p),
-        "z": float(z),
-        "n": N,
-        "m": m,
-        "method": "Van der Waerden normal-scores test",
-    })
+    return RichResult(
+        payload={
+            "statistic": T,
+            "p_value": float(p),
+            "z": float(z),
+            "n": N,
+            "m": m,
+            "method": "Van der Waerden normal-scores test",
+        }
+    )
 
 
 def cheatsheet():

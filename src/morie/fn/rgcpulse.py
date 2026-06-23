@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Carotid pulse waveform feature extraction."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_carotid_pulse"]
@@ -32,7 +34,9 @@ def rangayyan_carotid_pulse(pulse, fs):
     n = int(pulse) if pulse.ndim == 0 else len(pulse)
     result = float(np.mean(pulse))
     se = float(np.std(pulse, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Carotid pulse waveform feature extraction"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Carotid pulse waveform feature extraction"}
+    )
 
 
 def cheatsheet():

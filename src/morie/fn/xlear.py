@@ -10,6 +10,7 @@ Kunzel, S. R., Sekhon, J. S., Bickel, P. J., & Yu, B. (2019).
 Metalearners for estimating heterogeneous treatment effects using
 machine learning. *PNAS*, 116(10), 4156-4165.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -97,8 +98,8 @@ def xlear(
     mu0 = Xa @ beta0
 
     # Stage 2: imputed pseudo-outcomes
-    D1 = Y[idx1] - mu0[idx1]          # treated pseudo-residuals
-    D0 = mu1[idx0] - Y[idx0]          # control pseudo-residuals
+    D1 = Y[idx1] - mu0[idx1]  # treated pseudo-residuals
+    D0 = mu1[idx0] - Y[idx0]  # control pseudo-residuals
 
     # Stage 3: cross-models
     gamma1 = np.linalg.lstsq(Xa[idx1], D1, rcond=None)[0]

@@ -1,6 +1,7 @@
 """Tests for morie.fn.mhwat -- wait time analysis."""
 
 import pytest
+
 from morie.fn.mhwat import wait_time_analysis
 
 

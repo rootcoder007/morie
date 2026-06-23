@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Peephole LSTM cell: gates see cell state c too."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_peephole_lstm_cell"]
@@ -56,7 +58,9 @@ def geron_peephole_lstm_cell(x_t, h_prev, c_prev, Wf, Wi, Wg, Wo, Uf, Ui, Uo, bf
     n = len(x_t)
     result = float(np.mean(x_t))
     se = float(np.std(x_t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Peephole LSTM cell: gates see cell state c too"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Peephole LSTM cell: gates see cell state c too"}
+    )
 
 
 def cheatsheet():

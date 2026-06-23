@@ -1,6 +1,7 @@
 """Tests for opnclp.open_clip."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opnclp import open_clip
 
 
@@ -11,7 +12,7 @@ def test_opnclp_basic():
     batch = np.random.default_rng(42).normal(0, 1, 100)
     result = open_clip(images, texts, batch)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_opnclp_edge():

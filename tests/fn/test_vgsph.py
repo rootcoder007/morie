@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgsph -- Spherical variogram model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgsph import vario_spherical
 
@@ -15,5 +14,5 @@ class TestVarioSpherical:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = vario_spherical(np.random.default_rng(0).uniform(0,1,(5,2)), np.ones(5))
+        result = vario_spherical(np.random.default_rng(0).uniform(0, 1, (5, 2)), np.ones(5))
         assert hasattr(result, "statistic")

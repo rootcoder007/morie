@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """(eps, delta)-differential privacy definition."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_differential_privacy"]
@@ -32,7 +34,9 @@ def kamath_differential_privacy(eps, delta):
     n = len(eps)
     result = float(np.mean(eps))
     se = float(np.std(eps, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "(eps, delta)-differential privacy definition"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "(eps, delta)-differential privacy definition"}
+    )
 
 
 def cheatsheet():

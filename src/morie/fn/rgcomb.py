@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Comb filter for periodic artifact removal."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_comb_filter"]
@@ -32,7 +34,9 @@ def rangayyan_comb_filter(period_samples, fs):
     n = int(period_samples) if period_samples.ndim == 0 else len(period_samples)
     result = float(np.mean(period_samples))
     se = float(np.std(period_samples, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Comb filter for periodic artifact removal"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Comb filter for periodic artifact removal"}
+    )
 
 
 def cheatsheet():

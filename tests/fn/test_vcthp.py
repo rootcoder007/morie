@@ -1,8 +1,9 @@
 """Tests for morie.fn.vcthp — victim help seeking."""
 
 import pytest
-from morie.fn.vcthp import victim_help_seeking
+
 from morie.fn._containers import CrimeResult
+from morie.fn.vcthp import victim_help_seeking
 
 
 class TestVictimHelpSeeking:

@@ -1,6 +1,7 @@
 """Tests for chronos.chronos_foundation_ts."""
+
 import numpy as np
-import pytest
+
 from morie.fn.chronos import chronos_foundation_ts
 
 
@@ -10,7 +11,7 @@ def test_chronos_basic():
     horizon = np.random.default_rng(42).normal(0, 1, 100)
     result = chronos_foundation_ts(y, horizon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_chronos_edge():

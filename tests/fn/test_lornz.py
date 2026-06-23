@@ -1,6 +1,8 @@
 """Tests for morie.fn.lornz."""
+
 import numpy as np
 import pytest
+
 from morie.fn.lornz import lorenz_curve
 
 
@@ -16,6 +18,7 @@ def test_lornz_smoke():
 
 def test_cheatsheet():
     from morie.fn.lornz import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

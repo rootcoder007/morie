@@ -1,6 +1,7 @@
 """Constrained / safe RL (CMDP)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["safe_rl"]

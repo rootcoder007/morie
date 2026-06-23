@@ -1,7 +1,7 @@
 """Tests for morie.fn.simin — Single-index minimum distance."""
 
 import numpy as np
-import pytest
+
 from morie.fn.simin import simin
 
 

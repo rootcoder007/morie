@@ -1,6 +1,7 @@
 """Test rsica."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsica import rsica
 
 

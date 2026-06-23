@@ -1,6 +1,8 @@
 """Tests for hh.py - Hodgkin-Huxley neuron model."""
+
 import numpy as np
-from morie.fn.hh import hodgkin_huxley_fn, hh
+
+from morie.fn.hh import hh, hodgkin_huxley_fn
 
 
 def test_hh_returns_signal_result():

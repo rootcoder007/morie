@@ -1,6 +1,7 @@
 """RotatE -- rotation in complex space."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rotate"]

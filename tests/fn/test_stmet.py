@@ -1,6 +1,8 @@
 """Tests for stmet."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stmet import stmet
 
 
@@ -28,4 +30,5 @@ def test_stmet_no_data():
 
 def test_stmet_alias():
     from morie.fn.stmet import stmet
+
     assert stmet is stmet

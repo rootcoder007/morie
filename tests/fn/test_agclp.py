@@ -1,6 +1,7 @@
 """Test agclp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agclp import agclp
 
 

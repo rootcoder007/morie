@@ -7,7 +7,6 @@ from morie.fn.knear import knn_weights
 
 
 class TestKNNWeights:
-
     def test_each_row_has_k_neighbors(self):
         """Each row of the weight matrix has exactly k nonzero entries."""
         coords = np.array([[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]], dtype=float)

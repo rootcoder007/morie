@@ -33,9 +33,8 @@ specific tests without re-running the whole pipeline.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterable, Optional
+from typing import Any
 
-import numpy as np
 import pandas as pd
 
 from morie.arsau_datasets import (
@@ -51,11 +50,9 @@ from morie.mrm_uof import (
     mrm_uof_data_quality_audit,
     mrm_uof_demographic_disparity,
     mrm_uof_force_concentration,
-    mrm_uof_region_locality,
     mrm_uof_weapon_diversity,
     mrm_uof_yoy_change,
 )
-
 
 # Column-name constants for the ARSAU schemas.
 _MAIN_FORCE_COL = "PoliceService"
@@ -87,7 +84,7 @@ def _wrap(
     call: str,
     sub_results: dict[str, RichResult],
     data: pd.DataFrame,
-    sidecar: Optional[dict],
+    sidecar: dict | None,
     year_or_range: str,
     kind: str,
     language: str,
@@ -118,14 +115,12 @@ def _wrap(
 
     sections: list[dict[str, Any]] = []
     for name, sub in sub_results.items():
-        sections.append({
-            "title": f"-- {name} -- ({sub.title})",
-            "text": (
-                sub.interpretation
-                if isinstance(sub.interpretation, str)
-                else str(sub.interpretation)
-            ),
-        })
+        sections.append(
+            {
+                "title": f"-- {name} -- ({sub.title})",
+                "text": (sub.interpretation if isinstance(sub.interpretation, str) else str(sub.interpretation)),
+            }
+        )
 
     base_interp = (
         f"Ran {len(sub_results)} sub-analysis(es) over the ARSAU "
@@ -191,9 +186,7 @@ def arsau_analyze_main_records(
     sub_results: dict[str, RichResult] = {}
 
     if _MAIN_FORCE_COL in df.columns:
-        sub_results["force_concentration"] = mrm_uof_force_concentration(
-            df, force_col=_MAIN_FORCE_COL
-        )
+        sub_results["force_concentration"] = mrm_uof_force_concentration(df, force_col=_MAIN_FORCE_COL)
 
     if _MAIN_INCIDENT_TYPE_COL in df.columns and _MAIN_FORCE_COL in df.columns:
         sub_results["incident_type_x_force"] = mrm_uof_weapon_diversity(
@@ -257,9 +250,7 @@ def arsau_analyze_individual_records(
 
     if outcome_col_actual is None:
         # Outcome column missing — still do DQ audit but skip disparity.
-        sub_results["data_quality"] = mrm_uof_data_quality_audit(
-            df, sidecar=loaded.sidecar
-        )
+        sub_results["data_quality"] = mrm_uof_data_quality_audit(df, sidecar=loaded.sidecar)
         return _wrap(
             title=f"ARSAU individual_records analysis ({loaded.year})",
             call=f"arsau_analyze_individual_records(year={year!r})",
@@ -271,8 +262,7 @@ def arsau_analyze_individual_records(
             language=language,
             is_valid=loaded.is_valid,
             extra_interpretation=(
-                f"Disparity analysis skipped: outcome column "
-                f"{_INDIV_OUTCOME_COL!r} not found in this CSV."
+                f"Disparity analysis skipped: outcome column {_INDIV_OUTCOME_COL!r} not found in this CSV."
             ),
         )
 
@@ -299,9 +289,7 @@ def arsau_analyze_individual_records(
                 bootstrap_reps=bootstrap_reps,
             )
 
-    sub_results["data_quality"] = mrm_uof_data_quality_audit(
-        df, sidecar=loaded.sidecar
-    )
+    sub_results["data_quality"] = mrm_uof_data_quality_audit(df, sidecar=loaded.sidecar)
 
     return _wrap(
         title=f"ARSAU individual_records analysis ({loaded.year})",
@@ -373,9 +361,7 @@ def arsau_analyze_probe_cycle_records(
             payload=descriptive,
         )
 
-    sub_results["data_quality"] = mrm_uof_data_quality_audit(
-        df, sidecar=loaded.sidecar
-    )
+    sub_results["data_quality"] = mrm_uof_data_quality_audit(df, sidecar=loaded.sidecar)
 
     return _wrap(
         title=f"ARSAU probe_cycle_records analysis ({loaded.year})",
@@ -409,17 +395,12 @@ def arsau_analyze_weapon_records(
     The 2023 file is the ministry-flagged-invalid release and requires
     ``allow_invalid=True``.
     """
-    loaded = arsau_load_weapon_records(
-        year, allow_invalid=allow_invalid, language=language, data_dir=data_dir
-    )
+    loaded = arsau_load_weapon_records(year, allow_invalid=allow_invalid, language=language, data_dir=data_dir)
     df: pd.DataFrame = loaded.data
 
     sub_results: dict[str, RichResult] = {}
 
-    if (
-        _WEAPON_WEAPON_COL in df.columns
-        and _WEAPON_LOCATION_COL in df.columns
-    ):
+    if _WEAPON_WEAPON_COL in df.columns and _WEAPON_LOCATION_COL in df.columns:
         sub_results["weapon_x_location"] = mrm_uof_weapon_diversity(
             df,
             weapon_col=_WEAPON_WEAPON_COL,
@@ -439,15 +420,14 @@ def arsau_analyze_weapon_records(
                 ("Top weapon", str(wc.index[0]) if wc.size else "-"),
                 ("Top weapon share", float(wc.iloc[0]) / int(wc.sum()) if wc.size else 0.0),
             ],
-            tables=[{
-                "title": "Weapons by frequency",
-                "headers": ["weapon", "n", "share"],
-                "rows": rows,
-            }],
-            interpretation=(
-                f"{int(wc.size)} distinct weapon type(s) recorded "
-                f"across {int(wc.sum())} weapon-row(s)."
-            ),
+            tables=[
+                {
+                    "title": "Weapons by frequency",
+                    "headers": ["weapon", "n", "share"],
+                    "rows": rows,
+                }
+            ],
+            interpretation=(f"{int(wc.size)} distinct weapon type(s) recorded across {int(wc.sum())} weapon-row(s)."),
             payload={
                 "n_distinct": int(wc.size),
                 "n_total": int(wc.sum()),
@@ -455,9 +435,7 @@ def arsau_analyze_weapon_records(
             },
         )
 
-    sub_results["data_quality"] = mrm_uof_data_quality_audit(
-        df, sidecar=loaded.sidecar
-    )
+    sub_results["data_quality"] = mrm_uof_data_quality_audit(df, sidecar=loaded.sidecar)
 
     extra = ""
     if not loaded.is_valid:
@@ -499,9 +477,7 @@ def arsau_analyze_aggregate_summary(
     REPORT_SCOPE rows (the headline volume series), and surface a
     data-quality audit.
     """
-    loaded = arsau_load_aggregate_summary(
-        year_range, language=language, data_dir=data_dir
-    )
+    loaded = arsau_load_aggregate_summary(year_range, language=language, data_dir=data_dir)
     df: pd.DataFrame = loaded.data
 
     sub_results: dict[str, RichResult] = {}
@@ -513,7 +489,9 @@ def arsau_analyze_aggregate_summary(
         years = sorted(int(c.replace(_AGG_YEAR_PREFIX, "")) for c in year_cols)
         # Use the REPORT_SCOPE row "1 to 3 Subjects - Individual Reports"
         # as the headline volume series.
-        mask = (df[_AGG_SECTION_COL] == "REPORT_SCOPE") if _AGG_SECTION_COL in df.columns else pd.Series([True] * len(df))
+        mask = (
+            (df[_AGG_SECTION_COL] == "REPORT_SCOPE") if _AGG_SECTION_COL in df.columns else pd.Series([True] * len(df))
+        )
         headline = df[mask].iloc[0] if mask.any() else df.iloc[0]
         dfs_by_year = {}
         for y in years:
@@ -528,9 +506,7 @@ def arsau_analyze_aggregate_summary(
 
         sub_results["yoy_change_headline"] = mrm_uof_yoy_change(dfs_by_year=dfs_by_year)
 
-    sub_results["data_quality"] = mrm_uof_data_quality_audit(
-        df, sidecar=loaded.sidecar
-    )
+    sub_results["data_quality"] = mrm_uof_data_quality_audit(df, sidecar=loaded.sidecar)
 
     return _wrap(
         title=f"ARSAU aggregate_summary analysis ({loaded.year})",
@@ -568,9 +544,7 @@ def arsau_analyze_detailed_dataset(
       - yoy_change on REPORTING_YEAR
       - data_quality audit
     """
-    loaded = arsau_load_detailed_dataset(
-        year_range, language=language, data_dir=data_dir
-    )
+    loaded = arsau_load_detailed_dataset(year_range, language=language, data_dir=data_dir)
     df: pd.DataFrame = loaded.data
 
     sub_results: dict[str, RichResult] = {}
@@ -580,21 +554,13 @@ def arsau_analyze_detailed_dataset(
     assignment_col = "ASSIGNMENT_TYPE" if "ASSIGNMENT_TYPE" in df.columns else None
 
     if force_col is not None:
-        sub_results["force_concentration"] = mrm_uof_force_concentration(
-            df, force_col=force_col
-        )
+        sub_results["force_concentration"] = mrm_uof_force_concentration(df, force_col=force_col)
     if force_col is not None and assignment_col is not None:
-        sub_results["assignment_x_force"] = mrm_uof_weapon_diversity(
-            df, weapon_col=assignment_col, force_col=force_col
-        )
+        sub_results["assignment_x_force"] = mrm_uof_weapon_diversity(df, weapon_col=assignment_col, force_col=force_col)
     if year_col is not None:
-        sub_results["yoy_change"] = mrm_uof_yoy_change(
-            df=df, year_col=year_col
-        )
+        sub_results["yoy_change"] = mrm_uof_yoy_change(df=df, year_col=year_col)
 
-    sub_results["data_quality"] = mrm_uof_data_quality_audit(
-        df, sidecar=loaded.sidecar
-    )
+    sub_results["data_quality"] = mrm_uof_data_quality_audit(df, sidecar=loaded.sidecar)
 
     return _wrap(
         title=f"ARSAU detailed_dataset analysis ({loaded.year})",

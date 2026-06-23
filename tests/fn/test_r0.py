@@ -1,6 +1,7 @@
 """Tests for morie.fn.r0 -- basic reproduction number."""
 
 import pytest
+
 from morie.fn.r0 import basic_reproduction_number
 
 

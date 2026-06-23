@@ -1,6 +1,7 @@
 """Tests for hrzt1.horowitz_treatment_effect."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzt1 import horowitz_treatment_effect
 
 
@@ -11,7 +12,7 @@ def test_hrzt1_basic():
     treatment = np.random.default_rng(42).normal(0, 1, 100)
     result = horowitz_treatment_effect(x, y, treatment)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzt1_edge():

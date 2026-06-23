@@ -1,6 +1,7 @@
 """HadCRUT5 anomaly + CIs."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["hadcrut"]

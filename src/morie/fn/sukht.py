@@ -7,6 +7,7 @@ samples at the pooled median.
 
 Returns the standardised statistic and its normal-approx p-value.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -35,11 +36,16 @@ def sukhatme_test(x, y):
     y = np.asarray(y, dtype=float).ravel()
     m, n = int(x.size), int(y.size)
     if m < 2 or n < 2:
-        return RichResult(payload={
-            "statistic": np.nan, "p_value": np.nan, "U": np.nan,
-            "n": m + n, "m": m,
-            "method": "Sukhatme scale test",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "U": np.nan,
+                "n": m + n,
+                "m": m,
+                "method": "Sukhatme scale test",
+            }
+        )
     pooled_med = float(np.median(np.concatenate([x, y])))
     ax = np.abs(x - pooled_med)
     ay = np.abs(y - pooled_med)
@@ -49,14 +55,16 @@ def sukhatme_test(x, y):
     E_U = m * n / 2.0
     Var_U = m * n * (N + 1.0) / 12.0
     z = (res.statistic - E_U) / np.sqrt(Var_U) if Var_U > 0 else np.nan
-    return RichResult(payload={
-        "statistic": float(z),
-        "p_value": float(res.pvalue),
-        "U": float(res.statistic),
-        "n": N,
-        "m": m,
-        "method": "Sukhatme scale test (Mann-Whitney on |·-median|)",
-    })
+    return RichResult(
+        payload={
+            "statistic": float(z),
+            "p_value": float(res.pvalue),
+            "U": float(res.statistic),
+            "n": N,
+            "m": m,
+            "method": "Sukhatme scale test (Mann-Whitney on |·-median|)",
+        }
+    )
 
 
 def cheatsheet():

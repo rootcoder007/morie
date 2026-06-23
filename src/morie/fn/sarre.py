@@ -1,6 +1,8 @@
 """Spatial autoregressive error model (SAR error, ML)."""
+
 import numpy as np
 from scipy import optimize
+
 from ._richresult import RichResult
 
 __all__ = ["spatial_ar_error"]
@@ -42,7 +44,8 @@ def spatial_ar_error(x, y, w):
 
     def neg_ll(lam):
         A = I - lam * W
-        AX = A @ X; Ay = A @ y
+        AX = A @ X
+        Ay = A @ y
         try:
             beta = np.linalg.solve(AX.T @ AX, AX.T @ Ay)
         except np.linalg.LinAlgError:
@@ -58,25 +61,27 @@ def spatial_ar_error(x, y, w):
         return 0.5 * n * np.log(2 * np.pi * sigma2) - logdetA + 0.5 * n
 
     # Search lambda inside (1/min_eig, 1/max_eig) -- approximate via (-0.99, 0.99)
-    res = optimize.minimize_scalar(neg_ll, bounds=(-0.99, 0.99), method="bounded",
-                                   options={"xatol": 1e-5})
+    res = optimize.minimize_scalar(neg_ll, bounds=(-0.99, 0.99), method="bounded", options={"xatol": 1e-5})
     lam = float(res.x)
     A = I - lam * W
-    AX = A @ X; Ay = A @ y
+    AX = A @ X
+    Ay = A @ y
     beta = np.linalg.solve(AX.T @ AX, AX.T @ Ay)
     e = Ay - AX @ beta
     sigma2 = float(e @ e) / max(n - p, 1)
     cov_beta = sigma2 * np.linalg.inv(AX.T @ AX)
     se_beta = np.sqrt(np.maximum(np.diag(cov_beta), 0.0))
 
-    return RichResult(payload={
-        "estimate": beta.tolist(),
-        "se": se_beta.tolist(),
-        "lambda": lam,
-        "sigma2": sigma2,
-        "n": int(n),
-        "method": "SAR error (ML, concentrated log-likelihood)",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta.tolist(),
+            "se": se_beta.tolist(),
+            "lambda": lam,
+            "sigma2": sigma2,
+            "n": int(n),
+            "method": "SAR error (ML, concentrated log-likelihood)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.probt — Probit regression."""
 
 import numpy as np
-import pytest
 from scipy import stats
 
 from morie.fn.probt import probit_regression

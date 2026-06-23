@@ -1,12 +1,11 @@
 """Tests for morie.fn.vtest — Test-retest reliability."""
 
 import numpy as np
-import pytest
+
 from morie.fn.vtest import validity_test_retest
 
 
 class TestValidityTestRetest:
-
     def test_high_icc_correlated(self, rng):
         s1 = rng.standard_normal(100)
         s2 = s1 + rng.standard_normal(100) * 0.1

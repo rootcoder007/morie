@@ -25,10 +25,12 @@ gates land as ``DatasetGate(...)`` entries in ``SEED_GATES`` below,
 or via ``morie.eval_pipeline.register(...)`` from anywhere
 downstream.
 """
+
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any
 
 from . import bq
 
@@ -84,24 +86,21 @@ def run_gate(g: DatasetGate) -> GateResult:
     try:
         actual = g.runner(g.slug)
     except (ConnectionError, OSError, TimeoutError) as e:
-        return GateResult(gate=g, actual=None, status="skip",
-                          detail=f"unreachable: {e!s}")
+        return GateResult(gate=g, actual=None, status="skip", detail=f"unreachable: {e!s}")
     except Exception as e:  # noqa: BLE001
-        return GateResult(gate=g, actual=None, status="error",
-                          detail=f"{type(e).__name__}: {e!s}")
+        return GateResult(gate=g, actual=None, status="error", detail=f"{type(e).__name__}: {e!s}")
     failures: list[str] = []
     for key, (lo, hi) in g.expected.items():
         v = actual.get(key)
         if not isinstance(v, (int, float)) or not _in_band(float(v), lo, hi):
-            failures.append(
-                f"{key}={v!r} expected in [{lo}, {hi}]"
-            )
+            failures.append(f"{key}={v!r} expected in [{lo}, {hi}]")
     status = "pass" if not failures else "fail"
     return GateResult(gate=g, actual=actual, status=status, failures=failures)
 
 
 # ── runner helpers ───────────────────────────────────────────────────────────
 # Tiny adaptors over morie.bq so each runner is one expression.
+
 
 def _primary_table(slug: str) -> str:
     """Pick the first non-_meta table. Public mirrors typically have
@@ -168,10 +167,7 @@ SEED_GATES: list[DatasetGate] = [
     DatasetGate(
         name="austin_311_min_rows",
         slug="austin_311",
-        description=(
-            "Austin 311 service requests sample mirror should have "
-            "at least 100k rows."
-        ),
+        description=("Austin 311 service requests sample mirror should have at least 100k rows."),
         citation="bigquery-public-data.austin_311.311_service_requests",
         runner=_row_count,
         expected={"row_count": (100_000.0, None)},
@@ -179,10 +175,7 @@ SEED_GATES: list[DatasetGate] = [
     DatasetGate(
         name="noaa_ghcn_min_rows",
         slug="noaa_ghcn",
-        description=(
-            "NOAA Global Historical Climatology Network observations "
-            "mirror should have >=200k rows."
-        ),
+        description=("NOAA Global Historical Climatology Network observations mirror should have >=200k rows."),
         citation="bigquery-public-data.noaa_ghcn_d.ghcnd_*",
         runner=_row_count,
         expected={"row_count": (200_000.0, None)},
@@ -190,9 +183,7 @@ SEED_GATES: list[DatasetGate] = [
     DatasetGate(
         name="worldbank_min_rows",
         slug="worldbank",
-        description=(
-            "World Bank indicators mirror should have >=10k rows."
-        ),
+        description=("World Bank indicators mirror should have >=10k rows."),
         citation="bigquery-public-data.worldbank_wdi.indicators_data",
         runner=_row_count,
         expected={"row_count": (10_000.0, None)},
@@ -201,8 +192,7 @@ SEED_GATES: list[DatasetGate] = [
         name="chicago_crime_min_rows",
         slug="chicago_crime",
         description=(
-            "Chicago Police Department incidents mirror should have "
-            ">=1M rows. Sudden drop signals a broken ingest."
+            "Chicago Police Department incidents mirror should have >=1M rows. Sudden drop signals a broken ingest."
         ),
         citation="bigquery-public-data.chicago_crime.crime",
         runner=_row_count,

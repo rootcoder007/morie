@@ -1,6 +1,8 @@
 """Tests for hhtfn.py - Hilbert-Huang Transform."""
+
 import numpy as np
-from morie.fn.hhtfn import hilbert_huang, hhtfn
+
+from morie.fn.hhtfn import hhtfn, hilbert_huang
 
 
 def test_hhtfn_returns_descriptive_result():

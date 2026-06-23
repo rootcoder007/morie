@@ -1,6 +1,7 @@
 """Tests for fourT.fourier_transform."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fourT import fourier_transform
 
 
@@ -11,7 +12,7 @@ def test_fourT_basic():
     k = 5
     result = fourier_transform(f, x, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fourT_edge():

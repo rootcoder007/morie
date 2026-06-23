@@ -1,5 +1,7 @@
 """Algorithm 1: online per-token key-cache quantizer (QJL)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_online_key_quantizer"]
@@ -31,7 +33,14 @@ def turboquant_online_key_quantizer(k, S):
     n = len(k)
     result = float(np.mean(k))
     se = float(np.std(k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Algorithm 1: online per-token key-cache quantizer (QJL)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Algorithm 1: online per-token key-cache quantizer (QJL)",
+        }
+    )
 
 
 def cheatsheet():

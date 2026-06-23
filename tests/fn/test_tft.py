@@ -1,6 +1,7 @@
 """Tests for tft.temporal_fusion_transformer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tft import temporal_fusion_transformer
 
 
@@ -11,7 +12,7 @@ def test_tft_basic():
     static_cov = np.random.default_rng(42).normal(0, 1, 100)
     result = temporal_fusion_transformer(X, y, static_cov)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tft_edge():

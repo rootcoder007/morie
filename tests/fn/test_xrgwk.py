@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrgwk -- GWR kernel function"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrgwk import gwr_kernel
 

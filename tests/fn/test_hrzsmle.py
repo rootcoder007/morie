@@ -1,6 +1,7 @@
 """Tests for hrzsmle.horowitz_semipar_mle_binary."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzsmle import horowitz_semipar_mle_binary
 
 
@@ -11,7 +12,7 @@ def test_hrzsmle_basic():
     bandwidth = 0.3
     result = horowitz_semipar_mle_binary(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzsmle_edge():

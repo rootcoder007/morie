@@ -1,5 +1,7 @@
 """Tests for morie.fn.scidl — scatter ideal points."""
+
 import numpy as np
+
 from morie.fn.scidl import scidl
 
 
@@ -13,6 +15,7 @@ def test_scidl_smoke():
 
 def test_cheatsheet():
     from morie.fn.scidl import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

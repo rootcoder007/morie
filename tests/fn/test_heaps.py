@@ -1,6 +1,8 @@
 """Tests for Heaps' law."""
+
 import pytest
-from morie.fn.heaps import heaps_law, heaps
+
+from morie.fn.heaps import heaps, heaps_law
 
 
 def test_basic():

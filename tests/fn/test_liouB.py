@@ -1,6 +1,7 @@
 """Tests for liouB.liouville_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.liouB import liouville_test
 
 
@@ -10,7 +11,7 @@ def test_liouB_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = liouville_test(expr, x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_liouB_edge():

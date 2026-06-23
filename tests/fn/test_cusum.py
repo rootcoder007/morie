@@ -1,7 +1,6 @@
 """Tests for morie.fn.cusum — CUSUM change detection."""
 
 import numpy as np
-import pytest
 
 from morie.fn.cusum import cusum
 
@@ -11,10 +10,12 @@ class TestCusum:
 
     def test_detects_mean_shift(self):
         """Detects a clear mean shift."""
-        series = np.concatenate([
-            np.zeros(50),
-            np.full(50, 5.0),
-        ])
+        series = np.concatenate(
+            [
+                np.zeros(50),
+                np.full(50, 5.0),
+            ]
+        )
         result = cusum(series, target_mean=0.0, threshold=10.0)
         assert len(result["change_points"]) > 0
         # Change point should be near index 50

@@ -1,6 +1,7 @@
 """Tests for gmccsm.g_methods_consistency."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gmccsm import g_methods_consistency
 
 
@@ -12,7 +13,7 @@ def test_gmccsm_basic():
     tau = 0.1
     result = g_methods_consistency(y, treatment_history, covariate_history, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gmccsm_edge():

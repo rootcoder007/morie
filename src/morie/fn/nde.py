@@ -1,6 +1,7 @@
 """Natural direct effect (Pearl 2001)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["natural_direct_effect"]

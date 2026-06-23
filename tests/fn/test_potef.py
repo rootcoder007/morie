@@ -1,6 +1,7 @@
 """Tests for potef.potential_outcomes_individual."""
+
 import numpy as np
-import pytest
+
 from morie.fn.potef import potential_outcomes_individual
 
 
@@ -10,7 +11,7 @@ def test_potef_basic():
     Y0 = np.random.default_rng(42).normal(0, 1, 100)
     result = potential_outcomes_individual(Y1, Y0)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_potef_edge():

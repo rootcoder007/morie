@@ -80,4 +80,4 @@ coomat = cooccurrence_matrix
 
 
 def cheatsheet() -> str:
-    return 'cooccurrence_matrix({}) -> Co-occurrence matrix analysis.'
+    return "cooccurrence_matrix({}) -> Co-occurrence matrix analysis."

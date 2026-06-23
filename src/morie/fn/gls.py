@@ -78,4 +78,4 @@ gls = generalized_ls
 
 
 def cheatsheet() -> str:
-    return 'gls() -> GLS via Cochrane-Orcutt for AR(1) errors. Dataset-agnostic'
+    return "gls() -> GLS via Cochrane-Orcutt for AR(1) errors. Dataset-agnostic"

@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmrcn -- Roll call normalization"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmrcn import roll_call_normalize
 

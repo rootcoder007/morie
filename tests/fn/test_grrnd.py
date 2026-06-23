@@ -1,6 +1,7 @@
 """Tests for grrnd.geron_randomized_search_cv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grrnd import geron_randomized_search_cv
 
 
@@ -13,7 +14,7 @@ def test_grrnd_basic():
     K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
     result = geron_randomized_search_cv(X, y, param_dist, n_iter, K)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grrnd_edge():

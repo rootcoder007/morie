@@ -1,4 +1,5 @@
 """Tests for morie.fn.wlsci."""
+
 from morie.fn.wlsci import wlsci
 
 
@@ -11,6 +12,7 @@ def test_wlsci_smoke():
 
 def test_cheatsheet():
     from morie.fn.wlsci import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

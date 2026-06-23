@@ -1,6 +1,7 @@
 """Spike-train information rate (neural)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["spike_information"]

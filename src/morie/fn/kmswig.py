@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SwiGLU activation used in LLaMA-style FFN: Swish-gated linear unit."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_swiglu_activation"]
@@ -38,7 +40,14 @@ def kamath_swiglu_activation(x, W, V, b, c):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SwiGLU activation used in LLaMA-style FFN: Swish-gated linear unit"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "SwiGLU activation used in LLaMA-style FFN: Swish-gated linear unit",
+        }
+    )
 
 
 def cheatsheet():

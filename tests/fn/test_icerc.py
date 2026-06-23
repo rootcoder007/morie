@@ -1,6 +1,8 @@
 """Tests for morie.fn.icerc — ICE curves."""
+
 import numpy as np
 import pytest
+
 from morie.fn.icerc import icerc
 
 
@@ -11,8 +13,10 @@ def setup():
     X = rng.standard_normal((n, p))
     # Linear model: beta = [1, 2, -1]
     beta = np.array([1.0, 2.0, -1.0])
+
     def predict_fn(Xp):
         return Xp @ beta
+
     return predict_fn, X
 
 
@@ -63,4 +67,5 @@ def test_custom_grid(setup):
 
 def test_cheatsheet():
     from morie.fn.icerc import cheatsheet
+
     assert len(cheatsheet()) > 0

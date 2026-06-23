@@ -1,6 +1,8 @@
 """Tests for rfgam."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfgam import rfgam
 
 
@@ -28,4 +30,5 @@ def test_rfgam_no_data():
 
 def test_rfgam_alias():
     from morie.fn.rfgam import rfgam
+
     assert rfgam is rfgam

@@ -1,7 +1,7 @@
 """Tests for morie.fn.umpar."""
 
 import numpy as np
-import pytest
+
 from morie.fn.umpar import umpar
 
 

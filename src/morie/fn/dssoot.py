@@ -1,6 +1,7 @@
 """Bootstrap CI for indirect effect ab."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bootstrap_indirect"]

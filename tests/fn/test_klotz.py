@@ -1,6 +1,7 @@
 """Tests for klotz (Klotz normal-scores test)."""
 
 import numpy as np
+
 from morie.fn.klotz import klotz
 
 

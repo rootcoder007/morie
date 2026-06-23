@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nucleus (top-p) sampling (Holtzman et al. 2020)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -32,7 +33,8 @@ def top_p_nucleus(x, p: float = 0.9, T: float = 1.0):
         raise ValueError("p must be in (0, 1]")
     z = np.asarray(x, dtype=float).ravel() / T
     z = z - np.max(z)
-    probs = np.exp(z); probs = probs / np.sum(probs)
+    probs = np.exp(z)
+    probs = probs / np.sum(probs)
     order = np.argsort(-probs)
     sorted_probs = probs[order]
     cum = np.cumsum(sorted_probs)
@@ -46,12 +48,8 @@ def top_p_nucleus(x, p: float = 0.9, T: float = 1.0):
     filtered = filtered / filtered.sum()
     return RichResult(
         title="Top-p Nucleus Sampling (Holtzman 2020)",
-        summary_lines=[("p", p),
-                       ("n_kept", int(keep.sum())),
-                       ("V", probs.size)],
-        payload={"tensor": filtered, "keep_mask": keep,
-                 "n_kept": int(keep.sum()), "p": p,
-                 "method": "top-p"},
+        summary_lines=[("p", p), ("n_kept", int(keep.sum())), ("V", probs.size)],
+        payload={"tensor": filtered, "keep_mask": keep, "n_kept": int(keep.sum()), "p": p, "method": "top-p"},
     )
 
 

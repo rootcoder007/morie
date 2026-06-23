@@ -1,6 +1,7 @@
 """Tests for ksr050.kosorok_ch2_frechet_differentiability."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr050 import kosorok_ch2_frechet_differentiability
 
 
@@ -11,7 +12,7 @@ def test_ksr050_basic():
     h_n = np.random.default_rng(42).normal(0, 1, 100)
     result = kosorok_ch2_frechet_differentiability(phi, theta, h_n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr050_edge():

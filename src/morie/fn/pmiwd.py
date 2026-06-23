@@ -1,6 +1,7 @@
 """Pointwise mutual information PMI(x,y)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["pointwise_mutual_info"]

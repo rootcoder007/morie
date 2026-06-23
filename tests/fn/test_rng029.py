@@ -1,6 +1,7 @@
 """Tests for rng029.rangayyan_ch3_signal_as_delta_decomposition."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng029 import rangayyan_ch3_signal_as_delta_decomposition
 
 
@@ -11,7 +12,7 @@ def test_rng029_basic():
     t = np.linspace(0, 10, 100)
     result = rangayyan_ch3_signal_as_delta_decomposition(x, alpha, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng029_edge():

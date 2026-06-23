@@ -32,4 +32,4 @@ mdslb = label_mds_points
 
 
 def cheatsheet() -> str:
-    return 'mdslb() -> Attach labels to MDS coordinate matrix'
+    return "mdslb() -> Attach labels to MDS coordinate matrix"

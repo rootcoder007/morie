@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.gls import generalized_ls, gls
+
 from morie.fn._containers import RegressionResult
+from morie.fn.gls import generalized_ls, gls
 
 
 @pytest.fixture()

@@ -1,6 +1,7 @@
 """Accelerated gradient descent (constrained)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["agd_constrained"]
@@ -38,7 +39,9 @@ def agd_constrained(f, grad_f, project, x0, steps):
     n = len(f)
     result = float(np.mean(f))
     se = float(np.std(f, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Accelerated gradient descent (constrained)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Accelerated gradient descent (constrained)"}
+    )
 
 
 def cheatsheet():

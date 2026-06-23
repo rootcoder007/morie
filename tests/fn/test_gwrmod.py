@@ -1,6 +1,7 @@
 """Tests for gwrmod.geographically_weighted_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gwrmod import geographically_weighted_regression
 
 
@@ -12,7 +13,7 @@ def test_gwrmod_basic():
     bandwidth = 0.3
     result = geographically_weighted_regression(y, X, coords, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gwrmod_edge():

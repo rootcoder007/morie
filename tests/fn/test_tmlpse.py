@@ -1,6 +1,7 @@
 """Tests for tmlpse.tmle_path_specific."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlpse import tmle_path_specific
 
 
@@ -13,7 +14,7 @@ def test_tmlpse_basic():
     path = np.random.default_rng(42).normal(0, 1, 100)
     result = tmle_path_specific(y, D, M_chain, X, path)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlpse_edge():

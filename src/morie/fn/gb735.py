@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Symmetry of null distribution of T_N when m = n = N/2."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_linrank_sym_equal"]
@@ -34,7 +36,14 @@ def gibbons_linrank_sym_equal(a, m, n):
     n = int(a) if a.ndim == 0 else len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Symmetry of null distribution of T_N when m = n = N/2"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Symmetry of null distribution of T_N when m = n = N/2",
+        }
+    )
 
 
 def cheatsheet():

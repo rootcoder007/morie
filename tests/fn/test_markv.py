@@ -1,6 +1,7 @@
 """Test markv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.markv import markv
 
 

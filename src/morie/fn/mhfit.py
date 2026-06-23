@@ -7,7 +7,7 @@ Constructs majorizing function; easier to optimize than original objective.
 
 import numpy as np
 
-__all__ = ['mhfit']
+__all__ = ["mhfit"]
 
 
 def mhfit(f, majorizer, x0, tol=1e-6, max_iter=100, full_output=False):
@@ -67,25 +67,18 @@ def mhfit(f, majorizer, x0, tol=1e-6, max_iter=100, full_output=False):
             return majorizer(x_new, x)
 
         from scipy.optimize import minimize as scipy_minimize
-        result = scipy_minimize(maj_obj, x, method='BFGS', options={'maxiter': 50})
+
+        result = scipy_minimize(maj_obj, x, method="BFGS", options={"maxiter": 50})
         x_new = result.x
 
         residual = np.linalg.norm(x_new - x)
         if residual < tol:
             if full_output:
-                return x_new, {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_value': f(x_new)
-                }
+                return x_new, {"iterations": iteration + 1, "converged": True, "final_value": f(x_new)}
             return x_new
 
         x = x_new
 
     if full_output:
-        return x, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_value': f(x)
-        }
+        return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x

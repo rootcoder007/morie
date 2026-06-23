@@ -1,6 +1,7 @@
 """Tests for morie.fn.ihmrt -- indigenous mortality."""
 
 import pytest
+
 from morie.fn.ihmrt import indigenous_mortality
 
 

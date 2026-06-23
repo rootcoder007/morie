@@ -1,6 +1,7 @@
 """Tests for sinkhd.sinkhorn_distance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sinkhd import sinkhorn_distance
 
 
@@ -12,7 +13,7 @@ def test_sinkhd_basic():
     eps = np.random.default_rng(42).normal(0, 1, 100)
     result = sinkhorn_distance(a, b, C, eps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sinkhd_edge():

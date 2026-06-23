@@ -1,6 +1,5 @@
 """Tests for erdosg.erdos_renyi_gnp."""
-import numpy as np
-import pytest
+
 from morie.fn.erdosg import erdos_renyi_gnp
 
 
@@ -10,7 +9,7 @@ def test_erdosg_basic():
     p = 5
     result = erdos_renyi_gnp(n, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_erdosg_edge():

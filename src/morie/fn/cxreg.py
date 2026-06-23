@@ -86,7 +86,9 @@ def cxreg(
             score += X[i] - x_bar
             for j in range(p):
                 for k in range(p):
-                    hessian[j, k] -= (np.sum(X[:i+1, j] * X[:i+1, k] * exp_eta[:i+1]) / denom - x_bar[j] * x_bar[k])
+                    hessian[j, k] -= (
+                        np.sum(X[: i + 1, j] * X[: i + 1, k] * exp_eta[: i + 1]) / denom - x_bar[j] * x_bar[k]
+                    )
 
         try:
             step = np.linalg.solve(hessian - 1e-8 * np.eye(p), -score)

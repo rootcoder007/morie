@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """SetFit two-step: (1) contrastive fine-tune encoder on few-shot pairs, (2) classifier head."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_setfit_twostep"]
@@ -34,7 +36,14 @@ def alammar_setfit_twostep(few_shot_pairs, encoder, classifier):
     n = len(few_shot_pairs)
     result = float(np.mean(few_shot_pairs))
     se = float(np.std(few_shot_pairs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SetFit two-step: (1) contrastive fine-tune encoder on few-shot pairs, (2) classifier head"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "SetFit two-step: (1) contrastive fine-tune encoder on few-shot pairs, (2) classifier head",
+        }
+    )
 
 
 def cheatsheet():

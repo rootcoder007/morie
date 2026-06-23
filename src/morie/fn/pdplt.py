@@ -12,6 +12,7 @@ boosting machine. *Annals of Statistics*, 29(5), 1189-1232.
 Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of
 Statistical Learning* (2nd ed.). Springer. Section 10.13.
 """
+
 from __future__ import annotations
 
 from collections.abc import Callable

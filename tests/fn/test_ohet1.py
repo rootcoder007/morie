@@ -1,6 +1,5 @@
 """Tests for morie.fn.ohet1 — Heterogeneous effects test by region."""
 
-import numpy as np
 from morie.fn.ohet1 import otis_het_region
 
 

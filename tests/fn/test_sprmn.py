@@ -1,5 +1,7 @@
 """Tests for spearman_corr."""
-import numpy as np, pytest
+
+import pytest
+
 from morie.fn.sprmn import spearman_corr
 
 

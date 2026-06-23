@@ -1,7 +1,8 @@
 """Tests for morie.fn.accur — classification accuracy."""
-import numpy as np
+
 import pytest
-from morie.fn.accur import accuracy, accur
+
+from morie.fn.accur import accur, accuracy
 
 
 def test_perfect():

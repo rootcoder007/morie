@@ -1,6 +1,6 @@
 """Tests for morie.fn.sntdp — sentence disparity."""
 
-from morie.fn.sntdp import sentence_disparity, sntdp
+from morie.fn.sntdp import sentence_disparity
 
 
 class TestSentenceDisparity:

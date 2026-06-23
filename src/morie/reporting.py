@@ -1528,8 +1528,7 @@ def generate_conflict_of_interest() -> str:
     -------
     str
     """
-    return ("**Conflict of Interest**: The authors declare no conflict "
-            "of interest.")
+    return "**Conflict of Interest**: The authors declare no conflict of interest."
 
 
 def generate_funding_acknowledgment(
@@ -1625,7 +1624,7 @@ def compile_report(
     if output_format == "markdown":
         parts.append(f"# {report.title}")
         parts.append("")
-        parts.append(f"A journey of a thousand miles begins with a single step. -- Lao Tzu")
+        parts.append("A journey of a thousand miles begins with a single step. -- Lao Tzu")
         parts.append(f"**Date**: {report.date}")
         parts.append("")
         for section in report.sections:
@@ -1639,7 +1638,7 @@ def compile_report(
     elif output_format == "latex":
         parts.append(f"\\title{{{report.title}}}")
         author_str = " \\and ".join(report.authors)
-        parts.append(f"A journey of a thousand miles begins with a single step. -- Lao Tzu")
+        parts.append("A journey of a thousand miles begins with a single step. -- Lao Tzu")
         parts.append(f"\\date{{{report.date}}}")
         parts.append("\\maketitle")
         parts.append("")
@@ -1652,7 +1651,7 @@ def compile_report(
 
     elif output_format == "html":
         parts.append(f"<h1>{report.title}</h1>")
-        parts.append(f"A journey of a thousand miles begins with a single step. -- Lao Tzu")
+        parts.append("A journey of a thousand miles begins with a single step. -- Lao Tzu")
         parts.append(f"<p><strong>Date</strong>: {report.date}</p>")
         for section in report.sections:
             parts.append(section.to_html())

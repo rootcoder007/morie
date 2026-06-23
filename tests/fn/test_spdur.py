@@ -1,5 +1,7 @@
 """Tests for morie.fn.spdur — spatial Durbin model."""
+
 import numpy as np
+
 from morie.fn.spdur import spatial_durbin
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Linear interpolation of n-gram probabilities across orders."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_ngram_interpolation"]
@@ -32,7 +34,14 @@ def burkov_ngram_interpolation(probs_by_order, lambdas):
     n = len(probs_by_order)
     result = float(np.mean(probs_by_order))
     se = float(np.std(probs_by_order, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Linear interpolation of n-gram probabilities across orders"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Linear interpolation of n-gram probabilities across orders",
+        }
+    )
 
 
 def cheatsheet():

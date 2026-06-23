@@ -1,6 +1,7 @@
 """Tests for pate.pate."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pate import pate
 
 
@@ -11,7 +12,7 @@ def test_pate_basic():
     epsilon = 1e-6
     result = pate(teachers, x, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pate_edge():

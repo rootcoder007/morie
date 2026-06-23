@@ -1,6 +1,7 @@
 """Tests for grmsam.graded_response_samejima."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grmsam import graded_response_samejima
 
 
@@ -12,7 +13,7 @@ def test_grmsam_basic():
     b_k = np.random.default_rng(42).normal(0, 1, 100)
     result = graded_response_samejima(y, theta, a, b_k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grmsam_edge():

@@ -9,7 +9,9 @@ from scipy.stats import f as _f_dist
 from ._containers import GenomicsResult
 
 
-def gxenv(y: np.ndarray, genotypes: np.ndarray, environment: np.ndarray, cdf=None, *, covariates: np.ndarray | None = None) -> GenomicsResult:
+def gxenv(
+    y: np.ndarray, genotypes: np.ndarray, environment: np.ndarray, cdf=None, *, covariates: np.ndarray | None = None
+) -> GenomicsResult:
     """Test for gene-by-environment (GxE) interaction.
 
     Fits full model y = b0 + b_g*g + b_e*env + b_ge*g*env + covs + e
@@ -58,7 +60,7 @@ def gxenv(y: np.ndarray, genotypes: np.ndarray, environment: np.ndarray, cdf=Non
     def _fit(X):
         beta = np.linalg.lstsq(X, y, rcond=None)[0]
         resid = y - X @ beta
-        return float(np.sum(resid ** 2)), beta
+        return float(np.sum(resid**2)), beta
 
     rss_r, _ = _fit(X_reduced)
     rss_f, beta_full = _fit(X_full)

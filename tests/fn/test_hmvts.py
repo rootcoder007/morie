@@ -1,6 +1,7 @@
 """Tests for hmvts.geron_voting_soft."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmvts import geron_voting_soft
 
 
@@ -10,7 +11,7 @@ def test_hmvts_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = geron_voting_soft(models, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmvts_edge():

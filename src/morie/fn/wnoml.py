@@ -1,5 +1,7 @@
 """W-NOMINATE log-likelihood for roll call matrix."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["wnominate_logit"]
@@ -35,7 +37,9 @@ def wnominate_logit(votes, ideal_points, yea_nay_positions, beta):
     n = int(votes) if votes.ndim == 0 else len(votes)
     result = float(np.mean(votes))
     se = float(np.std(votes, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "W-NOMINATE log-likelihood for roll call matrix"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "W-NOMINATE log-likelihood for roll call matrix"}
+    )
 
 
 def cheatsheet():

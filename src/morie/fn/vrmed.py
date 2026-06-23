@@ -1,6 +1,7 @@
 """Variance-based proportion mediated (R^2)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["variance_based_mediation"]
@@ -32,7 +33,9 @@ def variance_based_mediation(r2_full, r2_partial):
     n = len(r2_full)
     result = float(np.mean(r2_full))
     se = float(np.std(r2_full, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Variance-based proportion mediated (R^2)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Variance-based proportion mediated (R^2)"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for ripK.ripley_k_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ripk import ripley_k_function
 
 
@@ -11,7 +12,7 @@ def test_ripk_basic():
     r = 10
     result = ripley_k_function(points, window, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ripk_edge():

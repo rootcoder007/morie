@@ -1,5 +1,7 @@
 """Test bpsst."""
+
 import pytest
+
 from morie.fn.bpsst import bps_state
 
 

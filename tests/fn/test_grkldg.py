@@ -1,6 +1,7 @@
 """Tests for grkldg.geron_kl_divergence_gaussian."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grkldg import geron_kl_divergence_gaussian
 
 
@@ -10,7 +11,7 @@ def test_grkldg_basic():
     logvar = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_kl_divergence_gaussian(mu, logvar)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grkldg_edge():

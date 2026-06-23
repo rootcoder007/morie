@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Marginal distribution of R1 (runs of type 1)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_marginal_r1"]
@@ -34,7 +36,9 @@ def gibbons_marginal_r1(r1, n1, n2):
     n = int(r1) if r1.ndim == 0 else len(r1)
     result = float(np.mean(r1))
     se = float(np.std(r1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Marginal distribution of R1 (runs of type 1)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Marginal distribution of R1 (runs of type 1)"}
+    )
 
 
 def cheatsheet():

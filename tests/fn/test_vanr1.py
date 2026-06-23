@@ -1,6 +1,7 @@
 """Tests for vanr1.vanraden_method1."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vanr1 import vanraden_method1
 
 
@@ -10,7 +11,7 @@ def test_vanr1_basic():
     freq = np.random.default_rng(42).normal(0, 1, 100)
     result = vanraden_method1(marker_matrix, freq)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_vanr1_edge():

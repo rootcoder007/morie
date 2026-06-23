@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.ridge import ridge_regression, ridge
+
 from morie.fn._containers import RegressionResult
+from morie.fn.ridge import ridge, ridge_regression
 
 
 @pytest.fixture()
@@ -37,6 +38,7 @@ class TestRidge:
     def test_slope_shrunk_toward_zero(self, reg_data):
         """Ridge should shrink slope vs OLS (with large lambda)."""
         from morie.fn.rey import linear_regression
+
         ols = linear_regression(reg_data, y="y", x="x")
         ridge_res = ridge_regression(reg_data, y="y", x="x", lam=10.0)
         assert abs(ridge_res.coefficients["x"]) < abs(ols.coefficients["x"])
@@ -48,10 +50,12 @@ class TestRidge:
 
     def test_multiple_predictors(self):
         rng = np.random.default_rng(42)
-        df = pd.DataFrame({
-            "y": rng.normal(0, 1, 100),
-            "x1": rng.normal(0, 1, 100),
-            "x2": rng.normal(0, 1, 100),
-        })
+        df = pd.DataFrame(
+            {
+                "y": rng.normal(0, 1, 100),
+                "x1": rng.normal(0, 1, 100),
+                "x2": rng.normal(0, 1, 100),
+            }
+        )
         result = ridge_regression(df, y="y", x=["x1", "x2"])
         assert result.k == 2

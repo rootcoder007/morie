@@ -1,6 +1,7 @@
 """Tests for ksr056.kosorok_ch2_lad_lipschitz_bound."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr056 import kosorok_ch2_lad_lipschitz_bound
 
 
@@ -12,7 +13,7 @@ def test_ksr056_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = kosorok_ch2_lad_lipschitz_bound(theta_1, theta_2, u, x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr056_edge():

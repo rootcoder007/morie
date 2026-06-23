@@ -1,6 +1,7 @@
 """Test rscir."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rscir import rscir
 
 

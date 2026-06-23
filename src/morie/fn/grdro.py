@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dropout layer: mask each activation with prob p (training time)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_dropout"]
@@ -34,7 +36,14 @@ def geron_dropout(a, p, seed):
     n = int(a) if a.ndim == 0 else len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Dropout layer: mask each activation with prob p (training time)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Dropout layer: mask each activation with prob p (training time)",
+        }
+    )
 
 
 def cheatsheet():

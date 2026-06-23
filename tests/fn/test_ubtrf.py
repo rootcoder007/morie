@@ -1,6 +1,7 @@
 """Test ubtrf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ubtrf import ubtrf
 
 

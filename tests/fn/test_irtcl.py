@@ -1,7 +1,5 @@
 """Tests for morie.fn.irtcl — IRT calibration."""
 
-import numpy as np
-import pandas as pd
 from morie.fn.irtcl import irt_calibrate
 
 

@@ -1,6 +1,7 @@
 """Test endrt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.endrt import endrt
 
 

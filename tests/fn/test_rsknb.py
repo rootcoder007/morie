@@ -1,13 +1,12 @@
 """Tests for morie.fn.rsknb — risk Nagelkerke R2."""
 
-import pytest
 import numpy as np
-from morie.fn.rsknb import risk_nagelkerke
+
 from morie.fn._containers import ESRes
+from morie.fn.rsknb import risk_nagelkerke
 
 
 class TestRiskNagelkerke:
-
     def test_returns_esres(self):
         rng = np.random.default_rng(42)
         outcomes = rng.integers(0, 2, 100).astype(float)

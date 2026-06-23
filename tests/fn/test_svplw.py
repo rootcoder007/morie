@@ -1,7 +1,6 @@
 """Tests for morie.fn.svplw -- Wolfson bipolarization index"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svplw import polarization_wolf
 

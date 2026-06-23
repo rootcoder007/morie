@@ -1,6 +1,5 @@
 """Tests for morie.fn.cstin — custody incident rate."""
 
-import pytest
 from morie.fn.cstin import custody_incident_rate
 
 

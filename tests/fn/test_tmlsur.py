@@ -1,6 +1,7 @@
 """Tests for tmlsur.tmle_survival."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlsur import tmle_survival
 
 
@@ -13,7 +14,7 @@ def test_tmlsur_basic():
     tau = 0.1
     result = tmle_survival(time, event, treatment, covariates, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlsur_edge():

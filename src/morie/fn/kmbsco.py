@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """BERTScore: token-level cosine similarity between contextual embeddings."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_bertscore"]
@@ -34,7 +36,14 @@ def kamath_bertscore(hypothesis_tokens, reference_tokens, embed_fn):
     n = len(hypothesis_tokens)
     result = float(np.mean(hypothesis_tokens))
     se = float(np.std(hypothesis_tokens, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BERTScore: token-level cosine similarity between contextual embeddings"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "BERTScore: token-level cosine similarity between contextual embeddings",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test hexgen."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hexgen import hexgen
 
 

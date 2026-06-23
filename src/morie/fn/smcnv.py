@@ -35,4 +35,4 @@ smcnv = smacof_convergence
 
 
 def cheatsheet() -> str:
-    return 'smacof_convergence({}) -> SMACOF convergence check.'
+    return "smacof_convergence({}) -> SMACOF convergence check."

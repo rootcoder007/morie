@@ -9,8 +9,10 @@ indicator class F = {1{X<=t} : t in R} one has N_[](e, F, L_2(P))
 entropy integral.  This callable returns that integral as a
 quantitative Donsker-class diagnostic.
 """
+
 import numpy as np
 from scipy import integrate
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_donsker_class"]
@@ -31,11 +33,13 @@ def kosorok_donsker_class(x):
     n = len(x)
     integrand = lambda e: np.sqrt(np.log(2.0) - 2.0 * np.log(e))
     j, _ = integrate.quad(integrand, 1e-8, 1.0, limit=200)
-    return RichResult(payload={
-        "estimate": float(j),
-        "n": n,
-        "method": "Bracketing-integral Donsker verification (indicator class)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(j),
+            "n": n,
+            "method": "Bracketing-integral Donsker verification (indicator class)",
+        }
+    )
 
 
 def cheatsheet():

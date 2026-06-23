@@ -9,7 +9,9 @@ import numpy as np
 from scipy.stats import expon
 
 
-def pexp(q: Union[float, np.ndarray], rate: float = 1.0, cdf=None, *, lower_tail: bool = True) -> Union[float, np.ndarray]:
+def pexp(
+    q: Union[float, np.ndarray], rate: float = 1.0, cdf=None, *, lower_tail: bool = True
+) -> Union[float, np.ndarray]:
     """
     Exponential distribution cumulative distribution function.
 

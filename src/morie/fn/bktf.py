@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Term frequency: raw count of term t in document d (optionally normalized)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_term_frequency"]
@@ -32,7 +34,14 @@ def burkov_term_frequency(term, document):
     n = len(term)
     result = float(np.mean(term))
     se = float(np.std(term, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Term frequency: raw count of term t in document d (optionally normalized)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Term frequency: raw count of term t in document d (optionally normalized)",
+        }
+    )
 
 
 def cheatsheet():

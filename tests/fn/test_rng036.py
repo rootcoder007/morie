@@ -1,6 +1,7 @@
 """Tests for rng036.rangayyan_ch3_discrete_convolution_causal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng036 import rangayyan_ch3_discrete_convolution_causal
 
 
@@ -11,7 +12,7 @@ def test_rng036_basic():
     n = 100
     result = rangayyan_ch3_discrete_convolution_causal(x, h, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng036_edge():

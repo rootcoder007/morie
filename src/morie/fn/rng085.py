@@ -1,6 +1,7 @@
 """Synchronized sum across M observations to form ensemble averaging.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_synchronized_averaging_sum"]
@@ -38,7 +39,14 @@ def rangayyan_ch3_synchronized_averaging_sum(y_k, x_k, eta_k, n, M):
     n = len(y_k)
     result = float(np.mean(y_k))
     se = float(np.std(y_k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Synchronized sum across M observations to form ensemble averaging."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Synchronized sum across M observations to form ensemble averaging.",
+        }
+    )
 
 
 def cheatsheet():

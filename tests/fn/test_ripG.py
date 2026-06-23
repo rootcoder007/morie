@@ -1,6 +1,7 @@
 """Tests for ripG.ripley_g_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ripG import ripley_g_function
 
 
@@ -11,7 +12,7 @@ def test_ripG_basic():
     r = 10
     result = ripley_g_function(points, window, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ripG_edge():

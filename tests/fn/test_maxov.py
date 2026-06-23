@@ -1,5 +1,7 @@
 """Tests for maxov.py - Maximal Overlap DWT."""
+
 import numpy as np
+
 from morie.fn.maxov import maximal_overlap_dwt, maxov
 
 

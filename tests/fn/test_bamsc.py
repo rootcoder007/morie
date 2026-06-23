@@ -1,6 +1,6 @@
 """Tests for morie.fn.bamsc — Bayesian Aldrich-McKelvey scaling."""
+
 import numpy as np
-import pytest
 
 from morie.fn.bamsc import bamsc
 
@@ -13,6 +13,7 @@ def test_bamsc_smoke():
 
 def test_cheatsheet():
     from morie.fn.bamsc import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

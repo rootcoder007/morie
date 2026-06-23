@@ -1,6 +1,7 @@
 """Tests for hmddim.geron_ddim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmddim import geron_ddim
 
 
@@ -12,7 +13,7 @@ def test_hmddim_basic():
     n_steps = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_ddim(x_T, model, T, n_steps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmddim_edge():

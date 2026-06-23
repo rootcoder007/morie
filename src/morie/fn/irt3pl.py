@@ -1,6 +1,7 @@
 """3-parameter logistic with guessing parameter."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["three_parameter_logistic"]
@@ -38,7 +39,9 @@ def three_parameter_logistic(y, theta, a, b, c):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "3-parameter logistic with guessing parameter"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "3-parameter logistic with guessing parameter"}
+    )
 
 
 def cheatsheet():

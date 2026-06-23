@@ -1,6 +1,7 @@
 """Tests for otsoft.ot_softassignment."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otsoft import ot_softassignment
 
 
@@ -12,7 +13,7 @@ def test_otsoft_basic():
     epsilon = 1e-6
     result = ot_softassignment(a, b, C, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otsoft_edge():

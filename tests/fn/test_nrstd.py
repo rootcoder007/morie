@@ -1,6 +1,7 @@
 """Test nrstd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nrstd import nrstd
 
 

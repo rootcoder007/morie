@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Random subspaces: bag features per tree without subsampling rows."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_random_subspaces"]
@@ -38,7 +40,14 @@ def geron_random_subspaces(X, y, base_estimator, n_estimators, max_features):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Random subspaces: bag features per tree without subsampling rows"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Random subspaces: bag features per tree without subsampling rows",
+        }
+    )
 
 
 def cheatsheet():

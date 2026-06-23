@@ -70,7 +70,7 @@ def simod(
     if y.shape[0] != n:
         raise ValueError(f"y length {y.shape[0]} != X rows {n}.")
     if n < max(10, 2 * p):
-        raise ValueError(f"Need at least {max(10, 2*p)} observations, got {n}.")
+        raise ValueError(f"Need at least {max(10, 2 * p)} observations, got {n}.")
 
     from morie.fn.nwker import _silverman_bw, nwker
 

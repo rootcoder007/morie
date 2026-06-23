@@ -38,11 +38,17 @@ def moods(x, y, axis=0, cdf=None):
     scores_x = []
     scores_y = []
     for i in range(n_x):
-        rank_i = np.sum(combined <= x[i]) + np.sum((combined == x[i]) & (np.arange(n) <= np.where(combined == x[i])[0][0])) / 2
+        rank_i = (
+            np.sum(combined <= x[i])
+            + np.sum((combined == x[i]) & (np.arange(n) <= np.where(combined == x[i])[0][0])) / 2
+        )
         scores_x.append((rank_i - (n + 1) / 2) ** 2)
 
     for i in range(n_y):
-        rank_i = np.sum(combined <= y[i]) + np.sum((combined == y[i]) & (np.arange(n) <= np.where(combined == y[i])[0][0])) / 2
+        rank_i = (
+            np.sum(combined <= y[i])
+            + np.sum((combined == y[i]) & (np.arange(n) <= np.where(combined == y[i])[0][0])) / 2
+        )
         scores_y.append((rank_i - (n + 1) / 2) ** 2)
 
     M_x = np.sum(scores_x)

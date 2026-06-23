@@ -1,6 +1,7 @@
 """Tests for icarbm.icar_prior."""
+
 import numpy as np
-import pytest
+
 from morie.fn.icarbm import icar_prior
 
 
@@ -10,7 +11,7 @@ def test_icarbm_basic():
     tau = 0.1
     result = icar_prior(adjacency, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_icarbm_edge():

@@ -1,6 +1,7 @@
 """Tests for gestid.g_estimation_snm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gestid import g_estimation_snm
 
 
@@ -12,7 +13,7 @@ def test_gestid_basic():
     time = np.linspace(0, 10, 100)
     result = g_estimation_snm(y, treatment_history, covariate_history, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gestid_edge():

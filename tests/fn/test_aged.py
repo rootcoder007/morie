@@ -1,6 +1,7 @@
 """Test aged."""
+
 import numpy as np
-import pytest
+
 from morie.fn.aged import aged
 
 

@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """EMG RMS envelope -- Rangayyan Ch 8."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -34,13 +35,13 @@ def rangayyan_emg_rms(x, window=64, fs=1.0):
     W = int(window)
     if W < 1:
         raise ValueError("window must be >= 1")
-    sq = x ** 2
+    sq = x**2
     csum = np.concatenate([[0.0], np.cumsum(sq)])
     rms = np.full_like(x, np.nan)
     for i in range(W - 1, x.size):
         rms[i] = np.sqrt((csum[i + 1] - csum[i + 1 - W]) / W)
     if x.size >= W:
-        rms[:W - 1] = rms[W - 1]
+        rms[: W - 1] = rms[W - 1]
     res = RichResult(
         title="EMG RMS envelope",
         summary_lines=[
@@ -50,8 +51,7 @@ def rangayyan_emg_rms(x, window=64, fs=1.0):
             ("Max RMS", float(np.nanmax(rms))),
         ],
         interpretation=f"Sliding-window RMS, W={W} samples ({W / fs:.3g} s).",
-        payload={"rms": rms, "window": W, "fs": float(fs),
-                 "mean_rms": float(np.nanmean(rms))},
+        payload={"rms": rms, "window": W, "fs": float(fs), "mean_rms": float(np.nanmean(rms))},
     )
     return with_describe_pointer(res, "rgemg")
 

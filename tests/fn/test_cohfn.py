@@ -1,5 +1,7 @@
 """Tests for cohfn.py - Coherence function."""
+
 import numpy as np
+
 from morie.fn.cohfn import coherence_function_fn, cohfn
 
 

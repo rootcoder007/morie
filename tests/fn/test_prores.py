@@ -1,8 +1,9 @@
 """Tests for morie.fn.prores -- bootstrap quantile resampling."""
 
 import numpy as np
-from morie.fn.prores import probability_resample, prores
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.prores import probability_resample, prores
 
 
 class TestProres:

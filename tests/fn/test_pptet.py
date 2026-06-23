@@ -1,6 +1,8 @@
 """Tests for morie.fn.pptet -- Phillips-Perron test."""
+
 import numpy as np
 import pytest
+
 from morie.fn.pptet import pp_test
 
 
@@ -17,4 +19,5 @@ class TestPP:
 
     def test_cheatsheet(self):
         from morie.fn.pptet import cheatsheet
+
         assert isinstance(cheatsheet(), str)

@@ -1,8 +1,9 @@
 """Tests for morie.fn.rct — restrictive confinement trends."""
 
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
+
 from morie.fn.rct import rctrnd as rct
 
 
@@ -12,11 +13,13 @@ def trend_df():
     rng = np.random.default_rng(42)
     regions = ["Central", "Eastern", "Northern"]
     n = 150
-    return pd.DataFrame({
-        "unique_individual_id": [f"P{i:04d}" for i in range(n)],
-        "end_fiscal_year": rng.choice([2019, 2020, 2021], n),
-        "region_at_time_of_placement": rng.choice(regions, n),
-    })
+    return pd.DataFrame(
+        {
+            "unique_individual_id": [f"P{i:04d}" for i in range(n)],
+            "end_fiscal_year": rng.choice([2019, 2020, 2021], n),
+            "region_at_time_of_placement": rng.choice(regions, n),
+        }
+    )
 
 
 class TestRctrnd:

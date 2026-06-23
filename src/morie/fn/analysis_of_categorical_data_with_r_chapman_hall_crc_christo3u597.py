@@ -1,8 +1,8 @@
 """ANOVA expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_unnumbered_597"]
 
@@ -46,4 +46,6 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_unnum
 
 
 def cheatsheet():
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u597: ANOVA expression (auto-extracted; see ref)."
+    return (
+        "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3u597: ANOVA expression (auto-extracted; see ref)."
+    )

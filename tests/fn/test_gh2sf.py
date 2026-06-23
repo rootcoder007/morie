@@ -1,6 +1,7 @@
 """Test gh2sf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gh2sf import gh2sf
 
 

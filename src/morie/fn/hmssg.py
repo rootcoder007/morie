@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Semantic segmentation: per-pixel class labels."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_semantic_segmentation"]
@@ -32,7 +34,9 @@ def geron_semantic_segmentation(image, model):
     n = len(image)
     result = float(np.mean(image))
     se = float(np.std(image, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Semantic segmentation: per-pixel class labels"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Semantic segmentation: per-pixel class labels"}
+    )
 
 
 def cheatsheet():

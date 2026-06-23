@@ -1,6 +1,7 @@
 """Test dtwbl2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtwbl2 import dtwbl2
 
 

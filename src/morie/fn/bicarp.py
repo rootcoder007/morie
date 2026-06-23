@@ -1,6 +1,7 @@
 """BIC for AR(p) order selection."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bic_ar_order"]

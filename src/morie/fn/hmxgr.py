@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exploding gradients: gradients grow through layers."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_exploding_gradients"]
@@ -30,7 +32,9 @@ def geron_exploding_gradients(grads):
     n = len(grads)
     result = float(np.mean(grads))
     se = float(np.std(grads, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Exploding gradients: gradients grow through layers"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Exploding gradients: gradients grow through layers"}
+    )
 
 
 def cheatsheet():

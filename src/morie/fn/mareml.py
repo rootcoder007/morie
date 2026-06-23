@@ -1,6 +1,7 @@
 """REML estimation of between-study τ²."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_random_reml"]
@@ -38,7 +39,16 @@ def ma_random_reml(yi, vi, max_iter):
     se = 1.2533 * np.std(yi, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "REML estimation of between-study τ²"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "REML estimation of between-study τ²",
+        }
+    )
 
 
 def cheatsheet():

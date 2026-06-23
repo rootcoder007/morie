@@ -1,6 +1,7 @@
 """Tests for tmlnsm.tmle_non_smooth."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlnsm import tmle_non_smooth
 
 
@@ -12,7 +13,7 @@ def test_tmlnsm_basic():
     bw = np.random.default_rng(42).normal(0, 1, 100)
     result = tmle_non_smooth(y, D, X, bw)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlnsm_edge():

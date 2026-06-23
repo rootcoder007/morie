@@ -1,6 +1,5 @@
 """Tests for morie.fn.pgeom — geometric CDF."""
 
-import numpy as np
 import pytest
 
 from morie.fn.pgeom import pgeom

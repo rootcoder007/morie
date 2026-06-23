@@ -9,8 +9,10 @@ version replaces the indicator with the integrated kernel:
 Under H0: median(X)=theta_0,  E[S_n]=n/2, Var[S_n]≈n/4, so
 z = (S_n - n/2)/sqrt(n/4) ~ N(0,1).
 """
+
 import numpy as np
 from scipy import stats as _sps
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_smoothed_sign"]
@@ -31,8 +33,7 @@ def fauzi_smoothed_sign(x, theta0=0.0, h=None, alternative="two-sided"):
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 5:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan,
-                                    "n": n, "method": "fzsgn -- too few obs"})
+        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "fzsgn -- too few obs"})
     if h is None:
         h = float(_silverman_h(x))
 
@@ -48,15 +49,17 @@ def fauzi_smoothed_sign(x, theta0=0.0, h=None, alternative="two-sided"):
     else:
         raise ValueError("alternative must be two-sided/greater/less")
 
-    return RichResult(payload={
-        "statistic": S_n,
-        "z": float(z),
-        "p_value": float(p),
-        "theta0": theta0,
-        "h": h,
-        "n": n,
-        "method": f"Fauzi smoothed sign test ({alternative}) (Ch 5)",
-    })
+    return RichResult(
+        payload={
+            "statistic": S_n,
+            "z": float(z),
+            "p_value": float(p),
+            "theta0": theta0,
+            "h": h,
+            "n": n,
+            "method": f"Fauzi smoothed sign test ({alternative}) (Ch 5)",
+        }
+    )
 
 
 def cheatsheet():

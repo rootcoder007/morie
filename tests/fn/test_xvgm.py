@@ -7,7 +7,6 @@ from morie.fn.xvgm import xvgm
 
 
 class TestXvgm:
-
     def test_output_keys(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (20, 2))

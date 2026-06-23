@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Output verification: second LLM checks response against criteria."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_output_verification"]
@@ -34,7 +36,14 @@ def alammar_output_verification(response, criteria, verifier_model):
     n = len(response)
     result = float(np.mean(response))
     se = float(np.std(response, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Output verification: second LLM checks response against criteria"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Output verification: second LLM checks response against criteria",
+        }
+    )
 
 
 def cheatsheet():

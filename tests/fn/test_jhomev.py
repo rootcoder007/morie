@@ -1,6 +1,7 @@
 """Tests for jhomev.johansen_max_eigen."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jhomev import johansen_max_eigen
 
 
@@ -10,7 +11,7 @@ def test_jhomev_basic():
     lags = 10
     result = johansen_max_eigen(X, lags)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_jhomev_edge():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.clse — Clustered standard errors."""
 
 import numpy as np
-import pytest
 
 from morie.fn.clse import clustered_se
 
@@ -20,6 +19,7 @@ def test_clustered_se_larger_than_ols():
             cl.append(c)
     y, X, cl = np.array(y), np.array(X), np.array(cl)
     from morie.fn.olsrg import ols_regression
+
     ols = ols_regression(y, X)
     cse = clustered_se(y, X, cl)
     assert cse.se["(Intercept)"] > ols.se["(Intercept)"]
@@ -31,6 +31,7 @@ def test_clustered_se_coefs_same_as_ols():
     y = 2.0 + 3.0 * X[:, 0] + rng.standard_normal(100)
     cl = np.repeat(np.arange(20), 5)
     from morie.fn.olsrg import ols_regression
+
     ols = ols_regression(y, X)
     cse = clustered_se(y, X, cl)
     np.testing.assert_allclose(

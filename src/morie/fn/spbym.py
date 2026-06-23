@@ -1,5 +1,7 @@
 """Besag-York-Mollie (BYM) model: ICAR + independent random effects."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_bym_model"]
@@ -35,7 +37,14 @@ def schabenberger_bym_model(x, y, E, w):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Besag-York-Mollie (BYM) model: ICAR + independent random effects"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Besag-York-Mollie (BYM) model: ICAR + independent random effects",
+        }
+    )
 
 
 def cheatsheet():

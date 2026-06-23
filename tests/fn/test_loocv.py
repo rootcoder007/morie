@@ -1,6 +1,7 @@
 """Tests for loocv.py - Leave-One-Out Cross-Validation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.loocv import loocv_fn, loocv_fn_alias
 
 
@@ -9,7 +10,7 @@ def _two_class_data():
     X0 = rng.standard_normal((10, 2)) + np.array([0, 0])
     X1 = rng.standard_normal((10, 2)) + np.array([5, 5])
     X = np.vstack([X0, X1])
-    y = np.array([0]*10 + [1]*10)
+    y = np.array([0] * 10 + [1] * 10)
     return X, y
 
 

@@ -1,6 +1,7 @@
 """Tests for siaepi.sir_epidemic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.siaepi import sir_epidemic
 
 
@@ -12,7 +13,7 @@ def test_siaepi_basic():
     initial = np.random.default_rng(42).normal(0, 1, 100)
     result = sir_epidemic(G, beta, gamma, initial)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_siaepi_edge():

@@ -4,6 +4,8 @@
 import numpy as np
 
 from ._containers import DescriptiveResult
+
+
 def feature_select_variance(X, threshold: float = 0.0, **kwargs) -> DescriptiveResult:
     """
     Select features with variance above a threshold.

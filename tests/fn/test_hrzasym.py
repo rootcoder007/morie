@@ -1,6 +1,7 @@
 """Tests for hrzasym.horowitz_one_step_efficient."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzasym import horowitz_one_step_efficient
 
 
@@ -12,7 +13,7 @@ def test_hrzasym_basic():
     initial_estimator = np.random.default_rng(42).normal(0, 1, 100)
     result = horowitz_one_step_efficient(x, y, bandwidth, initial_estimator)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzasym_edge():

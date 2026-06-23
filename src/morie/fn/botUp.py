@@ -1,6 +1,7 @@
 """Bottom-up hierarchy aggregation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bottom_up_aggregation"]

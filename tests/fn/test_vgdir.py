@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgdir -- Directional variogram"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgdir import directional_vario
 
@@ -15,5 +14,5 @@ class TestDirectionalVario:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = directional_vario(np.random.default_rng(0).uniform(0,1,(5,2)), np.ones(5))
+        result = directional_vario(np.random.default_rng(0).uniform(0, 1, (5, 2)), np.ones(5))
         assert hasattr(result, "statistic")

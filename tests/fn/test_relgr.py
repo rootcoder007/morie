@@ -1,5 +1,7 @@
 """Tests for morie.fn.relgr."""
+
 import numpy as np
+
 from morie.fn.relgr import relgr
 
 
@@ -13,6 +15,7 @@ def test_relgr_smoke():
 
 def test_cheatsheet():
     from morie.fn.relgr import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Grouped-Query Attention (Ainslie et al. 2023)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -15,8 +16,7 @@ def _softmax(x, axis=-1):
     return e / np.sum(e, axis=axis, keepdims=True)
 
 
-def grouped_query_attention(Q, K=None, V=None, n_heads: int = 8,
-                            n_kv_heads: int = 2):
+def grouped_query_attention(Q, K=None, V=None, n_heads: int = 8, n_kv_heads: int = 2):
     """Scaled dot-product attention with grouped KV heads.
 
     ``n_heads`` query heads share ``n_kv_heads`` KV heads; ``n_heads``
@@ -62,13 +62,15 @@ def grouped_query_attention(Q, K=None, V=None, n_heads: int = 8,
     out = np.einsum("hqk,hkd->hqd", attn, V_rep)
     return RichResult(
         title="Grouped-Query Attention (Ainslie 2023)",
-        summary_lines=[("n_heads", n_heads),
-                       ("n_kv_heads", n_kv_heads),
-                       ("group_size", group),
-                       ("d_head", d_head)],
-        payload={"tensor": out, "attn": attn, "n_heads": n_heads,
-                 "n_kv_heads": n_kv_heads, "group_size": group,
-                 "method": "GQA"},
+        summary_lines=[("n_heads", n_heads), ("n_kv_heads", n_kv_heads), ("group_size", group), ("d_head", d_head)],
+        payload={
+            "tensor": out,
+            "attn": attn,
+            "n_heads": n_heads,
+            "n_kv_heads": n_kv_heads,
+            "group_size": group,
+            "method": "GQA",
+        },
     )
 
 

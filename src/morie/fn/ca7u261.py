@@ -1,8 +1,8 @@
 """Regression expression involving 'numdoff' (auto-extracted; see reference for full context).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["ca_chapter_7_unnumbered_261"]
 
@@ -41,7 +41,12 @@ def ca_chapter_7_unnumbered_261(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "Regression expression involving 'numdoff' (auto-extracted; see reference for full context)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Regression expression involving 'numdoff' (auto-extracted; see reference for full context).",
+        },
     )
 
 

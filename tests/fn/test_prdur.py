@@ -1,7 +1,9 @@
 """Test pr_duration (prdur)."""
+
 import numpy as np
-from morie.fn.prdur import pr_duration, prdur
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.prdur import pr_duration, prdur
 
 
 class TestPrDuration:

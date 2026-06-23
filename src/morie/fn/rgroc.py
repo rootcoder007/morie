@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Receiver operating characteristic (ROC) curve and AUC."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_roc_curve"]
@@ -32,7 +34,14 @@ def rangayyan_roc_curve(y_true, y_scores):
     n = int(y_true) if y_true.ndim == 0 else len(y_true)
     result = float(np.mean(y_true))
     se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Receiver operating characteristic (ROC) curve and AUC"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Receiver operating characteristic (ROC) curve and AUC",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for hrzk1.horowitz_kernel_density."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzk1 import horowitz_kernel_density
 
 
@@ -10,7 +11,7 @@ def test_hrzk1_basic():
     bandwidth = 0.3
     result = horowitz_kernel_density(x, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzk1_edge():

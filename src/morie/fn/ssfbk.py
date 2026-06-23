@@ -3,6 +3,8 @@
 import numpy as np
 
 from ._containers import DescriptiveResult
+
+
 def state_feedback(A, B, poles, **kwargs) -> DescriptiveResult:
     r"""
     Compute state feedback gain matrix via Ackermann's pole placement.

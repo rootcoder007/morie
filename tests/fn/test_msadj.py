@@ -1,6 +1,7 @@
 """Test misadjustment (msadj)."""
-from morie.fn.msadj import misadjustment, msadj
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.msadj import misadjustment, msadj
 
 
 class TestMsadj:

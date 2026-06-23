@@ -1,8 +1,9 @@
 """Correlation expression (auto-extracted; see ref).."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["wilcox_chapter_14_unnumbered_489"]
 
@@ -48,7 +49,11 @@ def wilcox_chapter_14_unnumbered_489(x):
         statistic=float(result.statistic),
         pvalue=float(result.pvalue),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Correlation expression (auto-extracted; see ref).", "p_value": float(result.pvalue)},
+        extra_payload={
+            "n": n,
+            "method": "Correlation expression (auto-extracted; see ref).",
+            "p_value": float(result.pvalue),
+        },
     )
 
 

@@ -37,13 +37,11 @@ Public callables:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Callable, Optional, Sequence
+from collections.abc import Callable, Sequence
 
 import numpy as np
 import pandas as pd
 from scipy import stats
-
 
 __all__ = [
     "mrm_anova_bonferroni",
@@ -88,15 +86,13 @@ def _ols_anova(formula_terms: list[tuple[str, np.ndarray]], y: np.ndarray):
         df_b = Xb.shape[1]
         ss_b = rss_old - rss_new
         ms_b = ss_b / df_b if df_b > 0 else float("nan")
-        rows.append({"name": name, "df": df_b, "ss": round(ss_b, 6),
-                     "ms": round(ms_b, 6)})
+        rows.append({"name": name, "df": df_b, "ss": round(ss_b, 6), "ms": round(ms_b, 6)})
         accumulated_X = new_X
         last_resid_ss = rss_new
         last_resid_df = n - accumulated_X.shape[1]
 
     ms_res = last_resid_ss / last_resid_df if last_resid_df > 0 else float("nan")
-    rows.append({"name": "Residual", "df": int(last_resid_df),
-                 "ss": round(last_resid_ss, 6), "ms": round(ms_res, 6)})
+    rows.append({"name": "Residual", "df": int(last_resid_df), "ss": round(last_resid_ss, 6), "ms": round(ms_res, 6)})
     # Compute F and p for each non-residual block
     for r in rows[:-1]:
         if ms_res > 0:
@@ -127,8 +123,10 @@ def _factor_dummies(s: pd.Series) -> np.ndarray:
 
 
 def mrm_anova_bonferroni(
-    data: pd.DataFrame, *,
-    response_col: str, group_col: str,
+    data: pd.DataFrame,
+    *,
+    response_col: str,
+    group_col: str,
     alpha: float = 0.05,
 ) -> dict:
     """One-way ANOVA with pairwise Bonferroni-adjusted t-tests.
@@ -139,18 +137,21 @@ def mrm_anova_bonferroni(
     """
     d = data[[response_col, group_col]].dropna()
     groups = list(pd.unique(d[group_col]))
-    samples = [d.loc[d[group_col] == g, response_col].to_numpy(dtype=float)
-               for g in groups]
+    samples = [d.loc[d[group_col] == g, response_col].to_numpy(dtype=float) for g in groups]
     f_stat, p_anova = stats.f_oneway(*samples)
     pairs = []
     for i in range(len(groups)):
         for j in range(i + 1, len(groups)):
             t, p = stats.ttest_ind(samples[i], samples[j], equal_var=False)
-            pairs.append({
-                "group_a": groups[i], "group_b": groups[j],
-                "diff": round(float(np.mean(samples[i]) - np.mean(samples[j])), 4),
-                "t": round(float(t), 4), "p_raw": float(p),
-            })
+            pairs.append(
+                {
+                    "group_a": groups[i],
+                    "group_b": groups[j],
+                    "diff": round(float(np.mean(samples[i]) - np.mean(samples[j])), 4),
+                    "t": round(float(t), 4),
+                    "p_raw": float(p),
+                }
+            )
     n_pairs = len(pairs)
     for p in pairs:
         p["p_bonferroni"] = min(1.0, p["p_raw"] * n_pairs)
@@ -174,8 +175,11 @@ def mrm_anova_bonferroni(
 
 
 def mrm_rcbd(
-    data: pd.DataFrame, *,
-    response_col: str, treatment_col: str, block_col: str,
+    data: pd.DataFrame,
+    *,
+    response_col: str,
+    treatment_col: str,
+    block_col: str,
 ) -> dict:
     """Randomised complete block design (RCBD) two-way ANOVA.
 
@@ -204,8 +208,12 @@ def mrm_rcbd(
 
 
 def mrm_latin_square(
-    data: pd.DataFrame, *,
-    response_col: str, row_col: str, col_col: str, treatment_col: str,
+    data: pd.DataFrame,
+    *,
+    response_col: str,
+    row_col: str,
+    col_col: str,
+    treatment_col: str,
 ) -> dict:
     """Latin-square three-way ANOVA (row, column, treatment).
 
@@ -223,9 +231,7 @@ def mrm_latin_square(
         "anova": pd.DataFrame(table),
         "n": int(len(d)),
         "k": int(k),
-        "interpretation": (
-            f"{k}x{k} Latin square on n={len(d)}; Treatment p = {table[2]['p_value']:.3g}."
-        ),
+        "interpretation": (f"{k}x{k} Latin square on n={len(d)}; Treatment p = {table[2]['p_value']:.3g}."),
     }
 
 
@@ -233,9 +239,13 @@ def mrm_latin_square(
 
 
 def mrm_graeco_latin(
-    data: pd.DataFrame, *,
-    response_col: str, row_col: str, col_col: str,
-    latin_col: str, greek_col: str,
+    data: pd.DataFrame,
+    *,
+    response_col: str,
+    row_col: str,
+    col_col: str,
+    latin_col: str,
+    greek_col: str,
 ) -> dict:
     """Graeco-Latin square four-way ANOVA (row, col, Latin, Greek)."""
     d = data[[response_col, row_col, col_col, latin_col, greek_col]].dropna()
@@ -244,8 +254,7 @@ def mrm_graeco_latin(
     Xc = _factor_dummies(d[col_col])
     Xl = _factor_dummies(d[latin_col])
     Xg = _factor_dummies(d[greek_col])
-    table = _ols_anova([("Row", Xr), ("Column", Xc),
-                         ("Latin", Xl), ("Greek", Xg)], y)
+    table = _ols_anova([("Row", Xr), ("Column", Xc), ("Latin", Xl), ("Greek", Xg)], y)
     return {
         "anova": pd.DataFrame(table),
         "n": int(len(d)),
@@ -260,9 +269,11 @@ def mrm_graeco_latin(
 
 
 def mrm_fractional_factorial(
-    data: pd.DataFrame, *,
-    response_col: str, factor_cols: Sequence[str],
-    generator: Optional[str] = None,
+    data: pd.DataFrame,
+    *,
+    response_col: str,
+    factor_cols: Sequence[str],
+    generator: str | None = None,
 ) -> dict:
     """Fractional 2^(k-p) factorial main-effects + alias-structure analysis.
 
@@ -300,8 +311,10 @@ def mrm_fractional_factorial(
 
 
 def mrm_response_surface(
-    data: pd.DataFrame, *,
-    response_col: str, factor_cols: Sequence[str],
+    data: pd.DataFrame,
+    *,
+    response_col: str,
+    factor_cols: Sequence[str],
 ) -> dict:
     """Second-order response-surface fit (Box-Wilson 1951).
 
@@ -318,9 +331,11 @@ def mrm_response_surface(
     cols = [np.ones(len(d))]
     names = ["intercept"]
     for i in range(k):
-        cols.append(X[:, i]); names.append(f"{factor_cols[i]}")
+        cols.append(X[:, i])
+        names.append(f"{factor_cols[i]}")
     for i in range(k):
-        cols.append(X[:, i] ** 2); names.append(f"{factor_cols[i]}^2")
+        cols.append(X[:, i] ** 2)
+        names.append(f"{factor_cols[i]}^2")
     for i in range(k):
         for j in range(i + 1, k):
             cols.append(X[:, i] * X[:, j])
@@ -328,40 +343,35 @@ def mrm_response_surface(
     D = np.column_stack(cols)
     beta, *_ = np.linalg.lstsq(D, y, rcond=None)
     # Build B matrix (symmetric quadratic) and b (linear)
-    b = beta[1:1 + k]
+    b = beta[1 : 1 + k]
     B = np.zeros((k, k))
     for i in range(k):
         B[i, i] = beta[1 + k + i]
     idx = 1 + 2 * k
     for i in range(k):
         for j in range(i + 1, k):
-            B[i, j] = beta[idx] / 2; B[j, i] = beta[idx] / 2
+            B[i, j] = beta[idx] / 2
+            B[j, i] = beta[idx] / 2
             idx += 1
     try:
         x_star = -0.5 * np.linalg.solve(B, b)
         y_star = float(beta[0] + b @ x_star + x_star @ B @ x_star)
     except np.linalg.LinAlgError:
-        x_star = None; y_star = float("nan")
+        x_star = None
+        y_star = float("nan")
 
     eigvals, _ = np.linalg.eigh(B)
-    nature = (
-        "maximum" if np.all(eigvals < 0) else
-        "minimum" if np.all(eigvals > 0) else
-        "saddle"
-    )
+    nature = "maximum" if np.all(eigvals < 0) else "minimum" if np.all(eigvals > 0) else "saddle"
     return {
         "coefficients": {n: round(float(c), 6) for n, c in zip(names, beta)},
         "stationary_point": (
-            None if x_star is None else
-            {factor_cols[i]: round(float(x_star[i]), 4) for i in range(k)}
+            None if x_star is None else {factor_cols[i]: round(float(x_star[i]), 4) for i in range(k)}
         ),
         "stationary_y": round(y_star, 4) if x_star is not None else None,
         "stationary_nature": nature,
         "eigenvalues": [round(float(v), 4) for v in eigvals],
         "n": int(len(d)),
-        "interpretation": (
-            f"Second-order RSM on n={len(d)}, k={k}; stationary point is a {nature}."
-        ),
+        "interpretation": (f"Second-order RSM on n={len(d)}, k={k}; stationary point is a {nature}."),
     }
 
 
@@ -369,8 +379,11 @@ def mrm_response_surface(
 
 
 def mrm_anova_power(
-    k_groups: int, n_per_group: int, effect_size_f: float,
-    *, alpha: float = 0.05,
+    k_groups: int,
+    n_per_group: int,
+    effect_size_f: float,
+    *,
+    alpha: float = 0.05,
 ) -> dict:
     """Power of one-way ANOVA given Cohen's f effect size.
 
@@ -379,7 +392,7 @@ def mrm_anova_power(
     df1 = k_groups - 1
     N = k_groups * n_per_group
     df2 = N - k_groups
-    ncp = N * effect_size_f ** 2
+    ncp = N * effect_size_f**2
     F_crit = stats.f.ppf(1 - alpha, df1, df2)
     power = 1 - stats.ncf.cdf(F_crit, df1, df2, ncp)
     return {
@@ -388,7 +401,8 @@ def mrm_anova_power(
         "N_total": int(N),
         "effect_size_f": float(effect_size_f),
         "alpha": alpha,
-        "df1": int(df1), "df2": int(df2),
+        "df1": int(df1),
+        "df2": int(df2),
         "noncentrality": round(float(ncp), 4),
         "F_critical": round(float(F_crit), 4),
         "power": round(float(power), 4),
@@ -404,7 +418,10 @@ def mrm_anova_power(
 
 def mrm_mc_power(
     simulator: Callable[[int], float],
-    *, n_sims: int = 1000, alpha: float = 0.05, seed: int = 42,
+    *,
+    n_sims: int = 1000,
+    alpha: float = 0.05,
+    seed: int = 42,
 ) -> dict:
     """Empirical power via Monte-Carlo: caller supplies a simulator
     that draws data under the alternative hypothesis and returns a
@@ -421,7 +438,7 @@ def mrm_mc_power(
     rng = np.random.default_rng(seed)
     p_values = np.empty(n_sims)
     for i in range(n_sims):
-        s = int(rng.integers(0, 2 ** 31 - 1))
+        s = int(rng.integers(0, 2**31 - 1))
         p_values[i] = float(simulator(s))
     rejects = p_values < alpha
     pwr = float(rejects.mean())
@@ -433,9 +450,7 @@ def mrm_mc_power(
         "se": round(se, 4),
         "ci95_lower": round(max(0.0, pwr - 1.96 * se), 4),
         "ci95_upper": round(min(1.0, pwr + 1.96 * se), 4),
-        "interpretation": (
-            f"Empirical power = {pwr:.3f} (SE {se:.3f}) over {n_sims} sims at alpha={alpha}."
-        ),
+        "interpretation": (f"Empirical power = {pwr:.3f} (SE {se:.3f}) over {n_sims} sims at alpha={alpha}."),
     }
 
 
@@ -443,9 +458,13 @@ def mrm_mc_power(
 
 
 def mrm_perm_block(
-    data: pd.DataFrame, *,
-    response_col: str, treatment_col: str, block_col: str,
-    n_perm: int = 1000, seed: int = 42,
+    data: pd.DataFrame,
+    *,
+    response_col: str,
+    treatment_col: str,
+    block_col: str,
+    n_perm: int = 1000,
+    seed: int = 42,
 ) -> dict:
     """Block-permutation test for treatment effect.
 
@@ -454,9 +473,7 @@ def mrm_perm_block(
     statistic.  Two-sided p-value.
     """
     d = data[[response_col, treatment_col, block_col]].dropna().reset_index(drop=True)
-    obs_stat = (
-        d.groupby(treatment_col)[response_col].mean().diff().iloc[-1]
-    )
+    obs_stat = d.groupby(treatment_col)[response_col].mean().diff().iloc[-1]
     rng = np.random.default_rng(seed)
     perm_stats = np.empty(n_perm)
     for k in range(n_perm):
@@ -464,9 +481,7 @@ def mrm_perm_block(
         for b, idx in d.groupby(block_col).groups.items():
             shuffled = rng.permutation(d.loc[idx, treatment_col].values)
             permuted.loc[idx, treatment_col] = shuffled
-        perm_stats[k] = (
-            permuted.groupby(treatment_col)[response_col].mean().diff().iloc[-1]
-        )
+        perm_stats[k] = permuted.groupby(treatment_col)[response_col].mean().diff().iloc[-1]
     p = float((np.abs(perm_stats) >= abs(obs_stat)).mean())
     return {
         "observed_statistic": round(float(obs_stat), 6),
@@ -498,6 +513,4 @@ def mrm_random_latin(k: int, *, seed: int = 42) -> pd.DataFrame:
     sym_perm = rng.permutation(k)
     sq = base[row_perm][:, col_perm]
     sq = np.vectorize(lambda x: int(sym_perm[x]))(sq)
-    return pd.DataFrame(sq,
-                          index=[f"R{i+1}" for i in range(k)],
-                          columns=[f"C{j+1}" for j in range(k)])
+    return pd.DataFrame(sq, index=[f"R{i + 1}" for i in range(k)], columns=[f"C{j + 1}" for j in range(k)])

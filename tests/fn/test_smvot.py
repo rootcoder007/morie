@@ -1,5 +1,7 @@
 """Tests for morie.fn.smvot -- simulate spatial voting."""
+
 import numpy as np
+
 from morie.fn.smvot import simulate_voting_spatial, smvot
 
 

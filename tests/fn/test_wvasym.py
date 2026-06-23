@@ -1,7 +1,7 @@
 """Tests for morie.fn.wvasym."""
 
 import numpy as np
-import pytest
+
 from morie.fn.wvasym import wvasym
 
 

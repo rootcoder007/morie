@@ -1,6 +1,7 @@
 """Tests for km014.kamath_ch2_positional_encoding_cos."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km014 import kamath_ch2_positional_encoding_cos
 
 
@@ -11,7 +12,7 @@ def test_km014_basic():
     d = 5
     result = kamath_ch2_positional_encoding_cos(i, j, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km014_edge():

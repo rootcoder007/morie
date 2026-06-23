@@ -1,6 +1,7 @@
 """Normalized ratio used in maximizing matched-filter SNR.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_snr_normalized_ratio"]
@@ -38,7 +39,14 @@ def rangayyan_ch4_snr_normalized_ratio(H, X, P_eta_i, f, t_0):
     n = len(H)
     result = float(np.mean(H))
     se = float(np.std(H, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Normalized ratio used in maximizing matched-filter SNR."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Normalized ratio used in maximizing matched-filter SNR.",
+        }
+    )
 
 
 def cheatsheet():

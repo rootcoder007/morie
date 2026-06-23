@@ -1,6 +1,7 @@
 """Tests for barerp.barrier_method."""
+
 import numpy as np
-import pytest
+
 from morie.fn.barerp import barrier_method
 
 
@@ -12,7 +13,7 @@ def test_barerp_basic():
     tau = 0.1
     result = barrier_method(f, constraints, x0, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_barerp_edge():

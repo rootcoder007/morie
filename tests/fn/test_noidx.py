@@ -1,6 +1,5 @@
 """Tests for morie.fn.noidx -- noise exposure."""
 
-import pytest
 from morie.fn.noidx import noise_exposure
 
 

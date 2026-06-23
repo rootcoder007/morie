@@ -1,6 +1,7 @@
 """RLS volatility update on squared returns."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_recursive_least_sq"]
@@ -32,7 +33,9 @@ def vol_recursive_least_sq(r, lam):
     n = len(r)
     result = float(np.mean(r))
     se = float(np.std(r, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "RLS volatility update on squared returns"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "RLS volatility update on squared returns"}
+    )
 
 
 def cheatsheet():

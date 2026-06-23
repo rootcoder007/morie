@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """L2 weight regularization for neural networks."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["l2_weight_regularization"]
@@ -34,7 +36,9 @@ def l2_weight_regularization(loss, weights, lam):
     n = int(loss) if loss.ndim == 0 else len(loss)
     result = float(np.mean(loss))
     se = float(np.std(loss, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "L2 weight regularization for neural networks"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "L2 weight regularization for neural networks"}
+    )
 
 
 def cheatsheet():

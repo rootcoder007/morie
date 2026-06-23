@@ -1,9 +1,10 @@
 """Tests for morie.fn.vctfr — fear of crime."""
 
-import pytest
 import numpy as np
-from morie.fn.vctfr import victim_fear
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.vctfr import victim_fear
 
 
 class TestVictimFear:

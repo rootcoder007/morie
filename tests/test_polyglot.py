@@ -1,7 +1,10 @@
 """Tests for the headless polyglot REPL engine."""
+
 import os
+
 import pytest
-from morie.polyglot import PolyglotEngine, detect_language, ExecResult, LABELS, LANGUAGES
+
+from morie.polyglot import LABELS, LANGUAGES, ExecResult, PolyglotEngine, detect_language
 
 
 class TestDetectLanguage:
@@ -81,7 +84,7 @@ class TestDetectLanguage:
         assert detect_language("use std::io;") == "rust"
 
     def test_c_detection(self):
-        assert detect_language('#include <stdio.h>') == "c"
+        assert detect_language("#include <stdio.h>") == "c"
         assert detect_language('printf("hello\\n");') == "c"
 
     def test_cpp_detection(self):
@@ -282,8 +285,7 @@ class TestPolyglotBridging:
 
 @pytest.mark.skipif(
     not any(
-        os.path.exists(p)
-        for p in ["/usr/bin/R", "/usr/local/bin/R", "/Library/Frameworks/R.framework/Resources/bin/R"]
+        os.path.exists(p) for p in ["/usr/bin/R", "/usr/local/bin/R", "/Library/Frameworks/R.framework/Resources/bin/R"]
     ),
     reason="R not installed",
 )
@@ -361,7 +363,7 @@ class TestPolyglotC:
 class TestPolyglotCpp:
     def test_cpp_exec(self):
         engine = PolyglotEngine(polyglot=False)
-        code = 'C+> #include <iostream>\nint main() { std::cout << 42 << std::endl; return 0; }'
+        code = "C+> #include <iostream>\nint main() { std::cout << 42 << std::endl; return 0; }"
         result = engine.execute(code)
         assert result.language == "cpp"
         assert result.success

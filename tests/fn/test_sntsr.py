@@ -1,7 +1,8 @@
 """Tests for morie.fn.sntsr — proportion of sentence served."""
 
-from morie.fn.sntsr import sentence_served, sntsr
 import numpy as np
+
+from morie.fn.sntsr import sentence_served
 
 
 class TestSentenceServed:

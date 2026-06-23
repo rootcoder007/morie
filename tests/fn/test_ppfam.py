@@ -1,7 +1,7 @@
 """Tests for morie.fn.ppfam."""
 
 import numpy as np
-import pytest
+
 from morie.fn.ppfam import ppfam
 
 

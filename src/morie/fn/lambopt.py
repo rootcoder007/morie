@@ -1,6 +1,7 @@
 """LAMB layer-wise adaptive."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["lamb_optimizer"]

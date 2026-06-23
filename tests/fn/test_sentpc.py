@@ -1,6 +1,7 @@
 """Tests for sentpc.sentencepiece."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sentpc import sentencepiece
 
 
@@ -11,7 +12,7 @@ def test_sentpc_basic():
     alpha = 0.05
     result = sentencepiece(corpus, vocab_size, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sentpc_edge():

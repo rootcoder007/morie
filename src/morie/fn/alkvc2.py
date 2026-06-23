@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """KV-cache growth during autoregressive decoding: append new K/V per generated token."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_kv_cache_lookup"]
@@ -38,7 +40,14 @@ def alammar_kv_cache_lookup(K_cache, V_cache, k_new, v_new, q_new):
     n = len(K_cache)
     result = float(np.mean(K_cache))
     se = float(np.std(K_cache, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "KV-cache growth during autoregressive decoding: append new K/V per generated token"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "KV-cache growth during autoregressive decoding: append new K/V per generated token",
+        }
+    )
 
 
 def cheatsheet():

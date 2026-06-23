@@ -1,8 +1,9 @@
 """Tests for morie.fn.ludc -- LU decomposition."""
 
 import numpy as np
-from morie.fn.ludc import lu_decomposition, ludc
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ludc import lu_decomposition, ludc
 
 
 class TestLudc:
@@ -27,5 +28,6 @@ class TestLudc:
 
     def test_non_square_raises(self):
         import pytest
+
         with pytest.raises(ValueError):
             lu_decomposition(np.ones((2, 3)))

@@ -3,7 +3,8 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.ebal import entropy_balance, ebal
+
+from morie.fn.ebal import ebal, entropy_balance
 
 
 class TestEntropyBalance:

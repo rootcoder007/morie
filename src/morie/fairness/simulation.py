@@ -16,6 +16,7 @@ Both are pure-numpy and need no optional dependency.  The JAX GAN /
 CTGAN generative models live in :mod:`morie.fairness.gan` (the
 ``morie[sim]`` extra).
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -219,10 +220,12 @@ def simulate_biased_crime_data(
     loc = np.where(gi == 0, 250.0, 250.0 + bias * 100.0)
     risk_score = np.clip(rng.normal(loc, 40.0), 0.0, 500.0)
 
-    return pd.DataFrame({
-        "area": area,
-        "group": group,
-        "true_outcome": true_outcome,
-        "detected": detected,
-        "risk_score": risk_score,
-    })
+    return pd.DataFrame(
+        {
+            "area": area,
+            "group": group,
+            "true_outcome": true_outcome,
+            "detected": detected,
+            "risk_score": risk_score,
+        }
+    )

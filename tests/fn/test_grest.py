@@ -45,4 +45,5 @@ def test_wrong_groups():
 
 def test_cheatsheet():
     from morie.fn.grest import cheatsheet
+
     assert "gehan" in cheatsheet().lower()

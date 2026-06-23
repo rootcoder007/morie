@@ -1,6 +1,7 @@
 """Tests for hmmdp.geron_mdp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmmdp import geron_mdp
 
 
@@ -13,7 +14,7 @@ def test_hmmdp_basic():
     gamma = 1.0
     result = geron_mdp(states, actions, P, R, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmmdp_edge():

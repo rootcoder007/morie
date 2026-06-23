@@ -1,7 +1,7 @@
 """Tests for morie.fn.mpgov."""
 
 import numpy as np
-import pytest
+
 from morie.fn.mpgov import mpgov
 
 

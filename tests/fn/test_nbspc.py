@@ -1,6 +1,7 @@
 """Test nbspc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nbspc import nbspc
 
 

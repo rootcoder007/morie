@@ -1,6 +1,7 @@
 """Tests for rglms.rangayyan_lms_filter."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rglms import rangayyan_lms_filter
 
 
@@ -12,7 +13,7 @@ def test_rglms_basic():
     order = 4
     result = rangayyan_lms_filter(x, d, mu, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rglms_edge():

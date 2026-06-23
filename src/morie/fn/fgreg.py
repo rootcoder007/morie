@@ -9,7 +9,16 @@ from scipy.stats import norm
 __all__ = ["fgreg"]
 
 
-def fgreg(time: np.ndarray, event: np.ndarray, X: np.ndarray, cdf=None, *, cause: int = 1, max_iter: int = 100, tol: float = 1e-8) -> dict:
+def fgreg(
+    time: np.ndarray,
+    event: np.ndarray,
+    X: np.ndarray,
+    cdf=None,
+    *,
+    cause: int = 1,
+    max_iter: int = 100,
+    tol: float = 1e-8,
+) -> dict:
     """Fine-Gray subdistribution hazard regression.
 
     Models the subdistribution hazard for a specific cause
@@ -53,9 +62,9 @@ def fgreg(time: np.ndarray, event: np.ndarray, X: np.ndarray, cdf=None, *, cause
     X_s = X[order]
 
     from .km import kaplan_meier
+
     km_cens = kaplan_meier(time, (1 - is_competing).astype(int))
-    G_func = np.interp(time, km_cens.times, km_cens.survival,
-                       left=1.0, right=km_cens.survival[-1])
+    G_func = np.interp(time, km_cens.times, km_cens.survival, left=1.0, right=km_cens.survival[-1])
 
     w = np.ones(n)
     for i in range(n):

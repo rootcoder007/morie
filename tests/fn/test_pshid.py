@@ -1,7 +1,7 @@
 """Tests for morie.fn.pshid."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pshid import pshid
 
 

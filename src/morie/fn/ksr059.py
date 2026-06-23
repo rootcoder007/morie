@@ -1,6 +1,7 @@
 """Komlos-Major-Tusnady (KMT) strong approximation of empirical process by Brownian bridge."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_kmt_strong_approximation"]
@@ -38,7 +39,14 @@ def kosorok_ch2_kmt_strong_approximation(G_n, B_n, F, n, x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Komlos-Major-Tusnady (KMT) strong approximation of empirical process by Brownian bridge"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Komlos-Major-Tusnady (KMT) strong approximation of empirical process by Brownian bridge",
+        }
+    )
 
 
 def cheatsheet():

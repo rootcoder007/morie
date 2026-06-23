@@ -1,6 +1,7 @@
 """Rosenthal's fail-safe N (file-drawer)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_fail_safe_n"]

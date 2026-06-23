@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Quantization-aware training (QAT): simulate quantization during training."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_quantization_aware_training"]
@@ -36,7 +38,14 @@ def geron_quantization_aware_training(model, X, y, epochs):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Quantization-aware training (QAT): simulate quantization during training"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Quantization-aware training (QAT): simulate quantization during training",
+        }
+    )
 
 
 def cheatsheet():

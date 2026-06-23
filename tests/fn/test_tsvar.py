@@ -1,6 +1,7 @@
 """Test tsvar."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tsvar import tsvar
 
 

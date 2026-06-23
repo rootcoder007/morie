@@ -44,7 +44,7 @@ def matern_kernel(
     scaled_dist = np.sqrt(2.0 * nu) * dist / length_scale + 1e-8
 
     coeff = (2.0 ** (1.0 - nu)) / gamma(nu)
-    return output_scale**2 * coeff * (scaled_dist ** nu) * kv(nu, scaled_dist)
+    return output_scale**2 * coeff * (scaled_dist**nu) * kv(nu, scaled_dist)
 
 
 def rational_quadratic_kernel(
@@ -74,18 +74,22 @@ def periodic_kernel(
     return output_scale**2 * np.exp(-2.0 * sin_dist**2 / length_scale**2)
 
 
-def gp_kernel_matrix(
-    x1: np.ndarray, x2: np.ndarray, kernel_type: str = 'se', **kwargs
-) -> np.ndarray:
+def gp_kernel_matrix(x1: np.ndarray, x2: np.ndarray, kernel_type: str = "se", **kwargs) -> np.ndarray:
     """Compute a GP kernel matrix using the requested kernel family."""
-    if kernel_type == 'se':
-        return squared_exponential_kernel(x1, x2, **{k: v for k, v in kwargs.items() if k in ['length_scale', 'output_scale']})
-    if kernel_type == 'matern':
-        return matern_kernel(x1, x2, **{k: v for k, v in kwargs.items() if k in ['length_scale', 'output_scale', 'nu']})
-    if kernel_type == 'rq':
-        return rational_quadratic_kernel(x1, x2, **{k: v for k, v in kwargs.items() if k in ['length_scale', 'output_scale', 'alpha']})
-    if kernel_type == 'periodic':
-        return periodic_kernel(x1, x2, **{k: v for k, v in kwargs.items() if k in ['length_scale', 'output_scale', 'period']})
+    if kernel_type == "se":
+        return squared_exponential_kernel(
+            x1, x2, **{k: v for k, v in kwargs.items() if k in ["length_scale", "output_scale"]}
+        )
+    if kernel_type == "matern":
+        return matern_kernel(x1, x2, **{k: v for k, v in kwargs.items() if k in ["length_scale", "output_scale", "nu"]})
+    if kernel_type == "rq":
+        return rational_quadratic_kernel(
+            x1, x2, **{k: v for k, v in kwargs.items() if k in ["length_scale", "output_scale", "alpha"]}
+        )
+    if kernel_type == "periodic":
+        return periodic_kernel(
+            x1, x2, **{k: v for k, v in kwargs.items() if k in ["length_scale", "output_scale", "period"]}
+        )
     raise ValueError(f"Unknown kernel type: {kernel_type}")
 
 
@@ -94,7 +98,7 @@ def gpkrn(
     coords: np.ndarray | None = None,
     n: int = 50,
     seed: int = 0,
-    kernel_type: str = 'se',
+    kernel_type: str = "se",
     **kwargs,
 ) -> SpatialResult:
     """
@@ -116,7 +120,7 @@ def gpkrn(
         coords = rng.uniform(0, 1, size=(n_points, 2))
     coords = np.asarray(coords, dtype=float)
 
-    kernel_kwargs = {k: v for k, v in kwargs.items() if k in {'length_scale', 'output_scale', 'nu', 'alpha', 'period'}}
+    kernel_kwargs = {k: v for k, v in kwargs.items() if k in {"length_scale", "output_scale", "nu", "alpha", "period"}}
     K = gp_kernel_matrix(coords, coords, kernel_type=kernel_type, **kernel_kwargs)
 
     return SpatialResult(

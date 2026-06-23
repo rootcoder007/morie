@@ -1,6 +1,7 @@
 """Finite-level density p_m of a tail-free measure obtained by averaging P(A_epsilon)/mu(A_epsilon) over the level-m partition cells.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_tailfree_finite_density_pm"]
@@ -36,7 +37,14 @@ def ghosal_ch3_tailfree_finite_density_pm(P, mu, A_epsilon, m):
     n = len(P)
     result = float(np.mean(P))
     se = float(np.std(P, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Finite-level density p_m of a tail-free measure obtained by averaging P(A_epsilon)/mu(A_epsilon) over the level-m partition cells."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Finite-level density p_m of a tail-free measure obtained by averaging P(A_epsilon)/mu(A_epsilon) over the level-m partition cells.",
+        }
+    )
 
 
 def cheatsheet():

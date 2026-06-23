@@ -1,13 +1,13 @@
 """Tests for morie.fn.odose — OTIS dose-response."""
 
-import pytest
 import numpy as np
-from morie.fn.odose import otis_dose_response
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.odose import otis_dose_response
 
 
 class TestOtisDoseResponse:
-
     def test_returns_descriptive(self):
         doses = np.array([1, 1, 2, 2, 3, 3, 4, 4])
         outcomes = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8])

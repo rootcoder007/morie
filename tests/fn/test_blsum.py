@@ -1,4 +1,5 @@
 """Tests for blsum (BLOSUM alignment score)."""
+
 from morie.fn.blsum import blosum_score
 
 

@@ -1,6 +1,7 @@
 """Test csrtk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csrtk import csrtk
 
 

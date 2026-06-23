@@ -1,6 +1,7 @@
 """Test adaptg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.adaptg import adaptg
 
 

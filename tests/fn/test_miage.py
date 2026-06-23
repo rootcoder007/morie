@@ -4,7 +4,6 @@ from morie.fn.miage import mi_by_age
 
 
 class TestMiByAge:
-
     def test_returns_four_levels(self, mapq_df):
         result = mi_by_age(mapq_df)
         assert len(result) == 4

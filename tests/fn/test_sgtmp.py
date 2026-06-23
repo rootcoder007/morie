@@ -1,5 +1,7 @@
 """Tests for temperature schedule."""
+
 import numpy as np
+
 from morie.fn.sgtmp import sgtmp
 
 

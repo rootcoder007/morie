@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrwqn -- Queen contiguity weights"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrwqn import w_queen
 

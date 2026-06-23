@@ -1,6 +1,7 @@
 """Information-theoretic detectability threshold for SBM."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sgt_sbm_detect_threshold"]
@@ -34,7 +35,14 @@ def sgt_sbm_detect_threshold(a, b, k):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Information-theoretic detectability threshold for SBM"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Information-theoretic detectability threshold for SBM",
+        }
+    )
 
 
 def cheatsheet():

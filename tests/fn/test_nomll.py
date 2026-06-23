@@ -1,6 +1,6 @@
 """Tests for morie.fn.nomll — NOMINATE log-likelihood."""
+
 import numpy as np
-import pytest
 
 from morie.fn.nomll import nomll
 
@@ -16,6 +16,7 @@ def test_nomll_smoke():
 
 def test_cheatsheet():
     from morie.fn.nomll import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

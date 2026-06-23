@@ -1,6 +1,7 @@
 """Spatial weights matrix construction."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["weights_matrix"]

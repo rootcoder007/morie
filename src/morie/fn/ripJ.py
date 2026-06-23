@@ -1,6 +1,7 @@
 """J function = (1-G)/(1-F) -- CSR has J=1."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ripley_j_function"]
@@ -34,7 +35,9 @@ def ripley_j_function(points, window, r):
     n = len(points)
     result = float(np.mean(points))
     se = float(np.std(points, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "J function = (1-G)/(1-F) -- CSR has J=1"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "J function = (1-G)/(1-F) -- CSR has J=1"}
+    )
 
 
 def cheatsheet():

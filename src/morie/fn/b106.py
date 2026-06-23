@@ -1,6 +1,7 @@
 r"""Output of the first hidden layer of a feed-forward network after applying activation function phi.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_layer1_output"]
@@ -36,7 +37,14 @@ def burkov_lm_ch1_layer1_output(W_1, x, b_1, phi):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Output of the first hidden layer of a feed-forward network after applying activation function phi."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Output of the first hidden layer of a feed-forward network after applying activation function phi.",
+        }
+    )
 
 
 def cheatsheet():

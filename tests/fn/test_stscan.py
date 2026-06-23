@@ -1,5 +1,7 @@
 """Tests for morie.fn.stscan."""
+
 import numpy as np
+
 from morie.fn.stscan import st_scan_statistic
 
 
@@ -9,7 +11,7 @@ def test_stscan_smoke():
         coords=rng.uniform(size=(20, 2)),
         times=np.arange(20, dtype=float),
         cases=rng.integers(0, 10, size=20).astype(float),
-        population=rng.uniform(100, 1000, size=20)
+        population=rng.uniform(100, 1000, size=20),
     )
     assert result is not None
     assert hasattr(result, "name")
@@ -18,6 +20,7 @@ def test_stscan_smoke():
 
 def test_cheatsheet():
     from morie.fn.stscan import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -83,11 +83,14 @@ def entropy_balance(
         w /= w.sum()
         bal = X_c.T @ w - target
         dw = w[:, None] * (X_c - (X_c.T @ w)[None, :])
-        return dw.T @ (X_c @ np.zeros_like(lam)) + X_c.T @ (w * (X_c @ np.zeros_like(lam))) if False else (X_c * w[:, None]).T @ X_c @ np.linalg.lstsq(np.eye(len(lam)), bal, rcond=None)[0]
+        return (
+            dw.T @ (X_c @ np.zeros_like(lam)) + X_c.T @ (w * (X_c @ np.zeros_like(lam)))
+            if False
+            else (X_c * w[:, None]).T @ X_c @ np.linalg.lstsq(np.eye(len(lam)), bal, rcond=None)[0]
+        )
 
     lam0 = np.zeros(X_c.shape[1])
-    result = minimize(dual_obj, lam0, method="L-BFGS-B",
-                      options={"maxiter": max_iter})
+    result = minimize(dual_obj, lam0, method="L-BFGS-B", options={"maxiter": max_iter})
 
     logw = X_c @ result.x
     logw -= logw.max()

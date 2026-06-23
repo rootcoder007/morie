@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Distribution of lengths of runs of type 1 objects marginally."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_type1_run_lengths"]
@@ -34,7 +36,14 @@ def gibbons_type1_run_lengths(run_lengths, n1, n2):
     n = int(run_lengths) if run_lengths.ndim == 0 else len(run_lengths)
     result = float(np.mean(run_lengths))
     se = float(np.std(run_lengths, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Distribution of lengths of runs of type 1 objects marginally"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Distribution of lengths of runs of type 1 objects marginally",
+        }
+    )
 
 
 def cheatsheet():

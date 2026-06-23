@@ -11,7 +11,9 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['chpdl']
+__all__ = ["chpdl"]
+
+
 def chpdl(
     x: np.ndarray,
     fs: float = 1.0,
@@ -63,7 +65,7 @@ def chpdl(
 
         for t0_idx in range(0, n, max(1, window_len // 2)):
             t0 = t[t0_idx]
-            g = np.exp(-((t - t0) ** 2) / (2 * sigma ** 2))
+            g = np.exp(-((t - t0) ** 2) / (2 * sigma**2))
             for cr in chirp_rates:
                 for f0 in np.linspace(0, fs / 2, max(2, window_len // 4)):
                     phase = 2 * np.pi * (f0 * (t - t0) + 0.5 * cr * (t - t0) ** 2)

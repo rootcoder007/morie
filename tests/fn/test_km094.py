@@ -1,6 +1,7 @@
 """Tests for km094.kamath_ch6_debias_regularizer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km094 import kamath_ch6_debias_regularizer
 
 
@@ -11,7 +12,7 @@ def test_km094_basic():
     lam = 0.1
     result = kamath_ch6_debias_regularizer(A, E, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km094_edge():

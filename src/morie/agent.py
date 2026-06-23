@@ -245,7 +245,9 @@ def tool_get_cheatsheet(name: str) -> str:
         return f"Error loading cheatsheet for '{name}': {exc}"
 
 
-def tool_search_codebase(pattern: str, *, file_glob: str = "*.py", max_results: int = 20, sandbox: Path | None = None) -> str:
+def tool_search_codebase(
+    pattern: str, *, file_glob: str = "*.py", max_results: int = 20, sandbox: Path | None = None
+) -> str:
     """Search the morie codebase for a pattern (grep-like)."""
     import re
 
@@ -316,9 +318,7 @@ def tool_describe_data(code: str = "") -> str:
     try:
         exec_globals: dict[str, Any] = {}
         exec(
-            "import pandas as pd; import numpy as np; "
-            "from morie.data import load_dataset, DATASET_CATALOG; "
-            + code,
+            "import pandas as pd; import numpy as np; from morie.data import load_dataset, DATASET_CATALOG; " + code,
             exec_globals,
         )
         df = exec_globals.get("df")
@@ -385,8 +385,25 @@ _DOMAIN_KNOWLEDGE: dict[str, dict] = {
         "desc": "Spatial statistics, geostatistics, spatial econometrics",
         "books": "Schabenberger & Gotway; Armstrong Spatial Voting (2nd Ed)",
         "core": ["moran", "geary", "lisa", "getis", "krig", "idw", "gstat", "sgemp", "sar", "sgcar", "gwreg"],
-        "extended": ["stacf", "stscan", "stkde", "stvar", "stgwr", "trajd", "ripk", "gwpca", "quadr",
-                      "proxm", "dirvt", "lufac", "smvot", "sgok", "sguk", "sgsem", "splag"],
+        "extended": [
+            "stacf",
+            "stscan",
+            "stkde",
+            "stvar",
+            "stgwr",
+            "trajd",
+            "ripk",
+            "gwpca",
+            "quadr",
+            "proxm",
+            "dirvt",
+            "lufac",
+            "smvot",
+            "sgok",
+            "sguk",
+            "sgsem",
+            "splag",
+        ],
         "workflows": {
             "autocorrelation": "moran -> geary -> lisa -> getis (global -> local)",
             "interpolation": "gstat -> krig or idw (variogram -> predict)",
@@ -399,8 +416,21 @@ _DOMAIN_KNOWLEDGE: dict[str, dict] = {
         "desc": "Causal inference, treatment effects, quasi-experimental methods",
         "books": "Imbens & Rubin; Hernan & Robins; Angrist & Pischke",
         "core": ["ate", "att", "atc", "ipw", "aipw", "dml", "plr", "irm"],
-        "extended": ["did", "rdd", "iv", "pliv", "cate", "gate", "late", "g_comp",
-                      "psm", "matching", "rosenbaum_bound", "evalue", "synth_control"],
+        "extended": [
+            "did",
+            "rdd",
+            "iv",
+            "pliv",
+            "cate",
+            "gate",
+            "late",
+            "g_comp",
+            "psm",
+            "matching",
+            "rosenbaum_bound",
+            "evalue",
+            "synth_control",
+        ],
         "workflows": {
             "observational": "ipw -> aipw -> dml (increasing robustness)",
             "matching": "psm -> ate/att/atc (propensity matching -> effects)",
@@ -414,8 +444,7 @@ _DOMAIN_KNOWLEDGE: dict[str, dict] = {
         "desc": "Biomedical signal processing (Rangayyan & Krishnan, 941 equations)",
         "books": "Rangayyan -- Biomedical Signal Analysis (3rd Ed)",
         "core": ["bwflt", "envlp", "hlbrt", "hrvtd", "hrvfd", "eegbd", "welch", "pburg", "spgrm"],
-        "extended": ["lmsaf", "wienr", "nlmsf", "rlsaf", "ecgdet", "hrvtd", "hrvfd",
-                      "eogdt", "emgrt", "iemg", "gdemg"],
+        "extended": ["lmsaf", "wienr", "nlmsf", "rlsaf", "ecgdet", "hrvtd", "hrvfd", "eogdt", "emgrt", "iemg", "gdemg"],
         "workflows": {
             "emg_analysis": "bwflt -> envlp -> emgrt -> iemg (filter -> envelope -> RMS -> integrated)",
             "hrv_analysis": "ecgdet -> hrvtd -> hrvfd (R-peaks -> time domain -> frequency)",
@@ -427,8 +456,24 @@ _DOMAIN_KNOWLEDGE: dict[str, dict] = {
         "desc": "Classical test theory, IRT, DIF, factor analysis, reliability",
         "books": "DeVellis; Embretson & Reise; Crocker & Algina",
         "core": ["crba", "mcdo", "kmo", "bart", "paran", "irt1p", "irt2p", "irt3p", "difmh"],
-        "extended": ["itcor", "adel", "crel", "ave", "splhf", "idisc", "irtgr", "irtpc",
-                      "irtif", "irtic", "irtab", "irtfl", "diflr", "difef", "difgn", "difag"],
+        "extended": [
+            "itcor",
+            "adel",
+            "crel",
+            "ave",
+            "splhf",
+            "idisc",
+            "irtgr",
+            "irtpc",
+            "irtif",
+            "irtic",
+            "irtab",
+            "irtfl",
+            "diflr",
+            "difef",
+            "difgn",
+            "difag",
+        ],
         "workflows": {
             "reliability": "crba -> mcdo -> splhf (Cronbach alpha -> omega -> split-half)",
             "factor_prereqs": "kmo -> bart -> paran (adequacy -> Bartlett -> parallel analysis)",
@@ -461,8 +506,7 @@ _DOMAIN_KNOWLEDGE: dict[str, dict] = {
     "effect_size": {
         "desc": "Standardized effect sizes, conversions, clinical significance",
         "core": ["d", "g", "eta2", "omega2", "cramv", "phi", "cles", "cliff", "vda"],
-        "extended": ["rho", "tau", "ewok", "c3po", "r2d2", "d2nnt", "d2or", "d2r",
-                      "or2d", "or2r", "r2d", "r2or"],
+        "extended": ["rho", "tau", "ewok", "c3po", "r2d2", "d2nnt", "d2or", "d2r", "or2d", "or2r", "r2d", "r2or"],
         "workflows": {
             "two_groups": "d -> g -> cles -> cliff -> vda (Cohen -> Hedges -> probability)",
             "anova": "eta2 -> omega2 (biased -> unbiased)",
@@ -483,9 +527,24 @@ _DOMAIN_KNOWLEDGE: dict[str, dict] = {
     "distributions": {
         "desc": "Probability distributions: density, CDF, quantile, random",
         "core": ["dnorm", "pnorm", "qnorm", "rnorm", "dt", "pt", "qt", "rt"],
-        "extended": ["dchsq", "pchsq", "qchsq", "rchisq", "dbnm", "pbnm",
-                      "dpoi", "ppoi", "dunf", "punf", "dexp", "pexp",
-                      "dbet", "pbet", "dgam", "pgam"],
+        "extended": [
+            "dchsq",
+            "pchsq",
+            "qchsq",
+            "rchisq",
+            "dbnm",
+            "pbnm",
+            "dpoi",
+            "ppoi",
+            "dunf",
+            "punf",
+            "dexp",
+            "pexp",
+            "dbet",
+            "pbet",
+            "dgam",
+            "pgam",
+        ],
         "workflows": {
             "normal": "dnorm (density) -> pnorm (CDF) -> qnorm (quantile) -> rnorm (random)",
             "any_dist": "d* (density) -> p* (CDF) -> q* (quantile) -> r* (random)",
@@ -513,9 +572,33 @@ _DOMAIN_KNOWLEDGE: dict[str, dict] = {
         "desc": "Post-quantum cryptography, lattice-based, educational",
         "books": "NIST FIPS 203/204; Regev 2005; Micciancio & Regev",
         "core": ["mlkem", "cpoly"],
-        "extended": ["lwe", "rlwe", "lll", "babai", "gso", "bkz", "svpap", "lweke",
-                      "hamcd", "goppa", "ldpcd", "ldpce", "lamp", "lampv", "wots", "wotsv",
-                      "mktre", "xmss", "mldsa", "mldss", "mldsv", "ntru", "ntruc", "ntrud", "mcelc"],
+        "extended": [
+            "lwe",
+            "rlwe",
+            "lll",
+            "babai",
+            "gso",
+            "bkz",
+            "svpap",
+            "lweke",
+            "hamcd",
+            "goppa",
+            "ldpcd",
+            "ldpce",
+            "lamp",
+            "lampv",
+            "wots",
+            "wotsv",
+            "mktre",
+            "xmss",
+            "mldsa",
+            "mldss",
+            "mldsv",
+            "ntru",
+            "ntruc",
+            "ntrud",
+            "mcelc",
+        ],
         "workflows": {
             "key_exchange": "mlkem (ML-KEM-768 keygen -> encaps -> decaps)",
             "lattice": "lwe -> rlwe -> lweke (sample -> ring -> key exchange)",
@@ -571,9 +654,25 @@ _DOMAIN_KNOWLEDGE: dict[str, dict] = {
     "otis": {
         "desc": "Ontario correctional restrictive confinement analysis",
         "core": ["rpl", "astc", "vol", "rct", "otd", "oml"],
-        "extended": ["rpl_r", "rpl_gt", "rprat", "rpdur", "rpfrq", "rpfst", "rpgap",
-                      "alrt1", "alrt2", "alrt3", "alco", "altm", "aldur", "alesc",
-                      "vol_r", "vol_a", "vol_t"],
+        "extended": [
+            "rpl_r",
+            "rpl_gt",
+            "rprat",
+            "rpdur",
+            "rpfrq",
+            "rpfst",
+            "rpgap",
+            "alrt1",
+            "alrt2",
+            "alrt3",
+            "alco",
+            "altm",
+            "aldur",
+            "alesc",
+            "vol_r",
+            "vol_a",
+            "vol_t",
+        ],
         "workflows": {
             "placement": "rpl -> rpl_r -> rprat -> rpdur -> rpfrq (regional -> rate -> duration -> frequency)",
             "alerts": "alrt1 -> alrt2 -> alrt3 -> alco -> altm (types -> co-occurrence -> timing)",
@@ -600,29 +699,131 @@ _DOMAIN_KNOWLEDGE: dict[str, dict] = {
 }
 
 _KEYWORD_TO_DOMAIN: dict[str, list[str]] = {
-    "spatial": ["spatial", "geographic", "geostat", "moran", "autocorrelation", "kriging",
-                "gwr", "coordinates", "lat", "lon", "map", "semivariogram", "interpolat"],
-    "causal": ["causal", "treatment", "effect", "ipw", "propensity", "dml", "counterfactual",
-               "ate", "intervention", "rct", "observational", "confound"],
-    "biomedical": ["signal", "emg", "ecg", "eeg", "hrv", "filter", "biosignal", "waveform",
-                   "frequency", "spectral", "rangayyan", "envelope", "adaptive"],
-    "psychometrics": ["reliability", "validity", "irt", "dif", "factor", "cronbach", "item",
-                      "scale", "measurement", "psychometric", "omega"],
-    "epidemiology": ["disease", "incidence", "prevalence", "nnt", "risk ratio", "odds ratio",
-                     "sir model", "epidemic", "outbreak", "ebac", "blood alcohol"],
-    "hypothesis": ["test", "significant", "p-value", "hypothesis", "compare groups",
-                   "anova", "t-test", "chi-square", "nonparametric"],
-    "effect_size": ["effect size", "cohen", "hedges", "practical significance", "magnitude",
-                    "clinical significance", "nnt"],
+    "spatial": [
+        "spatial",
+        "geographic",
+        "geostat",
+        "moran",
+        "autocorrelation",
+        "kriging",
+        "gwr",
+        "coordinates",
+        "lat",
+        "lon",
+        "map",
+        "semivariogram",
+        "interpolat",
+    ],
+    "causal": [
+        "causal",
+        "treatment",
+        "effect",
+        "ipw",
+        "propensity",
+        "dml",
+        "counterfactual",
+        "ate",
+        "intervention",
+        "rct",
+        "observational",
+        "confound",
+    ],
+    "biomedical": [
+        "signal",
+        "emg",
+        "ecg",
+        "eeg",
+        "hrv",
+        "filter",
+        "biosignal",
+        "waveform",
+        "frequency",
+        "spectral",
+        "rangayyan",
+        "envelope",
+        "adaptive",
+    ],
+    "psychometrics": [
+        "reliability",
+        "validity",
+        "irt",
+        "dif",
+        "factor",
+        "cronbach",
+        "item",
+        "scale",
+        "measurement",
+        "psychometric",
+        "omega",
+    ],
+    "epidemiology": [
+        "disease",
+        "incidence",
+        "prevalence",
+        "nnt",
+        "risk ratio",
+        "odds ratio",
+        "sir model",
+        "epidemic",
+        "outbreak",
+        "ebac",
+        "blood alcohol",
+    ],
+    "hypothesis": [
+        "test",
+        "significant",
+        "p-value",
+        "hypothesis",
+        "compare groups",
+        "anova",
+        "t-test",
+        "chi-square",
+        "nonparametric",
+    ],
+    "effect_size": [
+        "effect size",
+        "cohen",
+        "hedges",
+        "practical significance",
+        "magnitude",
+        "clinical significance",
+        "nnt",
+    ],
     "survival": ["survival", "time-to-event", "hazard", "kaplan", "cox", "censored", "duration"],
-    "ml": ["machine learning", "classification", "prediction", "random forest",
-           "gradient boost", "svm", "cross-validation", "feature"],
-    "crypto": ["cryptography", "encryption", "lattice", "post-quantum", "lwe", "kem",
-               "signature", "hash", "ntru", "dilithium"],
-    "genomics": ["genetic", "genomic", "snp", "gwas", "allele", "population genetics",
-                 "hardy-weinberg", "fst", "tajima"],
-    "regression": ["regression", "linear model", "predict", "coefficient", "ols", "logistic",
-                   "quantile regression"],
+    "ml": [
+        "machine learning",
+        "classification",
+        "prediction",
+        "random forest",
+        "gradient boost",
+        "svm",
+        "cross-validation",
+        "feature",
+    ],
+    "crypto": [
+        "cryptography",
+        "encryption",
+        "lattice",
+        "post-quantum",
+        "lwe",
+        "kem",
+        "signature",
+        "hash",
+        "ntru",
+        "dilithium",
+    ],
+    "genomics": [
+        "genetic",
+        "genomic",
+        "snp",
+        "gwas",
+        "allele",
+        "population genetics",
+        "hardy-weinberg",
+        "fst",
+        "tajima",
+    ],
+    "regression": ["regression", "linear model", "predict", "coefficient", "ols", "logistic", "quantile regression"],
     "time_series": ["time series", "forecast", "arima", "trend", "seasonal", "stationarity"],
     "survey": ["survey", "weighted", "sampling", "design effect", "stratified", "cluster sample"],
     "bayesian": ["bayesian", "prior", "posterior", "mcmc", "credible interval", "gibbs"],
@@ -686,7 +887,9 @@ def tool_domain_guide(domain: str) -> str:
 
     if info is None:
         available = ", ".join(sorted(_DOMAIN_KNOWLEDGE.keys()))
-        return f"Unknown domain '{domain}'. Available: {available}\nOr use search_functions(query) to search by keyword."
+        return (
+            f"Unknown domain '{domain}'. Available: {available}\nOr use search_functions(query) to search by keyword."
+        )
 
     lines = [f"=== {domain_lower.upper()} ===", info.get("desc", "")]
 
@@ -697,6 +900,7 @@ def tool_domain_guide(domain: str) -> str:
     for fn_name in info.get("core", []):
         try:
             from .fn._registry import REGISTRY
+
             entry = REGISTRY.get(fn_name)
             if entry:
                 lines.append(f"  {fn_name:8s} | {entry.category:16s} | {entry.description[:55]}")
@@ -780,7 +984,7 @@ def tool_category_tree() -> str:
     lines = [f"=== MORIE FUNCTION TAXONOMY -- {len(REGISTRY)} functions, {len(cats)} categories ===\n"]
     for cat, funcs in sorted(cats.items(), key=lambda x: -len(x[1])):
         preview = ", ".join(sorted(funcs)[:5])
-        more = f" +{len(funcs)-5} more" if len(funcs) > 5 else ""
+        more = f" +{len(funcs) - 5} more" if len(funcs) > 5 else ""
         lines.append(f"  {cat:22s} ({len(funcs):4d}) | {preview}{more}")
 
     lines.append("\nUse domain_guide(domain) or search_functions(query) to explore any category.")
@@ -854,7 +1058,7 @@ def tool_run_pipeline(steps: str) -> str:
         kwargs = step.get("kwargs", {})
 
         if not fn_name:
-            results.append(f"Step {i+1}: ERROR -- missing 'fn'")
+            results.append(f"Step {i + 1}: ERROR -- missing 'fn'")
             result_objects.append(None)
             continue
 
@@ -875,14 +1079,14 @@ def tool_run_pipeline(steps: str) -> str:
             result_objects.append(r)
 
             if hasattr(r, "value") and r.value is not None:
-                results.append(f"Step {i+1} [{fn_name}]: value={r.value}, name={getattr(r, 'name', '')}")
+                results.append(f"Step {i + 1} [{fn_name}]: value={r.value}, name={getattr(r, 'name', '')}")
             elif hasattr(r, "success"):
-                results.append(f"Step {i+1} [{fn_name}]: success={r.success}")
+                results.append(f"Step {i + 1} [{fn_name}]: success={r.success}")
             else:
-                results.append(f"Step {i+1} [{fn_name}]: {str(r)[:200]}")
+                results.append(f"Step {i + 1} [{fn_name}]: {str(r)[:200]}")
         except Exception as exc:
             result_objects.append(None)
-            results.append(f"Step {i+1} [{fn_name}]: ERROR -- {exc}")
+            results.append(f"Step {i + 1} [{fn_name}]: ERROR -- {exc}")
 
     return "\n".join(results) if results else "(empty pipeline)"
 
@@ -901,6 +1105,7 @@ def tool_compare_methods(methods: str, data_code: str = "") -> str:
     if data_code:
         try:
             import numpy as np
+
             context["np"] = np
             exec(data_code, context)  # noqa: S102
         except Exception as exc:
@@ -959,6 +1164,7 @@ def tool_run_suite(domain: str, data_code: str = "") -> str:
     if data_code:
         try:
             import numpy as np
+
             context["np"] = np
             exec(data_code, context)  # noqa: S102
         except Exception as exc:
@@ -1265,7 +1471,10 @@ _CORE_TOOLS: list[dict] = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "topic": {"type": "string", "description": "Topic to look up (e.g. 'kriging', 'emg', 'irt', 'dml')"},
+                    "topic": {
+                        "type": "string",
+                        "description": "Topic to look up (e.g. 'kriging', 'emg', 'irt', 'dml')",
+                    },
                 },
                 "required": ["topic"],
             },
@@ -1300,7 +1509,10 @@ _CORE_TOOLS: list[dict] = [
                 "type": "object",
                 "properties": {
                     "methods": {"type": "string", "description": "Comma-separated fn/ names (e.g. 'd,g,cles,cliff')"},
-                    "data_code": {"type": "string", "description": "Python code to set up variables (e.g. 'group1=[1,2,3]; group2=[4,5,6]')"},
+                    "data_code": {
+                        "type": "string",
+                        "description": "Python code to set up variables (e.g. 'group1=[1,2,3]; group2=[4,5,6]')",
+                    },
                 },
                 "required": ["methods"],
             },
@@ -1317,8 +1529,14 @@ _CORE_TOOLS: list[dict] = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "domain": {"type": "string", "description": "Domain name (e.g. 'effect_size', 'hypothesis', 'spatial')"},
-                    "data_code": {"type": "string", "description": "Python code to set up data (optional; some domains have demo data)"},
+                    "domain": {
+                        "type": "string",
+                        "description": "Domain name (e.g. 'effect_size', 'hypothesis', 'spatial')",
+                    },
+                    "data_code": {
+                        "type": "string",
+                        "description": "Python code to set up data (optional; some domains have demo data)",
+                    },
                 },
                 "required": ["domain"],
             },
@@ -1442,8 +1660,14 @@ class PerseusAgent:
     def _build_tool_definitions(self) -> list[dict]:
         if _is_small_model(self._model):
             core_names = {
-                "search_functions", "run_morie_function", "get_cheatsheet", "execute_code",
-                "domain_guide", "recommend_analysis", "run_pipeline", "category_tree",
+                "search_functions",
+                "run_morie_function",
+                "get_cheatsheet",
+                "execute_code",
+                "domain_guide",
+                "recommend_analysis",
+                "run_pipeline",
+                "category_tree",
             }
             return [t for t in _CORE_TOOLS if t["function"]["name"] in core_names]
         return list(_CORE_TOOLS)
@@ -1702,6 +1926,7 @@ def _get_tool_call_re():
     global _TOOL_CALL_RE
     if _TOOL_CALL_RE is None:
         import re
+
         _TOOL_CALL_RE = re.compile(r"<tool_call>\s*(\{.*?\})\s*</tool_call>", re.DOTALL)
     return _TOOL_CALL_RE
 
@@ -1922,6 +2147,7 @@ def create_agent(
                 pi_url = f"http://{host_part}:11434"
                 try:
                     import httpx
+
                     resp = httpx.get(f"{pi_url}/api/tags", timeout=3.0)
                     if resp.status_code == 200:
                         base_url = pi_url
@@ -1934,6 +2160,7 @@ def create_agent(
 
     try:
         import httpx
+
         resp = httpx.get(f"{base_url.rstrip('/')}/api/tags", timeout=5.0)
         if resp.status_code == 200:
             if model is None:
@@ -1948,6 +2175,7 @@ def create_agent(
         relay_url = f"http://{host_part}:8421"
         try:
             from .perseus_relay import PerseusCloudClient
+
             client = PerseusCloudClient(relay_url)
             if client.is_available():
                 logger.info("Auto-connected to Perseus relay at %s", relay_url)
@@ -1957,6 +2185,7 @@ def create_agent(
 
     try:
         from .fam import OllamaFreeAPI
+
         client = OllamaFreeAPI()
         if client.list_models():
             logger.info("No local Ollama -- using FreeAPI with text-based tool calling")
@@ -1984,6 +2213,7 @@ def warmup(model: str | None = None, base_url: str | None = None) -> bool:
         if model is None:
             try:
                 from .llm import _ollama_model
+
                 model = _ollama_model() or _DEFAULT_MODEL
             except Exception:
                 model = _DEFAULT_MODEL

@@ -1,6 +1,7 @@
 """Tests for plpol.plot_spatial."""
+
 import numpy as np
-import pytest
+
 from morie.fn.plpol import plot_spatial
 
 
@@ -11,7 +12,7 @@ def test_plpol_basic():
     stimuli_labels = np.random.default_rng(43).integers(0, 2, 100)
     result = plot_spatial(ideal_points, party_labels, stimuli_labels)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_plpol_edge():

@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.accpro import acceleration_profile, accpro
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.accpro import acceleration_profile, accpro
 
 
 class TestAccpro:

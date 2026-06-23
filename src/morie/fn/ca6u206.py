@@ -1,8 +1,8 @@
 """CountModels expression involving 'negative' (auto-extracted; see reference for full context).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["ca_chapter_6_unnumbered_206"]
 
@@ -41,7 +41,12 @@ def ca_chapter_6_unnumbered_206(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "CountModels expression involving 'negative' (auto-extracted; see reference for full context)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "CountModels expression involving 'negative' (auto-extracted; see reference for full context).",
+        },
     )
 
 

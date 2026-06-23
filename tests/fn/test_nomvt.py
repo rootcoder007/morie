@@ -1,6 +1,6 @@
 """Tests for morie.fn.nomvt — NOMINATE vote probability."""
+
 import numpy as np
-import pytest
 
 from morie.fn.nomvt import nomvt
 
@@ -12,6 +12,7 @@ def test_nomvt_smoke():
 
 def test_cheatsheet():
     from morie.fn.nomvt import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

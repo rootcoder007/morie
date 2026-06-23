@@ -1,6 +1,7 @@
 """Tests for qrF.quantile_forecast."""
+
 import numpy as np
-import pytest
+
 from morie.fn.qrF import quantile_forecast
 
 
@@ -11,7 +12,7 @@ def test_qrF_basic():
     tau = 0.1
     result = quantile_forecast(y, y_hat, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_qrF_edge():

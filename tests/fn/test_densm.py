@@ -23,8 +23,7 @@ def test_construct_normalizes():
 def test_partial_trace_bell_state():
     psi = np.array([1, 0, 0, 1], dtype=complex) / np.sqrt(2)
     rho = np.outer(psi, np.conj(psi))
-    r = densm(rho=rho, operation="partial_trace",
-              subsystem_dims=(2, 2), trace_out=1)
+    r = densm(rho=rho, operation="partial_trace", subsystem_dims=(2, 2), trace_out=1)
     expected = 0.5 * np.eye(2, dtype=complex)
     np.testing.assert_allclose(r["rho_out"], expected, atol=1e-10)
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxfkr -- Functional kriging"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxfkr import func_kriging
 
@@ -14,5 +13,5 @@ class TestFuncKriging:
         assert result.value is not None
 
     def test_output_type(self):
-        result = func_kriging(np.array([1.,2.,3.]), np.array([0.,1.,2.]))
+        result = func_kriging(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
         assert hasattr(result, "value")

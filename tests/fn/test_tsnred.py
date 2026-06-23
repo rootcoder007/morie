@@ -1,8 +1,9 @@
 """Tests for morie.fn.tsnred -- t-SNE dimensionality reduction."""
 
 import numpy as np
-from morie.fn.tsnred import tsne_reduce, tsnred
+
 from morie.fn._containers import TsneRes
+from morie.fn.tsnred import tsne_reduce, tsnred
 
 
 class TestTsnred:

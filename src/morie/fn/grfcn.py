@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fully convolutional upsampling (transposed conv) for segmentation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_fcn_upsample"]
@@ -34,7 +36,14 @@ def geron_fcn_upsample(X, W, stride):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fully convolutional upsampling (transposed conv) for segmentation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Fully convolutional upsampling (transposed conv) for segmentation",
+        }
+    )
 
 
 def cheatsheet():

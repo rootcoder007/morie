@@ -1,6 +1,7 @@
 """Ali-Mikhail-Haq copula CDF."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ali_mikhail_haq_copula"]

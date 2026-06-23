@@ -1,6 +1,7 @@
 """Barrier method (interior point)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boyd_interior_point"]

@@ -1,8 +1,9 @@
 """Association expression (auto-extracted; see ref).."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_7_unnumbered_7"]
 
@@ -48,9 +49,15 @@ def edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_7_unnumbere
         statistic=float(result.statistic),
         pvalue=float(result.pvalue),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Association expression (auto-extracted; see ref).", "p_value": float(result.pvalue)},
+        extra_payload={
+            "n": n,
+            "method": "Association expression (auto-extracted; see ref).",
+            "p_value": float(result.pvalue),
+        },
     )
 
 
 def cheatsheet():
-    return "edward_frenkel_love_and_math_the_heart_of_hidden_reality7u7: Association expression (auto-extracted; see ref)."
+    return (
+        "edward_frenkel_love_and_math_the_heart_of_hidden_reality7u7: Association expression (auto-extracted; see ref)."
+    )

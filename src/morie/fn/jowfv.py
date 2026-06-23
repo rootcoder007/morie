@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Walk-forward validation: refit model after each new observation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_walk_forward_validation"]
@@ -34,7 +36,14 @@ def joseph_walk_forward_validation(y, model, T_start):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Walk-forward validation: refit model after each new observation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Walk-forward validation: refit model after each new observation",
+        }
+    )
 
 
 def cheatsheet():

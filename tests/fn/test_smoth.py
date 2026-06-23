@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.smoth import epidemic_smooth
 
 
@@ -24,9 +25,7 @@ class TestEpiSmooth:
     def test_residuals_sum(self):
         inc = np.array([10.0, 20.0, 30.0, 25.0, 15.0, 5.0])
         res = epidemic_smooth(inc, method="savgol", window=5)
-        np.testing.assert_allclose(
-            inc, res["smoothed"] + res["residuals"], atol=1e-10
-        )
+        np.testing.assert_allclose(inc, res["smoothed"] + res["residuals"], atol=1e-10)
 
     def test_invalid_method_raises(self):
         with pytest.raises(ValueError):

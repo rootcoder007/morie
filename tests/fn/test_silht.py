@@ -1,5 +1,7 @@
 """Tests for morie.fn.silht."""
+
 import numpy as np
+
 from morie.fn.silht import silht
 
 
@@ -16,6 +18,7 @@ def test_silht_smoke():
 
 def test_cheatsheet():
     from morie.fn.silht import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

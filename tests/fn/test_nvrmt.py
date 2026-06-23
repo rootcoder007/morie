@@ -1,5 +1,8 @@
 """Tests for normal_var_ratio_test."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.nvrmt import normal_var_ratio_test
 
 

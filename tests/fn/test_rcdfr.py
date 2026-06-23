@@ -1,13 +1,12 @@
 """Tests for morie.fn.rcdfr — recidivism fairness."""
 
-import pytest
 import numpy as np
-from morie.fn.rcdfr import recidivism_fairness
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rcdfr import recidivism_fairness
 
 
 class TestRecidivismFairness:
-
     def test_returns_descriptive(self):
         y_true = np.array([1, 0, 1, 0, 1, 0, 1, 0])
         y_pred = np.array([1, 0, 0, 0, 1, 1, 1, 0])

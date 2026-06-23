@@ -1,6 +1,7 @@
 """Euler's formula for the complex exponential basis function.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_complex_exponential"]
@@ -32,7 +33,14 @@ def rangayyan_ch3_complex_exponential(omega, t):
     n = len(omega)
     result = float(np.mean(omega))
     se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Euler's formula for the complex exponential basis function."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Euler's formula for the complex exponential basis function.",
+        }
+    )
 
 
 def cheatsheet():

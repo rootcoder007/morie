@@ -46,7 +46,6 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 import pandas as pd
 
@@ -89,13 +88,14 @@ OTIS_DATA_DIR = _resolve_otis_data_dir()
 @dataclass(frozen=True, slots=True)
 class OtisDataset:
     """One OTIS dataset's metadata."""
-    id: str                  # b01, c03, d05, ...
-    series: str              # 'b', 'c', or 'd'
-    csv_filename: str        # b01_segregation_detailed_dataset.csv
+
+    id: str  # b01, c03, d05, ...
+    series: str  # 'b', 'c', or 'd'
+    csv_filename: str  # b01_segregation_detailed_dataset.csv
     description: str
     columns: tuple[str, ...]  # canonical column names
-    panel: bool              # True if person-level, False if aggregate
-    primary_metric: str       # the headline value column
+    panel: bool  # True if person-level, False if aggregate
+    primary_metric: str  # the headline value column
 
     @property
     def csv_path(self) -> Path:
@@ -110,292 +110,491 @@ def _r(d: OtisDataset) -> None:
 
 
 # ── a-series: Restrictive confinement detailed (Ruhela 2026 primary) ──
-_r(OtisDataset(
-    id="a01", series="a",
-    csv_filename="a01_restrictive_confinement_detailed_dataset.csv",
-    description=("Restrictive confinement -- person-level detail "
-                  "(each row = one DAY in restrictive confinement). "
-                  "The canonical RC dataset used in Ruhela's OTIS-RC "
-                  "research (notez1a.qmd, res_pool, res_by_year, "
-                  "res_all)."),
-    columns=("EndFiscalYear", "UniqueIndividual_ID",
-              "Region_AtTimeOfPlacement", "Region_MostRecentPlacement",
-              "Gender", "Age_Category",
-              "MentalHealth_Alert", "SuicideRisk_Alert",
-              "SuicideWatch_Alert", "Number_Of_Placements"),
-    panel=True, primary_metric="Number_Of_Placements",
-))
+_r(
+    OtisDataset(
+        id="a01",
+        series="a",
+        csv_filename="a01_restrictive_confinement_detailed_dataset.csv",
+        description=(
+            "Restrictive confinement -- person-level detail "
+            "(each row = one DAY in restrictive confinement). "
+            "The canonical RC dataset used in Ruhela's OTIS-RC "
+            "research (notez1a.qmd, res_pool, res_by_year, "
+            "res_all)."
+        ),
+        columns=(
+            "EndFiscalYear",
+            "UniqueIndividual_ID",
+            "Region_AtTimeOfPlacement",
+            "Region_MostRecentPlacement",
+            "Gender",
+            "Age_Category",
+            "MentalHealth_Alert",
+            "SuicideRisk_Alert",
+            "SuicideWatch_Alert",
+            "Number_Of_Placements",
+        ),
+        panel=True,
+        primary_metric="Number_Of_Placements",
+    )
+)
 
 
 # ── b-series: Segregation placements ────────────────────────────────
-_r(OtisDataset(
-    id="b01", series="b",
-    csv_filename="b01_segregation_detailed_dataset.csv",
-    description="Segregation placements -- person-level detail (each row = one placement)",
-    columns=("EndFiscalYear", "UniqueIndividual_ID", "Gender",
-             "Region_AtTimeOfPlacement", "Region_MostRecentPlacement",
-             "Age_Category", "NumberConsecutiveDays_Segregation",
-             "SegReason_SecurityOfInstitution_SafetyOfOthers",
-             "SegReason_InmateNeedsProtection",
-             "SegReason_InmateNeedsProtection_Medical",
-             "SegReason_SecurityOfInstitution_SafetyOfOthers_Medical",
-             "SegReason_Disciplinary_Segregation",
-             "SegReason_InmateRefuseSearch_Scan",
-             "SegReason_Other",
-             "MentalHealth_Alert", "SuicideRisk_Alert",
-             "SuicideWatch_Alert", "Number_Of_Placements"),
-    panel=True, primary_metric="Number_Of_Placements",
-))
-_r(OtisDataset(
-    id="b02", series="b",
-    csv_filename="b02_segregation_detailed_total_days.csv",
-    description="Segregation total days per individual per fiscal year",
-    columns=("EndFiscalYear", "UniqueIndividual_ID", "Gender",
-             "Region_MostRecentPlacement", "Age_Category",
-             "TotalAggregatedDays_Segregation"),
-    panel=True, primary_metric="TotalAggregatedDays_Segregation",
-))
-_r(OtisDataset(
-    id="b03", series="b",
-    csv_filename="b03_segregation_placements_alerts_and_hold_flags_by_institution.csv",
-    description="Segregation placements by alert/hold flag × institution",
-    columns=("EndFiscalYear", "Region_AtTimeOfPlacement",
-             "Institution_AtTimeOfPlacement", "Alert_Type",
-             "Alert_Presence", "Number_SegregationPlacements"),
-    panel=False, primary_metric="Number_SegregationPlacements",
-))
-_r(OtisDataset(
-    id="b04", series="b",
-    csv_filename="b04_segregation_placements_consecutive_durations_by_region.csv",
-    description="Segregation placement durations (max/median/mode) by region & gender",
-    columns=("EndFiscalYear", "Region_AtTimeOfPlacement",
-             "Gender", "Measure", "NumberConsecutiveDays_Segregation"),
-    panel=False, primary_metric="NumberConsecutiveDays_Segregation",
-))
-_r(OtisDataset(
-    id="b05", series="b",
-    csv_filename="b05_segregation_placements_consecutive_lengths.csv",
-    description="Segregation placement count by binned duration",
-    columns=("EndFiscalYear", "Consecutive_Duration",
-             "Number_SegregationPlacements"),
-    panel=False, primary_metric="Number_SegregationPlacements",
-))
-_r(OtisDataset(
-    id="b06", series="b",
-    csv_filename="b06_segregation_placements_reason_for_placement_by_institution.csv",
-    description="Segregation placements by reason × institution × gender",
-    columns=("EndFiscalYear", "Region_AtTimeOfPlacement",
-             "Institution_AtTimeOfPlacement", "Gender", "Reason",
-             "Number_SegregationPlacements"),
-    panel=False, primary_metric="Number_SegregationPlacements",
-))
-_r(OtisDataset(
-    id="b07", series="b",
-    csv_filename="b07_segregation_placements_alerts_and_hold_flags_by_gender.csv",
-    description="Segregation placements with/without alert × gender",
-    columns=("EndFiscalYear", "Alert_Type", "Gender",
-             "Number_Segregation_Placements_Without_Alert",
-             "Number_Segregation_Placements_With_Alert"),
-    panel=False, primary_metric="Number_Segregation_Placements_With_Alert",
-))
-_r(OtisDataset(
-    id="b08", series="b",
-    csv_filename="b08_segregation_placements_consecutive_durations_by_institution.csv",
-    description="Segregation placement durations (median/mode) by institution & gender",
-    columns=("EndFiscalYear", "Region_AtTimeOfPlacement",
-             "Institution_AtTimeOfPlacement", "Gender", "Measure",
-             "NumberConsecutiveDays_Segregation"),
-    panel=False, primary_metric="NumberConsecutiveDays_Segregation",
-))
-_r(OtisDataset(
-    id="b09", series="b",
-    csv_filename="b09_individuals_in_segregation_number_of_times_in_segregation.csv",
-    description="Individuals by number of segregation placements × gender",
-    columns=("EndFiscalYear", "NumberPlacements_Segregation",
-             "Gender", "NumberIndividuals_Segregation"),
-    panel=False, primary_metric="NumberIndividuals_Segregation",
-))
+_r(
+    OtisDataset(
+        id="b01",
+        series="b",
+        csv_filename="b01_segregation_detailed_dataset.csv",
+        description="Segregation placements -- person-level detail (each row = one placement)",
+        columns=(
+            "EndFiscalYear",
+            "UniqueIndividual_ID",
+            "Gender",
+            "Region_AtTimeOfPlacement",
+            "Region_MostRecentPlacement",
+            "Age_Category",
+            "NumberConsecutiveDays_Segregation",
+            "SegReason_SecurityOfInstitution_SafetyOfOthers",
+            "SegReason_InmateNeedsProtection",
+            "SegReason_InmateNeedsProtection_Medical",
+            "SegReason_SecurityOfInstitution_SafetyOfOthers_Medical",
+            "SegReason_Disciplinary_Segregation",
+            "SegReason_InmateRefuseSearch_Scan",
+            "SegReason_Other",
+            "MentalHealth_Alert",
+            "SuicideRisk_Alert",
+            "SuicideWatch_Alert",
+            "Number_Of_Placements",
+        ),
+        panel=True,
+        primary_metric="Number_Of_Placements",
+    )
+)
+_r(
+    OtisDataset(
+        id="b02",
+        series="b",
+        csv_filename="b02_segregation_detailed_total_days.csv",
+        description="Segregation total days per individual per fiscal year",
+        columns=(
+            "EndFiscalYear",
+            "UniqueIndividual_ID",
+            "Gender",
+            "Region_MostRecentPlacement",
+            "Age_Category",
+            "TotalAggregatedDays_Segregation",
+        ),
+        panel=True,
+        primary_metric="TotalAggregatedDays_Segregation",
+    )
+)
+_r(
+    OtisDataset(
+        id="b03",
+        series="b",
+        csv_filename="b03_segregation_placements_alerts_and_hold_flags_by_institution.csv",
+        description="Segregation placements by alert/hold flag × institution",
+        columns=(
+            "EndFiscalYear",
+            "Region_AtTimeOfPlacement",
+            "Institution_AtTimeOfPlacement",
+            "Alert_Type",
+            "Alert_Presence",
+            "Number_SegregationPlacements",
+        ),
+        panel=False,
+        primary_metric="Number_SegregationPlacements",
+    )
+)
+_r(
+    OtisDataset(
+        id="b04",
+        series="b",
+        csv_filename="b04_segregation_placements_consecutive_durations_by_region.csv",
+        description="Segregation placement durations (max/median/mode) by region & gender",
+        columns=("EndFiscalYear", "Region_AtTimeOfPlacement", "Gender", "Measure", "NumberConsecutiveDays_Segregation"),
+        panel=False,
+        primary_metric="NumberConsecutiveDays_Segregation",
+    )
+)
+_r(
+    OtisDataset(
+        id="b05",
+        series="b",
+        csv_filename="b05_segregation_placements_consecutive_lengths.csv",
+        description="Segregation placement count by binned duration",
+        columns=("EndFiscalYear", "Consecutive_Duration", "Number_SegregationPlacements"),
+        panel=False,
+        primary_metric="Number_SegregationPlacements",
+    )
+)
+_r(
+    OtisDataset(
+        id="b06",
+        series="b",
+        csv_filename="b06_segregation_placements_reason_for_placement_by_institution.csv",
+        description="Segregation placements by reason × institution × gender",
+        columns=(
+            "EndFiscalYear",
+            "Region_AtTimeOfPlacement",
+            "Institution_AtTimeOfPlacement",
+            "Gender",
+            "Reason",
+            "Number_SegregationPlacements",
+        ),
+        panel=False,
+        primary_metric="Number_SegregationPlacements",
+    )
+)
+_r(
+    OtisDataset(
+        id="b07",
+        series="b",
+        csv_filename="b07_segregation_placements_alerts_and_hold_flags_by_gender.csv",
+        description="Segregation placements with/without alert × gender",
+        columns=(
+            "EndFiscalYear",
+            "Alert_Type",
+            "Gender",
+            "Number_Segregation_Placements_Without_Alert",
+            "Number_Segregation_Placements_With_Alert",
+        ),
+        panel=False,
+        primary_metric="Number_Segregation_Placements_With_Alert",
+    )
+)
+_r(
+    OtisDataset(
+        id="b08",
+        series="b",
+        csv_filename="b08_segregation_placements_consecutive_durations_by_institution.csv",
+        description="Segregation placement durations (median/mode) by institution & gender",
+        columns=(
+            "EndFiscalYear",
+            "Region_AtTimeOfPlacement",
+            "Institution_AtTimeOfPlacement",
+            "Gender",
+            "Measure",
+            "NumberConsecutiveDays_Segregation",
+        ),
+        panel=False,
+        primary_metric="NumberConsecutiveDays_Segregation",
+    )
+)
+_r(
+    OtisDataset(
+        id="b09",
+        series="b",
+        csv_filename="b09_individuals_in_segregation_number_of_times_in_segregation.csv",
+        description="Individuals by number of segregation placements × gender",
+        columns=("EndFiscalYear", "NumberPlacements_Segregation", "Gender", "NumberIndividuals_Segregation"),
+        panel=False,
+        primary_metric="NumberIndividuals_Segregation",
+    )
+)
 
 # ── c-series: Individuals in segregation & restrictive confinement ──
-_r(OtisDataset(
-    id="c01", series="c",
-    csv_filename="c01_individuals_in_segregation_and_restrictive_confinement_total_individuals.csv",
-    description="Total unique individuals in custody/RC/segregation × gender",
-    columns=("EndFiscalYear", "Gender",
-             "NumberIndividuals_InCustody",
-             "NumberIndividuals_RestrictiveConfinement",
-             "NumberIndividuals_Segregation"),
-    panel=False, primary_metric="NumberIndividuals_RestrictiveConfinement",
-))
-_r(OtisDataset(
-    id="c02", series="c",
-    csv_filename="c02_individuals_in_segregation_and_restrictive_confinement_by_institution.csv",
-    description="Individuals in RC/segregation by institution × region × gender",
-    columns=("EndFiscalYear", "Region_MostRecentPlacement",
-             "Institution_MostRecentPlacement", "Gender",
-             "NumberIndividuals_RestrictiveConfinement",
-             "NumberIndividuals_Segregation"),
-    panel=False, primary_metric="NumberIndividuals_RestrictiveConfinement",
-))
-_r(OtisDataset(
-    id="c03", series="c",
-    csv_filename="c03_individuals_in_segregation_and_restrictive_confinement_race_by_gender.csv",
-    description="Individuals in custody/RC/seg × race × gender",
-    columns=("EndFiscalYear", "Race", "Gender",
-             "NumberIndividuals_InCustody",
-             "NumberIndividuals_RestrictiveConfinement",
-             "NumberIndividuals_Segregation"),
-    panel=False, primary_metric="NumberIndividuals_RestrictiveConfinement",
-))
-_r(OtisDataset(
-    id="c04", series="c",
-    csv_filename="c04_individuals_in_segregation_and_restrictive_confinement_race_by_region.csv",
-    description="Individuals in RC/seg × race × region",
-    columns=("EndFiscalYear", "Region_MostRecentPlacement",
-             "Race",
-             "NumberIndividuals_RestrictiveConfinement",
-             "NumberIndividuals_Segregation"),
-    panel=False, primary_metric="NumberIndividuals_RestrictiveConfinement",
-))
-_r(OtisDataset(
-    id="c05", series="c",
-    csv_filename="c05_individuals_in_segregation_and_restrictive_confinement_religion_by_region.csv",
-    description="Individuals in RC/seg × religion × region",
-    columns=("EndFiscalYear", "Region_MostRecentPlacement",
-             "Religion",
-             "NumberIndividuals_RestrictiveConfinement",
-             "NumberIndividuals_Segregation"),
-    panel=False, primary_metric="NumberIndividuals_RestrictiveConfinement",
-))
-_r(OtisDataset(
-    id="c06", series="c",
-    csv_filename="c06_individuals_in_segregation_and_restrictive_confinement_age_category_by_region.csv",
-    description="Individuals in RC/seg × age category × region",
-    columns=("EndFiscalYear", "Region_MostRecentPlacement",
-             "Age_Category",
-             "NumberIndividuals_RestrictiveConfinement",
-             "NumberIndividuals_Segregation"),
-    panel=False, primary_metric="NumberIndividuals_RestrictiveConfinement",
-))
-_r(OtisDataset(
-    id="c07", series="c",
-    csv_filename="c07_individuals_in_segregation_and_restrictive_confinement_alerts_and_hold_flags.csv",
-    description="Individuals in custody/RC/seg × alert type × gender",
-    columns=("EndFiscalYear", "Alert_Type", "Gender",
-             "NumberIndividuals_InCustody",
-             "NumberIndividuals_RestrictiveConfinement",
-             "NumberIndividuals_Segregation"),
-    panel=False, primary_metric="NumberIndividuals_RestrictiveConfinement",
-))
-_r(OtisDataset(
-    id="c08", series="c",
-    csv_filename="c08_individuals_in_segregation_and_restrictive_confinement_religion_by_gender.csv",
-    description="Individuals in custody/RC/seg × religion × gender",
-    columns=("EndFiscalYear", "Religion", "Gender",
-             "NumberIndividuals_InCustody",
-             "NumberIndividuals_RestrictiveConfinement",
-             "NumberIndividuals_Segregation"),
-    panel=False, primary_metric="NumberIndividuals_RestrictiveConfinement",
-))
-_r(OtisDataset(
-    id="c09", series="c",
-    csv_filename="c09_individuals_in_segregation_and_restrictive_confinement_age_category_by_gender.csv",
-    description="Individuals in custody/RC/seg × age category × gender",
-    columns=("EndFiscalYear", "Age_Category", "Gender",
-             "NumberIndividuals_InCustody",
-             "NumberIndividuals_RestrictiveConfinement",
-             "NumberIndividuals_Segregation"),
-    panel=False, primary_metric="NumberIndividuals_RestrictiveConfinement",
-))
-_r(OtisDataset(
-    id="c10", series="c",
-    csv_filename="c10_segregation_and_restrictive_confinement_aggregate_durations_by_institution.csv",
-    description="RC/seg aggregate durations (max/median/mode) by institution",
-    columns=("EndFiscalYear", "Region_MostRecentPlacement",
-             "Institution_MostRecentPlacement", "Gender", "Measure",
-             "TotalAggregatedDays_RestrictiveConfinement",
-             "TotalAggregatedDays_Segregation"),
-    panel=False, primary_metric="TotalAggregatedDays_RestrictiveConfinement",
-))
-_r(OtisDataset(
-    id="c11", series="c",
-    csv_filename="c11_individuals_in_segregation_and_restrictive_confinement_aggregate_lengths.csv",
-    description="Individuals by binned aggregate duration",
-    columns=("EndFiscalYear", "Aggregate_Duration",
-             "NumberIndividuals_RestrictiveConfinement",
-             "NumberIndividuals_Segregation"),
-    panel=False, primary_metric="NumberIndividuals_RestrictiveConfinement",
-))
-_r(OtisDataset(
-    id="c12", series="c",
-    csv_filename="c12_segregation_and_restrictive_confinement_aggregate_durations_by_region.csv",
-    description="RC/seg aggregate durations (max/median/mode) by region & gender",
-    columns=("EndFiscalYear", "Region_MostRecentPlacement",
-             "Gender", "Measure",
-             "TotalAggregatedDays_RestrictiveConfinement",
-             "TotalAggregatedDays_Segregation"),
-    panel=False, primary_metric="TotalAggregatedDays_RestrictiveConfinement",
-))
+_r(
+    OtisDataset(
+        id="c01",
+        series="c",
+        csv_filename="c01_individuals_in_segregation_and_restrictive_confinement_total_individuals.csv",
+        description="Total unique individuals in custody/RC/segregation × gender",
+        columns=(
+            "EndFiscalYear",
+            "Gender",
+            "NumberIndividuals_InCustody",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ),
+        panel=False,
+        primary_metric="NumberIndividuals_RestrictiveConfinement",
+    )
+)
+_r(
+    OtisDataset(
+        id="c02",
+        series="c",
+        csv_filename="c02_individuals_in_segregation_and_restrictive_confinement_by_institution.csv",
+        description="Individuals in RC/segregation by institution × region × gender",
+        columns=(
+            "EndFiscalYear",
+            "Region_MostRecentPlacement",
+            "Institution_MostRecentPlacement",
+            "Gender",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ),
+        panel=False,
+        primary_metric="NumberIndividuals_RestrictiveConfinement",
+    )
+)
+_r(
+    OtisDataset(
+        id="c03",
+        series="c",
+        csv_filename="c03_individuals_in_segregation_and_restrictive_confinement_race_by_gender.csv",
+        description="Individuals in custody/RC/seg × race × gender",
+        columns=(
+            "EndFiscalYear",
+            "Race",
+            "Gender",
+            "NumberIndividuals_InCustody",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ),
+        panel=False,
+        primary_metric="NumberIndividuals_RestrictiveConfinement",
+    )
+)
+_r(
+    OtisDataset(
+        id="c04",
+        series="c",
+        csv_filename="c04_individuals_in_segregation_and_restrictive_confinement_race_by_region.csv",
+        description="Individuals in RC/seg × race × region",
+        columns=(
+            "EndFiscalYear",
+            "Region_MostRecentPlacement",
+            "Race",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ),
+        panel=False,
+        primary_metric="NumberIndividuals_RestrictiveConfinement",
+    )
+)
+_r(
+    OtisDataset(
+        id="c05",
+        series="c",
+        csv_filename="c05_individuals_in_segregation_and_restrictive_confinement_religion_by_region.csv",
+        description="Individuals in RC/seg × religion × region",
+        columns=(
+            "EndFiscalYear",
+            "Region_MostRecentPlacement",
+            "Religion",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ),
+        panel=False,
+        primary_metric="NumberIndividuals_RestrictiveConfinement",
+    )
+)
+_r(
+    OtisDataset(
+        id="c06",
+        series="c",
+        csv_filename="c06_individuals_in_segregation_and_restrictive_confinement_age_category_by_region.csv",
+        description="Individuals in RC/seg × age category × region",
+        columns=(
+            "EndFiscalYear",
+            "Region_MostRecentPlacement",
+            "Age_Category",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ),
+        panel=False,
+        primary_metric="NumberIndividuals_RestrictiveConfinement",
+    )
+)
+_r(
+    OtisDataset(
+        id="c07",
+        series="c",
+        csv_filename="c07_individuals_in_segregation_and_restrictive_confinement_alerts_and_hold_flags.csv",
+        description="Individuals in custody/RC/seg × alert type × gender",
+        columns=(
+            "EndFiscalYear",
+            "Alert_Type",
+            "Gender",
+            "NumberIndividuals_InCustody",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ),
+        panel=False,
+        primary_metric="NumberIndividuals_RestrictiveConfinement",
+    )
+)
+_r(
+    OtisDataset(
+        id="c08",
+        series="c",
+        csv_filename="c08_individuals_in_segregation_and_restrictive_confinement_religion_by_gender.csv",
+        description="Individuals in custody/RC/seg × religion × gender",
+        columns=(
+            "EndFiscalYear",
+            "Religion",
+            "Gender",
+            "NumberIndividuals_InCustody",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ),
+        panel=False,
+        primary_metric="NumberIndividuals_RestrictiveConfinement",
+    )
+)
+_r(
+    OtisDataset(
+        id="c09",
+        series="c",
+        csv_filename="c09_individuals_in_segregation_and_restrictive_confinement_age_category_by_gender.csv",
+        description="Individuals in custody/RC/seg × age category × gender",
+        columns=(
+            "EndFiscalYear",
+            "Age_Category",
+            "Gender",
+            "NumberIndividuals_InCustody",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ),
+        panel=False,
+        primary_metric="NumberIndividuals_RestrictiveConfinement",
+    )
+)
+_r(
+    OtisDataset(
+        id="c10",
+        series="c",
+        csv_filename="c10_segregation_and_restrictive_confinement_aggregate_durations_by_institution.csv",
+        description="RC/seg aggregate durations (max/median/mode) by institution",
+        columns=(
+            "EndFiscalYear",
+            "Region_MostRecentPlacement",
+            "Institution_MostRecentPlacement",
+            "Gender",
+            "Measure",
+            "TotalAggregatedDays_RestrictiveConfinement",
+            "TotalAggregatedDays_Segregation",
+        ),
+        panel=False,
+        primary_metric="TotalAggregatedDays_RestrictiveConfinement",
+    )
+)
+_r(
+    OtisDataset(
+        id="c11",
+        series="c",
+        csv_filename="c11_individuals_in_segregation_and_restrictive_confinement_aggregate_lengths.csv",
+        description="Individuals by binned aggregate duration",
+        columns=(
+            "EndFiscalYear",
+            "Aggregate_Duration",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ),
+        panel=False,
+        primary_metric="NumberIndividuals_RestrictiveConfinement",
+    )
+)
+_r(
+    OtisDataset(
+        id="c12",
+        series="c",
+        csv_filename="c12_segregation_and_restrictive_confinement_aggregate_durations_by_region.csv",
+        description="RC/seg aggregate durations (max/median/mode) by region & gender",
+        columns=(
+            "EndFiscalYear",
+            "Region_MostRecentPlacement",
+            "Gender",
+            "Measure",
+            "TotalAggregatedDays_RestrictiveConfinement",
+            "TotalAggregatedDays_Segregation",
+        ),
+        panel=False,
+        primary_metric="TotalAggregatedDays_RestrictiveConfinement",
+    )
+)
 
 # ── d-series: Deaths in custody ─────────────────────────────────────
-_r(OtisDataset(
-    id="d01", series="d",
-    csv_filename="d01_deaths_in_custody_detailed_dataset.csv",
-    description="Custodial deaths -- person-level detail (calendar year)",
-    columns=("Year", "UniqueIndividual_ID",
-             "Region_AtTimeOfDeath", "HousingUnit_Type",
-             "MedicalCauseofDeath", "MeansofDeath"),
-    panel=True, primary_metric="UniqueIndividual_ID",
-))
-_r(OtisDataset(
-    id="d02", series="d",
-    csv_filename="d02_deaths_in_custody_gender.csv",
-    description="Custodial deaths × gender",
-    columns=("Year", "Gender", "Number_CustodialDeaths"),
-    panel=False, primary_metric="Number_CustodialDeaths",
-))
-_r(OtisDataset(
-    id="d03", series="d",
-    csv_filename="d03_deaths_in_custody_race.csv",
-    description="Custodial deaths × race",
-    columns=("Year", "Race", "Number_CustodialDeaths"),
-    panel=False, primary_metric="Number_CustodialDeaths",
-))
-_r(OtisDataset(
-    id="d04", series="d",
-    csv_filename="d04_deaths_in_custody_religion.csv",
-    description="Custodial deaths × religion",
-    columns=("Year", "Religion", "Number_CustodialDeaths"),
-    panel=False, primary_metric="Number_CustodialDeaths",
-))
-_r(OtisDataset(
-    id="d05", series="d",
-    csv_filename="d05_deaths_in_custody_age_category.csv",
-    description="Custodial deaths × age category",
-    columns=("Year", "Age_Category", "Number_CustodialDeaths"),
-    panel=False, primary_metric="Number_CustodialDeaths",
-))
-_r(OtisDataset(
-    id="d06", series="d",
-    csv_filename="d06_deaths_in_custody_cause_of_death_by_alert_by_institution.csv",
-    description="Custodial deaths × alert × medical cause",
-    columns=("Year", "Alert_Type", "MedicalCauseOfDeath",
-             "Number_CustodialDeaths"),
-    panel=False, primary_metric="Number_CustodialDeaths",
-))
-_r(OtisDataset(
-    id="d07", series="d",
-    csv_filename="d07_deaths_in_custody_alerts_by_housing_unit.csv",
-    description="Custodial deaths × alert × housing unit type",
-    columns=("Year", "Alert_Type", "Housing_Type",
-             "Number_CustodialDeaths"),
-    panel=False, primary_metric="Number_CustodialDeaths",
-))
+_r(
+    OtisDataset(
+        id="d01",
+        series="d",
+        csv_filename="d01_deaths_in_custody_detailed_dataset.csv",
+        description="Custodial deaths -- person-level detail (calendar year)",
+        columns=(
+            "Year",
+            "UniqueIndividual_ID",
+            "Region_AtTimeOfDeath",
+            "HousingUnit_Type",
+            "MedicalCauseofDeath",
+            "MeansofDeath",
+        ),
+        panel=True,
+        primary_metric="UniqueIndividual_ID",
+    )
+)
+_r(
+    OtisDataset(
+        id="d02",
+        series="d",
+        csv_filename="d02_deaths_in_custody_gender.csv",
+        description="Custodial deaths × gender",
+        columns=("Year", "Gender", "Number_CustodialDeaths"),
+        panel=False,
+        primary_metric="Number_CustodialDeaths",
+    )
+)
+_r(
+    OtisDataset(
+        id="d03",
+        series="d",
+        csv_filename="d03_deaths_in_custody_race.csv",
+        description="Custodial deaths × race",
+        columns=("Year", "Race", "Number_CustodialDeaths"),
+        panel=False,
+        primary_metric="Number_CustodialDeaths",
+    )
+)
+_r(
+    OtisDataset(
+        id="d04",
+        series="d",
+        csv_filename="d04_deaths_in_custody_religion.csv",
+        description="Custodial deaths × religion",
+        columns=("Year", "Religion", "Number_CustodialDeaths"),
+        panel=False,
+        primary_metric="Number_CustodialDeaths",
+    )
+)
+_r(
+    OtisDataset(
+        id="d05",
+        series="d",
+        csv_filename="d05_deaths_in_custody_age_category.csv",
+        description="Custodial deaths × age category",
+        columns=("Year", "Age_Category", "Number_CustodialDeaths"),
+        panel=False,
+        primary_metric="Number_CustodialDeaths",
+    )
+)
+_r(
+    OtisDataset(
+        id="d06",
+        series="d",
+        csv_filename="d06_deaths_in_custody_cause_of_death_by_alert_by_institution.csv",
+        description="Custodial deaths × alert × medical cause",
+        columns=("Year", "Alert_Type", "MedicalCauseOfDeath", "Number_CustodialDeaths"),
+        panel=False,
+        primary_metric="Number_CustodialDeaths",
+    )
+)
+_r(
+    OtisDataset(
+        id="d07",
+        series="d",
+        csv_filename="d07_deaths_in_custody_alerts_by_housing_unit.csv",
+        description="Custodial deaths × alert × housing unit type",
+        columns=("Year", "Alert_Type", "Housing_Type", "Number_CustodialDeaths"),
+        panel=False,
+        primary_metric="Number_CustodialDeaths",
+    )
+)
 
 
-def load_otis_dataset(dataset_id: str,
-                      data_dir: Path | str | None = None,
-                      *, download: bool = True) -> pd.DataFrame:
+def load_otis_dataset(dataset_id: str, data_dir: Path | str | None = None, *, download: bool = True) -> pd.DataFrame:
     """Load one OTIS dataset by id (b01, c03, d05, …).
 
     Returns a pandas DataFrame with the columns documented in
@@ -409,10 +608,7 @@ def load_otis_dataset(dataset_id: str,
     """
     dataset_id = dataset_id.lower()
     if dataset_id not in DATASET_REGISTRY:
-        raise KeyError(
-            f"unknown OTIS dataset id {dataset_id!r}. "
-            f"valid ids: {sorted(DATASET_REGISTRY.keys())}"
-        )
+        raise KeyError(f"unknown OTIS dataset id {dataset_id!r}. valid ids: {sorted(DATASET_REGISTRY.keys())}")
     meta = DATASET_REGISTRY[dataset_id]
     base = Path(data_dir) if data_dir else OTIS_DATA_DIR
     p = base / meta.csv_filename
@@ -432,10 +628,7 @@ def load_otis_dataset(dataset_id: str,
 
 def list_otis_datasets() -> list[tuple[str, str, int]]:
     """List all 29 OTIS datasets as (id, description, n_columns)."""
-    return [
-        (d.id, d.description, len(d.columns))
-        for d in sorted(DATASET_REGISTRY.values(), key=lambda x: x.id)
-    ]
+    return [(d.id, d.description, len(d.columns)) for d in sorted(DATASET_REGISTRY.values(), key=lambda x: x.id)]
 
 
 # ── CKAN downloader ────────────────────────────────────────────────
@@ -471,9 +664,7 @@ def _ckan_resource_index() -> dict[str, str]:
     return out
 
 
-def download_otis_dataset(dataset_id: str,
-                            target_dir: str | Path | None = None,
-                            *, overwrite: bool = False) -> Path:
+def download_otis_dataset(dataset_id: str, target_dir: str | Path | None = None, *, overwrite: bool = False) -> Path:
     """Fetch one OTIS CSV from CKAN and write to ``target_dir``.
 
     Returns the local path to the downloaded file.  No-op if the
@@ -496,16 +687,14 @@ def download_otis_dataset(dataset_id: str,
     # drop common boilerplate words, lowercase.  Then match against
     # CKAN names (which use spaces / en-dashes / mixed case).
     import re
+
     needle_raw = meta.csv_filename.removesuffix(".csv").lower()
-    needle_tokens = set(t for t in re.split(r"[^a-z0-9]+", needle_raw)
-                          if t and t not in {"dataset", meta.id, "and"})
+    needle_tokens = set(t for t in re.split(r"[^a-z0-9]+", needle_raw) if t and t not in {"dataset", meta.id, "and"})
     url = idx.get(needle_raw)
     best_score, best_url = 0, None
     if url is None:
         for name, u in idx.items():
-            name_tokens = set(t for t in re.split(r"[^a-z0-9]+",
-                                                    name.lower())
-                                if t and t not in {"dataset", "and"})
+            name_tokens = set(t for t in re.split(r"[^a-z0-9]+", name.lower()) if t and t not in {"dataset", "and"})
             score = len(needle_tokens & name_tokens)
             if score > best_score:
                 best_score, best_url = score, u
@@ -514,15 +703,16 @@ def download_otis_dataset(dataset_id: str,
         raise RuntimeError(
             f"no CKAN resource matched {meta.csv_filename} "
             f"(best_score={best_score}); "
-            f"available: {sorted(idx.keys())[:6]}…")
+            f"available: {sorted(idx.keys())[:6]}…"
+        )
     with urllib.request.urlopen(url, timeout=120) as resp:
         out_path.write_bytes(resp.read())
     return out_path
 
 
-def download_all_otis(target_dir: str | Path | None = None,
-                       *, overwrite: bool = False,
-                       skip_missing: bool = True) -> dict[str, Path]:
+def download_all_otis(
+    target_dir: str | Path | None = None, *, overwrite: bool = False, skip_missing: bool = True
+) -> dict[str, Path]:
     """Fetch every CSV in the OTIS registry from CKAN.
 
     Returns ``{dataset_id: local_path}`` for successfully downloaded
@@ -532,9 +722,8 @@ def download_all_otis(target_dir: str | Path | None = None,
     out: dict[str, Path] = {}
     for did in DATASET_REGISTRY:
         try:
-            out[did] = download_otis_dataset(did, target_dir,
-                                              overwrite=overwrite)
-        except Exception as exc:  # noqa: BLE001
+            out[did] = download_otis_dataset(did, target_dir, overwrite=overwrite)
+        except Exception:  # noqa: BLE001
             if skip_missing:
                 continue
             raise
@@ -557,6 +746,7 @@ def _lookup_dictionary_for(dataset_id: str, dictionary: dict | None = None):
     """
     if dictionary is None:
         from morie.dataset_dictionary import load_otis_dictionary
+
         dictionary = load_otis_dictionary()
     if dataset_id in dictionary:
         return dictionary[dataset_id]
@@ -616,22 +806,24 @@ def otis_describe(dataset_id: str, language: str = "en"):
     schema = None
     try:
         schema = _lookup_dictionary_for(dataset_id)
-    except Exception as exc:  # noqa: BLE001
+    except Exception:  # noqa: BLE001
         schema = None
 
     sections: list[dict] = []
-    sections.append({
-        "title": "Registry metadata",
-        "headers": ["field", "value"],
-        "table": [
-            ["id", entry.id],
-            ["series", entry.series],
-            ["csv_filename", entry.csv_filename],
-            ["panel", str(entry.panel)],
-            ["primary_metric", entry.primary_metric],
-            ["columns (count)", str(len(entry.columns))],
-        ],
-    })
+    sections.append(
+        {
+            "title": "Registry metadata",
+            "headers": ["field", "value"],
+            "table": [
+                ["id", entry.id],
+                ["series", entry.series],
+                ["csv_filename", entry.csv_filename],
+                ["panel", str(entry.panel)],
+                ["primary_metric", entry.primary_metric],
+                ["columns (count)", str(len(entry.columns))],
+            ],
+        }
+    )
 
     if schema is not None:
         col_rows: list[list] = []
@@ -640,14 +832,13 @@ def otis_describe(dataset_id: str, language: str = "en"):
             if len(desc) > 90:
                 desc = desc[:90] + "…"
             col_rows.append([col.name, col.dtype, desc])
-        sections.append({
-            "title": (
-                f"Data dictionary columns (first 30 of "
-                f"{len(schema.columns)})"
-            ),
-            "headers": ["name", "dtype", "description"],
-            "table": col_rows,
-        })
+        sections.append(
+            {
+                "title": (f"Data dictionary columns (first 30 of {len(schema.columns)})"),
+                "headers": ["name", "dtype", "description"],
+                "table": col_rows,
+            }
+        )
 
     if language.lower().startswith("fr"):
         interp = (
@@ -679,9 +870,7 @@ def otis_describe(dataset_id: str, language: str = "en"):
             "series": entry.series,
             "csv_filename": entry.csv_filename,
             "columns_registry": list(entry.columns),
-            "schema_columns": (
-                [c.name for c in schema.columns] if schema else None
-            ),
+            "schema_columns": ([c.name for c in schema.columns] if schema else None),
             "description": entry.description,
             "language": language,
             "schema_present": schema is not None,
@@ -719,8 +908,8 @@ def otis_validate_against_dictionary(
         ``schema_present``), ``known_drifts`` (the three above),
         ``n_datasets``, ``n_with_drift``, ``n``.
     """
-    from morie.fn._richresult import RichResult
     from morie.dataset_dictionary import load_otis_dictionary
+    from morie.fn._richresult import RichResult
 
     try:
         dictionary = load_otis_dictionary()
@@ -753,13 +942,15 @@ def otis_validate_against_dictionary(
             csv_header = list(entry.columns)
         schema = _lookup_dictionary_for(did, dictionary=dictionary)
         if schema is None:
-            per_dataset.append({
-                "dataset_id": did,
-                "csv_columns": csv_header,
-                "missing_in_csv": [],
-                "extra_in_csv": [],
-                "schema_present": False,
-            })
+            per_dataset.append(
+                {
+                    "dataset_id": did,
+                    "csv_columns": csv_header,
+                    "missing_in_csv": [],
+                    "extra_in_csv": [],
+                    "schema_present": False,
+                }
+            )
             continue
 
         schema_names = {c.name.lower() for c in schema.columns}
@@ -771,13 +962,15 @@ def otis_validate_against_dictionary(
         extra_in_csv = sorted(c for c in csv_lc if c not in schema_names_no_id)
         if missing_in_csv or extra_in_csv:
             n_with_drift += 1
-        per_dataset.append({
-            "dataset_id": did,
-            "csv_columns": csv_header,
-            "missing_in_csv": missing_in_csv,
-            "extra_in_csv": extra_in_csv,
-            "schema_present": True,
-        })
+        per_dataset.append(
+            {
+                "dataset_id": did,
+                "csv_columns": csv_header,
+                "missing_in_csv": missing_in_csv,
+                "extra_in_csv": extra_in_csv,
+                "schema_present": True,
+            }
+        )
 
     known_drifts = [
         {
@@ -814,14 +1007,14 @@ def otis_validate_against_dictionary(
             continue
         if not entry["missing_in_csv"] and not entry["extra_in_csv"]:
             continue
-        drift_rows.append([
-            entry["dataset_id"],
-            ", ".join(entry["missing_in_csv"][:5]) +
-            ("…" if len(entry["missing_in_csv"]) > 5 else ""),
-            ", ".join(entry["extra_in_csv"][:5]) +
-            ("…" if len(entry["extra_in_csv"]) > 5 else ""),
-            f"miss={len(entry['missing_in_csv'])} extra={len(entry['extra_in_csv'])}",
-        ])
+        drift_rows.append(
+            [
+                entry["dataset_id"],
+                ", ".join(entry["missing_in_csv"][:5]) + ("…" if len(entry["missing_in_csv"]) > 5 else ""),
+                ", ".join(entry["extra_in_csv"][:5]) + ("…" if len(entry["extra_in_csv"]) > 5 else ""),
+                f"miss={len(entry['missing_in_csv'])} extra={len(entry['extra_in_csv'])}",
+            ]
+        )
 
     interpretation = (
         f"Validated {len(per_dataset)} OTIS dataset(s) against the "
@@ -839,11 +1032,13 @@ def otis_validate_against_dictionary(
             ("With drift", n_with_drift),
             ("Known annotation issues", len(known_drifts)),
         ],
-        sections=[{
-            "title": "Drift per dataset (truncated to top-5 column names)",
-            "headers": ["dataset", "missing in CSV", "extra in CSV", "totals"],
-            "table": drift_rows or [["(none)", "", "", ""]],
-        }],
+        sections=[
+            {
+                "title": "Drift per dataset (truncated to top-5 column names)",
+                "headers": ["dataset", "missing in CSV", "extra in CSV", "totals"],
+                "table": drift_rows or [["(none)", "", "", ""]],
+            }
+        ],
         interpretation=interpretation,
         payload={
             "n": len(per_dataset),

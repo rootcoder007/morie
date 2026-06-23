@@ -2,10 +2,8 @@
 
 import pandas as pd
 import pytest
-import tempfile
-import os
 
-from morie.fn.loadds import loadds, load_dataset
+from morie.fn.loadds import load_dataset, loadds
 
 
 def test_alias_is_same_function():

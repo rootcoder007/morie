@@ -1,6 +1,8 @@
 """Tests for tmexp."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tmexp import tmexp
 
 
@@ -28,4 +30,5 @@ def test_tmexp_no_data():
 
 def test_tmexp_alias():
     from morie.fn.tmexp import tmexp
+
     assert tmexp is tmexp

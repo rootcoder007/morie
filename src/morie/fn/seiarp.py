@@ -1,6 +1,7 @@
 """SEIRA with asymptomatic compartment."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["seira_asymptomatic"]

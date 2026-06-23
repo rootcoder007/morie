@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxw84 -- WGS84 to local tangent plane"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxw84 import wgs84_to_local
 

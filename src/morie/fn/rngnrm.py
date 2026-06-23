@@ -1,8 +1,12 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Range normalization to [0, 1]."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
+
+
 def rngnrm(x: Union[Sequence, np.ndarray]) -> np.ndarray:
     """Min-max scale x to [0, 1]: (x − min) / (max − min)."""
     a = np.asarray(x, dtype=float)

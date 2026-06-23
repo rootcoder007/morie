@@ -1,6 +1,7 @@
 """Test clshr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clshr import clshr
 
 

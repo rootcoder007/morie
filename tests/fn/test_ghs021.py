@@ -1,6 +1,7 @@
 """Tests for ghs021.ghosal_ch3_tailfree_max_bound."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghs021 import ghosal_ch3_tailfree_max_bound
 
 
@@ -11,7 +12,7 @@ def test_ghs021_basic():
     r = 10
     result = ghosal_ch3_tailfree_max_bound(V, m, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ghs021_edge():

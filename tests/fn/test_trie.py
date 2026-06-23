@@ -1,4 +1,5 @@
 """Tests for morie.fn.trie."""
+
 from morie.fn.trie import trie_operations
 
 
@@ -11,6 +12,7 @@ def test_trie_smoke():
 
 def test_cheatsheet():
     from morie.fn.trie import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

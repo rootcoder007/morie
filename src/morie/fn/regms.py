@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Markov-switching regression (Hamilton 1989)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -49,22 +50,24 @@ def regime_switching(x, k_regimes=2):
         from statsmodels.tsa.regime_switching.markov_regression import (
             MarkovRegression,
         )
-        mod = MarkovRegression(y, k_regimes=k_regimes,
-                               switching_variance=True)
+
+        mod = MarkovRegression(y, k_regimes=k_regimes, switching_variance=True)
         fit = mod.fit(disp=False)
-        mu = np.asarray([float(fit.params[f"const[{k}]"])
-                         for k in range(k_regimes)])
-        sigma = np.asarray([float(np.sqrt(fit.params[f"sigma2[{k}]"]))
-                            for k in range(k_regimes)])
+        mu = np.asarray([float(fit.params[f"const[{k}]"]) for k in range(k_regimes)])
+        sigma = np.asarray([float(np.sqrt(fit.params[f"sigma2[{k}]"])) for k in range(k_regimes)])
         P = np.asarray(fit.regime_transition).reshape(k_regimes, k_regimes)
-        return RichResult(payload={
-            "mu": mu, "sigma": sigma,
-            "transition": P,
-            "smoothed_probabilities": np.asarray(fit.smoothed_marginal_probabilities),
-            "loglik": float(fit.llf),
-            "n": int(n), "k_regimes": int(k_regimes),
-            "method": f"MarkovRegression via statsmodels (K={k_regimes})",
-        })
+        return RichResult(
+            payload={
+                "mu": mu,
+                "sigma": sigma,
+                "transition": P,
+                "smoothed_probabilities": np.asarray(fit.smoothed_marginal_probabilities),
+                "loglik": float(fit.llf),
+                "n": int(n),
+                "k_regimes": int(k_regimes),
+                "method": f"MarkovRegression via statsmodels (K={k_regimes})",
+            }
+        )
     except Exception:
         pass
 
@@ -77,8 +80,7 @@ def regime_switching(x, k_regimes=2):
     ll_prev = -np.inf
     for _ in range(200):
         # E-step: forward-backward filter.
-        emit = np.exp(-0.5 * ((y[:, None] - mu) / sig) ** 2) / (
-            sig * np.sqrt(2 * np.pi))
+        emit = np.exp(-0.5 * ((y[:, None] - mu) / sig) ** 2) / (sig * np.sqrt(2 * np.pi))
         emit = np.clip(emit, 1e-300, None)
         alpha = np.zeros((n, k_regimes))
         c = np.zeros(n)
@@ -98,8 +100,7 @@ def regime_switching(x, k_regimes=2):
         gamma /= gamma.sum(axis=1, keepdims=True)
         xi = np.zeros((n - 1, k_regimes, k_regimes))
         for t in range(n - 1):
-            xi[t] = (alpha[t, :, None] * P * emit[t + 1, None, :]
-                     * beta[t + 1, None, :])
+            xi[t] = alpha[t, :, None] * P * emit[t + 1, None, :] * beta[t + 1, None, :]
             xi[t] /= max(xi[t].sum(), 1e-300)
         # M-step.
         pi = gamma[0]
@@ -107,21 +108,24 @@ def regime_switching(x, k_regimes=2):
         for k in range(k_regimes):
             wk = gamma[:, k]
             mu[k] = np.sum(wk * y) / max(wk.sum(), 1e-12)
-            sig[k] = np.sqrt(np.sum(wk * (y - mu[k]) ** 2)
-                              / max(wk.sum(), 1e-12))
+            sig[k] = np.sqrt(np.sum(wk * (y - mu[k]) ** 2) / max(wk.sum(), 1e-12))
             sig[k] = max(sig[k], 1e-6)
         ll = float(np.sum(np.log(np.clip(c, 1e-300, None))))
         if abs(ll - ll_prev) < 1e-6:
             break
         ll_prev = ll
-    return RichResult(payload={
-        "mu": mu, "sigma": sig,
-        "transition": P,
-        "smoothed_probabilities": gamma,
-        "loglik": float(ll_prev),
-        "n": int(n), "k_regimes": int(k_regimes),
-        "method": f"Markov switching via EM/Hamilton filter (K={k_regimes}, numpy)",
-    })
+    return RichResult(
+        payload={
+            "mu": mu,
+            "sigma": sig,
+            "transition": P,
+            "smoothed_probabilities": gamma,
+            "loglik": float(ll_prev),
+            "n": int(n),
+            "k_regimes": int(k_regimes),
+            "method": f"Markov switching via EM/Hamilton filter (K={k_regimes}, numpy)",
+        }
+    )
 
 
 def cheatsheet():

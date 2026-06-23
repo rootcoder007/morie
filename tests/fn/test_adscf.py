@@ -1,5 +1,7 @@
 """Test adscf."""
+
 import pytest
+
 from morie.fn.adscf import ads_cft_dictionary
 
 

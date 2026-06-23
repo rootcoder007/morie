@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GATE (group average treatment effect): average CATE over subgroup."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gate_estimation"]
@@ -33,14 +35,31 @@ def gate_estimation(cate, X, group_var):
     cate = np.asarray(cate, dtype=float)
     n = int(cate) if cate.ndim == 0 else len(cate)
     if cate.ndim == 0:
-        return RichResult(payload={"statistic": float('nan'), "p_value": float('nan'), "n": 1, "method": "scalar-input placeholder"})
+        return RichResult(
+            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+        )
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "GATE (group average treatment effect): average CATE over subgroup"})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "GATE (group average treatment effect): average CATE over subgroup",
+            }
+        )
     estimate = np.median(cate)
     se = 1.2533 * np.std(cate, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "GATE (group average treatment effect): average CATE over subgroup"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "GATE (group average treatment effect): average CATE over subgroup",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,14 +1,17 @@
 """Tests for morie.fn.vacve -- vaccine effectiveness."""
 
 import pytest
+
 from morie.fn.vacve import vaccine_effectiveness
 
 
 class TestVaccineEffectiveness:
     def test_basic(self):
         res = vaccine_effectiveness(
-            cases_vacc=10, cases_unvacc=50,
-            pop_vacc=5000, pop_unvacc=5000,
+            cases_vacc=10,
+            cases_unvacc=50,
+            pop_vacc=5000,
+            pop_unvacc=5000,
         )
         assert res.estimate == pytest.approx(80.0)
 

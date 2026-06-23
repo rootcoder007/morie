@@ -28,9 +28,7 @@ def test_antisymmetry_last_two():
         for sig in range(4):
             for mu in range(4):
                 for nu in range(4):
-                    assert R[rho, sig, mu, nu] == pytest.approx(
-                        -R[rho, sig, nu, mu], abs=1e-12
-                    )
+                    assert R[rho, sig, mu, nu] == pytest.approx(-R[rho, sig, nu, mu], abs=1e-12)
 
 
 def test_shape():

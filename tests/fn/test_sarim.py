@@ -1,6 +1,8 @@
 """Tests for morie.fn.sarim -- Seasonal ARIMA."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sarim import sarima_fit
 
 
@@ -19,4 +21,5 @@ class TestSARIMA:
 
     def test_cheatsheet(self):
         from morie.fn.sarim import cheatsheet
+
         assert isinstance(cheatsheet(), str)

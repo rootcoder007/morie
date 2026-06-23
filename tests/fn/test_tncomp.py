@@ -1,6 +1,7 @@
 """Tests for tncomp.compound_diversity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tncomp import compound_diversity
 
 
@@ -10,7 +11,7 @@ def test_tncomp_basic():
     n_pick = np.random.default_rng(42).normal(0, 1, 100)
     result = compound_diversity(fps, n_pick)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tncomp_edge():

@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Criminal justice system flow and attrition rates."""
+
 from __future__ import annotations
 
 from ._containers import DescriptiveResult
@@ -50,4 +51,4 @@ cjs = cjs_flow
 
 
 def cheatsheet() -> str:
-    return 'cjs_flow({}) -> CJS flow / attrition calculation.'
+    return "cjs_flow({}) -> CJS flow / attrition calculation."

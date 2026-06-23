@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multilabel classification: predict a subset of labels per instance."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_multilabel"]
@@ -32,7 +34,14 @@ def geron_multilabel(X, Y):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multilabel classification: predict a subset of labels per instance"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multilabel classification: predict a subset of labels per instance",
+        }
+    )
 
 
 def cheatsheet():

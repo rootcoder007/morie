@@ -1,8 +1,9 @@
 """Tests for morie.fn.swflm -- Solar System mission summary."""
 
 import pandas as pd
-from morie.fn.swflm import solar_mission_summary, swflm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.swflm import solar_mission_summary, swflm
 
 
 class TestSwflm:
@@ -10,10 +11,12 @@ class TestSwflm:
         assert swflm is solar_mission_summary
 
     def test_basic(self):
-        df = pd.DataFrame({
-            "name": ["Sputnik 1", "Apollo 11", "Voyager 1"],
-            "launch_year": [1957, 1969, 1977],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["Sputnik 1", "Apollo 11", "Voyager 1"],
+                "launch_year": [1957, 1969, 1977],
+            }
+        )
         result = solar_mission_summary(df)
         assert isinstance(result, DescriptiveResult)
         assert result.value["count"] == 3

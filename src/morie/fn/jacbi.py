@@ -52,9 +52,7 @@ def jacobi_solve(
         rel_res = np.linalg.norm(x_new - x) / (np.linalg.norm(x_new) + 1e-15)
         x = x_new
         if rel_res < tol:
-            return DescriptiveResult(
-                name="Jacobi", value=float(rel_res), extra={"x": x, "iterations": it}
-            )
+            return DescriptiveResult(name="Jacobi", value=float(rel_res), extra={"x": x, "iterations": it})
     return DescriptiveResult(
         name="Jacobi",
         value=float(np.linalg.norm(b - A @ x) / bnorm),

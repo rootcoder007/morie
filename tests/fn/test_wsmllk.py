@@ -1,6 +1,7 @@
 """Tests for wsmllk.wasserman_log_likelihood."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmllk import wasserman_log_likelihood
 
 
@@ -11,7 +12,7 @@ def test_wsmllk_basic():
     theta = 0.0
     result = wasserman_log_likelihood(data, f, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmllk_edge():

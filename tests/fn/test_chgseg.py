@@ -1,6 +1,7 @@
 """Tests for chgseg.changepoint_segmentation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.chgseg import changepoint_segmentation
 
 
@@ -10,7 +11,7 @@ def test_chgseg_basic():
     penalty = np.random.default_rng(42).normal(0, 1, 100)
     result = changepoint_segmentation(y, penalty)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_chgseg_edge():

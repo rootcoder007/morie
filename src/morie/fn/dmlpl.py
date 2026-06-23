@@ -101,7 +101,7 @@ def dml_plr(
     V_hat = T_arr - m_hat
     Y_tilde = Y - g_hat
 
-    denom = float(np.sum(V_hat ** 2))
+    denom = float(np.sum(V_hat**2))
     if denom < 1e-15:
         theta = float("nan")
         se = float("nan")

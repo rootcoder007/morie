@@ -89,4 +89,4 @@ short = pendulum
 
 
 def cheatsheet() -> str:
-    return 'pendu() -> Simulate a simple pendulum using the nonlinear ODE'
+    return "pendu() -> Simulate a simple pendulum using the nonlinear ODE"

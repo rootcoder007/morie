@@ -52,4 +52,4 @@ semea = sem_measurement
 
 
 def cheatsheet() -> str:
-    return 'sem_measurement({}) -> Standard error of measurement.'
+    return "sem_measurement({}) -> Standard error of measurement."

@@ -1,7 +1,7 @@
 """Tests for morie.fn.cmunn."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cmunn import cmunn
 
 

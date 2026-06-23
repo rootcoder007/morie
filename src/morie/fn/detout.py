@@ -50,4 +50,4 @@ detout = detect_outliers
 
 
 def cheatsheet() -> str:
-    return 'detect_outliers({}) -> Outlier detection.'
+    return "detect_outliers({}) -> Outlier detection."

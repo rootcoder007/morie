@@ -59,4 +59,4 @@ palps = parallel_analysis
 
 
 def cheatsheet() -> str:
-    return 'parallel_analysis({}) -> Parallel analysis for factor analysis.'
+    return "parallel_analysis({}) -> Parallel analysis for factor analysis."

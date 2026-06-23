@@ -1,6 +1,7 @@
 """Quantile-form sliced Wasserstein for fast 1-D evaluation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_sliced_distance_quant"]
@@ -36,7 +37,14 @@ def ot_sliced_distance_quant(X, Y, p, n_proj):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Quantile-form sliced Wasserstein for fast 1-D evaluation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Quantile-form sliced Wasserstein for fast 1-D evaluation",
+        }
+    )
 
 
 def cheatsheet():

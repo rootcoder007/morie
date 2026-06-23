@@ -1,6 +1,8 @@
 """Tests for morie.fn.arima — ARIMA fitting."""
+
 import numpy as np
 import pytest
+
 from morie.fn.arima import arima_fit
 
 
@@ -9,7 +11,7 @@ class TestARIMA:
         rng = np.random.default_rng(42)
         y = np.zeros(200)
         for t in range(1, 200):
-            y[t] = 0.7 * y[t-1] + rng.standard_normal()
+            y[t] = 0.7 * y[t - 1] + rng.standard_normal()
         res = arima_fit(y, order=(1, 0, 0))
         assert abs(res.extra["ar"][0] - 0.7) < 0.2
 

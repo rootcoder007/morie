@@ -1,15 +1,16 @@
 """Test group_sparse_decompose (grpsp)."""
+
 import numpy as np
-from morie.fn.grpsp import group_sparse_decompose, grpsp
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.grpsp import group_sparse_decompose, grpsp
 
 
 class TestGrpsp:
     def test_basic(self):
         rng = np.random.default_rng(42)
         x = rng.standard_normal(20)
-        groups = [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9],
-                  [10, 11, 12, 13, 14], [15, 16, 17, 18, 19]]
+        groups = [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9], [10, 11, 12, 13, 14], [15, 16, 17, 18, 19]]
         result = group_sparse_decompose(x, groups, lambda_=0.5)
         assert isinstance(result, DescriptiveResult)
         assert result.name == "group_sparse_decompose"

@@ -1,6 +1,7 @@
 """Test varfp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.varfp import varfp
 
 

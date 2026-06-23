@@ -7,11 +7,10 @@ Accumulates squared gradients for adaptive learning rate scheduling.
 
 import numpy as np
 
-__all__ = ['adagr']
+__all__ = ["adagr"]
 
 
-def adagr(f, grad_f, x0, learning_rate=0.01, epsilon=1e-8, max_iter=1000,
-          full_output=False, seed=None):
+def adagr(f, grad_f, x0, learning_rate=0.01, epsilon=1e-8, max_iter=1000, full_output=False, seed=None):
     """
     Adagrad optimizer for unconstrained minimization.
 
@@ -79,19 +78,11 @@ def adagr(f, grad_f, x0, learning_rate=0.01, epsilon=1e-8, max_iter=1000,
         residual = np.linalg.norm(x_new - x)
         if residual < 1e-6:
             if full_output:
-                return x_new, {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_value': f(x_new)
-                }
+                return x_new, {"iterations": iteration + 1, "converged": True, "final_value": f(x_new)}
             return x_new
 
         x = x_new
 
     if full_output:
-        return x, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_value': f(x)
-        }
+        return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x

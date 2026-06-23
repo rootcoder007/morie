@@ -1,6 +1,7 @@
 """Test ublib."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ublib import ublib
 
 

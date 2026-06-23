@@ -1,6 +1,9 @@
 """Tests for dffits."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.dffts import dffits
+
 
 class TestDFFITS:
     def test_basic(self):

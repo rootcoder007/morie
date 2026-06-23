@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GAN minimax / non-saturating loss (Goodfellow et al. 2014)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -64,8 +65,7 @@ def gan_loss(D_real, D_fake, kind: str = "minimax"):
     elif kind == "nonsaturating":
         g_loss = float(-_clip_log(D_fake).mean())
     else:
-        raise ValueError(
-            f"kind must be 'minimax' or 'nonsaturating', got {kind!r}.")
+        raise ValueError(f"kind must be 'minimax' or 'nonsaturating', got {kind!r}.")
     return RichResult(
         title=f"GAN loss ({kind})",
         summary_lines=[("V(D)", V), ("D loss", d_loss), ("G loss", g_loss)],

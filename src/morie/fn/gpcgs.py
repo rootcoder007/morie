@@ -1,6 +1,7 @@
 """SVGP classifier with mini-batch."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["gp_classification_svgp"]

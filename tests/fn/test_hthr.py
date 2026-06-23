@@ -1,7 +1,9 @@
 """Test hard_threshold (hthr)."""
+
 import numpy as np
-from morie.fn.hthr import hard_threshold, hthr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.hthr import hard_threshold, hthr
 
 
 class TestHthr:

@@ -36,7 +36,7 @@ def pp_test(y: np.ndarray, n_lags: int | None = None, cdf=None) -> DescriptiveRe
     beta = np.linalg.lstsq(X, dep, rcond=None)[0]
     resid = dep - X @ beta
     T = n - 1
-    sig2 = float(np.sum(resid ** 2) / T)
+    sig2 = float(np.sum(resid**2) / T)
     lam2 = sig2
     for lag in range(1, n_lags + 1):
         w = 1 - lag / (n_lags + 1)
@@ -47,8 +47,7 @@ def pp_test(y: np.ndarray, n_lags: int | None = None, cdf=None) -> DescriptiveRe
     se_rho = float(np.sqrt(max(sig2 * np.linalg.inv(XtX)[1, 1], 1e-20)))
     t_alpha = (rho_hat - 1) / se_rho
     pp_stat = float(
-        T * (rho_hat - 1) / np.sqrt(lam2 / sig2)
-        - 0.5 * (lam2 - sig2) * np.sqrt(T) / (se_rho * np.sqrt(lam2))
+        T * (rho_hat - 1) / np.sqrt(lam2 / sig2) - 0.5 * (lam2 - sig2) * np.sqrt(T) / (se_rho * np.sqrt(lam2))
     )
     crit_1 = -3.43
     crit_5 = -2.86

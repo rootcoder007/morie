@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Masked language modeling pretraining objective."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_masked_lm"]
@@ -32,7 +34,9 @@ def geron_masked_lm(X, mask_frac):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Masked language modeling pretraining objective"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Masked language modeling pretraining objective"}
+    )
 
 
 def cheatsheet():

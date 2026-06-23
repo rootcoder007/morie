@@ -1,6 +1,7 @@
 """Tests for hmphp.geron_peephole_lstm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmphp import geron_peephole_lstm
 
 
@@ -12,7 +13,7 @@ def test_hmphp_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = geron_peephole_lstm(x_t, h_prev, c_prev, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmphp_edge():

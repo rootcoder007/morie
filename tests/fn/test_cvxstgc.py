@@ -1,6 +1,7 @@
 """Tests for cvxstgc.boyd_strong_convex."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxstgc import boyd_strong_convex
 
 
@@ -10,7 +11,7 @@ def test_cvxstgc_basic():
     m = 10
     result = boyd_strong_convex(f, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxstgc_edge():

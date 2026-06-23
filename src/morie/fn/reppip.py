@@ -95,4 +95,4 @@ reppip = repair_pipeline
 
 
 def cheatsheet() -> str:
-    return 'repair_pipeline({}) -> Data cleaning / denoising pipeline.'
+    return "repair_pipeline({}) -> Data cleaning / denoising pipeline."

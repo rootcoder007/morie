@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['emgmu']
+__all__ = ["emgmu"]
 
 _QUOTE = "The unexamined statistic is not worth reporting. -- adapted from Socrates"
 
@@ -48,7 +48,7 @@ def emgmu(
     """
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
-    rms = np.sqrt(np.mean(x ** 2))
+    rms = np.sqrt(np.mean(x**2))
     threshold = threshold_factor * rms
 
     min_samples = max(1, int(min_duration_ms * fs / 1000))
@@ -66,13 +66,15 @@ def emgmu(
             dur = i - start
             if min_samples <= dur <= max_samples:
                 peak_idx = start + np.argmax(rect[start:i])
-                muaps.append({
-                    "onset": start,
-                    "offset": i,
-                    "peak_idx": int(peak_idx),
-                    "peak_amp": float(x[peak_idx]),
-                    "duration_ms": dur / fs * 1000,
-                })
+                muaps.append(
+                    {
+                        "onset": start,
+                        "offset": i,
+                        "peak_idx": int(peak_idx),
+                        "peak_amp": float(x[peak_idx]),
+                        "duration_ms": dur / fs * 1000,
+                    }
+                )
                 i = max(i, start + refr_samples)
         else:
             i += 1

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svpxv -- Proximity voting model probability"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svpxv import proximity_vote
 

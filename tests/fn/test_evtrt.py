@@ -1,6 +1,6 @@
 """Tests for morie.fn.evtrt — event rate."""
+
 import numpy as np
-import pytest
 
 from morie.fn.evtrt import event_rate, evtrt
 

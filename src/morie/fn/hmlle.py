@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Locally linear embedding (LLE): preserve local linear reconstruction weights."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_locally_linear_embedding"]
@@ -34,7 +36,14 @@ def geron_locally_linear_embedding(X, n_components, n_neighbors):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Locally linear embedding (LLE): preserve local linear reconstruction weights"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Locally linear embedding (LLE): preserve local linear reconstruction weights",
+        }
+    )
 
 
 def cheatsheet():

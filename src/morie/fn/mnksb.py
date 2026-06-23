@@ -16,6 +16,7 @@ Manski, C. F., & Pepper, J. V. (2000). Monotone instrumental
 variables: With an application to the returns to schooling.
 *Econometrica*, 68(4), 997-1010.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -123,10 +124,14 @@ def mnksb(
         "lb": lb,
         "ub": ub,
         "width": ub - lb,
-        "lb_ci": (float(np.mean(lb_boots) - hw * np.std(lb_boots, ddof=1)),
-                  float(np.mean(lb_boots) + hw * np.std(lb_boots, ddof=1))),
-        "ub_ci": (float(np.mean(ub_boots) - hw * np.std(ub_boots, ddof=1)),
-                  float(np.mean(ub_boots) + hw * np.std(ub_boots, ddof=1))),
+        "lb_ci": (
+            float(np.mean(lb_boots) - hw * np.std(lb_boots, ddof=1)),
+            float(np.mean(lb_boots) + hw * np.std(lb_boots, ddof=1)),
+        ),
+        "ub_ci": (
+            float(np.mean(ub_boots) - hw * np.std(ub_boots, ddof=1)),
+            float(np.mean(ub_boots) + hw * np.std(ub_boots, ddof=1)),
+        ),
         "n": n,
         "method": "Manski-bounds-MTR" if assume_mtr else "Manski-bounds",
     }
@@ -143,6 +148,7 @@ def _bounds(mu1, mu0, p1, p0, y0, y1, mtr):
 
 def _norm_ppf(q):
     from scipy.stats import norm
+
     return float(norm.ppf(q))
 
 

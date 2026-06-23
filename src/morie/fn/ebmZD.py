@@ -1,6 +1,7 @@
 """Zonal energy balance model (Budyko-Sellers)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["zonal_ebm"]
@@ -36,7 +37,9 @@ def zonal_ebm(S, alpha, A, B):
     n = len(S)
     result = float(np.mean(S))
     se = float(np.std(S, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Zonal energy balance model (Budyko-Sellers)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Zonal energy balance model (Budyko-Sellers)"}
+    )
 
 
 def cheatsheet():

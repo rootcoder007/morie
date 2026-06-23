@@ -1,12 +1,11 @@
 """Tests for morie.fn.bcomp — Bayesian model comparison."""
 
 import numpy as np
-import pytest
+
 from morie.fn.bcomp import bayesian_model_compare
 
 
 class TestBayesianModelCompare:
-
     def test_returns_dict(self, rng):
         ll1 = rng.standard_normal((100, 50))
         ll2 = rng.standard_normal((100, 50)) - 0.1

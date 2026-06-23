@@ -1,7 +1,9 @@
 """Test logit_softcap."""
+
 import numpy as np
-from morie.fn.logsc import logit_softcap, logsc
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.logsc import logit_softcap, logsc
 
 
 class TestLogitSoftcap:

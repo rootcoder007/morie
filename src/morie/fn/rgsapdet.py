@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sleep apnea detection using multimodal biomedical signals."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_sleep_apnea_detect"]
@@ -36,7 +38,14 @@ def rangayyan_sleep_apnea_detect(ecg, spo2, snore, fs):
     n = int(ecg) if ecg.ndim == 0 else len(ecg)
     result = float(np.mean(ecg))
     se = float(np.std(ecg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sleep apnea detection using multimodal biomedical signals"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Sleep apnea detection using multimodal biomedical signals",
+        }
+    )
 
 
 def cheatsheet():

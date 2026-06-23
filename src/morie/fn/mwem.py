@@ -1,6 +1,7 @@
 """Multiplicative weights exponential mechanism."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mwem"]
@@ -34,7 +35,9 @@ def mwem(queries, epsilon, T):
     n = len(queries)
     result = float(np.mean(queries))
     se = float(np.std(queries, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multiplicative weights exponential mechanism"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Multiplicative weights exponential mechanism"}
+    )
 
 
 def cheatsheet():

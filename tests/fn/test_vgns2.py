@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgns2 -- Nested variogram fitting"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgns2 import vario_nested_fit
 
@@ -15,5 +14,5 @@ class TestVarioNestedFit:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = vario_nested_fit(np.random.default_rng(0).uniform(0,1,(5,2)), np.ones(5))
+        result = vario_nested_fit(np.random.default_rng(0).uniform(0, 1, (5, 2)), np.ones(5))
         assert hasattr(result, "statistic")

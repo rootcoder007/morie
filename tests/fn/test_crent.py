@@ -1,6 +1,8 @@
 """Tests for morie.fn.crent — cross-entropy."""
+
 import numpy as np
 import pytest
+
 from morie.fn.crent import cross_entropy
 
 

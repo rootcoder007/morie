@@ -1,6 +1,7 @@
 """Test dkvck."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkvck import dkvck
 
 

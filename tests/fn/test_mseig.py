@@ -1,7 +1,6 @@
 """Tests for morie.fn.mseig -- MDS eigendecomposition"""
 
 import numpy as np
-import pytest
 
 from morie.fn.mseig import mds_eigen
 
@@ -14,5 +13,5 @@ class TestMdsEigen:
         assert result.value is not None
 
     def test_output_type(self):
-        result = mds_eigen(np.random.default_rng(0).standard_normal((5,2)))
+        result = mds_eigen(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

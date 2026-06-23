@@ -1,6 +1,7 @@
 """Closed subcomposition over a chosen set of parts."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["aitchison_subcomposition"]
@@ -32,7 +33,9 @@ def aitchison_subcomposition(x, idx):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Closed subcomposition over a chosen set of parts"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Closed subcomposition over a chosen set of parts"}
+    )
 
 
 def cheatsheet():

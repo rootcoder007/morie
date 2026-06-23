@@ -36,6 +36,7 @@ def test_uhi_array_stats():
 
 def test_uhi_timestamps_passed_through():
     import pandas as pd
+
     ts = pd.date_range("2026-07-01", periods=3, freq="h")
     r = uhi(np.array([25, 26, 28]), np.array([22, 23, 24]), timestamps=ts)
     assert "timestamps" in r.extra

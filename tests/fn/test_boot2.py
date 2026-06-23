@@ -1,5 +1,7 @@
 """Tests for bootstrap_two_sample."""
-import numpy as np, pytest
+
+import pytest
+
 from morie.fn.boot2 import bootstrap_two_sample
 
 

@@ -1,6 +1,7 @@
 """Tests for hmpcac.geron_principal_components."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmpcac import geron_principal_components
 
 
@@ -10,7 +11,7 @@ def test_hmpcac_basic():
     n_components = 3
     result = geron_principal_components(X, n_components)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmpcac_edge():

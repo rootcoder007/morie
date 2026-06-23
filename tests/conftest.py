@@ -4,12 +4,13 @@ Real CPADS PUMF microdata lives in data/private/ and is never committed.
 These fixtures create a synthetic dataset with canonical MORIE columns
 so module tests run on CI without private data.
 """
+
 from __future__ import annotations
 
 import os
 import random
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Keep the suite hermetic: morie's import-time update check must not
 # reach PyPI or print notices during tests.
@@ -39,23 +40,27 @@ def _generate_synthetic_cpads(n: int = 200, seed: int = 42) -> pd.DataFrame:
     alcohol = rng.choice([0, 1], size=n, p=[0.35, 0.65])
     heavy = np.where((alcohol == 1) & (rng.random(n) < 0.35), 1, 0)
     ebac_tot = np.where(
-        alcohol == 1, np.round(rng.uniform(0.0, 0.18, size=n), 4), 0.0,
+        alcohol == 1,
+        np.round(rng.uniform(0.0, 0.18, size=n), 4),
+        0.0,
     )
     ebac_legal = (ebac_tot >= 0.08).astype(int)
 
-    return pd.DataFrame({
-        "weight": np.round(rng.uniform(0.3, 3.5, size=n), 6),
-        "alcohol_past12m": alcohol,
-        "heavy_drinking_30d": heavy,
-        "ebac_tot": ebac_tot,
-        "ebac_legal": ebac_legal,
-        "cannabis_any_use": rng.choice([0, 1], size=n),
-        "age_group": [random.choice(age_groups) for _ in range(n)],
-        "gender": [random.choice(genders) for _ in range(n)],
-        "province_region": [random.choice(provinces) for _ in range(n)],
-        "mental_health": [random.choice(health) for _ in range(n)],
-        "physical_health": [random.choice(health) for _ in range(n)],
-    })
+    return pd.DataFrame(
+        {
+            "weight": np.round(rng.uniform(0.3, 3.5, size=n), 6),
+            "alcohol_past12m": alcohol,
+            "heavy_drinking_30d": heavy,
+            "ebac_tot": ebac_tot,
+            "ebac_legal": ebac_legal,
+            "cannabis_any_use": rng.choice([0, 1], size=n),
+            "age_group": [random.choice(age_groups) for _ in range(n)],
+            "gender": [random.choice(genders) for _ in range(n)],
+            "province_region": [random.choice(provinces) for _ in range(n)],
+            "mental_health": [random.choice(health) for _ in range(n)],
+            "physical_health": [random.choice(health) for _ in range(n)],
+        }
+    )
 
 
 @pytest.fixture(scope="session")
@@ -67,9 +72,7 @@ def synthetic_cpads_csv(tmp_path_factory) -> Path:
     return path
 
 
-import ast
 import inspect
-import textwrap
 import warnings
 
 _TRIVIAL_PATTERNS = {

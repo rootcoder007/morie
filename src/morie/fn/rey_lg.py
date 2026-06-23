@@ -101,4 +101,4 @@ rey_lg = logistic_regression
 
 
 def cheatsheet() -> str:
-    return 'logistic_regression({}) -> Logistic regression via IRLS.'
+    return "logistic_regression({}) -> Logistic regression via IRLS."

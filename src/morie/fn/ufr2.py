@@ -36,4 +36,4 @@ ufr2 = unfolding_r_squared
 
 
 def cheatsheet() -> str:
-    return 'unfolding_r_squared({}) -> Unfolding R-squared.'
+    return "unfolding_r_squared({}) -> Unfolding R-squared."

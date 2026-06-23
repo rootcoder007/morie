@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SGD classifier with hinge loss (linear SVM) trained by stochastic gradient descent."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_sgd_classifier"]
@@ -36,7 +38,14 @@ def geron_sgd_classifier(X, y, lr, n_iter):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SGD classifier with hinge loss (linear SVM) trained by stochastic gradient descent"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "SGD classifier with hinge loss (linear SVM) trained by stochastic gradient descent",
+        }
+    )
 
 
 def cheatsheet():

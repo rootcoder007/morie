@@ -1,6 +1,7 @@
 """Tests for bndinf.bound_inference."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndinf import bound_inference
 
 
@@ -11,7 +12,7 @@ def test_bndinf_basic():
     alpha = 0.05
     result = bound_inference(theta, moments, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndinf_edge():

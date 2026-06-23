@@ -1,6 +1,7 @@
 """Tests for mahg.ma_hedges_g."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mahg import ma_hedges_g
 
 
@@ -14,7 +15,7 @@ def test_mahg_basic():
     n2 = np.random.default_rng(42).normal(0, 1, 100)
     result = ma_hedges_g(m1, m2, s1, s2, n1, n2)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mahg_edge():

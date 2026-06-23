@@ -1,6 +1,8 @@
 """Tests for spccoh."""
+
 import numpy as np
 import pytest
+
 from morie.fn.spccoh import spccoh
 
 
@@ -28,4 +30,5 @@ def test_spccoh_no_data():
 
 def test_spccoh_alias():
     from morie.fn.spccoh import spccoh
+
     assert spccoh is spccoh

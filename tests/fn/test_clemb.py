@@ -1,6 +1,7 @@
 """Test clemb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clemb import clemb
 
 

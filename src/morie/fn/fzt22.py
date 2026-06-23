@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 2.2: bias of bias-reduced KDFE is O(h^4)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_thm2_2_bias_brdkdfe"]
@@ -34,7 +36,9 @@ def fauzi_thm2_2_bias_brdkdfe(x, bandwidth, a):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Theorem 2.2: bias of bias-reduced KDFE is O(h^4)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Theorem 2.2: bias of bias-reduced KDFE is O(h^4)"}
+    )
 
 
 def cheatsheet():

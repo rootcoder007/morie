@@ -1,6 +1,7 @@
 """Tests for baynav.variational_nf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.baynav import variational_nf
 
 
@@ -11,7 +12,7 @@ def test_baynav_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = variational_nf(log_p, flow, x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_baynav_edge():

@@ -1,6 +1,7 @@
 """Test ubren."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ubren import ubren
 
 

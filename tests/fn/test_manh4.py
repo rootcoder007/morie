@@ -1,6 +1,7 @@
 """Test manh4."""
+
 import numpy as np
-import pytest
+
 from morie.fn.manh4 import manh4
 
 

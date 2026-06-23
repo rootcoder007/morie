@@ -69,4 +69,4 @@ defall = defense_allocation
 
 
 def cheatsheet() -> str:
-    return 'defall() -> Allocate defense resources across threats proportional to risk'
+    return "defall() -> Allocate defense resources across threats proportional to risk"

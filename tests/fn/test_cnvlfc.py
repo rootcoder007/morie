@@ -1,6 +1,7 @@
 """Tests for cnvlfc.convergent_cross_mapping."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cnvlfc import convergent_cross_mapping
 
 
@@ -12,7 +13,7 @@ def test_cnvlfc_basic():
     tau = 0.1
     result = convergent_cross_mapping(x, y, E, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cnvlfc_edge():

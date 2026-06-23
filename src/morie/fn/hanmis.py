@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Missing data: 'summary' reports patterns, 'mean'/'median'/'drop' imputes."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -49,4 +50,4 @@ hanmis = handle_missing
 
 
 def cheatsheet() -> str:
-    return 'handle_missing({}) -> Missing data handler.'
+    return "handle_missing({}) -> Missing data handler."

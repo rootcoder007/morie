@@ -1,6 +1,7 @@
 """Tests for hrzcbsm.horowitz_choice_based_sms."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzcbsm import horowitz_choice_based_sms
 
 
@@ -11,7 +12,7 @@ def test_hrzcbsm_basic():
     sampling_weights = np.random.default_rng(42).normal(0, 1, 100)
     result = horowitz_choice_based_sms(x, y, sampling_weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzcbsm_edge():

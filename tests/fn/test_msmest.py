@@ -1,6 +1,7 @@
 """Tests for msmest.marginal_structural_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msmest import marginal_structural_model
 
 
@@ -12,7 +13,7 @@ def test_msmest_basic():
     time = np.linspace(0, 10, 100)
     result = marginal_structural_model(y, treatment_history, covariate_history, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msmest_edge():

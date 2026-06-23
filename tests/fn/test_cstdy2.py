@@ -1,13 +1,13 @@
 """Tests for morie.fn.cstdy2 — custody days credit."""
 
-import pytest
 import numpy as np
-from morie.fn.cstdy2 import custody_days_credit
+import pytest
+
 from morie.fn._containers import ESRes
+from morie.fn.cstdy2 import custody_days_credit
 
 
 class TestCustodyDaysCredit:
-
     def test_returns_esres(self):
         days = np.array([10, 20, 30])
         result = custody_days_credit(days)

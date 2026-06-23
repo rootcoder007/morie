@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.ypll import years_potential_life_lost
 
 

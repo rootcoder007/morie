@@ -1,6 +1,7 @@
 """Test agwtr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agwtr import agwtr
 
 

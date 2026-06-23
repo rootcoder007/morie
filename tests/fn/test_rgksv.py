@@ -1,6 +1,7 @@
 """Tests for rgksv.rangayyan_ksvd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgksv import rangayyan_ksvd
 
 
@@ -12,7 +13,7 @@ def test_rgksv_basic():
     max_iter = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_ksvd(Y, n_atoms, sparsity, max_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgksv_edge():

@@ -1,7 +1,8 @@
 """Tests for morie.fn.rskcb — risk calibration."""
 
 import pandas as pd
-from morie.fn.rskcb import risk_calibration, rskcb
+
+from morie.fn.rskcb import risk_calibration
 
 
 class TestRiskCalibration:

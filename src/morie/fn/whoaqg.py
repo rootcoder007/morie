@@ -16,32 +16,32 @@ from ._containers import DescriptiveResult
 # many countries still aim at.
 _WHO_AQG_2021: dict[str, dict[str, Any]] = {
     "pm25": {
-        "annual":   {"aqg": 5,  "it1": 35, "it2": 25, "it3": 15, "it4": 10},
-        "24h":      {"aqg": 15, "it1": 75, "it2": 50, "it3": 37.5, "it4": 25},
-        "unit":     "µg/m³",
+        "annual": {"aqg": 5, "it1": 35, "it2": 25, "it3": 15, "it4": 10},
+        "24h": {"aqg": 15, "it1": 75, "it2": 50, "it3": 37.5, "it4": 25},
+        "unit": "µg/m³",
     },
     "pm10": {
-        "annual":   {"aqg": 15, "it1": 70, "it2": 50, "it3": 30, "it4": 20},
-        "24h":      {"aqg": 45, "it1": 150, "it2": 100, "it3": 75, "it4": 50},
-        "unit":     "µg/m³",
+        "annual": {"aqg": 15, "it1": 70, "it2": 50, "it3": 30, "it4": 20},
+        "24h": {"aqg": 45, "it1": 150, "it2": 100, "it3": 75, "it4": 50},
+        "unit": "µg/m³",
     },
     "no2": {
-        "annual":   {"aqg": 10, "it1": 40, "it2": 30, "it3": 20},
-        "24h":      {"aqg": 25, "it1": 120, "it2": 50},
-        "unit":     "µg/m³",
+        "annual": {"aqg": 10, "it1": 40, "it2": 30, "it3": 20},
+        "24h": {"aqg": 25, "it1": 120, "it2": 50},
+        "unit": "µg/m³",
     },
     "o3": {
         "peak_season": {"aqg": 60, "it1": 100, "it2": 70},
-        "8h":          {"aqg": 100, "it1": 160, "it2": 120},
-        "unit":     "µg/m³",
+        "8h": {"aqg": 100, "it1": 160, "it2": 120},
+        "unit": "µg/m³",
     },
     "so2": {
-        "24h":      {"aqg": 40, "it1": 125, "it2": 50},
-        "unit":     "µg/m³",
+        "24h": {"aqg": 40, "it1": 125, "it2": 50},
+        "unit": "µg/m³",
     },
     "co": {
-        "24h":      {"aqg": 4,  "it1": 7},
-        "unit":     "mg/m³",
+        "24h": {"aqg": 4, "it1": 7},
+        "unit": "mg/m³",
     },
 }
 
@@ -98,20 +98,15 @@ def who_aqg_compliance(
     a = averaging.lower().strip().replace("-", "_").replace(" ", "_")
 
     if p not in _WHO_AQG_2021:
-        raise KeyError(
-            f"Unknown pollutant {pollutant!r}. Available: {list(_WHO_AQG_2021)}"
-        )
+        raise KeyError(f"Unknown pollutant {pollutant!r}. Available: {list(_WHO_AQG_2021)}")
     bands = _WHO_AQG_2021[p]
     if a not in bands:
         valid = [k for k in bands if k != "unit"]
-        raise KeyError(
-            f"Unknown averaging {averaging!r} for {p}. Available: {valid}"
-        )
+        raise KeyError(f"Unknown averaging {averaging!r} for {p}. Available: {valid}")
     thresholds = bands[a]
     # Order from strictest (aqg) to most permissive (it1). Missing
     # tiers are fine -- e.g. SO₂ has only AQG + IT-1 + IT-2.
-    ordered_tiers = [t for t in ("aqg", "it4", "it3", "it2", "it1")
-                     if t in thresholds]
+    ordered_tiers = [t for t in ("aqg", "it4", "it3", "it2", "it1") if t in thresholds]
 
     C = np.atleast_1d(np.asarray(concentration, dtype=float))
     if np.any(C < 0):

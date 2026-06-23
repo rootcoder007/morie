@@ -1,6 +1,8 @@
 """Tests for morie.fn.limex — LIME explanations."""
+
 import numpy as np
 import pytest
+
 from morie.fn.limex import limex
 
 
@@ -11,8 +13,10 @@ def setup():
     X_train = rng.standard_normal((n, p))
     instance = rng.standard_normal(p)
     beta = np.array([2.0, -1.5, 0.5, 0.1])
+
     def predict_fn(Xp):
         return Xp @ beta
+
     return predict_fn, instance, X_train, beta
 
 
@@ -63,4 +67,5 @@ def test_weights_positive(setup):
 
 def test_cheatsheet():
     from morie.fn.limex import cheatsheet
+
     assert len(cheatsheet()) > 0

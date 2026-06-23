@@ -1,8 +1,8 @@
 """Probability expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe_chapter_10_unnumbered_9"]
 

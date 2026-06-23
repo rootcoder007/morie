@@ -40,7 +40,7 @@ def kernel_pca(
         gamma = 1.0 / p
 
     if kernel == "rbf":
-        sq = np.sum(X ** 2, axis=1)
+        sq = np.sum(X**2, axis=1)
         K = np.exp(-gamma * (sq[:, None] + sq[None, :] - 2 * X @ X.T))
     elif kernel == "poly":
         K = (gamma * X @ X.T + 1) ** degree

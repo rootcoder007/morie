@@ -1,6 +1,7 @@
 """Tests for hmmcel.geron_memory_cell."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmmcel import geron_memory_cell
 
 
@@ -11,7 +12,7 @@ def test_hmmcel_basic():
     f = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_memory_cell(c_prev, x_t, f)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmmcel_edge():

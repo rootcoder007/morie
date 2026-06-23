@@ -1,6 +1,7 @@
 """Test aglpi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.aglpi import aglpi
 
 

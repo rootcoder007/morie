@@ -20,23 +20,17 @@ def synth_data():
 
 
 def test_returns_series(synth_data):
-    result = estimate_cate(
-        synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"]
-    )
+    result = estimate_cate(synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"])
     assert isinstance(result, pd.Series)
 
 
 def test_cate_values_are_finite(synth_data):
-    result = estimate_cate(
-        synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"]
-    )
+    result = estimate_cate(synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"])
     assert np.all(np.isfinite(result.values))
 
 
 def test_length_matches_input(synth_data):
-    result = estimate_cate(
-        synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"]
-    )
+    result = estimate_cate(synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"])
     assert len(result) == len(synth_data)
 
 

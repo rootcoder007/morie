@@ -1,10 +1,11 @@
 """Tests for morie.fn.astc — alert-state combination encoding."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.astc import astcmb as astc
+import pytest
+
 from morie.fn._containers import AstRes
+from morie.fn.astc import astcmb as astc
 
 
 @pytest.fixture()
@@ -12,14 +13,16 @@ def alert_df():
     """Synthetic alert data with Yes/No strings."""
     rng = np.random.default_rng(42)
     n = 100
-    return pd.DataFrame({
-        "unique_individual_id": [f"P{i:04d}" for i in range(n)],
-        "end_fiscal_year": rng.choice([2020, 2021], n),
-        "number_of_placements": rng.integers(1, 5, n),
-        "mental_health_alert": rng.choice(["Yes", "No"], n),
-        "suicide_risk_alert": rng.choice(["Yes", "No"], n),
-        "suicide_watch_alert": rng.choice(["Yes", "No"], n),
-    })
+    return pd.DataFrame(
+        {
+            "unique_individual_id": [f"P{i:04d}" for i in range(n)],
+            "end_fiscal_year": rng.choice([2020, 2021], n),
+            "number_of_placements": rng.integers(1, 5, n),
+            "mental_health_alert": rng.choice(["Yes", "No"], n),
+            "suicide_risk_alert": rng.choice(["Yes", "No"], n),
+            "suicide_watch_alert": rng.choice(["Yes", "No"], n),
+        }
+    )
 
 
 class TestAstcmb:
@@ -47,13 +50,15 @@ class TestAstcmb:
         """Should also work with integer 0/1 columns."""
         rng = np.random.default_rng(42)
         n = 60
-        df = pd.DataFrame({
-            "unique_individual_id": [f"P{i:04d}" for i in range(n)],
-            "end_fiscal_year": [2021] * n,
-            "number_of_placements": [1] * n,
-            "mental_health_alert": rng.integers(0, 2, n),
-            "suicide_risk_alert": rng.integers(0, 2, n),
-            "suicide_watch_alert": rng.integers(0, 2, n),
-        })
+        df = pd.DataFrame(
+            {
+                "unique_individual_id": [f"P{i:04d}" for i in range(n)],
+                "end_fiscal_year": [2021] * n,
+                "number_of_placements": [1] * n,
+                "mental_health_alert": rng.integers(0, 2, n),
+                "suicide_risk_alert": rng.integers(0, 2, n),
+                "suicide_watch_alert": rng.integers(0, 2, n),
+            }
+        )
         result = astc(df)
         assert isinstance(result, AstRes)

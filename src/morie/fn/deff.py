@@ -8,4 +8,4 @@ design_effect = _fn
 
 
 def cheatsheet() -> str:
-    return 'deff() -> Design effect (DEFF) from survey weights.'
+    return "deff() -> Design effect (DEFF) from survey weights."

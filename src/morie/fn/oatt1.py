@@ -8,7 +8,15 @@ import pandas as pd
 from scipy import stats
 
 
-def otis_att_region(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", region_col: str = "region", covariates: list[str] | None = None) -> pd.DataFrame:
+def otis_att_region(
+    df: pd.DataFrame,
+    cdf=None,
+    *,
+    outcome: str = "Y",
+    treatment: str = "D",
+    region_col: str = "region",
+    covariates: list[str] | None = None,
+) -> pd.DataFrame:
     """Estimate ATT via IPW within each region.
 
     Propensity scores estimated via logistic regression (OLS on logit

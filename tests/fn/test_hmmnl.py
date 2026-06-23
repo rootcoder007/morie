@@ -1,6 +1,7 @@
 """Tests for hmmnl.geron_multinomial_logistic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmmnl import geron_multinomial_logistic
 
 
@@ -12,7 +13,7 @@ def test_hmmnl_basic():
     n_iter = 50
     result = geron_multinomial_logistic(X, Y, lr, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmmnl_edge():

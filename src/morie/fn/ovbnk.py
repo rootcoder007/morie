@@ -1,6 +1,7 @@
 """Oster bound on bias from omitted variables (delta)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["oster_omitted_bias_bound"]
@@ -40,7 +41,9 @@ def oster_omitted_bias_bound(beta_short, beta_long, R_short, R_long, R_max, delt
     n = len(beta_short)
     result = float(np.mean(beta_short))
     se = float(np.std(beta_short, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Oster bound on bias from omitted variables (delta)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Oster bound on bias from omitted variables (delta)"}
+    )
 
 
 def cheatsheet():

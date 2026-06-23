@@ -1,8 +1,9 @@
 """Tests for morie.fn.lexlr -- Lexicographic rank aggregation."""
 
 import numpy as np
-from morie.fn.lexlr import lexico_rank, lexlr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lexlr import lexico_rank, lexlr
 
 
 class TestLexlr:

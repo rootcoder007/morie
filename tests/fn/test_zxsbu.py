@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxsbu -- Buffered spatial CV"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxsbu import spatial_cv_buffer
 

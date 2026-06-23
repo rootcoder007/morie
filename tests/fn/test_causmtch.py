@@ -1,6 +1,7 @@
 """Tests for causmtch.causal_pair_matching."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causmtch import causal_pair_matching
 
 
@@ -11,7 +12,7 @@ def test_causmtch_basic():
     caliper = np.random.default_rng(42).normal(0, 1, 100)
     result = causal_pair_matching(ps, treat, caliper)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causmtch_edge():

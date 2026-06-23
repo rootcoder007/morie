@@ -1,8 +1,9 @@
 """Tests for morie.fn.entpro -- entropy production."""
 
 import numpy as np
-from morie.fn.entpro import entropy_production, entpro
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.entpro import entpro, entropy_production
 
 
 class TestEntpro:

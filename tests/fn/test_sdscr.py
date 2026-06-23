@@ -1,11 +1,11 @@
 """Tests for morie.fn.sdscr -- discriminant validity."""
 
 import pandas as pd
+
 from morie.fn.sdscr import subscale_discriminant
 
 
 class TestSubscaleDiscriminant:
-
     def test_returns_dataframe(self, mapq_df):
         result = subscale_discriminant(mapq_df)
         assert isinstance(result, pd.DataFrame)

@@ -60,4 +60,4 @@ short = polar_decompose
 
 
 def cheatsheet() -> str:
-    return 'polar_decompose({}) -> Polar decomposition A = UP.'
+    return "polar_decompose({}) -> Polar decomposition A = UP."

@@ -1,6 +1,7 @@
 """Tests for enobj.elastic_net_objective."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enobj import elastic_net_objective
 
 
@@ -13,7 +14,7 @@ def test_enobj_basic():
     alpha = 0.05
     result = elastic_net_objective(y, X, beta, lam, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_enobj_edge():

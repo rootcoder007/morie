@@ -6,9 +6,7 @@ import numpy as np
 from ._containers import DescriptiveResult
 
 
-def coherence(
-    x: np.ndarray, y: np.ndarray, nperseg: int | None = None, fs: float = 1.0
-) -> DescriptiveResult:
+def coherence(x: np.ndarray, y: np.ndarray, nperseg: int | None = None, fs: float = 1.0) -> DescriptiveResult:
     """
     Magnitude-squared coherence between two time series.
 

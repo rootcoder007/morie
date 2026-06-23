@@ -1,7 +1,7 @@
 """Tests for morie.fn.pawgt."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pawgt import pawgt
 
 

@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.prdnt import prediction_intervals, prdnt
+from morie.fn.prdnt import prdnt, prediction_intervals
 
 
 def test_returns_descriptive_result():

@@ -1,5 +1,7 @@
 """Spatial prediction in GLMs via kriging on random effect."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_spatial_glm_kriging"]
@@ -39,7 +41,14 @@ def schabenberger_spatial_glm_kriging(x, y, coords, target, cov_model, link):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spatial prediction in GLMs via kriging on random effect"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Spatial prediction in GLMs via kriging on random effect",
+        }
+    )
 
 
 def cheatsheet():

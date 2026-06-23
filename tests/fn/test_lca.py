@@ -1,6 +1,9 @@
 """Tests for latent_class."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.lca import latent_class
+
 
 class TestLCA:
     def test_two_classes(self):

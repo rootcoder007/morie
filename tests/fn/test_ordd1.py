@@ -1,14 +1,13 @@
 """Tests for morie.fn.ordd1 — OTIS RDD age."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.ordd1 import otis_rdd_age
+
 from morie.fn._containers import ESRes
+from morie.fn.ordd1 import otis_rdd_age
 
 
 class TestOtisRddAge:
-
     def test_returns_esres(self):
         rng = np.random.default_rng(42)
         n = 200

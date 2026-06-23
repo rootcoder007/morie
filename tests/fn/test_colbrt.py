@@ -1,6 +1,7 @@
 """Tests for colbrt.colbert."""
+
 import numpy as np
-import pytest
+
 from morie.fn.colbrt import colbert
 
 
@@ -10,7 +11,7 @@ def test_colbrt_basic():
     docs = np.random.default_rng(42).normal(0, 1, 100)
     result = colbert(query, docs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_colbrt_edge():

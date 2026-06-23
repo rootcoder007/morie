@@ -1,6 +1,7 @@
 """Tests for rmsdtr.rmsd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rmsdtr import rmsd
 
 
@@ -10,7 +11,7 @@ def test_rmsdtr_basic():
     coords2 = np.random.default_rng(42).normal(0, 1, 100)
     result = rmsd(coords1, coords2)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rmsdtr_edge():

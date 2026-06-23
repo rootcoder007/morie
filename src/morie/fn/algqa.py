@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Grouped-Query Attention: H query heads share K/V across G groups (H divisible by G)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_grouped_query_attention"]
@@ -38,7 +40,14 @@ def alammar_grouped_query_attention(Q, K, V, n_query_heads, n_kv_groups):
     n = len(Q)
     result = float(np.mean(Q))
     se = float(np.std(Q, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Grouped-Query Attention: H query heads share K/V across G groups (H divisible by G)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Grouped-Query Attention: H query heads share K/V across G groups (H divisible by G)",
+        }
+    )
 
 
 def cheatsheet():

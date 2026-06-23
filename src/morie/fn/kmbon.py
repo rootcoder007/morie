@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Best-of-N sampling: generate N completions, return the highest-reward one."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_best_of_n_sampling"]
@@ -32,7 +34,14 @@ def kamath_best_of_n_sampling(samples, rewards):
     n = len(samples)
     result = float(np.mean(samples))
     se = float(np.std(samples, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Best-of-N sampling: generate N completions, return the highest-reward one"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Best-of-N sampling: generate N completions, return the highest-reward one",
+        }
+    )
 
 
 def cheatsheet():

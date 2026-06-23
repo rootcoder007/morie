@@ -1,6 +1,9 @@
 """Tests for dfbetas."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.dfbts import dfbetas
+
 
 class TestDFBETAS:
     def test_basic(self):

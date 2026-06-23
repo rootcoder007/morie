@@ -1,6 +1,7 @@
 """Tests for propal.proportional_allocation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.propal import proportional_allocation
 
 
@@ -11,7 +12,7 @@ def test_propal_basic():
     n = 100
     result = proportional_allocation(N, Nh, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_propal_edge():

@@ -1,6 +1,7 @@
 """Tests for jackvar.jackknife_variance_survey."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jackvar import jackknife_variance_survey
 
 
@@ -11,7 +12,7 @@ def test_jackvar_basic():
     replicates = np.random.default_rng(42).normal(0, 1, 100)
     result = jackknife_variance_survey(y, weights, replicates)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jackvar_edge():

@@ -42,7 +42,7 @@ def factor_analysis_ml(
     eigvecs = eigvecs[:, idx]
 
     L = eigvecs[:, :n_factors] * np.sqrt(np.maximum(eigvals[:n_factors] - 1.0, 0.1))
-    psi = np.diag(S) - np.sum(L ** 2, axis=1)
+    psi = np.diag(S) - np.sum(L**2, axis=1)
     psi = np.maximum(psi, 1e-6)
 
     for _ in range(max_iter):
@@ -50,8 +50,10 @@ def factor_analysis_ml(
         M = np.eye(n_factors) + (L.T * psi_inv) @ L
         M_inv = np.linalg.inv(M)
 
-        L_new = S @ (L * psi_inv[:, None]) @ np.linalg.inv(
-            np.eye(n_factors) + M_inv @ (L.T * psi_inv) @ S @ (L * psi_inv[:, None])
+        L_new = (
+            S
+            @ (L * psi_inv[:, None])
+            @ np.linalg.inv(np.eye(n_factors) + M_inv @ (L.T * psi_inv) @ S @ (L * psi_inv[:, None]))
         )
 
         L_new = S @ np.diag(psi_inv) @ L @ M_inv
@@ -65,8 +67,8 @@ def factor_analysis_ml(
         L = L_new
         psi = psi_new
 
-    communalities = np.sum(L ** 2, axis=1)
-    var_explained = np.sum(L ** 2, axis=0)
+    communalities = np.sum(L**2, axis=1)
+    var_explained = np.sum(L**2, axis=0)
 
     return FaRes(
         loadings=L,

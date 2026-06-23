@@ -78,4 +78,4 @@ hwint = holt_winters
 
 
 def cheatsheet() -> str:
-    return 'holt_winters({}) -> Holt-Winters additive seasonal method.'
+    return "holt_winters({}) -> Holt-Winters additive seasonal method."

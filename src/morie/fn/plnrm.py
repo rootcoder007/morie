@@ -9,7 +9,9 @@ import numpy as np
 from scipy.stats import lognorm
 
 
-def plnrm(q: Union[float, np.ndarray], meanlog: float = 0.0, sdlog: float = 1.0, lower_tail: bool = True, cdf=None) -> Union[float, np.ndarray]:
+def plnrm(
+    q: Union[float, np.ndarray], meanlog: float = 0.0, sdlog: float = 1.0, lower_tail: bool = True, cdf=None
+) -> Union[float, np.ndarray]:
     """
     Lognormal distribution cumulative distribution function.
 

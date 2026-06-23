@@ -1,6 +1,7 @@
 """Test gccor."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gccor import gccor
 
 

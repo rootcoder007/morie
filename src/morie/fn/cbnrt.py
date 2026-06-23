@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """CausalBERT: text representation for CATE estimation with NLP confounders."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["causalbert_text"]
@@ -35,14 +37,31 @@ def causalbert_text(texts, T, Y, X):
     texts = np.asarray(texts, dtype=float)
     n = int(texts) if texts.ndim == 0 else len(texts)
     if texts.ndim == 0:
-        return RichResult(payload={"statistic": float('nan'), "p_value": float('nan'), "n": 1, "method": "scalar-input placeholder"})
+        return RichResult(
+            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+        )
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "CausalBERT: text representation for CATE estimation with NLP confounders"})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "CausalBERT: text representation for CATE estimation with NLP confounders",
+            }
+        )
     estimate = np.median(texts)
     se = 1.2533 * np.std(texts, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "CausalBERT: text representation for CATE estimation with NLP confounders"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "CausalBERT: text representation for CATE estimation with NLP confounders",
+        }
+    )
 
 
 def cheatsheet():

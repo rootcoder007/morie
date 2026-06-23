@@ -1,6 +1,7 @@
 """Kernel PCA top-k components."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sgt_kernel_pca"]

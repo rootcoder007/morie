@@ -1,13 +1,11 @@
 """Tests for morie.fn.gptq — GPTQ weight quantizer."""
 
 import numpy as np
-import pytest
 
 from morie.fn.gptq import gptq_quantize
 
 
 class TestGptqQuantize:
-
     def test_returns_result(self):
         W = np.random.default_rng(42).standard_normal((8, 16))
         res = gptq_quantize(W, bits=4)

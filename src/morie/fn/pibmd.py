@@ -1,6 +1,7 @@
 """Prior-data conflict / sensitivity diagnostic."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["prior_informativeness_bias_diagnostic"]
@@ -32,7 +33,9 @@ def prior_informativeness_bias_diagnostic(samples, prior):
     n = len(samples)
     result = float(np.mean(samples))
     se = float(np.std(samples, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Prior-data conflict / sensitivity diagnostic"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Prior-data conflict / sensitivity diagnostic"}
+    )
 
 
 def cheatsheet():

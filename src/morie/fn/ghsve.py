@@ -1,8 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sieve prior construction (truncated log-spline / Bernstein basis)."""
+
 import numpy as np
-from scipy.stats import beta as beta_dist
 from scipy.special import gammaln
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_sieve_prior"]
@@ -13,9 +14,12 @@ def _bernstein_basis(u, K):
     u = np.atleast_1d(u)
     k = np.arange(1, K + 1)[None, :]
     n = K
-    log_binom = (gammaln(n + 1) - gammaln(k) - gammaln(n - k + 2))
-    log_b = (log_binom + (k - 1) * np.log(np.clip(u[:, None], 1e-12, 1))
-             + (n - k + 1) * np.log(np.clip(1 - u[:, None], 1e-12, 1)))
+    log_binom = gammaln(n + 1) - gammaln(k) - gammaln(n - k + 2)
+    log_b = (
+        log_binom
+        + (k - 1) * np.log(np.clip(u[:, None], 1e-12, 1))
+        + (n - k + 1) * np.log(np.clip(1 - u[:, None], 1e-12, 1))
+    )
     return np.exp(log_b)
 
 
@@ -56,10 +60,13 @@ def ghosal_sieve_prior(x, K=None):
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n < 3:
-        return RichResult(payload={
-            "estimate": float("nan"), "n": n,
-            "method": "Bernstein sieve (n<3)",
-        })
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "n": n,
+                "method": "Bernstein sieve (n<3)",
+            }
+        )
     lo, hi = float(np.min(x)) - 1e-6, float(np.max(x)) + 1e-6
     u = (x - lo) / (hi - lo)
     if K is None:
@@ -81,14 +88,16 @@ def ghosal_sieve_prior(x, K=None):
     # Headline: posterior-mean density of x at sample mean (Bayes-style)
     u_bar = (float(np.mean(x)) - lo) / (hi - lo)
     f_bar = float((_bernstein_basis(np.array([u_bar]), K)[0] @ w) / (hi - lo))
-    return RichResult(payload={
-        "estimate": f_bar,
-        "log_lik_per_obs": log_lik,
-        "weights": w.tolist(),
-        "K": int(K),
-        "n": n,
-        "method": "Bernstein-polynomial sieve density (Petrone 1999, Ghosal 2001)",
-    })
+    return RichResult(
+        payload={
+            "estimate": f_bar,
+            "log_lik_per_obs": log_lik,
+            "weights": w.tolist(),
+            "K": int(K),
+            "n": n,
+            "method": "Bernstein-polynomial sieve density (Petrone 1999, Ghosal 2001)",
+        }
+    )
 
 
 def cheatsheet():

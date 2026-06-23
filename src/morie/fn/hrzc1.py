@@ -9,6 +9,7 @@ Powell CLAD estimator:
 iterative reweighting via the equivalent quantile-regression on the
 sub-sample with ``X_i'b > c``.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -39,7 +40,8 @@ def _qreg_irls(X, y, tau=0.5, maxiter=50, tol=1e-6):
         except np.linalg.LinAlgError:
             new = np.linalg.pinv(XtWX) @ (WX.T @ y)
         if np.max(np.abs(new - beta)) < tol:
-            beta = new; break
+            beta = new
+            break
         beta = new
     return beta
 
@@ -52,16 +54,26 @@ def horowitz_censored_regression(x, y, censor=0.0):
         X = X.T
     n, p = X.shape
     if n < max(10, 2 * p):
-        return RichResult(payload={"estimate": np.full(p, np.nan),
-                                   "se": np.full(p, np.nan), "n": n,
-                                   "method": "CLAD (insufficient data)"})
+        return RichResult(
+            payload={
+                "estimate": np.full(p, np.nan),
+                "se": np.full(p, np.nan),
+                "n": n,
+                "method": "CLAD (insufficient data)",
+            }
+        )
     c = float(censor)
     # Initialise on uncensored sub-sample
     keep = y > c
     if keep.sum() < max(5, p + 1):
-        return RichResult(payload={"estimate": np.full(p, np.nan),
-                                   "se": np.full(p, np.nan), "n": n,
-                                   "method": "CLAD (too few uncensored obs)"})
+        return RichResult(
+            payload={
+                "estimate": np.full(p, np.nan),
+                "se": np.full(p, np.nan),
+                "n": n,
+                "method": "CLAD (too few uncensored obs)",
+            }
+        )
     beta = _qreg_irls(X[keep], y[keep])
     # Iterate: only obs with X_i'beta > c contribute
     for _ in range(30):
@@ -70,7 +82,8 @@ def horowitz_censored_regression(x, y, censor=0.0):
             break
         new = _qreg_irls(X[active], y[active])
         if np.max(np.abs(new - beta)) < 1e-5:
-            beta = new; break
+            beta = new
+            break
         beta = new
 
     # Powell SE: kernel density of residuals at zero
@@ -79,8 +92,9 @@ def horowitz_censored_regression(x, y, censor=0.0):
     if active.sum() < max(5, p + 1):
         se = np.full(p, np.nan)
     else:
-        Xa = X[active]; ra = r[active]
-        h = max(1.06 * np.std(ra, ddof=1) * len(ra) ** (-1/5), 1e-4)
+        Xa = X[active]
+        ra = r[active]
+        h = max(1.06 * np.std(ra, ddof=1) * len(ra) ** (-1 / 5), 1e-4)
         f0 = float(np.mean(np.exp(-0.5 * (ra / h) ** 2) / (h * np.sqrt(2 * np.pi))))
         A = Xa.T @ Xa * f0
         try:
@@ -89,12 +103,16 @@ def horowitz_censored_regression(x, y, censor=0.0):
             cov = np.full((p, p), np.nan)
         se = np.sqrt(np.maximum(np.diag(cov), 0))
 
-    return RichResult(payload={
-        "estimate": beta.astype(float) if beta.size > 1 else float(beta[0]),
-        "se": se.astype(float) if se.size > 1 else float(se[0]),
-        "n": n, "n_uncensored": int(active.sum()), "censor": c,
-        "method": "Powell (1984) censored LAD (CLAD)",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta.astype(float) if beta.size > 1 else float(beta[0]),
+            "se": se.astype(float) if se.size > 1 else float(se[0]),
+            "n": n,
+            "n_uncensored": int(active.sum()),
+            "censor": c,
+            "method": "Powell (1984) censored LAD (CLAD)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Logistic distribution random variate generation."""
 
-
 import numpy as np
 import scipy.stats as stats
 

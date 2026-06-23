@@ -1,6 +1,7 @@
 """Tests for coxres.cox_schoenfeld_residuals."""
+
 import numpy as np
-import pytest
+
 from morie.fn.coxres import cox_schoenfeld_residuals
 
 
@@ -10,7 +11,7 @@ def test_coxres_basic():
     time = np.linspace(0, 10, 100)
     result = cox_schoenfeld_residuals(fit, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_coxres_edge():

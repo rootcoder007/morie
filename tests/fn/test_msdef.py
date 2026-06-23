@@ -1,6 +1,7 @@
 """Tests for msdef.mse_metric."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msdef import mse_metric
 
 
@@ -10,7 +11,7 @@ def test_msdef_basic():
     y_pred = np.random.default_rng(44).normal(0, 1, 100)
     result = mse_metric(y_true, y_pred)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msdef_edge():

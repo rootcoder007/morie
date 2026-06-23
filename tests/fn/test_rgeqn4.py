@@ -1,6 +1,7 @@
 """Tests for rgeqn4.rangayyan_ch4_qrs_slope."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgeqn4 import rangayyan_ch4_qrs_slope
 
 
@@ -10,7 +11,7 @@ def test_rgeqn4_basic():
     fs = 100.0
     result = rangayyan_ch4_qrs_slope(ecg, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgeqn4_edge():

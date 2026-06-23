@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Vector dot product (scalar product) of two vectors a and b."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_dot_product"]
@@ -32,7 +34,14 @@ def burkov_dot_product(a, b):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Vector dot product (scalar product) of two vectors a and b"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Vector dot product (scalar product) of two vectors a and b",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,9 @@
 """Test periodogram (psdpr)."""
+
 import numpy as np
-from morie.fn.psdpr import periodogram, psdpr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.psdpr import periodogram, psdpr
 
 
 class TestPsdpr:

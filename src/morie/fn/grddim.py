@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DDIM deterministic sampling step (subset schedule, eta=0)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ddim_sampling_step"]
@@ -38,7 +40,14 @@ def geron_ddim_sampling_step(x_t, t, t_prev, eps_pred, alpha_bar):
     n = len(x_t)
     result = float(np.mean(x_t))
     se = float(np.std(x_t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DDIM deterministic sampling step (subset schedule, eta=0)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "DDIM deterministic sampling step (subset schedule, eta=0)",
+        }
+    )
 
 
 def cheatsheet():

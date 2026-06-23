@@ -1,6 +1,7 @@
 """Tests for hrznpiv.horowitz_npiv_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrznpiv import horowitz_npiv_model
 
 
@@ -11,7 +12,7 @@ def test_hrznpiv_basic():
     w = np.random.default_rng(45).exponential(1, 100)
     result = horowitz_npiv_model(x, y, w)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrznpiv_edge():

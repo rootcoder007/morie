@@ -1,6 +1,7 @@
 """Tests for jotsmx.joseph_tsmixer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jotsmx import joseph_tsmixer
 
 
@@ -11,7 +12,7 @@ def test_jotsmx_basic():
     hidden_dim = 2
     result = joseph_tsmixer(x, n_blocks, hidden_dim)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jotsmx_edge():

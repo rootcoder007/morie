@@ -1,6 +1,8 @@
 """Tests for morie.fn.pcalg — PC algorithm."""
+
 import numpy as np
 import pytest
+
 from morie.fn.pcalg import pcalg
 
 
@@ -53,4 +55,5 @@ def test_n_tests_positive(linear_dag):
 
 def test_cheatsheet():
     from morie.fn.pcalg import cheatsheet
+
     assert len(cheatsheet()) > 0

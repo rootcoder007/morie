@@ -1,7 +1,6 @@
 """Tests for morie.fn.lmpzv — Lempel-Ziv complexity."""
 
 import numpy as np
-import pytest
 
 from morie.fn.lmpzv import lmpzv
 

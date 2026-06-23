@@ -1,6 +1,7 @@
 """Test secop."""
+
 import numpy as np
-import pytest
+
 from morie.fn.secop import secop
 
 

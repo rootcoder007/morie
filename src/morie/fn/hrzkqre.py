@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Appendix: Kernel-type nonparametric quantile regression estimator."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_kernel_quantile_reg"]
@@ -35,14 +37,31 @@ def horowitz_kernel_quantile_reg(x, y, bandwidth, tau):
     x = np.asarray(x, dtype=float)
     n = int(x) if x.ndim == 0 else len(x)
     if x.ndim == 0:
-        return RichResult(payload={"statistic": float('nan'), "p_value": float('nan'), "n": 1, "method": "scalar-input placeholder"})
+        return RichResult(
+            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+        )
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Appendix: Kernel-type nonparametric quantile regression estimator"})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "Appendix: Kernel-type nonparametric quantile regression estimator",
+            }
+        )
     estimate = np.median(x)
     se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Appendix: Kernel-type nonparametric quantile regression estimator"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Appendix: Kernel-type nonparametric quantile regression estimator",
+        }
+    )
 
 
 def cheatsheet():

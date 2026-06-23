@@ -1,5 +1,7 @@
 """Tests for klmfn.py - Kalman filter wrapper."""
+
 import numpy as np
+
 from morie.fn.klmfn import kalman_filter_fn, klmfn
 
 

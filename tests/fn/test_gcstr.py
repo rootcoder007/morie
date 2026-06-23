@@ -1,6 +1,7 @@
 """Test gcstr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcstr import gcstr
 
 

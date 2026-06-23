@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Max-norm regularization: rescale weights so ||w||_2 <= r."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_max_norm"]
@@ -32,7 +34,14 @@ def geron_max_norm(w, r):
     n = len(w)
     result = float(np.mean(w))
     se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Max-norm regularization: rescale weights so ||w||_2 <= r"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Max-norm regularization: rescale weights so ||w||_2 <= r",
+        }
+    )
 
 
 def cheatsheet():

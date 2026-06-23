@@ -1,6 +1,7 @@
 """Brenier map recovery in 1-D from sorted samples."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_map_recovery_brenier"]
@@ -32,7 +33,9 @@ def ot_map_recovery_brenier(x, y):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Brenier map recovery in 1-D from sorted samples"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Brenier map recovery in 1-D from sorted samples"}
+    )
 
 
 def cheatsheet():

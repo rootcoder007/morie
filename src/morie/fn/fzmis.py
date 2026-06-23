@@ -12,7 +12,9 @@ The bandwidth minimising MISE is
 For Gaussian K, mu_2(K)=1, R(K)=1/(2 sqrt(pi)).  We estimate R(f'') by
 the Silverman normal-reference plug-in R(f'') = 3 / (8 sqrt(pi) sigma^5).
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_mise_computation"]
@@ -41,34 +43,35 @@ def fauzi_mise_computation(x, h=None):
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 5:
-        return RichResult(payload={"estimate": np.nan, "n": n,
-                                    "method": "fzmis -- too few obs"})
+        return RichResult(payload={"estimate": np.nan, "n": n, "method": "fzmis -- too few obs"})
 
     sigma = float(np.std(x, ddof=1))
     if sigma <= 0:
         sigma = 1.0
-    R_fpp = 3.0 / (8.0 * np.sqrt(np.pi) * sigma ** 5)
+    R_fpp = 3.0 / (8.0 * np.sqrt(np.pi) * sigma**5)
 
     if h is None:
         h = float(_silverman_h(x))
 
-    bias_part = (h ** 4 / 4.0) * (_MU2_GAUSS ** 2) * R_fpp
+    bias_part = (h**4 / 4.0) * (_MU2_GAUSS**2) * R_fpp
     var_part = _R_K_GAUSS / (n * h)
     mise = bias_part + var_part
 
-    h_opt = (_R_K_GAUSS / (n * (_MU2_GAUSS ** 2) * R_fpp)) ** (1.0 / 5.0)
+    h_opt = (_R_K_GAUSS / (n * (_MU2_GAUSS**2) * R_fpp)) ** (1.0 / 5.0)
 
-    return RichResult(payload={
-        "estimate": float(mise),
-        "bias_part": float(bias_part),
-        "var_part": float(var_part),
-        "h": float(h),
-        "h_opt": float(h_opt),
-        "R_fpp": float(R_fpp),
-        "sigma": float(sigma),
-        "n": n,
-        "method": "Fauzi MISE decomposition (Ch 1)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(mise),
+            "bias_part": float(bias_part),
+            "var_part": float(var_part),
+            "h": float(h),
+            "h_opt": float(h_opt),
+            "R_fpp": float(R_fpp),
+            "sigma": float(sigma),
+            "n": n,
+            "method": "Fauzi MISE decomposition (Ch 1)",
+        }
+    )
 
 
 def cheatsheet():

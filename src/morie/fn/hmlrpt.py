@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Linear regression implemented in PyTorch."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_linreg_pytorch"]
@@ -36,7 +38,9 @@ def geron_linreg_pytorch(X, y, epochs, lr):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Linear regression implemented in PyTorch"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Linear regression implemented in PyTorch"}
+    )
 
 
 def cheatsheet():

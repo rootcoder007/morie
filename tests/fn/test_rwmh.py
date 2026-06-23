@@ -1,6 +1,5 @@
 """Tests for morie.fn.rwmh -- Random walk MH."""
 
-import numpy as np
 from morie.fn.rwmh import random_walk_mh
 
 

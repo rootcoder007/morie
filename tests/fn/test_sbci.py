@@ -1,6 +1,8 @@
 """Tests for sbci."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sbci import sbci
 
 
@@ -28,4 +30,5 @@ def test_sbci_no_data():
 
 def test_sbci_alias():
     from morie.fn.sbci import sbci
+
     assert sbci is sbci

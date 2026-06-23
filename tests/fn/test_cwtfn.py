@@ -1,5 +1,7 @@
 """Tests for cwtfn.py - Continuous wavelet transform."""
+
 import numpy as np
+
 from morie.fn.cwtfn import cwt_compute_fn, cwtfn
 
 

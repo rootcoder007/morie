@@ -1,6 +1,8 @@
 """Tests for reasn.py - Reassigned STFT."""
+
 import numpy as np
-from morie.fn.reasn import reassigned_stft, reasn
+
+from morie.fn.reasn import reasn, reassigned_stft
 
 
 def test_reasn_returns_descriptive_result():

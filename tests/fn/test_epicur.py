@@ -1,6 +1,7 @@
 """Tests for epicur.epicurve."""
+
 import numpy as np
-import pytest
+
 from morie.fn.epicur import epicurve
 
 
@@ -11,7 +12,7 @@ def test_epicur_basic():
     bandwidth = 0.3
     result = epicurve(dates, cases, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_epicur_edge():

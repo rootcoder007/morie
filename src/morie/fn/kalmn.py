@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kalman filter predict-update recursion (Kalman 1960)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -9,8 +10,7 @@ from ._richresult import RichResult
 __all__ = ["kalman_filter"]
 
 
-def kalman_filter(x, F=None, H=None, Q=None, R=None,
-                  x0=None, P0=None):
+def kalman_filter(x, F=None, H=None, Q=None, R=None, x0=None, P0=None):
     r"""Run a generic linear Kalman filter.
 
     For each :math:`t`,
@@ -57,8 +57,7 @@ def kalman_filter(x, F=None, H=None, Q=None, R=None,
         Q = np.eye(m) * np.var(np.diff(Y, axis=0)) * 0.5
     if R is None:
         R = np.eye(m) * np.var(np.diff(Y, axis=0)) * 0.5
-    F, H, Q, R = map(lambda a: np.atleast_2d(np.asarray(a, dtype=float)),
-                     (F, H, Q, R))
+    F, H, Q, R = map(lambda a: np.atleast_2d(np.asarray(a, dtype=float)), (F, H, Q, R))
     p = F.shape[0]
     if x0 is None:
         x0 = np.zeros(p)
@@ -92,15 +91,17 @@ def kalman_filter(x, F=None, H=None, Q=None, R=None,
         sign, logdet = np.linalg.slogdet(S)
         if sign > 0:
             ll += -0.5 * (m * np.log(2 * np.pi) + logdet + v @ Sinv @ v)
-    return RichResult(payload={
-        "state": x_hat,
-        "state_cov": P,
-        "innovations": innov,
-        "innovation_variance": Sv,
-        "loglik": float(ll),
-        "n": int(n),
-        "method": "Linear Gaussian Kalman filter (numpy)",
-    })
+    return RichResult(
+        payload={
+            "state": x_hat,
+            "state_cov": P,
+            "innovations": innov,
+            "innovation_variance": Sv,
+            "loglik": float(ll),
+            "n": int(n),
+            "method": "Linear Gaussian Kalman filter (numpy)",
+        }
+    )
 
 
 def cheatsheet():

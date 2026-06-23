@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exponential learning-rate decay over training steps."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_lr_exponential_schedule"]
@@ -34,7 +36,9 @@ def geron_lr_exponential_schedule(eta0, gamma, t):
     n = int(eta0) if eta0.ndim == 0 else len(eta0)
     result = float(np.mean(eta0))
     se = float(np.std(eta0, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Exponential learning-rate decay over training steps"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Exponential learning-rate decay over training steps"}
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.msdmc -- Mahalanobis distance matrix"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msdmc import dist_mahal
 

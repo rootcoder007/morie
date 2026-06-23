@@ -10,7 +10,14 @@ from scipy import stats as sp
 from morie.fn._containers import DIFResult
 
 
-def dif_irt_based(responses: np.ndarray | pd.DataFrame, group: np.ndarray | list, cdf=None, *, item_names: list[str] | None = None, alpha: float = 0.05) -> DIFResult:
+def dif_irt_based(
+    responses: np.ndarray | pd.DataFrame,
+    group: np.ndarray | list,
+    cdf=None,
+    *,
+    item_names: list[str] | None = None,
+    alpha: float = 0.05,
+) -> DIFResult:
     """IRT-based DIF via likelihood ratio test.
 
     Compares item difficulty estimates between groups using a

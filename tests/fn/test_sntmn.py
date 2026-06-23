@@ -1,17 +1,21 @@
 """Tests for morie.fn.sntmn — mandatory minimum sentence."""
 
-import pytest
 import pandas as pd
-from morie.fn.sntmn import sentence_mandatory_min
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sntmn import sentence_mandatory_min
 
 
 class TestSentenceMandatoryMin:
-
     def test_returns_descriptive(self):
-        df = pd.DataFrame({"offense": ["A", "B", "A", "B"],
-                           "sentence_days": [30, 90, 60, 120],
-                           "mandatory_min_days": [30, 60, 30, 60]})
+        df = pd.DataFrame(
+            {
+                "offense": ["A", "B", "A", "B"],
+                "sentence_days": [30, 90, 60, 120],
+                "mandatory_min_days": [30, 60, 30, 60],
+            }
+        )
         result = sentence_mandatory_min(df)
         assert isinstance(result, DescriptiveResult)
 

@@ -1,8 +1,9 @@
 """Test gf2_matrix_add."""
+
 import numpy as np
-import pytest
-from morie.fn.gf2ad import gf2_matrix_add
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.gf2ad import gf2_matrix_add
 
 
 class TestGf2MatrixAdd:

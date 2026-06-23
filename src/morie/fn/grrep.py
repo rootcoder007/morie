@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Reparameterization: z = mu + sigma * eps, eps ~ N(0, I)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_reparameterization_trick"]
@@ -32,7 +34,14 @@ def geron_reparameterization_trick(mu, logvar):
     n = len(mu)
     result = float(np.mean(mu))
     se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Reparameterization: z = mu + sigma * eps, eps ~ N(0, I)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Reparameterization: z = mu + sigma * eps, eps ~ N(0, I)",
+        }
+    )
 
 
 def cheatsheet():

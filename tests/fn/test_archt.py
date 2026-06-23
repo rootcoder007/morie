@@ -1,6 +1,8 @@
 """Tests for morie.fn.archt -- ARCH(p)."""
+
 import numpy as np
 import pytest
+
 from morie.fn.archt import arch_fit
 
 
@@ -17,4 +19,5 @@ class TestARCH:
 
     def test_cheatsheet(self):
         from morie.fn.archt import cheatsheet
+
         assert isinstance(cheatsheet(), str)

@@ -1,7 +1,7 @@
 """Test early_stopping."""
-import numpy as np
-from morie.fn.earlm import early_stopping, earlm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.earlm import earlm, early_stopping
 
 
 class TestEarlyStopping:

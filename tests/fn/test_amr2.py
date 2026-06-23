@@ -1,5 +1,5 @@
 """Tests for morie.fn.amr2 — A-M R-squared."""
-import numpy as np
+
 from morie.fn.amr2 import amr2
 
 

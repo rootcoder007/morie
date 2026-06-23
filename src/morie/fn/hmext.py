@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Extra-trees: randomize thresholds per feature split for extra variance reduction."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_extra_trees"]
@@ -38,7 +40,14 @@ def geron_extra_trees(X, y, n_estimators, max_features, seed):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Extra-trees: randomize thresholds per feature split for extra variance reduction"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Extra-trees: randomize thresholds per feature split for extra variance reduction",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,7 @@
 """Tests for morie.fn.isomp."""
+
 import numpy as np
+
 from morie.fn.isomp import isomap
 
 
@@ -13,6 +15,7 @@ def test_isomp_smoke():
 
 def test_cheatsheet():
     from morie.fn.isomp import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

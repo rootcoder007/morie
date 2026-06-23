@@ -44,4 +44,4 @@ mdsex = convex_hull_mds
 
 
 def cheatsheet() -> str:
-    return 'convex_hull_mds({}) -> Convex hull per group in MDS space.'
+    return "convex_hull_mds({}) -> Convex hull per group in MDS space."

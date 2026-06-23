@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Omega-squared (less biased than η²)."""
 
-def omeg2(ss_between: float, df_between: int,
-           ms_within: float, ss_total: float) -> float:
+
+def omeg2(ss_between: float, df_between: int, ms_within: float, ss_total: float) -> float:
     """Omega-squared: less biased than η² for small samples.
 
     ω² = (SS_b − df_b × MS_w) / (SS_t + MS_w)

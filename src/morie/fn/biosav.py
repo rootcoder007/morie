@@ -70,4 +70,4 @@ biosav = biot_savart
 
 
 def cheatsheet() -> str:
-    return 'biot_savart({}) -> Biot-Savart magnetic field computation.'
+    return "biot_savart({}) -> Biot-Savart magnetic field computation."

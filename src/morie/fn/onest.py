@@ -93,12 +93,7 @@ def onest(
     if initial_estimate is None:
         initial_estimate = float(np.mean(mu1 - mu0))
 
-    ic = (
-        T * (Y - mu1) / ps
-        - (1 - T) * (Y - mu0) / (1 - ps)
-        + mu1 - mu0
-        - initial_estimate
-    )
+    ic = T * (Y - mu1) / ps - (1 - T) * (Y - mu0) / (1 - ps) + mu1 - mu0 - initial_estimate
 
     correction = float(np.mean(ic))
     ate = initial_estimate + correction
@@ -121,6 +116,7 @@ def onest(
 
 def _logistic_predict(X, y):
     from scipy import special
+
     beta = np.zeros(X.shape[1])
     for _ in range(25):
         p = special.expit(X @ beta)

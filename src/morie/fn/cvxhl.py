@@ -66,4 +66,4 @@ cvxhl = convex_hull
 
 
 def cheatsheet() -> str:
-    return 'convex_hull({}) -> 2-D convex hull via gift wrapping.'
+    return "convex_hull({}) -> 2-D convex hull via gift wrapping."

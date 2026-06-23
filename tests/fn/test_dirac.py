@@ -17,7 +17,7 @@ def test_rest_energy():
     m = 9.109e-31
     c = 299792458.0
     r = dirac(p=np.zeros(3), m=m)
-    assert r["energy"] == pytest.approx(m * c ** 2, rel=1e-10)
+    assert r["energy"] == pytest.approx(m * c**2, rel=1e-10)
 
 
 def test_spinor_length_4():

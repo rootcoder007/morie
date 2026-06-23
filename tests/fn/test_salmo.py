@@ -1,6 +1,7 @@
 """Test salmo."""
+
 import numpy as np
-import pytest
+
 from morie.fn.salmo import salmo
 
 

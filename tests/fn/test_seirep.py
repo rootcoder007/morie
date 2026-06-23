@@ -1,6 +1,7 @@
 """Tests for seirep.seir_compartmental."""
+
 import numpy as np
-import pytest
+
 from morie.fn.seirep import seir_compartmental
 
 
@@ -15,7 +16,7 @@ def test_seirep_basic():
     gamma = 1.0
     result = seir_compartmental(S, E, I, R, beta, sigma, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_seirep_edge():

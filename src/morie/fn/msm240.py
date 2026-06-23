@@ -1,6 +1,7 @@
 r"""Numbered display equation (2.1) from MVSML chapter 2.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_preprocessing_eq_2_1"]
@@ -40,7 +41,14 @@ def mvsml_preprocessing_eq_2_1(represented, by, random, variables, observed, whi
     n = len(represented)
     result = float(np.mean(represented))
     se = float(np.std(represented, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (2.1) from MVSML chapter 2."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (2.1) from MVSML chapter 2.",
+        }
+    )
 
 
 def cheatsheet():

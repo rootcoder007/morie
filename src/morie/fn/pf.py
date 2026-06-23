@@ -9,7 +9,9 @@ import numpy as np
 from scipy.stats import f as f_dist
 
 
-def pf(q: Union[float, np.ndarray], dfn: float, dfd: float, cdf=None, *, lower_tail: bool = True) -> Union[float, np.ndarray]:
+def pf(
+    q: Union[float, np.ndarray], dfn: float, dfd: float, cdf=None, *, lower_tail: bool = True
+) -> Union[float, np.ndarray]:
     """
     F-distribution cumulative distribution function.
 

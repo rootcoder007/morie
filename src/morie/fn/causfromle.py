@@ -1,6 +1,7 @@
 """VanderWeele-Ding E-value for unmeasured confounding."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_e_value"]
@@ -30,7 +31,9 @@ def causal_e_value(RR):
     n = len(RR)
     result = float(np.mean(RR))
     se = float(np.std(RR, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "VanderWeele-Ding E-value for unmeasured confounding"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "VanderWeele-Ding E-value for unmeasured confounding"}
+    )
 
 
 def cheatsheet():

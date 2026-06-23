@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Tests for morie.check_datasets — the dataset-availability auditor."""
+
 import morie
 from morie.data import DATASET_CATALOG, check_datasets
 
@@ -30,8 +31,7 @@ def test_check_datasets_top_level_export():
 def test_check_datasets_never_crashes_on_bad_cache(monkeypatch):
     # a misconfigured cache must not crash the auditor
     import morie.data as data
-    monkeypatch.setattr(
-        data, "cache_load",
-        lambda *a, **k: (_ for _ in ()).throw(PermissionError("denied")))
+
+    monkeypatch.setattr(data, "cache_load", lambda *a, **k: (_ for _ in ()).throw(PermissionError("denied")))
     res = check_datasets()
     assert res.payload["n_catalog"] == len(DATASET_CATALOG)

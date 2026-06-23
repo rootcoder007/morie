@@ -1,6 +1,7 @@
 """Tests for morie.fn.sutrn -- substance use trend."""
 
 import pytest
+
 from morie.fn.sutrn import substance_trend
 
 

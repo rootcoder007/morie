@@ -1,6 +1,7 @@
 """Tests for morie.fn.gbdcm -- GBD compare."""
 
 import pytest
+
 from morie.fn.gbdcm import gbd_compare
 
 

@@ -1,8 +1,12 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Leave-one-out jackknife estimates."""
 
-from typing import Sequence, Union, Callable
+from collections.abc import Callable, Sequence
+from typing import Union
+
 import numpy as np
+
+
 def jackone(x: Union[Sequence, np.ndarray], stat: Callable) -> np.ndarray:
     """Leave-one-out jackknife: stat applied to each n−1-subset.
 

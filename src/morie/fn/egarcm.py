@@ -1,6 +1,7 @@
 """Exponential GARCH (asymmetric)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["egarch_nelson"]

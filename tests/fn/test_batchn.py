@@ -1,5 +1,7 @@
 """Tests for batchn (batch normalization)."""
+
 import numpy as np
+
 from morie.fn.batchn import batch_norm
 
 
@@ -13,6 +15,7 @@ def test_batch_norm_basic():
 
 def test_cheatsheet():
     from morie.fn.batchn import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,7 +1,9 @@
 """Test rls_filter (rlsfl)."""
+
 import numpy as np
-from morie.fn.rlsfl import rls_filter, rlsfl
+
 from morie.fn._containers import SignalResult
+from morie.fn.rlsfl import rls_filter, rlsfl
 
 
 class TestRlsFilter:

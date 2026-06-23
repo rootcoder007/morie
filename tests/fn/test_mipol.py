@@ -1,6 +1,8 @@
 """Tests for morie.fn.mipol — multiple imputation pooling (Rubin's rules)."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mipol import mi_pool
 
 

@@ -78,4 +78,4 @@ damatt = damped_attenuation
 
 
 def cheatsheet() -> str:
-    return 'damatt() -> Model signal attenuation through a second-order damped system'
+    return "damatt() -> Model signal attenuation through a second-order damped system"

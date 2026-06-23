@@ -1,6 +1,7 @@
 """Tests for ebalw.entropy_balancing."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ebalw import entropy_balancing
 
 
@@ -11,7 +12,7 @@ def test_ebalw_basic():
     moments = np.random.default_rng(42).normal(0, 1, 100)
     result = entropy_balancing(X, T, moments)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ebalw_edge():

@@ -1,6 +1,7 @@
 """Test unstgr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.unstgr import unstgr
 
 

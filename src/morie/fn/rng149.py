@@ -1,6 +1,7 @@
 """Frequency-domain Wiener relation between PSD and CSD.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_wiener_frequency_relation"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_wiener_frequency_relation(W, S_xx, S_xd, omega):
     n = len(W)
     result = float(np.mean(W))
     se = float(np.std(W, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Frequency-domain Wiener relation between PSD and CSD."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Frequency-domain Wiener relation between PSD and CSD.",
+        }
+    )
 
 
 def cheatsheet():

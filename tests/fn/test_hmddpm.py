@@ -1,6 +1,7 @@
 """Tests for hmddpm.geron_ddpm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmddpm import geron_ddpm
 
 
@@ -13,7 +14,7 @@ def test_hmddpm_basic():
     lr = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_ddpm(X, T, beta_schedule, epochs, lr)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmddpm_edge():

@@ -1,5 +1,7 @@
 """Stochastic gradient descent update on mini-batch."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["sgd_update"]
@@ -33,7 +35,9 @@ def sgd_update(beta, batch_grads, eta):
     n = int(beta) if beta.ndim == 0 else len(beta)
     result = float(np.mean(beta))
     se = float(np.std(beta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Stochastic gradient descent update on mini-batch"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Stochastic gradient descent update on mini-batch"}
+    )
 
 
 def cheatsheet():

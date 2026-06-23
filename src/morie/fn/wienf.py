@@ -10,7 +10,9 @@ import numpy as np
 
 from ._containers import SignalResult
 
-__all__ = ['wienf']
+__all__ = ["wienf"]
+
+
 def wienf(
     x: np.ndarray,
     fs: float = 1.0,

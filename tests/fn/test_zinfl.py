@@ -1,7 +1,6 @@
 """Tests for morie.fn.zinfl — Zero-inflated Poisson."""
 
 import numpy as np
-import pytest
 
 from morie.fn.zinfl import zero_inflated_poisson
 

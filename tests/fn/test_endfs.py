@@ -1,6 +1,7 @@
 """Test endfs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.endfs import endfs
 
 

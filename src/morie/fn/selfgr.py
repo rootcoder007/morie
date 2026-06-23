@@ -1,6 +1,7 @@
 """SELFIES encoding (robust to mutation)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["selfies_encode"]

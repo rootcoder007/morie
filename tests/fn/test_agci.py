@@ -1,4 +1,5 @@
 """Tests for agci (Agresti-Coull interval)."""
+
 from morie.fn.agci import agresti_coull
 
 

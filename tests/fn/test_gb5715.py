@@ -1,6 +1,7 @@
 """Tests for gb5715.gibbons_wsrt_ci."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb5715 import gibbons_wsrt_ci
 
 
@@ -10,7 +11,7 @@ def test_gb5715_basic():
     alpha = 0.05
     result = gibbons_wsrt_ci(x, alpha)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb5715_edge():

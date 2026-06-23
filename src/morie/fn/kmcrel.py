@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """RAGAS context relevance: fraction of retrieved context sentences that are useful."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ragas_context_relevance"]
@@ -32,7 +34,14 @@ def kamath_ragas_context_relevance(context_sentences, relevance_labels):
     n = len(context_sentences)
     result = float(np.mean(context_sentences))
     se = float(np.std(context_sentences, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "RAGAS context relevance: fraction of retrieved context sentences that are useful"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "RAGAS context relevance: fraction of retrieved context sentences that are useful",
+        }
+    )
 
 
 def cheatsheet():

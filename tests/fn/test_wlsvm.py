@@ -1,6 +1,7 @@
 """Test wlsvm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wlsvm import wlsvm
 
 

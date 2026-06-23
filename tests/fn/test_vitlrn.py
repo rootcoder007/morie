@@ -1,6 +1,7 @@
 """Tests for vitlrn.vit_layer_norm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vitlrn import vit_layer_norm
 
 
@@ -11,7 +12,7 @@ def test_vitlrn_basic():
     beta = 0.8
     result = vit_layer_norm(x, gamma, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_vitlrn_edge():

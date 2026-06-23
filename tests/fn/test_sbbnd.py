@@ -1,6 +1,8 @@
 """Tests for sbbnd."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sbbnd import sbbnd
 
 
@@ -28,4 +30,5 @@ def test_sbbnd_no_data():
 
 def test_sbbnd_alias():
     from morie.fn.sbbnd import sbbnd
+
     assert sbbnd is sbbnd

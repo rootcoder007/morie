@@ -1,6 +1,7 @@
 """Tests for groebn.groebner."""
+
 import numpy as np
-import pytest
+
 from morie.fn.groebn import groebner
 
 
@@ -10,7 +11,7 @@ def test_groebn_basic():
     order = 4
     result = groebner(polys, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_groebn_edge():

@@ -1,6 +1,7 @@
 """Tests for morie.fn.ebmix -- Empirical Bayes mixture."""
 
 import numpy as np
+
 from morie.fn.ebmix import eb_mixture
 
 

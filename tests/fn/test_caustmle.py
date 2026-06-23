@@ -1,6 +1,7 @@
 """Tests for caustmle.causal_tmle_targeted."""
+
 import numpy as np
-import pytest
+
 from morie.fn.caustmle import causal_tmle_targeted
 
 
@@ -13,7 +14,7 @@ def test_caustmle_basic():
     Q0 = np.random.default_rng(42).normal(0, 1, 100)
     result = causal_tmle_targeted(y, T, ps, Q1, Q0)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_caustmle_edge():

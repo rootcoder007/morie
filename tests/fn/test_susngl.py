@@ -1,6 +1,7 @@
 """Tests for morie.fn.susngl -- single-use risk."""
 
 import pytest
+
 from morie.fn.susngl import single_use_risk
 
 

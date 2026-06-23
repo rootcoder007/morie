@@ -1,7 +1,7 @@
 """Tests for morie.fn.pssim."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pssim import pssim
 
 

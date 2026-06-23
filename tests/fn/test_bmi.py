@@ -1,12 +1,9 @@
 """Tests for morie.fn.bmi — Bayesian measurement invariance."""
 
-import numpy as np
-import pytest
 from morie.fn.bmi import bayesian_mi
 
 
 class TestBayesianMi:
-
     def test_returns_dict(self, mapq_df):
         structure = {"EE": [f"EE{i}" for i in range(1, 6)]}
         group = mapq_df["gender"].values

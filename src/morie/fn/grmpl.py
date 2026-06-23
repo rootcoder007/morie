@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """2D max pooling over kxk windows with stride s."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_max_pooling"]
@@ -34,7 +36,9 @@ def geron_max_pooling(X, k, stride):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "2D max pooling over kxk windows with stride s"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "2D max pooling over kxk windows with stride s"}
+    )
 
 
 def cheatsheet():

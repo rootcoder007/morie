@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """CrowS-Pairs: pseudo-log-likelihood preference for stereotyping sentence in minimal pairs."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_crowspairs_bias"]
@@ -32,7 +34,14 @@ def kamath_crowspairs_bias(stereo_pll, anti_pll):
     n = len(stereo_pll)
     result = float(np.mean(stereo_pll))
     se = float(np.std(stereo_pll, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "CrowS-Pairs: pseudo-log-likelihood preference for stereotyping sentence in minimal pairs"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "CrowS-Pairs: pseudo-log-likelihood preference for stereotyping sentence in minimal pairs",
+        }
+    )
 
 
 def cheatsheet():

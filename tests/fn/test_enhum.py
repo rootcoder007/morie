@@ -1,6 +1,7 @@
 """Test enhum."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enhum import enhum
 
 

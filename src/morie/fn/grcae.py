@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Convolutional autoencoder: conv encoder + transposed-conv decoder."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_convolutional_autoencoder"]
@@ -34,7 +36,14 @@ def geron_convolutional_autoencoder(x, encoder_weights, decoder_weights):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Convolutional autoencoder: conv encoder + transposed-conv decoder"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Convolutional autoencoder: conv encoder + transposed-conv decoder",
+        }
+    )
 
 
 def cheatsheet():

@@ -11,7 +11,17 @@ from scipy import stats
 from morie.fn._containers import OtDmlR
 
 
-def otdml(df: pd.DataFrame, outcome: str = "Y", treatment: str = "D", covariates: list[str] | None = None, cdf=None, *, cluster: str | None = None, n_folds: int = 3, seed: int = 123) -> OtDmlR:
+def otdml(
+    df: pd.DataFrame,
+    outcome: str = "Y",
+    treatment: str = "D",
+    covariates: list[str] | None = None,
+    cdf=None,
+    *,
+    cluster: str | None = None,
+    n_folds: int = 3,
+    seed: int = 123,
+) -> OtDmlR:
     """Run DML IRM (ATE/ATT) on OTIS data.
 
     Uses Frisch-Waugh-Lovell partialling out with cross-fitting.

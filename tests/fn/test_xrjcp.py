@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrjcp -- Join count permutation test"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrjcp import join_count_perm
 

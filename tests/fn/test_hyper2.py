@@ -1,6 +1,7 @@
 """Tests for hyper2.hyperparam_optim_gp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hyper2 import hyperparam_optim_gp
 
 
@@ -11,7 +12,7 @@ def test_hyper2_basic():
     prior = np.random.default_rng(42).normal(0, 1, 100)
     result = hyperparam_optim_gp(X, y, prior)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hyper2_edge():

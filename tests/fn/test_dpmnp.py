@@ -1,6 +1,7 @@
 """Tests for dpmnp.dp_minmax."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpmnp import dp_minmax
 
 
@@ -10,7 +11,7 @@ def test_dpmnp_basic():
     epsilon = 1e-6
     result = dp_minmax(x, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpmnp_edge():

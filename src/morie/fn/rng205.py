@@ -1,6 +1,7 @@
 """Cross-spectral density (CSD) as the Fourier transform of the CCF.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_csd_from_ccf"]
@@ -38,7 +39,14 @@ def rangayyan_ch4_csd_from_ccf(theta_xy, X, Y, f, tau):
     n = len(theta_xy)
     result = float(np.mean(theta_xy))
     se = float(np.std(theta_xy, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cross-spectral density (CSD) as the Fourier transform of the CCF."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Cross-spectral density (CSD) as the Fourier transform of the CCF.",
+        }
+    )
 
 
 def cheatsheet():

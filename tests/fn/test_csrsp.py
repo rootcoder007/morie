@@ -1,6 +1,7 @@
 """Test csrsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csrsp import csrsp
 
 

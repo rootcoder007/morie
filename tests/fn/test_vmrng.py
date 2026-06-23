@@ -1,6 +1,7 @@
 """Test vmrng."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmrng import vmrng
 
 

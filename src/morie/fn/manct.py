@@ -1,6 +1,7 @@
 """Add continuity correction c to zero cells."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_continuity_correction"]
@@ -38,7 +39,9 @@ def ma_continuity_correction(a, b, c, d, cc):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Add continuity correction c to zero cells"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Add continuity correction c to zero cells"}
+    )
 
 
 def cheatsheet():

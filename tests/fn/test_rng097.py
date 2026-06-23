@@ -1,6 +1,7 @@
 """Tests for rng097.rangayyan_ch3_ma_8point."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng097 import rangayyan_ch3_ma_8point
 
 
@@ -10,7 +11,7 @@ def test_rng097_basic():
     n = 100
     result = rangayyan_ch3_ma_8point(x, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng097_edge():

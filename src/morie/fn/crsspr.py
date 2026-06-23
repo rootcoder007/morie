@@ -1,10 +1,13 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cross product of centered vectors."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
-def crsspr(x: Union[Sequence, np.ndarray],
-           y: Union[Sequence, np.ndarray]) -> float:
+
+
+def crsspr(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]) -> float:
     """Σᵢ (xᵢ − x̄)(yᵢ − ȳ) -- cross-product of centered series.
 
     Numerator of covariance and Pearson r.

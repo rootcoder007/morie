@@ -1,6 +1,7 @@
 """Tests for morie.fn.poppyr -- population pyramid."""
 
 import numpy as np
+
 from morie.fn.poppyr import population_pyramid
 
 

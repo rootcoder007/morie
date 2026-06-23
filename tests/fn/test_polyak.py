@@ -1,6 +1,7 @@
 """Tests for polyak.polyak_target."""
+
 import numpy as np
-import pytest
+
 from morie.fn.polyak import polyak_target
 
 
@@ -11,7 +12,7 @@ def test_polyak_basic():
     tau = 0.1
     result = polyak_target(theta, theta_target, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_polyak_edge():

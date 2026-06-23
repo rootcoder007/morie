@@ -1,6 +1,7 @@
 """Doubly-stochastic Sinkhorn-Knopp projection."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_doubly_stoch_proj"]
@@ -32,7 +33,9 @@ def ot_doubly_stoch_proj(K, max_iter):
     n = len(K)
     result = float(np.mean(K))
     se = float(np.std(K, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Doubly-stochastic Sinkhorn-Knopp projection"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Doubly-stochastic Sinkhorn-Knopp projection"}
+    )
 
 
 def cheatsheet():

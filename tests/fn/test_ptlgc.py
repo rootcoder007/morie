@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptlgc -- Log-Gaussian Cox process"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptlgc import log_gaussian_cox
 

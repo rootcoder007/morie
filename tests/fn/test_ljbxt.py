@@ -1,6 +1,7 @@
 """Tests for morie.fn.ljbxt -- Ljung-Box test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ljbxt import ljung_box
 
 
@@ -22,4 +23,5 @@ class TestLjungBox:
 
     def test_cheatsheet(self):
         from morie.fn.ljbxt import cheatsheet
+
         assert isinstance(cheatsheet(), str)

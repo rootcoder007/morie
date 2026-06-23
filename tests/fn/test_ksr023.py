@@ -1,6 +1,7 @@
 """Tests for ksr023.kosorok_ch1_cox_estimating_equation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr023 import kosorok_ch1_cox_estimating_equation
 
 
@@ -14,7 +15,7 @@ def test_ksr023_basic():
     n = 100
     result = kosorok_ch1_cox_estimating_equation(t, beta, Z, Y, N, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr023_edge():

@@ -1,6 +1,7 @@
 """Tests for bndpl.bnp_density_pl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndpl import bnp_density_pl
 
 
@@ -11,7 +12,7 @@ def test_bndpl_basic():
     alpha = 0.05
     result = bnp_density_pl(y, tree_depth, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndpl_edge():

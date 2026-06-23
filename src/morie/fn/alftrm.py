@@ -1,6 +1,7 @@
 """AlphaFold triangular multiplicative update."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphafold_triangle_mult"]
@@ -32,7 +33,9 @@ def alphafold_triangle_mult(z, direction):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AlphaFold triangular multiplicative update"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "AlphaFold triangular multiplicative update"}
+    )
 
 
 def cheatsheet():

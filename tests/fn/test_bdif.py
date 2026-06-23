@@ -2,11 +2,11 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.bdif import bayesian_dif
 
 
 class TestBayesianDif:
-
     def test_returns_dict(self, mapq_binary_df, rng):
         group = rng.choice([0, 1], len(mapq_binary_df))
         result = bayesian_dif(mapq_binary_df, group, n_iter=100)

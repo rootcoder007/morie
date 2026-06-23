@@ -1,6 +1,7 @@
 """Tests for rng132.rangayyan_ch3_iir_difference_eq_general."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng132 import rangayyan_ch3_iir_difference_eq_general
 
 
@@ -14,7 +15,7 @@ def test_rng132_basic():
     n = 100
     result = rangayyan_ch3_iir_difference_eq_general(x, y, b_k, a_k, N, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng132_edge():

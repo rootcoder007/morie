@@ -1,6 +1,7 @@
 """Tests for smplep.sample_overlap."""
+
 import numpy as np
-import pytest
+
 from morie.fn.smplep import sample_overlap
 
 
@@ -11,7 +12,7 @@ def test_smplep_basic():
     overlap_indicator = np.random.default_rng(42).normal(0, 1, 100)
     result = sample_overlap(frame_a, frame_b, overlap_indicator)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_smplep_edge():

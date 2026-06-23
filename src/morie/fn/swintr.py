@@ -1,6 +1,7 @@
 """Swin shifted-window attention."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["swin_transformer"]

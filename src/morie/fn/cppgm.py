@@ -73,4 +73,4 @@ cppgm = changepoint_poisson
 
 
 def cheatsheet() -> str:
-    return 'changepoint_poisson({}) -> Poisson change-point model.'
+    return "changepoint_poisson({}) -> Poisson change-point model."

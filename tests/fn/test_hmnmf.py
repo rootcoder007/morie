@@ -1,6 +1,7 @@
 """Tests for hmnmf.geron_nmf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmnmf import geron_nmf
 
 
@@ -10,7 +11,7 @@ def test_hmnmf_basic():
     n_components = 3
     result = geron_nmf(X, n_components)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmnmf_edge():

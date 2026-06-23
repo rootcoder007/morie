@@ -1,5 +1,7 @@
 """Tests for Bayesian hierarchical spatial model."""
+
 import numpy as np
+
 from morie.fn.sgbhr import sgbhr
 
 
@@ -17,6 +19,7 @@ def test_sgbhr_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgbhr import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

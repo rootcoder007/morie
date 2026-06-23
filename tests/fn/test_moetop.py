@@ -1,6 +1,7 @@
 """Tests for moetop.moe_topk_routing."""
+
 import numpy as np
-import pytest
+
 from morie.fn.moetop import moe_topk_routing
 
 
@@ -13,7 +14,7 @@ def test_moetop_basic():
     k = 5
     result = moe_topk_routing(y, x, W_g, experts, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_moetop_edge():

@@ -1,6 +1,8 @@
 """Tests for morie.fn.theil — Theil-Sen estimator."""
+
 import numpy as np
 import pytest
+
 from morie.fn.theil import theil_sen
 
 

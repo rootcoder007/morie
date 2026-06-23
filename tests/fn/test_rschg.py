@@ -1,6 +1,7 @@
 """Test rschg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rschg import rschg
 
 

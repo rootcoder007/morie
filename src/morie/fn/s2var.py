@@ -1,7 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Unbiased sample variance -- denominator (n−1)."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
 
 import numpy as np
 

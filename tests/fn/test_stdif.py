@@ -1,5 +1,7 @@
 """Tests for morie.fn.stdif."""
+
 import numpy as np
+
 from morie.fn.stdif import spatial_did
 
 
@@ -9,7 +11,7 @@ def test_stdif_smoke():
         y=rng.uniform(-80, -75, size=20),
         treated=rng.integers(0, 2, size=20).astype(float),
         post=rng.integers(0, 2, size=20).astype(float),
-        coords=rng.uniform(size=(20, 2))
+        coords=rng.uniform(size=(20, 2)),
     )
     assert result is not None
     assert hasattr(result, "name")
@@ -18,6 +20,7 @@ def test_stdif_smoke():
 
 def test_cheatsheet():
     from morie.fn.stdif import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

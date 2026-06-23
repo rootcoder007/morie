@@ -1,7 +1,8 @@
 """Tests for flda.py - Fisher Linear Discriminant Analysis."""
+
 import numpy as np
-import pytest
-from morie.fn.flda import flda_fn, flda
+
+from morie.fn.flda import flda, flda_fn
 
 
 def _two_class_data():
@@ -9,7 +10,7 @@ def _two_class_data():
     X0 = rng.standard_normal((30, 3)) + np.array([0, 0, 0])
     X1 = rng.standard_normal((30, 3)) + np.array([3, 3, 3])
     X = np.vstack([X0, X1])
-    y = np.array([0]*30 + [1]*30)
+    y = np.array([0] * 30 + [1] * 30)
     return X, y
 
 

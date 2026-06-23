@@ -1,12 +1,9 @@
 """Tests for morie.fn.bcfa — Bayesian CFA."""
 
-import numpy as np
-import pytest
 from morie.fn.bcfa import bayesian_cfa
 
 
 class TestBayesianCfa:
-
     def test_returns_dict(self, mapq_df):
         items = [c for c in mapq_df.columns if c not in ("gender", "age_group")]
         structure = {

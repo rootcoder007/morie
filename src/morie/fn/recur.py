@@ -9,7 +9,16 @@ from scipy.stats import norm
 __all__ = ["recur"]
 
 
-def recur(start: np.ndarray, stop: np.ndarray, event: np.ndarray, X: np.ndarray, cdf=None, *, max_iter: int = 100, tol: float = 1e-8) -> dict:
+def recur(
+    start: np.ndarray,
+    stop: np.ndarray,
+    event: np.ndarray,
+    X: np.ndarray,
+    cdf=None,
+    *,
+    max_iter: int = 100,
+    tol: float = 1e-8,
+) -> dict:
     """Andersen-Gill model for recurrent events.
 
     Extension of Cox model for counting process data with

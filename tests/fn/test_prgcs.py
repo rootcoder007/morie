@@ -1,8 +1,9 @@
 """Tests for morie.fn.prgcs — program cost savings."""
 
 import pytest
-from morie.fn.prgcs import program_cost_savings
+
 from morie.fn._containers import ESRes
+from morie.fn.prgcs import program_cost_savings
 
 
 class TestProgramCostSavings:

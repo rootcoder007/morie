@@ -1,6 +1,7 @@
 """Tests for morie.fn.phrx — prescription pattern analysis."""
+
 import numpy as np
-import pytest
+
 from morie.fn.phrx import prescription_patterns
 
 

@@ -1,6 +1,7 @@
 """Tests for rgpowerl.rangayyan_powerline_removal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgpowerl import rangayyan_powerline_removal
 
 
@@ -11,7 +12,7 @@ def test_rgpowerl_basic():
     powerline_freq = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_powerline_removal(ecg, fs, powerline_freq)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgpowerl_edge():

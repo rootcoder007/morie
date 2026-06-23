@@ -1,6 +1,7 @@
 """Tests for gb738.gibbons_chernoff_savage."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb738 import gibbons_chernoff_savage
 
 
@@ -12,7 +13,7 @@ def test_gb738_basic():
     J = 20
     result = gibbons_chernoff_savage(T_N, m, n, J)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb738_edge():

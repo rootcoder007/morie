@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Feature extraction for BCI from EEG (event-related desynchronization/synchronization)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_feature_extract_bci"]
@@ -38,7 +40,14 @@ def rangayyan_feature_extract_bci(eeg, fs, ref_window, active_window, band):
     n = int(eeg) if eeg.ndim == 0 else len(eeg)
     result = float(np.mean(eeg))
     se = float(np.std(eeg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Feature extraction for BCI from EEG (event-related desynchronization/synchronization)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Feature extraction for BCI from EEG (event-related desynchronization/synchronization)",
+        }
+    )
 
 
 def cheatsheet():

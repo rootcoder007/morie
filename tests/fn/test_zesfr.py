@@ -1,7 +1,6 @@
 """Tests for morie.fn.zesfr -- Spatial frailty survival model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zesfr import spatial_frailty
 

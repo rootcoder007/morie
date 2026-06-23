@@ -1,6 +1,7 @@
 """Tests for sobolI.sobol_indices."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sobolI import sobol_indices
 
 
@@ -11,7 +12,7 @@ def test_sobolI_basic():
     N = 100
     result = sobol_indices(model, input_dist, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sobolI_edge():

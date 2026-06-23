@@ -39,4 +39,5 @@ def test_hr_positive(recur_data):
 
 def test_cheatsheet():
     from morie.fn.recur import cheatsheet
+
     assert "andersen" in cheatsheet().lower()

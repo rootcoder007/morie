@@ -1,7 +1,7 @@
 """Tests for morie.fn.pldyn."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pldyn import pldyn
 
 

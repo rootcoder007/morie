@@ -1,6 +1,7 @@
 """Tests for timesnet.timesnet."""
+
 import numpy as np
-import pytest
+
 from morie.fn.timesnet import timesnet
 
 
@@ -10,7 +11,7 @@ def test_timesnet_basic():
     top_k = np.random.default_rng(42).normal(0, 1, 100)
     result = timesnet(X, top_k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_timesnet_edge():

@@ -32,9 +32,7 @@ def test_run_propensity_ipw_analysis_returns_expected_tables():
 @pytest.mark.filterwarnings(
     "ignore:Perfect separation or prediction detected, parameter may not be identified:statsmodels.genmod.generalized_linear_model.PerfectSeparationWarning"
 )
-@pytest.mark.filterwarnings(
-    "ignore:divide by zero encountered in scalar divide:RuntimeWarning"
-)
+@pytest.mark.filterwarnings("ignore:divide by zero encountered in scalar divide:RuntimeWarning")
 def test_run_ebac_selection_ipw_analysis_returns_key_outputs():
     frame = pd.DataFrame(
         {

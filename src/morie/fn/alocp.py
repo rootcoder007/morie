@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """OpenCLIP contrastive objective -- scaled dot-product between normalized text + image emb."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_openclip_contrastive"]
@@ -34,7 +36,14 @@ def alammar_openclip_contrastive(I_emb, T_emb, tau):
     n = len(I_emb)
     result = float(np.mean(I_emb))
     se = float(np.std(I_emb, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "OpenCLIP contrastive objective -- scaled dot-product between normalized text + image emb"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "OpenCLIP contrastive objective -- scaled dot-product between normalized text + image emb",
+        }
+    )
 
 
 def cheatsheet():

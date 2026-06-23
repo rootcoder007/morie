@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsvor -- Voronoi polygon areas"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsvor import voronoi_areas
 

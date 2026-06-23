@@ -1,13 +1,11 @@
 """Tests for morie.fn.cbgen — codebook generation."""
 
 import numpy as np
-import pytest
 
 from morie.fn.cbgen import codebook_generate
 
 
 class TestCodebookGenerate:
-
     def test_returns_result(self):
         data = np.random.default_rng(42).standard_normal((100, 4))
         res = codebook_generate(data, k=8)

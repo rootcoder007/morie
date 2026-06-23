@@ -1,6 +1,7 @@
 """Test rsatm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsatm import rsatm
 
 

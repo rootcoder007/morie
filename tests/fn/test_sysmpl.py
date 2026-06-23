@@ -1,6 +1,7 @@
 """Tests for sysmpl.systematic_sample."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sysmpl import systematic_sample
 
 
@@ -10,7 +11,7 @@ def test_sysmpl_basic():
     n = 100
     result = systematic_sample(frame, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sysmpl_edge():

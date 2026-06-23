@@ -1,6 +1,7 @@
 """Tests for rgfir.rangayyan_fir_filter."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgfir import rangayyan_fir_filter
 
 
@@ -11,7 +12,7 @@ def test_rgfir_basic():
     order = 4
     result = rangayyan_fir_filter(x, cutoff, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgfir_edge():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrcar -- CAR model ML"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrcar import car_ml
 

@@ -1,6 +1,7 @@
 """Test svdsi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.svdsi import svdsi
 
 

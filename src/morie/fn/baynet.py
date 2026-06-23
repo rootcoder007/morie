@@ -1,6 +1,7 @@
 """Bayesian network inference (variable elimination)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bayes_network"]
@@ -36,7 +37,9 @@ def bayes_network(graph, cpts, evidence, query):
     n = len(graph)
     result = float(np.mean(graph))
     se = float(np.std(graph, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian network inference (variable elimination)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bayesian network inference (variable elimination)"}
+    )
 
 
 def cheatsheet():

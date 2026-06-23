@@ -1,6 +1,8 @@
 """Tests for insft.py - Instantaneous frequency."""
+
 import numpy as np
-from morie.fn.insft import instantaneous_freq, insft
+
+from morie.fn.insft import insft, instantaneous_freq
 
 
 def test_inst_freq_returns_result():

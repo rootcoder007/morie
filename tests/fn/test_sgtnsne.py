@@ -1,6 +1,7 @@
 """Tests for sgtnsne.sgt_isomap."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sgtnsne import sgt_isomap
 
 
@@ -11,7 +12,7 @@ def test_sgtnsne_basic():
     dim = np.random.default_rng(42).normal(0, 1, 100)
     result = sgt_isomap(X, k, dim)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sgtnsne_edge():

@@ -1,6 +1,7 @@
 r"""Conditional probability that defines an autoregressive language model: distribution over the next token given an L-token context.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch2_lm_next_token"]
@@ -32,7 +33,14 @@ def burkov_lm_ch2_lm_next_token(t_next, s):
     n = len(t_next)
     result = float(np.mean(t_next))
     se = float(np.std(t_next, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Conditional probability that defines an autoregressive language model: distribution over the next token given an L-token context."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Conditional probability that defines an autoregressive language model: distribution over the next token given an L-token context.",
+        }
+    )
 
 
 def cheatsheet():

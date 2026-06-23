@@ -76,4 +76,4 @@ allreg = allometric_regression
 
 
 def cheatsheet() -> str:
-    return 'allometric_regression({}) -> Allometric scaling regression.'
+    return "allometric_regression({}) -> Allometric scaling regression."

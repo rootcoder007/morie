@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgorv -- Ordinary kriging variance"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgorv import ok_variance
 

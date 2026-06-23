@@ -71,6 +71,7 @@ def cvtml(
         Xd_val = np.column_stack([X_val, np.ones(n_val)])
         beta_ps = _logistic_fit(Xd_tr, T_tr)
         from scipy.special import expit
+
         ps_val = expit(Xd_val @ beta_ps)
         ps_val = np.clip(ps_val, ps_trim, 1.0 - ps_trim)
 
@@ -106,6 +107,7 @@ def cvtml(
 
 def _logistic_fit(X, y):
     from scipy.special import expit
+
     beta = np.zeros(X.shape[1])
     for _ in range(25):
         p = expit(X @ beta)
@@ -121,6 +123,7 @@ def _logistic_fit(X, y):
 
 def _logistic_predict(X, y):
     from scipy.special import expit
+
     return expit(X @ _logistic_fit(X, y))
 
 

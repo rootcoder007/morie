@@ -1,6 +1,7 @@
 """2D compensatory multidimensional IRT."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mirt_2d_compensatory"]

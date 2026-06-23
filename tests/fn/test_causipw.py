@@ -1,6 +1,7 @@
 """Tests for causipw.causal_ipw_truncated."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causipw import causal_ipw_truncated
 
 
@@ -12,7 +13,7 @@ def test_causipw_basic():
     alpha = 0.05
     result = causal_ipw_truncated(treat, y, ps, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causipw_edge():

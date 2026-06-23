@@ -1,6 +1,5 @@
 """Tests for morie.fn.plnrm — lognormal CDF."""
 
-import numpy as np
 import pytest
 
 from morie.fn.plnrm import plnrm

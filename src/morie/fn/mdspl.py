@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Classical MDS for spatial map of legislators (Armstrong Ch 7)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["mds_spatial_map", "mdspl"]
@@ -30,45 +32,54 @@ def mds_spatial_map(x, k: int = 2):
         x = x.reshape(-1, 1)
     n = x.shape[0]
     if n < 2:
-        return RichResult(payload={"coords": np.zeros((n, k)),
-                                   "eigenvalues": np.zeros(k),
-                                   "stress": np.nan, "k": k, "n": n,
-                                   "method": "mds_classical"})
+        return RichResult(
+            payload={
+                "coords": np.zeros((n, k)),
+                "eigenvalues": np.zeros(k),
+                "stress": np.nan,
+                "k": k,
+                "n": n,
+                "method": "mds_classical",
+            }
+        )
     # Decide: distance matrix vs configuration
-    if x.shape[0] == x.shape[1] \
-            and np.allclose(x, x.T, atol=1e-9) \
-            and np.allclose(np.diag(x), 0):
+    if x.shape[0] == x.shape[1] and np.allclose(x, x.T, atol=1e-9) and np.allclose(np.diag(x), 0):
         D = x
     else:
         diff = x[:, None, :] - x[None, :, :]
-        D = np.sqrt(np.sum(diff ** 2, axis=-1))
-    D2 = D ** 2
+        D = np.sqrt(np.sum(diff**2, axis=-1))
+    D2 = D**2
     J = np.eye(n) - np.ones((n, n)) / n
     B = -0.5 * J @ D2 @ J
     eigvals, eigvecs = np.linalg.eigh((B + B.T) / 2)
     # Sort descending
     idx = np.argsort(eigvals)[::-1]
-    eigvals = eigvals[idx]; eigvecs = eigvecs[:, idx]
+    eigvals = eigvals[idx]
+    eigvecs = eigvecs[:, idx]
     k_eff = min(k, n - 1)
     pos = np.maximum(eigvals[:k_eff], 0)
     coords = eigvecs[:, :k_eff] * np.sqrt(pos)
     # Stress-1
-    Dh = np.sqrt(np.sum((coords[:, None, :] - coords[None, :, :]) ** 2,
-                        axis=-1))
-    denom = float(np.sum(D ** 2))
-    stress = float(np.sqrt(np.sum((D - Dh) ** 2) / denom)) if denom > 0 \
-        else np.nan
+    Dh = np.sqrt(np.sum((coords[:, None, :] - coords[None, :, :]) ** 2, axis=-1))
+    denom = float(np.sum(D**2))
+    stress = float(np.sqrt(np.sum((D - Dh) ** 2) / denom)) if denom > 0 else np.nan
     return RichResult(
         title="Classical MDS (Torgerson)",
-        summary_lines=[("Stress-1", stress), ("k", k_eff), ("n", n),
-                       ("Top eigenvalues",
-                        list(np.round(eigvals[:min(5, n)], 4)))],
-        interpretation=(
-            f"k={k_eff}-dim MDS map; Stress-1 = {stress:.4f} "
-            f"(<0.20 = good fit, Kruskal 1964)."),
-        payload={"coords": coords, "eigenvalues": eigvals,
-                 "stress": stress, "k": int(k_eff), "n": int(n),
-                 "method": "mds_classical"},
+        summary_lines=[
+            ("Stress-1", stress),
+            ("k", k_eff),
+            ("n", n),
+            ("Top eigenvalues", list(np.round(eigvals[: min(5, n)], 4))),
+        ],
+        interpretation=(f"k={k_eff}-dim MDS map; Stress-1 = {stress:.4f} (<0.20 = good fit, Kruskal 1964)."),
+        payload={
+            "coords": coords,
+            "eigenvalues": eigvals,
+            "stress": stress,
+            "k": int(k_eff),
+            "n": int(n),
+            "method": "mds_classical",
+        },
     )
 
 

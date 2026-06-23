@@ -1,6 +1,7 @@
 """Test sawdl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sawdl import sawdl
 
 

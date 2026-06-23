@@ -6,6 +6,7 @@ the linear head by closed-form ridge on the pooled context vector. This
 gives a NumPy-only, reproducible, sub-second implementation while still
 returning the per-position attention map for inspection.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -21,8 +22,9 @@ def _softmax(x, axis=-1):
     return e / e.sum(axis=axis, keepdims=True)
 
 
-def transformer_genomic(x, y, markers, d_model: int = 8, lam: float = 1.0,
-                        seed: int = 0, deterministic_seed: int | None = None):
+def transformer_genomic(
+    x, y, markers, d_model: int = 8, lam: float = 1.0, seed: int = 0, deterministic_seed: int | None = None
+):
     """Single-head self-attention with random key/query/value projections,
     followed by mean-pooling and ridge regression.
 
@@ -59,6 +61,7 @@ def transformer_genomic(x, y, markers, d_model: int = 8, lam: float = 1.0,
     """
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("trfge", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -68,7 +71,8 @@ def transformer_genomic(x, y, markers, d_model: int = 8, lam: float = 1.0,
     if M.ndim != 2 or M.shape[0] != n:
         raise ValueError("`markers` must be (n × L)")
     L = M.shape[1]
-    M_mean = M.mean(axis=0); M_sd = M.std(axis=0)
+    M_mean = M.mean(axis=0)
+    M_sd = M.std(axis=0)
     M_sd = np.where(M_sd > 0, M_sd, 1.0)
     Ms = (M - M_mean) / M_sd
     # Random fixed projections (no training, gives reproducible features)
@@ -88,8 +92,10 @@ def transformer_genomic(x, y, markers, d_model: int = 8, lam: float = 1.0,
     context = np.zeros((n, d_model))
     attentions = np.zeros((n, L, L))
     for i in range(n):
-        E = Ms[i].reshape(L, 1) @ W_emb + pe   # (L, d)
-        Q = E @ W_Q; K = E @ W_K; V = E @ W_V
+        E = Ms[i].reshape(L, 1) @ W_emb + pe  # (L, d)
+        Q = E @ W_Q
+        K = E @ W_K
+        V = E @ W_V
         scores = Q @ K.T / np.sqrt(d_model)
         A = _softmax(scores, axis=-1)
         attentions[i] = A
@@ -107,7 +113,7 @@ def transformer_genomic(x, y, markers, d_model: int = 8, lam: float = 1.0,
     beta = np.linalg.solve(A_mat, feats.T @ y)
     y_hat = feats @ beta
     resid = y - y_hat
-    se = float(np.sqrt(np.mean(resid ** 2)))
+    se = float(np.sqrt(np.mean(resid**2)))
     return RichResult(
         title="Transformer (1-head self-attention) genomic predictor",
         summary_lines=[
@@ -127,9 +133,11 @@ def transformer_genomic(x, y, markers, d_model: int = 8, lam: float = 1.0,
             "n": n,
             "method": "Transformer 1-head random-projection + ridge head",
         },
-        warnings=["Random fixed projections (no attention training): "
-                  "captures positional+linear structure; for production "
-                  "trainable transformers use torch/keras."],
+        warnings=[
+            "Random fixed projections (no attention training): "
+            "captures positional+linear structure; for production "
+            "trainable transformers use torch/keras."
+        ],
     )
 
 

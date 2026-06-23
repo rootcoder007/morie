@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.hales import health_adjusted_life_expectancy
 
 
@@ -40,6 +41,4 @@ class TestHALE:
 
     def test_invalid_prevalence_raises(self):
         with pytest.raises(ValueError):
-            health_adjusted_life_expectancy(
-                np.array([0]), np.array([80]), np.array([1.5]), np.array([0.5])
-            )
+            health_adjusted_life_expectancy(np.array([0]), np.array([80]), np.array([1.5]), np.array([0.5]))

@@ -1,6 +1,8 @@
 """Tests for stkmap."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stkmap import stkmap
 
 
@@ -28,4 +30,5 @@ def test_stkmap_no_data():
 
 def test_stkmap_alias():
     from morie.fn.stkmap import stkmap
+
     assert stkmap is stkmap

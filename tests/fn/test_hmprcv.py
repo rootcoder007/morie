@@ -1,6 +1,7 @@
 """Tests for hmprcv.geron_perceiver."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmprcv import geron_perceiver
 
 
@@ -11,7 +12,7 @@ def test_hmprcv_basic():
     n_iter = 50
     result = geron_perceiver(x, latents, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmprcv_edge():

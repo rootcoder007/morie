@@ -1,5 +1,7 @@
 """Test dednm."""
+
 import pytest
+
 from morie.fn.dednm import dedekind_sum
 
 

@@ -1,6 +1,7 @@
 """Numbered display equation (13.2) from MVSML chapter 13.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_deep_learning_eq_13_2"]
@@ -40,7 +41,14 @@ def mvsml_deep_learning_eq_13_2(pre, activation, zi, yi, values, the):
     n = len(values)
     result = float(np.mean(values))
     se = float(np.std(values, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (13.2) from MVSML chapter 13."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (13.2) from MVSML chapter 13.",
+        }
+    )
 
 
 def cheatsheet():

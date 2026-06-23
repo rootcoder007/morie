@@ -1,6 +1,7 @@
 """Tests for rgpcg.rangayyan_pcg_segments."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgpcg import rangayyan_pcg_segments
 
 
@@ -11,7 +12,7 @@ def test_rgpcg_basic():
     fs = 100.0
     result = rangayyan_pcg_segments(pcg, ecg, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgpcg_edge():

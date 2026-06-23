@@ -1,6 +1,8 @@
 """Tests for sbbias."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sbbias import sbbias
 
 
@@ -28,4 +30,5 @@ def test_sbbias_no_data():
 
 def test_sbbias_alias():
     from morie.fn.sbbias import sbbias
+
     assert sbbias is sbbias

@@ -1,8 +1,9 @@
 """Tests for morie.fn.crtaq — acquittal rate."""
 
 import pytest
-from morie.fn.crtaq import court_acquittal
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.crtaq import court_acquittal
 
 
 class TestAcquittal:

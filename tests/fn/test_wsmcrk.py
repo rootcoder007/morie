@@ -1,6 +1,7 @@
 """Tests for wsmcrk.wasserman_kernel_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmcrk import wasserman_kernel_regression
 
 
@@ -12,7 +13,7 @@ def test_wsmcrk_basic():
     h = 0.3
     result = wasserman_kernel_regression(x, x_data, y_data, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmcrk_edge():

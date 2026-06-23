@@ -72,4 +72,4 @@ short = logic_gates
 
 
 def cheatsheet() -> str:
-    return 'logic_gates({}) -> Logic gate simulation.'
+    return "logic_gates({}) -> Logic gate simulation."

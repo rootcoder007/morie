@@ -1,6 +1,7 @@
 """Powering (scalar action) on the simplex."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["aitchison_powering"]
@@ -32,7 +33,9 @@ def aitchison_powering(alpha, x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Powering (scalar action) on the simplex"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Powering (scalar action) on the simplex"}
+    )
 
 
 def cheatsheet():

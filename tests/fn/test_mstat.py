@@ -41,4 +41,5 @@ def test_rates_bounded(ms_data):
 
 def test_cheatsheet():
     from morie.fn.mstat import cheatsheet
+
     assert "multi-state" in cheatsheet().lower()

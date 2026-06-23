@@ -1,5 +1,7 @@
 """Tests for biscn (bisection root finding)."""
+
 import math
+
 from morie.fn.biscn import bisection_root
 
 

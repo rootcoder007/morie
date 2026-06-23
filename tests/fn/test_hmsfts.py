@@ -1,6 +1,7 @@
 """Tests for hmsfts.geron_softmax_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmsfts import geron_softmax_score
 
 
@@ -10,7 +11,7 @@ def test_hmsfts_basic():
     theta = 0.0
     result = geron_softmax_score(X, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmsfts_edge():

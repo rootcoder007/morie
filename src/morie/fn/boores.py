@@ -85,4 +85,4 @@ boores = bootstrap_resample
 
 
 def cheatsheet() -> str:
-    return 'bootstrap_resample({}) -> Bootstrap resampling with replacement.'
+    return "bootstrap_resample({}) -> Bootstrap resampling with replacement."

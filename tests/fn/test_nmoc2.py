@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmoc2 -- Optimal Classification 2D"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmoc2 import oc_2d
 

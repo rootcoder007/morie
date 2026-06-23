@@ -1,6 +1,7 @@
 """Tests for rgeemd.rangayyan_eemd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgeemd import rangayyan_eemd
 
 
@@ -12,7 +13,7 @@ def test_rgeemd_basic():
     max_imfs = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_eemd(x, n_ensembles, noise_std, max_imfs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgeemd_edge():

@@ -1,6 +1,7 @@
 """SAM multi-mask scoring + ranking."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sam_multi_mask_rank"]

@@ -1,7 +1,7 @@
 """Test token_stats."""
-import numpy as np
-from morie.fn.tokst import token_stats, tokst
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.tokst import token_stats, tokst
 
 
 class TestTokenStats:

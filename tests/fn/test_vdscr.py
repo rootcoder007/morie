@@ -2,15 +2,13 @@
 
 import numpy as np
 import pandas as pd
-import pytest
+
 from morie.fn.vdscr import validity_discriminant
 
 
 class TestValidityDiscriminant:
-
     def test_returns_dataframe(self, mapq_df):
-        subscales = {"EE": [f"EE{i}" for i in range(1, 6)],
-                     "EA": [f"EA{i}" for i in range(1, 6)]}
+        subscales = {"EE": [f"EE{i}" for i in range(1, 6)], "EA": [f"EA{i}" for i in range(1, 6)]}
         result = validity_discriminant(mapq_df, subscales)
         assert isinstance(result, pd.DataFrame)
         assert result.shape == (2, 2)
@@ -21,8 +19,7 @@ class TestValidityDiscriminant:
         assert result.loc["EE", "EE"] > 0
 
     def test_symmetric(self, mapq_df):
-        subscales = {"EE": [f"EE{i}" for i in range(1, 6)],
-                     "EA": [f"EA{i}" for i in range(1, 6)]}
+        subscales = {"EE": [f"EE{i}" for i in range(1, 6)], "EA": [f"EA{i}" for i in range(1, 6)]}
         result = validity_discriminant(mapq_df, subscales)
         np.testing.assert_allclose(result.values, result.values.T, atol=1e-10)
 

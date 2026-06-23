@@ -1,6 +1,7 @@
 """Redundancy 1 - H(X)/H_max."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["redundancy"]

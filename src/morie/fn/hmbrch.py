@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """BIRCH: balanced iterative reducing and clustering using hierarchies."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_birch"]
@@ -36,7 +38,14 @@ def geron_birch(X, n_clusters, threshold, branching_factor):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BIRCH: balanced iterative reducing and clustering using hierarchies"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "BIRCH: balanced iterative reducing and clustering using hierarchies",
+        }
+    )
 
 
 def cheatsheet():

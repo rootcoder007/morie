@@ -1,6 +1,7 @@
 """Test csseq."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csseq import csseq
 
 

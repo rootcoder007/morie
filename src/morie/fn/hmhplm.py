@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hidden layers guideline: add layers until validation error stops improving."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_hidden_layers_heuristic"]
@@ -34,7 +36,14 @@ def geron_hidden_layers_heuristic(model, X, y):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hidden layers guideline: add layers until validation error stops improving"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Hidden layers guideline: add layers until validation error stops improving",
+        }
+    )
 
 
 def cheatsheet():

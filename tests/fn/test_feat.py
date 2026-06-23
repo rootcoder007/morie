@@ -1,6 +1,7 @@
 """Tests for morie.fn.feat -- Permutation feature importance."""
 
 import numpy as np
+
 from morie.fn.feat import feature_importance
 
 

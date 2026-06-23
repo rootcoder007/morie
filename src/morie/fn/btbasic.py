@@ -1,6 +1,7 @@
 """Basic (reverse-percentile) bootstrap CI."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_basic_ci"]
@@ -34,7 +35,9 @@ def boot_basic_ci(theta_hat, theta_b, alpha):
     n = len(theta_hat)
     result = float(np.mean(theta_hat))
     se = float(np.std(theta_hat, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Basic (reverse-percentile) bootstrap CI"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Basic (reverse-percentile) bootstrap CI"}
+    )
 
 
 def cheatsheet():

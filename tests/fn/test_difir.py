@@ -1,7 +1,9 @@
 """Tests for difir -- IRT-based DIF."""
+
 import numpy as np
-from morie.fn.difir import dif_irt_based
+
 from morie.fn._containers import DIFResult
+from morie.fn.difir import dif_irt_based
 
 
 class TestDifIrt:

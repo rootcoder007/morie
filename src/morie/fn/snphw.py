@@ -57,7 +57,7 @@ def snphw(
         n_b = 2 * n_bb + n_ab
         p_a = n_a / (2.0 * n)
 
-        exp_aa = p_a ** 2 * n
+        exp_aa = p_a**2 * n
         exp_ab = 2.0 * p_a * (1.0 - p_a) * n
         exp_bb = (1.0 - p_a) ** 2 * n
 

@@ -1,7 +1,8 @@
 """Tests for mhlds.py - Mahalanobis distance."""
+
 import numpy as np
-import pytest
-from morie.fn.mhlds import mhlds_fn, mhlds
+
+from morie.fn.mhlds import mhlds, mhlds_fn
 
 
 def test_mhlds_returns_descriptive_result():

@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import pytest
+
 from morie.fn.bb8 import bootstrap_ci as bb8
 
 
@@ -20,6 +21,7 @@ class TestBB8:
     def test_same_as_boot(self):
         """BB-8 alias should give identical results to boot.bootstrap_ci."""
         from morie.fn.boot import bootstrap_ci
+
         data = pd.DataFrame({"x": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]})
         r1 = bb8(lambda df: df["x"].mean(), data, seed=99)
         r2 = bootstrap_ci(lambda df: df["x"].mean(), data, seed=99)

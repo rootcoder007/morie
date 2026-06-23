@@ -1,6 +1,7 @@
 """Tests for gb733.gibbons_linrank_covariance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb733 import gibbons_linrank_covariance
 
 
@@ -13,7 +14,7 @@ def test_gb733_basic():
     N = 100
     result = gibbons_linrank_covariance(a, b, m, n, N)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb733_edge():

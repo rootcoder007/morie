@@ -1,5 +1,7 @@
 """Tests for morie.fn.pairm — Pairwise matrix."""
+
 import numpy as np
+
 from morie.fn.pairm import pairm
 
 

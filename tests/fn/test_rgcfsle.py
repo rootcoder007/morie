@@ -1,6 +1,7 @@
 """Tests for rgcfsle.rangayyan_coupled_freq_select."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgcfsle import rangayyan_coupled_freq_select
 
 
@@ -11,7 +12,7 @@ def test_rgcfsle_basic():
     fs = 100.0
     result = rangayyan_coupled_freq_select(ecg, resp, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgcfsle_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Magnitude-based unstructured weight pruning."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_weight_pruning"]
@@ -32,7 +34,9 @@ def geron_weight_pruning(W, sparsity):
     n = len(W)
     result = float(np.mean(W))
     se = float(np.std(W, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Magnitude-based unstructured weight pruning"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Magnitude-based unstructured weight pruning"}
+    )
 
 
 def cheatsheet():

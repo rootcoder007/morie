@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Knowledge distillation: student matches soft-labels of teacher."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_knowledge_distillation_loss"]
@@ -38,7 +40,14 @@ def geron_knowledge_distillation_loss(student_logits, teacher_logits, y, alpha, 
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Knowledge distillation: student matches soft-labels of teacher"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Knowledge distillation: student matches soft-labels of teacher",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 """Tests for morie.fn.reldi — Reliability diagram values."""
+
 import numpy as np
 import pytest
+
 from morie.fn.reldi import reldi
 
 
@@ -15,9 +17,17 @@ def data():
 
 def test_keys(data):
     r = reldi(*data)
-    for k in ("bin_centers", "fraction_positive", "mean_confidence",
-              "bin_counts", "calibration_gaps", "overconfident_bins",
-              "underconfident_bins", "n", "method"):
+    for k in (
+        "bin_centers",
+        "fraction_positive",
+        "mean_confidence",
+        "bin_counts",
+        "calibration_gaps",
+        "overconfident_bins",
+        "underconfident_bins",
+        "n",
+        "method",
+    ):
         assert k in r
 
 
@@ -61,4 +71,5 @@ def test_n_correct(data):
 
 def test_cheatsheet():
     from morie.fn.reldi import cheatsheet
+
     assert len(cheatsheet()) > 0

@@ -1,6 +1,8 @@
 """Tests for stnsep."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stnsep import stnsep
 
 
@@ -28,4 +30,5 @@ def test_stnsep_no_data():
 
 def test_stnsep_alias():
     from morie.fn.stnsep import stnsep
+
     assert stnsep is stnsep

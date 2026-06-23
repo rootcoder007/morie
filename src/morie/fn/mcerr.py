@@ -6,6 +6,7 @@ from __future__ import annotations
 from typing import Any, Union
 
 import numpy as np
+
 from ._richresult import RichResult
 
 
@@ -30,7 +31,9 @@ def mcmc_se(
     n_batches = max(int(np.sqrt(n)), 2)
     batch_size = n // n_batches
     if batch_size < 1:
-        return RichResult(payload={"mcse": sd_x / np.sqrt(n) if n > 0 else 0.0, "mean": mean_x, "sd": sd_x, "n": n, "n_batches": 1})
+        return RichResult(
+            payload={"mcse": sd_x / np.sqrt(n) if n > 0 else 0.0, "mean": mean_x, "sd": sd_x, "n": n, "n_batches": 1}
+        )
 
     batch_means = []
     for b in range(n_batches):

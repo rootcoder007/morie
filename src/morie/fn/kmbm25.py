@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """BM25 relevance score for query-document matching."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_bm25_score"]
@@ -40,7 +42,9 @@ def kamath_bm25_score(q_terms, doc_terms, idf, avgdl, k1, b):
     n = len(q_terms)
     result = float(np.mean(q_terms))
     se = float(np.std(q_terms, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BM25 relevance score for query-document matching"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "BM25 relevance score for query-document matching"}
+    )
 
 
 def cheatsheet():

@@ -1,9 +1,9 @@
 """Tests for morie.fn.cnstr -- IQR anomaly removal."""
 
-import numpy as np
 import pandas as pd
-from morie.fn.cnstr import iqr_exorcise, cnstr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cnstr import cnstr, iqr_exorcise
 
 
 class TestCnstr:

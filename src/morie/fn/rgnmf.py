@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nonnegative matrix factorization (NMF) with multiplicative update rules."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_nmf"]
@@ -36,7 +38,14 @@ def rangayyan_nmf(V, r, max_iter, tol):
     n = int(V) if V.ndim == 0 else len(V)
     result = float(np.mean(V))
     se = float(np.std(V, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Nonnegative matrix factorization (NMF) with multiplicative update rules"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Nonnegative matrix factorization (NMF) with multiplicative update rules",
+        }
+    )
 
 
 def cheatsheet():

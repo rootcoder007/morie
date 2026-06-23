@@ -1,8 +1,9 @@
 """Test superposition_test (supps)."""
+
 import numpy as np
 
-from morie.fn.supps import superposition_test, supps
 from morie.fn._containers import DescriptiveResult
+from morie.fn.supps import superposition_test, supps
 
 
 class TestSuperpositionTest:

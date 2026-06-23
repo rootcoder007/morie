@@ -65,5 +65,4 @@ def gnorm(
     if beta is not None:
         x_norm = x_norm + beta.reshape(1, channels, *[1] * (x.ndim - 2))
 
-    return {"output": x_norm, "mean": mean.reshape(batch, num_groups, -1),
-            "var": var.reshape(batch, num_groups, -1)}
+    return {"output": x_norm, "mean": mean.reshape(batch, num_groups, -1), "var": var.reshape(batch, num_groups, -1)}

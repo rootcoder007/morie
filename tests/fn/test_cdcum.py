@@ -1,6 +1,7 @@
 """Tests for morie.fn.cdcum -- cumulative incidence."""
 
 import pytest
+
 from morie.fn.cdcum import cumulative_incidence
 
 

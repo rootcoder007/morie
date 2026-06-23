@@ -50,4 +50,4 @@ hdint = hdi
 
 
 def cheatsheet() -> str:
-    return 'hdi({}) -> Highest Density Interval (Bayesian).'
+    return "hdi({}) -> Highest Density Interval (Bayesian)."

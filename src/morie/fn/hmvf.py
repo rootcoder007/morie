@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """State value function V^pi(s)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_value_function"]

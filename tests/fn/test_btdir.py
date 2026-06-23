@@ -1,6 +1,7 @@
 """Tests for btdir.boot_dirichlet_weights."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btdir import boot_dirichlet_weights
 
 
@@ -11,7 +12,7 @@ def test_btdir_basic():
     rng = np.random.default_rng(42)
     result = boot_dirichlet_weights(n, B, rng)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_btdir_edge():

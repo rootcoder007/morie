@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Q-learning off-policy update."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_q_learning_update"]

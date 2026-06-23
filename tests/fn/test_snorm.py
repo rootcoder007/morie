@@ -1,11 +1,11 @@
 """Tests for morie.fn.snorm -- subscale normative tables."""
 
 import pandas as pd
+
 from morie.fn.snorm import subscale_norms
 
 
 class TestSubscaleNorms:
-
     def test_returns_dataframe(self, mapq_df):
         result = subscale_norms(mapq_df)
         assert isinstance(result, pd.DataFrame)

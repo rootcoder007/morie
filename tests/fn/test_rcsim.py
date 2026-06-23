@@ -1,7 +1,7 @@
 """Tests for morie.fn.rcsim."""
 
 import numpy as np
-import pytest
+
 from morie.fn.rcsim import rcsim
 
 

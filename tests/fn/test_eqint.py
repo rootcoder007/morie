@@ -1,8 +1,9 @@
 """Test equalization_inverse (eqint)."""
+
 import numpy as np
 
-from morie.fn.eqint import equalization_inverse, eqint
 from morie.fn._containers import DescriptiveResult
+from morie.fn.eqint import eqint, equalization_inverse
 
 
 class TestEqualizationInverse:

@@ -1,6 +1,7 @@
 """Modified first-difference filter with pole at 0.995 to remove baseline wander.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_baseline_wander_filter_z_form_a"]
@@ -32,7 +33,14 @@ def rangayyan_ch3_baseline_wander_filter_z_form_a(z, T):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Modified first-difference filter with pole at 0.995 to remove baseline wander."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Modified first-difference filter with pole at 0.995 to remove baseline wander.",
+        }
+    )
 
 
 def cheatsheet():

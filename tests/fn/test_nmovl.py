@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmovl -- Party overlap index"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmovl import party_overlap
 

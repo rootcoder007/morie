@@ -1,6 +1,7 @@
 """Tests for gentmt.generalized_treatment_msm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gentmt import generalized_treatment_msm
 
 
@@ -11,7 +12,7 @@ def test_gentmt_basic():
     H = np.random.default_rng(42).normal(0, 1, 100)
     result = generalized_treatment_msm(y, A, H)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gentmt_edge():

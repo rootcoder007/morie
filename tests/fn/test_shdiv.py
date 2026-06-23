@@ -1,5 +1,7 @@
 """Tests for morie.fn.shdiv."""
+
 import numpy as np
+
 from morie.fn.shdiv import shdiv
 
 
@@ -13,6 +15,7 @@ def test_shdiv_smoke():
 
 def test_cheatsheet():
     from morie.fn.shdiv import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

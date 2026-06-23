@@ -1,6 +1,7 @@
 """Tests for midegf.mi_degrees_of_freedom."""
+
 import numpy as np
-import pytest
+
 from morie.fn.midegf import mi_degrees_of_freedom
 
 
@@ -11,7 +12,7 @@ def test_midegf_basic():
     m = 10
     result = mi_degrees_of_freedom(B, W, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_midegf_edge():

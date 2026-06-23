@@ -1,5 +1,7 @@
 """Tests for Monte Carlo spatial test."""
+
 import numpy as np
+
 from morie.fn.sgmci import sgmci
 
 
@@ -15,6 +17,7 @@ def test_sgmci_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgmci import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

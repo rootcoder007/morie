@@ -99,4 +99,4 @@ short = graph_from_edges
 
 
 def cheatsheet() -> str:
-    return 'graph_from_edges({}) -> Graph from edge list.'
+    return "graph_from_edges({}) -> Graph from edge list."

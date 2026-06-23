@@ -1,6 +1,7 @@
 """Tests for sarmod.spatial_lag_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sarmod import spatial_lag_model
 
 
@@ -11,7 +12,7 @@ def test_sarmod_basic():
     W = np.random.default_rng(42).normal(0, 1, 100)
     result = spatial_lag_model(y, X, W)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sarmod_edge():

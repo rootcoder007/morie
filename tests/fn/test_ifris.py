@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.ifris import infection_fatality_rate
 
 
@@ -12,8 +13,7 @@ class TestIFR:
         assert res["adjusted_seroprevalence"] == pytest.approx(0.10)
 
     def test_imperfect_test(self):
-        res = infection_fatality_rate(100, 100000, 0.12,
-                                     sensitivity=0.95, specificity=0.99)
+        res = infection_fatality_rate(100, 100000, 0.12, sensitivity=0.95, specificity=0.99)
         assert 0 < res["adjusted_seroprevalence"] <= 0.15
 
     def test_ci_ordering(self):

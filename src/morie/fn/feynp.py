@@ -69,10 +69,7 @@ def feynp(
     rng = np.random.default_rng(seed)
     dt = T / n_slices
 
-    S_cl = (
-        m * omega / (2.0 * np.sin(omega * T))
-        * ((x_i ** 2 + x_f ** 2) * np.cos(omega * T) - 2.0 * x_i * x_f)
-    )
+    S_cl = m * omega / (2.0 * np.sin(omega * T)) * ((x_i**2 + x_f**2) * np.cos(omega * T) - 2.0 * x_i * x_f)
 
     prefactor = np.sqrt(m * omega / (2.0 * np.pi * 1j * hbar * np.sin(omega * T + 1e-30)))
     K_exact = prefactor * np.exp(1j * S_cl / hbar)
@@ -92,13 +89,13 @@ def feynp(
         for k in range(n_slices):
             v = (path[k + 1] - path[k]) / dt
             x_mid = 0.5 * (path[k] + path[k + 1])
-            S += 0.5 * m * v ** 2 - 0.5 * m * omega ** 2 * x_mid ** 2
+            S += 0.5 * m * v**2 - 0.5 * m * omega**2 * x_mid**2
         S *= dt
 
         S_free = 0.0
         for k in range(n_slices):
             v = (path[k + 1] - path[k]) / dt
-            S_free += 0.5 * m * v ** 2
+            S_free += 0.5 * m * v**2
         S_free *= dt
 
         weights[p] = np.exp(1j * (S - S_free) / hbar)

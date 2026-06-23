@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cepstral liftering (low-time / high-time separation)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_liftering"]
@@ -34,7 +36,9 @@ def rangayyan_liftering(cepstrum, l_low, l_high):
     n = int(cepstrum) if cepstrum.ndim == 0 else len(cepstrum)
     result = float(np.mean(cepstrum))
     se = float(np.std(cepstrum, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cepstral liftering (low-time / high-time separation)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Cepstral liftering (low-time / high-time separation)"}
+    )
 
 
 def cheatsheet():

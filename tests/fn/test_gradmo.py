@@ -1,6 +1,7 @@
 """Tests for gradmo.geron_adam_update."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gradmo import geron_adam_update
 
 
@@ -17,7 +18,7 @@ def test_gradmo_basic():
     eps = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_adam_update(theta, grad, m, s, t, eta, b1, b2, eps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gradmo_edge():

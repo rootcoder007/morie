@@ -35,19 +35,17 @@ except ImportError:  # pragma: no cover
 @dataclass
 class VertexConfig:
     """Resolved Vertex configuration from env vars."""
+
     project: str
     location: str = "us-central1"
     model: str = "gemini-2.5-flash"
-    token_ttl_s: int = 3300   # access tokens last ~1h; refresh at 55m
+    token_ttl_s: int = 3300  # access tokens last ~1h; refresh at 55m
     gcloud_path: str = "gcloud"
 
 
 def resolve_config() -> VertexConfig:
     """Read Vertex config from environment, with sensible defaults."""
-    project = (
-        os.environ.get("GOOGLE_CLOUD_PROJECT")
-        or os.environ.get("MORIE_EE_PROJECT")
-    )
+    project = os.environ.get("GOOGLE_CLOUD_PROJECT") or os.environ.get("MORIE_EE_PROJECT")
     if not project:
         raise RuntimeError(
             "Vertex requires GOOGLE_CLOUD_PROJECT (or MORIE_EE_PROJECT). "
@@ -55,8 +53,7 @@ def resolve_config() -> VertexConfig:
         )
     gcloud = os.environ.get("GCLOUD_PATH") or "gcloud"
     # Try known install paths if bare 'gcloud' isn't on PATH.
-    for candidate in (gcloud, "/mnt/nvme/google-cloud-sdk/bin/gcloud",
-                       "/opt/google-cloud-sdk/bin/gcloud"):
+    for candidate in (gcloud, "/mnt/nvme/google-cloud-sdk/bin/gcloud", "/opt/google-cloud-sdk/bin/gcloud"):
         if os.path.exists(candidate) or _which(candidate):
             gcloud = candidate
             break
@@ -70,6 +67,7 @@ def resolve_config() -> VertexConfig:
 
 def _which(cmd: str) -> str | None:
     from shutil import which
+
     return which(cmd)
 
 
@@ -84,16 +82,15 @@ def _access_token(cfg: VertexConfig) -> str:
     try:
         out = subprocess.run(
             [cfg.gcloud_path, "auth", "print-access-token"],
-            check=True, capture_output=True, text=True, timeout=30,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=30,
         ).stdout.strip()
     except subprocess.CalledProcessError as exc:
-        raise RuntimeError(
-            f"gcloud print-access-token failed: {exc.stderr.strip()}"
-        ) from exc
+        raise RuntimeError(f"gcloud print-access-token failed: {exc.stderr.strip()}") from exc
     except FileNotFoundError as exc:
-        raise RuntimeError(
-            f"gcloud not found at {cfg.gcloud_path}. Set GCLOUD_PATH env var."
-        ) from exc
+        raise RuntimeError(f"gcloud not found at {cfg.gcloud_path}. Set GCLOUD_PATH env var.") from exc
     if not out:
         raise RuntimeError("gcloud returned empty access token.")
     _TOKEN_CACHE["token"] = out
@@ -145,9 +142,7 @@ def ask_gemini(
         If gcloud auth, project env, or Vertex call fails.
     """
     if _httpx is None:
-        raise ImportError(
-            "morie.vertex requires httpx. Install with: pip install httpx"
-        )
+        raise ImportError("morie.vertex requires httpx. Install with: pip install httpx")
     cfg = cfg or resolve_config()
     model = model or cfg.model
     token = _access_token(cfg)
@@ -180,17 +175,13 @@ def ask_gemini(
             json=payload,
         )
     if r.status_code != 200:
-        raise RuntimeError(
-            f"Vertex API returned {r.status_code}: {r.text[:400]}"
-        )
+        raise RuntimeError(f"Vertex API returned {r.status_code}: {r.text[:400]}")
     data = r.json()
     try:
         parts = data["candidates"][0]["content"]["parts"]
         return "".join(p.get("text", "") for p in parts).strip()
     except (KeyError, IndexError) as exc:
-        raise RuntimeError(
-            f"unexpected Vertex response shape: {json.dumps(data)[:400]}"
-        ) from exc
+        raise RuntimeError(f"unexpected Vertex response shape: {json.dumps(data)[:400]}") from exc
 
 
 def health_check() -> dict[str, Any]:
@@ -203,7 +194,9 @@ def health_check() -> dict[str, Any]:
         out["model"] = cfg.model
         reply = ask_gemini(
             "reply with just OK and nothing else",
-            cfg=cfg, temperature=0.0, max_output_tokens=8,
+            cfg=cfg,
+            temperature=0.0,
+            max_output_tokens=8,
         )
         out["reply"] = reply
         out["ok"] = bool(reply)

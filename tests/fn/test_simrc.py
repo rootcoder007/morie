@@ -1,4 +1,5 @@
 """Tests for morie.fn.simrc — simulate roll call."""
+
 from morie.fn.simrc import simrc
 
 
@@ -12,6 +13,7 @@ def test_simrc_smoke():
 
 def test_cheatsheet():
     from morie.fn.simrc import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

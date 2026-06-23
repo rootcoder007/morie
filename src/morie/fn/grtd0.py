@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """TD(0) value update."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_td_zero_update"]

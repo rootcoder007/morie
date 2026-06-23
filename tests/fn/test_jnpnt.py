@@ -39,4 +39,5 @@ def test_bic_exists(surv_data):
 
 def test_cheatsheet():
     from morie.fn.jnpnt import cheatsheet
+
     assert "joinpoint" in cheatsheet().lower()

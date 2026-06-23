@@ -79,4 +79,4 @@ short = full_adder
 
 
 def cheatsheet() -> str:
-    return 'full_adder({}) -> Full adder binary circuit.'
+    return "full_adder({}) -> Full adder binary circuit."

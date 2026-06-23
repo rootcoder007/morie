@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """EEG band power (δ θ α β γ) via Welch -- Rangayyan Ch 9."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -13,7 +14,7 @@ _BANDS = {
     "delta": (0.5, 4.0),
     "theta": (4.0, 8.0),
     "alpha": (8.0, 13.0),
-    "beta":  (13.0, 30.0),
+    "beta": (13.0, 30.0),
     "gamma": (30.0, 100.0),
 }
 
@@ -51,22 +52,15 @@ def rangayyan_eeg_bands(x, fs, bands=None, nperseg=None):
     absolute = {}
     for name, (lo, hi) in bands.items():
         mask = (freqs >= lo) & (freqs < hi)
-        absolute[name] = (float(np.trapz(pxx[mask], freqs[mask]))
-                          if mask.any() else 0.0)
+        absolute[name] = float(np.trapz(pxx[mask], freqs[mask])) if mask.any() else 0.0
     relative = {k: (v / total if total > 0 else 0.0) for k, v in absolute.items()}
-    rows = [[name, f"{absolute[name]:.4g}", f"{relative[name] * 100:.2f}%"]
-            for name in bands]
+    rows = [[name, f"{absolute[name]:.4g}", f"{relative[name] * 100:.2f}%"] for name in bands]
     res = RichResult(
         title="EEG band power",
-        summary_lines=[("Fs (Hz)", float(fs)),
-                       ("Total power", total),
-                       ("Bin width (Hz)", df)],
-        tables=[{"title": "Power by band",
-                 "headers": ["Band", "Absolute (W)", "Relative"],
-                 "rows": rows}],
+        summary_lines=[("Fs (Hz)", float(fs)), ("Total power", total), ("Bin width (Hz)", df)],
+        tables=[{"title": "Power by band", "headers": ["Band", "Absolute (W)", "Relative"], "rows": rows}],
         interpretation="Relative percentages sum ≤100% (residual outside defined bands).",
-        payload={"absolute": absolute, "relative": relative,
-                 "total_power": total, "freqs": freqs, "psd": pxx},
+        payload={"absolute": absolute, "relative": relative, "total_power": total, "freqs": freqs, "psd": pxx},
     )
     return with_describe_pointer(res, "rgeeg")
 

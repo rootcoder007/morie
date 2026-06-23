@@ -1,6 +1,7 @@
 """Tests for rgcdft.rangayyan_circular_conv_dft."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgcdft import rangayyan_circular_conv_dft
 
 
@@ -10,7 +11,7 @@ def test_rgcdft_basic():
     h = 0.3
     result = rangayyan_circular_conv_dft(x, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgcdft_edge():

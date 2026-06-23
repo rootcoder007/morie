@@ -1,6 +1,7 @@
 """Tests for rgrbf.rangayyan_rbf_network."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgrbf import rangayyan_rbf_network
 
 
@@ -12,7 +13,7 @@ def test_rgrbf_basic():
     sigma = 1.0
     result = rangayyan_rbf_network(X, y, n_centers, sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgrbf_edge():

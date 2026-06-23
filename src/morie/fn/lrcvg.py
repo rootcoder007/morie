@@ -1,4 +1,5 @@
 """Learning curve -- train/val error vs training-set size."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -44,20 +45,28 @@ def learning_curve(x, y, *, sizes=None, cv=5, seed=0, estimator=None):
         sizes = np.linspace(0.1, 1.0, 5)
     est = estimator if estimator is not None else LinearRegression()
     train_sizes, train_scores, val_scores = _lc(
-        est, X, y, train_sizes=sizes, cv=cv,
-        scoring="neg_mean_squared_error", random_state=seed, shuffle=True,
+        est,
+        X,
+        y,
+        train_sizes=sizes,
+        cv=cv,
+        scoring="neg_mean_squared_error",
+        random_state=seed,
+        shuffle=True,
     )
     # Convert from "neg MSE" back to MSE
     train_mse = -train_scores.mean(axis=1)
     val_mse = -val_scores.mean(axis=1)
-    return RichResult(payload={
-        "estimate": float(val_mse[-1]),
-        "train_sizes": train_sizes.tolist(),
-        "train_scores": train_mse.tolist(),
-        "val_scores": val_mse.tolist(),
-        "n": int(n),
-        "method": "Learning curve (cv MSE)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(val_mse[-1]),
+            "train_sizes": train_sizes.tolist(),
+            "train_scores": train_mse.tolist(),
+            "val_scores": val_mse.tolist(),
+            "n": int(n),
+            "method": "Learning curve (cv MSE)",
+        }
+    )
 
 
 def cheatsheet():

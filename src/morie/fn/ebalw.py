@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Entropy balancing for covariate balance (Hainmueller 2012)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["entropy_balancing"]
@@ -34,7 +36,14 @@ def entropy_balancing(X, T, moments):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Entropy balancing for covariate balance (Hainmueller 2012)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Entropy balancing for covariate balance (Hainmueller 2012)",
+        }
+    )
 
 
 def cheatsheet():

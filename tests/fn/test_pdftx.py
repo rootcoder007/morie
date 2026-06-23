@@ -1,31 +1,34 @@
 """Test pdf_to_text."""
-import tempfile
+
 from pathlib import Path
 
 import pytest
 
 pypdf = pytest.importorskip("pypdf")
 
-from morie.fn.pdftx import pdf_to_text, pdftx
 from morie.fn._containers import DescriptiveResult
+from morie.fn.pdftx import pdf_to_text, pdftx
 
 
 class TestPdfToText:
     def _make_test_pdf(self, tmp_path: Path) -> Path:
         from pypdf import PdfWriter
+
         writer = PdfWriter()
         writer.add_blank_page(width=612, height=792)
         page = writer.pages[0]
         from pypdf.generic import (
-            ArrayObject, ContentStream, DecodedStreamObject,
-            NameObject, NumberObject,
+            DecodedStreamObject,
+            NameObject,
         )
+
         content = b"BT /F1 12 Tf 100 700 Td (Hello World) Tj ET"
         stream = DecodedStreamObject()
         stream.set_data(content)
         page[NameObject("/Contents")] = stream
         if "/Font" not in page.get("/Resources", {}):
             from pypdf.generic import DictionaryObject
+
             resources = DictionaryObject()
             font_dict = DictionaryObject()
             font_obj = DictionaryObject()

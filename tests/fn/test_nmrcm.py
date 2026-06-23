@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmrcm -- Roll call matrix construction"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmrcm import roll_call_matrix
 

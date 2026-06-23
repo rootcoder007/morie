@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mode collapse: GAN generator outputs limited variety."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_mode_collapse"]
@@ -30,7 +32,9 @@ def geron_mode_collapse(samples):
     n = len(samples)
     result = float(np.mean(samples))
     se = float(np.std(samples, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mode collapse: GAN generator outputs limited variety"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Mode collapse: GAN generator outputs limited variety"}
+    )
 
 
 def cheatsheet():

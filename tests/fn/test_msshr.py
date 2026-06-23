@@ -1,7 +1,6 @@
 """Tests for morie.fn.msshr -- Shepard residuals"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msshr import shepard_resid
 

@@ -1,6 +1,7 @@
 """Tests for dmlqs.deepml_qsar."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dmlqs import deepml_qsar
 
 
@@ -10,7 +11,7 @@ def test_dmlqs_basic():
     activities = np.random.default_rng(42).normal(0, 1, 100)
     result = deepml_qsar(smiles, activities)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dmlqs_edge():

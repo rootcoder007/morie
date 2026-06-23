@@ -1,6 +1,7 @@
 """MI-based neural encoder objective."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mi_neural_encoder"]

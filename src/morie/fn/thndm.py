@@ -73,4 +73,4 @@ thndm = mach_shock
 
 
 def cheatsheet() -> str:
-    return 'mach_shock({}) -> Shock wave Mach number.'
+    return "mach_shock({}) -> Shock wave Mach number."

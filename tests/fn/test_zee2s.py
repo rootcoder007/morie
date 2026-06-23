@@ -1,7 +1,6 @@
 """Tests for morie.fn.zee2s -- Enhanced 2SFCA"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zee2s import enhanced_2sfca
 

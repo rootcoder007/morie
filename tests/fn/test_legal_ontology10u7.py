@@ -1,6 +1,7 @@
 """Tests for legal_ontology10u7.legal_ontology_chapter_10_unnumbered_7."""
+
 import numpy as np
-import pytest
+
 from morie.fn.legal_ontology10u7 import legal_ontology_chapter_10_unnumbered_7
 
 
@@ -9,7 +10,7 @@ def test_legal_ontology10u7_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = legal_ontology_chapter_10_unnumbered_7(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_legal_ontology10u7_edge():

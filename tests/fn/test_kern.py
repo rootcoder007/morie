@@ -1,8 +1,9 @@
 """Tests for morie.fn.kern -- Gaussian KDE."""
 
 import numpy as np
-from morie.fn.kern import kde, kern
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.kern import kde, kern
 
 
 class TestKern:

@@ -1,4 +1,5 @@
 """Parse an SIU Ontario report page to extract key fields."""
+
 from __future__ import annotations
 
 import re
@@ -71,4 +72,4 @@ siubc = siu_scrape_report
 
 
 def cheatsheet() -> str:
-    return 'siu_scrape_report({}) -> SIU Ontario report HTML parser.'
+    return "siu_scrape_report({}) -> SIU Ontario report HTML parser."

@@ -16,36 +16,41 @@ from morie.sampling import (
     stratified_sample,
 )
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def population_df():
     """A synthetic population frame with 500 rows."""
     rng = np.random.default_rng(42)
     n = 500
-    return pd.DataFrame({
-        "id": range(n),
-        "stratum": rng.choice(["A", "B", "C"], size=n),
-        "cluster": rng.choice(range(1, 11), size=n),
-        "size_measure": rng.exponential(100, size=n),
-        "y": rng.normal(50, 10, size=n),
-    })
+    return pd.DataFrame(
+        {
+            "id": range(n),
+            "stratum": rng.choice(["A", "B", "C"], size=n),
+            "cluster": rng.choice(range(1, 11), size=n),
+            "size_measure": rng.exponential(100, size=n),
+            "y": rng.normal(50, 10, size=n),
+        }
+    )
 
 
 @pytest.fixture
 def small_df():
     """Small DataFrame for deterministic tests."""
-    return pd.DataFrame({
-        "x": [1.0, 2.0, 3.0, 4.0, 5.0],
-    })
+    return pd.DataFrame(
+        {
+            "x": [1.0, 2.0, 3.0, 4.0, 5.0],
+        }
+    )
 
 
 # ---------------------------------------------------------------------------
 # simple_random_sample
 # ---------------------------------------------------------------------------
+
 
 class TestSimpleRandomSample:
     def test_correct_size(self, population_df):
@@ -70,6 +75,7 @@ class TestSimpleRandomSample:
 # stratified_sample
 # ---------------------------------------------------------------------------
 
+
 class TestStratifiedSample:
     def test_fixed_allocation(self, population_df):
         sample = stratified_sample(population_df, "stratum", 10, seed=0)
@@ -83,9 +89,7 @@ class TestStratifiedSample:
         assert sizes == alloc
 
     def test_proportional_allocation(self, population_df):
-        sample = stratified_sample(
-            population_df, "stratum", 100, proportional=True, seed=0
-        )
+        sample = stratified_sample(population_df, "stratum", 100, proportional=True, seed=0)
         assert len(sample) == 100
 
     def test_raises_when_stratum_too_small(self):
@@ -97,6 +101,7 @@ class TestStratifiedSample:
 # ---------------------------------------------------------------------------
 # cluster_sample
 # ---------------------------------------------------------------------------
+
 
 class TestClusterSample:
     def test_correct_cluster_count(self, population_df):
@@ -120,6 +125,7 @@ class TestClusterSample:
 # pps_sample
 # ---------------------------------------------------------------------------
 
+
 class TestPPSSample:
     def test_correct_size(self, population_df):
         sample = pps_sample(population_df, "size_measure", 20, seed=0)
@@ -135,11 +141,10 @@ class TestPPSSample:
 # bootstrap_sample
 # ---------------------------------------------------------------------------
 
+
 class TestBootstrapSample:
     def test_returns_correct_keys(self, small_df):
-        result = bootstrap_sample(
-            small_df, 100, statistic=lambda d: d["x"].mean(), seed=0
-        )
+        result = bootstrap_sample(small_df, 100, statistic=lambda d: d["x"].mean(), seed=0)
         assert "mean" in result
         assert "se" in result
         assert "ci_lower" in result
@@ -147,29 +152,24 @@ class TestBootstrapSample:
         assert "distribution" in result
 
     def test_distribution_length(self, small_df):
-        result = bootstrap_sample(
-            small_df, 500, statistic=lambda d: d["x"].mean(), seed=0
-        )
+        result = bootstrap_sample(small_df, 500, statistic=lambda d: d["x"].mean(), seed=0)
         assert len(result["distribution"]) == 500
 
     def test_mean_close_to_population(self):
         rng = np.random.default_rng(0)
         df = pd.DataFrame({"x": rng.normal(10, 1, 500)})
-        result = bootstrap_sample(
-            df, 1000, statistic=lambda d: d["x"].mean(), seed=0
-        )
+        result = bootstrap_sample(df, 1000, statistic=lambda d: d["x"].mean(), seed=0)
         assert abs(result["mean"] - 10.0) < 0.5
 
     def test_ci_contains_estimate(self, small_df):
-        result = bootstrap_sample(
-            small_df, 500, statistic=lambda d: d["x"].mean(), seed=0
-        )
+        result = bootstrap_sample(small_df, 500, statistic=lambda d: d["x"].mean(), seed=0)
         assert result["ci_lower"] <= result["mean"] <= result["ci_upper"]
 
 
 # ---------------------------------------------------------------------------
 # jackknife_estimate
 # ---------------------------------------------------------------------------
+
 
 class TestJackknifeEstimate:
     def test_correct_estimate(self, small_df):
@@ -189,6 +189,7 @@ class TestJackknifeEstimate:
 # compute_design_weights
 # ---------------------------------------------------------------------------
 
+
 class TestComputeDesignWeights:
     def test_correct_weights(self):
         df = pd.DataFrame({"stratum": ["A"] * 10 + ["B"] * 20})
@@ -205,6 +206,7 @@ class TestComputeDesignWeights:
 # ---------------------------------------------------------------------------
 # effective_sample_size
 # ---------------------------------------------------------------------------
+
 
 class TestEffectiveSampleSize:
     def test_equal_weights(self):
@@ -223,6 +225,7 @@ class TestEffectiveSampleSize:
 # ---------------------------------------------------------------------------
 # design_effect
 # ---------------------------------------------------------------------------
+
 
 class TestDesignEffect:
     def test_equal_weights_deff_one(self):

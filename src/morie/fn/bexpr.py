@@ -1,5 +1,6 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Evaluate a boolean expression given variable assignments."""
+
 from __future__ import annotations
 
 from ._containers import DescriptiveResult
@@ -64,4 +65,4 @@ short = boolean_eval
 
 
 def cheatsheet() -> str:
-    return 'boolean_eval({}) -> Boolean expression evaluator.'
+    return "boolean_eval({}) -> Boolean expression evaluator."

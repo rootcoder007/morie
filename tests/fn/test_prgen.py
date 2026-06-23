@@ -1,8 +1,9 @@
 """Tests for morie.fn.prgen — program enrollment."""
 
 import pytest
-from morie.fn.prgen import program_enrollment
+
 from morie.fn._containers import CrimeResult
+from morie.fn.prgen import program_enrollment
 
 
 class TestProgramEnrollment:

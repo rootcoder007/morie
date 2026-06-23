@@ -11,6 +11,7 @@ Ribeiro, M. T., Singh, S., & Guestrin, C. (2016). "Why should I trust
 you?" Explaining the predictions of any classifier.
 *Proceedings of ACM SIGKDD*, 1135-1144.
 """
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -122,7 +123,7 @@ def limex(
     # Ridge: (Z^TWZ + alpha*I) beta = Z^TWf
     n_feat = Z_aug_w.shape[1]
     A = Z_aug_w.T @ Z_aug_w + alpha * np.eye(n_feat)
-    A[0, 0] -= alpha               # do not regularise intercept
+    A[0, 0] -= alpha  # do not regularise intercept
     b = Z_aug_w.T @ f_w
     try:
         beta = np.linalg.solve(A, b)
@@ -134,9 +135,9 @@ def limex(
 
     # Weighted R² of surrogate
     f_hat = Z_aug @ beta
-    ss_res = float(np.sum(kernel_weights * (f_z - f_hat)**2))
+    ss_res = float(np.sum(kernel_weights * (f_z - f_hat) ** 2))
     f_mean = float(np.average(f_z, weights=kernel_weights))
-    ss_tot = float(np.sum(kernel_weights * (f_z - f_mean)**2))
+    ss_tot = float(np.sum(kernel_weights * (f_z - f_mean) ** 2))
     local_r2 = 1.0 - ss_res / ss_tot if ss_tot > 1e-12 else 0.0
 
     # Optionally retain only top n_features by absolute importance

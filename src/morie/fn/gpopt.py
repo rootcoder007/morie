@@ -17,7 +17,7 @@ from scipy.spatial.distance import cdist
 def _rbf_kernel(X1, X2, length_scale=1.0, variance=1.0, cdf=None):
     """Squared exponential (RBF) kernel."""
     dists = cdist(X1, X2, metric="sqeuclidean")
-    return variance * np.exp(-0.5 * dists / length_scale ** 2)
+    return variance * np.exp(-0.5 * dists / length_scale**2)
 
 
 def _gp_predict(X_train, y_train, X_test, length_scale, variance, noise):
@@ -133,9 +133,7 @@ def gp_optimize(
 
         for _ in range(n_restarts):
             x0 = bounds[:, 0] + rng.uniform(size=d) * (bounds[:, 1] - bounds[:, 0])
-            result = sp_minimize(
-                neg_ei, x0, bounds=list(bounds), method="L-BFGS-B"
-            )
+            result = sp_minimize(neg_ei, x0, bounds=list(bounds), method="L-BFGS-B")
             if result.fun < best_ei:
                 best_ei = result.fun
                 best_x_next = result.x

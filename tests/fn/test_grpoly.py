@@ -1,6 +1,7 @@
 """Tests for grpoly.geron_polynomial_features."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grpoly import geron_polynomial_features
 
 
@@ -10,7 +11,7 @@ def test_grpoly_basic():
     degree = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_polynomial_features(X, degree)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grpoly_edge():

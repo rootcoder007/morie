@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxsle -- Spatial elastic net"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxsle import spatial_elastic
 

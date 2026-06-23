@@ -1,6 +1,7 @@
 """Numbered display equation (5.3) from MVSML chapter 5.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_linear_mixed_models_eq_5_3"]
@@ -40,7 +41,14 @@ def mvsml_linear_mixed_models_eq_5_3(Illustrative, Examples, of, the, Univariate
     n = len(Illustrative)
     result = float(np.mean(Illustrative))
     se = float(np.std(Illustrative, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (5.3) from MVSML chapter 5."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (5.3) from MVSML chapter 5.",
+        }
+    )
 
 
 def cheatsheet():

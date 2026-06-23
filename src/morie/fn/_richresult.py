@@ -74,9 +74,7 @@ class RichResult(dict):
         try:
             return self.payload[name]
         except KeyError:
-            raise AttributeError(
-                f"{type(self).__name__!r} has no attribute {name!r}"
-            ) from None
+            raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}") from None
 
     def __getitem__(self, key: str) -> Any:
         return self.payload[key]
@@ -161,19 +159,14 @@ class RichResult(dict):
         """Render a column-aligned ASCII table."""
         if not rows:
             return ""
-        all_rows = ([headers] if headers else []) + [
-            [RichResult._fmt(c) for c in r] for r in rows
-        ]
+        all_rows = ([headers] if headers else []) + [[RichResult._fmt(c) for c in r] for r in rows]
         widths = [
             max(len(str(row[i])) if i < len(row) else 0 for row in all_rows)
             for i in range(max(len(r) for r in all_rows))
         ]
         lines = []
         for r_idx, r in enumerate(all_rows):
-            cells = [
-                f"{str(c):<{widths[i]}}"
-                for i, c in enumerate(r)
-            ]
+            cells = [f"{str(c):<{widths[i]}}" for i, c in enumerate(r)]
             lines.append("  " + "  ".join(cells))
             if r_idx == 0 and headers:
                 lines.append("  " + "  ".join("-" * w for w in widths))
@@ -209,10 +202,7 @@ class RichResult(dict):
                     return float(v)
                 except (TypeError, ValueError):
                     continue
-        raise TypeError(
-            f"{type(self).__name__} has no scalar headline "
-            f"(none of {list(self.payload.keys())[:8]})"
-        )
+        raise TypeError(f"{type(self).__name__} has no scalar headline (none of {list(self.payload.keys())[:8]})")
 
     # Scalar comparison operators -- let `cohend(x, y) == 1.0` and
     # `cohend(x, y) < 0.5` and `pytest.approx(0.25) == mcfadr(...)`
@@ -369,11 +359,9 @@ def hypothesis_test_result(
         summary.extend(extra_summary)
 
     if pvalue < alpha:
-        interp = (f"Reject H₀ at α={alpha}: result is statistically "
-                  f"significant (p={pvalue:.4f}).")
+        interp = f"Reject H₀ at α={alpha}: result is statistically significant (p={pvalue:.4f})."
     else:
-        interp = (f"Fail to reject H₀ at α={alpha}: insufficient evidence "
-                  f"(p={pvalue:.4f}).")
+        interp = f"Fail to reject H₀ at α={alpha}: insufficient evidence (p={pvalue:.4f})."
 
     payload = {"statistic": statistic, "pvalue": pvalue}
     if df is not None:
@@ -404,6 +392,7 @@ def _detect_caller_name() -> str | None:
     invoked this factory. Returns the function name or None.
     """
     import inspect
+
     try:
         frame = inspect.currentframe()
         # currentframe (this fn) -> hypothesis_test_result -> caller fn.
@@ -434,12 +423,14 @@ def _detect_caller_name() -> str | None:
 
 def _describe_pointer(callable_name: str) -> str:
     """The 'Learn more' pointer line appended to results."""
-    return (f"Learn more: `from morie.fn import describe; "
-            f"print(describe({callable_name!r}))` for the full "
-            f"pedagogical guide (when, why, formula, common mistakes).")
+    return (
+        f"Learn more: `from morie.fn import describe; "
+        f"print(describe({callable_name!r}))` for the full "
+        f"pedagogical guide (when, why, formula, common mistakes)."
+    )
 
 
-def with_describe_pointer(result: "RichResult", callable_name: str) -> "RichResult":
+def with_describe_pointer(result: RichResult, callable_name: str) -> RichResult:
     """Add a describe() pointer to an existing RichResult.
 
     Used by callables that return RichResult directly (without going

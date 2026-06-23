@@ -1,6 +1,7 @@
 """Tests for taulep.tau_leap_sim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.taulep import tau_leap_sim
 
 
@@ -11,7 +12,7 @@ def test_taulep_basic():
     tau = 0.1
     result = tau_leap_sim(state, rates, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_taulep_edge():

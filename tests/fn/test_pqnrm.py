@@ -7,7 +7,6 @@ from morie.fn.pqnrm import polar_normalize
 
 
 class TestPolarNormalize:
-
     def test_unit_norm(self):
         x = np.random.default_rng(42).standard_normal(64)
         res = polar_normalize(x)

@@ -1,6 +1,7 @@
 """Tests for morie.fn.bnorm -- Bayesian normal model."""
 
 import numpy as np
+
 from morie.fn.bnorm import bayesian_normal
 
 
@@ -19,18 +20,14 @@ def test_large_sample_converges_to_data_mean():
 
 
 def test_small_sample_shrinks_to_prior():
-    result = bayesian_normal(
-        [10.0], prior_mu=0.0, prior_sigma=1.0, sigma_known=1.0
-    )
+    result = bayesian_normal([10.0], prior_mu=0.0, prior_sigma=1.0, sigma_known=1.0)
     assert result["posterior_mean"] < 10.0
     assert result["posterior_mean"] > 0.0
 
 
 def test_weights_sum_to_one():
     result = bayesian_normal([1, 2, 3], prior_mu=0, prior_sigma=1, sigma_known=1)
-    np.testing.assert_allclose(
-        result["prior_weight"] + result["data_weight"], 1.0, atol=1e-10
-    )
+    np.testing.assert_allclose(result["prior_weight"] + result["data_weight"], 1.0, atol=1e-10)
 
 
 def test_ci_contains_mean():

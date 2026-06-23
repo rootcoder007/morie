@@ -1,6 +1,7 @@
 """Projection (inner product) of two continuous-time signals over R.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_continuous_dot_product"]
@@ -34,7 +35,14 @@ def rangayyan_ch4_continuous_dot_product(x, y, t):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Projection (inner product) of two continuous-time signals over R."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Projection (inner product) of two continuous-time signals over R.",
+        }
+    )
 
 
 def cheatsheet():

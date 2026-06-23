@@ -1,5 +1,7 @@
 """Tests for pair correlation function."""
+
 import numpy as np
+
 from morie.fn.sgpcf import sgpcf
 
 
@@ -14,6 +16,7 @@ def test_sgpcf_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgpcf import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

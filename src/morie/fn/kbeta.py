@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kbeta"]
@@ -91,9 +92,7 @@ def kbeta(
         xi = np.clip(data_std[i], 1e-10, 1 - 1e-10)
         a_param = xi / bw + 1.0
         b_param = (1.0 - xi) / bw + 1.0
-        log_k = ((a_param - 1) * np.log(t)
-                 + (b_param - 1) * np.log(1 - t)
-                 - betaln(a_param, b_param))
+        log_k = (a_param - 1) * np.log(t) + (b_param - 1) * np.log(1 - t) - betaln(a_param, b_param)
         density += np.exp(log_k)
     density /= n * (upper - lower)
 

@@ -1,6 +1,7 @@
 """Test csgng."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csgng import csgng
 
 

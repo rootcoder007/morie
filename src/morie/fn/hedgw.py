@@ -64,23 +64,23 @@ def hedgw(
         raise ValueError(f"bw must be positive, got {bw}.")
 
     u = (x0 - data) / bw
-    k_vals = np.exp(-0.5 * u ** 2) / np.sqrt(2 * np.pi)
+    k_vals = np.exp(-0.5 * u**2) / np.sqrt(2 * np.pi)
     f_hat = float(np.mean(k_vals) / bw)
 
     rk = 1.0 / (2.0 * np.sqrt(np.pi))
     variance = rk * f_hat / (n * bw) if f_hat > 0 else 1e-20
 
-    k2_vals = np.exp(-0.5 * u ** 2 / 2) / np.sqrt(4 * np.pi)
+    k2_vals = np.exp(-0.5 * u**2 / 2) / np.sqrt(4 * np.pi)
     f2_hat = float(np.mean(k2_vals) / (bw * np.sqrt(2)))
 
-    mu3_k = np.mean(k_vals ** 3) / bw ** 3
-    mu2_k = np.mean(k_vals ** 2) / bw ** 2
+    mu3_k = np.mean(k_vals**3) / bw**3
+    mu2_k = np.mean(k_vals**2) / bw**2
     if mu2_k > 0:
-        kappa3 = mu3_k / mu2_k ** 1.5
+        kappa3 = mu3_k / mu2_k**1.5
     else:
         kappa3 = 0.0
 
-    bias_term = 0.5 * bw ** 2 * f2_hat
+    bias_term = 0.5 * bw**2 * f2_hat
 
     se = np.sqrt(variance)
     z_alpha = 1.96

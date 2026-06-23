@@ -1,6 +1,7 @@
 """Test trdns."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trdns import trdns
 
 

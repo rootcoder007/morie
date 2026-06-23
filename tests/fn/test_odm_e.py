@@ -1,13 +1,13 @@
 """Tests for morie.fn.odm_e — OTIS demo equity."""
 
-import pytest
 import numpy as np
-from morie.fn.odm_e import otis_demo_equity
+import pytest
+
 from morie.fn._containers import ESRes
+from morie.fn.odm_e import otis_demo_equity
 
 
 class TestOtisDemoEquity:
-
     def test_returns_esres(self):
         gp = np.array([0.5, 0.3, 0.2])
         pp = np.array([0.4, 0.4, 0.2])

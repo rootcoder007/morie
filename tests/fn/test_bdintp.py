@@ -1,6 +1,7 @@
 """Tests for bdintp.bound_intersection."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bdintp import bound_intersection
 
 
@@ -11,7 +12,7 @@ def test_bdintp_basic():
     moments = np.random.default_rng(42).normal(0, 1, 100)
     result = bound_intersection(y, D, moments)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bdintp_edge():

@@ -1,6 +1,7 @@
 """Free energy of an OT plan = primal - dual."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_free_energy"]
@@ -42,7 +43,9 @@ def ot_free_energy(T, C, a, b, f, g, epsilon):
     n = len(T)
     result = float(np.mean(T))
     se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Free energy of an OT plan = primal - dual"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Free energy of an OT plan = primal - dual"}
+    )
 
 
 def cheatsheet():

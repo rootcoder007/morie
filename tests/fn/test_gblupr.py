@@ -1,6 +1,7 @@
 """Tests for gblupr.gblup_estimator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gblupr import gblup_estimator
 
 
@@ -12,7 +13,7 @@ def test_gblupr_basic():
     G = np.eye(10)
     result = gblup_estimator(y, X, Z, G)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gblupr_edge():

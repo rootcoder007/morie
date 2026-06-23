@@ -1,7 +1,5 @@
 """Tests for Burnett 2018 PNAS GEMM PM₂.₅ exposure-response."""
 
-import math
-
 import numpy as np
 import pytest
 
@@ -24,9 +22,7 @@ def test_pmgemm_monotone_in_concentration():
     r = pmgemm(concs)
     rrs = r.extra["rr"]
     for i in range(1, len(rrs)):
-        assert rrs[i] >= rrs[i - 1], (
-            f"non-monotone: {rrs[i-1]:.3f} → {rrs[i]:.3f} at C={concs[i]}"
-        )
+        assert rrs[i] >= rrs[i - 1], f"non-monotone: {rrs[i - 1]:.3f} → {rrs[i]:.3f} at C={concs[i]}"
 
 
 def test_pmgemm_saturation_vs_linear():
@@ -48,7 +44,7 @@ def test_pmgemm_lung_cancer_steeper_than_ncd_at_moderate_exposure():
 def test_pmgemm_params_overridable_for_sensitivity():
     # Sensitivity analysis: bump θ, expect higher RR.
     r_base = pmgemm(20.0, outcome="ncd_lri")
-    r_high = pmgemm(20.0, outcome="ncd_lri", theta=0.20)   # > 0.1430
+    r_high = pmgemm(20.0, outcome="ncd_lri", theta=0.20)  # > 0.1430
     assert r_high.value > r_base.value
 
 
@@ -89,9 +85,7 @@ def test_pmgemm_delhi_scale_rr_in_published_ballpark():
     # to be ~1.7 (solid black line, central estimate). We get 1.704 —
     # spot-on. Window is deliberately wide to accept the published CI.
     r = pmgemm(100.0, outcome="ncd_lri")
-    assert 1.50 < r.value < 1.95, (
-        f"expected Burnett ~1.7 at C=100 (range 1.5-1.95); got {r.value:.3f}"
-    )
+    assert 1.50 < r.value < 1.95, f"expected Burnett ~1.7 at C=100 (range 1.5-1.95); got {r.value:.3f}"
 
 
 def test_pmgemm_saturation_shape_above_100():
@@ -104,6 +98,5 @@ def test_pmgemm_saturation_shape_above_100():
     gain_10_to_100 = r100 - r10
     gain_100_to_300 = r300 - r100
     assert gain_100_to_300 < gain_10_to_100, (
-        f"GEMM should saturate: Δ(10→100)={gain_10_to_100:.3f} "
-        f"should exceed Δ(100→300)={gain_100_to_300:.3f}"
+        f"GEMM should saturate: Δ(10→100)={gain_10_to_100:.3f} should exceed Δ(100→300)={gain_100_to_300:.3f}"
     )

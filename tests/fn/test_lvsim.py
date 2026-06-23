@@ -1,6 +1,7 @@
 """Test lvsim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lvsim import lvsim
 
 

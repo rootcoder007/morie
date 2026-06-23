@@ -1,6 +1,7 @@
 """Test clcon."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clcon import clcon
 
 

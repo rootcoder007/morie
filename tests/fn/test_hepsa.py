@@ -1,6 +1,5 @@
 """Tests for morie.fn.hepsa -- PSA."""
 
-import pytest
 from morie.fn.hepsa import probabilistic_sensitivity
 
 

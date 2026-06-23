@@ -1,7 +1,6 @@
 """Tests for morie.fn.msnmt -- Nonmetric MDS (Kruskal)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msnmt import nonmetric_mds
 
@@ -14,5 +13,5 @@ class TestNonmetricMds:
         assert result.value is not None
 
     def test_output_type(self):
-        result = nonmetric_mds(np.random.default_rng(0).standard_normal((5,2)))
+        result = nonmetric_mds(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

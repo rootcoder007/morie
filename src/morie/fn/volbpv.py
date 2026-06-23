@@ -1,6 +1,7 @@
 """Bipower variation (jump-robust realised volatility)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_bipower_variation"]
@@ -32,7 +33,9 @@ def vol_bipower_variation(r_intraday, block_index):
     n = len(r_intraday)
     result = float(np.mean(r_intraday))
     se = float(np.std(r_intraday, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bipower variation (jump-robust realised volatility)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bipower variation (jump-robust realised volatility)"}
+    )
 
 
 def cheatsheet():

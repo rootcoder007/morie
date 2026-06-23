@@ -1,6 +1,7 @@
 """SAX symbolic aggregate approximation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sax_representation"]

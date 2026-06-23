@@ -186,6 +186,5 @@ def fetch_table(
     timeout : float | None
         Total query timeout in seconds.
     """
-    sql = build_sql(project, dataset, table,
-                    where=where, limit=limit, select=select)
+    sql = build_sql(project, dataset, table, where=where, limit=limit, select=select)
     return run_query(sql, project=billing_project, client=client, timeout=timeout)

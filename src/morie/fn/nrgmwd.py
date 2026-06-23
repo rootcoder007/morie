@@ -1,6 +1,7 @@
 """Normalized random measure."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["normalized_random_measure"]

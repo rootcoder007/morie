@@ -1,7 +1,9 @@
 """Tests for semfn.py - spectral error measure."""
+
 import numpy as np
 import pytest
-from morie.fn.semfn import spectral_error_fn, semfn
+
+from morie.fn.semfn import semfn, spectral_error_fn
 
 
 def test_spectral_error_returns_descriptive_result():

@@ -1,6 +1,7 @@
 """Tests for wsmbpc.wasserman_bootstrap_percentile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmbpc import wasserman_bootstrap_percentile
 
 
@@ -12,7 +13,7 @@ def test_wsmbpc_basic():
     alpha = 0.05
     result = wasserman_bootstrap_percentile(data, T, B, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmbpc_edge():

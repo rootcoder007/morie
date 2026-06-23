@@ -7,7 +7,7 @@ Accelerated proximal gradient method with momentum.
 
 import numpy as np
 
-__all__ = ['fista']
+__all__ = ["fista"]
 
 
 def fista(f, grad_f, prox_g, x0, step_size=0.01, tol=1e-6, max_iter=1000, full_output=False):
@@ -74,11 +74,7 @@ def fista(f, grad_f, prox_g, x0, step_size=0.01, tol=1e-6, max_iter=1000, full_o
         residual = np.linalg.norm(x_new - x)
         if residual < tol:
             if full_output:
-                return x_new, {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_value': f(x_new)
-                }
+                return x_new, {"iterations": iteration + 1, "converged": True, "final_value": f(x_new)}
             return x_new
 
         x = x_new
@@ -86,9 +82,5 @@ def fista(f, grad_f, prox_g, x0, step_size=0.01, tol=1e-6, max_iter=1000, full_o
         t = t_new
 
     if full_output:
-        return x, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_value': f(x)
-        }
+        return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x

@@ -1,6 +1,7 @@
 """Tests for prgxnt.perplexity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.prgxnt import perplexity
 
 
@@ -10,7 +11,7 @@ def test_prgxnt_basic():
     N = 100
     result = perplexity(log_probs, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_prgxnt_edge():

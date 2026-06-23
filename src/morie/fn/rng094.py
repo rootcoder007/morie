@@ -1,6 +1,7 @@
 """Simplified closed-form frequency response of the Hann filter.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_hann_frequency_response_simplified"]
@@ -30,7 +31,14 @@ def rangayyan_ch3_hann_frequency_response_simplified(omega):
     n = len(omega)
     result = float(np.mean(omega))
     se = float(np.std(omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Simplified closed-form frequency response of the Hann filter."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Simplified closed-form frequency response of the Hann filter.",
+        }
+    )
 
 
 def cheatsheet():

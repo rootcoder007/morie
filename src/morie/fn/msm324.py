@@ -1,6 +1,7 @@
 r"""Numbered display equation (15.1) from MVSML chapter 15.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_functional_regression_eq_15_1"]
@@ -40,7 +41,14 @@ def mvsml_functional_regression_eq_15_1(log, f, x, where, are, general):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (15.1) from MVSML chapter 15."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (15.1) from MVSML chapter 15.",
+        }
+    )
 
 
 def cheatsheet():

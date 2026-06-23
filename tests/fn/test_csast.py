@@ -1,6 +1,7 @@
 """Test csast."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csast import csast
 
 

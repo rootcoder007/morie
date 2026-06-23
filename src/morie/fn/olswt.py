@@ -112,7 +112,7 @@ def ols_weighted(
         else:
             p_dict[nm] = float("nan")
 
-    ss_res = float(np.sum(W * resid ** 2))
+    ss_res = float(np.sum(W * resid**2))
     ss_tot = float(np.sum(W * (Y - np.average(Y, weights=W)) ** 2))
     r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0.0
 

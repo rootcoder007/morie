@@ -1,6 +1,7 @@
 """Tests for dssm.dssm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dssm import dssm
 
 
@@ -10,7 +11,7 @@ def test_dssm_basic():
     doc = np.random.default_rng(42).normal(0, 1, 100)
     result = dssm(query, doc)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dssm_edge():

@@ -1,6 +1,7 @@
 """Tests for baysprr.sparsity_horseshoe."""
+
 import numpy as np
-import pytest
+
 from morie.fn.baysprr import sparsity_horseshoe
 
 
@@ -11,7 +12,7 @@ def test_baysprr_basic():
     tau = 0.1
     result = sparsity_horseshoe(X, y, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_baysprr_edge():

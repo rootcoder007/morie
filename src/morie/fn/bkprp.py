@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Backpropagation gradient computation for a single dense layer."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -61,7 +62,7 @@ def backpropagation(x, y, w=None, b=None, activation: str = "sigmoid"):
     dsig = _sigma_prime(z, activation, a)
 
     batch = x.shape[0]
-    diff = (a - y)  # (batch, n_out)
+    diff = a - y  # (batch, n_out)
     loss = float(0.5 * np.sum(diff * diff) / batch)
 
     delta = diff * dsig  # (batch, n_out)

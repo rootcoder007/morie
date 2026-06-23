@@ -1,6 +1,7 @@
 """Test boxmm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.boxmm import box_m_test
 
 

@@ -11,7 +11,9 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['entsg']
+__all__ = ["entsg"]
+
+
 def entsg(
     x: np.ndarray,
     *,
@@ -47,14 +49,13 @@ def entsg(
         p = counts / counts.sum()
         p = p[p > 0]
         ent = -float(np.sum(p * np.log2(p)))
-        return DescriptiveResult(name="entsg", value=ent,
-                                 extra={"method": "shannon", "n_bins": n_bins})
+        return DescriptiveResult(name="entsg", value=ent, extra={"method": "shannon", "n_bins": n_bins})
 
     if r is None:
         r = 0.2 * np.std(x, ddof=1) if np.std(x) > 0 else 1.0
 
     def _count_matches(dim):
-        templates = np.array([x[i:i + dim] for i in range(n - dim)])
+        templates = np.array([x[i : i + dim] for i in range(n - dim)])
         count = 0
         for i in range(len(templates)):
             for j in range(i + 1, len(templates)):

@@ -1,5 +1,7 @@
 """Tests for turning bands simulation."""
+
 import numpy as np
+
 from morie.fn.sgtbn import sgtbn
 
 
@@ -15,6 +17,7 @@ def test_sgtbn_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgtbn import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

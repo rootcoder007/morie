@@ -1,6 +1,7 @@
 """Pole positions on the Butterworth circle in the s-plane.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_butterworth_pole_positions"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_butterworth_pole_positions(Omega_c, N, k):
     n = len(Omega_c)
     result = float(np.mean(Omega_c))
     se = float(np.std(Omega_c, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pole positions on the Butterworth circle in the s-plane."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pole positions on the Butterworth circle in the s-plane.",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 """Cross-correlation function of two continuous-time signals with delay tau.."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_ccf_continuous_with_delay"]
@@ -36,9 +38,23 @@ def rangayyan_ch4_ccf_continuous_with_delay(x, y, tau, t):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Cross-correlation function of two continuous-time signals with delay tau."})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Cross-correlation function of two continuous-time signals with delay tau.",
+            }
+        )
     result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Cross-correlation function of two continuous-time signals with delay tau."})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Cross-correlation function of two continuous-time signals with delay tau.",
+        }
+    )
 
 
 def cheatsheet():

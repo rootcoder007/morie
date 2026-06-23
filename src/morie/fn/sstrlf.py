@@ -1,6 +1,7 @@
 """Left-truncated survival adjustment."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["surv_truncation_left"]

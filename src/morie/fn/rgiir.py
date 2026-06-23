@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """IIR Butterworth filter -- Rangayyan Ch 3."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -52,8 +53,12 @@ def rangayyan_iir_filter(x, cutoff, order=4, fs=1.0, btype="low"):
         ],
         interpretation=f"Zero-phase Butterworth {btype} filter, order {order}.",
         payload={
-            "signal": y, "sos": sos, "order": int(order),
-            "cutoff": cutoff, "fs": float(fs), "btype": btype,
+            "signal": y,
+            "sos": sos,
+            "order": int(order),
+            "cutoff": cutoff,
+            "fs": float(fs),
+            "btype": btype,
         },
     )
     return with_describe_pointer(res, "rgiir")

@@ -1,6 +1,7 @@
 """Multiplicative model addressed by homomorphic filtering.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_homomorphic_multiplicative_signal"]
@@ -34,7 +35,14 @@ def rangayyan_ch4_homomorphic_multiplicative_signal(x, p, t):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multiplicative model addressed by homomorphic filtering."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multiplicative model addressed by homomorphic filtering.",
+        }
+    )
 
 
 def cheatsheet():

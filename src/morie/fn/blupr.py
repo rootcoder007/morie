@@ -1,6 +1,7 @@
 """Best linear unbiased predictor of random intercept."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["blup_random_intercept"]
@@ -38,7 +39,9 @@ def blup_random_intercept(y, X, cluster, sigma2_u, sigma2_e):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Best linear unbiased predictor of random intercept"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Best linear unbiased predictor of random intercept"}
+    )
 
 
 def cheatsheet():

@@ -1,8 +1,9 @@
 """Tests for morie.fn.r_es -- Pearson r as an effect size."""
 
 import pytest
-from morie.fn.r_es import r_effect_size
+
 from morie.fn._containers import ESRes
+from morie.fn.r_es import r_effect_size
 
 
 class TestREffectSize:

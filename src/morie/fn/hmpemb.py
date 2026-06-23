@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Use pretrained word embeddings (e.g., GloVe) as initialization."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_pretrained_embeddings"]
@@ -34,7 +36,14 @@ def geron_pretrained_embeddings(vocab, pretrained, freeze):
     n = len(vocab)
     result = float(np.mean(vocab))
     se = float(np.std(vocab, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Use pretrained word embeddings (e.g., GloVe) as initialization"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Use pretrained word embeddings (e.g., GloVe) as initialization",
+        }
+    )
 
 
 def cheatsheet():

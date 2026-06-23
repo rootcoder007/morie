@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.sraph import validate_inputs, sraph
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sraph import sraph, validate_inputs
 
 
 class TestSraph:

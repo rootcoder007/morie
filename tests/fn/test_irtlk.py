@@ -1,7 +1,7 @@
 """Tests for irtlk -- IRT linking."""
-import numpy as np
-from morie.fn.irtlk import irt_linking
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.irtlk import irt_linking
 
 
 class TestIrtLinking:

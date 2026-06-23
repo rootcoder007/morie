@@ -1,7 +1,7 @@
 """Tests for morie.fn.umsad."""
 
 import numpy as np
-import pytest
+
 from morie.fn.umsad import umsad
 
 

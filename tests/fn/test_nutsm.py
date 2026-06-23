@@ -1,6 +1,7 @@
 """Test nutsm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nutsm import nutsm
 
 

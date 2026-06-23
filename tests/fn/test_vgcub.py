@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgcub -- Cubic variogram model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgcub import vario_cubic
 
@@ -15,5 +14,5 @@ class TestVarioCubic:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = vario_cubic(np.random.default_rng(0).uniform(0,1,(5,2)), np.ones(5))
+        result = vario_cubic(np.random.default_rng(0).uniform(0, 1, (5, 2)), np.ones(5))
         assert hasattr(result, "statistic")

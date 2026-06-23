@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Randomized hyperparam search over distributions with CV scoring."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_randomized_search_cv"]
@@ -38,7 +40,14 @@ def geron_randomized_search_cv(X, y, param_dist, n_iter, K):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Randomized hyperparam search over distributions with CV scoring"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Randomized hyperparam search over distributions with CV scoring",
+        }
+    )
 
 
 def cheatsheet():

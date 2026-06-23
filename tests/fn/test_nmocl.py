@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmocl -- Optimal Classification cutting line"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmocl import oc_cutline
 

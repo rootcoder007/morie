@@ -1,6 +1,7 @@
 """Tests for laplT.laplace_transform."""
+
 import numpy as np
-import pytest
+
 from morie.fn.laplT import laplace_transform
 
 
@@ -11,7 +12,7 @@ def test_laplT_basic():
     s = 90
     result = laplace_transform(f, t, s)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_laplT_edge():

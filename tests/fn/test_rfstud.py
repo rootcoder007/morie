@@ -1,6 +1,8 @@
 """Tests for rfstud."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfstud import rfstud
 
 
@@ -28,4 +30,5 @@ def test_rfstud_no_data():
 
 def test_rfstud_alias():
     from morie.fn.rfstud import rfstud
+
     assert rfstud is rfstud

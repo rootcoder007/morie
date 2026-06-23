@@ -1,8 +1,9 @@
 """Tests for morie.fn.cles -- Common Language Effect Size."""
 
 import pytest
-from morie.fn.cles import cles
+
 from morie.fn._containers import ESRes
+from morie.fn.cles import cles
 
 
 class TestCLES:

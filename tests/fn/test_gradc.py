@@ -1,7 +1,9 @@
 """Test gradient_clip."""
+
 import numpy as np
-from morie.fn.gradc import gradient_clip, gradc
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.gradc import gradc, gradient_clip
 
 
 class TestGradientClip:

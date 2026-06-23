@@ -1,6 +1,7 @@
 """Tests for km124.kamath_ch8_ngram_embedding."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km124 import kamath_ch8_ngram_embedding
 
 
@@ -11,7 +12,7 @@ def test_km124_basic():
     n = 100
     result = kamath_ch8_ngram_embedding(x, i, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km124_edge():

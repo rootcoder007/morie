@@ -1,6 +1,7 @@
 """Reversible-jump MCMC across model dimensions."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["reversible_jump_mcmc"]
@@ -34,7 +35,9 @@ def reversible_jump_mcmc(models, x0, n_iter):
     n = len(models)
     result = float(np.mean(models))
     se = float(np.std(models, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Reversible-jump MCMC across model dimensions"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Reversible-jump MCMC across model dimensions"}
+    )
 
 
 def cheatsheet():

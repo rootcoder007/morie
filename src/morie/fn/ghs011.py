@@ -1,6 +1,7 @@
 """Joint Dirichlet distribution of the first k weights and the residual mass under a countable Dirichlet prior with parameters alpha_j.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_countable_dirichlet_marginal"]
@@ -34,7 +35,14 @@ def ghosal_ch3_countable_dirichlet_marginal(p_j, alpha_j, k):
     n = len(p_j)
     result = float(np.mean(p_j))
     se = float(np.std(p_j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Joint Dirichlet distribution of the first k weights and the residual mass under a countable Dirichlet prior with parameters alpha_j."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Joint Dirichlet distribution of the first k weights and the residual mass under a countable Dirichlet prior with parameters alpha_j.",
+        }
+    )
 
 
 def cheatsheet():

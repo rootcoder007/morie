@@ -1,6 +1,7 @@
 """Tests for hmmcd.geron_mc_dropout."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmmcd import geron_mc_dropout
 
 
@@ -12,7 +13,7 @@ def test_hmmcd_basic():
     p = 5
     result = geron_mc_dropout(model, x, K, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmmcd_edge():

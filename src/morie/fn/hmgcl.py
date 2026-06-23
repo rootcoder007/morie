@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gradient clipping by global norm to stabilize training."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_gradient_clipping"]
@@ -32,7 +34,14 @@ def geron_gradient_clipping(grads, max_norm):
     n = len(grads)
     result = float(np.mean(grads))
     se = float(np.std(grads, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gradient clipping by global norm to stabilize training"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Gradient clipping by global norm to stabilize training",
+        }
+    )
 
 
 def cheatsheet():

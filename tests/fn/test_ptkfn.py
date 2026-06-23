@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptkfn -- Ripley's K-function"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptkfn import k_function
 

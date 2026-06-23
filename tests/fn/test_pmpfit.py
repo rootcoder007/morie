@@ -1,6 +1,7 @@
 """Tests for pmpfit.pmp_fit."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pmpfit import pmp_fit
 
 
@@ -12,7 +13,7 @@ def test_pmpfit_basic():
     alpha_grid = np.random.default_rng(42).normal(0, 1, 100)
     result = pmp_fit(y, K, sigma_grid, alpha_grid)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pmpfit_edge():

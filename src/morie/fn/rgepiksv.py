@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Epileptic seizure detection using K-SVD dictionary learning."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_epilepsy_ksvd"]
@@ -36,7 +38,14 @@ def rangayyan_epilepsy_ksvd(eeg, fs, dict_size, sparsity):
     n = int(eeg) if eeg.ndim == 0 else len(eeg)
     result = float(np.mean(eeg))
     se = float(np.std(eeg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Epileptic seizure detection using K-SVD dictionary learning"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Epileptic seizure detection using K-SVD dictionary learning",
+        }
+    )
 
 
 def cheatsheet():

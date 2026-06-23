@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pan-Tompkins QRS detection -- Rangayyan Ch 6."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -37,20 +38,19 @@ def rangayyan_qrs_detect(x, fs=360.0):
     ----------
     Pan & Tompkins (1985), IEEE TBME 32:230.  Rangayyan Ch 6.
     """
-    from scipy.signal import butter, sosfiltfilt, find_peaks
+    from scipy.signal import butter, find_peaks, sosfiltfilt
 
     x = np.asarray(x, dtype=float).ravel()
     nyq = 0.5 * fs
     # 1) bandpass 5–15 Hz
-    sos = butter(3, [5.0 / nyq, min(15.0, nyq * 0.95) / nyq], btype="band",
-                 output="sos")
+    sos = butter(3, [5.0 / nyq, min(15.0, nyq * 0.95) / nyq], btype="band", output="sos")
     bp = sosfiltfilt(sos, x)
     # 2) differentiate (Pan-Tompkins coefficients)
     der = np.zeros_like(bp)
     for n in range(4, bp.size):
         der[n] = (1.0 / 8.0) * (2 * bp[n] + bp[n - 1] - bp[n - 3] - 2 * bp[n - 4])
     # 3) square
-    sq = der ** 2
+    sq = der**2
     # 4) moving-window integration over 150 ms
     W = max(1, int(round(0.150 * fs)))
     kernel = np.ones(W) / W
@@ -77,9 +77,7 @@ def rangayyan_qrs_detect(x, fs=360.0):
             ("Mean HR (bpm)", hr),
             ("Threshold", float(thr)),
         ],
-        interpretation=(
-            f"Detected {r_peaks.size} R-peaks; mean HR {hr:.1f} bpm."
-        ),
+        interpretation=(f"Detected {r_peaks.size} R-peaks; mean HR {hr:.1f} bpm."),
         payload={
             "r_peaks": r_peaks,
             "rr_intervals_ms": rr_ms,

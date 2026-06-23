@@ -1,6 +1,7 @@
 """Tests for km063.kamath_ch4_vera_forward."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km063 import kamath_ch4_vera_forward
 
 
@@ -14,7 +15,7 @@ def test_km063_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ch4_vera_forward(W_0, Lambda_b, Lambda_d, A, B, x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km063_edge():

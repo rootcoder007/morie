@@ -1,6 +1,7 @@
 """Tests for otopw.ot_optimised_potentials_warm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otopw import ot_optimised_potentials_warm
 
 
@@ -15,7 +16,7 @@ def test_otopw_basic():
     max_iter = np.random.default_rng(42).normal(0, 1, 100)
     result = ot_optimised_potentials_warm(a, b, C, epsilon, f0, g0, max_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otopw_edge():

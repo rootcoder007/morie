@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.detlea import detect_leakage, detlea
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.detlea import detect_leakage, detlea
 
 
 class TestDetlea:

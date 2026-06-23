@@ -1,6 +1,7 @@
 """NUTS max-tree-depth saturation rate."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tree_depth_saturation"]

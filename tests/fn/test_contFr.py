@@ -1,6 +1,7 @@
 """Tests for contFr.continued_fraction."""
+
 import numpy as np
-import pytest
+
 from morie.fn.contFr import continued_fraction
 
 
@@ -10,7 +11,7 @@ def test_contFr_basic():
     n = 100
     result = continued_fraction(x, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_contFr_edge():

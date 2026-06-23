@@ -1,6 +1,7 @@
 """Tests for morie.fn.lr_ -- Likelihood Ratios."""
 
 import pytest
+
 from morie.fn.lr_ import likelihood_ratios
 
 

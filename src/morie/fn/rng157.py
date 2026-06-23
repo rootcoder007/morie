@@ -1,6 +1,7 @@
 """Quadratic squared-error form used in LMS gradient derivations.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_lms_squared_error"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_lms_squared_error(x, r, w, n):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Quadratic squared-error form used in LMS gradient derivations."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Quadratic squared-error form used in LMS gradient derivations.",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for attmh.multi_head_attention."""
+
 import numpy as np
-import pytest
+
 from morie.fn.attmh import multi_head_attention
 
 
@@ -17,7 +18,7 @@ def test_attmh_basic():
     heads = np.random.default_rng(42).normal(0, 1, 100)
     result = multi_head_attention(y, Q, K, V, Wq, Wk, Wv, Wo, heads)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_attmh_edge():

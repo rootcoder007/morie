@@ -1,8 +1,9 @@
 """Tests for morie.fn.thndm -- Mach shock wave."""
 
-from morie.fn.thndm import mach_shock, thndm
-from morie.fn._containers import DescriptiveResult
 import pytest
+
+from morie.fn._containers import DescriptiveResult
+from morie.fn.thndm import mach_shock, thndm
 
 
 class TestThndm:

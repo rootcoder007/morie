@@ -39,4 +39,4 @@ pfcrc = preference_circles
 
 
 def cheatsheet() -> str:
-    return 'preference_circles({}) -> Preference circles for visualization.'
+    return "preference_circles({}) -> Preference circles for visualization."

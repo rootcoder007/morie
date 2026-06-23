@@ -1,6 +1,7 @@
 """Test dkinl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkinl import dkinl
 
 

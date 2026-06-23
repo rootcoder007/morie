@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Multi-Query Attention: single K/V head shared across all Q heads."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_multi_query_attention"]
@@ -36,7 +38,14 @@ def alammar_multi_query_attention(Q, K_shared, V_shared, n_query_heads):
     n = len(Q)
     result = float(np.mean(Q))
     se = float(np.std(Q, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multi-Query Attention: single K/V head shared across all Q heads"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multi-Query Attention: single K/V head shared across all Q heads",
+        }
+    )
 
 
 def cheatsheet():

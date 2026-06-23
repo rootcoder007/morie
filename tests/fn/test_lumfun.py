@@ -1,8 +1,9 @@
 """Tests for morie.fn.lumfun -- Luminosity function."""
 
 import numpy as np
-from morie.fn.lumfun import luminosity_function, lumfun
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lumfun import lumfun, luminosity_function
 
 
 class TestLumfun:

@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.summar import summarize, summar
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.summar import summar, summarize
 
 
 class TestSummar:
@@ -12,10 +13,12 @@ class TestSummar:
 
     def test_numeric_summary(self):
         rng = np.random.default_rng(42)
-        df = pd.DataFrame({
-            "a": rng.normal(10, 2, 100),
-            "b": rng.normal(5, 1, 100),
-        })
+        df = pd.DataFrame(
+            {
+                "a": rng.normal(10, 2, 100),
+                "b": rng.normal(5, 1, 100),
+            }
+        )
         result = summarize(df)
         assert isinstance(result, DescriptiveResult)
         assert result.name == "Summary"
@@ -26,10 +29,12 @@ class TestSummar:
         assert "skew" in tbl.columns
 
     def test_mixed_types(self):
-        df = pd.DataFrame({
-            "num": [1.0, 2.0, 3.0],
-            "cat": ["a", "b", "a"],
-        })
+        df = pd.DataFrame(
+            {
+                "num": [1.0, 2.0, 3.0],
+                "cat": ["a", "b", "a"],
+            }
+        )
         result = summarize(df)
         tbl = result.value
         assert len(tbl) == 2

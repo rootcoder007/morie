@@ -1,6 +1,7 @@
 """MSM accelerated failure time model."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["msm_accelerated_failure"]

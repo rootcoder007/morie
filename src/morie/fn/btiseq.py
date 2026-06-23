@@ -1,6 +1,7 @@
 """Iterated bootstrap CI calibration via prepivoting."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_iter_calibrated"]
@@ -38,7 +39,9 @@ def boot_iter_calibrated(x, stat, B, iters, alpha):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Iterated bootstrap CI calibration via prepivoting"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Iterated bootstrap CI calibration via prepivoting"}
+    )
 
 
 def cheatsheet():

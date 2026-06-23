@@ -7,7 +7,6 @@ from morie.fn.sttrn import sttrn
 
 
 class TestSttrn:
-
     def test_linear_trend(self):
         rng = np.random.default_rng(42)
         n = 30

@@ -1,6 +1,9 @@
 """Tests for rpl_at — age trend."""
+
 import pandas as pd
+
 from morie.fn.rpl_at import rplace_age_trend
+
 
 def test_rpl_at_basic(otis_df):
     result = rplace_age_trend(otis_df)
@@ -9,6 +12,7 @@ def test_rpl_at_basic(otis_df):
 
 def test_cheatsheet():
     from morie.fn.rpl_at import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

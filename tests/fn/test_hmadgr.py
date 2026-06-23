@@ -1,6 +1,7 @@
 """Tests for hmadgr.geron_adagrad."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmadgr import geron_adagrad
 
 
@@ -12,7 +13,7 @@ def test_hmadgr_basic():
     eps = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_adagrad(grads, s, eta, eps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmadgr_edge():

@@ -1,6 +1,7 @@
 """Test opga."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opga import opga
 
 

@@ -1,6 +1,7 @@
 """Tests for cvxadm.boyd_admm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxadm import boyd_admm
 
 
@@ -14,7 +15,7 @@ def test_cvxadm_basic():
     rho = 0.5
     result = boyd_admm(f, g, A, B, c, rho)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxadm_edge():

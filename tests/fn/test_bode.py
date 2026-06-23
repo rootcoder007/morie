@@ -1,4 +1,5 @@
 """Tests for bode (Bode plot computation)."""
+
 from morie.fn.bode import bode_plot
 
 
@@ -11,6 +12,7 @@ def test_bode_first_order():
 
 def test_cheatsheet():
     from morie.fn.bode import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

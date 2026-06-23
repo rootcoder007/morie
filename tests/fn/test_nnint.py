@@ -1,6 +1,7 @@
 """Test nnint."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nnint import nnint
 
 

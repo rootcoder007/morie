@@ -1,14 +1,15 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Schwartz posterior consistency diagnostic."""
+
 import numpy as np
 from scipy.stats import norm
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_posterior_consistency"]
 
 
-def ghosal_posterior_consistency(x, ref_loc=None, ref_scale=None,
-                                  eps=0.1, K=200, seed=0):
+def ghosal_posterior_consistency(x, ref_loc=None, ref_scale=None, eps=0.1, K=200, seed=0):
     """Schwartz-style posterior-consistency diagnostic.
 
     For a Dirichlet-process prior the posterior is strongly consistent
@@ -48,10 +49,13 @@ def ghosal_posterior_consistency(x, ref_loc=None, ref_scale=None,
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n == 0:
-        return RichResult(payload={
-            "estimate": float("nan"), "n": 0,
-            "method": "Schwartz consistency (empty input)",
-        })
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "n": 0,
+                "method": "Schwartz consistency (empty input)",
+            }
+        )
     order = np.argsort(x)
     xs = x[order]
     grid = np.linspace(float(xs[0]) - 1.0, float(xs[-1]) + 1.0, 200)
@@ -64,22 +68,23 @@ def ghosal_posterior_consistency(x, ref_loc=None, ref_scale=None,
         u = rng.dirichlet(np.ones(n))
         cdf_at_data = np.cumsum(u)  # sorted weights cumulative
         idx = np.searchsorted(xs, grid, side="right")
-        F_draw = np.where(idx == 0, 0.0,
-                          cdf_at_data[np.clip(idx - 1, 0, n - 1)])
+        F_draw = np.where(idx == 0, 0.0, cdf_at_data[np.clip(idx - 1, 0, n - 1)])
         ks[k] = float(np.max(np.abs(F_draw - F_ref)))
     estimate = float(np.mean(ks > eps))
     ks_mean = float(np.mean(ks))
     ks_se = float(np.std(ks, ddof=1) / np.sqrt(K)) if K > 1 else float("nan")
-    schwartz_bound = float(np.exp(-2 * n * eps ** 2))
-    return RichResult(payload={
-        "estimate": estimate,
-        "ks_mean": ks_mean,
-        "ks_se": ks_se,
-        "schwartz_bound": schwartz_bound,
-        "n": n,
-        "eps": float(eps),
-        "method": "Schwartz consistency (Bayesian-bootstrap proxy)",
-    })
+    schwartz_bound = float(np.exp(-2 * n * eps**2))
+    return RichResult(
+        payload={
+            "estimate": estimate,
+            "ks_mean": ks_mean,
+            "ks_se": ks_se,
+            "schwartz_bound": schwartz_bound,
+            "n": n,
+            "eps": float(eps),
+            "method": "Schwartz consistency (Bayesian-bootstrap proxy)",
+        }
+    )
 
 
 def cheatsheet():

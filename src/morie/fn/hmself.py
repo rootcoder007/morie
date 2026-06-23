@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Self-supervised learning: generate labels from the data itself via pretext task."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_self_supervised"]
@@ -32,7 +34,14 @@ def geron_self_supervised(X, pretext):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Self-supervised learning: generate labels from the data itself via pretext task"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Self-supervised learning: generate labels from the data itself via pretext task",
+        }
+    )
 
 
 def cheatsheet():

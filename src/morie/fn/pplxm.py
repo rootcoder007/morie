@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Perplexity (Jelinek et al. 1977)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -38,10 +39,8 @@ def perplexity_metric(x, base: str = "e"):
     return RichResult(
         title="Perplexity (Jelinek 1977)",
         summary_lines=[("PPL", ppl), ("NLL/tok", nll), ("n", n)],
-        payload={"value": ppl, "nll": nll, "n": n,
-                 "method": "perplexity"},
-        interpretation=(f"Per-token branching factor = {ppl:.4f}; "
-                        f"lower is better."),
+        payload={"value": ppl, "nll": nll, "n": n, "method": "perplexity"},
+        interpretation=(f"Per-token branching factor = {ppl:.4f}; lower is better."),
     )
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sentiment analysis with RNN or transformer on tokens."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_sentiment_analysis"]
@@ -34,7 +36,9 @@ def geron_sentiment_analysis(texts, model, tokenizer):
     n = len(texts)
     result = float(np.mean(texts))
     se = float(np.std(texts, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sentiment analysis with RNN or transformer on tokens"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Sentiment analysis with RNN or transformer on tokens"}
+    )
 
 
 def cheatsheet():

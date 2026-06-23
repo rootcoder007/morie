@@ -1,6 +1,7 @@
 """Fourier transform of the log of a product is sum of log-FTs of the components.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_homomorphic_log_fourier"]
@@ -34,7 +35,14 @@ def rangayyan_ch4_homomorphic_log_fourier(X_l, P_l, omega):
     n = len(X_l)
     result = float(np.mean(X_l))
     se = float(np.std(X_l, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fourier transform of the log of a product is sum of log-FTs of the components."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Fourier transform of the log of a product is sum of log-FTs of the components.",
+        }
+    )
 
 
 def cheatsheet():

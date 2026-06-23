@@ -1,6 +1,7 @@
 """Tests for barte.bart."""
+
 import numpy as np
-import pytest
+
 from morie.fn.barte import bart
 
 
@@ -10,7 +11,7 @@ def test_barte_basic():
     tgt = np.random.default_rng(42).normal(0, 1, 100)
     result = bart(src, tgt)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_barte_edge():

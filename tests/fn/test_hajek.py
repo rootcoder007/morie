@@ -1,4 +1,5 @@
 """Tests for fn/hajek.py -- Hajek estimator for population mean."""
+
 import numpy as np
 import pytest
 

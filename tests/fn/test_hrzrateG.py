@@ -1,6 +1,7 @@
 """Tests for hrzrateG.horowitz_rate_G_estimation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzrateG import horowitz_rate_G_estimation
 
 
@@ -11,7 +12,7 @@ def test_hrzrateG_basic():
     bandwidth = 0.3
     result = horowitz_rate_G_estimation(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzrateG_edge():

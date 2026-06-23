@@ -1,5 +1,7 @@
 """Test tdual."""
+
 import pytest
+
 from morie.fn.tdual import t_duality
 
 

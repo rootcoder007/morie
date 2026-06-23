@@ -52,4 +52,4 @@ ptinp = point_in_polygon
 
 
 def cheatsheet() -> str:
-    return 'point_in_polygon({}) -> Point-in-polygon test via ray casting.'
+    return "point_in_polygon({}) -> Point-in-polygon test via ray casting."

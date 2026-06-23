@@ -1,4 +1,5 @@
 """Gradient Boosting ensemble (sequential additive model)."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -6,9 +7,17 @@ from ._richresult import RichResult
 __all__ = ["gradient_boosting_ensemble"]
 
 
-def gradient_boosting_ensemble(x, y, *, n_estimators=100, learning_rate=0.1,
-                                max_depth=3, task="auto", seed=0,
-                                deterministic_seed: int | None = None):
+def gradient_boosting_ensemble(
+    x,
+    y,
+    *,
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=3,
+    task="auto",
+    seed=0,
+    deterministic_seed: int | None = None,
+):
     """Gradient boosting via sklearn.ensemble.GradientBoosting{Classifier,Regressor}.
 
     F_m(x) = F_{m-1}(x) + nu * h_m(x), where h_m fits the negative gradient
@@ -39,7 +48,8 @@ def gradient_boosting_ensemble(x, y, *, n_estimators=100, learning_rate=0.1,
     feature_importances, n_estimators, learning_rate, n, method.
     """
     from sklearn.ensemble import (
-        GradientBoostingClassifier, GradientBoostingRegressor,
+        GradientBoostingClassifier,
+        GradientBoostingRegressor,
     )
 
     X = np.asarray(x, dtype=float)
@@ -50,29 +60,35 @@ def gradient_boosting_ensemble(x, y, *, n_estimators=100, learning_rate=0.1,
 
     if deterministic_seed is not None:
         from morie._det_rng import r_seed
+
         rs = r_seed("gbens", deterministic_seed)
     else:
         rs = seed
 
     if task == "auto":
-        task = "classification" if np.issubdtype(y.dtype, np.integer) or set(np.unique(y)).issubset({0, 1}) else "regression"
+        task = (
+            "classification"
+            if np.issubdtype(y.dtype, np.integer) or set(np.unique(y)).issubset({0, 1})
+            else "regression"
+        )
 
     Cls = GradientBoostingClassifier if task == "classification" else GradientBoostingRegressor
-    m = Cls(n_estimators=n_estimators, learning_rate=learning_rate,
-            max_depth=max_depth, random_state=rs)
+    m = Cls(n_estimators=n_estimators, learning_rate=learning_rate, max_depth=max_depth, random_state=rs)
     m.fit(X, y)
     score = float(m.score(X, y))
-    return RichResult(payload={
-        "estimate": score,
-        "train_score": score,
-        "feature_importances": m.feature_importances_.tolist(),
-        "n_estimators": int(n_estimators),
-        "learning_rate": float(learning_rate),
-        "max_depth": int(max_depth),
-        "task": task,
-        "n": int(n),
-        "method": f"Gradient Boosting ({task})",
-    })
+    return RichResult(
+        payload={
+            "estimate": score,
+            "train_score": score,
+            "feature_importances": m.feature_importances_.tolist(),
+            "n_estimators": int(n_estimators),
+            "learning_rate": float(learning_rate),
+            "max_depth": int(max_depth),
+            "task": task,
+            "n": int(n),
+            "method": f"Gradient Boosting ({task})",
+        }
+    )
 
 
 def cheatsheet():
@@ -85,7 +101,6 @@ if __name__ == "__main__":
     n = 300
     X = rng.normal(size=(n, 4))
     y = (X[:, 0] + 0.5 * X[:, 1] - X[:, 2] > 0).astype(int)
-    r = gradient_boosting_ensemble(X, y, n_estimators=50, learning_rate=0.1,
-                                    max_depth=3, seed=0)
+    r = gradient_boosting_ensemble(X, y, n_estimators=50, learning_rate=0.1, max_depth=3, seed=0)
     print("task:", r.task, "  train score:", r.train_score)
     print("feature importances:", r.feature_importances)

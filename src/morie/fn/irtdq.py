@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Quadratic deterministic utility function in Bayesian IRT."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["irt_quadratic_utility"]
@@ -34,7 +36,14 @@ def irt_quadratic_utility(ideal_point, vote_position, discrimination):
     n = int(ideal_point) if ideal_point.ndim == 0 else len(ideal_point)
     result = float(np.mean(ideal_point))
     se = float(np.std(ideal_point, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Quadratic deterministic utility function in Bayesian IRT"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Quadratic deterministic utility function in Bayesian IRT",
+        }
+    )
 
 
 def cheatsheet():

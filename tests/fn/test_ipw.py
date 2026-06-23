@@ -43,8 +43,6 @@ def test_stabilized_weights(synth_data):
 
 def test_trim_quantiles(synth_data):
     w_raw = calculate_ipw_weights(synth_data, treatment="treatment", ps_col="ps")
-    w_trim = calculate_ipw_weights(
-        synth_data, treatment="treatment", ps_col="ps", trim_quantiles=(0.05, 0.95)
-    )
+    w_trim = calculate_ipw_weights(synth_data, treatment="treatment", ps_col="ps", trim_quantiles=(0.05, 0.95))
     assert w_trim.max() <= w_raw.max()
     assert w_trim.min() >= w_raw.min()

@@ -1,6 +1,7 @@
 """Test mtpgr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtpgr import mtpgr
 
 

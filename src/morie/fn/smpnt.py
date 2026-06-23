@@ -32,7 +32,7 @@ def sample_entropy(x, m: int = 2, r: float | None = None, **kwargs) -> ESRes:
         raise ValueError("Tolerance r must be positive.")
 
     def _count_matches(dim):
-        templates = np.array([x[i:i + dim] for i in range(n - dim)])
+        templates = np.array([x[i : i + dim] for i in range(n - dim)])
         count = 0
         for i in range(len(templates)):
             for j in range(i + 1, len(templates)):

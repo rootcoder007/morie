@@ -1,6 +1,7 @@
 """Tests for nmffn.py - Non-negative Matrix Factorization."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nmffn import nmf_fn, nmffn
 
 

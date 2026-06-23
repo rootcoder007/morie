@@ -1,6 +1,7 @@
 """Tests for gb_eqf.gibbons_emp_quantile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb_eqf import gibbons_emp_quantile
 
 
@@ -10,7 +11,7 @@ def test_gb_eqf_basic():
     data = np.random.default_rng(42).normal(0, 1, 100)
     result = gibbons_emp_quantile(u, data)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb_eqf_edge():

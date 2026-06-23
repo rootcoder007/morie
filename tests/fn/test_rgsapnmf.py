@@ -1,6 +1,7 @@
 """Tests for rgsapnmf.rangayyan_sleep_apnea_nmf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgsapnmf import rangayyan_sleep_apnea_nmf
 
 
@@ -11,7 +12,7 @@ def test_rgsapnmf_basic():
     n_comp = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_sleep_apnea_nmf(signals, fs, n_comp)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgsapnmf_edge():

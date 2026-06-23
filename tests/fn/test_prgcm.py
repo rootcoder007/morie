@@ -1,8 +1,8 @@
 """Tests for morie.fn.prgcm — program completion."""
 
 import pytest
+
 from morie.fn.prgcm import program_completion
-from morie.fn._containers import CrimeResult
 
 
 class TestProgramCompletion:

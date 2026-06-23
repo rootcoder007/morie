@@ -1,6 +1,7 @@
 """Test nbstv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nbstv import nbstv
 
 

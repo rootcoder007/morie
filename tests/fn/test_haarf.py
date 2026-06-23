@@ -1,5 +1,7 @@
 """Tests for haarf.py - Haar wavelet transform."""
+
 import numpy as np
+
 from morie.fn.haarf import haar_transform, haarf
 
 

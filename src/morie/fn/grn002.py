@@ -1,6 +1,7 @@
 """Linear regression prediction as a weighted sum of input features plus a bias term.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ch4_linear_regression_prediction"]
@@ -32,7 +33,14 @@ def geron_ch4_linear_regression_prediction(theta, x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Linear regression prediction as a weighted sum of input features plus a bias term."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Linear regression prediction as a weighted sum of input features plus a bias term.",
+        }
+    )
 
 
 def cheatsheet():

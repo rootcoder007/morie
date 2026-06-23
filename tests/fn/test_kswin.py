@@ -1,6 +1,7 @@
 """Tests for kswin.kswin."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kswin import kswin
 
 
@@ -10,7 +11,7 @@ def test_kswin_basic():
     alpha = 0.05
     result = kswin(stream, alpha)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_kswin_edge():

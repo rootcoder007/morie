@@ -1,6 +1,7 @@
 """Tests for prtdid.partition_did."""
+
 import numpy as np
-import pytest
+
 from morie.fn.prtdid import partition_did
 
 
@@ -11,7 +12,7 @@ def test_prtdid_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = partition_did(y, D, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_prtdid_edge():

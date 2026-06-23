@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Calendar/time-of-day feature engineering (day-of-week, hour, month, is_holiday)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_calendar_features"]
@@ -30,7 +32,14 @@ def joseph_calendar_features(timestamps):
     n = len(timestamps)
     result = float(np.mean(timestamps))
     se = float(np.std(timestamps, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Calendar/time-of-day feature engineering (day-of-week, hour, month, is_holiday)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Calendar/time-of-day feature engineering (day-of-week, hour, month, is_holiday)",
+        }
+    )
 
 
 def cheatsheet():

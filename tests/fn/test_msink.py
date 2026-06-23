@@ -1,7 +1,6 @@
 """Tests for morie.fn.msink -- Three-way INDSCAL"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msink import indscal_3way
 

@@ -1,6 +1,7 @@
 """Test geexp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.geexp import geexp
 
 

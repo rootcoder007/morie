@@ -1,6 +1,7 @@
 """Solve entropic-OT dual potentials f,g via L-BFGS."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_regularised_dual"]
@@ -38,7 +39,9 @@ def ot_regularised_dual(a, b, C, epsilon, max_iter):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Solve entropic-OT dual potentials f,g via L-BFGS"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Solve entropic-OT dual potentials f,g via L-BFGS"}
+    )
 
 
 def cheatsheet():

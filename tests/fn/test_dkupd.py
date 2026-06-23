@@ -1,6 +1,7 @@
 """Test dkupd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkupd import dkupd
 
 

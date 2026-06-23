@@ -8,6 +8,7 @@ Two test families:
   (guards against false positives) and strongly biased data must be
   flagged (guards against false negatives).
 """
+
 import numpy as np
 import pytest
 
@@ -25,6 +26,7 @@ A4B4 = ["A"] * 4 + ["B"] * 4
 
 
 # ── disparate impact ────────────────────────────────────────────────
+
 
 def test_disparate_impact_known_answer():
     # group A: 5/5 favourable; group B: 3/5 -> ratio 0.6
@@ -52,6 +54,7 @@ def test_disparate_impact_privileged_inferred_with_warning():
 
 # ── demographic parity ──────────────────────────────────────────────
 
+
 def test_demographic_parity_known_answer():
     # A rate 0.8, B rate 0.2 -> gap -0.6
     pred = [1, 1, 1, 1, 0, 0, 0, 1, 0, 0]
@@ -66,6 +69,7 @@ def test_demographic_parity_null():
 
 
 # ── equalized odds ──────────────────────────────────────────────────
+
 
 def test_equalized_odds_known_answer():
     # A: TPR 1.0 / FPR 0.0 ;  B: TPR 0.5 / FPR 1.0
@@ -88,6 +92,7 @@ def test_equalized_odds_null():
 
 # ── average odds difference ─────────────────────────────────────────
 
+
 def test_average_odds_difference_known_answer():
     # AOD_B = 0.5 * ((FPR_B-FPR_A) + (TPR_B-TPR_A))
     #       = 0.5 * ((1.0-0.0) + (0.5-1.0)) = 0.25
@@ -98,6 +103,7 @@ def test_average_odds_difference_known_answer():
 
 
 # ── Gini ────────────────────────────────────────────────────────────
+
 
 def test_gini_perfect_equality():
     assert float(fairness_gini([5, 5, 5, 5])) == pytest.approx(0.0)
@@ -114,6 +120,7 @@ def test_gini_per_group():
 
 
 # ── bias amplification score (arXiv:2603.18987) ─────────────────────
+
 
 def test_bias_amplification_known_answer():
     # A rate 1.0, B rate 0.0 -> Δ_parity = -1.0 ; Gini([1,0]) = 0.5
@@ -134,6 +141,7 @@ def test_bias_amplification_null():
 
 # ── error handling ──────────────────────────────────────────────────
 
+
 def test_requires_two_groups():
     with pytest.raises(ValueError):
         fairness_disparate_impact([1, 0, 1], ["A", "A", "A"])
@@ -150,6 +158,7 @@ def test_unknown_privileged_raises():
 
 
 # ── null / placebo: false-positive guard ────────────────────────────
+
 
 def test_placebo_no_false_positive():
     """Labels independent of group: every metric must read near-neutral."""
@@ -171,6 +180,7 @@ def test_placebo_no_false_positive():
 
 # ── injected bias: false-negative guard ─────────────────────────────
 
+
 def test_injected_bias_is_detected():
     """Group B systematically denied: the audit MUST flag it."""
     rng = np.random.default_rng(7)
@@ -189,9 +199,10 @@ def test_injected_bias_is_detected():
 
 # ── RichResult contract ─────────────────────────────────────────────
 
+
 def test_results_are_rich_and_dict_like():
     res = fairness_disparate_impact([1, 1, 0, 0], ["A", "A", "B", "B"], privileged="A")
-    assert isinstance(res, dict)            # legacy dict callers keep working
+    assert isinstance(res, dict)  # legacy dict callers keep working
     assert "value" in res.payload
     assert res.title and res.interpretation  # paragraph-level output
     assert "Disparate Impact" in res.summary()

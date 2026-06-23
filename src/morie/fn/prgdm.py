@@ -9,7 +9,14 @@ from scipy import stats as sp_stats
 from morie.fn._containers import ESRes
 
 
-def program_dml(df, cdf=None, *, outcome_col: str = "outcome", treatment_col: str = "treatment", covariate_cols: list[str] | None = None) -> ESRes:
+def program_dml(
+    df,
+    cdf=None,
+    *,
+    outcome_col: str = "outcome",
+    treatment_col: str = "treatment",
+    covariate_cols: list[str] | None = None,
+) -> ESRes:
     """Estimate program causal effect via simplified DML (Partially Linear Regression).
 
     Uses residual-on-residual regression with OLS as nuisance learner.

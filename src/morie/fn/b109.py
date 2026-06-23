@@ -1,6 +1,7 @@
 r"""Binary cross-entropy (logistic) loss for a single example in binary classification.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_binary_cross_entropy"]
@@ -32,7 +33,14 @@ def burkov_lm_ch1_binary_cross_entropy(y_hat_i, y_i):
     n = len(y_hat_i)
     result = float(np.mean(y_hat_i))
     se = float(np.std(y_hat_i, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Binary cross-entropy (logistic) loss for a single example in binary classification."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Binary cross-entropy (logistic) loss for a single example in binary classification.",
+        }
+    )
 
 
 def cheatsheet():

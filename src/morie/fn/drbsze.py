@@ -1,6 +1,7 @@
 """DR-DiD with finite-sample size correction."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dr_did_size_correction"]
@@ -34,7 +35,9 @@ def dr_did_size_correction(y, D, X):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DR-DiD with finite-sample size correction"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DR-DiD with finite-sample size correction"}
+    )
 
 
 def cheatsheet():

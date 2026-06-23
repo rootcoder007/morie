@@ -1,6 +1,7 @@
 """Tests for lmmf1.lmm_form_eq2_1."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lmmf1 import lmm_form_eq2_1
 
 
@@ -12,7 +13,7 @@ def test_lmmf1_basic():
     beta_init = 0.0
     result = lmm_form_eq2_1(Y, X, Z, beta_init)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lmmf1_edge():

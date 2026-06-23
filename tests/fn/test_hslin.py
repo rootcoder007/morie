@@ -1,7 +1,7 @@
 """Tests for morie.fn.hslin."""
 
 import numpy as np
-import pytest
+
 from morie.fn.hslin import hslin
 
 

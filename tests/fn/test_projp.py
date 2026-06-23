@@ -1,7 +1,9 @@
 """Test projection_pursuit (projp)."""
+
 import numpy as np
-from morie.fn.projp import projection_pursuit, projp
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.projp import projection_pursuit, projp
 
 
 class TestProjp:

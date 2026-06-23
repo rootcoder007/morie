@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multi-environment genomic model: environment as factor in LMM."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["multi_env_model"]
@@ -36,7 +38,14 @@ def multi_env_model(y, markers, env, G):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multi-environment genomic model: environment as factor in LMM"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multi-environment genomic model: environment as factor in LMM",
+        }
+    )
 
 
 def cheatsheet():

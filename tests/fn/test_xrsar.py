@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrsar -- SAR (Spatial Lag) model ML estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrsar import sar_ml
 

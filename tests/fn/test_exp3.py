@@ -1,6 +1,7 @@
 """Tests for exp3.exp3."""
+
 import numpy as np
-import pytest
+
 from morie.fn.exp3 import exp3
 
 
@@ -11,7 +12,7 @@ def test_exp3_basic():
     gamma = 1.0
     result = exp3(arms, T, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_exp3_edge():

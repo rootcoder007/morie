@@ -1,6 +1,7 @@
 """Tests for rgtfe.rangayyan_transfer_func_est."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgtfe import rangayyan_transfer_func_est
 
 
@@ -12,7 +13,7 @@ def test_rgtfe_basic():
     nperseg = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_transfer_func_est(x, y, fs, nperseg)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgtfe_edge():

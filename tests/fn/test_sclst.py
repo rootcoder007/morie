@@ -64,4 +64,5 @@ def test_dimension_error():
 
 def test_cheatsheet():
     from morie.fn.sclst import cheatsheet
+
     assert "censored" in cheatsheet().lower()

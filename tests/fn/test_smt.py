@@ -1,6 +1,7 @@
 """Tests for smt.semiparametric_max."""
+
 import numpy as np
-import pytest
+
 from morie.fn.smt import semiparametric_max
 
 
@@ -11,7 +12,7 @@ def test_smt_basic():
     model = np.random.default_rng(42).normal(0, 1, 100)
     result = semiparametric_max(y, X, model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_smt_edge():

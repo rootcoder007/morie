@@ -1,6 +1,5 @@
 """Tests for morie.fn.t2smp -- Two-sample t-test."""
 
-import pytest
 from morie.fn.t2smp import two_sample_t_test
 
 

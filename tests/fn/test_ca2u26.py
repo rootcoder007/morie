@@ -1,6 +1,7 @@
 """Tests for ca2u26.ca_chapter_2_unnumbered_26."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ca2u26 import ca_chapter_2_unnumbered_26
 
 
@@ -9,7 +10,7 @@ def test_ca2u26_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = ca_chapter_2_unnumbered_26(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ca2u26_edge():

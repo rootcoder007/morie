@@ -1,6 +1,7 @@
 """Test opslp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opslp import opslp
 
 

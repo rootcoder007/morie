@@ -66,6 +66,7 @@ def _align_timecourses(eeg: np.ndarray, fmri: np.ndarray) -> tuple[np.ndarray, n
     n = min(e_tc.shape[0], f_tc.shape[0])
     if n == 0:
         return e_tc, f_tc
+
     # Block-average the longer one to length n.
     def _bin(x: np.ndarray) -> np.ndarray:
         if x.shape[0] == n:
@@ -102,7 +103,7 @@ def binding_per_frame(eeg: np.ndarray, fmri: np.ndarray) -> np.ndarray:
             continue
         x = e_tc[a:b] - e_tc[a:b].mean()
         y = f_grad[a:b] - f_grad[a:b].mean()
-        denom = (np.sqrt((x * x).sum() * (y * y).sum()) + 1e-9)
+        denom = np.sqrt((x * x).sum() * (y * y).sum()) + 1e-9
         out[i] = float((x * y).sum() / denom)
     # Standardise.
     out -= out.mean()
@@ -126,8 +127,7 @@ def san_recurrence_per_frame(eeg: np.ndarray, fmri: np.ndarray) -> np.ndarray:
     # Joint state vector: stack EEG and fMRI.
     joint = np.stack([e_tc[:n], f_tc[:n]], axis=0)
     # Z-score along time.
-    joint = (joint - joint.mean(axis=1, keepdims=True)) / (
-        joint.std(axis=1, keepdims=True) + 1e-9)
+    joint = (joint - joint.mean(axis=1, keepdims=True)) / (joint.std(axis=1, keepdims=True) + 1e-9)
     win = 9
     out = np.zeros(n, dtype=np.float32)
     for i in range(n):
@@ -140,6 +140,6 @@ def san_recurrence_per_frame(eeg: np.ndarray, fmri: np.ndarray) -> np.ndarray:
         s0 = seg[:, :-1]
         s1 = seg[:, 1:]
         num = (s0 * s1).sum()
-        denom = np.sqrt((s0 ** 2).sum() * (s1 ** 2).sum()) + 1e-9
+        denom = np.sqrt((s0**2).sum() * (s1**2).sum()) + 1e-9
         out[i] = float(num / denom)
     return out

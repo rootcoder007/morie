@@ -1,6 +1,7 @@
 """Tests for morie.fn.mdslb -- label MDS points."""
 
 import numpy as np
+
 from morie.fn.mdslb import label_mds_points, mdslb
 
 

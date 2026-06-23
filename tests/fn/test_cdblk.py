@@ -1,6 +1,8 @@
 """Tests for cdblk."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cdblk import cdblk
 
 
@@ -28,4 +30,5 @@ def test_cdblk_no_data():
 
 def test_cdblk_alias():
     from morie.fn.cdblk import cdblk
+
     assert cdblk is cdblk

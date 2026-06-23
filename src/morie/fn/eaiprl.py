@@ -1,6 +1,7 @@
 """AIPW with efficient influence curve."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["aipw_efficient_influence"]

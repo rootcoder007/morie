@@ -7,7 +7,6 @@ from morie.fn.tqprd import turboquant_prod
 
 
 class TestTurboquantProd:
-
     def test_returns_result(self):
         x = np.random.default_rng(42).standard_normal(64)
         res = turboquant_prod(x, bits=3, n_sub=2)

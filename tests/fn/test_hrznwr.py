@@ -1,6 +1,7 @@
 """Tests for hrznwr.horowitz_nw_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrznwr import horowitz_nw_regression
 
 
@@ -11,7 +12,7 @@ def test_hrznwr_basic():
     bandwidth = 0.3
     result = horowitz_nw_regression(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrznwr_edge():

@@ -1,6 +1,7 @@
 """Gradient of MSE cost function with respect to tap-weight vector.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_mse_gradient"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_mse_gradient(w, Theta, Phi):
     n = len(w)
     result = float(np.mean(w))
     se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gradient of MSE cost function with respect to tap-weight vector."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Gradient of MSE cost function with respect to tap-weight vector.",
+        }
+    )
 
 
 def cheatsheet():

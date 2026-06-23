@@ -1,6 +1,7 @@
 """Two-dimensional mediation effect with M1 and M2."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["two_dimensional_mediation"]
@@ -36,7 +37,9 @@ def two_dimensional_mediation(X, M1, M2, Y):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Two-dimensional mediation effect with M1 and M2"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Two-dimensional mediation effect with M1 and M2"}
+    )
 
 
 def cheatsheet():

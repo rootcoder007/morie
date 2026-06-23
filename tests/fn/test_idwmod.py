@@ -1,6 +1,8 @@
 """Tests for idwmod."""
+
 import numpy as np
 import pytest
+
 from morie.fn.idwmod import idwmod
 
 
@@ -28,4 +30,5 @@ def test_idwmod_no_data():
 
 def test_idwmod_alias():
     from morie.fn.idwmod import idwmod
+
     assert idwmod is idwmod

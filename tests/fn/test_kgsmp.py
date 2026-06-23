@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgsmp -- Simple kriging prediction"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgsmp import simple_kriging
 
@@ -14,5 +13,5 @@ class TestSimpleKriging:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = simple_kriging(np.array([1.,2.,3.]), np.array([0.,1.,2.]))
+        result = simple_kriging(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
         assert hasattr(result, "statistic")

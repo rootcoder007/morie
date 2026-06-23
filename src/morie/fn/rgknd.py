@@ -15,6 +15,7 @@ effect of student aid on college enrollment: Evidence from a
 government grant policy reform. *American Economic Journal: Economic
 Policy*, 2(2), 185-215.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -86,7 +87,7 @@ def rgknd(
     if not (len(T) == n == len(R)):
         raise ValueError("Y, T, R must have the same length.")
 
-    R_c = R - cutoff         # centred running variable
+    R_c = R - cutoff  # centred running variable
 
     if bandwidth is None:
         iqr = float(np.percentile(np.abs(R_c), 75) - np.percentile(np.abs(R_c), 25))
@@ -115,7 +116,7 @@ def rgknd(
         cols = [np.ones(len(r_))] + [r_**k for k in range(1, poly_order + 1)]
         Xp = np.column_stack(cols)
         beta = np.linalg.lstsq(Xp, y_, rcond=None)[0]
-        return float(beta[1])          # linear slope coefficient
+        return float(beta[1])  # linear slope coefficient
 
     slope_Y_r = _fit_slopes(Y_w, right)
     slope_Y_l = _fit_slopes(Y_w, left)

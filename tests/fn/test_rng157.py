@@ -1,6 +1,7 @@
 """Tests for rng157.rangayyan_ch3_lms_squared_error."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng157 import rangayyan_ch3_lms_squared_error
 
 
@@ -12,7 +13,7 @@ def test_rng157_basic():
     n = 100
     result = rangayyan_ch3_lms_squared_error(x, r, w, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng157_edge():

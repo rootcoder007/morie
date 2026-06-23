@@ -55,11 +55,7 @@ def qda(
         diff = Xt - means[c]
         cov_inv = np.linalg.inv(covs[c])
         _, logdet = np.linalg.slogdet(covs[c])
-        log_posts[:, j] = (
-            -0.5 * np.sum(diff @ cov_inv * diff, axis=1)
-            - 0.5 * logdet
-            + np.log(priors[c])
-        )
+        log_posts[:, j] = -0.5 * np.sum(diff @ cov_inv * diff, axis=1) - 0.5 * logdet + np.log(priors[c])
 
     preds = classes[np.argmax(log_posts, axis=1)]
 

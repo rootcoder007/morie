@@ -1,9 +1,10 @@
 """Test convergence_rate (rconv)."""
+
 import numpy as np
 import pytest
 
-from morie.fn.rconv import convergence_rate, rconv
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rconv import convergence_rate, rconv
 
 
 class TestConvergenceRate:

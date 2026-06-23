@@ -1,6 +1,7 @@
 """Tests for kmdpok.kamath_dpo_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmdpok import kamath_dpo_loss
 
 
@@ -13,7 +14,7 @@ def test_kmdpok_basic():
     beta = 0.8
     result = kamath_dpo_loss(logp_w, logp_l, logp_ref_w, logp_ref_l, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmdpok_edge():

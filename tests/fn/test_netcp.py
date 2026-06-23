@@ -1,12 +1,9 @@
 """Tests for morie.fn.netcp — Network comparison test."""
 
-import numpy as np
-import pytest
 from morie.fn.netcp import network_compare
 
 
 class TestNetworkCompare:
-
     def test_returns_dict(self, rng):
         X1 = rng.standard_normal((50, 5))
         X2 = rng.standard_normal((50, 5))

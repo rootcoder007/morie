@@ -1,6 +1,7 @@
 """Test sespd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sespd import sespd
 
 

@@ -1,6 +1,7 @@
 """Tests for hrzseriu.horowitz_series_unknown_T."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzseriu import horowitz_series_unknown_T
 
 
@@ -13,7 +14,7 @@ def test_hrzseriu_basic():
     basis = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = horowitz_series_unknown_T(x, y, w, K, basis)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzseriu_edge():

@@ -1,6 +1,7 @@
 """Tests for ghs027.ghosal_ch3_tailfree_strong_support_event."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghs027 import ghosal_ch3_tailfree_strong_support_event
 
 
@@ -12,7 +13,7 @@ def test_ghs027_basic():
     epsilon = 1e-6
     result = ghosal_ch3_tailfree_strong_support_event(p, p_m, p_0, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ghs027_edge():

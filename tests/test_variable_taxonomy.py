@@ -13,22 +13,29 @@ import pytest
 
 from morie.dataset_dictionary import ColumnSpec
 from morie.variable_taxonomy import (
-    Cardinality,
     INVARIANT_OVERRIDES,
+    Cardinality,
     LevelOfMeasurement,
     Role,
     VariableTaxonomy,
     classify_variable,
 )
 
-
 # ── Identifier detection ───────────────────────────────────────────
 
 
-@pytest.mark.parametrize("name", [
-    "_id", "_Id", "Id_", "RecordID", "UniqueIndividual_ID",
-    "BatchFileName", "Indiv_Index",
-])
+@pytest.mark.parametrize(
+    "name",
+    [
+        "_id",
+        "_Id",
+        "Id_",
+        "RecordID",
+        "UniqueIndividual_ID",
+        "BatchFileName",
+        "Indiv_Index",
+    ],
+)
 def test_identifier_names_classified_as_identifier(name):
     spec = ColumnSpec(name=name, dtype="string", description_en="")
     t = classify_variable(spec, dataset_name="any")
@@ -48,7 +55,8 @@ def test_dtype_bool_yields_boolean():
 
 def test_yesno_valid_values_yields_boolean():
     spec = ColumnSpec(
-        name="IndivInjuries_PhysicalInjuries", dtype="string",
+        name="IndivInjuries_PhysicalInjuries",
+        dtype="string",
         valid_values=("Yes", "No"),
     )
     t = classify_variable(spec, dataset_name="uof_individual_records")
@@ -60,7 +68,8 @@ def test_yesno_valid_values_yields_boolean():
 
 def test_age_category_is_ordinal():
     spec = ColumnSpec(
-        name="Age_Category", dtype="string",
+        name="Age_Category",
+        dtype="string",
         valid_values=("18 to 24", "25 to 49", "50+"),
     )
     t = classify_variable(spec, dataset_name="b01")
@@ -69,7 +78,8 @@ def test_age_category_is_ordinal():
 
 def test_race_without_order_is_nominal():
     spec = ColumnSpec(
-        name="Race", dtype="string",
+        name="Race",
+        dtype="string",
         valid_values=("White", "Black", "Asian", "Indigenous"),
     )
     t = classify_variable(spec, dataset_name="uof_individual_records")
@@ -79,12 +89,15 @@ def test_race_without_order_is_nominal():
 # ── Ratio (counts) ─────────────────────────────────────────────────
 
 
-@pytest.mark.parametrize("name", [
-    "NumberConsecutiveDays_Segregation",
-    "Number_Of_Placements",
-    "NumberTeam",
-    "NUMBER_POLICE_OFFICERS_INVOLVED",
-])
+@pytest.mark.parametrize(
+    "name",
+    [
+        "NumberConsecutiveDays_Segregation",
+        "Number_Of_Placements",
+        "NumberTeam",
+        "NUMBER_POLICE_OFFICERS_INVOLVED",
+    ],
+)
 def test_count_like_int_names_classified_as_ratio(name):
     spec = ColumnSpec(name=name, dtype="int", description_en="")
     t = classify_variable(spec, dataset_name="any")
@@ -107,14 +120,14 @@ def test_otis_unique_individual_id_is_cross_year_unsafe():
     silent regression in the override registry fails the build.
     """
     spec = ColumnSpec(
-        name="UniqueIndividual_ID", dtype="string",
+        name="UniqueIndividual_ID",
+        dtype="string",
         description_en="A random number assigned to an individual",
     )
     for dataset_id in ("b01", "a01"):
         t = classify_variable(spec, dataset_name=dataset_id)
         assert t.cross_year_safe is False, (
-            f"OTIS {dataset_id}/UniqueIndividual_ID must be "
-            f"cross_year_safe=False — see data dictionary."
+            f"OTIS {dataset_id}/UniqueIndividual_ID must be cross_year_safe=False — see data dictionary."
         )
         assert t.role == Role.IDENTIFIER
         # The notes may say "fiscal year" or "fiscal-year"; either is fine.
@@ -153,33 +166,44 @@ def test_invariant_overrides_registry_is_not_empty():
 
 def test_overrides_have_valid_field_names():
     valid_fields = {
-        "level", "cardinality", "role", "cross_year_safe",
-        "dictionary_described", "valid_values", "nullable",
-        "raw_dtype", "notes", "source",
+        "level",
+        "cardinality",
+        "role",
+        "cross_year_safe",
+        "dictionary_described",
+        "valid_values",
+        "nullable",
+        "raw_dtype",
+        "notes",
+        "source",
     }
     for (ds, col), patch in INVARIANT_OVERRIDES.items():
         unknown = set(patch.keys()) - valid_fields
-        assert not unknown, (
-            f"Override for ({ds}, {col}) has unknown fields: {unknown}"
-        )
+        assert not unknown, f"Override for ({ds}, {col}) has unknown fields: {unknown}"
 
 
 # ── Recommended summary string per level ───────────────────────────
 
 
-@pytest.mark.parametrize("level,fragment", [
-    (LevelOfMeasurement.BOOLEAN, "Wilson"),
-    (LevelOfMeasurement.NOMINAL, "chi-square"),
-    (LevelOfMeasurement.ORDINAL, "median"),
-    (LevelOfMeasurement.RATIO, "Pareto"),
-    (LevelOfMeasurement.INTERVAL, "regression"),
-    (LevelOfMeasurement.IDENTIFIER, "identifier"),
-])
+@pytest.mark.parametrize(
+    "level,fragment",
+    [
+        (LevelOfMeasurement.BOOLEAN, "Wilson"),
+        (LevelOfMeasurement.NOMINAL, "chi-square"),
+        (LevelOfMeasurement.ORDINAL, "median"),
+        (LevelOfMeasurement.RATIO, "Pareto"),
+        (LevelOfMeasurement.INTERVAL, "regression"),
+        (LevelOfMeasurement.IDENTIFIER, "identifier"),
+    ],
+)
 def test_recommended_summary_mentions_appropriate_method(level, fragment):
     spec = ColumnSpec(name="X", dtype="string")
     t = VariableTaxonomy(
-        dataset_name="X", column_name="X",
-        level=level, cardinality=Cardinality.UNKNOWN, role=Role.COVARIATE,
+        dataset_name="X",
+        column_name="X",
+        level=level,
+        cardinality=Cardinality.UNKNOWN,
+        role=Role.COVARIATE,
     )
     assert fragment.lower() in t.recommended_summary().lower()
 
@@ -189,8 +213,11 @@ def test_recommended_summary_mentions_appropriate_method(level, fragment):
 
 def _tax(level: LevelOfMeasurement) -> VariableTaxonomy:
     return VariableTaxonomy(
-        dataset_name="X", column_name="X",
-        level=level, cardinality=Cardinality.UNKNOWN, role=Role.COVARIATE,
+        dataset_name="X",
+        column_name="X",
+        level=level,
+        cardinality=Cardinality.UNKNOWN,
+        role=Role.COVARIATE,
     )
 
 
@@ -235,10 +262,11 @@ def test_audit_returns_real_numbers():
     """The audit walker should classify >100 OTIS variables and
     >100 ARSAU variables given the real dictionaries on disk."""
     import os
-    if not (os.environ.get("MORIE_OTIS_DIR") and
-            os.environ.get("MORIE_ARSAU_DIR")):
+
+    if not (os.environ.get("MORIE_OTIS_DIR") and os.environ.get("MORIE_ARSAU_DIR")):
         pytest.skip("MORIE_OTIS_DIR and MORIE_ARSAU_DIR must be set")
     from morie.audit_variables import audit_all_variables
+
     audit = audit_all_variables()
     assert audit["otis"].n > 100
     assert audit["arsau"].n > 100

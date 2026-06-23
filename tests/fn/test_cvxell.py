@@ -1,6 +1,7 @@
 """Tests for cvxell.boyd_minvol_ellipsoid."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxell import boyd_minvol_ellipsoid
 
 
@@ -9,7 +10,7 @@ def test_cvxell_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = boyd_minvol_ellipsoid(X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxell_edge():

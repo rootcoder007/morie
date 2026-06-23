@@ -1,6 +1,7 @@
 """Tests for bkbkof.burkov_ngram_backoff."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bkbkof import burkov_ngram_backoff
 
 
@@ -10,7 +11,7 @@ def test_bkbkof_basic():
     alpha = 0.05
     result = burkov_ngram_backoff(counts_by_order, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bkbkof_edge():

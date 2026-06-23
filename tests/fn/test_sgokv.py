@@ -1,5 +1,7 @@
 """Tests for ordinary kriging variance."""
+
 import numpy as np
+
 from morie.fn.sgokv import sgokv
 
 
@@ -12,6 +14,7 @@ def test_sgokv_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgokv import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

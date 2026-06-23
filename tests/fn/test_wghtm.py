@@ -1,5 +1,7 @@
 """Tests for morie.fn.wghtm — Weighted Euclidean model."""
+
 import numpy as np
+
 from morie.fn.wghtm import wghtm
 
 

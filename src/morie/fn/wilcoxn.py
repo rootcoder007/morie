@@ -1,15 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wilcoxon signed-rank test with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
 
 import numpy as np
 from scipy.stats import wilcoxon as _scipy_wilcoxon
 
 
-def wilcoxn(x: Union[Sequence, np.ndarray],
-            y: Union[Sequence, np.ndarray] = None,
-            alternative: str = "two-sided"):
+def wilcoxn(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray] = None, alternative: str = "two-sided"):
     """Wilcoxon signed-rank test (paired or one-sample).
 
     References
@@ -17,6 +16,7 @@ def wilcoxn(x: Union[Sequence, np.ndarray],
     Wilcox (2017) ch.7.
     """
     from ._richresult import hypothesis_test_result
+
     a = np.asarray(x, dtype=float)
     if y is not None:
         b = np.asarray(y, dtype=float)

@@ -1,6 +1,7 @@
 """Test trsgn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trsgn import trsgn
 
 

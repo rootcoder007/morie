@@ -1,6 +1,7 @@
 """Transfer function of the 8-point MA filter.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_ma_8point_transfer_function"]
@@ -30,7 +31,9 @@ def rangayyan_ch3_ma_8point_transfer_function(z):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Transfer function of the 8-point MA filter."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Transfer function of the 8-point MA filter."}
+    )
 
 
 def cheatsheet():

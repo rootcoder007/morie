@@ -54,7 +54,7 @@ def gamma_glm(
     for _ in range(max_iter):
         eta = X @ beta
         mu = np.exp(np.clip(eta, -20, 20))
-        W = mu ** 2
+        W = mu**2
         z = eta + (y - mu) / (mu + 1e-12)
         XtWX = (X * W[:, None]).T @ X
         XtWz = (X * W[:, None]).T @ z
@@ -73,7 +73,7 @@ def gamma_glm(
     phi = deviance / (n - k)
     aic = deviance / phi + 2 * k
 
-    W_f = mu_f ** 2
+    W_f = mu_f**2
     XtWX = (X * W_f[:, None]).T @ X
     try:
         cov = phi * np.linalg.inv(XtWX)
@@ -84,9 +84,7 @@ def gamma_glm(
     z_vals = beta / (se_arr + 1e-300)
     p_vals = 2.0 * _st.norm.sf(np.abs(z_vals))
 
-    names = (["(Intercept)"] if add_intercept else []) + [
-        f"x{j}" for j in range(p_raw)
-    ]
+    names = (["(Intercept)"] if add_intercept else []) + [f"x{j}" for j in range(p_raw)]
     return RegressionResult(
         method="Gamma GLM (log link)",
         coefficients={nm: float(b) for nm, b in zip(names, beta)},

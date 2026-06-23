@@ -1,9 +1,10 @@
 """Tests for morie.fn.siutm — SIU timeline."""
 
-import pytest
 import pandas as pd
-from morie.fn.siutm import siu_timeline
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.siutm import siu_timeline
 
 
 class TestSiuTimeline:

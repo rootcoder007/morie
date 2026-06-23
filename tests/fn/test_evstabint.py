@@ -1,6 +1,7 @@
 """Tests for evstabint.evt_xi_ci_profile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evstabint import evt_xi_ci_profile
 
 
@@ -11,7 +12,7 @@ def test_evstabint_basic():
     level = np.random.default_rng(42).normal(0, 1, 100)
     result = evt_xi_ci_profile(x, mle, level)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evstabint_edge():

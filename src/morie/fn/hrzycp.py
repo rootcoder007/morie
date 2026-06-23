@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Conditional prediction of Y given X after transformation model estimation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_conditional_prediction"]
@@ -37,14 +39,31 @@ def horowitz_conditional_prediction(x, y_threshold, T_hat, F_hat, beta_hat):
     x = np.asarray(x, dtype=float)
     n = int(x) if x.ndim == 0 else len(x)
     if x.ndim == 0:
-        return RichResult(payload={"statistic": float('nan'), "p_value": float('nan'), "n": 1, "method": "scalar-input placeholder"})
+        return RichResult(
+            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+        )
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Conditional prediction of Y given X after transformation model estimation"})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "Conditional prediction of Y given X after transformation model estimation",
+            }
+        )
     estimate = np.median(x)
     se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Conditional prediction of Y given X after transformation model estimation"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Conditional prediction of Y given X after transformation model estimation",
+        }
+    )
 
 
 def cheatsheet():

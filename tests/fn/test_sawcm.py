@@ -1,6 +1,7 @@
 """Test sawcm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sawcm import sawcm
 
 

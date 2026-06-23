@@ -1,6 +1,7 @@
 """Adaptive iteration count for Sinkhorn given tol."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_sinkhorn_iter_count"]
@@ -40,7 +41,9 @@ def ot_sinkhorn_iter_count(a, b, C, epsilon, tol, max_iter):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Adaptive iteration count for Sinkhorn given tol"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Adaptive iteration count for Sinkhorn given tol"}
+    )
 
 
 def cheatsheet():

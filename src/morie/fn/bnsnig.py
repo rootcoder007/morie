@@ -1,6 +1,7 @@
 """Bound under no unobserved invariance."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bound_no_unobserved_inv"]

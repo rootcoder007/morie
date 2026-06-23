@@ -79,4 +79,4 @@ ghosig = ghost_signal
 
 
 def cheatsheet() -> str:
-    return 'ghost_signal({}) -> Ghost signal detection in noise.'
+    return "ghost_signal({}) -> Ghost signal detection in noise."

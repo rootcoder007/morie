@@ -1,7 +1,6 @@
 """Tests for morie.fn.zelrx -- Leroux CAR model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zelrx import leroux_model
 

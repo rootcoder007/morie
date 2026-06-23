@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptthm -- Thomas cluster process"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptthm import thomas_process
 

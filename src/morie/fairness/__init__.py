@@ -17,6 +17,7 @@ Later phases add the generalised predictive-policing audit module, the
 multi-city temporal analysis, the JAX simulation framework, and the
 explainability (XAI) layer.
 """
+
 from __future__ import annotations
 
 from .cityprofile import (
@@ -92,6 +93,6 @@ def __getattr__(name):
     """
     if name in ("SpatialGAN", "CTGANDebiaser"):
         from . import gan
+
         return getattr(gan, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
-

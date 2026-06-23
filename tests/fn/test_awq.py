@@ -7,7 +7,6 @@ from morie.fn.awq import activation_aware_quant
 
 
 class TestActivationAwareQuant:
-
     def test_returns_result(self):
         W = np.random.default_rng(42).standard_normal((8, 16))
         act = np.abs(np.random.default_rng(0).standard_normal(16))

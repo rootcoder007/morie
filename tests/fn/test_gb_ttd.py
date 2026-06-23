@@ -1,6 +1,7 @@
 """Tests for gb_ttd.gibbons_total_runs_dist_table."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb_ttd import gibbons_total_runs_dist_table
 
 
@@ -11,7 +12,7 @@ def test_gb_ttd_basic():
     r = 10
     result = gibbons_total_runs_dist_table(n1, n2, r)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb_ttd_edge():

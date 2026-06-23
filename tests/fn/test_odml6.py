@@ -1,14 +1,13 @@
 """Tests for morie.fn.odml6 — OTIS DML custody."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.odml6 import otis_dml_custody
+
 from morie.fn._containers import ESRes
+from morie.fn.odml6 import otis_dml_custody
 
 
 class TestOtisDmlCustody:
-
     def test_returns_esres(self):
         rng = np.random.default_rng(42)
         n = 200

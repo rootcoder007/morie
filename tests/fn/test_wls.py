@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.wls import weighted_ls, wls
+
 from morie.fn._containers import RegressionResult
+from morie.fn.wls import weighted_ls, wls
 
 
 @pytest.fixture()
@@ -16,7 +17,7 @@ def wls_data():
     # Variance proportional to |x|+1
     sigma = np.abs(x) + 1
     y = 2 + 3 * x + rng.normal(0, 1, n) * sigma
-    weight = 1.0 / sigma ** 2
+    weight = 1.0 / sigma**2
     return pd.DataFrame({"y": y, "x": x, "weight": weight})
 
 

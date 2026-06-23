@@ -1,6 +1,7 @@
 """Tests for kldivg.kl_divergence."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kldivg import kldivg as kl_divergence
 
 
@@ -12,7 +13,7 @@ def test_kldivg_basic():
     base = np.random.default_rng(42).normal(0, 1, 100)
     result = kl_divergence(y, p, q, base)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kldivg_edge():

@@ -1,13 +1,13 @@
 """Tests for morie.fn.cstvs — custody visits."""
 
-import pytest
 import numpy as np
-from morie.fn.cstvs import custody_visits
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cstvs import custody_visits
 
 
 class TestCustodyVisits:
-
     def test_returns_descriptive(self):
         vc = np.array([0, 1, 2, 3, 0, 5])
         result = custody_visits(vc)

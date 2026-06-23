@@ -37,11 +37,9 @@ class TestAft:
     def test_raises_nonpositive_time(self):
         """Rejects non-positive times."""
         with pytest.raises(ValueError, match="times must be"):
-            aft(np.array([0, 1, 2]), np.array([1, 1, 0]),
-                np.array([[1], [2], [3]]))
+            aft(np.array([0, 1, 2]), np.array([1, 1, 0]), np.array([[1], [2], [3]]))
 
     def test_raises_unsupported_distribution(self):
         """Rejects unknown distribution."""
         with pytest.raises(ValueError, match="Unsupported"):
-            aft(np.array([1.0, 2.0]), np.array([1, 1]),
-                np.array([[1], [2]]), distribution="exponential")
+            aft(np.array([1.0, 2.0]), np.array([1, 1]), np.array([[1], [2]]), distribution="exponential")

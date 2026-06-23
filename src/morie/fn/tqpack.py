@@ -1,5 +1,7 @@
 """Pack an array of b-bit codebook indices into a dense byte buffer."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_bit_pack_indices"]
@@ -31,7 +33,14 @@ def turboquant_bit_pack_indices(indices, bits):
     n = len(indices)
     result = float(np.mean(indices))
     se = float(np.std(indices, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pack an array of b-bit codebook indices into a dense byte buffer"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pack an array of b-bit codebook indices into a dense byte buffer",
+        }
+    )
 
 
 def cheatsheet():

@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.seiqr import seiqr_model
 
 
@@ -17,7 +18,7 @@ class TestSEIQR:
 
     def test_r0_with_quarantine(self):
         res = seiqr_model(beta=0.5, sigma=0.2, gamma=0.1, delta=0.15)
-        assert res.R0 == pytest.approx(0.5 / (0.1 + 0.15), rel=1e-6)
+        assert pytest.approx(0.5 / (0.1 + 0.15), rel=1e-6) == res.R0
 
     def test_model_label(self):
         res = seiqr_model(beta=0.3, sigma=0.2, gamma=0.1, delta=0.05)

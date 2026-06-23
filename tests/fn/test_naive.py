@@ -1,5 +1,7 @@
 """Tests for morie.fn.naive."""
+
 import numpy as np
+
 from morie.fn.naive import naive
 
 
@@ -13,6 +15,7 @@ def test_naive_smoke():
 
 def test_cheatsheet():
     from morie.fn.naive import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

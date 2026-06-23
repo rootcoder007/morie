@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Chain prompting: output of prompt 1 fed as input to prompt 2."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_chain_prompting"]
@@ -34,7 +36,14 @@ def alammar_chain_prompting(x, prompts, model):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Chain prompting: output of prompt 1 fed as input to prompt 2"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Chain prompting: output of prompt 1 fed as input to prompt 2",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """node2vec biased random walks."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["node2vec"]

@@ -23,13 +23,12 @@ Public callables:
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Callable, Iterable, Optional
 
 import numpy as np
 import pandas as pd
 from scipy import stats
-
 
 __all__ = [
     "mrm_oneprop_test",
@@ -54,13 +53,17 @@ class OnePropResult:
     p_value_exact: float
     ci95_wald_lower: float
     ci95_wald_upper: float
-    ci95_exact_lower: float       # Clopper-Pearson
+    ci95_exact_lower: float  # Clopper-Pearson
     ci95_exact_upper: float
     interpretation: str
 
 
 def mrm_oneprop_test(
-    x: int, n: int, p0: float, *, alpha: float = 0.05,
+    x: int,
+    n: int,
+    p0: float,
+    *,
+    alpha: float = 0.05,
 ) -> OnePropResult:
     """One-proportion test (binomial exact + Wald approximation).
 
@@ -82,9 +85,11 @@ def mrm_oneprop_test(
     cp = stats.binomtest(x, n).proportion_ci(method="exact")
     return OnePropResult(
         p_hat=round(p_hat, 6),
-        p0=round(p0, 6), n=int(n),
+        p0=round(p0, 6),
+        n=int(n),
         z_wald=round(float(z), 4),
-        p_value_wald=float(p_wald), p_value_exact=p_exact,
+        p_value_wald=float(p_wald),
+        p_value_exact=p_exact,
         ci95_wald_lower=round(max(0.0, p_hat - z_a * se), 6),
         ci95_wald_upper=round(min(1.0, p_hat + z_a * se), 6),
         ci95_exact_lower=round(cp.low, 6),
@@ -116,7 +121,12 @@ class TwoPropResult:
 
 
 def mrm_twoprop_test(
-    x1: int, n1: int, x2: int, n2: int, *, alpha: float = 0.05,
+    x1: int,
+    n1: int,
+    x2: int,
+    n2: int,
+    *,
+    alpha: float = 0.05,
 ) -> TwoPropResult:
     """Two-proportion test (chi-square + Fisher's exact + Wald)."""
     if any(v <= 0 for v in (n1, n2)) or x1 < 0 or x2 < 0:
@@ -132,11 +142,15 @@ def mrm_twoprop_test(
     z_a = stats.norm.ppf(1 - alpha / 2)
     diff = p1 - p2
     return TwoPropResult(
-        p1=round(p1, 6), p2=round(p2, 6),
+        p1=round(p1, 6),
+        p2=round(p2, 6),
         diff=round(diff, 6),
-        chi2=round(float(chi2), 4), df=int(dof),
-        p_value_chi2=float(p_chi2), p_value_fisher=p_fisher,
-        z_wald=round(float(z_w), 4), p_value_wald=float(p_wald),
+        chi2=round(float(chi2), 4),
+        df=int(dof),
+        p_value_chi2=float(p_chi2),
+        p_value_fisher=p_fisher,
+        z_wald=round(float(z_w), 4),
+        p_value_wald=float(p_wald),
         ci95_diff_lower=round(diff - z_a * se, 6),
         ci95_diff_upper=round(diff + z_a * se, 6),
         interpretation=(
@@ -164,7 +178,10 @@ class VarTestResult:
 
 
 def mrm_var_test(
-    sample: Iterable[float], sigma0_sq: float, *, alpha: float = 0.05,
+    sample: Iterable[float],
+    sigma0_sq: float,
+    *,
+    alpha: float = 0.05,
 ) -> VarTestResult:
     """Chi-square test for variance σ² = σ₀² (Wilks 1962).
 
@@ -187,16 +204,14 @@ def mrm_var_test(
     return VarTestResult(
         s_sq=round(s_sq, 6),
         sigma0_sq=round(float(sigma0_sq), 6),
-        chi2_stat=round(float(stat), 4), df=int(df),
+        chi2_stat=round(float(stat), 4),
+        df=int(df),
         p_value_two_sided=float(p_two),
         p_value_one_sided_greater=float(p_upper),
         p_value_one_sided_less=float(p_lower),
         ci95_lower=round(lo, 6),
         ci95_upper=round(hi, 6),
-        interpretation=(
-            f"s² = {s_sq:.4f}; H0: σ² = {sigma0_sq}; "
-            f"χ²({df}) = {stat:.3f}, two-sided p = {p_two:.3g}."
-        ),
+        interpretation=(f"s² = {s_sq:.4f}; H0: σ² = {sigma0_sq}; χ²({df}) = {stat:.3f}, two-sided p = {p_two:.3g}."),
     )
 
 
@@ -204,8 +219,10 @@ def mrm_var_test(
 
 
 def mrm_qq_plot(
-    sample: Iterable[float], *,
-    dist: str = "norm", **dist_kwargs,
+    sample: Iterable[float],
+    *,
+    dist: str = "norm",
+    **dist_kwargs,
 ) -> pd.DataFrame:
     """Compute Q-Q plot coordinates (theoretical vs empirical quantiles).
 
@@ -226,12 +243,14 @@ def mrm_qq_plot(
     # Plotting positions (Blom 1958)
     p = (np.arange(1, n + 1) - 0.375) / (n + 0.25)
     theoretical = pdist.ppf(p, **dist_kwargs)
-    return pd.DataFrame({
-        "rank": np.arange(1, n + 1),
-        "empirical": x,
-        "theoretical": theoretical,
-        "plotting_position": p,
-    })
+    return pd.DataFrame(
+        {
+            "rank": np.arange(1, n + 1),
+            "empirical": x,
+            "theoretical": theoretical,
+            "plotting_position": p,
+        }
+    )
 
 
 # ─── Central Limit Theorem demonstrator ──────────────────────────────────────
@@ -269,11 +288,13 @@ def mrm_clt_demo(
         x = pdist.rvs(size=sample_size, random_state=rng, **dist_kwargs)
         means.append(float(np.mean(x)))
     means = np.array(means)
-    return pd.DataFrame({
-        "sample_index": np.arange(1, n_samples + 1),
-        "sample_mean": means,
-        "z_score": (means - means.mean()) / means.std(ddof=1),
-    })
+    return pd.DataFrame(
+        {
+            "sample_index": np.arange(1, n_samples + 1),
+            "sample_mean": means,
+            "z_score": (means - means.mean()) / means.std(ddof=1),
+        }
+    )
 
 
 # ─── Probability Integral Transform ──────────────────────────────────────────

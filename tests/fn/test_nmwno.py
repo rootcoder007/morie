@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmwno -- W-NOMINATE estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmwno import wnominate
 

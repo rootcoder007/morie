@@ -1,6 +1,7 @@
 """Tests for design_of_observational_studies3e29.design_of_observational_studies_chapter_3_equation_29."""
+
 import numpy as np
-import pytest
+
 from morie.fn.design_of_observational_studies3e29 import design_of_observational_studies_chapter_3_equation_29
 
 
@@ -9,7 +10,7 @@ def test_design_of_observational_studies3e29_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = design_of_observational_studies_chapter_3_equation_29(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_design_of_observational_studies3e29_edge():

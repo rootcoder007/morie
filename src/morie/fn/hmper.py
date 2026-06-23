@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Prioritized experience replay: sample by TD-error priority."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_prioritized_replay"]
@@ -34,7 +36,14 @@ def geron_prioritized_replay(buffer, alpha, beta):
     n = len(buffer)
     result = float(np.mean(buffer))
     se = float(np.std(buffer, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Prioritized experience replay: sample by TD-error priority"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Prioritized experience replay: sample by TD-error priority",
+        }
+    )
 
 
 def cheatsheet():

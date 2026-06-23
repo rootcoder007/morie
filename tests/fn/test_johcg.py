@@ -1,6 +1,8 @@
 """Tests for morie.fn.johcg -- Johansen cointegration."""
+
 import numpy as np
 import pytest
+
 from morie.fn.johcg import johansen_test
 
 
@@ -18,4 +20,5 @@ class TestJohansen:
 
     def test_cheatsheet(self):
         from morie.fn.johcg import cheatsheet
+
         assert isinstance(cheatsheet(), str)

@@ -1,6 +1,7 @@
 """Tests for rgwavstr.rangayyan_wavelet_struct."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgwavstr import rangayyan_wavelet_struct
 
 
@@ -9,10 +10,10 @@ def test_rgwavstr_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     fs = 100.0
     scales = np.random.default_rng(42).normal(0, 1, 100)
-    wavelet = 'morl'
+    wavelet = "morl"
     result = rangayyan_wavelet_struct(x, fs, scales, wavelet)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgwavstr_edge():
@@ -20,6 +21,6 @@ def test_rgwavstr_edge():
     x = np.random.default_rng(42).normal(0, 1, 100)
     fs = 100.0
     scales = np.random.default_rng(42).normal(0, 1, 100)
-    wavelet = 'morl'
+    wavelet = "morl"
     result = rangayyan_wavelet_struct(x, fs, scales, wavelet)
     assert isinstance(result, dict)

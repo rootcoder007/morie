@@ -1,14 +1,13 @@
 """Tests for morie.fn.rcddl — recidivism DML."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.rcddl import recidivism_dml
+
 from morie.fn._containers import ESRes
+from morie.fn.rcddl import recidivism_dml
 
 
 class TestRecidivismDml:
-
     def test_returns_esres(self):
         rng = np.random.default_rng(42)
         n = 200

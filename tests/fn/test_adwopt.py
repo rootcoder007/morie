@@ -1,6 +1,7 @@
 """Tests for adwopt.adamw."""
+
 import numpy as np
-import pytest
+
 from morie.fn.adwopt import adamw
 
 
@@ -13,7 +14,7 @@ def test_adwopt_basic():
     wd = np.random.default_rng(42).normal(0, 1, 100)
     result = adamw(g, beta1, beta2, lr, wd)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_adwopt_edge():

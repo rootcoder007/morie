@@ -1,6 +1,8 @@
 """Tests for rfvon."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfvon import rfvon
 
 
@@ -28,4 +30,5 @@ def test_rfvon_no_data():
 
 def test_rfvon_alias():
     from morie.fn.rfvon import rfvon
+
     assert rfvon is rfvon

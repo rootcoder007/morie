@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Emergent ability metric: step-function improvement past a scale threshold."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_emergent_abilities"]
@@ -34,7 +36,14 @@ def kamath_emergent_abilities(scales, scores, threshold):
     n = len(scales)
     result = float(np.mean(scales))
     se = float(np.std(scales, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Emergent ability metric: step-function improvement past a scale threshold"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Emergent ability metric: step-function improvement past a scale threshold",
+        }
+    )
 
 
 def cheatsheet():

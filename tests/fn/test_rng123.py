@@ -1,6 +1,7 @@
 """Tests for rng123.rangayyan_ch3_butterworth_lowpass_squared_magnitude."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng123 import rangayyan_ch3_butterworth_lowpass_squared_magnitude
 
 
@@ -11,7 +12,7 @@ def test_rng123_basic():
     N = 100
     result = rangayyan_ch3_butterworth_lowpass_squared_magnitude(Omega, Omega_c, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng123_edge():

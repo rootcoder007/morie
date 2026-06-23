@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.alfrd import cooks_distance, alfrd
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.alfrd import alfrd, cooks_distance
 
 
 class TestAlfrd:

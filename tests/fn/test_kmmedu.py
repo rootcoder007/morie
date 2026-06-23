@@ -1,6 +1,7 @@
 """Tests for kmmedu.kamath_medusa_heads."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmmedu import kamath_medusa_heads
 
 
@@ -11,7 +12,7 @@ def test_kmmedu_basic():
     k = 5
     result = kamath_medusa_heads(hidden_state, medusa_heads, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmmedu_edge():

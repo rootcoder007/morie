@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxphl -- Persistence landscape"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxphl import persistence_land
 

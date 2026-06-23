@@ -76,4 +76,4 @@ stscm = byzantine_detect
 
 
 def cheatsheet() -> str:
-    return 'byzantine_detect({}) -> Byzantine fault detection.'
+    return "byzantine_detect({}) -> Byzantine fault detection."

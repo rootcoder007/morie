@@ -87,4 +87,4 @@ def isomap(
 
 
 def cheatsheet() -> str:
-    return 'isomap({}) -> Isomap embedding.'
+    return "isomap({}) -> Isomap embedding."

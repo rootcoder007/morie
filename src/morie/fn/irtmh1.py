@@ -1,6 +1,7 @@
 """DIF Mantel-Haenszel."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dif_mantel_haenszel"]

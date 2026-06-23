@@ -1,6 +1,7 @@
 """Tests for mirt3.mirt_3d_compensatory."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mirt3 import mirt_3d_compensatory
 
 
@@ -12,7 +13,7 @@ def test_mirt3_basic():
     d = 5
     result = mirt_3d_compensatory(y, theta, a, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mirt3_edge():

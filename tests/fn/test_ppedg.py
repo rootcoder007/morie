@@ -1,6 +1,7 @@
 """Test ppedg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppedg import ppedg
 
 

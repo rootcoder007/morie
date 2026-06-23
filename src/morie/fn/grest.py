@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import numpy as np
 from scipy.stats import chi2
+
 from ._richresult import RichResult
 
 __all__ = ["grest"]
@@ -55,13 +56,15 @@ def grest(time: np.ndarray, event: np.ndarray, group: np.ndarray, cdf=None) -> d
         w = n
         e1 = n1 * d / n
         num += w * (d1 - e1)
-        v = w ** 2 * n1 * (n - n1) * d * (n - d) / (n ** 2 * (n - 1)) if n > 1 else 0
+        v = w**2 * n1 * (n - n1) * d * (n - d) / (n**2 * (n - 1)) if n > 1 else 0
         den += v
 
     if den <= 0:
-        return RichResult(payload={"statistic": 0.0, "p_value": 1.0, "n_obs": len(time), "n_events": int(np.sum(event))})
+        return RichResult(
+            payload={"statistic": 0.0, "p_value": 1.0, "n_obs": len(time), "n_events": int(np.sum(event))}
+        )
 
-    stat = num ** 2 / den
+    stat = num**2 / den
     pval = 1 - chi2.cdf(stat, df=1)
 
     return {

@@ -1,6 +1,7 @@
 """Tests for matrxP.matrix_profile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.matrxP import matrix_profile
 
 
@@ -10,7 +11,7 @@ def test_matrxP_basic():
     m = 10
     result = matrix_profile(x, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_matrxP_edge():

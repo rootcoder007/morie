@@ -1,5 +1,7 @@
 """Value-cache quantization: token-wise normalize + round-to-integer."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_value_cache_quantization"]
@@ -31,7 +33,14 @@ def turboquant_value_cache_quantization(v, bits):
     n = len(v)
     result = float(np.mean(v))
     se = float(np.std(v, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Value-cache quantization: token-wise normalize + round-to-integer"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Value-cache quantization: token-wise normalize + round-to-integer",
+        }
+    )
 
 
 def cheatsheet():

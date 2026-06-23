@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rotary position embedding / RoPE (Su et al. 2021)."""
+
 from __future__ import annotations
 
 import numpy as np

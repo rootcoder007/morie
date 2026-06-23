@@ -1,5 +1,7 @@
 """Tests for morie.fn.xgb_ — simplified XGBoost."""
+
 import numpy as np
+
 from morie.fn.xgb_ import xgboost_simple
 
 

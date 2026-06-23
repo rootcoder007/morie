@@ -1,6 +1,7 @@
 """Tests for rganc.rangayyan_anc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rganc import rangayyan_anc
 
 
@@ -12,7 +13,7 @@ def test_rganc_basic():
     order = 4
     result = rangayyan_anc(primary, reference, mu, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rganc_edge():

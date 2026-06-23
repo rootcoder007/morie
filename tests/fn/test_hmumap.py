@@ -1,6 +1,7 @@
 """Tests for hmumap.geron_umap."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmumap import geron_umap
 
 
@@ -12,7 +13,7 @@ def test_hmumap_basic():
     min_dist = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_umap(X, n_components, n_neighbors, min_dist)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmumap_edge():

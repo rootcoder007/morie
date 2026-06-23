@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Simple exponential smoothing (SES) forecast."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_simple_exponential_smoothing"]
@@ -34,7 +36,9 @@ def joseph_simple_exponential_smoothing(y, alpha, horizon):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Simple exponential smoothing (SES) forecast"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Simple exponential smoothing (SES) forecast"}
+    )
 
 
 def cheatsheet():

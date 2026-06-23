@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptisg -- Isotropic edge correction"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptisg import isotropic_guard
 

@@ -1,6 +1,7 @@
 """Tests for wvar.weighted_variance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wvar import weighted_variance
 
 
@@ -10,7 +11,7 @@ def test_wvar_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = weighted_variance(y, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wvar_edge():

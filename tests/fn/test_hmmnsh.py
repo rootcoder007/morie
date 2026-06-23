@@ -1,6 +1,7 @@
 """Tests for hmmnsh.geron_mean_shift."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmmnsh import geron_mean_shift
 
 
@@ -10,7 +11,7 @@ def test_hmmnsh_basic():
     bandwidth = 0.3
     result = geron_mean_shift(X, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmmnsh_edge():

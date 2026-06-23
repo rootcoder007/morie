@@ -1,6 +1,7 @@
 """Tests for kmsp.kamath_sentencepiece_tokenizer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmsp import kamath_sentencepiece_tokenizer
 
 
@@ -10,7 +11,7 @@ def test_kmsp_basic():
     vocab_size = 100
     result = kamath_sentencepiece_tokenizer(corpus, vocab_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmsp_edge():

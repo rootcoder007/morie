@@ -1,6 +1,7 @@
 """Test sespc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sespc import sespc
 
 

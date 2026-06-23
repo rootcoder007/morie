@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Vibromyogram (VMG) signal characterization (lateral oscillation of contracting muscle)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_vmg"]
@@ -12,7 +14,14 @@ def rangayyan_vmg(vmg, fs):
     n = int(vmg) if vmg.ndim == 0 else len(vmg)
     result = float(np.mean(vmg))
     se = float(np.std(vmg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Vibromyogram (VMG) signal characterization (lateral oscillation of contracting muscle)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Vibromyogram (VMG) signal characterization (lateral oscillation of contracting muscle)",
+        }
+    )
 
 
 def cheatsheet():

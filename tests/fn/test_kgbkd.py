@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgbkd -- Block kriging discretization"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgbkd import bk_discretize
 

@@ -7,11 +7,10 @@ Momentum method with lookahead for improved convergence rates.
 
 import numpy as np
 
-__all__ = ['nadmf']
+__all__ = ["nadmf"]
 
 
-def nadmf(f, grad_f, x0, learning_rate=0.01, momentum=0.9, tol=1e-6, max_iter=1000,
-          full_output=False, seed=None):
+def nadmf(f, grad_f, x0, learning_rate=0.01, momentum=0.9, tol=1e-6, max_iter=1000, full_output=False, seed=None):
     """
     Nesterov accelerated gradient (NAG) for unconstrained minimization.
 
@@ -94,11 +93,7 @@ def nadmf(f, grad_f, x0, learning_rate=0.01, momentum=0.9, tol=1e-6, max_iter=10
         residual = np.linalg.norm(x_new - x)
         if residual < tol:
             if full_output:
-                return x_new, {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_value': f(x_new)
-                }
+                return x_new, {"iterations": iteration + 1, "converged": True, "final_value": f(x_new)}
             return x_new
 
         x = x_new
@@ -106,8 +101,8 @@ def nadmf(f, grad_f, x0, learning_rate=0.01, momentum=0.9, tol=1e-6, max_iter=10
 
     if full_output:
         return best_x, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_value': best_f,
+            "iterations": max_iter,
+            "converged": False,
+            "final_value": best_f,
         }
     return best_x

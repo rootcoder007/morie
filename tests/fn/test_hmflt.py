@@ -1,9 +1,9 @@
 """Test homomorphic_filter (hmflt)."""
-import numpy as np
-import pytest
 
-from morie.fn.hmflt import homomorphic_filter, hmflt
+import numpy as np
+
 from morie.fn._containers import SignalResult
+from morie.fn.hmflt import hmflt, homomorphic_filter
 
 
 class TestHomomorphicFilter:

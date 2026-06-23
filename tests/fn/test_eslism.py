@@ -1,6 +1,7 @@
 """Tests for eslism.esl_isomap."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslism import esl_isomap
 
 
@@ -11,7 +12,7 @@ def test_eslism_basic():
     neighbors = np.random.default_rng(42).normal(0, 1, 100)
     result = esl_isomap(X, k, neighbors)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslism_edge():

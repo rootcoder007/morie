@@ -1,6 +1,8 @@
 """Tests for tmar."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tmar import tmar
 
 
@@ -28,4 +30,5 @@ def test_tmar_no_data():
 
 def test_tmar_alias():
     from morie.fn.tmar import tmar
+
     assert tmar is tmar

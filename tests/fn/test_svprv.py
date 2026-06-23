@@ -1,7 +1,6 @@
 """Tests for morie.fn.svprv -- Probit spatial voting probability"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svprv import probit_vote
 

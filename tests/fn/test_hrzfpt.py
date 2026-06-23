@@ -1,6 +1,7 @@
 """Tests for hrzfpt.horowitz_first_passage_time."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzfpt import horowitz_first_passage_time
 
 
@@ -11,7 +12,7 @@ def test_hrzfpt_basic():
     fU_hat = np.random.default_rng(42).normal(0, 1, 100)
     result = horowitz_first_passage_time(y_panel, threshold, fU_hat)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzfpt_edge():

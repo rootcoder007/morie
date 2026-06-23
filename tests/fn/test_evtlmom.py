@@ -1,6 +1,7 @@
 """Tests for evtlmom.evt_trimmed_lmom."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evtlmom import evt_trimmed_lmom
 
 
@@ -12,7 +13,7 @@ def test_evtlmom_basic():
     order = 4
     result = evt_trimmed_lmom(x, s, t, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evtlmom_edge():

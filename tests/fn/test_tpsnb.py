@@ -1,10 +1,10 @@
 """Tests for morie.fn.tpsnb — neighbourhood."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.tpsnb import tps_neighborhood
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.tpsnb import tps_neighborhood
 
 
 class TestNeighbourhood:

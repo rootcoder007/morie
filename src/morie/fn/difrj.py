@@ -10,7 +10,16 @@ from scipy import stats as sp
 from morie.fn._containers import DIFResult
 
 
-def dif_raju_area(a_ref: np.ndarray | list, b_ref: np.ndarray | list, a_focal: np.ndarray | list, b_focal: np.ndarray | list, cdf=None, *, item_names: list[str] | None = None, alpha: float = 0.05) -> DIFResult:
+def dif_raju_area(
+    a_ref: np.ndarray | list,
+    b_ref: np.ndarray | list,
+    a_focal: np.ndarray | list,
+    b_focal: np.ndarray | list,
+    cdf=None,
+    *,
+    item_names: list[str] | None = None,
+    alpha: float = 0.05,
+) -> DIFResult:
     """Raju's signed and unsigned area measures for DIF.
 
     Parameters

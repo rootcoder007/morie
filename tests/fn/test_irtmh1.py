@@ -1,6 +1,7 @@
 """Tests for irtmh1.dif_mantel_haenszel."""
+
 import numpy as np
-import pytest
+
 from morie.fn.irtmh1 import dif_mantel_haenszel
 
 
@@ -11,7 +12,7 @@ def test_irtmh1_basic():
     total_score = np.random.default_rng(42).normal(0, 1, 100)
     result = dif_mantel_haenszel(X, group, total_score)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_irtmh1_edge():

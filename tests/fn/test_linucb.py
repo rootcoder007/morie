@@ -1,6 +1,7 @@
 """Tests for linucb.linucb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.linucb import linucb
 
 
@@ -11,7 +12,7 @@ def test_linucb_basic():
     alpha = 0.05
     result = linucb(context, arms, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_linucb_edge():

@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pearson correlation coefficient for morphological analysis."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_correlation_coeff"]
@@ -33,9 +35,23 @@ def rangayyan_correlation_coeff(x, y):
     y = np.asarray(y, dtype=float)
     n = min(len(x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Pearson correlation coefficient for morphological analysis"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Pearson correlation coefficient for morphological analysis",
+            }
+        )
     result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Pearson correlation coefficient for morphological analysis"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Pearson correlation coefficient for morphological analysis",
+        }
+    )
 
 
 def cheatsheet():

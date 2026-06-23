@@ -1,6 +1,7 @@
 """Test dunn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dunn import dunn_test
 
 

@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.auc_ import auc_score
 
 

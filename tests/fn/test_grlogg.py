@@ -1,6 +1,7 @@
 """Tests for grlogg.geron_logistic_cost_gradient."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grlogg import geron_logistic_cost_gradient
 
 
@@ -11,7 +12,7 @@ def test_grlogg_basic():
     theta = 0.0
     result = geron_logistic_cost_gradient(X, y, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grlogg_edge():

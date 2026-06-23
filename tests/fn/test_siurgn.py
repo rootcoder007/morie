@@ -1,9 +1,10 @@
 """Tests for morie.fn.siurgn — SIU by region."""
 
-import pytest
 import pandas as pd
-from morie.fn.siurgn import siu_by_region
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.siurgn import siu_by_region
 
 
 class TestSiuByRegion:

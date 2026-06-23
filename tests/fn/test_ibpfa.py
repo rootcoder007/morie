@@ -1,6 +1,7 @@
 """Tests for ibpfa.indian_buffet_factor."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ibpfa import indian_buffet_factor
 
 
@@ -11,7 +12,7 @@ def test_ibpfa_basic():
     n_iter = 50
     result = indian_buffet_factor(y, alpha, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ibpfa_edge():

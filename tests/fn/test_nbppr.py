@@ -1,6 +1,7 @@
 """Test nbppr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nbppr import nbppr
 
 

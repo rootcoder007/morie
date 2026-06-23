@@ -1,6 +1,8 @@
 """Test geagm."""
+
 import numpy as np
 import pytest
+
 from morie.fn.geagm import geagm
 
 

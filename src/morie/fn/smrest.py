@@ -1,6 +1,7 @@
 """Standardized mortality ratio (indirect)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["standardized_mortality_ratio"]
@@ -32,7 +33,9 @@ def standardized_mortality_ratio(observed, expected):
     n = len(observed)
     result = float(np.mean(observed))
     se = float(np.std(observed, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Standardized mortality ratio (indirect)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Standardized mortality ratio (indirect)"}
+    )
 
 
 def cheatsheet():

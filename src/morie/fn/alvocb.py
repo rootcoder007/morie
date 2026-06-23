@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Tokenizer vocabulary comparison: Jaccard overlap between two tokenizer vocabs."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_tokenizer_vocab_overlap"]
@@ -32,7 +34,14 @@ def alammar_tokenizer_vocab_overlap(vocab_a, vocab_b):
     n = len(vocab_a)
     result = float(np.mean(vocab_a))
     se = float(np.std(vocab_a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Tokenizer vocabulary comparison: Jaccard overlap between two tokenizer vocabs"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Tokenizer vocabulary comparison: Jaccard overlap between two tokenizer vocabs",
+        }
+    )
 
 
 def cheatsheet():

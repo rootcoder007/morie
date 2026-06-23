@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Decision trees exhibit high variance; small data changes yield very different trees."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_tree_high_variance"]
@@ -32,7 +34,14 @@ def geron_tree_high_variance(X, y):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Decision trees exhibit high variance; small data changes yield very different trees"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Decision trees exhibit high variance; small data changes yield very different trees",
+        }
+    )
 
 
 def cheatsheet():

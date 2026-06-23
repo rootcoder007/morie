@@ -1,6 +1,7 @@
 """Nonresponse adjustment via response propensity."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["nonresponse_adjustment"]
@@ -34,7 +35,9 @@ def nonresponse_adjustment(y, weights, propensity):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Nonresponse adjustment via response propensity"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Nonresponse adjustment via response propensity"}
+    )
 
 
 def cheatsheet():

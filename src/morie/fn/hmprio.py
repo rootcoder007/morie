@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Perceiver IO: adds cross-attention output decoder."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_perceiver_io"]
@@ -34,7 +36,9 @@ def geron_perceiver_io(x, latents, queries):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Perceiver IO: adds cross-attention output decoder"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Perceiver IO: adds cross-attention output decoder"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test csbwt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csbwt import csbwt
 
 

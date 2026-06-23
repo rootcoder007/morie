@@ -1,6 +1,7 @@
 """Tests for msm243.mvsml_preprocessing_eq_2_4."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm243 import mvsml_preprocessing_eq_2_4
 
 
@@ -10,7 +11,7 @@ def test_msm243_basic():
     XTR = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_preprocessing_eq_2_4(b, XTR)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm243_edge():

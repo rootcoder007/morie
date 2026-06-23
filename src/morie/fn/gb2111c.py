@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Elementary coverage C_i = U_(i) - U_(i-1) has Beta(1,n) distribution."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_elementary_coverage_beta"]
@@ -33,7 +35,14 @@ def gibbons_elementary_coverage_beta(n):
         data = rng.standard_normal(max(n, 2))
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Elementary coverage C_i = U_(i) - U_(i-1) has Beta(1,n) distribution"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Elementary coverage C_i = U_(i) - U_(i-1) has Beta(1,n) distribution",
+        }
+    )
 
 
 def cheatsheet():

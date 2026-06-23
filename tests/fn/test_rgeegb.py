@@ -1,6 +1,7 @@
 """Tests for rgeegb.rangayyan_eeg_rhythms."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgeegb import rangayyan_eeg_rhythms
 
 
@@ -10,7 +11,7 @@ def test_rgeegb_basic():
     fs = 100.0
     result = rangayyan_eeg_rhythms(eeg, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgeegb_edge():

@@ -1,7 +1,7 @@
 """Tests for morie.fn.doom -- System failure cascade."""
 
-from morie.fn.doom import failure_cascade, doom
 from morie.fn._containers import DescriptiveResult
+from morie.fn.doom import doom, failure_cascade
 
 
 class TestDoom:

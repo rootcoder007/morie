@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Average treatment effect via simple difference-in-means with Welch CI."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -45,4 +46,4 @@ force = ate_diff
 
 
 def cheatsheet() -> str:
-    return 'ate_diff({}) -> ATE difference-in-means.'
+    return "ate_diff({}) -> ATE difference-in-means."

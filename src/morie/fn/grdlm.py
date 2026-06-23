@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mini-batch iterator over DataLoader: yields shuffled batches of size b."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_dataloader_minibatch"]
@@ -36,7 +38,14 @@ def geron_dataloader_minibatch(n, b, shuffle, seed):
     n = int(n) if n.ndim == 0 else len(n)
     result = float(np.mean(n))
     se = float(np.std(n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mini-batch iterator over DataLoader: yields shuffled batches of size b"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mini-batch iterator over DataLoader: yields shuffled batches of size b",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 """Tests for morie.fn.rmsfe -- RMSFE."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rmsfe import rmsfe_calc
 
 
@@ -22,4 +24,5 @@ class TestRMSFE:
 
     def test_cheatsheet(self):
         from morie.fn.rmsfe import cheatsheet
+
         assert isinstance(cheatsheet(), str)

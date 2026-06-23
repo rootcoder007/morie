@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Adam optimizer update rule."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["adam_optimizer"]

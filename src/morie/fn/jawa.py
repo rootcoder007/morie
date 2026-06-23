@@ -37,4 +37,4 @@ jawa = jackknife
 
 
 def cheatsheet() -> str:
-    return 'jackknife({}) -> Jackknife estimator.'
+    return "jackknife({}) -> Jackknife estimator."

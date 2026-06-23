@@ -1,6 +1,7 @@
 """Magnitude of instantaneous output signal of a matched filter at t = t0.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_matched_filter_instantaneous_signal"]
@@ -36,7 +37,14 @@ def rangayyan_ch4_matched_filter_instantaneous_signal(X, H, f, t_0):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Magnitude of instantaneous output signal of a matched filter at t = t0."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Magnitude of instantaneous output signal of a matched filter at t = t0.",
+        }
+    )
 
 
 def cheatsheet():

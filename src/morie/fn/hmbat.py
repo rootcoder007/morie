@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Batch (offline) learning: train once on full dataset, then deploy."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_batch_learning"]
@@ -32,7 +34,14 @@ def geron_batch_learning(X, y):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Batch (offline) learning: train once on full dataset, then deploy"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Batch (offline) learning: train once on full dataset, then deploy",
+        }
+    )
 
 
 def cheatsheet():

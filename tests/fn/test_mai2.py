@@ -1,6 +1,7 @@
 """Tests for mai2.ma_higgins_i2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mai2 import ma_higgins_i2
 
 
@@ -10,7 +11,7 @@ def test_mai2_basic():
     k = 5
     result = ma_higgins_i2(Q, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mai2_edge():

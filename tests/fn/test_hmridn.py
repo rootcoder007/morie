@@ -1,6 +1,7 @@
 """Tests for hmridn.geron_ridge_normal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmridn import geron_ridge_normal
 
 
@@ -11,7 +12,7 @@ def test_hmridn_basic():
     alpha = 0.05
     result = geron_ridge_normal(X, y, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmridn_edge():

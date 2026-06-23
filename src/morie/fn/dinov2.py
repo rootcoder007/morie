@@ -1,6 +1,7 @@
 """DINOv2 self-supervised image representation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dino_v2_repr"]
@@ -36,7 +37,9 @@ def dino_v2_repr(x, student, teacher, tau):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DINOv2 self-supervised image representation"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DINOv2 self-supervised image representation"}
+    )
 
 
 def cheatsheet():

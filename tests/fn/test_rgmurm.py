@@ -1,6 +1,7 @@
 """Tests for rgmurm.rangayyan_murmur_analysis."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgmurm import rangayyan_murmur_analysis
 
 
@@ -11,7 +12,7 @@ def test_rgmurm_basic():
     ecg = np.random.default_rng(42).normal(0, 1, 1024)
     result = rangayyan_murmur_analysis(pcg, fs, ecg)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgmurm_edge():

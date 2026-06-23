@@ -1,6 +1,7 @@
 """Tests for chnntp.channel_capacity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.chnntp import channel_capacity
 
 
@@ -9,7 +10,7 @@ def test_chnntp_basic():
     channel = np.random.default_rng(42).normal(0, 1, 100)
     result = channel_capacity(channel)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_chnntp_edge():

@@ -1,6 +1,7 @@
 """Tests for randW.random_walk_kernel."""
+
 import numpy as np
-import pytest
+
 from morie.fn.randW import random_walk_kernel
 
 
@@ -11,7 +12,7 @@ def test_randW_basic():
     lam = 0.1
     result = random_walk_kernel(G1, G2, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_randW_edge():

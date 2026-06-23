@@ -1,7 +1,6 @@
 """Tests for morie.fn.ze3sf -- Three-step FCA"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ze3sf import three_step_fca
 

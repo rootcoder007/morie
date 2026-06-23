@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Codon usage table from a DNA sequence."""
 
-
 from ._containers import DescriptiveResult
 
 

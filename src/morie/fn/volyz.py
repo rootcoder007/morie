@@ -1,6 +1,7 @@
 """Yang-Zhang OHLC volatility (most efficient)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_yang_zhang"]
@@ -36,7 +37,9 @@ def vol_yang_zhang(o, h, l, c):
     n = len(o)
     result = float(np.mean(o))
     se = float(np.std(o, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Yang-Zhang OHLC volatility (most efficient)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Yang-Zhang OHLC volatility (most efficient)"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 """Tests for rfcox."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfcox import rfcox
 
 
@@ -28,4 +30,5 @@ def test_rfcox_no_data():
 
 def test_rfcox_alias():
     from morie.fn.rfcox import rfcox
+
     assert rfcox is rfcox

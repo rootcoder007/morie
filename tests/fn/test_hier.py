@@ -1,6 +1,7 @@
 """Tests for hier.hierarchical_rl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hier import hierarchical_rl
 
 
@@ -11,7 +12,7 @@ def test_hier_basic():
     meta = np.random.default_rng(42).normal(0, 1, 100)
     result = hierarchical_rl(env, options, meta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hier_edge():

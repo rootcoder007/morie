@@ -1,6 +1,7 @@
 """Tests for morie.fn.dalyc -- DALY computation."""
 
 import pytest
+
 from morie.fn.dalyc import daly_computation
 
 

@@ -1,13 +1,12 @@
 """Tests for morie.fn.rcdcm — recidivism competing risks."""
 
-import pytest
 import numpy as np
-from morie.fn.rcdcm import recidivism_competing
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rcdcm import recidivism_competing
 
 
 class TestRecidivismCompeting:
-
     def test_returns_descriptive(self):
         times = np.array([1, 2, 3, 4, 5, 6, 7, 8])
         events = np.array([1, 0, 2, 1, 0, 1, 2, 0])

@@ -1,5 +1,7 @@
 """Tests for Cholesky GRF simulation."""
+
 import numpy as np
+
 from morie.fn.sgchol import sgchol
 
 

@@ -1,6 +1,7 @@
 """Tests for hmroc.geron_roc_curve."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmroc import geron_roc_curve
 
 
@@ -10,7 +11,7 @@ def test_hmroc_basic():
     scores = np.random.default_rng(42).uniform(0, 1, 100)
     result = geron_roc_curve(y_true, scores)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmroc_edge():

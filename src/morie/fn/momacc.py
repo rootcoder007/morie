@@ -1,6 +1,7 @@
 """Moments accountant for DP-SGD."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["moments_accountant"]

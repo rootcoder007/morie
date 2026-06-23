@@ -22,10 +22,10 @@ from ._containers import DescriptiveResult
 #
 # Systolic BP reduction:  -2.6 mmHg per 0.1 NDVI (Twohig-Bennett 2018)
 _NDVI_RR_PER_0_1: dict[str, tuple[float, tuple[float, float]]] = {
-    "all_cause":        (0.96, (0.94, 0.97)),
-    "cardiovascular":   (0.95, (0.90, 1.00)),
-    "depression":       (0.85, (0.76, 0.95)),   # OR from Twohig-Bennett
-    "self_rated_mh":    (0.91, (0.88, 0.94)),
+    "all_cause": (0.96, (0.94, 0.97)),
+    "cardiovascular": (0.95, (0.90, 1.00)),
+    "depression": (0.85, (0.76, 0.95)),  # OR from Twohig-Bennett
+    "self_rated_mh": (0.91, (0.88, 0.94)),
 }
 
 
@@ -103,17 +103,12 @@ def ndvi_exposure_rr(
     """
     key = outcome.lower().strip().replace(" ", "_").replace("-", "_")
     if key not in _NDVI_RR_PER_0_1:
-        raise KeyError(
-            f"Unknown outcome {outcome!r}. Available: "
-            f"{sorted(_NDVI_RR_PER_0_1)}"
-        )
+        raise KeyError(f"Unknown outcome {outcome!r}. Available: {sorted(_NDVI_RR_PER_0_1)}")
     rr_per, (lo_per, hi_per) = _NDVI_RR_PER_0_1[key]
 
     N = np.atleast_1d(np.asarray(ndvi, dtype=float))
     if np.any(N < -1.01) or np.any(N > 1.01):
-        raise ValueError(
-            "NDVI values must be in [-1, 1] (slight numerical slack allowed)."
-        )
+        raise ValueError("NDVI values must be in [-1, 1] (slight numerical slack allowed).")
     if not (-1.0 <= reference_ndvi <= 1.0):
         raise ValueError("reference_ndvi must be in [-1, 1].")
 
@@ -134,8 +129,7 @@ def ndvi_exposure_rr(
             "rr_per_0_1_ndvi": rr_per,
             "outcome": key,
             "reference_ndvi": reference_ndvi,
-            "source": "Rojas-Rueda 2019 Lancet Planet Health / "
-                       "Twohig-Bennett 2018 Environ Res",
+            "source": "Rojas-Rueda 2019 Lancet Planet Health / Twohig-Bennett 2018 Environ Res",
         },
     )
 

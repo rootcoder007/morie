@@ -1,6 +1,7 @@
 """Test prjinv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.prjinv import prjinv
 
 

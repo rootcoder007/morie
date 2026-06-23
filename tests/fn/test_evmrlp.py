@@ -1,6 +1,7 @@
 """Tests for evmrlp.evt_mean_residual_life."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evmrlp import evt_mean_residual_life
 
 
@@ -10,7 +11,7 @@ def test_evmrlp_basic():
     u_grid = np.random.default_rng(42).normal(0, 1, 100)
     result = evt_mean_residual_life(x, u_grid)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evmrlp_edge():

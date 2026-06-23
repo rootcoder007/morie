@@ -1,6 +1,7 @@
 """Tests for ipwsrv.ipw_with_survey_weights."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ipwsrv import ipw_with_survey_weights
 
 
@@ -12,7 +13,7 @@ def test_ipwsrv_basic():
     propensity = np.random.default_rng(42).normal(0, 1, 100)
     result = ipw_with_survey_weights(y, T, weights, propensity)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ipwsrv_edge():

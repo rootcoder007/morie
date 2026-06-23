@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Constitutional AI: critique-and-revise loop using a set of principles."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_constitutional_ai_loop"]
@@ -34,7 +36,14 @@ def kamath_constitutional_ai_loop(initial_response, constitution, model):
     n = len(initial_response)
     result = float(np.mean(initial_response))
     se = float(np.std(initial_response, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Constitutional AI: critique-and-revise loop using a set of principles"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Constitutional AI: critique-and-revise loop using a set of principles",
+        }
+    )
 
 
 def cheatsheet():

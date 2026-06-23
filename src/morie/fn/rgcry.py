@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Infant cry signal analysis: formants and fundamental frequency."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_infant_cry"]
@@ -32,7 +34,14 @@ def rangayyan_infant_cry(cry, fs):
     n = int(cry) if cry.ndim == 0 else len(cry)
     result = float(np.mean(cry))
     se = float(np.std(cry, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Infant cry signal analysis: formants and fundamental frequency"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Infant cry signal analysis: formants and fundamental frequency",
+        }
+    )
 
 
 def cheatsheet():

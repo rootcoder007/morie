@@ -1,6 +1,7 @@
 """Tests for rmspO.rmsprop_optimizer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rmspO import rmsprop_optimizer
 
 
@@ -13,7 +14,7 @@ def test_rmspO_basic():
     eps = np.random.default_rng(42).normal(0, 1, 100)
     result = rmsprop_optimizer(theta, grad, lr, rho, eps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rmspO_edge():

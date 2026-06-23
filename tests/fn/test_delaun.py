@@ -1,6 +1,7 @@
 """Test delaun."""
+
 import numpy as np
-import pytest
+
 from morie.fn.delaun import delaun
 
 

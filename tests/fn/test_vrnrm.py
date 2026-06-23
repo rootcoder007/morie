@@ -1,5 +1,7 @@
 """Tests for morie.fn.vrnrm — normalized variance."""
+
 import numpy as np
+
 from morie.fn.vrnrm import vrnrm
 
 
@@ -12,6 +14,7 @@ def test_vrnrm_perfect():
 
 def test_cheatsheet():
     from morie.fn.vrnrm import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

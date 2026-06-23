@@ -1,6 +1,8 @@
 """Tests for spchst."""
+
 import numpy as np
 import pytest
+
 from morie.fn.spchst import spchst
 
 
@@ -28,4 +30,5 @@ def test_spchst_no_data():
 
 def test_spchst_alias():
     from morie.fn.spchst import spchst
+
     assert spchst is spchst

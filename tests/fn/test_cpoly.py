@@ -1,8 +1,11 @@
 """Tests for cpoly — ChaCha20-Poly1305 authenticated encryption."""
+
 import os
+
 import pytest
-from morie.fn.cpoly import chacha20_encrypt, chacha20_decrypt
+
 from morie.fn._containers import CryptoResult
+from morie.fn.cpoly import chacha20_decrypt, chacha20_encrypt
 
 
 def test_cpoly_roundtrip():

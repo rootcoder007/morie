@@ -1,7 +1,7 @@
 """Tests for morie.fn.cmamn."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cmamn import cmamn
 
 

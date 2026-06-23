@@ -1,6 +1,7 @@
 """Test sawrg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sawrg import sawrg
 
 

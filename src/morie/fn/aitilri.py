@@ -1,6 +1,7 @@
 """Inverse ILR back to a closed composition."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["aitchison_ilr_inverse"]
@@ -32,7 +33,9 @@ def aitchison_ilr_inverse(y, V):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Inverse ILR back to a closed composition"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Inverse ILR back to a closed composition"}
+    )
 
 
 def cheatsheet():

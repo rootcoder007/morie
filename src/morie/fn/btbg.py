@@ -1,6 +1,7 @@
 """Bootstrap aggregating (bagging) ensemble prediction."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_bagging_predict"]
@@ -34,7 +35,9 @@ def boot_bagging_predict(models, X_new, kind):
     n = len(models)
     result = float(np.mean(models))
     se = float(np.std(models, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bootstrap aggregating (bagging) ensemble prediction"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bootstrap aggregating (bagging) ensemble prediction"}
+    )
 
 
 def cheatsheet():

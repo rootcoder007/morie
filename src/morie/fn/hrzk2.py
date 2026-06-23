@@ -7,6 +7,7 @@ with a Gaussian kernel.  Returns a fitted value at each X_i (leave-one-in
 fit) plus an asymptotic pointwise SE based on local variance
 ``sigma_hat^2 = sum w_i (y - m_hat)^2``.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -50,14 +51,15 @@ def horowitz_kernel_regression(x, y, bandwidth=None, grid=None):
     y = np.asarray(y, dtype=float).ravel()
     n = x.size
     if n < 2 or y.size != n:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                   "method": "nadaraya-watson (insufficient data)"})
+        return RichResult(
+            payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "nadaraya-watson (insufficient data)"}
+        )
     h = float(bandwidth) if bandwidth is not None else _silverman_bandwidth(x)
     if h <= 0:
         h = _silverman_bandwidth(x)
     g = x if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     u = (g[:, None] - x[None, :]) / h
-    w = np.exp(-0.5 * u * u)            # un-normalised; ratio cancels constants
+    w = np.exp(-0.5 * u * u)  # un-normalised; ratio cancels constants
     wsum = w.sum(axis=1)
     safe_wsum = np.where(wsum > 0, wsum, 1.0)
     m_hat = (w @ y) / safe_wsum
@@ -67,16 +69,22 @@ def horowitz_kernel_regression(x, y, bandwidth=None, grid=None):
     # Pointwise asymptotic SE  ~ sqrt(sigma2 * R(K) / (n h f(x)))
     # use f_hat(x) via the same weights / (n h * sqrt(2 pi))
     f_hat = wsum / (n * h * np.sqrt(2 * np.pi))
-    se = np.sqrt(np.maximum(sigma2, 0) * _R_K_GAUSSIAN /
-                 (n * h * np.maximum(f_hat, 1e-12)))
+    se = np.sqrt(np.maximum(sigma2, 0) * _R_K_GAUSSIAN / (n * h * np.maximum(f_hat, 1e-12)))
     if m_hat.size == 1:
-        est = float(m_hat[0]); se_v = float(se[0])
+        est = float(m_hat[0])
+        se_v = float(se[0])
     else:
-        est = m_hat.astype(float); se_v = se.astype(float)
-    return RichResult(payload={
-        "estimate": est, "se": se_v, "bandwidth": h, "n": n,
-        "method": "Nadaraya-Watson kernel regression (Gaussian)",
-    })
+        est = m_hat.astype(float)
+        se_v = se.astype(float)
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se_v,
+            "bandwidth": h,
+            "n": n,
+            "method": "Nadaraya-Watson kernel regression (Gaussian)",
+        }
+    )
 
 
 def cheatsheet():

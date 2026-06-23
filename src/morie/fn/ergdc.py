@@ -84,6 +84,7 @@ def ergdc(
                 n_classes += 1
 
     from math import gcd
+
     is_aperiodic = True
     if is_irreducible:
         return_times = []
@@ -98,7 +99,7 @@ def ergdc(
             d = return_times[0]
             for t in return_times[1:]:
                 d = gcd(d, t)
-            is_aperiodic = (d == 1)
+            is_aperiodic = d == 1
     else:
         is_aperiodic = False
 

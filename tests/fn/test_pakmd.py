@@ -1,7 +1,7 @@
 """Tests for morie.fn.pakmd."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pakmd import pakmd
 
 

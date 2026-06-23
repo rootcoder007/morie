@@ -1,7 +1,6 @@
 """Tests for morie.fn.mssmw -- Weighted SMACOF MDS"""
 
 import numpy as np
-import pytest
 
 from morie.fn.mssmw import smacof_weight
 

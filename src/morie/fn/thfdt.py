@@ -12,6 +12,7 @@ Approximated normal scores via inverse-CDF of midranks
 (``Phi^{-1}((R_i - 3/8)/(N + 1/4))``) -- the Blom approximation,
 identical to R's ``qnorm(ppoints(N))``.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -40,30 +41,37 @@ def terry_hoeffding_test(x, y):
     m, n = int(x.size), int(y.size)
     N = m + n
     if m < 2 or n < 2:
-        return RichResult(payload={
-            "statistic": np.nan, "p_value": np.nan, "z": np.nan,
-            "n": N, "m": m,
-            "method": "Terry-Hoeffding (Fisher-Yates) normal-scores test",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "z": np.nan,
+                "n": N,
+                "m": m,
+                "method": "Terry-Hoeffding (Fisher-Yates) normal-scores test",
+            }
+        )
     pooled = np.concatenate([x, y])
     ranks = stats.rankdata(pooled)
     # Blom normal scores
     a = stats.norm.ppf((ranks - 3.0 / 8.0) / (N + 1.0 / 4.0))
     a_x = a[:m]
     T = float(a_x.sum())
-    sum_a2 = float((a ** 2).sum())
+    sum_a2 = float((a**2).sum())
     E_T = 0.0  # since scores sum to ~0
     Var_T = (m * n / float(N * (N - 1))) * sum_a2
     z = (T - E_T) / np.sqrt(Var_T) if Var_T > 0 else np.nan
     p = 2.0 * (1.0 - stats.norm.cdf(abs(z))) if np.isfinite(z) else np.nan
-    return RichResult(payload={
-        "statistic": T,
-        "p_value": float(p),
-        "z": float(z),
-        "n": N,
-        "m": m,
-        "method": "Terry-Hoeffding (Fisher-Yates) normal-scores test",
-    })
+    return RichResult(
+        payload={
+            "statistic": T,
+            "p_value": float(p),
+            "z": float(z),
+            "n": N,
+            "m": m,
+            "method": "Terry-Hoeffding (Fisher-Yates) normal-scores test",
+        }
+    )
 
 
 def cheatsheet():

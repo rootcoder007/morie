@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.bunck import bunching, bunck
+
 from morie.fn._containers import ESRes
+from morie.fn.bunck import bunching, bunck
 
 
 class TestBunching:

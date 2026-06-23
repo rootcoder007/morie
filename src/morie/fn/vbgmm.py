@@ -57,11 +57,15 @@ def vb_gaussian_mixture(
         E_ln_pi = digamma(alpha) - digamma(np.sum(alpha))
         E_ln_prec = np.zeros(K)
         for k in range(K):
-            E_ln_prec[k] = np.sum(digamma(0.5 * (nu[k] + 1 - np.arange(1, d + 1)))) + d * np.log(2) - np.sum(np.log(W_inv[k] + 1e-30))
+            E_ln_prec[k] = (
+                np.sum(digamma(0.5 * (nu[k] + 1 - np.arange(1, d + 1))))
+                + d * np.log(2)
+                - np.sum(np.log(W_inv[k] + 1e-30))
+            )
 
         for k in range(K):
             diff = X_arr - m[k]
-            mahal = np.sum(diff ** 2 * nu[k] / (W_inv[k] + 1e-30), axis=1)
+            mahal = np.sum(diff**2 * nu[k] / (W_inv[k] + 1e-30), axis=1)
             r[:, k] = E_ln_pi[k] + 0.5 * E_ln_prec[k] - 0.5 * d / beta[k] - 0.5 * mahal
 
         r_max = np.max(r, axis=1, keepdims=True)
@@ -77,9 +81,9 @@ def vb_gaussian_mixture(
             beta[k] = beta_0 + N_k[k]
             m[k] = (beta_0 * m_0 + N_k[k] * x_bar[k]) / beta[k]
             diff = X_arr - x_bar[k]
-            S_k = np.sum(r[:, k:k+1] * diff ** 2, axis=0) / N_k[k]
+            S_k = np.sum(r[:, k : k + 1] * diff**2, axis=0) / N_k[k]
             dm = x_bar[k] - m_0
-            W_inv[k] = W_0_inv + N_k[k] * S_k + (beta_0 * N_k[k] / beta[k]) * dm ** 2
+            W_inv[k] = W_0_inv + N_k[k] * S_k + (beta_0 * N_k[k] / beta[k]) * dm**2
             nu[k] = nu_0 + N_k[k]
 
         elbo = float(np.sum(r * (E_ln_pi[None, :] - np.log(r + 1e-30))))

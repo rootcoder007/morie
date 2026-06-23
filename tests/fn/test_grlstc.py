@@ -1,6 +1,7 @@
 """Tests for grlstc.geron_lstm_cell."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grlstc import geron_lstm_cell
 
 
@@ -19,7 +20,7 @@ def test_grlstc_basic():
     bo = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_lstm_cell(x_t, h_prev, c_prev, Wf, Wi, Wg, Wo, bf, bi, bg, bo)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grlstc_edge():

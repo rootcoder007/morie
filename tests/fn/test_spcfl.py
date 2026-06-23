@@ -1,7 +1,8 @@
 """Tests for spcfl.py - spectral flatness."""
+
 import numpy as np
-import pytest
-from morie.fn.spcfl import spectral_flatness_fn, spcfl
+
+from morie.fn.spcfl import spcfl, spectral_flatness_fn
 
 
 def test_spectral_flatness_returns_descriptive_result():

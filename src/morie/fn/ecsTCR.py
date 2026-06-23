@@ -1,6 +1,7 @@
 """Equilibrium climate sensitivity / transient climate response."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ecs_tcr"]
@@ -32,7 +33,14 @@ def ecs_tcr(model_run, CO2_traj):
     n = len(model_run)
     result = float(np.mean(model_run))
     se = float(np.std(model_run, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Equilibrium climate sensitivity / transient climate response"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Equilibrium climate sensitivity / transient climate response",
+        }
+    )
 
 
 def cheatsheet():

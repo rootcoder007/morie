@@ -1,5 +1,7 @@
 """Tests for morie.fn.emllk -- EM log-likelihood."""
+
 import numpy as np
+
 from morie.fn.emllk import em_log_likelihood, emllk
 
 

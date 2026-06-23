@@ -1,6 +1,7 @@
 """Tests for rng189.rangayyan_ch4_pan_tompkins_moving_window_integrator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng189 import rangayyan_ch4_pan_tompkins_moving_window_integrator
 
 
@@ -11,7 +12,7 @@ def test_rng189_basic():
     n = 100
     result = rangayyan_ch4_pan_tompkins_moving_window_integrator(x, N, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng189_edge():

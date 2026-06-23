@@ -10,6 +10,7 @@ def mcc(tp: int, tn: int, fp: int, fn: int):
     Returns RichResult; float(result) yields the scalar.
     """
     from ._richresult import RichResult
+
     num = tp * tn - fp * fn
     denom = ((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn)) ** 0.5
     if denom == 0:
@@ -25,14 +26,20 @@ def mcc(tp: int, tn: int, fp: int, fn: int):
         summary_lines=[
             ("MCC", v),
             ("Accuracy (for context)", accuracy),
-            ("TP", tp), ("TN", tn), ("FP", fp), ("FN", fn),
+            ("TP", tp),
+            ("TN", tn),
+            ("FP", fp),
+            ("FN", fn),
             ("n total", n),
         ],
         warnings=warnings,
-        interpretation=(f"MCC={v:+.3f}: {abs(v):.2f} magnitude on [0, 1] scale; "
-                        "negative = predictions inversely correlated with truth."),
+        interpretation=(
+            f"MCC={v:+.3f}: {abs(v):.2f} magnitude on [0, 1] scale; "
+            "negative = predictions inversely correlated with truth."
+        ),
         payload={"value": v, "statistic": v, "tp": tp, "tn": tn, "fp": fp, "fn": fn},
     )
+
 
 # Back-compat alias
 matthews_corrcoef = mcc

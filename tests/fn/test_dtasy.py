@@ -1,6 +1,7 @@
 """Test dtasy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtasy import dtasy
 
 

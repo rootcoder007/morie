@@ -40,4 +40,5 @@ def test_with_covariates(surv_data):
 
 def test_cheatsheet():
     from morie.fn.logns import cheatsheet
+
     assert "log-normal" in cheatsheet().lower()

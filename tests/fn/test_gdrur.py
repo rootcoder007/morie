@@ -1,6 +1,7 @@
 """Test gdrur."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdrur import gdrur
 
 

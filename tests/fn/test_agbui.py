@@ -1,6 +1,7 @@
 """Test agbui."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agbui import agbui
 
 

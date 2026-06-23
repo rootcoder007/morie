@@ -1,6 +1,7 @@
 """Test tssld."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tssld import tssld
 
 

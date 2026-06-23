@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Log-density estimation by exponential-family expansion."""
+
 import numpy as np
 from scipy.optimize import minimize
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_log_density"]
@@ -45,10 +47,13 @@ def ghosal_log_density(x, K=5, grid=None):
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n < 5:
-        return RichResult(payload={
-            "estimate": float("nan"), "n": n,
-            "method": "Log-density (n<5)",
-        })
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "n": n,
+                "method": "Log-density (n<5)",
+            }
+        )
     m = float(np.mean(x))
     s = float(np.std(x, ddof=1))
     s = max(s, 1e-6)
@@ -57,12 +62,13 @@ def ghosal_log_density(x, K=5, grid=None):
         gz = np.linspace(z.min() - 1.0, z.max() + 1.0, 401)
     else:
         gz = (np.asarray(grid, dtype=float) - m) / s
+
     # Use Hermite-style monomial basis (centred, scaled).
     def basis(u):
         return np.stack([u ** (k + 1) for k in range(K)], axis=-1)
 
-    Bx = basis(z)              # (n, K)
-    Bg = basis(gz)             # (G, K)
+    Bx = basis(z)  # (n, K)
+    Bg = basis(gz)  # (G, K)
 
     def neg_ll(theta):
         eta_x = Bx @ theta
@@ -74,27 +80,28 @@ def ghosal_log_density(x, K=5, grid=None):
 
     theta0 = np.zeros(K)
     # Penalty to keep coefficients tame (small L2)
-    opt = minimize(lambda t: neg_ll(t) + 1e-4 * np.sum(t ** 2),
-                    theta0, method="L-BFGS-B")
+    opt = minimize(lambda t: neg_ll(t) + 1e-4 * np.sum(t**2), theta0, method="L-BFGS-B")
     theta = opt.x
     eta_g = Bg @ theta
     M = float(np.max(eta_g))
     logZ = M + float(np.log(np.trapezoid(np.exp(eta_g - M), gz)))
-    log_density = eta_g - logZ - np.log(s)   # change-of-variables back
+    log_density = eta_g - logZ - np.log(s)  # change-of-variables back
     # log-density at sample mean
     eta0 = float(basis(np.array([0.0]))[0] @ theta)
     estimate = float(eta0 - logZ - np.log(s))
-    log_lik = float(-opt.fun + 1e-4 * np.sum(theta ** 2))   # remove penalty
-    return RichResult(payload={
-        "estimate": estimate,
-        "theta": theta.tolist(),
-        "log_lik": log_lik,
-        "grid": (gz * s + m).tolist(),
-        "log_density": log_density.tolist(),
-        "K": int(K),
-        "n": n,
-        "method": "Log-spline density (Stone 1990)",
-    })
+    log_lik = float(-opt.fun + 1e-4 * np.sum(theta**2))  # remove penalty
+    return RichResult(
+        payload={
+            "estimate": estimate,
+            "theta": theta.tolist(),
+            "log_lik": log_lik,
+            "grid": (gz * s + m).tolist(),
+            "log_density": log_density.tolist(),
+            "K": int(K),
+            "n": n,
+            "method": "Log-spline density (Stone 1990)",
+        }
+    )
 
 
 def cheatsheet():

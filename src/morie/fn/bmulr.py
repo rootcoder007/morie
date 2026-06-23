@@ -61,8 +61,7 @@ def bayesian_multinomial(
         ci_upper.append(hi)
 
     log_ml = float(
-        gammaln(np.sum(prior_alpha)) - gammaln(alpha_sum)
-        + np.sum(gammaln(post_alpha) - gammaln(prior_alpha))
+        gammaln(np.sum(prior_alpha)) - gammaln(alpha_sum) + np.sum(gammaln(post_alpha) - gammaln(prior_alpha))
     )
 
     return {

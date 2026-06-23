@@ -1,6 +1,9 @@
 """Tests for covariate_balance_ps."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.cbps import covariate_balance_ps
+
 
 class TestCBPS:
     def test_basic(self):

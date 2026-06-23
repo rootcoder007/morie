@@ -1,5 +1,5 @@
 """Test bbtrs."""
-import numpy as np
+
 from morie.fn.bbtrs import blackbox_transpose
 
 

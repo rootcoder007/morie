@@ -1,8 +1,9 @@
 """Tests for morie.fn.megtr -- Kronecker product decomposition."""
 
 import numpy as np
-from morie.fn.megtr import kronecker_decompose, megtr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.megtr import kronecker_decompose, megtr
 
 
 class TestMegtr:

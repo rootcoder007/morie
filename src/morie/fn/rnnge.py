@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Recurrent (vanilla RNN) genomic predictor -- NumPy."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -9,9 +10,17 @@ from ._richresult import RichResult
 __all__ = ["rnn_genomic"]
 
 
-def rnn_genomic(x, y, markers, hidden: int = 8, n_epochs: int = 150,
-                lr: float = 1e-2, l2: float = 1e-3, seed: int = 0,
-                deterministic_seed: int | None = None):
+def rnn_genomic(
+    x,
+    y,
+    markers,
+    hidden: int = 8,
+    n_epochs: int = 150,
+    lr: float = 1e-2,
+    l2: float = 1e-3,
+    seed: int = 0,
+    deterministic_seed: int | None = None,
+):
     """Vanilla RNN sweeping over the marker sequence.
 
     Architecture (per individual i with marker vector m_i of length L)::
@@ -47,6 +56,7 @@ def rnn_genomic(x, y, markers, hidden: int = 8, n_epochs: int = 150,
     """
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("rnnge", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -56,7 +66,8 @@ def rnn_genomic(x, y, markers, hidden: int = 8, n_epochs: int = 150,
     if M.ndim != 2 or M.shape[0] != n:
         raise ValueError("`markers` must be (n × m)")
     L = M.shape[1]
-    M_mean = M.mean(axis=0); M_sd = M.std(axis=0)
+    M_mean = M.mean(axis=0)
+    M_sd = M.std(axis=0)
     M_sd = np.where(M_sd > 0, M_sd, 1.0)
     Ms = (M - M_mean) / M_sd
     H = hidden
@@ -71,7 +82,7 @@ def rnn_genomic(x, y, markers, hidden: int = 8, n_epochs: int = 150,
         h = np.zeros((n, H))
         hs = [h.copy()]
         for t in range(L):
-            xt = Ms[:, t][:, None]   # (n, 1)
+            xt = Ms[:, t][:, None]  # (n, 1)
             h = np.tanh(h @ Wh + xt * Wx + bh)
             hs.append(h.copy())
         y_hat = h @ wo + bo
@@ -86,7 +97,7 @@ def rnn_genomic(x, y, markers, hidden: int = 8, n_epochs: int = 150,
         dbh = np.zeros(H)
         for t in reversed(range(L)):
             h_t = hs[t + 1]
-            dh_raw = dh * (1.0 - h_t ** 2)
+            dh_raw = dh * (1.0 - h_t**2)
             dWh += hs[t].T @ dh_raw
             dWx += float((Ms[:, t][:, None] * dh_raw).sum())
             dbh += dh_raw.sum(axis=0)
@@ -98,7 +109,7 @@ def rnn_genomic(x, y, markers, hidden: int = 8, n_epochs: int = 150,
         bh -= lr * dbh
         wo -= lr * dwo
         bo -= lr * dbo
-        losses.append(float(np.mean(resid ** 2)))
+        losses.append(float(np.mean(resid**2)))
     # Final
     h = np.zeros((n, H))
     for t in range(L):
@@ -106,7 +117,7 @@ def rnn_genomic(x, y, markers, hidden: int = 8, n_epochs: int = 150,
         h = np.tanh(h @ Wh + xt * Wx + bh)
     y_hat = h @ wo + bo
     resid = y - y_hat
-    se = float(np.sqrt(np.mean(resid ** 2)))
+    se = float(np.sqrt(np.mean(resid**2)))
     return RichResult(
         title="RNN genomic predictor (vanilla)",
         summary_lines=[
@@ -120,15 +131,17 @@ def rnn_genomic(x, y, markers, hidden: int = 8, n_epochs: int = 150,
         payload={
             "estimate": float(np.mean(y_hat)),
             "y_hat": y_hat,
-            "W_h": Wh, "W_x": float(Wx) if np.ndim(Wx) == 0 else Wx,
-            "b_h": bh, "w_o": wo, "b_o": bo,
+            "W_h": Wh,
+            "W_x": float(Wx) if np.ndim(Wx) == 0 else Wx,
+            "b_h": bh,
+            "w_o": wo,
+            "b_o": bo,
             "loss_curve": np.asarray(losses),
             "se": se,
             "n": n,
             "method": "Vanilla RNN BPTT (NumPy)",
         },
-        warnings=["Vanilla RNN: vanishing gradients on long L. For "
-                  "production use LSTM/GRU in keras/torch."],
+        warnings=["Vanilla RNN: vanishing gradients on long L. For production use LSTM/GRU in keras/torch."],
     )
 
 

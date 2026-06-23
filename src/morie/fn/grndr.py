@@ -70,9 +70,7 @@ def grenander_estimator(
     }
 
 
-def _least_concave_majorant(
-    x: np.ndarray, y: np.ndarray
-) -> tuple[np.ndarray, np.ndarray]:
+def _least_concave_majorant(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Compute the least concave majorant of (x, y) via upper convex hull."""
     n = len(x)
     hull = [0]

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxbet -- Betti numbers computation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxbet import betti_numbers
 

@@ -1,6 +1,8 @@
 """Tests for morie.fn.cfint — Counterfactual explanation."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cfint import cfint
 
 
@@ -10,17 +12,18 @@ def setup():
     n, p = 100, 3
     X_train = rng.standard_normal((n, p))
     instance = rng.standard_normal(p)
+
     # Model: predict 1 if sum > 0
     def predict_fn(Xp):
         return (Xp.sum(axis=1) > 0).astype(float)
+
     return predict_fn, instance, X_train
 
 
 def test_keys(setup):
     fn, inst, X_tr = setup
     r = cfint(fn, inst, X_tr, n_cf=3, max_iter=30, seed=0)
-    for k in ("counterfactuals", "distances", "predictions",
-              "instance", "target_class", "p", "method"):
+    for k in ("counterfactuals", "distances", "predictions", "instance", "target_class", "p", "method"):
         assert k in r
 
 
@@ -63,4 +66,5 @@ def test_p_correct(setup):
 
 def test_cheatsheet():
     from morie.fn.cfint import cheatsheet
+
     assert len(cheatsheet()) > 0

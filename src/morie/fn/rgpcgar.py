@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """AR/ARMA model of PCG for heart sound characterization."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_pcg_ar_model"]
@@ -36,7 +38,14 @@ def rangayyan_pcg_ar_model(pcg, fs, p, q):
     n = int(pcg) if pcg.ndim == 0 else len(pcg)
     result = float(np.mean(pcg))
     se = float(np.std(pcg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AR/ARMA model of PCG for heart sound characterization"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "AR/ARMA model of PCG for heart sound characterization",
+        }
+    )
 
 
 def cheatsheet():

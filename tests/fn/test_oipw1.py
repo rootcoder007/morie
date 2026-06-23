@@ -1,6 +1,7 @@
 """Tests for morie.fn.oipw1 — IPW for placement effect."""
 
 import numpy as np
+
 from morie.fn.oipw1 import otis_ipw_placement
 
 

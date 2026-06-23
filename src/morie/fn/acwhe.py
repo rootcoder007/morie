@@ -1,6 +1,7 @@
 """Privacy-accuracy trade-off bound."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["private_accuracy_tradeoff"]

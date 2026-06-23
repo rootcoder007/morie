@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayes classifier for normal (Gaussian) patterns."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_bayes_gaussian"]
@@ -36,7 +38,9 @@ def rangayyan_bayes_gaussian(X, mu_list, sigma_list, priors):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayes classifier for normal (Gaussian) patterns"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bayes classifier for normal (Gaussian) patterns"}
+    )
 
 
 def cheatsheet():

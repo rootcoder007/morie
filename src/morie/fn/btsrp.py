@@ -10,6 +10,7 @@ Implements three resampling-based CIs from Efron & Tibshirani (1993,
 
 Default statistic is the mean; pass `statistic=np.median` etc.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -20,8 +21,7 @@ from ._richresult import RichResult
 __all__ = ["bootstrap_ci"]
 
 
-def bootstrap_ci(x, statistic=None, B: int = 2000, alpha: float = 0.05,
-                 method: str = "percentile", seed: int = 42):
+def bootstrap_ci(x, statistic=None, B: int = 2000, alpha: float = 0.05, method: str = "percentile", seed: int = 42):
     """Bootstrap confidence interval (percentile, BCa, studentized).
 
     Parameters
@@ -50,10 +50,17 @@ def bootstrap_ci(x, statistic=None, B: int = 2000, alpha: float = 0.05,
     x = np.asarray(x, dtype=float).ravel()
     n = x.size
     if n < 2:
-        return RichResult(payload={"estimate": float("nan"), "se": float("nan"),
-                                   "ci_lower": float("nan"), "ci_upper": float("nan"),
-                                   "n": int(n), "method": method,
-                                   "warning": "Need n >= 2."})
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "se": float("nan"),
+                "ci_lower": float("nan"),
+                "ci_upper": float("nan"),
+                "n": int(n),
+                "method": method,
+                "warning": "Need n >= 2.",
+            }
+        )
     if statistic is None:
         statistic = np.mean
     rng = np.random.default_rng(seed)
@@ -85,23 +92,27 @@ def bootstrap_ci(x, statistic=None, B: int = 2000, alpha: float = 0.05,
         for b in range(B):
             xb = x[idx[b]]
             theta_b = statistic(xb)
-            inner = np.array([statistic(xb[rng.integers(0, n, size=n)])
-                              for _ in range(B2)])
+            inner = np.array([statistic(xb[rng.integers(0, n, size=n)]) for _ in range(B2)])
             se_b = inner.std(ddof=1)
             t_stars[b] = (theta_b - theta_hat) / se_b if se_b > 0 else 0.0
         t_lo, t_hi = np.quantile(t_stars, [alpha / 2, 1 - alpha / 2])
         lo = theta_hat - t_hi * se
         hi = theta_hat - t_lo * se
     else:
-        raise ValueError(f"Unknown method {method!r}; "
-                         "use percentile / bca / studentized.")
+        raise ValueError(f"Unknown method {method!r}; use percentile / bca / studentized.")
 
-    return RichResult(payload={
-        "estimate": theta_hat, "se": se,
-        "ci_lower": float(lo), "ci_upper": float(hi),
-        "alpha": alpha, "B": int(B), "n": int(n),
-        "method": f"Bootstrap CI ({method})",
-    })
+    return RichResult(
+        payload={
+            "estimate": theta_hat,
+            "se": se,
+            "ci_lower": float(lo),
+            "ci_upper": float(hi),
+            "alpha": alpha,
+            "B": int(B),
+            "n": int(n),
+            "method": f"Bootstrap CI ({method})",
+        }
+    )
 
 
 # CANONICAL TEST

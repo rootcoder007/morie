@@ -1,6 +1,7 @@
 """Test dktpr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dktpr import dktpr
 
 

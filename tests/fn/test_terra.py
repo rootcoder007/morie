@@ -1,8 +1,9 @@
 """Tests for morie.fn.terra -- Terrain analysis."""
 
 import numpy as np
-from morie.fn.terra import terrain_analysis, terra
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.terra import terra, terrain_analysis
 
 
 class TestTerra:

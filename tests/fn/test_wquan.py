@@ -1,6 +1,7 @@
 """Tests for wquan.weighted_quantile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wquan import weighted_quantile
 
 
@@ -11,7 +12,7 @@ def test_wquan_basic():
     p = 5
     result = weighted_quantile(y, weights, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wquan_edge():

@@ -1,6 +1,7 @@
 """Tests for rglpca.rangayyan_lpc_analysis."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rglpca import rangayyan_lpc_analysis
 
 
@@ -13,7 +14,7 @@ def test_rglpca_basic():
     fs = 100.0
     result = rangayyan_lpc_analysis(x, order, frame_len, hop_len, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rglpca_edge():

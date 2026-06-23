@@ -1,6 +1,7 @@
 """Tests for cvxsoc.boyd_socp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxsoc import boyd_socp
 
 
@@ -13,7 +14,7 @@ def test_cvxsoc_basic():
     d = 5
     result = boyd_socp(f, A, b, c, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxsoc_edge():

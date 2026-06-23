@@ -1,6 +1,8 @@
 """Tests for stkrgs."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stkrgs import stkrgs
 
 
@@ -28,4 +30,5 @@ def test_stkrgs_no_data():
 
 def test_stkrgs_alias():
     from morie.fn.stkrgs import stkrgs
+
     assert stkrgs is stkrgs

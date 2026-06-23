@@ -1,6 +1,7 @@
 """Test gcssp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcssp import gcssp
 
 

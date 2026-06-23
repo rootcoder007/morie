@@ -1,6 +1,7 @@
 """Tests for parsto.parallel_trends_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.parsto import parallel_trends_test
 
 
@@ -13,7 +14,7 @@ def test_parsto_basic():
     cohort = np.random.default_rng(42).normal(0, 1, 100)
     result = parallel_trends_test(y, D, unit, time, cohort)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_parsto_edge():

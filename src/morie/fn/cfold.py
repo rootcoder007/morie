@@ -101,7 +101,7 @@ def cross_fit(
 
     V_resid = T - e_hat
     Y_resid = Y - m_hat
-    denom = float(np.mean(V_resid ** 2))
+    denom = float(np.mean(V_resid**2))
     theta = float(np.mean(Y_resid * V_resid) / denom) if denom > 1e-15 else float("nan")
 
     scores = V_resid * (Y_resid - theta * V_resid) / denom
@@ -111,7 +111,7 @@ def cross_fit(
         mask = fold_ids == k
         v_k = V_resid[mask]
         yr_k = Y_resid[mask]
-        d_k = float(np.mean(v_k ** 2))
+        d_k = float(np.mean(v_k**2))
         if d_k > 1e-15:
             fold_estimates.append(float(np.mean(yr_k * v_k) / d_k))
         else:

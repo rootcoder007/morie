@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Countable Dirichlet process on simplex: normalization of gamma random variables."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_dir_simplex"]
@@ -30,7 +32,14 @@ def ghosal_dir_simplex(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Countable Dirichlet process on simplex: normalization of gamma random variables"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Countable Dirichlet process on simplex: normalization of gamma random variables",
+        }
+    )
 
 
 def cheatsheet():

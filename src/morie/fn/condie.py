@@ -1,6 +1,7 @@
 """Conditional indirect effect at moderator value."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["conditional_indirect_effect"]
@@ -36,7 +37,9 @@ def conditional_indirect_effect(a1, a3, b, w):
     n = len(w)
     result = float(np.mean(w))
     se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Conditional indirect effect at moderator value"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Conditional indirect effect at moderator value"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,5 @@
 """Test aicc."""
-import numpy as np
-import pytest
+
 from morie.fn.aicc import corrected_aic
 
 

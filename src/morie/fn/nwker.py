@@ -109,9 +109,9 @@ def _silverman_bw(x: np.ndarray) -> float:
 def _get_kernel(name: str):
     """Return kernel function by name."""
     if name == "gaussian":
-        return lambda u: np.exp(-0.5 * u ** 2) / np.sqrt(2 * np.pi)
+        return lambda u: np.exp(-0.5 * u**2) / np.sqrt(2 * np.pi)
     elif name == "epanechnikov":
-        return lambda u: np.where(np.abs(u) <= 1, 0.75 * (1 - u ** 2), 0.0)
+        return lambda u: np.where(np.abs(u) <= 1, 0.75 * (1 - u**2), 0.0)
     elif name == "uniform":
         return lambda u: np.where(np.abs(u) <= 1, 0.5, 0.0)
 

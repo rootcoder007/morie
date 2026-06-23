@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Correlation dimension (Grassberger-Procaccia) -- Rangayyan Ch 7."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -44,7 +45,7 @@ def rangayyan_correlation_dimension(x, m=3, tau=1, n_r=20):
         raise ValueError("Series too short for embedding.")
     Y = np.empty((M, m))
     for i in range(m):
-        Y[:, i] = x[i * tau:i * tau + M]
+        Y[:, i] = x[i * tau : i * tau + M]
     d = np.linalg.norm(Y[:, None, :] - Y[None, :, :], axis=2)
     iu = np.triu_indices(M, k=1)
     dist = d[iu]
@@ -56,20 +57,21 @@ def rangayyan_correlation_dimension(x, m=3, tau=1, n_r=20):
     rs = np.logspace(np.log10(rmin), np.log10(rmax), n_r)
     C = np.array([np.mean(dist <= r) for r in rs])
     mask = (C > 0) & np.isfinite(C)
-    log_r = np.log(rs[mask]); log_C = np.log(C[mask])
+    log_r = np.log(rs[mask])
+    log_C = np.log(C[mask])
     if log_r.size < 3:
         D2 = float("nan")
     else:
         n = log_r.size
-        lo = max(1, n // 5); hi = max(lo + 2, n - n // 5)
+        lo = max(1, n // 5)
+        hi = max(lo + 2, n - n // 5)
         slope, _ = np.polyfit(log_r[lo:hi], log_C[lo:hi], 1)
         D2 = float(slope)
     res = RichResult(
         title="Correlation dimension (Grassberger-Procaccia)",
         summary_lines=[("m", m), ("τ", tau), ("D₂", D2)],
         interpretation=f"D₂ = {D2:.4g}. Saturates with m for low-dim chaos.",
-        payload={"D2": D2, "log_r": log_r, "log_C": log_C,
-                 "m": m, "tau": tau},
+        payload={"D2": D2, "log_r": log_r, "log_C": log_C, "m": m, "tau": tau},
     )
     return with_describe_pointer(res, "rgcrl")
 

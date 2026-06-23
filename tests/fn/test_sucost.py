@@ -1,6 +1,7 @@
 """Tests for morie.fn.sucost -- substance cost."""
 
 import pytest
+
 from morie.fn.sucost import substance_cost
 
 

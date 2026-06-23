@@ -1,6 +1,7 @@
 """Test optrs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.optrs import optrs
 
 

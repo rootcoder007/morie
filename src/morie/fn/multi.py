@@ -80,8 +80,7 @@ def multinomial_logit(
         return -g.ravel()
 
     x0 = np.zeros(n_params)
-    res = optimize.minimize(neg_loglik, x0, jac=grad, method="BFGS",
-                            options={"maxiter": max_iter})
+    res = optimize.minimize(neg_loglik, x0, jac=grad, method="BFGS", options={"maxiter": max_iter})
     beta_mat = res.x.reshape(k, J - 1)
 
     probs = _softmax(X, beta_mat)
@@ -91,9 +90,7 @@ def multinomial_logit(
     ll = float(-res.fun)
     aic = -2 * ll + 2 * n_params
 
-    names_base = (["(Intercept)"] if add_intercept else []) + [
-        f"x{j}" for j in range(p_raw)
-    ]
+    names_base = (["(Intercept)"] if add_intercept else []) + [f"x{j}" for j in range(p_raw)]
     coef_dict = {}
     for j in range(J - 1):
         cat_label = str(cats[j + 1])

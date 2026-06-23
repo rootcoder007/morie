@@ -1,6 +1,7 @@
 """Tests for msm260.mvsml_deep_learning_eq_13_2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm260 import mvsml_deep_learning_eq_13_2
 
 
@@ -14,7 +15,7 @@ def test_msm260_basic():
     the = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_deep_learning_eq_13_2(pre, activation, zi, yi, values, the)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm260_edge():

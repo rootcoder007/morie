@@ -67,9 +67,11 @@ def nusnc(
 
     for k, psi_val in enumerate(psi_range):
         if n_nuisance > 0:
+
             def neg_ll_fixed(eta, psi_v=psi_val):
                 theta = np.concatenate([[psi_v], eta])
                 return -log_likelihood(x, theta)
+
             res = optimize.minimize(neg_ll_fixed, nuisance_mle, method="Nelder-Mead")
             profile_ll[k] = -res.fun
         else:

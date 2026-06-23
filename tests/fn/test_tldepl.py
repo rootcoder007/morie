@@ -1,6 +1,7 @@
 """Tests for tldepl.lower_tail_dependence."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tldepl import lower_tail_dependence
 
 
@@ -11,7 +12,7 @@ def test_tldepl_basic():
     theta = 0.0
     result = lower_tail_dependence(y, copula, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tldepl_edge():

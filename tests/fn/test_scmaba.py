@@ -1,6 +1,7 @@
 """Tests for scmaba.synthetic_control_method."""
+
 import numpy as np
-import pytest
+
 from morie.fn.scmaba import synthetic_control_method
 
 
@@ -12,7 +13,7 @@ def test_scmaba_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = synthetic_control_method(y, treated, controls, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_scmaba_edge():

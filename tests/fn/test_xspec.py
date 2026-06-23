@@ -1,9 +1,9 @@
 """Test cross_spectral_density (xspec)."""
-import numpy as np
-import pytest
 
-from morie.fn.xspec import cross_spectral_density, xspec
+import numpy as np
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.xspec import cross_spectral_density, xspec
 
 
 class TestCrossSpectralDensity:

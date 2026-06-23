@@ -68,8 +68,7 @@ def klopt(
         return np.sum(p * np.log((p + eps) / (q + eps)))
 
     lam0 = np.zeros(k)
-    result = minimize(kl, lam0, method="Nelder-Mead",
-                      options={"maxiter": 5000, "xatol": 1e-12, "fatol": 1e-12})
+    result = minimize(kl, lam0, method="Nelder-Mead", options={"maxiter": 5000, "xatol": 1e-12, "fatol": 1e-12})
 
     lambdas = result.x
     log_q = T.T @ lambdas

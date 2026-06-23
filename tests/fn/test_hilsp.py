@@ -1,7 +1,9 @@
 """Test hilbert_spectrum (hilsp)."""
+
 import numpy as np
-from morie.fn.hilsp import hilbert_spectrum, hilsp
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.hilsp import hilbert_spectrum, hilsp
 
 
 class TestHilsp:

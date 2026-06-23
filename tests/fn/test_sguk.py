@@ -1,5 +1,7 @@
 """Tests for universal kriging."""
+
 import numpy as np
+
 from morie.fn.sguk import sguk
 
 
@@ -15,6 +17,7 @@ def test_sguk_smoke():
 
 def test_cheatsheet():
     from morie.fn.sguk import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

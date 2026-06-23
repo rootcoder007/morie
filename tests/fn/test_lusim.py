@@ -1,6 +1,8 @@
 """Tests for lusim."""
+
 import numpy as np
 import pytest
+
 from morie.fn.lusim import lusim
 
 
@@ -28,4 +30,5 @@ def test_lusim_no_data():
 
 def test_lusim_alias():
     from morie.fn.lusim import lusim
+
     assert lusim is lusim

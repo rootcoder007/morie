@@ -1,6 +1,7 @@
 """Tests for gb1321.gibbons_are_def."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb1321 import gibbons_are_def
 
 
@@ -11,7 +12,7 @@ def test_gb1321_basic():
     n = 100
     result = gibbons_are_def(T, T_star, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb1321_edge():

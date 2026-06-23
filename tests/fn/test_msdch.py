@@ -1,7 +1,6 @@
 """Tests for morie.fn.msdch -- Chebyshev distance matrix"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msdch import dist_chebyshev
 

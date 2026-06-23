@@ -1,6 +1,7 @@
 """Complex log of X(z) expanded as a sum of log terms over poles and zeros.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_complex_log_x_z"]
@@ -50,7 +51,14 @@ def rangayyan_ch4_complex_log_x_z(A, z, r, a_k, b_k, c_k, d_k, M_I, M_O, N_I, N_
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Complex log of X(z) expanded as a sum of log terms over poles and zeros."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Complex log of X(z) expanded as a sum of log terms over poles and zeros.",
+        }
+    )
 
 
 def cheatsheet():

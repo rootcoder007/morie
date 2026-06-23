@@ -76,4 +76,4 @@ moncar = monte_carlo
 
 
 def cheatsheet() -> str:
-    return 'monte_carlo({}) -> Monte Carlo simulation engine.'
+    return "monte_carlo({}) -> Monte Carlo simulation engine."

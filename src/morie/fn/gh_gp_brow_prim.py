@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Integrated BM prior: k_m(s,t) = integral_0^{min(s,t)} (s-u)^{m-1}(t-u)^{m-1}/(m-1)!^2 du."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_gp_brownian_primitive"]
@@ -30,7 +32,14 @@ def ghosal_gp_brownian_primitive(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Integrated BM prior: k_m(s,t) = integral_0^{min(s,t)} (s-u)^{m-1}(t-u)^{m-1}/(m-1)!^2 du"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Integrated BM prior: k_m(s,t) = integral_0^{min(s,t)} (s-u)^{m-1}(t-u)^{m-1}/(m-1)!^2 du",
+        }
+    )
 
 
 def cheatsheet():

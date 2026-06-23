@@ -1,6 +1,7 @@
 """Tests for grn011.geron_ch4_lasso_regression_cost_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grn011 import geron_ch4_lasso_regression_cost_function
 
 
@@ -12,7 +13,7 @@ def test_grn011_basic():
     alpha = 0.05
     result = geron_ch4_lasso_regression_cost_function(X, y, theta, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grn011_edge():

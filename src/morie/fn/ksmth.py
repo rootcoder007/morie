@@ -73,4 +73,4 @@ ksmth = kernel_smooth
 
 
 def cheatsheet() -> str:
-    return 'kernel_smooth({}) -> Nadaraya-Watson kernel regression.'
+    return "kernel_smooth({}) -> Nadaraya-Watson kernel regression."

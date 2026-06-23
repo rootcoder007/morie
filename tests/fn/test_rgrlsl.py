@@ -1,6 +1,7 @@
 """Tests for rgrlsl.rangayyan_rls_lattice."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgrlsl import rangayyan_rls_lattice
 
 
@@ -12,7 +13,7 @@ def test_rgrlsl_basic():
     order = 4
     result = rangayyan_rls_lattice(x, d, lam, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgrlsl_edge():

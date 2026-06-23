@@ -1,6 +1,7 @@
 """Tests for morie.fn.hmc -- Hamiltonian Monte Carlo."""
 
 import numpy as np
+
 from morie.fn.hmc import hamiltonian_mc
 
 
@@ -25,18 +26,12 @@ def test_correct_shape():
 
 
 def test_high_acceptance():
-    result = hamiltonian_mc(
-        _log_normal, _grad_normal, [0.0, 0.0],
-        n_iter=500, epsilon=0.05, n_leapfrog=20
-    )
+    result = hamiltonian_mc(_log_normal, _grad_normal, [0.0, 0.0], n_iter=500, epsilon=0.05, n_leapfrog=20)
     assert result["acceptance_rate"] > 0.4
 
 
 def test_samples_near_target_mean():
-    result = hamiltonian_mc(
-        _log_normal, _grad_normal, [0.0, 0.0],
-        n_iter=2000, epsilon=0.05, n_leapfrog=20
-    )
+    result = hamiltonian_mc(_log_normal, _grad_normal, [0.0, 0.0], n_iter=2000, epsilon=0.05, n_leapfrog=20)
     means = np.mean(result["samples"][500:], axis=0)
     assert np.all(np.abs(means) < 0.5)
 

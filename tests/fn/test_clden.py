@@ -1,6 +1,7 @@
 """Test clden."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clden import clden
 
 

@@ -72,4 +72,4 @@ polfea = polynomial_features
 
 
 def cheatsheet() -> str:
-    return 'polynomial_features({}) -> Feature engineering (polynomial expansion).'
+    return "polynomial_features({}) -> Feature engineering (polynomial expansion)."

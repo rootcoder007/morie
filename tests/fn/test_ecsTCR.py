@@ -1,6 +1,7 @@
 """Tests for ecsTCR.ecs_tcr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ecsTCR import ecs_tcr
 
 
@@ -10,7 +11,7 @@ def test_ecsTCR_basic():
     CO2_traj = np.random.default_rng(42).normal(0, 1, 100)
     result = ecs_tcr(model_run, CO2_traj)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ecsTCR_edge():

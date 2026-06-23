@@ -1,7 +1,8 @@
 """Tests for morie.fn.major -- SMACOF majorize step."""
 
 import numpy as np
-from morie.fn.major import majorize_step, major
+
+from morie.fn.major import major, majorize_step
 
 
 def test_major_smoke():

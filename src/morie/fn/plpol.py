@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spatial map plot coordinates for ideal point visualization."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["plot_spatial"]
@@ -34,7 +36,14 @@ def plot_spatial(ideal_points, party_labels, stimuli_labels):
     n = int(ideal_points) if ideal_points.ndim == 0 else len(ideal_points)
     result = float(np.mean(ideal_points))
     se = float(np.std(ideal_points, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spatial map plot coordinates for ideal point visualization"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Spatial map plot coordinates for ideal point visualization",
+        }
+    )
 
 
 def cheatsheet():

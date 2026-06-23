@@ -1,6 +1,7 @@
 """Tests for morie.fn.bivrt -- Bayesian IV regression."""
 
 import numpy as np
+
 from morie.fn.bivrt import bayesian_iv
 
 

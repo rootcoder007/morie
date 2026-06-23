@@ -1,12 +1,11 @@
 """Tests for morie.fn.vknwn — Known-groups validity."""
 
 import numpy as np
-import pytest
+
 from morie.fn.vknwn import validity_known_groups
 
 
 class TestValidityKnownGroups:
-
     def test_two_groups_ttest(self, rng):
         scores = np.concatenate([rng.normal(10, 1, 50), rng.normal(15, 1, 50)])
         groups = np.array(["A"] * 50 + ["B"] * 50)
@@ -15,9 +14,7 @@ class TestValidityKnownGroups:
         assert result["p_value"] < 0.05
 
     def test_three_groups_anova(self, rng):
-        scores = np.concatenate([rng.normal(10, 1, 50),
-                                 rng.normal(12, 1, 50),
-                                 rng.normal(14, 1, 50)])
+        scores = np.concatenate([rng.normal(10, 1, 50), rng.normal(12, 1, 50), rng.normal(14, 1, 50)])
         groups = np.array(["A"] * 50 + ["B"] * 50 + ["C"] * 50)
         result = validity_known_groups(scores, groups)
         assert result["test"] == "ANOVA"

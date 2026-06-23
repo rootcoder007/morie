@@ -58,4 +58,4 @@ short = relu
 
 
 def cheatsheet() -> str:
-    return 'relu() -> Compute ReLU or Leaky ReLU activation function'
+    return "relu() -> Compute ReLU or Leaky ReLU activation function"

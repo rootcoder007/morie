@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PCA for dimensionality reduction of SNP marker matrices."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["pca_dimensionality_reduction"]
@@ -32,7 +34,14 @@ def pca_dimensionality_reduction(X, n_components):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PCA for dimensionality reduction of SNP marker matrices"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PCA for dimensionality reduction of SNP marker matrices",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test ghbar."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghbar import ghbar
 
 

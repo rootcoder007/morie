@@ -1,7 +1,7 @@
 """Tests for stkey (Siegel-Tukey test)."""
 
 import numpy as np
-import pytest
+
 from morie.fn.stkey import stkey
 
 

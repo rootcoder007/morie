@@ -1,5 +1,7 @@
 """Tests for morie.fn.kron — Kronecker product."""
+
 import numpy as np
+
 from morie.fn.kron import kronecker_product
 
 

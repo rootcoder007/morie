@@ -1,7 +1,6 @@
 """Tests for morie.fn.zesmr -- Standardized Morbidity Ratio"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zesmr import smr_compute
 
@@ -13,5 +12,5 @@ class TestSmrCompute:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = smr_compute(np.array([1,2,3,4,5]))
+        result = smr_compute(np.array([1, 2, 3, 4, 5]))
         assert hasattr(result, "statistic")

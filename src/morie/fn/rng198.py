@@ -1,6 +1,7 @@
 """Discrete-time dot product (inner product) of two N-sample signals.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_dot_product_discrete"]
@@ -34,7 +35,14 @@ def rangayyan_ch4_dot_product_discrete(x, y, N):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Discrete-time dot product (inner product) of two N-sample signals."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Discrete-time dot product (inner product) of two N-sample signals.",
+        }
+    )
 
 
 def cheatsheet():

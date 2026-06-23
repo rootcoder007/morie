@@ -1,6 +1,7 @@
 """Gene-set enrichment (GSEA)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["geneset_enrichment"]

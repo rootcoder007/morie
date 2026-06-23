@@ -1,6 +1,7 @@
 """Test ghgrv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghgrv import ghgrv
 
 

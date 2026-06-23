@@ -1,6 +1,7 @@
 """Tests for hmmcp.geron_model_context_protocol."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmmcp import geron_model_context_protocol
 
 
@@ -10,7 +11,7 @@ def test_hmmcp_basic():
     client = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_model_context_protocol(server, client)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmmcp_edge():

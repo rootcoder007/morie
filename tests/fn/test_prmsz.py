@@ -1,6 +1,7 @@
 """Test param_count."""
-from morie.fn.prmsz import param_count, prmsz
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.prmsz import param_count, prmsz
 
 
 class TestParamCount:

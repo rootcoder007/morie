@@ -1,6 +1,8 @@
 """Tests for gppred."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gppred import gppred
 
 
@@ -28,4 +30,5 @@ def test_gppred_no_data():
 
 def test_gppred_alias():
     from morie.fn.gppred import gppred
+
     assert gppred is gppred

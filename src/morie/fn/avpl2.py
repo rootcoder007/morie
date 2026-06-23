@@ -14,7 +14,7 @@ __all__ = ["avpl2"]
 import numpy as np
 
 
-def avpl2(x, pool_size=2, stride=None, padding='valid'):
+def avpl2(x, pool_size=2, stride=None, padding="valid"):
     """
     2D average pooling.
 
@@ -42,15 +42,15 @@ def avpl2(x, pool_size=2, stride=None, padding='valid'):
     batch, height, width = x.shape
     stride = stride or pool_size
 
-    if padding == 'valid':
+    if padding == "valid":
         pad_h, pad_w = 0, 0
-    elif padding == 'same':
+    elif padding == "same":
         pad_h = (pool_size - 1) // 2
         pad_w = (pool_size - 1) // 2
     else:
         raise ValueError("padding must be 'valid' or 'same'")
 
-    x_padded = np.pad(x, ((0, 0), (pad_h, pad_h), (pad_w, pad_w)), mode='constant')
+    x_padded = np.pad(x, ((0, 0), (pad_h, pad_h), (pad_w, pad_w)), mode="constant")
     out_h = (x_padded.shape[1] - pool_size) // stride + 1
     out_w = (x_padded.shape[2] - pool_size) // stride + 1
 
@@ -58,8 +58,7 @@ def avpl2(x, pool_size=2, stride=None, padding='valid'):
     for i in range(out_h):
         for j in range(out_w):
             output[:, i, j] = np.mean(
-                x_padded[:, i*stride:i*stride+pool_size, j*stride:j*stride+pool_size],
-                axis=(1, 2)
+                x_padded[:, i * stride : i * stride + pool_size, j * stride : j * stride + pool_size], axis=(1, 2)
             )
 
     return output

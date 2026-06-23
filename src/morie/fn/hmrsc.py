@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Randomized search: sample n_iter hyperparameter combinations from distributions."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_randomized_search"]
@@ -38,7 +40,14 @@ def geron_randomized_search(param_dist, n_iter, X, y, estimator):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Randomized search: sample n_iter hyperparameter combinations from distributions"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Randomized search: sample n_iter hyperparameter combinations from distributions",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Bias-correction spatial-disaggregation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bcsd_downscaling"]
@@ -32,7 +33,9 @@ def bcsd_downscaling(gcm, obs):
     n = len(obs)
     result = float(np.mean(obs))
     se = float(np.std(obs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bias-correction spatial-disaggregation"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bias-correction spatial-disaggregation"}
+    )
 
 
 def cheatsheet():

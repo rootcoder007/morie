@@ -6,11 +6,22 @@ Adds noise to SGD for posterior sampling without convergence to point estimate.
 
 import numpy as np
 
-__all__ = ['sgld']
+__all__ = ["sgld"]
 
 
-def sgld(log_likelihood, log_prior, X, y, param_shape, learning_rate=0.01,
-         friction=0.01, n_iter=1000, batch_size=32, seed=None, full_output=False):
+def sgld(
+    log_likelihood,
+    log_prior,
+    X,
+    y,
+    param_shape,
+    learning_rate=0.01,
+    friction=0.01,
+    n_iter=1000,
+    batch_size=32,
+    seed=None,
+    full_output=False,
+):
     """
     Stochastic gradient Langevin dynamics (SGLD) for Bayesian inference.
 
@@ -86,8 +97,7 @@ def sgld(log_likelihood, log_prior, X, y, param_shape, learning_rate=0.01,
             for i in np.ndindex(param_shape):
                 p_eps = p.copy()
                 p_eps[i] += eps
-                grad_ll[i] = (log_likelihood(p_eps, X_batch, y_batch) -
-                             log_likelihood(p, X_batch, y_batch)) / eps
+                grad_ll[i] = (log_likelihood(p_eps, X_batch, y_batch) - log_likelihood(p, X_batch, y_batch)) / eps
 
             grad_lp = np.zeros(param_shape)
             for i in np.ndindex(param_shape):
@@ -108,7 +118,5 @@ def sgld(log_likelihood, log_prior, X, y, param_shape, learning_rate=0.01,
         samples[it] = params.copy()
 
     if full_output:
-        return samples, {
-            'n_iterations': n_iter
-        }
+        return samples, {"n_iterations": n_iter}
     return samples

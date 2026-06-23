@@ -1,6 +1,7 @@
 """Tests for dpvar.dp_variance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpvar import dp_variance
 
 
@@ -12,7 +13,7 @@ def test_dpvar_basic():
     epsilon = 1e-6
     result = dp_variance(x, a, b, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpvar_edge():

@@ -1,6 +1,7 @@
 """HAR-RV-Jump separating continuous + jump components."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_har_rv_jump"]
@@ -32,7 +33,9 @@ def vol_har_rv_jump(RV, BPV):
     n = len(RV)
     result = float(np.mean(RV))
     se = float(np.std(RV, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "HAR-RV-Jump separating continuous + jump components"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "HAR-RV-Jump separating continuous + jump components"}
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Permutation test for difference in means."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -50,4 +51,4 @@ perm = permutation_test
 
 
 def cheatsheet() -> str:
-    return 'permutation_test({}) -> Permutation test.'
+    return "permutation_test({}) -> Permutation test."

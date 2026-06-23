@@ -1,7 +1,7 @@
 """Tests for morie.fn.isatt."""
 
 import numpy as np
-import pytest
+
 from morie.fn.isatt import isatt
 
 

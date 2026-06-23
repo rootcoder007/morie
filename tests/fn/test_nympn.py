@@ -1,6 +1,8 @@
 """Tests for neyman_pearson."""
+
 import numpy as np
 import pytest
+
 from morie.fn.nympn import neyman_pearson, nympn
 
 

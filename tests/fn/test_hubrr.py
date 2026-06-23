@@ -1,6 +1,7 @@
 """Tests for hubrr.huber_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hubrr import huber_regression
 
 
@@ -11,7 +12,7 @@ def test_hubrr_basic():
     k = 5
     result = huber_regression(X, y, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hubrr_edge():

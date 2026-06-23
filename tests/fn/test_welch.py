@@ -1,7 +1,9 @@
 """Tests for welch — Welch power spectral density."""
+
 import numpy as np
-from morie.fn.welch import welch_psd
+
 from morie.fn._containers import SignalResult
+from morie.fn.welch import welch_psd
 
 
 def test_welch_basic(signal_1khz):

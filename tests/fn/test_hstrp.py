@@ -1,7 +1,7 @@
 """Tests for morie.fn.hstrp."""
 
 import numpy as np
-import pytest
+
 from morie.fn.hstrp import hstrp
 
 

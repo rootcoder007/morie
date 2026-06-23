@@ -68,4 +68,4 @@ shang = ring_harmonics
 
 
 def cheatsheet() -> str:
-    return 'ring_harmonics({}) -> Circular harmonic analysis.'
+    return "ring_harmonics({}) -> Circular harmonic analysis."

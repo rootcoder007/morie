@@ -1,8 +1,9 @@
 """Tests for morie.fn.pidtun -- PID controller."""
 
 import numpy as np
-from morie.fn.pidtun import pid_tune, pidtun
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.pidtun import pid_tune, pidtun
 
 
 class TestPidtun:

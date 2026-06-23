@@ -1,5 +1,5 @@
 """Tests for morie.fn.apres -- aggregate PRE."""
-import numpy as np
+
 from morie.fn.apres import apre_statistic, apres
 
 

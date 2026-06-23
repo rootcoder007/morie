@@ -1,6 +1,7 @@
 """Test vmcir."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmcir import vmcir
 
 

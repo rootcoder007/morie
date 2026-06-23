@@ -1,7 +1,9 @@
 """Test transfer_learn (trlrn)."""
+
 import numpy as np
-from morie.fn.trlrn import transfer_learn, trlrn
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.trlrn import transfer_learn, trlrn
 
 
 class TestTrlrn:

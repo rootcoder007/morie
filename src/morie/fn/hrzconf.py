@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Uniform confidence bands for nonparametric regression function."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_confidence_bands"]
@@ -36,7 +38,14 @@ def horowitz_confidence_bands(x, y, bandwidth, alpha):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Uniform confidence bands for nonparametric regression function"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Uniform confidence bands for nonparametric regression function",
+        }
+    )
 
 
 def cheatsheet():

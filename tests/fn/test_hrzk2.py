@@ -1,6 +1,7 @@
 """Tests for hrzk2.horowitz_kernel_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzk2 import horowitz_kernel_regression
 
 
@@ -11,7 +12,7 @@ def test_hrzk2_basic():
     bandwidth = 0.3
     result = horowitz_kernel_regression(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzk2_edge():

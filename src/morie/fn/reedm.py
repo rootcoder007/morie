@@ -44,7 +44,7 @@ def reedm(r: int, m: int) -> dict:
     if r < 0 or r > m:
         raise ValueError(f"r must be in [0, m], got r={r}, m={m}.")
 
-    n = 2 ** m
+    n = 2**m
 
     variables = np.zeros((m, n), dtype=np.int8)
     for i in range(m):

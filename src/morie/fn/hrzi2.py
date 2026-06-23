@@ -11,6 +11,7 @@ Implementation: use the score-style estimator
 which is the standard Powell-Stock-Stoker direct estimator with a
 Gaussian kernel.  SE from the asymptotic IID influence function.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -44,34 +45,42 @@ def horowitz_average_derivative(x, y, bandwidth=None):
         X = X.T
     n, p = X.shape
     if n < max(20, 2 * p):
-        return RichResult(payload={"estimate": np.full(p, np.nan),
-                                   "se": np.full(p, np.nan), "n": n,
-                                   "method": "average-derivative (insufficient data)"})
+        return RichResult(
+            payload={
+                "estimate": np.full(p, np.nan),
+                "se": np.full(p, np.nan),
+                "n": n,
+                "method": "average-derivative (insufficient data)",
+            }
+        )
     h = float(bandwidth) if bandwidth is not None else _silverman(X[:, 0])
     if h <= 0:
         h = max(_silverman(X[:, 0]), 1e-6)
     # Pairwise differences and Gaussian kernel
-    diffs = X[:, None, :] - X[None, :, :]            # (n, n, p)
+    diffs = X[:, None, :] - X[None, :, :]  # (n, n, p)
     sq = (diffs * diffs).sum(axis=2) / (h * h)
-    K = np.exp(-0.5 * sq) / ((2 * np.pi) ** (p / 2) * h ** p)
+    K = np.exp(-0.5 * sq) / ((2 * np.pi) ** (p / 2) * h**p)
     # grad f_hat at X_i wrt x = -(1/(n h^2)) sum_j (X_i - X_j) K_h(X_i-X_j)
     np.fill_diagonal(K, 0.0)
-    grad_f = -(1.0 / (n * h * h)) * np.einsum('ijk,ij->ik', diffs, K)
+    grad_f = -(1.0 / (n * h * h)) * np.einsum("ijk,ij->ik", diffs, K)
     # Influence-function form:  delta_hat = -(2/n) sum_i Y_i * grad f_hat(X_i)
     delta = -(2.0 / n) * (y[:, None] * grad_f).sum(axis=0)
     # IID-style SE
-    psi = -2 * y[:, None] * grad_f                    # (n, p)
+    psi = -2 * y[:, None] * grad_f  # (n, p)
     cov = np.cov(psi, rowvar=False) / n
     if p == 1:
         se = np.array([float(np.sqrt(max(cov, 0)))])
     else:
         se = np.sqrt(np.maximum(np.diag(cov), 0))
-    return RichResult(payload={
-        "estimate": delta.astype(float) if delta.size > 1 else float(delta[0]),
-        "se": se.astype(float) if se.size > 1 else float(se[0]),
-        "n": n, "bandwidth": h,
-        "method": "Powell-Stock-Stoker density-weighted average derivative",
-    })
+    return RichResult(
+        payload={
+            "estimate": delta.astype(float) if delta.size > 1 else float(delta[0]),
+            "se": se.astype(float) if se.size > 1 else float(se[0]),
+            "n": n,
+            "bandwidth": h,
+            "method": "Powell-Stock-Stoker density-weighted average derivative",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """MLE of theta for IRT."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["theta_mle"]

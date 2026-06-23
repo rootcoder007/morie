@@ -1,6 +1,7 @@
 """Effective parameters from DIC (p_D)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["effective_parameters_dic"]

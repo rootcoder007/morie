@@ -1,8 +1,10 @@
 """Tests for lyexp -- Lyapunov exponent estimation."""
+
 import numpy as np
 import pytest
-from morie.fn.lyexp import lyexp
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lyexp import lyexp
 
 
 def test_lyexp_basic():

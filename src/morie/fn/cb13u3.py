@@ -1,8 +1,9 @@
 """Association expression involving 'variable' (auto-extracted; see reference for full context).."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["cb_chapter_13_unnumbered_3"]
 
@@ -42,7 +43,10 @@ def cb_chapter_13_unnumbered_3(x, y):
             pvalue=float("nan"),
             warnings=["n<3: insufficient pairs for correlation."],
             extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Association expression involving 'variable' (auto-extracted; see reference for full context)."},
+            extra_payload={
+                "n": n,
+                "method": "Association expression involving 'variable' (auto-extracted; see reference for full context).",
+            },
         )
     result = stats.spearmanr(x[:n], y[:n])
     return hypothesis_test_result(
@@ -50,7 +54,11 @@ def cb_chapter_13_unnumbered_3(x, y):
         statistic=float(result.statistic),
         pvalue=float(result.pvalue),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Association expression involving 'variable' (auto-extracted; see reference for full context).", "p_value": float(result.pvalue)},
+        extra_payload={
+            "n": n,
+            "method": "Association expression involving 'variable' (auto-extracted; see reference for full context).",
+            "p_value": float(result.pvalue),
+        },
     )
 
 

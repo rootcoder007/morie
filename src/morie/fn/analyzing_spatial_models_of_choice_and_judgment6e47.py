@@ -1,8 +1,8 @@
 """Spatial equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment.."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["analyzing_spatial_models_of_choice_and_judgment_chapter_6_equation_47"]
 
@@ -41,7 +41,12 @@ def analyzing_spatial_models_of_choice_and_judgment_chapter_6_equation_47(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "Spatial equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Spatial equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment.",
+        },
     )
 
 

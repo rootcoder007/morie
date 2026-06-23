@@ -1,6 +1,7 @@
 """Tests for rgsapn.rangayyan_sleep_apnea."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgsapn import rangayyan_sleep_apnea
 
 
@@ -11,7 +12,7 @@ def test_rgsapn_basic():
     fs = 100.0
     result = rangayyan_sleep_apnea(ecg, spo2, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgsapn_edge():

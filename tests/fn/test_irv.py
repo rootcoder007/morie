@@ -1,5 +1,7 @@
 """Tests for morie.fn.irv — Instant runoff voting."""
+
 import numpy as np
+
 from morie.fn.irv import irv
 
 

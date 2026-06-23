@@ -1,6 +1,7 @@
 """L1 (LAD) regression."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["l1_regression"]

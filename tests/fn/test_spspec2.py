@@ -1,6 +1,7 @@
 """Tests for spspec2.schabenberger_spectral_sim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spspec2 import schabenberger_spectral_sim
 
 
@@ -11,7 +12,7 @@ def test_spspec2_basic():
     n_freqs = np.random.default_rng(42).normal(0, 1, 100)
     result = schabenberger_spectral_sim(spectral_density, coords, n_freqs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spspec2_edge():

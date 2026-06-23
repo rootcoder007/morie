@@ -1,13 +1,12 @@
 """Tests for morie.fn.cmptm — compliance timeline."""
 
-import pytest
 import pandas as pd
-from morie.fn.cmptm import compliance_timeline
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cmptm import compliance_timeline
 
 
 class TestComplianceTimeline:
-
     def test_returns_descriptive(self):
         df = pd.DataFrame({"compliant": [1, 0, 1, 1, 0, 1], "period": [1, 1, 1, 2, 2, 2]})
         result = compliance_timeline(df)

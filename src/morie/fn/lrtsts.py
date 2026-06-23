@@ -1,6 +1,8 @@
 """Log-rank test for two-sample survival."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["logrank_test"]
@@ -35,7 +37,9 @@ def logrank_test(time, event, group, cdf=None):
     time = np.asarray(time, dtype=float)
     n = len(time)
     if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Log-rank test for two-sample survival"})
+        return RichResult(
+            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Log-rank test for two-sample survival"}
+        )
     x_sorted = np.sort(time)
     if cdf is None:
         cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(time), scale=np.std(time, ddof=1))
@@ -50,9 +54,16 @@ def logrank_test(time, event, group, cdf=None):
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
-    return RichResult(payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Log-rank test for two-sample survival"})
+    return RichResult(
+        payload={
+            "statistic": float(statistic),
+            "p_value": float(p_value),
+            "n": n,
+            "method": "Log-rank test for two-sample survival",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for morie.fn.heicer -- ICER."""
 
 import pytest
+
 from morie.fn.heicer import incremental_cer
 
 

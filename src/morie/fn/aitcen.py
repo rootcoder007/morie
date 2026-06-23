@@ -1,6 +1,7 @@
 """Compositional centre (geometric mean of compositions)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["aitchison_center"]
@@ -30,7 +31,14 @@ def aitchison_center(X):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Compositional centre (geometric mean of compositions)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Compositional centre (geometric mean of compositions)",
+        }
+    )
 
 
 def cheatsheet():

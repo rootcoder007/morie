@@ -1,6 +1,7 @@
 """Tests for hmovo.geron_one_vs_one."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmovo import geron_one_vs_one
 
 
@@ -11,7 +12,7 @@ def test_hmovo_basic():
     base_estimator = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_one_vs_one(X, y, base_estimator)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmovo_edge():

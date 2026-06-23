@@ -1,6 +1,7 @@
 """Augmented outcome-weighted learning."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["augmented_owl"]

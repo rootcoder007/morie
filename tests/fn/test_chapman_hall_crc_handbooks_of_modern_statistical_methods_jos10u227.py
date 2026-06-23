@@ -1,7 +1,10 @@
 """Tests for chapman_hall_crc_handbooks_of_modern_statistical_methods_jos10u227.chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_10_unnumbered_227."""
+
 import numpy as np
-import pytest
-from morie.fn.chapman_hall_crc_handbooks_of_modern_statistical_methods_jos10u227 import chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_10_unnumbered_227
+
+from morie.fn.chapman_hall_crc_handbooks_of_modern_statistical_methods_jos10u227 import (
+    chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_10_unnumbered_227,
+)
 
 
 def test_chapman_hall_crc_handbooks_of_modern_statistical_methods_jos10u227_basic():
@@ -9,7 +12,7 @@ def test_chapman_hall_crc_handbooks_of_modern_statistical_methods_jos10u227_basi
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_10_unnumbered_227(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_chapman_hall_crc_handbooks_of_modern_statistical_methods_jos10u227_edge():

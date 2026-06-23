@@ -1,6 +1,7 @@
 """Law of the iterated logarithm for the empirical process G_n."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_law_iterated_logarithm"]
@@ -32,7 +33,14 @@ def kosorok_ch2_law_iterated_logarithm(G_n, n):
     n = len(G_n)
     result = float(np.mean(G_n))
     se = float(np.std(G_n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Law of the iterated logarithm for the empirical process G_n"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Law of the iterated logarithm for the empirical process G_n",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,14 +1,16 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Geary's C with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
 
 
-def gearyc(x: Union[Sequence, np.ndarray],
-           W: Union[Sequence, np.ndarray]):
+def gearyc(x: Union[Sequence, np.ndarray], W: Union[Sequence, np.ndarray]):
     """Geary's C: alternative spatial autocorrelation."""
     from ._richresult import RichResult
+
     a = np.asarray(x, dtype=float)
     W = np.asarray(W, dtype=float)
     n = a.size
@@ -23,11 +25,16 @@ def gearyc(x: Union[Sequence, np.ndarray],
     if denom == 0:
         raise ValueError("zero variance.")
     C = ((n - 1) / (2 * S0)) * num / denom
-    if C < 0.5: pattern = "strong positive autocorrelation (clustering)"
-    elif C < 0.9: pattern = "weak positive autocorrelation"
-    elif C <= 1.1: pattern = "no spatial autocorrelation (~random)"
-    elif C <= 1.5: pattern = "weak negative autocorrelation"
-    else: pattern = "strong negative autocorrelation (dispersion)"
+    if C < 0.5:
+        pattern = "strong positive autocorrelation (clustering)"
+    elif C < 0.9:
+        pattern = "weak positive autocorrelation"
+    elif C <= 1.1:
+        pattern = "no spatial autocorrelation (~random)"
+    elif C <= 1.5:
+        pattern = "weak negative autocorrelation"
+    else:
+        pattern = "strong negative autocorrelation (dispersion)"
     return RichResult(
         title="Geary's C spatial autocorrelation",
         summary_lines=[
@@ -36,7 +43,9 @@ def gearyc(x: Union[Sequence, np.ndarray],
             ("Pattern", pattern),
             ("n locations", n),
         ],
-        interpretation=(f"C = {C:.4f}; null = 1, range ~[0, 2]. {pattern.capitalize()}. "
-                        "More sensitive to local outliers than Moran's I."),
+        interpretation=(
+            f"C = {C:.4f}; null = 1, range ~[0, 2]. {pattern.capitalize()}. "
+            "More sensitive to local outliers than Moran's I."
+        ),
         payload={"value": C, "statistic": C, "pattern": pattern},
     )

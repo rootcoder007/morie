@@ -7,7 +7,14 @@ import numpy as np
 import scipy.stats as stats
 
 
-def pnorm(x: Union[float, np.ndarray], mean: float = 0.0, sd: float = 1.0, lower_tail: bool = True, log: bool = False, cdf=None) -> Union[float, np.ndarray]:
+def pnorm(
+    x: Union[float, np.ndarray],
+    mean: float = 0.0,
+    sd: float = 1.0,
+    lower_tail: bool = True,
+    log: bool = False,
+    cdf=None,
+) -> Union[float, np.ndarray]:
     """
     Normal distribution cumulative distribution function.
 

@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.deja import detect_duplicates, deja
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.deja import deja, detect_duplicates
 
 
 class TestDeja:

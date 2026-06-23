@@ -39,4 +39,5 @@ def test_hr_positive(td_data):
 
 def test_cheatsheet():
     from morie.fn.tdcox import cheatsheet
+
     assert "time-dependent" in cheatsheet().lower()

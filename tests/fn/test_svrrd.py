@@ -1,7 +1,6 @@
 """Tests for morie.fn.svrrd -- Roemer party unanimity model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svrrd import roemer_model
 

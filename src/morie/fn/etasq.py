@@ -1,6 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Eta-squared (one-way ANOVA effect size)."""
 
+
 def etasq(ss_between: float, ss_total: float) -> float:
     """Eta-squared: SS_between / SS_total.
 

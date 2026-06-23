@@ -1,6 +1,7 @@
 """CLIP image-text similarity score."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["clip_similarity"]

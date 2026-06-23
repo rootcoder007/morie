@@ -5,6 +5,7 @@
 
 with c = 1.06 (Silverman) by default.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -29,18 +30,22 @@ def horowitz_plr_bandwidth(x, y, c=1.06):
     x = np.asarray(x, dtype=float).ravel()
     n = x.size
     if n < 5:
-        return RichResult(payload={"estimate": np.nan, "n": n,
-                                   "method": "plr-bandwidth (insufficient data)"})
+        return RichResult(payload={"estimate": np.nan, "n": n, "method": "plr-bandwidth (insufficient data)"})
     s = float(np.std(x, ddof=1))
     iqr = float(np.subtract(*np.percentile(x, [75, 25])))
     sigma = min(s, iqr / 1.349) if iqr > 0 else s
     if sigma <= 0:
         sigma = max(s, 1e-6)
     h = c * sigma * n ** (-1.0 / 5.0)
-    return RichResult(payload={
-        "estimate": float(h), "n": n, "sigma": sigma, "c": float(c),
-        "method": "Silverman rule h = c * sigma * n^(-1/5)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(h),
+            "n": n,
+            "sigma": sigma,
+            "c": float(c),
+            "method": "Silverman rule h = c * sigma * n^(-1/5)",
+        }
+    )
 
 
 def cheatsheet():

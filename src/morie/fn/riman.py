@@ -58,10 +58,7 @@ def riman(
                 for nu in range(n):
                     R[rho, sig, mu, nu] = dG[mu, rho, nu, sig] - dG[nu, rho, mu, sig]
                     for lam in range(n):
-                        R[rho, sig, mu, nu] += (
-                            G[rho, mu, lam] * G[lam, nu, sig]
-                            - G[rho, nu, lam] * G[lam, mu, sig]
-                        )
+                        R[rho, sig, mu, nu] += G[rho, mu, lam] * G[lam, nu, sig] - G[rho, nu, lam] * G[lam, mu, sig]
 
     return {
         "riemann": R,

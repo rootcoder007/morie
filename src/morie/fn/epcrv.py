@@ -54,7 +54,7 @@ def epidemic_curve_analysis(
         else:
             growth_rates.append(0.0)
 
-    ascending = inc[:peak_day + 1] if peak_day > 0 else inc[:1]
+    ascending = inc[: peak_day + 1] if peak_day > 0 else inc[:1]
     asc_nonzero = ascending[ascending > 0]
     if len(asc_nonzero) >= 2:
         log_inc = np.log(asc_nonzero)

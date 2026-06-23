@@ -1,6 +1,7 @@
 """Tests for morie.fn.sirsv -- SIRS with vaccination."""
 
 import pytest
+
 from morie.fn.sirsv import sirs_vaccination
 
 
@@ -12,7 +13,7 @@ class TestSIRSV:
 
     def test_r0(self):
         res = sirs_vaccination(beta=0.3, gamma=0.1)
-        assert res.R0 == pytest.approx(3.0)
+        assert pytest.approx(3.0) == res.R0
 
     def test_invalid(self):
         with pytest.raises(ValueError):

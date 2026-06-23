@@ -1,6 +1,8 @@
 """Tests for rflgn."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rflgn import rflgn
 
 
@@ -28,4 +30,5 @@ def test_rflgn_no_data():
 
 def test_rflgn_alias():
     from morie.fn.rflgn import rflgn
+
     assert rflgn is rflgn

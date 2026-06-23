@@ -1,8 +1,9 @@
 """Tests for morie.fn.lasrb -- IoU metric."""
 
 import numpy as np
-from morie.fn.lasrb import iou_metric, lasrb
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lasrb import iou_metric, lasrb
 
 
 class TestLasrb:

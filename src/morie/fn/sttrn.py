@@ -45,22 +45,22 @@ def sttrn(
 
     for p in range(1, spatial_order + 1):
         for q in range(p + 1):
-            cols.append(x ** (p - q) * y ** q)
+            cols.append(x ** (p - q) * y**q)
 
     for p in range(1, temporal_order + 1):
-        cols.append(times ** p)
+        cols.append(times**p)
 
     if interaction:
         for sp in range(1, spatial_order + 1):
             for tp in range(1, temporal_order + 1):
-                cols.append(x ** sp * times ** tp)
-                cols.append(y ** sp * times ** tp)
+                cols.append(x**sp * times**tp)
+                cols.append(y**sp * times**tp)
 
     X = np.column_stack(cols)
     coeffs, _, _, _ = np.linalg.lstsq(X, values, rcond=None)
     fitted = X @ coeffs
     residuals = values - fitted
-    ss_res = float(np.sum(residuals ** 2))
+    ss_res = float(np.sum(residuals**2))
     ss_tot = float(np.sum((values - values.mean()) ** 2))
     r2 = 1.0 - ss_res / (ss_tot + 1e-12)
 

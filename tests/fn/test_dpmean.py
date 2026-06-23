@@ -1,6 +1,7 @@
 """Tests for dpmean.dp_mean."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpmean import dp_mean
 
 
@@ -12,7 +13,7 @@ def test_dpmean_basic():
     epsilon = 1e-6
     result = dp_mean(x, a, b, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpmean_edge():

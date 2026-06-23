@@ -4,15 +4,32 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
-from morie.fn import bpblm, cslat, cslnc, grdcl, grpqa, kvcmp, lradw
-from morie.fn import moeml, pplxm, rlhfd, rmsnr, rptpn, spqkv, swigl
-from morie.fn import tknbp, tmpsc, topkd, toppd, wdemb
+from morie.fn import (
+    bpblm,
+    cslat,
+    cslnc,
+    grdcl,
+    grpqa,
+    kvcmp,
+    lradw,
+    moeml,
+    pplxm,
+    rlhfd,
+    rmsnr,
+    rptpn,
+    spqkv,
+    swigl,
+    tknbp,
+    tmpsc,
+    topkd,
+    toppd,
+    wdemb,
+)
 from morie.fn import flsha as flshA  # noqa: N812 (case-renamed to flsha for Linux CI)
 
-
 # ───────────────────────── 20 unit checks ──────────────────────────
+
 
 def test_tknbp():
     r = tknbp.bpe_tokenizer(
@@ -38,13 +55,15 @@ def test_cslat_shape_and_inf():
 
 
 def test_grpqa_shape():
-    Q = np.zeros((4, 2, 8)); K = V = np.zeros((2, 2, 8))
+    Q = np.zeros((4, 2, 8))
+    K = V = np.zeros((2, 2, 8))
     r = grpqa.grouped_query_attention(Q, K, V, n_heads=4, n_kv_heads=2)
     assert r["tensor"].shape == (4, 2, 8)
 
 
 def test_swigl_silu_at_zero():
-    x = np.zeros((1, 4)); W = V = np.eye(4)
+    x = np.zeros((1, 4))
+    W = V = np.eye(4)
     r = swigl.swiglu_activation(x, W=W, V=V)
     assert r["tensor"].shape == (1, 4)
     # SiLU(0)=0 -> output is all-zero.
@@ -58,7 +77,8 @@ def test_rmsnr_unit_norm_after_normalising():
 
 
 def test_kvcmp_append_grows_T():
-    K = np.zeros((2, 4)); V = np.zeros((2, 4))
+    K = np.zeros((2, 4))
+    V = np.zeros((2, 4))
     r = kvcmp.kv_cache_management(K, V, np.ones((1, 4)), np.ones((1, 4)))
     assert r["T"] == 3
 
@@ -79,8 +99,7 @@ def test_toppd_keeps_minimal_set():
 
 
 def test_rptpn_asymmetric():
-    r = rptpn.repetition_penalty([2.0, -2.0, 1.0],
-                                 generated=[0, 1], alpha=2.0)
+    r = rptpn.repetition_penalty([2.0, -2.0, 1.0], generated=[0, 1], alpha=2.0)
     assert np.allclose(r["tensor"], [1.0, -4.0, 1.0])
 
 
@@ -95,8 +114,7 @@ def test_bpblm_one_bit_per_byte():
 
 
 def test_cslnc_at_zero_is_lr_max():
-    r = cslnc.cosine_lr_schedule(0, lr_max=1.0, lr_min=0.0,
-                                  total_steps=10, warmup_steps=0)
+    r = cslnc.cosine_lr_schedule(0, lr_max=1.0, lr_min=0.0, total_steps=10, warmup_steps=0)
     assert np.isclose(float(r["value"]), 1.0)
 
 
@@ -135,12 +153,12 @@ def test_moeml_routes_to_argmax_expert():
 
 
 def test_rlhfd_linear_combination():
-    r = rlhfd.rlhf_reward(np.array([[1.0, 1.0]]),
-                          w=np.array([0.5, 0.5]), b=0.0)
+    r = rlhfd.rlhf_reward(np.array([[1.0, 1.0]]), w=np.array([0.5, 0.5]), b=0.0)
     assert float(r["value"]) == 1.0
 
 
 # ──────────────────── headline mass property checks ────────────────
+
 
 def test_tmpsc_topkd_toppd_all_sum_to_one():
     z = np.array([0.1, 0.5, 0.3, 0.05, 0.05])

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Priors based on finite approximating sets: sieve priors for contraction."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_fin_apx_pri"]
@@ -30,7 +32,14 @@ def ghosal_fin_apx_pri(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Priors based on finite approximating sets: sieve priors for contraction"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Priors based on finite approximating sets: sieve priors for contraction",
+        }
+    )
 
 
 def cheatsheet():

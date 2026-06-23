@@ -1,8 +1,9 @@
 """Correlation equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_17"]
 
@@ -40,7 +41,10 @@ def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equat
             pvalue=float("nan"),
             warnings=["n<3: insufficient pairs for correlation."],
             extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Correlation equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling."},
+            extra_payload={
+                "n": n,
+                "method": "Correlation equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
+            },
         )
     result = stats.spearmanr(x[:n], y[:n])
     return hypothesis_test_result(
@@ -48,7 +52,11 @@ def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equat
         statistic=float(result.statistic),
         pvalue=float(result.pvalue),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Correlation equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.", "p_value": float(result.pvalue)},
+        extra_payload={
+            "n": n,
+            "method": "Correlation equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
+            "p_value": float(result.pvalue),
+        },
     )
 
 

@@ -1,6 +1,7 @@
 """Tests for kmklr.kamath_kl_reward_shaping."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmklr import kamath_kl_reward_shaping
 
 
@@ -11,7 +12,7 @@ def test_kmklr_basic():
     beta = 0.8
     result = kamath_kl_reward_shaping(r_phi, kl_divergence, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmklr_edge():

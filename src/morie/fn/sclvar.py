@@ -1,6 +1,7 @@
 """Selection coefficient estimator."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["selection_coefficient"]
@@ -38,7 +39,16 @@ def selection_coefficient(freqs, generations, Ne):
     se = 1.2533 * np.std(freqs, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Selection coefficient estimator"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Selection coefficient estimator",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,9 @@
 """Test template_match_lib (tmpml)."""
+
 import numpy as np
-from morie.fn.tmpml import template_match_lib, tmpml
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.tmpml import template_match_lib, tmpml
 
 
 class TestTemplateMatchLib:

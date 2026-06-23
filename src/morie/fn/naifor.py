@@ -86,4 +86,4 @@ naifor = naive_forecast
 
 
 def cheatsheet() -> str:
-    return 'naive_forecast({}) -> Naive time series forecasting.'
+    return "naive_forecast({}) -> Naive time series forecasting."

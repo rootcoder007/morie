@@ -1,6 +1,7 @@
 """Test csncr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csncr import csncr
 
 

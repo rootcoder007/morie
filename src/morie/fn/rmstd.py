@@ -9,7 +9,9 @@ from scipy.stats import norm
 __all__ = ["rmstd"]
 
 
-def rmstd(time: np.ndarray, event: np.ndarray, group: np.ndarray, cdf=None, *, tau: float | None = None, alpha: float = 0.05) -> dict:
+def rmstd(
+    time: np.ndarray, event: np.ndarray, group: np.ndarray, cdf=None, *, tau: float | None = None, alpha: float = 0.05
+) -> dict:
     """Restricted mean survival time (RMST) difference between two groups.
 
     RMST is the area under the Kaplan-Meier curve up to tau.
@@ -67,7 +69,7 @@ def rmstd(time: np.ndarray, event: np.ndarray, group: np.ndarray, cdf=None, *, t
         for i in range(len(all_t) - 1):
             dt = all_t[i + 1] - all_t[i]
             area += surv_vals[i] * dt
-            var_area += (surv_vals[i] ** 2) * gw_vals[i] * (dt ** 2)
+            var_area += (surv_vals[i] ** 2) * gw_vals[i] * (dt**2)
 
         return area, var_area
 

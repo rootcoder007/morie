@@ -6,6 +6,8 @@ from __future__ import annotations
 import numpy as np
 
 from ._containers import DescriptiveResult
+
+
 def roc_curve(y_true, y_score, **kwargs) -> DescriptiveResult:
     """
     Compute Receiver Operating Characteristic curve.

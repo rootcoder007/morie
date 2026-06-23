@@ -10,11 +10,13 @@ def test_multinomial_three_classes():
     rng = np.random.default_rng(42)
     n = 600
     X = rng.standard_normal((n, 2))
-    scores = np.column_stack([
-        np.zeros(n),
-        1.0 + X[:, 0],
-        -1.0 + X[:, 1],
-    ])
+    scores = np.column_stack(
+        [
+            np.zeros(n),
+            1.0 + X[:, 0],
+            -1.0 + X[:, 1],
+        ]
+    )
     probs = np.exp(scores)
     probs /= probs.sum(axis=1, keepdims=True)
     y = np.array([rng.choice(3, p=p) for p in probs])

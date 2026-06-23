@@ -1,6 +1,7 @@
 """Tests for prnFil.prophet_changepoint."""
+
 import numpy as np
-import pytest
+
 from morie.fn.prnFil import prophet_changepoint
 
 
@@ -10,7 +11,7 @@ def test_prnFil_basic():
     n_cps = np.random.default_rng(42).normal(0, 1, 100)
     result = prophet_changepoint(y, n_cps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_prnFil_edge():

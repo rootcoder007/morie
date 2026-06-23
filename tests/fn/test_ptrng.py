@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptrng -- Point pattern intensity"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptrng import pp_intensity
 

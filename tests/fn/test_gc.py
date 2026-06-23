@@ -1,6 +1,7 @@
 """Tests for morie.fn.gc -- GC content."""
 
 import pytest
+
 from morie.fn.gc import gc_content_calc
 
 

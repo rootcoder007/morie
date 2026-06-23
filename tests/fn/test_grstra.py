@@ -1,6 +1,7 @@
 """Tests for grstra.geron_stratified_split."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grstra import geron_stratified_split
 
 
@@ -11,7 +12,7 @@ def test_grstra_basic():
     test_size = 100
     result = geron_stratified_split(X, y, test_size)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_grstra_edge():

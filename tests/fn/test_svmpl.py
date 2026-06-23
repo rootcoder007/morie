@@ -1,7 +1,9 @@
 """Test svm_poly (svmpl)."""
+
 import numpy as np
-from morie.fn.svmpl import svm_poly, svmpl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.svmpl import svm_poly, svmpl
 
 
 class TestSvmpl:

@@ -1,6 +1,7 @@
 """AlphaDev-style quicksort move discovery via RL."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphadev_quicksort_disc"]
@@ -34,7 +35,9 @@ def alphadev_quicksort_disc(target, action_space, reward_fn):
     n = len(target)
     result = float(np.mean(target))
     se = float(np.std(target, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AlphaDev-style quicksort move discovery via RL"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "AlphaDev-style quicksort move discovery via RL"}
+    )
 
 
 def cheatsheet():

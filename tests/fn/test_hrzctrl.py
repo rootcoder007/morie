@@ -1,6 +1,7 @@
 """Tests for hrzctrl.horowitz_control_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzctrl import horowitz_control_function
 
 
@@ -12,7 +13,7 @@ def test_hrzctrl_basic():
     bandwidth = 0.3
     result = horowitz_control_function(x, y, w, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzctrl_edge():

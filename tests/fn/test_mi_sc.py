@@ -4,7 +4,6 @@ from morie.fn.mi_sc import mi_scalar
 
 
 class TestMiScalar:
-
     def test_returns_expected_keys(self, mapq_df):
         result = mi_scalar(mapq_df, "gender")
         for key in ("level", "fit", "delta_fit", "passed"):

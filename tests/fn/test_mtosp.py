@@ -1,9 +1,10 @@
 """Tests for morie.fn.mtosp — speed analysis."""
 
-import pytest
 import numpy as np
-from morie.fn.mtosp import mto_speed_analysis
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mtosp import mto_speed_analysis
 
 
 class TestSpeedAnalysis:

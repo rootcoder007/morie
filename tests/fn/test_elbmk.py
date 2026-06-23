@@ -1,8 +1,9 @@
 """Tests for morie.fn.elbmk -- Elbow method for k."""
 
 import numpy as np
-from morie.fn.elbmk import elbow_method, elbmk
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.elbmk import elbmk, elbow_method
 
 
 class TestElbowMethod:
@@ -27,4 +28,4 @@ class TestElbowMethod:
         res = elbow_method(X, k_range=(2, 5))
         inertias = res.extra["inertias"]
         for i in range(len(inertias) - 1):
-            assert inertias[i] >= inertias[i+1] - 1e-6
+            assert inertias[i] >= inertias[i + 1] - 1e-6

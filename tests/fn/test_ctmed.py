@@ -1,6 +1,7 @@
 """Tests for ctmed.control_median_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ctmed import control_median_test
 
 
@@ -10,7 +11,7 @@ def test_ctmed_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = control_median_test(x, y)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_ctmed_edge():

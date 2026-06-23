@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Houlsby-style bottleneck adapter inserted in a transformer block."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_houlsby_adapter"]
@@ -34,7 +36,14 @@ def kamath_houlsby_adapter(h, W_down, W_up):
     n = len(h)
     result = float(np.mean(h))
     se = float(np.std(h, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Houlsby-style bottleneck adapter inserted in a transformer block"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Houlsby-style bottleneck adapter inserted in a transformer block",
+        }
+    )
 
 
 def cheatsheet():

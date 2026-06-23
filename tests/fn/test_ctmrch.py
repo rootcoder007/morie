@@ -1,6 +1,8 @@
 """Tests for ctmrch."""
+
 import numpy as np
 import pytest
+
 from morie.fn.ctmrch import ctmrch
 
 
@@ -28,4 +30,5 @@ def test_ctmrch_no_data():
 
 def test_ctmrch_alias():
     from morie.fn.ctmrch import ctmrch
+
     assert ctmrch is ctmrch

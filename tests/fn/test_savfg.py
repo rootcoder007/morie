@@ -1,10 +1,11 @@
 """Tests for morie.fn.savfg -- Save figure."""
 
-import pytest
 from unittest.mock import MagicMock
 
-from morie.fn.savfg import save_figure, savfg, _VALID_FORMATS
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.savfg import _VALID_FORMATS, save_figure, savfg
 
 
 class TestSavfg:

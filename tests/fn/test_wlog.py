@@ -1,7 +1,6 @@
 """Tests for morie.fn.wlog — weighted logistic analysis with interaction and SMOTE."""
 
 import math
-from unittest.mock import patch
 
 import numpy as np
 import pandas as pd
@@ -22,19 +21,21 @@ def _make_cpads_frame(rng, n=200):
     p_outcome = 0.2 + 0.15 * treatment
     outcome = rng.binomial(1, p_outcome, size=n)
     weight = rng.uniform(0.5, 3.0, size=n)
-    return pd.DataFrame({
-        "weight": weight,
-        "alcohol_past12m": rng.integers(0, 2, size=n),
-        "heavy_drinking_30d": outcome,
-        "ebac_tot": rng.uniform(0, 0.15, size=n),
-        "ebac_legal": rng.integers(0, 2, size=n),
-        "cannabis_any_use": treatment,
-        "age_group": age,
-        "gender": gender,
-        "province_region": province,
-        "mental_health": mental,
-        "physical_health": physical,
-    })
+    return pd.DataFrame(
+        {
+            "weight": weight,
+            "alcohol_past12m": rng.integers(0, 2, size=n),
+            "heavy_drinking_30d": outcome,
+            "ebac_tot": rng.uniform(0, 0.15, size=n),
+            "ebac_legal": rng.integers(0, 2, size=n),
+            "cannabis_any_use": treatment,
+            "age_group": age,
+            "gender": gender,
+            "province_region": province,
+            "mental_health": mental,
+            "physical_health": physical,
+        }
+    )
 
 
 @pytest.fixture()
@@ -71,9 +72,7 @@ def test_coefficients_are_finite(wlog_data):
 def test_handles_weighted_data(wlog_data):
     """Analysis runs without error when weights vary across observations."""
     # Modify weights to be more extreme
-    wlog_data["weight"] = np.where(
-        wlog_data["cannabis_any_use"] == 1, 2.5, 0.8
-    )
+    wlog_data["weight"] = np.where(wlog_data["cannabis_any_use"] == 1, 2.5, 0.8)
     result = run_weighted_logistic_analysis(wlog_data)
     assert len(result["analysis_frame"]) > 0
     assert result["logistic_odds_ratios"].shape[0] > 0

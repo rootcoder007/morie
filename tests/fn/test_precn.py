@@ -1,6 +1,7 @@
 """Tests for morie.fn.precn — precision (PPV)."""
-import numpy as np
+
 import pytest
+
 from morie.fn.precn import precision, precn
 
 

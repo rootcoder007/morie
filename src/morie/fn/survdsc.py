@@ -1,6 +1,7 @@
 """Discrete-time survival via complementary log-log."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["discrete_time_survival"]
@@ -34,7 +35,9 @@ def discrete_time_survival(time_discrete, event, X):
     n = len(time_discrete)
     result = float(np.mean(time_discrete))
     se = float(np.std(time_discrete, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Discrete-time survival via complementary log-log"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Discrete-time survival via complementary log-log"}
+    )
 
 
 def cheatsheet():

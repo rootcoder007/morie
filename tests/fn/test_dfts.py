@@ -1,6 +1,8 @@
 """Tests for morie.fn.dfts — power spectral density."""
+
 import numpy as np
 import pytest
+
 from morie.fn.dfts import dft_spectrum
 
 

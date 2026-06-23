@@ -1,6 +1,7 @@
 """Calonico-Cattaneo-Titiunik MSE-optimal bandwidth."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_rdd_ccft_bw"]
@@ -36,7 +37,9 @@ def causal_rdd_ccft_bw(x, y, cutoff, p):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Calonico-Cattaneo-Titiunik MSE-optimal bandwidth"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Calonico-Cattaneo-Titiunik MSE-optimal bandwidth"}
+    )
 
 
 def cheatsheet():

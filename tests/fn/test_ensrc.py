@@ -1,6 +1,7 @@
 """Test ensrc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ensrc import ensrc
 
 

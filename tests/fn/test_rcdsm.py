@@ -1,6 +1,6 @@
 """Tests for morie.fn.rcdsm — overall recidivism rate."""
 
-from morie.fn.rcdsm import recidivism_rate, rcdsm
+from morie.fn.rcdsm import rcdsm, recidivism_rate
 
 
 class TestRecidivismRate:

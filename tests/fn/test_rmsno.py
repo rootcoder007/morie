@@ -1,5 +1,7 @@
 """Test RMS normalization."""
+
 import numpy as np
+
 from morie.fn.rmsno import rmsno
 
 

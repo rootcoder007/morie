@@ -1,6 +1,7 @@
 """Tests for grpex.geron_prioritized_experience_weight."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grpex import geron_prioritized_experience_weight
 
 
@@ -12,7 +13,7 @@ def test_grpex_basic():
     beta = 0.8
     result = geron_prioritized_experience_weight(priorities, N, alpha, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grpex_edge():

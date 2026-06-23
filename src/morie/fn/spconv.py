@@ -1,5 +1,7 @@
 """Convolution representation of stationary random field."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_convolution_representation"]
@@ -29,7 +31,14 @@ def schabenberger_convolution_representation(kernel):
     n = int(kernel) if kernel.ndim == 0 else len(kernel)
     result = float(np.mean(kernel))
     se = float(np.std(kernel, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Convolution representation of stationary random field"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Convolution representation of stationary random field",
+        }
+    )
 
 
 def cheatsheet():

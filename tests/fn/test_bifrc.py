@@ -1,6 +1,9 @@
 """Tests for bifurcation_data."""
+
 import pytest
+
 from morie.fn.bifrc import bifurcation_data
+
 
 class TestBifurcation:
     def test_basic(self):

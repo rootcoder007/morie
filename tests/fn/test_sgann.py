@@ -1,6 +1,8 @@
 """Tests for sgann."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sgann import sgann
 
 
@@ -28,4 +30,5 @@ def test_sgann_no_data():
 
 def test_sgann_alias():
     from morie.fn.sgann import sgann
+
     assert sgann is sgann

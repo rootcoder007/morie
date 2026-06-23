@@ -1,7 +1,7 @@
 """Tests for morie.fn.alpht -- Bayesian prior elicitation."""
 
-from morie.fn.alpht import prior_elicit, alpht
 from morie.fn._containers import DescriptiveResult
+from morie.fn.alpht import alpht, prior_elicit
 
 
 class TestAlpht:

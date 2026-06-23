@@ -1,8 +1,9 @@
 """Tests for morie.fn.nntra -- neural network training."""
 
 import numpy as np
-from morie.fn.nntra import nn_train, nntra
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.nntra import nn_train, nntra
 
 
 class TestNntra:

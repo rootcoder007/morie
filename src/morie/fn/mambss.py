@@ -1,6 +1,7 @@
 """Mamba selective SSM step (S6)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mamba_ssm_step"]

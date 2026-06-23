@@ -1,6 +1,7 @@
 """Test dkcrs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkcrs import dkcrs
 
 

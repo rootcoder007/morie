@@ -1,6 +1,7 @@
 """Z-transform of a signal with a wavelet and an echo.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_z_transform_signal_echo"]
@@ -36,7 +37,9 @@ def rangayyan_ch4_z_transform_signal_echo(a, n_0, z, H):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Z-transform of a signal with a wavelet and an echo."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Z-transform of a signal with a wavelet and an echo."}
+    )
 
 
 def cheatsheet():

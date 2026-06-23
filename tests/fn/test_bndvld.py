@@ -1,6 +1,7 @@
 """Tests for bndvld.bound_validity_check."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndvld import bound_validity_check
 
 
@@ -12,7 +13,7 @@ def test_bndvld_basic():
     H0 = np.random.default_rng(42).normal(0, 1, 100)
     result = bound_validity_check(lower, upper, theta_0, H0)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndvld_edge():

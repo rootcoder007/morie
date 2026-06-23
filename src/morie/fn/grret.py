@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Discounted return G_t from step t onward."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_discounted_return"]
@@ -32,7 +34,9 @@ def geron_discounted_return(rewards, gamma):
     n = len(rewards)
     result = float(np.mean(rewards))
     se = float(np.std(rewards, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Discounted return G_t from step t onward"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Discounted return G_t from step t onward"}
+    )
 
 
 def cheatsheet():

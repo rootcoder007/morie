@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MoE auxiliary load-balancing loss (Shazeer / Switch)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_moe_load_balance_loss"]
@@ -36,7 +38,9 @@ def kamath_moe_load_balance_loss(fractions, gate_means, N, alpha):
     n = len(fractions)
     result = float(np.mean(fractions))
     se = float(np.std(fractions, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MoE auxiliary load-balancing loss (Shazeer / Switch)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "MoE auxiliary load-balancing loss (Shazeer / Switch)"}
+    )
 
 
 def cheatsheet():

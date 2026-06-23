@@ -73,7 +73,7 @@ def bayesian_changepoint(
     boundaries = [0] + best_cps + [n]
     segment_means = []
     for i in range(len(boundaries) - 1):
-        seg = x[boundaries[i]:boundaries[i + 1]]
+        seg = x[boundaries[i] : boundaries[i + 1]]
         segment_means.append(float(np.mean(seg)))
 
     return {

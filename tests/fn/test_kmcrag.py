@@ -1,6 +1,7 @@
 """Tests for kmcrag.kamath_corrective_rag."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmcrag import kamath_corrective_rag
 
 
@@ -13,7 +14,7 @@ def test_kmcrag_basic():
     tau_lo = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_corrective_rag(query, docs, clf, tau_hi, tau_lo)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmcrag_edge():

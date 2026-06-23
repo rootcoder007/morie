@@ -1,6 +1,7 @@
 """Complex logarithms of z-transforms of a convolved signal y(n) = x(n)*h(n).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_log_of_convolved_signals"]
@@ -36,7 +37,14 @@ def rangayyan_ch4_log_of_convolved_signals(X_hat, H_hat, z, omega):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Complex logarithms of z-transforms of a convolved signal y(n) = x(n)*h(n)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Complex logarithms of z-transforms of a convolved signal y(n) = x(n)*h(n).",
+        }
+    )
 
 
 def cheatsheet():

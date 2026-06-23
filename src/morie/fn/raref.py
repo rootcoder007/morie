@@ -5,6 +5,8 @@ import numpy as np
 from scipy.special import comb
 
 from ._containers import DescriptiveResult
+
+
 def rarefaction(abundances, n_subsample=None, n_points: int = 20, **kwargs) -> DescriptiveResult:
     r"""
     Compute an individual-based rarefaction curve.

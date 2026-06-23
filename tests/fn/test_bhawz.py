@@ -1,6 +1,7 @@
 """Tests for morie.fn.bhawz -- Bayesian hazard."""
 
 import numpy as np
+
 from morie.fn.bhawz import bayesian_hazard
 
 

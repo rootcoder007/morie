@@ -1,15 +1,16 @@
 """Tests for morie.fn.treep -- TPE optimizer."""
 
 import numpy as np
+
 from morie.fn.treep import tpe_minimize
 
 
 def _sphere(x):
-    return float(np.sum(x ** 2))
+    return float(np.sum(x**2))
 
 
 def test_returns_dict():
-    result = tpe_minimize(_sphere, [[- 5, 5]], n_calls=20, n_initial=5)
+    result = tpe_minimize(_sphere, [[-5, 5]], n_calls=20, n_initial=5)
     assert isinstance(result, dict)
     assert "best_x" in result
     assert "best_y" in result

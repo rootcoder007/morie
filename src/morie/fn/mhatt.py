@@ -14,6 +14,7 @@ __all__ = ["mhatt"]
 
 import numpy as np
 from scipy.special import softmax
+
 from ._richresult import RichResult
 
 

@@ -1,6 +1,7 @@
 """Tests for netsts.neural_ts_lstm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.netsts import neural_ts_lstm
 
 
@@ -11,7 +12,7 @@ def test_netsts_basic():
     horizon = np.random.default_rng(42).normal(0, 1, 100)
     result = neural_ts_lstm(y, hidden, horizon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_netsts_edge():

@@ -1,8 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Simple random sample (without replacement)."""
 
-from typing import Sequence, Union
 import numpy as np
+
+
 def sampsrs(population, n: int, seed: int = 42):
     """Simple random sample of size n, without replacement."""
     rng = np.random.default_rng(seed)

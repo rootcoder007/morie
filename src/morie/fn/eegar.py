@@ -11,7 +11,9 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['eegar']
+__all__ = ["eegar"]
+
+
 def eegar(
     x: np.ndarray,
     fs: float = 256.0,
@@ -43,14 +45,14 @@ def eegar(
     x = x - np.mean(x)
     n = len(x)
 
-    r = np.correlate(x, x, mode="full")[n - 1:]
-    r = r[:order + 1] / n
+    r = np.correlate(x, x, mode="full")[n - 1 :]
+    r = r[: order + 1] / n
 
     R = np.zeros((order, order))
     for i in range(order):
         for j in range(order):
             R[i, j] = r[abs(i - j)]
-    rhs = r[1:order + 1]
+    rhs = r[1 : order + 1]
 
     try:
         ar = np.linalg.solve(R, rhs)

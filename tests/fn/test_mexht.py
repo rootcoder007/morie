@@ -1,6 +1,8 @@
 """Tests for mexht.py - Mexican hat wavelet."""
+
 import numpy as np
-from morie.fn.mexht import mexican_hat, mexht
+
+from morie.fn.mexht import mexht, mexican_hat
 
 
 def test_mexht_returns_descriptive_result():

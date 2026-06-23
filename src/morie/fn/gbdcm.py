@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Compare burden across conditions (GBD-style)."""
 
-
 from ._containers import DescriptiveResult
 
 

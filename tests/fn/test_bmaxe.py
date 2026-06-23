@@ -1,6 +1,7 @@
 """Tests for morie.fn.bmaxe -- Bayesian model averaging."""
 
 import numpy as np
+
 from morie.fn.bmaxe import bayesian_model_averaging
 
 

@@ -1,6 +1,7 @@
 """SimCSE-style contrastive sentence embeddings."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["contrastive_sent"]
@@ -32,7 +33,9 @@ def contrastive_sent(sentences, tau):
     n = len(sentences)
     result = float(np.mean(sentences))
     se = float(np.std(sentences, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SimCSE-style contrastive sentence embeddings"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "SimCSE-style contrastive sentence embeddings"}
+    )
 
 
 def cheatsheet():

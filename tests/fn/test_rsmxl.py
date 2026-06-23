@@ -1,6 +1,7 @@
 """Test rsmxl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsmxl import rsmxl
 
 

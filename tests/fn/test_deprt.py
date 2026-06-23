@@ -1,6 +1,7 @@
 """Tests for morie.fn.deprt -- dependency ratio."""
 
 import pytest
+
 from morie.fn.deprt import dependency_ratio
 
 

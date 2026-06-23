@@ -7,7 +7,7 @@ Mutation strategy based on differences between population members.
 
 import numpy as np
 
-__all__ = ['difev']
+__all__ = ["difev"]
 
 
 def difev(f, bounds, pop_size=50, generations=100, F=0.8, Cr=0.7, full_output=False, seed=None):
@@ -92,9 +92,5 @@ def difev(f, bounds, pop_size=50, generations=100, F=0.8, Cr=0.7, full_output=Fa
 
     best_idx = np.argmin(fx)
     if full_output:
-        return x[best_idx], {
-            'generations': generations,
-            'converged': False,
-            'final_value': fx[best_idx]
-        }
+        return x[best_idx], {"generations": generations, "converged": False, "final_value": fx[best_idx]}
     return x[best_idx]

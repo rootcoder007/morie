@@ -1,4 +1,5 @@
 """Tests for morie.fn.omega — alias for omega-squared."""
+
 from morie.fn.omega import omega
 
 
@@ -10,4 +11,5 @@ def test_omega_is_callable():
 
 def test_omega_same_as_omega2():
     from morie.fn.omega2 import omega_squared
+
     assert omega(10.0, 3, 100, 104) == omega_squared(10.0, 3, 100, 104)

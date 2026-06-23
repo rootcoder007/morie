@@ -6,8 +6,10 @@
 Under H0:X~F_0, sqrt(n) D_n has the same Kolmogorov limit as the
 classical KS, so we use SciPy's Kolmogorov tail.
 """
+
 import numpy as np
 from scipy import stats as _sps
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_ks_smoothed"]
@@ -37,8 +39,7 @@ def fauzi_ks_smoothed(x, cdf="norm", args=None, h=None, n_grid=512):
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 5:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan,
-                                    "n": n, "method": "fzksm -- too few obs"})
+        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "fzksm -- too few obs"})
     if h is None:
         h = float(_silverman_h(x))
 
@@ -51,6 +52,7 @@ def fauzi_ks_smoothed(x, cdf="norm", args=None, h=None, n_grid=512):
                 args = (float(np.mean(x)), float(np.std(x, ddof=1)))
             else:
                 args = ()
+
         def F0(t, dist=dist, args=args):
             return dist.cdf(t, *args)
 
@@ -63,13 +65,15 @@ def fauzi_ks_smoothed(x, cdf="norm", args=None, h=None, n_grid=512):
 
     p = float(_sps.kstwobign.sf(np.sqrt(n) * D_n))
 
-    return RichResult(payload={
-        "statistic": D_n,
-        "p_value": p,
-        "h": h,
-        "n": n,
-        "method": "Fauzi kernel-smoothed KS test (Ch 5)",
-    })
+    return RichResult(
+        payload={
+            "statistic": D_n,
+            "p_value": p,
+            "h": h,
+            "n": n,
+            "method": "Fauzi kernel-smoothed KS test (Ch 5)",
+        }
+    )
 
 
 def cheatsheet():

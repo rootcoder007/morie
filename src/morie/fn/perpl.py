@@ -26,7 +26,7 @@ def perplexity(log_probs, **kwargs) -> ESRes:
     if len(lp) < 1:
         raise ValueError("Need at least 1 log-probability.")
     avg_nll = -float(np.mean(lp)) / np.log(2)
-    pp = float(2.0 ** avg_nll)
+    pp = float(2.0**avg_nll)
     return ESRes(
         measure="perplexity",
         estimate=pp,

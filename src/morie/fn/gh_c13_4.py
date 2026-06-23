@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Discrete-time Beta process: product of independent Beta random variables."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_bp_discrete"]
@@ -30,7 +32,14 @@ def ghosal_bp_discrete(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Discrete-time Beta process: product of independent Beta random variables"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Discrete-time Beta process: product of independent Beta random variables",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Central path of barrier."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boyd_central_path"]

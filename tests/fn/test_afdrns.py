@@ -1,6 +1,7 @@
 """Test afdrns."""
+
 import numpy as np
-import pytest
+
 from morie.fn.afdrns import afdrns
 
 

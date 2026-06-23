@@ -1,7 +1,6 @@
 """Tests for morie.fn.gee — Generalized estimating equations."""
 
 import numpy as np
-import pytest
 
 from morie.fn.gee import gee_regression
 
@@ -36,8 +35,7 @@ def test_gee_binomial():
             y.append(float(rng.uniform() < p))
             X.append([x])
             cl.append(c)
-    res = gee_regression(np.array(y), np.array(X), np.array(cl),
-                         family="binomial")
+    res = gee_regression(np.array(y), np.array(X), np.array(cl), family="binomial")
     assert res.coefficients["x0"] > 0
 
 
@@ -51,6 +49,5 @@ def test_gee_exchangeable():
             y.append(1.0 + x + u + rng.standard_normal() * 0.3)
             X.append([x])
             cl.append(c)
-    res = gee_regression(np.array(y), np.array(X), np.array(cl),
-                         corr_structure="exchangeable")
+    res = gee_regression(np.array(y), np.array(X), np.array(cl), corr_structure="exchangeable")
     assert res.extra["n_clusters"] == 40

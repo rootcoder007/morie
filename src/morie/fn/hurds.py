@@ -97,20 +97,18 @@ def hurdle_model(
     fitted = pi_hat * mu_hat / (1 - np.exp(-mu_hat) + 1e-300)
 
     ll_zero = float(np.sum(d * np.log(pi_hat + 1e-300) + (1 - d) * np.log(1 - pi_hat + 1e-300)))
-    ll_count = float(np.sum(
-        y_pos * np.log(mu_p + 1e-300)
-        - mu_p
-        - np.array([float(special.gammaln(yi + 1)) for yi in y_pos])
-        - np.log(1 - np.exp(-mu_p) + 1e-300)
-    ))
+    ll_count = float(
+        np.sum(
+            y_pos * np.log(mu_p + 1e-300)
+            - mu_p
+            - np.array([float(special.gammaln(yi + 1)) for yi in y_pos])
+            - np.log(1 - np.exp(-mu_p) + 1e-300)
+        )
+    )
     ll = ll_zero + ll_count
 
-    hurdle_names = (["hurdle_(Intercept)"] if add_intercept else []) + [
-        f"hurdle_x{j}" for j in range(p_raw)
-    ]
-    count_names = (["count_(Intercept)"] if add_intercept else []) + [
-        f"count_x{j}" for j in range(p_raw)
-    ]
+    hurdle_names = (["hurdle_(Intercept)"] if add_intercept else []) + [f"hurdle_x{j}" for j in range(p_raw)]
+    count_names = (["count_(Intercept)"] if add_intercept else []) + [f"count_x{j}" for j in range(p_raw)]
     all_names = hurdle_names + count_names
     all_coefs = np.concatenate([gamma, beta])
 

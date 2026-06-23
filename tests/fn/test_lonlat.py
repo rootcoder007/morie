@@ -1,6 +1,7 @@
 """Test lonlat."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lonlat import lonlat
 
 

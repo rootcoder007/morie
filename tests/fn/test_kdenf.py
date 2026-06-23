@@ -1,6 +1,7 @@
 """Test kdenf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kdenf import kdenf
 
 

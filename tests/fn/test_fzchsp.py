@@ -1,6 +1,7 @@
 """Tests for fzchsp.fauzi_chung_smirnov."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fzchsp import fauzi_chung_smirnov
 
 
@@ -10,7 +11,7 @@ def test_fzchsp_basic():
     bandwidth = 0.3
     result = fauzi_chung_smirnov(x, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fzchsp_edge():

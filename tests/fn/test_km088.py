@@ -1,6 +1,7 @@
 """Tests for km088.kamath_ch6_cat_metric."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km088 import kamath_ch6_cat_metric
 
 
@@ -11,7 +12,7 @@ def test_km088_basic():
     theta = 0.0
     result = kamath_ch6_cat_metric(M, U, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km088_edge():

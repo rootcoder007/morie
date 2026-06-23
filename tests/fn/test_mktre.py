@@ -1,4 +1,5 @@
 """Test merkle_tree."""
+
 from morie.fn._containers import DescriptiveResult
 from morie.fn.mktre import merkle_tree, mktre
 

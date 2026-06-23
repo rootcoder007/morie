@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Linear mixed model general form (Eq 2.1): Y = Xbeta + Zu + epsilon."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["lmm_form_eq2_1"]
@@ -36,7 +38,14 @@ def lmm_form_eq2_1(Y, X, Z, beta_init):
     n = int(Y) if Y.ndim == 0 else len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Linear mixed model general form (Eq 2.1): Y = Xbeta + Zu + epsilon"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Linear mixed model general form (Eq 2.1): Y = Xbeta + Zu + epsilon",
+        }
+    )
 
 
 def cheatsheet():

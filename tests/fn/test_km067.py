@@ -1,6 +1,7 @@
 """Tests for km067.kamath_ch5_rm_bradley_terry."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km067 import kamath_ch5_rm_bradley_terry
 
 
@@ -12,7 +13,7 @@ def test_km067_basic():
     r_theta = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ch5_rm_bradley_terry(x, y_w, y_l, r_theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km067_edge():

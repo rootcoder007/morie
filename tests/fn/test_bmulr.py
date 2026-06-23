@@ -1,6 +1,5 @@
 """Tests for morie.fn.bmulr -- Bayesian multinomial."""
 
-import numpy as np
 from morie.fn.bmulr import bayesian_multinomial
 
 

@@ -1,5 +1,7 @@
 """Tests for spectral GRF simulation."""
+
 import numpy as np
+
 from morie.fn.sgsps import sgsps
 
 
@@ -15,6 +17,7 @@ def test_sgsps_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgsps import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

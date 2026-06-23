@@ -54,4 +54,4 @@ short = schur_decompose
 
 
 def cheatsheet() -> str:
-    return 'schur_decompose({}) -> Schur decomposition.'
+    return "schur_decompose({}) -> Schur decomposition."

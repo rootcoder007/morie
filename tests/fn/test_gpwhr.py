@@ -1,6 +1,7 @@
 """Tests for gpwhr.gp_warped."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gpwhr import gp_warped
 
 
@@ -12,7 +13,7 @@ def test_gpwhr_basic():
     warp = np.random.default_rng(42).normal(0, 1, 100)
     result = gp_warped(X, y, X_test, warp)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gpwhr_edge():

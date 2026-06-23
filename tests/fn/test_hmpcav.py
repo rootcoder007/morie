@@ -1,6 +1,7 @@
 """Tests for hmpcav.geron_pca_variance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmpcav import geron_pca_variance
 
 
@@ -10,7 +11,7 @@ def test_hmpcav_basic():
     n_components = 3
     result = geron_pca_variance(X, n_components)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmpcav_edge():

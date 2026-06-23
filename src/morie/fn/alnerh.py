@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """NER token-classification head: per-token softmax over BIO tags."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_ner_token_head"]
@@ -36,7 +38,14 @@ def alammar_ner_token_head(h_tokens, W, b, tags):
     n = len(h_tokens)
     result = float(np.mean(h_tokens))
     se = float(np.std(h_tokens, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "NER token-classification head: per-token softmax over BIO tags"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "NER token-classification head: per-token softmax over BIO tags",
+        }
+    )
 
 
 def cheatsheet():

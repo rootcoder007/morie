@@ -1,6 +1,8 @@
 """Tests for morie.fn.bambn -- burn-in trimming."""
+
 import numpy as np
-from morie.fn.bambn import bayesian_burnin_trim, bambn
+
+from morie.fn.bambn import bambn, bayesian_burnin_trim
 
 
 def test_alias():

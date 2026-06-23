@@ -1,6 +1,7 @@
 """Polynomial-kernel MSM for nonlinear effects."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["polynomial_kernel_msm"]
@@ -36,7 +37,9 @@ def polynomial_kernel_msm(y, A_history, H_history, degree):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Polynomial-kernel MSM for nonlinear effects"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Polynomial-kernel MSM for nonlinear effects"}
+    )
 
 
 def cheatsheet():

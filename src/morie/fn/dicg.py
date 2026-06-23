@@ -1,6 +1,7 @@
 """Deviance information criterion (DIC)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["deviance_information_criterion"]

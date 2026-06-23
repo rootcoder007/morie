@@ -47,4 +47,5 @@ def test_wrong_groups():
 
 def test_cheatsheet():
     from morie.fn.rmstd import cheatsheet
+
     assert "restricted" in cheatsheet().lower()

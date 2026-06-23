@@ -1,6 +1,7 @@
 """Test trcng."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trcng import trcng
 
 

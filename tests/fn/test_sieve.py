@@ -73,4 +73,5 @@ def test_dimension_mismatch():
 
 def test_cheatsheet():
     from morie.fn.sieve import cheatsheet
+
     assert "sieve" in cheatsheet().lower()

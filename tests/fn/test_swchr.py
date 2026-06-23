@@ -1,8 +1,9 @@
 """Tests for morie.fn.swchr -- Solar System body summary."""
 
 import pandas as pd
-from morie.fn.swchr import solar_body_summary, swchr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.swchr import solar_body_summary, swchr
 
 
 class TestSwchr:
@@ -10,11 +11,13 @@ class TestSwchr:
         assert swchr is solar_body_summary
 
     def test_basic(self):
-        df = pd.DataFrame({
-            "name": ["Mercury", "Venus", "Earth", "Mars", "Jupiter"],
-            "mass_earths": [0.055, 0.815, 1.0, 0.107, 317.8],
-            "radius_km": [2440, 6052, 6371, 3390, 69911],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["Mercury", "Venus", "Earth", "Mars", "Jupiter"],
+                "mass_earths": [0.055, 0.815, 1.0, 0.107, 317.8],
+                "radius_km": [2440, 6052, 6371, 3390, 69911],
+            }
+        )
         result = solar_body_summary(df)
         assert isinstance(result, DescriptiveResult)
         assert result.value["count"] == 5

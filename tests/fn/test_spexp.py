@@ -1,6 +1,7 @@
 """Tests for spexp.schabenberger_exponential_variogram."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spexp import schabenberger_exponential_variogram
 
 
@@ -12,7 +13,7 @@ def test_spexp_basic():
     range = np.random.default_rng(42).normal(0, 1, 100)
     result = schabenberger_exponential_variogram(h, nugget, sill, range)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spexp_edge():

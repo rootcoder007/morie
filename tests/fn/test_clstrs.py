@@ -1,6 +1,7 @@
 """Tests for clstrs.cluster_design."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clstrs import cluster_design
 
 
@@ -10,7 +11,7 @@ def test_clstrs_basic():
     cluster = np.random.default_rng(42).normal(0, 1, 100)
     result = cluster_design(y, cluster)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_clstrs_edge():

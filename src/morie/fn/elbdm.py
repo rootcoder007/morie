@@ -48,4 +48,4 @@ elbdm = elbow_mds_dim
 
 
 def cheatsheet() -> str:
-    return 'elbow_mds_dim({}) -> Elbow method for MDS dimensionality.'
+    return "elbow_mds_dim({}) -> Elbow method for MDS dimensionality."

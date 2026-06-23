@@ -1,11 +1,9 @@
 """Tests for morie.fn.cfa4 -- 4-factor CFA."""
 
-import numpy as np
 from morie.fn.cfa4 import cfa_4factor
 
 
 class TestCfa4Factor:
-
     def test_returns_fit_indices(self, mapq_df):
         result = cfa_4factor(mapq_df)
         for key in ("cfi", "tli", "rmsea", "srmr", "chi2", "df", "p_value"):

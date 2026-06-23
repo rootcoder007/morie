@@ -107,15 +107,15 @@ def advi_meanfield(
         elbo_history.append(float(elbo_est))
 
         m_mu = beta1 * m_mu + (1 - beta1) * g_mu
-        v_mu = beta2 * v_mu + (1 - beta2) * g_mu ** 2
-        m_hat_mu = m_mu / (1 - beta1 ** t)
-        v_hat_mu = v_mu / (1 - beta2 ** t)
+        v_mu = beta2 * v_mu + (1 - beta2) * g_mu**2
+        m_hat_mu = m_mu / (1 - beta1**t)
+        v_hat_mu = v_mu / (1 - beta2**t)
         mu += learning_rate * m_hat_mu / (np.sqrt(v_hat_mu) + eps_adam)
 
         m_om = beta1 * m_om + (1 - beta1) * g_om
-        v_om = beta2 * v_om + (1 - beta2) * g_om ** 2
-        m_hat_om = m_om / (1 - beta1 ** t)
-        v_hat_om = v_om / (1 - beta2 ** t)
+        v_om = beta2 * v_om + (1 - beta2) * g_om**2
+        m_hat_om = m_om / (1 - beta1**t)
+        v_hat_om = v_om / (1 - beta2**t)
         omega += learning_rate * m_hat_om / (np.sqrt(v_hat_om) + eps_adam)
 
     return {

@@ -1,6 +1,6 @@
 """Tests for morie.fn.vtbal — Viterbi alignment."""
+
 import numpy as np
-import pytest
 
 from morie.fn.vtbal import viterbi_align, vtbal
 

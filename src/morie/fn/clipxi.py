@@ -1,6 +1,7 @@
 """CLIP image encoder (ViT or ResNet variant)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["clip_image_encoder"]
@@ -32,7 +33,9 @@ def clip_image_encoder(image, backbone):
     n = len(image)
     result = float(np.mean(image))
     se = float(np.std(image, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "CLIP image encoder (ViT or ResNet variant)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "CLIP image encoder (ViT or ResNet variant)"}
+    )
 
 
 def cheatsheet():

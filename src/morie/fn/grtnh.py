@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hyperbolic tangent activation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_tanh_activation"]

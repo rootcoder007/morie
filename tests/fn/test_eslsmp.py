@@ -1,6 +1,7 @@
 """Tests for eslsmp.esl_subsampling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslsmp import esl_subsampling
 
 
@@ -9,7 +10,7 @@ def test_eslsmp_basic():
     eta = np.random.default_rng(42).normal(0, 1, 100)
     result = esl_subsampling(eta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslsmp_edge():

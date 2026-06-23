@@ -1,6 +1,7 @@
 """Tests for hrzaml.horowitz_additive_nonid_link."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzaml import horowitz_additive_nonid_link
 
 
@@ -9,10 +10,10 @@ def test_hrzaml_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     y = np.random.default_rng(43).normal(0, 1, 100)
     bandwidth = 0.3
-    link = 'identity'
+    link = "identity"
     result = horowitz_additive_nonid_link(x, y, bandwidth, link)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzaml_edge():
@@ -20,6 +21,6 @@ def test_hrzaml_edge():
     x = np.random.default_rng(42).normal(0, 1, 100)
     y = np.random.default_rng(43).normal(0, 1, 100)
     bandwidth = 0.3
-    link = 'identity'
+    link = "identity"
     result = horowitz_additive_nonid_link(x, y, bandwidth, link)
     assert isinstance(result, dict)

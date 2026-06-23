@@ -1,6 +1,7 @@
 """Tests for klmsmh.kalman_smoother."""
+
 import numpy as np
-import pytest
+
 from morie.fn.klmsmh import kalman_smoother
 
 
@@ -11,7 +12,7 @@ def test_klmsmh_basic():
     filtered = np.random.default_rng(42).normal(0, 1, 100)
     result = kalman_smoother(y, model, filtered)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_klmsmh_edge():

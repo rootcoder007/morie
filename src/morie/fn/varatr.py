@@ -1,6 +1,7 @@
 """Value at Risk (VaR) from GARCH."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["value_at_risk"]

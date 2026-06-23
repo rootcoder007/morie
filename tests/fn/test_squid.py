@@ -1,9 +1,9 @@
 """Tests for morie.fn.squid -- threat scoring."""
 
-import numpy as np
 import pandas as pd
-from morie.fn.squid import threat_score, squid
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.squid import squid, threat_score
 
 
 class TestSquid:

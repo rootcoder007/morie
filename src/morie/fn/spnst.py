@@ -1,5 +1,7 @@
 """Parametric non-stationary covariance model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_nonstationary_cov"]
@@ -31,7 +33,9 @@ def schabenberger_nonstationary_cov(coords, z):
     n = int(z) if z.ndim == 0 else len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Parametric non-stationary covariance model"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Parametric non-stationary covariance model"}
+    )
 
 
 def cheatsheet():

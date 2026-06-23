@@ -1,10 +1,11 @@
 """Tests for morie.fn.rpl — regional placement analysis."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.rpl import rplace as rpl
+import pytest
+
 from morie.fn._containers import RplRes
+from morie.fn.rpl import rplace as rpl
 
 
 @pytest.fixture()
@@ -14,13 +15,15 @@ def otis_df():
     n = 200
     regions = ["Central", "Eastern", "Northern", "Toronto", "Western"]
     ages = ["18 to 24", "25 to 49", "50+"]
-    return pd.DataFrame({
-        "unique_individual_id": [f"P{i:04d}" for i in range(n)],
-        "age_category": rng.choice(ages, n),
-        "region_at_time_of_placement": rng.choice(regions, n),
-        "end_fiscal_year": rng.choice([2020, 2021], n),
-        "gender": rng.choice(["Male", "Female"], n),
-    })
+    return pd.DataFrame(
+        {
+            "unique_individual_id": [f"P{i:04d}" for i in range(n)],
+            "age_category": rng.choice(ages, n),
+            "region_at_time_of_placement": rng.choice(regions, n),
+            "end_fiscal_year": rng.choice([2020, 2021], n),
+            "gender": rng.choice(["Male", "Female"], n),
+        }
+    )
 
 
 class TestRplace:

@@ -8,7 +8,9 @@ import pandas as pd
 from scipy import stats
 
 
-def otis_sensitivity(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", gamma_range: list[float] | None = None) -> dict:
+def otis_sensitivity(
+    df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", gamma_range: list[float] | None = None
+) -> dict:
     """Rosenbaum sensitivity analysis for hidden bias.
 
     Computes Wilcoxon signed-rank bounds under varying levels of

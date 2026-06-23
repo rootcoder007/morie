@@ -1,6 +1,7 @@
 """Tests for hmfsf.geron_few_shot."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmfsf import geron_few_shot
 
 
@@ -12,7 +13,7 @@ def test_hmfsf_basic():
     k = 5
     result = geron_few_shot(model, examples, query, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmfsf_edge():

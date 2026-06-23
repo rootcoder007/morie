@@ -1,7 +1,10 @@
 """Tests for statistical_methods_for_spatial_data_analysis1u416.statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_416."""
+
 import numpy as np
-import pytest
-from morie.fn.statistical_methods_for_spatial_data_analysis1u416 import statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_416
+
+from morie.fn.statistical_methods_for_spatial_data_analysis1u416 import (
+    statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_416,
+)
 
 
 def test_statistical_methods_for_spatial_data_analysis1u416_basic():
@@ -9,7 +12,7 @@ def test_statistical_methods_for_spatial_data_analysis1u416_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_416(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_statistical_methods_for_spatial_data_analysis1u416_edge():

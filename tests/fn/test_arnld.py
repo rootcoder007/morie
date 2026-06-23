@@ -1,8 +1,9 @@
 """Tests for morie.fn.arnld -- Arnoldi iteration."""
 
 import numpy as np
-from morie.fn.arnld import arnoldi, arnld
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.arnld import arnld, arnoldi
 
 
 class TestArnld:

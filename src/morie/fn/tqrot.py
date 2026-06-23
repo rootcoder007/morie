@@ -1,5 +1,7 @@
 """Random orthogonal rotation matrix generator (QR of a Gaussian matrix)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_rotation_matrix"]
@@ -31,7 +33,14 @@ def turboquant_rotation_matrix(d, seed):
     n = len(d)
     result = float(np.mean(d))
     se = float(np.std(d, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Random orthogonal rotation matrix generator (QR of a Gaussian matrix)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Random orthogonal rotation matrix generator (QR of a Gaussian matrix)",
+        }
+    )
 
 
 def cheatsheet():

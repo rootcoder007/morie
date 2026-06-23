@@ -1,6 +1,7 @@
 """Tests for eslkrn.esl_kernel_density."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslkrn import esl_kernel_density
 
 
@@ -11,7 +12,7 @@ def test_eslkrn_basic():
     lambda_ = np.random.default_rng(42).normal(0, 1, 100)
     result = esl_kernel_density(x, data, lambda_)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslkrn_edge():

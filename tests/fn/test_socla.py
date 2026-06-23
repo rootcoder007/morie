@@ -1,6 +1,7 @@
 """Test socla."""
+
 import numpy as np
-import pytest
+
 from morie.fn.socla import socla
 
 

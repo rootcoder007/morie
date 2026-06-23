@@ -1,5 +1,7 @@
 """Tests for cmorw.py - Complex Morlet wavelet."""
+
 import numpy as np
+
 from morie.fn.cmorw import cmor_wavelet, cmorw
 
 

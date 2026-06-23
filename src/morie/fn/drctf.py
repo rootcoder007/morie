@@ -1,6 +1,7 @@
 """DR-DiD with continuous treatment intensity."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dr_continuous_treatment"]
@@ -34,7 +35,9 @@ def dr_continuous_treatment(y, D_dose, X):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DR-DiD with continuous treatment intensity"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DR-DiD with continuous treatment intensity"}
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,7 @@
 """Tests for morie.fn.svdrc."""
 
 import numpy as np
-import pytest
+
 from morie.fn.svdrc import svdrc
 
 

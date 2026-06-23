@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['psdwl']
+__all__ = ["psdwl"]
 
 _QUOTE = "Out of chaos, comes order. -- Friedrich Nietzsche"
 
@@ -50,8 +50,7 @@ def psdwl(
 
     x = np.asarray(x, dtype=float).ravel()
     seg = min(nperseg, len(x))
-    f, psd = welch(x, fs=fs, nperseg=seg, noverlap=noverlap,
-                   window=window, nfft=nfft)
+    f, psd = welch(x, fs=fs, nperseg=seg, noverlap=noverlap, window=window, nfft=nfft)
     total_power = float(np.trapezoid(psd, f))
 
     return DescriptiveResult(

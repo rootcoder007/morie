@@ -1,6 +1,7 @@
 """Tests for plkt.plackett_copula."""
+
 import numpy as np
-import pytest
+
 from morie.fn.plkt import plackett_copula
 
 
@@ -12,7 +13,7 @@ def test_plkt_basic():
     theta = 0.0
     result = plackett_copula(y, u, v, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_plkt_edge():

@@ -1,6 +1,7 @@
 """Tests for geglu.geglu_activation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.geglu import geglu_activation
 
 
@@ -12,7 +13,7 @@ def test_geglu_basic():
     V = np.random.default_rng(42).normal(0, 1, 100)
     result = geglu_activation(y, x, W, V)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_geglu_edge():

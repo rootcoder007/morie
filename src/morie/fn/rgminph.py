@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Minimum-phase correspondent of a signal."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_min_phase"]
@@ -30,7 +32,9 @@ def rangayyan_min_phase(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Minimum-phase correspondent of a signal"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Minimum-phase correspondent of a signal"}
+    )
 
 
 def cheatsheet():

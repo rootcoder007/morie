@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """T5 span-corruption objective: mask spans and predict them as a single target sequence."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_t5_span_corruption"]
@@ -34,7 +36,14 @@ def kamath_t5_span_corruption(tokens, mean_span_len, corruption_rate):
     n = len(tokens)
     result = float(np.mean(tokens))
     se = float(np.std(tokens, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "T5 span-corruption objective: mask spans and predict them as a single target sequence"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "T5 span-corruption objective: mask spans and predict them as a single target sequence",
+        }
+    )
 
 
 def cheatsheet():

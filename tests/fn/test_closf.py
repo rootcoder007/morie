@@ -1,6 +1,7 @@
 """Test closf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.closf import closf
 
 

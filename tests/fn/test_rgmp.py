@@ -1,6 +1,7 @@
 """Tests for rgmp.rangayyan_matching_pursuit."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgmp import rangayyan_matching_pursuit
 
 
@@ -12,7 +13,7 @@ def test_rgmp_basic():
     tol = 1e-6
     result = rangayyan_matching_pursuit(x, dictionary, max_iter, tol)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgmp_edge():

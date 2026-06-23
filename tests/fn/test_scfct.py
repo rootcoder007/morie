@@ -1,7 +1,7 @@
 """Tests for morie.fn.scfct — factor scores."""
 
 import numpy as np
-import pandas as pd
+
 from morie.fn.scfct import score_factor
 
 

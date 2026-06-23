@@ -1,6 +1,7 @@
 """Tests for ndcg.ndcg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ndcg import ndcg
 
 
@@ -11,7 +12,7 @@ def test_ndcg_basic():
     k = 5
     result = ndcg(pred_rank, relevant, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ndcg_edge():

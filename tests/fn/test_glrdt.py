@@ -1,7 +1,9 @@
 """Test glr_detector (glrdt)."""
+
 import numpy as np
-from morie.fn.glrdt import glr_detector, glrdt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.glrdt import glr_detector, glrdt
 
 
 class TestGlrDetector:

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Causal 1D convolution: output at time t only depends on t'<=t."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_causal_1d_conv"]
@@ -32,7 +34,14 @@ def geron_causal_1d_conv(x, kernel):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Causal 1D convolution: output at time t only depends on t'<=t"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Causal 1D convolution: output at time t only depends on t'<=t",
+        }
+    )
 
 
 def cheatsheet():

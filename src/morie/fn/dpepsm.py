@@ -1,6 +1,7 @@
 """Pure ε-differential privacy definition."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["epsilon_dp"]
@@ -34,7 +35,9 @@ def epsilon_dp(mech, D, D_prime):
     n = len(mech)
     result = float(np.mean(mech))
     se = float(np.std(mech, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pure ε-differential privacy definition"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Pure ε-differential privacy definition"}
+    )
 
 
 def cheatsheet():

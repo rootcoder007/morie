@@ -1,6 +1,7 @@
 """Test cstpp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cstpp import cstpp
 
 

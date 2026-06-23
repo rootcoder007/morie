@@ -1,6 +1,7 @@
 """Tests for morie.fn.nnd -- Number Needed to Diagnose."""
 
 import pytest
+
 from morie.fn.nnd import number_needed_to_diagnose
 
 

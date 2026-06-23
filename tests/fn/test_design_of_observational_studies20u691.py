@@ -1,6 +1,7 @@
 """Tests for design_of_observational_studies20u691.design_of_observational_studies_chapter_20_unnumbered_691."""
+
 import numpy as np
-import pytest
+
 from morie.fn.design_of_observational_studies20u691 import design_of_observational_studies_chapter_20_unnumbered_691
 
 
@@ -9,7 +10,7 @@ def test_design_of_observational_studies20u691_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = design_of_observational_studies_chapter_20_unnumbered_691(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_design_of_observational_studies20u691_edge():

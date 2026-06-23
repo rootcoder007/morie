@@ -1,10 +1,11 @@
 """Tests for morie.fn.prgwt — program waitlist IV."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.prgwt import program_waitlist
+import pytest
+
 from morie.fn._containers import ESRes
+from morie.fn.prgwt import program_waitlist
 
 
 class TestProgramWaitlist:

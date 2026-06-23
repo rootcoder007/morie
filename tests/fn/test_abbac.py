@@ -1,6 +1,8 @@
 """Test abbac."""
+
 import numpy as np
 import pytest
+
 from morie.fn.abbac import abbac
 
 

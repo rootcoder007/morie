@@ -1,6 +1,9 @@
 """Tests for breusch_pagan."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.brpgn import breusch_pagan
+
 
 class TestBP:
     def test_homoscedastic(self):

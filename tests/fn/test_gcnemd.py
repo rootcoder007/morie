@@ -1,6 +1,7 @@
 """Tests for gcnemd.gcn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcnemd import gcn
 
 
@@ -11,7 +12,7 @@ def test_gcnemd_basic():
     W = np.random.default_rng(42).normal(0, 1, 100)
     result = gcn(G, X, W)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gcnemd_edge():

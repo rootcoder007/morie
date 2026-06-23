@@ -1,6 +1,7 @@
 """Tests for rgvmd.rangayyan_vmd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgvmd import rangayyan_vmd
 
 
@@ -14,7 +15,7 @@ def test_rgvmd_basic():
     tol = 1e-6
     result = rangayyan_vmd(x, K, alpha, tau, init, tol)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgvmd_edge():

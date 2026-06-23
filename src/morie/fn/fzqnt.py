@@ -8,9 +8,11 @@ the KDFE.  Its asymptotic distribution is
 
 with tau^2 = p(1-p) (the binomial variance of the empirical CDF at Q).
 """
+
 import numpy as np
 from scipy import stats as _sps
 from scipy.optimize import brentq as _brentq
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_kernel_quantile_asymptotic"]
@@ -50,8 +52,7 @@ def fauzi_kernel_quantile_asymptotic(x, p=0.5, h=None):
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 5:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                    "method": "fzqnt -- too few obs"})
+        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "fzqnt -- too few obs"})
     if not 0.0 < p < 1.0:
         raise ValueError("p must be in (0,1)")
     if h is None:
@@ -70,15 +71,17 @@ def fauzi_kernel_quantile_asymptotic(x, p=0.5, h=None):
     else:
         se = float(np.sqrt(p * (1.0 - p) / n) / f_q)
 
-    return RichResult(payload={
-        "estimate": float(q_hat),
-        "se": se,
-        "p": p,
-        "h": h,
-        "density_at_Q": f_q,
-        "n": n,
-        "method": "Fauzi kernel quantile (Ch 3) asymptotic N(0, p(1-p)/f(Q)^2)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(q_hat),
+            "se": se,
+            "p": p,
+            "h": h,
+            "density_at_Q": f_q,
+            "n": n,
+            "method": "Fauzi kernel quantile (Ch 3) asymptotic N(0, p(1-p)/f(Q)^2)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """LINE embeddings (1st + 2nd order)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["line"]

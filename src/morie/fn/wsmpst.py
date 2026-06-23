@@ -1,6 +1,7 @@
 """Plug-in estimator theta_hat = T(F_n)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["wasserman_plug_in_estimator"]
@@ -36,7 +37,16 @@ def wasserman_plug_in_estimator(data, T):
     se = 1.2533 * np.std(data, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Plug-in estimator theta_hat = T(F_n)"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Plug-in estimator theta_hat = T(F_n)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hugging Face Pipelines: high-level inference wrapper."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_hf_pipelines"]
@@ -34,7 +36,9 @@ def geron_hf_pipelines(task, inputs, model):
     n = len(task)
     result = float(np.mean(task))
     se = float(np.std(task, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hugging Face Pipelines: high-level inference wrapper"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Hugging Face Pipelines: high-level inference wrapper"}
+    )
 
 
 def cheatsheet():

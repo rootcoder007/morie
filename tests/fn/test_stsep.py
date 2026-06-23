@@ -7,7 +7,6 @@ from morie.fn.stsep import stsep
 
 
 class TestStsep:
-
     def test_output_shape(self):
         coords = np.array([[0, 0], [1, 0], [0, 1]], dtype=float)
         times = np.array([0.0, 1.0, 2.0])

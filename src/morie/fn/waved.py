@@ -79,4 +79,4 @@ short = wave_1d
 
 
 def cheatsheet() -> str:
-    return 'wave_1d({}) -> 1D wave equation solver.'
+    return "wave_1d({}) -> 1D wave equation solver."

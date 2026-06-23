@@ -1,6 +1,8 @@
 """Tests for cdpost."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cdpost import cdpost
 
 
@@ -28,4 +30,5 @@ def test_cdpost_no_data():
 
 def test_cdpost_alias():
     from morie.fn.cdpost import cdpost
+
     assert cdpost is cdpost

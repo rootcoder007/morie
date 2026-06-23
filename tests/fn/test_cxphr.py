@@ -1,8 +1,9 @@
 """Tests for cxphr: Cox proportional hazards via partial likelihood."""
+
 import numpy as np
 import pytest
-from morie.fn.cxphr import cxphr
 
+from morie.fn.cxphr import cxphr
 
 RNG = np.random.default_rng(42)
 

@@ -1,8 +1,9 @@
 """Tests for morie.fn.parmat -- partial correlation matrix."""
 
 import numpy as np
-from morie.fn.parmat import partial_corr_matrix, parmat
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.parmat import parmat, partial_corr_matrix
 
 
 class TestParmat:

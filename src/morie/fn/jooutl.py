@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rolling-IQR outlier detection for time series."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_ts_outlier_detection"]
@@ -32,7 +34,9 @@ def joseph_ts_outlier_detection(y, W):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rolling-IQR outlier detection for time series"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Rolling-IQR outlier detection for time series"}
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,8 @@
 """Tests for morie.fn.ufout -- unfolding outliers."""
 
 import numpy as np
-from morie.fn.ufout import unfolding_outliers, ufout
+
+from morie.fn.ufout import ufout, unfolding_outliers
 
 
 def test_ufout_no_outliers():

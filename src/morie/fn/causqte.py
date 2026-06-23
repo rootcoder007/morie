@@ -1,6 +1,7 @@
 """Quantile treatment effect via Firpo IPW."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_quantile_treatment_effect"]
@@ -36,7 +37,9 @@ def causal_quantile_treatment_effect(y, T, ps, tau):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Quantile treatment effect via Firpo IPW"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Quantile treatment effect via Firpo IPW"}
+    )
 
 
 def cheatsheet():

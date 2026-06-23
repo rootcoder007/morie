@@ -1,6 +1,7 @@
 """Manski no-assumption bounds on the ATE."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["manski_no_assumption_bounds"]
@@ -36,7 +37,9 @@ def manski_no_assumption_bounds(y, D, y_min, y_max):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Manski no-assumption bounds on the ATE"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Manski no-assumption bounds on the ATE"}
+    )
 
 
 def cheatsheet():

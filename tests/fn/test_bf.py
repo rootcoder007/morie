@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.bf import brown_forsythe, bf
+
 from morie.fn._containers import TestResult
+from morie.fn.bf import bf, brown_forsythe
 
 
 class TestBF:

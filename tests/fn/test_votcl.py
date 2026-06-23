@@ -1,7 +1,9 @@
 """Test voting_classify (votcl)."""
+
 import numpy as np
-from morie.fn.votcl import voting_classify, votcl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.votcl import votcl, voting_classify
 
 
 class TestVotcl:

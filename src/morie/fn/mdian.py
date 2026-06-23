@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mediation analysis: decompose total effect into direct and indirect."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["mediation_analysis"]
@@ -36,7 +38,14 @@ def mediation_analysis(Y, T, M, X):
     n = int(Y) if Y.ndim == 0 else len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mediation analysis: decompose total effect into direct and indirect"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mediation analysis: decompose total effect into direct and indirect",
+        }
+    )
 
 
 def cheatsheet():

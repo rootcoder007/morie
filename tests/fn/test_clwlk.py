@@ -1,6 +1,7 @@
 """Test clwlk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clwlk import clwlk
 
 

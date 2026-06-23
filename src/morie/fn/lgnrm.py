@@ -101,7 +101,7 @@ def lgnrm(
     def _neg_loglik(params):
         mu = params[0]
         if has_covariates:
-            beta = params[1: 1 + X.shape[1] - (0 if has_covariates else 1)]
+            beta = params[1 : 1 + X.shape[1] - (0 if has_covariates else 1)]
             log_sigma = params[-1]
         else:
             beta = np.array([])
@@ -152,7 +152,9 @@ def lgnrm(
             return -ll
 
         res = _opt.minimize(
-            _neg_loglik_full, x0, method="L-BFGS-B",
+            _neg_loglik_full,
+            x0,
+            method="L-BFGS-B",
             options={"maxiter": max_iter, "ftol": tol, "gtol": tol},
         )
         params_hat = res.x
@@ -164,6 +166,7 @@ def lgnrm(
         # Hessian via finite differences for SE
         try:
             from scipy.optimize import approx_fprime
+
             eps = 1e-5
             hess = np.zeros((p_full, p_full))
             g0 = approx_fprime(params_hat, _neg_loglik_full, eps)
@@ -184,7 +187,9 @@ def lgnrm(
     else:
         x0 = np.array([np.mean(log_t), np.log(np.std(log_t) + 1e-6)])
         res = _opt.minimize(
-            _neg_loglik, x0, method="L-BFGS-B",
+            _neg_loglik,
+            x0,
+            method="L-BFGS-B",
             options={"maxiter": max_iter, "ftol": tol, "gtol": tol},
         )
         mu_hat = res.x[0]

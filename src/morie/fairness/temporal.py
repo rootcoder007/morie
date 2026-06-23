@@ -19,6 +19,7 @@ first-class output.
 Builds on the Phase A metrics in :mod:`morie.fairness.metrics`;
 methods reimplemented from the paper, no code copied.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -131,20 +132,22 @@ def predpol_temporal_audit(
             if len(cell_groups) < 2 or privileged not in cell_groups:
                 skipped += 1
                 continue
-            di = float(fairness_disparate_impact(
-                cy, cg, privileged=privileged, favorable=favorable))
-            pg = float(fairness_demographic_parity(
-                cy, cg, privileged=privileged, favorable=favorable))
-            rate_vec = [
-                float(np.mean(cy[cg == g] == favorable)) for g in cell_groups
-            ]
+            di = float(fairness_disparate_impact(cy, cg, privileged=privileged, favorable=favorable))
+            pg = float(fairness_demographic_parity(cy, cg, privileged=privileged, favorable=favorable))
+            rate_vec = [float(np.mean(cy[cg == g] == favorable)) for g in cell_groups]
             gini = float(fairness_gini(rate_vec))
-            bas = float(fairness_bias_amplification(
-                cy, cg, privileged=privileged, favorable=favorable))
-            cells.append({
-                "city": c, "period": p, "n": int(mask.sum()),
-                "dir": di, "parity_gap": pg, "gini": gini, "bas": bas,
-            })
+            bas = float(fairness_bias_amplification(cy, cg, privileged=privileged, favorable=favorable))
+            cells.append(
+                {
+                    "city": c,
+                    "period": p,
+                    "n": int(mask.sum()),
+                    "dir": di,
+                    "parity_gap": pg,
+                    "gini": gini,
+                    "bas": bas,
+                }
+            )
 
     if skipped:
         warnings.append(
@@ -152,13 +155,10 @@ def predpol_temporal_audit(
             f"two groups present, or the privileged group absent."
         )
     if not cells:
-        raise ValueError(
-            "no (city, period) cell had enough groups to audit"
-        )
+        raise ValueError("no (city, period) cell had enough groups to audit")
 
     per_city: dict[Any, dict] = {}
-    for c in _ordered_unique(np.array([x["city"] for x in cells],
-                                      dtype=object)):
+    for c in _ordered_unique(np.array([x["city"] for x in cells], dtype=object)):
         cc = [x for x in cells if x["city"] == c]
         dirs = [x["dir"] for x in cc if np.isfinite(x["dir"])]
         per_city[c] = {
@@ -173,42 +173,56 @@ def predpol_temporal_audit(
             "periods_dir_gt1": sum(1 for d in dirs if d > 1.0),
         }
 
-    ranges = [v["dir_range"] for v in per_city.values()
-              if np.isfinite(v["dir_range"])]
+    ranges = [v["dir_range"] for v in per_city.values() if np.isfinite(v["dir_range"])]
     worst_range = max(ranges) if ranges else float("nan")
-    mean_dirs = [v["mean_dir"] for v in per_city.values()
-                 if np.isfinite(v["mean_dir"])]
-    cross_city_spread = (max(mean_dirs) - min(mean_dirs)
-                         if len(mean_dirs) >= 2 else 0.0)
+    mean_dirs = [v["mean_dir"] for v in per_city.values() if np.isfinite(v["mean_dir"])]
+    cross_city_spread = max(mean_dirs) - min(mean_dirs) if len(mean_dirs) >= 2 else 0.0
 
     cell_rows = [
-        [str(x["city"]), str(x["period"]), x["n"],
-         round(x["dir"], 4), round(x["parity_gap"], 4),
-         round(x["gini"], 4), round(x["bas"], 4)]
+        [
+            str(x["city"]),
+            str(x["period"]),
+            x["n"],
+            round(x["dir"], 4),
+            round(x["parity_gap"], 4),
+            round(x["gini"], 4),
+            round(x["bas"], 4),
+        ]
         for x in cells
     ]
     city_rows = [
-        [str(c), v["n_periods"], round(v["mean_dir"], 4),
-         round(v["mean_parity_gap"], 4), round(v["mean_gini"], 4),
-         round(v["mean_bas"], 4), round(v["dir_range"], 4),
-         v["periods_dir_gt1"]]
+        [
+            str(c),
+            v["n_periods"],
+            round(v["mean_dir"], 4),
+            round(v["mean_parity_gap"], 4),
+            round(v["mean_gini"], 4),
+            round(v["mean_bas"], 4),
+            round(v["dir_range"], 4),
+            v["periods_dir_gt1"],
+        ]
         for c, v in per_city.items()
     ]
 
     if np.isfinite(worst_range) and worst_range >= 0.5:
-        stab = (f"Bias is temporally unstable: the Disparate Impact Ratio "
-                f"swings by up to {worst_range:.3f} across periods within "
-                f"a single city. A one-off audit at deployment time would "
-                f"not have caught this — the metric must be recomputed "
-                f"every period.")
+        stab = (
+            f"Bias is temporally unstable: the Disparate Impact Ratio "
+            f"swings by up to {worst_range:.3f} across periods within "
+            f"a single city. A one-off audit at deployment time would "
+            f"not have caught this — the metric must be recomputed "
+            f"every period."
+        )
     else:
-        stab = ("The Disparate Impact Ratio is reasonably stable across "
-                "periods within each city over the audited window.")
+        stab = (
+            "The Disparate Impact Ratio is reasonably stable across periods within each city over the audited window."
+        )
     if len(per_city) >= 2 and cross_city_spread >= 0.3:
-        div = (f" Bias also diverges across cities: mean annual DIR spans "
-               f"{cross_city_spread:.3f} between cities — the direction and "
-               f"size of bias is city-specific, not a fixed property of "
-               f"the system.")
+        div = (
+            f" Bias also diverges across cities: mean annual DIR spans "
+            f"{cross_city_spread:.3f} between cities — the direction and "
+            f"size of bias is city-specific, not a fixed property of "
+            f"the system."
+        )
     else:
         div = ""
 
@@ -221,18 +235,20 @@ def predpol_temporal_audit(
             ("Cross-city mean-DIR spread", cross_city_spread),
             ("Reference group", privileged),
         ],
-        sections=[{
-            "title": "Per-city aggregates:",
-            "headers": ["city", "periods", "mean DIR", "mean PG",
-                        "mean Gini", "mean BAS", "DIR range", "M>1"],
-            "table": city_rows,
-        }],
-        tables=[{
-            "title": "Per-(city, period) metrics:",
-            "headers": ["city", "period", "n", "DIR", "parity gap",
-                        "Gini", "BAS"],
-            "rows": cell_rows,
-        }],
+        sections=[
+            {
+                "title": "Per-city aggregates:",
+                "headers": ["city", "periods", "mean DIR", "mean PG", "mean Gini", "mean BAS", "DIR range", "M>1"],
+                "table": city_rows,
+            }
+        ],
+        tables=[
+            {
+                "title": "Per-(city, period) metrics:",
+                "headers": ["city", "period", "n", "DIR", "parity gap", "Gini", "BAS"],
+                "rows": cell_rows,
+            }
+        ],
         warnings=warnings,
         interpretation=stab + div,
         payload={

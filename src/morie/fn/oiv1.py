@@ -9,7 +9,15 @@ from numpy.linalg import lstsq
 from scipy import stats
 
 
-def otis_iv_distance(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", instrument: str | None = None, covariates: list[str] | None = None) -> dict:
+def otis_iv_distance(
+    df: pd.DataFrame,
+    cdf=None,
+    *,
+    outcome: str = "Y",
+    treatment: str = "D",
+    instrument: str | None = None,
+    covariates: list[str] | None = None,
+) -> dict:
     """Estimate treatment effect via two-stage least squares (2SLS).
 
     If no instrument is specified, uses ``sentence_days`` as default

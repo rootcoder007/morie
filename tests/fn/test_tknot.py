@@ -16,7 +16,7 @@ class TestTorusKnot:
 
     def test_on_torus(self):
         r = torus_knot(p=2, q=3, R=3, r=1, n_points=50)
-        rho = np.sqrt(r.extra["x"]**2 + r.extra["y"]**2)
+        rho = np.sqrt(r.extra["x"] ** 2 + r.extra["y"] ** 2)
         assert np.all(rho >= 2) and np.all(rho <= 4)
 
     def test_invalid(self):

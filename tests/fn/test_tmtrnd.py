@@ -1,6 +1,8 @@
 """Tests for tmtrnd."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tmtrnd import tmtrnd
 
 
@@ -28,4 +30,5 @@ def test_tmtrnd_no_data():
 
 def test_tmtrnd_alias():
     from morie.fn.tmtrnd import tmtrnd
+
     assert tmtrnd is tmtrnd

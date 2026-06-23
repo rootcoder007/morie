@@ -1,6 +1,7 @@
 """Posterior expected density given hyperparameter theta for a Polya-tree mixture with elicited mean density g_theta and rate sequence a_m.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_polya_tree_mixture_post_density"]
@@ -40,7 +41,14 @@ def ghosal_ch3_polya_tree_mixture_post_density(g_theta, a_j, N, theta, x, n):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Posterior expected density given hyperparameter theta for a Polya-tree mixture with elicited mean density g_theta and rate sequence a_m."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Posterior expected density given hyperparameter theta for a Polya-tree mixture with elicited mean density g_theta and rate sequence a_m.",
+        }
+    )
 
 
 def cheatsheet():

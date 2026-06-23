@@ -88,4 +88,4 @@ dplapl = dp_laplace
 
 
 def cheatsheet() -> str:
-    return 'dp_laplace({}) -> Differential privacy (Laplace mechanism).'
+    return "dp_laplace({}) -> Differential privacy (Laplace mechanism)."

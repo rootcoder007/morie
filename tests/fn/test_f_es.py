@@ -1,9 +1,11 @@
 """Tests for morie.fn.f_es -- Cohen's f from eta-squared."""
 
 import math
+
 import pytest
-from morie.fn.f_es import cohens_f
+
 from morie.fn._containers import ESRes
+from morie.fn.f_es import cohens_f
 
 
 class TestCohensF:

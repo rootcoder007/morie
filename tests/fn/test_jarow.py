@@ -1,6 +1,7 @@
 """Tests for jarow.jaro_winkler."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jarow import jaro_winkler
 
 
@@ -11,7 +12,7 @@ def test_jarow_basic():
     p = 5
     result = jaro_winkler(s1, s2, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jarow_edge():

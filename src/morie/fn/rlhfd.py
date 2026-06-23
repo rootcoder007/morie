@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """RLHF reward-model score (Ouyang et al. 2022, InstructGPT)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -41,10 +42,8 @@ def rlhf_reward(x, w=None, b: float = 0.0):
     val = float(r[0]) if r.size > 0 else float("nan")
     return RichResult(
         title="RLHF Reward Score (Ouyang 2022)",
-        summary_lines=[("mean_reward", float(np.mean(r))),
-                       ("n", int(r.size))],
-        payload={"value": val, "tensor": r, "w": w, "b": b,
-                 "method": "rlhf-reward-head"},
+        summary_lines=[("mean_reward", float(np.mean(r))), ("n", int(r.size))],
+        payload={"value": val, "tensor": r, "w": w, "b": b, "method": "rlhf-reward-head"},
     )
 
 

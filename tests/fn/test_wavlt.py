@@ -1,5 +1,7 @@
 """Tests for morie.fn.wavlt — wavelet decomposition."""
+
 import numpy as np
+
 from morie.fn.wavlt import wavelet_decompose
 
 
@@ -16,6 +18,6 @@ class TestWavelet:
         detail = res.extra["details"][0]
         recon = np.zeros(16)
         for i in range(8):
-            recon[2*i] = (approx[i] + detail[i]) / np.sqrt(2)
-            recon[2*i+1] = (approx[i] - detail[i]) / np.sqrt(2)
+            recon[2 * i] = (approx[i] + detail[i]) / np.sqrt(2)
+            recon[2 * i + 1] = (approx[i] - detail[i]) / np.sqrt(2)
         np.testing.assert_allclose(recon, y, atol=1e-10)

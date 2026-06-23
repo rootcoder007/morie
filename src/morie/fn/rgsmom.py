@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spectral moments: centroid (mean freq), variance (bandwidth), skewness."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_spectral_moments"]
@@ -32,7 +34,14 @@ def rangayyan_spectral_moments(psd, freqs):
     n = int(psd) if psd.ndim == 0 else len(psd)
     result = float(np.mean(psd))
     se = float(np.std(psd, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spectral moments: centroid (mean freq), variance (bandwidth), skewness"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Spectral moments: centroid (mean freq), variance (bandwidth), skewness",
+        }
+    )
 
 
 def cheatsheet():

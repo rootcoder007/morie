@@ -1,14 +1,15 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dirichlet process posterior update."""
+
 import numpy as np
 from scipy.stats import norm
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_dirichlet_posterior"]
 
 
-def ghosal_dirichlet_posterior(x, alpha=1.0, base_mean=0.0, base_sd=1.0,
-                                grid=None):
+def ghosal_dirichlet_posterior(x, alpha=1.0, base_mean=0.0, base_sd=1.0, grid=None):
     """Dirichlet-process posterior, conjugate update.
 
     Given prior ``G ~ DP(alpha, G0)`` with base measure ``G0 = N(base_mean,
@@ -56,8 +57,7 @@ def ghosal_dirichlet_posterior(x, alpha=1.0, base_mean=0.0, base_sd=1.0,
     n = int(x.size)
     if grid is None:
         if n == 0:
-            grid = np.linspace(base_mean - 3 * base_sd,
-                               base_mean + 3 * base_sd, 51)
+            grid = np.linspace(base_mean - 3 * base_sd, base_mean + 3 * base_sd, 51)
         else:
             lo, hi = float(np.min(x)), float(np.max(x))
             pad = max(1e-6, 0.1 * (hi - lo + 1.0))
@@ -80,15 +80,17 @@ def ghosal_dirichlet_posterior(x, alpha=1.0, base_mean=0.0, base_sd=1.0,
         estimate = (alpha * G0_t0 + emp_t0) / alpha_post
     else:
         estimate = float(norm.cdf(base_mean, loc=base_mean, scale=base_sd))
-    return RichResult(payload={
-        "estimate": float(estimate),
-        "alpha_post": alpha_post,
-        "n": n,
-        "cdf_grid": grid.tolist(),
-        "cdf_post": F_post.tolist(),
-        "cdf_var": var_post.tolist(),
-        "method": "Dirichlet process posterior (conjugate)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "alpha_post": alpha_post,
+            "n": n,
+            "cdf_grid": grid.tolist(),
+            "cdf_post": F_post.tolist(),
+            "cdf_var": var_post.tolist(),
+            "method": "Dirichlet process posterior (conjugate)",
+        }
+    )
 
 
 def cheatsheet():

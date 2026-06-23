@@ -1,6 +1,8 @@
 """Tests for tmfour."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tmfour import tmfour
 
 
@@ -28,4 +30,5 @@ def test_tmfour_no_data():
 
 def test_tmfour_alias():
     from morie.fn.tmfour import tmfour
+
     assert tmfour is tmfour

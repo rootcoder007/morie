@@ -1,11 +1,15 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Studentized residual."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
-def studres(y: Union[Sequence, np.ndarray],
-            yhat: Union[Sequence, np.ndarray],
-            leverage: Union[Sequence, np.ndarray]) -> np.ndarray:
+
+
+def studres(
+    y: Union[Sequence, np.ndarray], yhat: Union[Sequence, np.ndarray], leverage: Union[Sequence, np.ndarray]
+) -> np.ndarray:
     """Internally-studentized residuals.
 
     rᵢ_studentized = (yᵢ − ŷᵢ) / (s × sqrt(1 − hᵢᵢ))
@@ -17,5 +21,5 @@ def studres(y: Union[Sequence, np.ndarray],
     resid = y - yh
     n = y.size
     p_eff = sum(h)  # trace of hat matrix
-    s = float(np.sqrt(np.sum(resid ** 2) / max(n - p_eff, 1)))
+    s = float(np.sqrt(np.sum(resid**2) / max(n - p_eff, 1)))
     return resid / (s * np.sqrt(np.maximum(1 - h, 1e-12)))

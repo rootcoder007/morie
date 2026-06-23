@@ -1,6 +1,8 @@
 """Tests for morie.fn.aucroc — AUC-ROC."""
+
 import numpy as np
 import pytest
+
 from morie.fn.aucroc import auc_roc, aucroc
 
 

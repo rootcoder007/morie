@@ -82,10 +82,10 @@ def pp_test(y, lags: int | None = None) -> TestResult:
             method=f"PP Z_tau (lags={lags})",
             extra={"critical_values": {}, "lags": lags, "lrvar": np.nan},
         )
-    sigma2_ols = float(np.sum(resid ** 2) / df_res)
+    sigma2_ols = float(np.sum(resid**2) / df_res)
 
     # Newey-West long-run variance estimator.
-    lrvar = float(np.mean(resid ** 2))
+    lrvar = float(np.mean(resid**2))
     for k in range(1, lags + 1):
         weight = 1.0 - k / (lags + 1.0)
         acov = float(np.mean(resid[k:] * resid[: n_ols - k]))
@@ -110,9 +110,11 @@ def pp_test(y, lags: int | None = None) -> TestResult:
     # Z_tau correction (Phillips & Perron 1988, eq. 23):
     # Z_tau = sqrt(sigma2_ols/lrvar)*tau - 0.5*(lrvar - sigma2_ols) * ...
     Sxx = float((X[:, 1] @ X[:, 1]) - n_ols * np.mean(X[:, 1]) ** 2)
-    correction = 0.5 * (lrvar - sigma2_ols) * np.sqrt(n_ols) * np.sqrt(Sxx) / (
-        lrvar * np.sqrt(float(np.sum(resid ** 2)))
-    ) if lrvar > 0.0 and np.sum(resid ** 2) > 0.0 else 0.0
+    correction = (
+        0.5 * (lrvar - sigma2_ols) * np.sqrt(n_ols) * np.sqrt(Sxx) / (lrvar * np.sqrt(float(np.sum(resid**2))))
+        if lrvar > 0.0 and np.sum(resid**2) > 0.0
+        else 0.0
+    )
 
     z_tau = float(np.sqrt(sigma2_ols / lrvar)) * tau_ols - correction
 

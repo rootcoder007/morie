@@ -52,14 +52,10 @@ def conjugate_gradient(
         rs_new = r @ r
         rel_res = np.sqrt(rs_new) / bnorm
         if rel_res < tol:
-            return DescriptiveResult(
-                name="CG", value=float(rel_res), extra={"x": x, "iterations": it}
-            )
+            return DescriptiveResult(name="CG", value=float(rel_res), extra={"x": x, "iterations": it})
         p = r + (rs_new / (rs_old + 1e-30)) * p
         rs_old = rs_new
-    return DescriptiveResult(
-        name="CG", value=float(np.linalg.norm(r) / bnorm), extra={"x": x, "iterations": maxiter}
-    )
+    return DescriptiveResult(name="CG", value=float(np.linalg.norm(r) / bnorm), extra={"x": x, "iterations": maxiter})
 
 
 cgsol = conjugate_gradient

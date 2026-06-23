@@ -1,6 +1,7 @@
 """Test afwndb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.afwndb import afwndb
 
 

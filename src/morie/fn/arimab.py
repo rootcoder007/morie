@@ -1,6 +1,7 @@
 """ARIMA(p,d,q) Box-Jenkins fit."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["arima_box_jenkins"]

@@ -1,6 +1,7 @@
 """Adaptive thresholds for QRS detection in the Pan-Tompkins algorithm.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_pan_tompkins_thresholds"]
@@ -32,7 +33,14 @@ def rangayyan_ch4_pan_tompkins_thresholds(NPKI, SPKI):
     n = len(NPKI)
     result = float(np.mean(NPKI))
     se = float(np.std(NPKI, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Adaptive thresholds for QRS detection in the Pan-Tompkins algorithm."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Adaptive thresholds for QRS detection in the Pan-Tompkins algorithm.",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """REOS rapid-elimination of swill."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["reos_filter"]

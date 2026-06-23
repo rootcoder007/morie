@@ -1,6 +1,7 @@
 """Tests for moeswt.moe_switch_routing."""
+
 import numpy as np
-import pytest
+
 from morie.fn.moeswt import moe_switch_routing
 
 
@@ -13,7 +14,7 @@ def test_moeswt_basic():
     capacity = np.random.default_rng(42).normal(0, 1, 100)
     result = moe_switch_routing(y, x, W_g, experts, capacity)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_moeswt_edge():

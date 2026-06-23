@@ -1,7 +1,7 @@
 """Tests for morie.fn.yll -- Years of Life Lost."""
 
-import numpy as np
 import pytest
+
 from morie.fn.yll import years_of_life_lost
 
 

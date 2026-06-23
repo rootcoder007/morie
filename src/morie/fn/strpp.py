@@ -40,4 +40,4 @@ strpp = stress_per_point
 
 
 def cheatsheet() -> str:
-    return 'stress_per_point({}) -> Stress per point.'
+    return "stress_per_point({}) -> Stress per point."

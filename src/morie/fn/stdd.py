@@ -119,7 +119,7 @@ def staggered_did(
     tau = float(np.sum(w_arr * tau_arr))
 
     if len(tau_arr) > 1:
-        se = float(np.sqrt(np.sum(w_arr ** 2 * (tau_arr - tau) ** 2)))
+        se = float(np.sqrt(np.sum(w_arr**2 * (tau_arr - tau) ** 2)))
     else:
         se = float("nan")
 

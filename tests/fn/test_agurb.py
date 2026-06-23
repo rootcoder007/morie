@@ -1,6 +1,7 @@
 """Test agurb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agurb import agurb
 
 

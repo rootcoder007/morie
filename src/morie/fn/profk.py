@@ -78,8 +78,7 @@ def profk(
 
     beta_ols = np.linalg.lstsq(X, Y, rcond=None)[0]
     theta_hat = float(beta_ols[0])
-    se_ols = float(np.sqrt(np.sum((Y - X @ beta_ols)**2) / max(n - p, 1) *
-                           np.linalg.pinv(X.T @ X)[0, 0]))
+    se_ols = float(np.sqrt(np.sum((Y - X @ beta_ols) ** 2) / max(n - p, 1) * np.linalg.pinv(X.T @ X)[0, 0]))
 
     if theta_grid is None:
         margin = max(4.0 * se_ols, 0.5)

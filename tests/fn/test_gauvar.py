@@ -1,6 +1,7 @@
 """Tests for gauvar.gaussian_variogram_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gauvar import gaussian_variogram_model
 
 
@@ -12,7 +13,7 @@ def test_gauvar_basic():
     a = np.random.default_rng(44).normal(0, 1, 100)
     result = gaussian_variogram_model(h, c0, c, a)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gauvar_edge():

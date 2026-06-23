@@ -1,6 +1,7 @@
 """Test srgwr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srgwr import srgwr
 
 

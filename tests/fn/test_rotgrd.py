@@ -1,6 +1,7 @@
 """Test rotgrd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rotgrd import rotgrd
 
 

@@ -1,8 +1,9 @@
 """Tests for morie.fn.mtxop -- matrix function."""
 
 import numpy as np
-from morie.fn.mtxop import matrix_function, mtxop
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mtxop import matrix_function, mtxop
 
 
 class TestMtxop:

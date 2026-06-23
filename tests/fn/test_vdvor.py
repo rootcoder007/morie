@@ -1,6 +1,8 @@
 """Tests for vdvor."""
+
 import numpy as np
 import pytest
+
 from morie.fn.vdvor import vdvor
 
 
@@ -28,4 +30,5 @@ def test_vdvor_no_data():
 
 def test_vdvor_alias():
     from morie.fn.vdvor import vdvor
+
     assert vdvor is vdvor

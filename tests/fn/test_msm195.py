@@ -1,6 +1,7 @@
 """Tests for msm195.mvsml_ridge_lasso_elastic_eq_9_23."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm195 import mvsml_ridge_lasso_elastic_eq_9_23
 
 
@@ -14,7 +15,7 @@ def test_msm195_basic():
     dual = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_ridge_lasso_elastic_eq_9_23(x, y, subject, to, Its, dual)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm195_edge():

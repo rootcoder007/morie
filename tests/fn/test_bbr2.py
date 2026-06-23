@@ -1,5 +1,7 @@
 """Tests for morie.fn.bbr2 — Blackbox R-squared per issue."""
+
 import numpy as np
+
 from morie.fn.bbr2 import bbr2
 
 
@@ -12,6 +14,7 @@ def test_bbr2_perfect():
 
 def test_cheatsheet():
     from morie.fn.bbr2 import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

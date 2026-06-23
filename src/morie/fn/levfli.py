@@ -81,4 +81,4 @@ levfli = levy_flight
 
 
 def cheatsheet() -> str:
-    return 'levy_flight({}) -> Levy flight random walk.'
+    return "levy_flight({}) -> Levy flight random walk."

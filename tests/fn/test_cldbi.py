@@ -1,6 +1,7 @@
 """Test cldbi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cldbi import cldbi
 
 

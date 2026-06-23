@@ -1,7 +1,9 @@
 """Test latency_detect (latdt)."""
+
 import numpy as np
-from morie.fn.latdt import latency_detect, latdt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.latdt import latdt, latency_detect
 
 
 class TestLatencyDetect:

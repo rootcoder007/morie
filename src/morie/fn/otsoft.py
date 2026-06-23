@@ -1,6 +1,7 @@
 """Soft assignment matrix from entropic OT for matching."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_softassignment"]
@@ -36,7 +37,9 @@ def ot_softassignment(a, b, C, epsilon):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Soft assignment matrix from entropic OT for matching"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Soft assignment matrix from entropic OT for matching"}
+    )
 
 
 def cheatsheet():

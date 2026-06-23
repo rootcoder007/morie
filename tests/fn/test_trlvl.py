@@ -1,6 +1,7 @@
 """Test trlvl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trlvl import trlvl
 
 

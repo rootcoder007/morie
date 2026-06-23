@@ -1,6 +1,7 @@
 """Tests for swiglu.swiglu_activation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.swiglu import swiglu_activation
 
 
@@ -12,7 +13,7 @@ def test_swiglu_basic():
     V = np.random.default_rng(42).normal(0, 1, 100)
     result = swiglu_activation(y, x, W, V)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_swiglu_edge():

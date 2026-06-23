@@ -1,6 +1,7 @@
 """Tests for bnsiii.bound_iii."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bnsiii import bound_iii
 
 
@@ -11,7 +12,7 @@ def test_bnsiii_basic():
     moments = np.random.default_rng(42).normal(0, 1, 100)
     result = bound_iii(y, X, moments)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bnsiii_edge():

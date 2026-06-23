@@ -1,6 +1,7 @@
 """Tests for gb_blt.gibbons_balance_incomplete."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb_blt import gibbons_balance_incomplete
 
 
@@ -12,7 +13,7 @@ def test_gb_blt_basic():
     k = 5
     result = gibbons_balance_incomplete(rankings, lam, n, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb_blt_edge():

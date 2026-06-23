@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GRU cell forward pass (Cho et al. 2014)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -13,9 +14,16 @@ def _sigmoid(z):
     return 1.0 / (1.0 + np.exp(-z))
 
 
-def gru_cell(x, h_prev=None, W=None, U=None, b=None,
-             hidden_size: "int | None" = None, seed: int = 0,
-             deterministic_seed: "int | None" = None):
+def gru_cell(
+    x,
+    h_prev=None,
+    W=None,
+    U=None,
+    b=None,
+    hidden_size: int | None = None,
+    seed: int = 0,
+    deterministic_seed: int | None = None,
+):
     """Single-step GRU cell.
 
     Gates::
@@ -62,6 +70,7 @@ def gru_cell(x, h_prev=None, W=None, U=None, b=None,
 
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("grucl", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -76,9 +85,9 @@ def gru_cell(x, h_prev=None, W=None, U=None, b=None,
     b = np.asarray(b, dtype=float)
 
     pre = W @ x + b
-    Wz, Wr, Wn = pre[0:H], pre[H:2 * H], pre[2 * H:3 * H]
+    Wz, Wr, Wn = pre[0:H], pre[H : 2 * H], pre[2 * H : 3 * H]
     Uh = U @ h_prev
-    Uz, Ur, Un = Uh[0:H], Uh[H:2 * H], Uh[2 * H:3 * H]
+    Uz, Ur, Un = Uh[0:H], Uh[H : 2 * H], Uh[2 * H : 3 * H]
 
     z = _sigmoid(Wz + Uz)
     r = _sigmoid(Wr + Ur)
@@ -91,7 +100,9 @@ def gru_cell(x, h_prev=None, W=None, U=None, b=None,
         payload={
             "h": h,
             "estimate": h,
-            "z": z, "r": r, "n": n,
+            "z": z,
+            "r": r,
+            "n": n,
             "method": "GRU cell forward",
         },
     )

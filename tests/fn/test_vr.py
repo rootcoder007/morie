@@ -1,7 +1,7 @@
 """Tests for morie.fn.vr -- variance ratio (F-test)."""
 
-import numpy as np
 import pytest
+
 from morie.fn.vr import variance_ratio
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Unigram LM tokenizer: EM over piece probabilities."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_unigram_lm_tokenizer"]
@@ -32,7 +34,9 @@ def kamath_unigram_lm_tokenizer(corpus, vocab):
     n = len(corpus)
     result = float(np.mean(corpus))
     se = float(np.std(corpus, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Unigram LM tokenizer: EM over piece probabilities"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Unigram LM tokenizer: EM over piece probabilities"}
+    )
 
 
 def cheatsheet():

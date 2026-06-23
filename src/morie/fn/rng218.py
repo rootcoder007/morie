@@ -1,6 +1,7 @@
 """Schwarz (Cauchy-Schwarz) inequality for two vectors.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_cauchy_schwarz_vectors"]
@@ -32,7 +33,9 @@ def rangayyan_ch4_cauchy_schwarz_vectors(a, b):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Schwarz (Cauchy-Schwarz) inequality for two vectors."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Schwarz (Cauchy-Schwarz) inequality for two vectors."}
+    )
 
 
 def cheatsheet():

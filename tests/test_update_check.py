@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Tests for morie._update_check -- the new-version notification and the
 `morie update` command. No live network calls are made."""
+
 import json
 import time
 
@@ -72,4 +73,5 @@ def test_update_entry_points_exist():
     # the `morie update` command resolves to a callable
     assert callable(uc.run_update)
     import morie.runner as runner
+
     assert callable(runner.main)

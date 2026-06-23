@@ -1,6 +1,7 @@
 """Placebo DR-DiD pre-period falsification."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["placebo_dr_did"]
@@ -36,7 +37,9 @@ def placebo_dr_did(y_pre1, y_pre2, D, X):
     n = len(y_pre1)
     result = float(np.mean(y_pre1))
     se = float(np.std(y_pre1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Placebo DR-DiD pre-period falsification"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Placebo DR-DiD pre-period falsification"}
+    )
 
 
 def cheatsheet():

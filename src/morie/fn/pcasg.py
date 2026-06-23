@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['pcasg']
+__all__ = ["pcasg"]
 
 _QUOTE = "The principal components, reveal the truth. --"
 

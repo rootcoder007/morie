@@ -1,6 +1,7 @@
 """Tests for gb521.gibbons_quantile_ci."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb521 import gibbons_quantile_ci
 
 
@@ -11,7 +12,7 @@ def test_gb521_basic():
     alpha = 0.05
     result = gibbons_quantile_ci(x, p, alpha)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb521_edge():

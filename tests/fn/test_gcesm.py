@@ -1,6 +1,7 @@
 """Test gcesm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcesm import gcesm
 
 

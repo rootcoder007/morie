@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 
-from morie.fn.vrfydr import vrfydr, verify_directory
+from morie.fn.vrfydr import verify_directory, vrfydr
 from morie.inspector import VerificationReport
 
 
@@ -16,11 +16,13 @@ def test_alias_is_same_function():
 def output_dir(tmp_path):
     """Directory with two valid CSV files."""
     for name in ("a.csv", "b.csv"):
-        df = pd.DataFrame({
-            "estimate": [1.0, 2.0],
-            "p_value": [0.05, 0.01],
-            "se": [0.1, 0.2],
-        })
+        df = pd.DataFrame(
+            {
+                "estimate": [1.0, 2.0],
+                "p_value": [0.05, 0.01],
+                "se": [0.1, 0.2],
+            }
+        )
         df.to_csv(tmp_path / name, index=False)
     return tmp_path
 

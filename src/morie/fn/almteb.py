@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """MTEB aggregate: mean score across task categories."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_mteb_benchmark_score"]
@@ -32,7 +34,9 @@ def alammar_mteb_benchmark_score(task_scores, category_map):
     n = len(task_scores)
     result = float(np.mean(task_scores))
     se = float(np.std(task_scores, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MTEB aggregate: mean score across task categories"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "MTEB aggregate: mean score across task categories"}
+    )
 
 
 def cheatsheet():

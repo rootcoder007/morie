@@ -1,6 +1,7 @@
 """Tests for tqipb.turboquant_inner_product_distortion_bound."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tqipb import turboquant_inner_product_distortion_bound
 
 
@@ -11,7 +12,7 @@ def test_tqipb_basic():
     d = 5
     result = turboquant_inner_product_distortion_bound(bits, norm_sq, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tqipb_edge():

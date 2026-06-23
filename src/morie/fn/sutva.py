@@ -1,5 +1,7 @@
 """Stable Unit Treatment Value Assumption (SUTVA): no interference + consistency."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["sutva_assumption"]
@@ -31,7 +33,14 @@ def sutva_assumption(Y, T):
     n = int(Y) if Y.ndim == 0 else len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Stable Unit Treatment Value Assumption (SUTVA): no interference + consistency"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Stable Unit Treatment Value Assumption (SUTVA): no interference + consistency",
+        }
+    )
 
 
 def cheatsheet():

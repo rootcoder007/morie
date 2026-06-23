@@ -4,6 +4,8 @@
 import numpy as np
 
 from ._containers import DescriptiveResult
+
+
 def lotka_volterra(
     prey0: float = 40.0,
     pred0: float = 9.0,

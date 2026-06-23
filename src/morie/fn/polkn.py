@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Polynomial kernel function."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["polynomial_kernel"]

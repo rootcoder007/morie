@@ -1,6 +1,7 @@
 """Test csjrn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csjrn import csjrn
 
 

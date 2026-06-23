@@ -1,6 +1,5 @@
 """Tests for morie.fn.i_pwr -- interaction power (ANOVA F-test)."""
 
-import pytest
 from morie.fn.i_pwr import calculate_interaction_power
 
 

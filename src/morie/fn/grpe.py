@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sinusoidal positional encoding (Vaswani et al. 2017)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_sinusoidal_positional_encoding"]
@@ -32,7 +34,9 @@ def geron_sinusoidal_positional_encoding(seq_len, d_model):
     n = len(seq_len)
     result = float(np.mean(seq_len))
     se = float(np.std(seq_len, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sinusoidal positional encoding (Vaswani et al. 2017)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Sinusoidal positional encoding (Vaswani et al. 2017)"}
+    )
 
 
 def cheatsheet():

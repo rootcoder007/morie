@@ -1,6 +1,7 @@
 """Mean residual life plot for threshold selection."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_mean_residual_life"]
@@ -32,7 +33,9 @@ def evt_mean_residual_life(x, u_grid):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mean residual life plot for threshold selection"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Mean residual life plot for threshold selection"}
+    )
 
 
 def cheatsheet():

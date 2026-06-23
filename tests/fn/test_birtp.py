@@ -1,6 +1,6 @@
 """Tests for morie.fn.birtp — Bayesian IRT posterior summary."""
+
 import numpy as np
-import pytest
 
 from morie.fn.birtp import birtp
 
@@ -13,6 +13,7 @@ def test_birtp_smoke():
 
 def test_cheatsheet():
     from morie.fn.birtp import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

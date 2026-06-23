@@ -1,6 +1,6 @@
 """Tests for morie.fn.birtl — Bayesian IRT log-likelihood."""
+
 import numpy as np
-import pytest
 
 from morie.fn.birtl import birtl
 
@@ -16,6 +16,7 @@ def test_birtl_smoke():
 
 def test_cheatsheet():
     from morie.fn.birtl import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

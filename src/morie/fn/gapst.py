@@ -101,4 +101,4 @@ gapst = gap_statistic
 
 
 def cheatsheet() -> str:
-    return 'gap_statistic({}) -> Gap statistic for optimal k.'
+    return "gap_statistic({}) -> Gap statistic for optimal k."

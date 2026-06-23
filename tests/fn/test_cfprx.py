@@ -1,7 +1,7 @@
 """Tests for morie.fn.cfprx."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cfprx import cfprx
 
 

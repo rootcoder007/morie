@@ -1,6 +1,7 @@
 """Test gehpr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gehpr import gehpr
 
 

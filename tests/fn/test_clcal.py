@@ -1,6 +1,7 @@
 """Test clcal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clcal import clcal
 
 

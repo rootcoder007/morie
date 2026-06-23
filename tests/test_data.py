@@ -140,6 +140,7 @@ def test_cpads_contract_validation(tmp_path: Path):
 
 def test_dataset_catalog_has_all_expected_keys():
     from morie.data import DATASET_CATALOG
+
     assert len(DATASET_CATALOG) >= 30
     assert "ocp21" in DATASET_CATALOG
     assert "hibub" in DATASET_CATALOG
@@ -148,8 +149,8 @@ def test_dataset_catalog_has_all_expected_keys():
 
 def test_dataset_catalog_entries_have_required_fields():
     from morie.data import DATASET_CATALOG
-    required = {"name", "source", "survey", "year", "format", "type",
-                "local_path", "table_name", "ckan_resource_id"}
+
+    required = {"name", "source", "survey", "year", "format", "type", "local_path", "table_name", "ckan_resource_id"}
     for key, entry in DATASET_CATALOG.items():
         missing = required - set(entry.keys())
         assert not missing, f"{key} missing fields: {missing}"
@@ -157,12 +158,14 @@ def test_dataset_catalog_entries_have_required_fields():
 
 def test_dataset_catalog_table_names_unique():
     from morie.data import DATASET_CATALOG
+
     names = [e["table_name"] for e in DATASET_CATALOG.values()]
     assert len(names) == len(set(names)), "Duplicate table names in catalog"
 
 
 def test_fuzzy_match_key():
     from morie.data import _fuzzy_match_key
+
     assert _fuzzy_match_key("ocp21") == "ocp21"
     assert _fuzzy_match_key("hibua") == "hibua"
     assert _fuzzy_match_key("nonexistent") is None
@@ -170,13 +173,12 @@ def test_fuzzy_match_key():
 
 def test_load_dataset_from_builtin_db(tmp_path, monkeypatch):
     import sqlite3
+
     from morie.data import load_dataset
 
     db = tmp_path / "mock.db"
     conn = sqlite3.connect(str(db))
-    pd.DataFrame({"SEQID": [1, 2, 3], "weight": [1.0, 1.0, 1.0]}).to_sql(
-        "ocp21_cpads_2021_pumf", conn, index=False
-    )
+    pd.DataFrame({"SEQID": [1, 2, 3], "weight": [1.0, 1.0, 1.0]}).to_sql("ocp21_cpads_2021_pumf", conn, index=False)
     conn.close()
 
     monkeypatch.setattr(
@@ -193,6 +195,7 @@ def test_load_dataset_from_builtin_db(tmp_path, monkeypatch):
 
 def test_list_datasets_shows_cache_status(tmp_path):
     from morie.data import cache_store, list_datasets
+
     db = tmp_path / "test.db"
     df = pd.DataFrame({"x": [1]})
     cache_store(df, "ocp21", db)
@@ -204,5 +207,6 @@ def test_list_datasets_shows_cache_status(tmp_path):
 
 def test_load_dataset_unknown_key_raises():
     from morie.data import load_dataset
+
     with pytest.raises(KeyError, match="Unknown dataset key"):
         load_dataset("totally_fake_dataset_xyz")

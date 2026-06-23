@@ -1,6 +1,7 @@
 """Test cszon."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cszon import cszon
 
 

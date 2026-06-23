@@ -1,5 +1,7 @@
 """Tests for morie.fn.lfunc — Ripley's L."""
+
 import numpy as np
+
 from morie.fn.lfunc import ripley_l
 
 

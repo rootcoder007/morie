@@ -22,6 +22,7 @@ class TestTfPlt:
 
 def test_cheatsheet():
     from morie.fn.tfplt import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

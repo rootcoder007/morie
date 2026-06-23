@@ -1,7 +1,7 @@
 """Sphinx configuration for MORIE developer documentation."""
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 try:
     import tomllib  # Python 3.11+
@@ -70,9 +70,14 @@ autodoc_mock_imports = [
     # those are real classes that participate in `|` type-unions
     # (`pd.DataFrame | None`), and Sphinx's MockObject doesn't
     # implement `__or__`, so the import fails at function-def time.
-    "doubleml", "DoubleML", "codecarbon",
-    "sklearn", "statsmodels", "matplotlib",
-    "openpyxl", "lxml",
+    "doubleml",
+    "DoubleML",
+    "codecarbon",
+    "sklearn",
+    "statsmodels",
+    "matplotlib",
+    "openpyxl",
+    "lxml",
 ]
 autodoc_default_options = {
     "members": True,
@@ -114,9 +119,9 @@ napoleon_use_ivar = True
 # ---------------------------------------------------------------------------
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
-    "numpy":  ("https://numpy.org/doc/stable", None),
+    "numpy": ("https://numpy.org/doc/stable", None),
     "pandas": ("https://pandas.pydata.org/docs", None),
-    "scipy":  ("https://docs.scipy.org/doc/scipy", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy", None),
     "sklearn": ("https://scikit-learn.org/stable", None),
     "statsmodels": ("https://www.statsmodels.org/stable", None),
 }
@@ -126,7 +131,7 @@ intersphinx_mapping = {
 # ---------------------------------------------------------------------------
 source_suffix = {
     ".rst": "restructuredtext",
-    ".md":  "markdown",
+    ".md": "markdown",
 }
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
@@ -220,4 +225,3 @@ mathjax3_config = {
         "displayMath": [["$$", "$$"], ["\\[", "\\]"]],
     }
 }
-

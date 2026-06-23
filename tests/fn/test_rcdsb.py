@@ -1,14 +1,13 @@
 """Tests for morie.fn.rcdsb — recidivism subgroup."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.rcdsb import recidivism_subgroup
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rcdsb import recidivism_subgroup
 
 
 class TestRecidivismSubgroup:
-
     def test_returns_descriptive(self):
         df = pd.DataFrame({"recidivism": [1, 0, 1, 0, 1, 0], "group": ["A", "A", "B", "B", "C", "C"]})
         result = recidivism_subgroup(df)

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zekex -- Kernel density exposure"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zekex import kernel_exposure
 

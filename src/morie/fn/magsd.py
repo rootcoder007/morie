@@ -1,6 +1,7 @@
 """Glass's Δ using control SD only."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_glass_delta"]

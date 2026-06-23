@@ -1,7 +1,7 @@
 """Tests for morie.fn.pamaj."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pamaj import pamaj
 
 

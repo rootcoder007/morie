@@ -1,6 +1,7 @@
 """Test enwtl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enwtl import enwtl
 
 

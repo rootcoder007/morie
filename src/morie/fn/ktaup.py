@@ -9,6 +9,7 @@ Partial Kendall tau between X and Y controlling for Z:
 Significance is tested via the standard Kendall-tau normal-
 approximation z-statistic on the partial tau (Gibbons, eq. 12.6.2).
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -40,37 +41,50 @@ def kendall_tau_partial(x, y, z):
     z = np.asarray(z, dtype=float).ravel()
     n = min(len(x), len(y), len(z))
     if n < 4:
-        return RichResult(payload={
-            "statistic": np.nan, "p_value": np.nan,
-            "tau_xy": np.nan, "tau_xz": np.nan, "tau_yz": np.nan,
-            "n": n, "method": "Kendall partial tau",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "tau_xy": np.nan,
+                "tau_xz": np.nan,
+                "tau_yz": np.nan,
+                "n": n,
+                "method": "Kendall partial tau",
+            }
+        )
     x, y, z = x[:n], y[:n], z[:n]
     tau_xy = stats.kendalltau(x, y).statistic
     tau_xz = stats.kendalltau(x, z).statistic
     tau_yz = stats.kendalltau(y, z).statistic
-    denom = np.sqrt((1.0 - tau_xz ** 2) * (1.0 - tau_yz ** 2))
+    denom = np.sqrt((1.0 - tau_xz**2) * (1.0 - tau_yz**2))
     if denom == 0 or not np.isfinite(denom):
-        return RichResult(payload={
-            "statistic": np.nan, "p_value": np.nan,
-            "tau_xy": float(tau_xy), "tau_xz": float(tau_xz),
-            "tau_yz": float(tau_yz), "n": n,
-            "method": "Kendall partial tau",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "tau_xy": float(tau_xy),
+                "tau_xz": float(tau_xz),
+                "tau_yz": float(tau_yz),
+                "n": n,
+                "method": "Kendall partial tau",
+            }
+        )
     tau_p = (tau_xy - tau_xz * tau_yz) / denom
     # Use the Kendall-tau normal approx (z = tau * sqrt(9n(n-1) / (2(2n+5))))
     z_stat = tau_p * np.sqrt(9.0 * n * (n - 1) / (2.0 * (2 * n + 5)))
     p = 2.0 * (1.0 - stats.norm.cdf(abs(z_stat)))
-    return RichResult(payload={
-        "statistic": float(tau_p),
-        "p_value": float(p),
-        "tau_xy": float(tau_xy),
-        "tau_xz": float(tau_xz),
-        "tau_yz": float(tau_yz),
-        "z": float(z_stat),
-        "n": n,
-        "method": "Kendall partial tau (xy controlling z)",
-    })
+    return RichResult(
+        payload={
+            "statistic": float(tau_p),
+            "p_value": float(p),
+            "tau_xy": float(tau_xy),
+            "tau_xz": float(tau_xz),
+            "tau_yz": float(tau_yz),
+            "z": float(z_stat),
+            "n": n,
+            "method": "Kendall partial tau (xy controlling z)",
+        }
+    )
 
 
 def cheatsheet():

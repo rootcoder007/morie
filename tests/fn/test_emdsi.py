@@ -1,7 +1,9 @@
 """Test emd_sifting (emdsi)."""
+
 import numpy as np
-from morie.fn.emdsi import emd_sifting, emdsi
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.emdsi import emd_sifting, emdsi
 
 
 class TestEmdsi:

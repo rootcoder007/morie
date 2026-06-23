@@ -1,6 +1,7 @@
 """Tests for bndnln.bound_nonlinear."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndnln import bound_nonlinear
 
 
@@ -11,7 +12,7 @@ def test_bndnln_basic():
     g = np.random.default_rng(43).normal(0, 1, 100)
     result = bound_nonlinear(y, X, g)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndnln_edge():

@@ -1,6 +1,7 @@
 """Tests for hmbrob.geron_roberta."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmbrob import geron_roberta
 
 
@@ -11,7 +12,7 @@ def test_hmbrob_basic():
     n_heads = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_roberta(X, n_layers, n_heads)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmbrob_edge():

@@ -1,6 +1,8 @@
 """Tests for cminc: cumulative incidence function (Aalen-Johansen)."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cminc import cminc
 
 
@@ -12,7 +14,7 @@ def _sim_competing_risks(n=200, seed=0):
     C = rng.exponential(5.0, size=n)
     time = np.minimum(np.minimum(T1, T2), C)
     event = np.where(T1 < T2, 1, 2)
-    event = np.where(C < np.minimum(T1, T2), 0, event)
+    event = np.where(np.minimum(T1, T2) > C, 0, event)
     return time, event
 
 

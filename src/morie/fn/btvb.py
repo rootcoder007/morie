@@ -1,6 +1,7 @@
 """Bootstrap variance estimator of T(F)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_var_estimator"]
@@ -34,7 +35,16 @@ def boot_var_estimator(theta_b):
     se = 1.2533 * np.std(theta_b, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Bootstrap variance estimator of T(F)"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Bootstrap variance estimator of T(F)",
+        }
+    )
 
 
 def cheatsheet():

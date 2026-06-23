@@ -1,8 +1,8 @@
 """Tests for morie.fn.eqthl — Theil index."""
 
 import pytest
+
 from morie.fn.eqthl import theil_index
-from morie.fn._containers import ESRes
 
 
 class TestTheil:

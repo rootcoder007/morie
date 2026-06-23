@@ -25,9 +25,18 @@ def test_returns_dict(cox_data):
     time, event, X = cox_data
     result = coxph(time, event, X)
     assert isinstance(result, dict)
-    for k in ("coefficients", "se", "hazard_ratios", "z_scores",
-              "p_values", "log_partial_likelihood", "n_iter",
-              "converged", "n_obs", "n_events"):
+    for k in (
+        "coefficients",
+        "se",
+        "hazard_ratios",
+        "z_scores",
+        "p_values",
+        "log_partial_likelihood",
+        "n_iter",
+        "converged",
+        "n_obs",
+        "n_events",
+    ):
         assert k in result
 
 
@@ -68,4 +77,5 @@ def test_dimension_error():
 
 def test_cheatsheet():
     from morie.fn.coxph import cheatsheet
+
     assert "cox" in cheatsheet().lower()

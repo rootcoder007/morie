@@ -1,6 +1,7 @@
 """Tests for kmtemp.kamath_temperature_sampling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmtemp import kamath_temperature_sampling
 
 
@@ -10,7 +11,7 @@ def test_kmtemp_basic():
     T = np.random.default_rng(43).integers(0, 2, 100)
     result = kamath_temperature_sampling(logits, T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmtemp_edge():

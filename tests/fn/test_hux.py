@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.hux import huber_regression, hux
+
 from morie.fn._containers import RegressionResult
+from morie.fn.hux import huber_regression, hux
 
 
 @pytest.fixture()
@@ -32,6 +33,7 @@ class TestHux:
     def test_robust_to_outliers(self, outlier_data):
         """Huber slope should be closer to true value (2) than OLS with outliers."""
         from morie.fn.rey import linear_regression
+
         ols = linear_regression(outlier_data, y="y", x="x")
         huber = huber_regression(outlier_data, y="y", x="x")
         # Huber should be closer to 2 than OLS

@@ -9,6 +9,7 @@ only reads a small cache file.
 
 Opt out entirely with the environment variable ``MORIE_NO_UPDATE_CHECK``.
 """
+
 from __future__ import annotations
 
 import json
@@ -25,8 +26,7 @@ __all__ = ["maybe_notify", "check_pypi_latest", "run_update"]
 
 
 def _cache_path() -> str:
-    base = os.environ.get("XDG_CACHE_HOME") or os.path.join(
-        os.path.expanduser("~"), ".cache")
+    base = os.environ.get("XDG_CACHE_HOME") or os.path.join(os.path.expanduser("~"), ".cache")
     return os.path.join(base, "morie", "update_check.json")
 
 
@@ -90,8 +90,7 @@ def _refresh_cache_async() -> None:
         if latest:
             _write_cache(latest)
 
-    threading.Thread(
-        target=_worker, name="morie-update-check", daemon=True).start()
+    threading.Thread(target=_worker, name="morie-update-check", daemon=True).start()
 
 
 def maybe_notify(installed_version: str) -> None:
@@ -131,6 +130,7 @@ def run_update(yes: bool = False) -> int:
     """``morie update`` -- check PyPI and optionally upgrade in place."""
     try:
         import morie
+
         installed_version = getattr(morie, "__version__", "0.0.0+unknown")
     except Exception:
         installed_version = "0.0.0+unknown"
@@ -146,8 +146,7 @@ def run_update(yes: bool = False) -> int:
         _write_cache(latest)
         return 0
 
-    print(f"A newer version is available: {latest} "
-          f"(you have {installed_version}).")
+    print(f"A newer version is available: {latest} (you have {installed_version}).")
     cmd = [sys.executable, "-m", "pip", "install", "-U", "morie"]
 
     if not yes:
@@ -165,6 +164,5 @@ def run_update(yes: bool = False) -> int:
     result = subprocess.run(cmd)
     if result.returncode == 0:
         _write_cache(latest)
-        print(f"Updated to morie {latest}. "
-              "The R package updates via install.packages(\"morie\").")
+        print(f'Updated to morie {latest}. The R package updates via install.packages("morie").')
     return result.returncode

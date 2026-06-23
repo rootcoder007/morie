@@ -1,6 +1,7 @@
 """Test soalk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.soalk import soalk
 
 

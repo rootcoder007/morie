@@ -1,8 +1,9 @@
 """Tests for morie.fn.anoiso -- isolation forest anomaly detection."""
 
 import numpy as np
-from morie.fn.anoiso import anomaly_isolation, anoiso
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.anoiso import anoiso, anomaly_isolation
 
 
 class TestAnoiso:

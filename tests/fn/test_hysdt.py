@@ -1,8 +1,8 @@
 """Tests for morie.fn.hysdt — hysteresis detector."""
-import numpy as np
-import pytest
 
-from morie.fn.hysdt import hysteresis_detect, hysdt
+import numpy as np
+
+from morie.fn.hysdt import hysdt, hysteresis_detect
 
 
 def test_single_event():

@@ -1,7 +1,9 @@
 """Test ar_to_lsf (ar2ls)."""
+
 import numpy as np
-from morie.fn.ar2ls import ar_to_lsf, ar2ls
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ar2ls import ar2ls, ar_to_lsf
 
 
 class TestAr2ls:

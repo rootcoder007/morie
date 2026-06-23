@@ -36,4 +36,4 @@ bic = bayesian_info_criterion
 
 
 def cheatsheet() -> str:
-    return 'bayesian_info_criterion({}) -> Bayesian Information Criterion.'
+    return "bayesian_info_criterion({}) -> Bayesian Information Criterion."

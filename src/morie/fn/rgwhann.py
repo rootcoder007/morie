@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hann (Hanning) window function."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_hann_window"]

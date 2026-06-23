@@ -1,6 +1,7 @@
 """Tests for copt.t_copula."""
+
 import numpy as np
-import pytest
+
 from morie.fn.copt import t_copula
 
 
@@ -13,7 +14,7 @@ def test_copt_basic():
     nu = np.random.default_rng(42).normal(0, 1, 100)
     result = t_copula(y, u, v, rho, nu)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_copt_edge():

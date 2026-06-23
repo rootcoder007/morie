@@ -1,6 +1,7 @@
 """Quantile-balanced causal forest for distributional treatment effects."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["quantile_balanced_cf"]
@@ -36,7 +37,14 @@ def quantile_balanced_cf(y, D, X, quantile):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Quantile-balanced causal forest for distributional treatment effects"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Quantile-balanced causal forest for distributional treatment effects",
+        }
+    )
 
 
 def cheatsheet():

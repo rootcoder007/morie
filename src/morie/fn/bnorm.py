@@ -65,8 +65,8 @@ def bayesian_normal(
     if prior_sigma <= 0 or sigma_known <= 0:
         raise ValueError("Standard deviations must be positive.")
 
-    tau_prior = 1.0 / prior_sigma ** 2
-    tau_data = n / sigma_known ** 2
+    tau_prior = 1.0 / prior_sigma**2
+    tau_data = n / sigma_known**2
     tau_post = tau_prior + tau_data
 
     post_mu = (tau_prior * prior_mu + tau_data * np.mean(x)) / tau_post

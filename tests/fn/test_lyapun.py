@@ -1,6 +1,7 @@
 """Tests for lyapun.lyapunov_exponent."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lyapun import lyapunov_exponent
 
 
@@ -11,7 +12,7 @@ def test_lyapun_basic():
     tau = 0.1
     result = lyapunov_exponent(y, embedding, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lyapun_edge():

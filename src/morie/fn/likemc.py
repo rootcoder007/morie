@@ -1,6 +1,7 @@
 """Likelihood-based MCMC for compartmental."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["likelihood_mcmc_epi"]
@@ -36,7 +37,9 @@ def likelihood_mcmc_epi(model, data, priors, n_iter):
     n = len(data)
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Likelihood-based MCMC for compartmental"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Likelihood-based MCMC for compartmental"}
+    )
 
 
 def cheatsheet():

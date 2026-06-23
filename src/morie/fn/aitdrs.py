@@ -1,6 +1,7 @@
 """Sample compositions from a Dirichlet distribution."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dirichlet_sample"]
@@ -32,7 +33,9 @@ def dirichlet_sample(alpha, n):
     n = len(alpha)
     result = float(np.mean(alpha))
     se = float(np.std(alpha, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sample compositions from a Dirichlet distribution"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Sample compositions from a Dirichlet distribution"}
+    )
 
 
 def cheatsheet():

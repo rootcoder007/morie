@@ -1,7 +1,6 @@
 """Tests for morie.fn.zectr -- Spatial contact tracing"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zectr import contact_trace_sp
 

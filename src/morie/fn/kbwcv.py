@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kbwcv"]
@@ -72,7 +73,7 @@ def kbwcv(
     scores = np.empty(len(bw_grid))
     for idx, h in enumerate(bw_grid):
         sq2h = np.sqrt(2.0) * h
-        term1 = np.exp(-0.5 * (diffs / sq2h) ** 2).sum() / (n ** 2 * sq2h * np.sqrt(np.pi))
+        term1 = np.exp(-0.5 * (diffs / sq2h) ** 2).sum() / (n**2 * sq2h * np.sqrt(np.pi))
 
         loo_vals = np.exp(-0.5 * (diffs / h) ** 2) / (h * np.sqrt(2 * np.pi))
         np.fill_diagonal(loo_vals, 0.0)

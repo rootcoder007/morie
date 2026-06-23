@@ -1,6 +1,7 @@
 """Test mawav."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mawav import mawav
 
 

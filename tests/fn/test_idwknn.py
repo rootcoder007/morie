@@ -1,6 +1,8 @@
 """Tests for idwknn."""
+
 import numpy as np
 import pytest
+
 from morie.fn.idwknn import idwknn
 
 
@@ -28,4 +30,5 @@ def test_idwknn_no_data():
 
 def test_idwknn_alias():
     from morie.fn.idwknn import idwknn
+
     assert idwknn is idwknn

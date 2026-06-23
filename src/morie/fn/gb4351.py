@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """V = 4n*D+^2 is asymptotically chi-square with 2 df."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_ks_chi2_approx"]
@@ -35,7 +37,9 @@ def gibbons_ks_chi2_approx(n, Dplus):
         data = rng.standard_normal(max(n, 2))
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "V = 4n*D+^2 is asymptotically chi-square with 2 df"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "V = 4n*D+^2 is asymptotically chi-square with 2 df"}
+    )
 
 
 def cheatsheet():

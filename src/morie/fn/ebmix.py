@@ -46,7 +46,7 @@ def eb_mixture(
         w1 = 1 - w0
 
         pi0_new = float(np.mean(w0))
-        tau2_new = float(np.sum(w1 * (z ** 2 - 1)) / (np.sum(w1) + 1e-30))
+        tau2_new = float(np.sum(w1 * (z**2 - 1)) / (np.sum(w1) + 1e-30))
         tau2_new = max(tau2_new, 1e-6)
 
         if abs(pi0_new - pi0) < tol and abs(tau2_new - tau2) < tol:

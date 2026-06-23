@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.prssc import prssc
 
 
@@ -16,8 +17,7 @@ class TestPrssc:
     def test_threshold_filters(self):
         Z = np.ones((5, 10))
         betas = np.ones(10)
-        pvals = np.array([0.001, 0.01, 0.05, 0.1, 0.5,
-                          0.6, 0.7, 0.8, 0.9, 1.0])
+        pvals = np.array([0.001, 0.01, 0.05, 0.1, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
         res = prssc(Z, betas, p_values=pvals, p_threshold=0.05)
         assert res.extra["n_snps_used"] == 2
 

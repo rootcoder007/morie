@@ -1,6 +1,7 @@
 """Test socrb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.socrb import socrb
 
 

@@ -1,6 +1,7 @@
 """Tests for ulrnir.u_learner."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ulrnir import u_learner
 
 
@@ -11,7 +12,7 @@ def test_ulrnir_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = u_learner(y, D, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ulrnir_edge():

@@ -56,6 +56,7 @@ def mofnb(
     rng = np.random.default_rng(seed)
 
     if statistic is None:
+
         def statistic(s):
             return float(np.mean(s))
 

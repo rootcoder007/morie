@@ -1,8 +1,8 @@
 """Regression expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["Look well into thyself; there is a source which will always spring up. -- Marcus Aurelius"]
 
@@ -46,4 +46,4 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
 
 
 def cheatsheet():
-    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u21() -> Regression expression (auto-extracted; see ref)'
+    return "christopher_gandrud_author_reproducible_research_with_r_and_4u21() -> Regression expression (auto-extracted; see ref)"

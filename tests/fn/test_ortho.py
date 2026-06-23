@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.ortho import orthogonal_score, ortho
+
 from morie.fn._containers import ESRes
+from morie.fn.ortho import ortho, orthogonal_score
 
 
 class TestOrthogonalScore:
@@ -26,11 +27,13 @@ class TestOrthogonalScore:
         assert abs(result.estimate - 2.0) < 0.5
 
     def test_degenerate_raises(self):
-        df = pd.DataFrame({
-            "outcome": [1.0, 2.0],
-            "treatment": [0.5, 0.5],
-            "m_hat": [1.0, 2.0],
-            "e_hat": [0.5, 0.5],
-        })
+        df = pd.DataFrame(
+            {
+                "outcome": [1.0, 2.0],
+                "treatment": [0.5, 0.5],
+                "m_hat": [1.0, 2.0],
+                "e_hat": [0.5, 0.5],
+            }
+        )
         with pytest.raises(ValueError, match="zero"):
             orthogonal_score(df)

@@ -1,6 +1,7 @@
 """Tests for morie.fn.nnt -- number needed to treat."""
 
 import pytest
+
 from morie.fn.nnt import number_needed_to_treat
 
 
@@ -21,5 +22,6 @@ class TestNNT:
     def test_equal_proportions_inf(self):
         """Equal proportions give RD=0, NNT=inf."""
         import numpy as np
+
         result = number_needed_to_treat(a=20, b=80, c=20, d=80)
         assert result.estimate == np.inf or result.estimate > 1e6

@@ -1,6 +1,7 @@
 """Tests for iinfo.item_information."""
+
 import numpy as np
-import pytest
+
 from morie.fn.iinfo import item_information
 
 
@@ -12,7 +13,7 @@ def test_iinfo_basic():
     b = np.random.default_rng(42).normal(0, 1, 100)
     result = item_information(y, theta, a, b)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_iinfo_edge():

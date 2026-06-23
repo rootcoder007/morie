@@ -1,6 +1,7 @@
 """Test hyidf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hyidf import hyidf
 
 

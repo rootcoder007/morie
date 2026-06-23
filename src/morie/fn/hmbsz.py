@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Batch size heuristic: power of two in [32, 512] balancing noise and throughput."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_batch_size_heuristic"]
@@ -30,7 +32,14 @@ def geron_batch_size_heuristic(n_train):
     n = len(n_train)
     result = float(np.mean(n_train))
     se = float(np.std(n_train, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Batch size heuristic: power of two in [32, 512] balancing noise and throughput"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Batch size heuristic: power of two in [32, 512] balancing noise and throughput",
+        }
+    )
 
 
 def cheatsheet():

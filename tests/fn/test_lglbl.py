@@ -1,5 +1,7 @@
 """Tests for morie.fn.lglbl -- label legislators."""
+
 import numpy as np
+
 from morie.fn.lglbl import label_legislators, lglbl
 
 

@@ -1,6 +1,9 @@
 """Tests for zero_inflated_negbin."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.zinb import zero_inflated_negbin
+
 
 class TestZINB:
     def test_basic(self):

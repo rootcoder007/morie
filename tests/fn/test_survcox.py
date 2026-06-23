@@ -1,6 +1,7 @@
 """Tests for survcox.cox_partial_likelihood."""
+
 import numpy as np
-import pytest
+
 from morie.fn.survcox import cox_partial_likelihood
 
 
@@ -12,7 +13,7 @@ def test_survcox_basic():
     beta = 0.8
     result = cox_partial_likelihood(time, event, X, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_survcox_edge():

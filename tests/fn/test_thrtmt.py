@@ -1,6 +1,7 @@
 """Tests for thrtmt.threshold_treatment_msm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.thrtmt import threshold_treatment_msm
 
 
@@ -12,7 +13,7 @@ def test_thrtmt_basic():
     threshold_grid = np.random.default_rng(42).normal(0, 1, 100)
     result = threshold_treatment_msm(y, A, W, threshold_grid)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_thrtmt_edge():

@@ -1,6 +1,7 @@
 """Tests for ksr067.kosorok_ch3_z_estimator_consistency_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr067 import kosorok_ch3_z_estimator_consistency_score
 
 
@@ -13,7 +14,7 @@ def test_ksr067_basic():
     l_tilde = np.random.default_rng(42).normal(0, 1, 100)
     result = kosorok_ch3_z_estimator_consistency_score(theta_n, eta_n, theta, eta, l_tilde)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr067_edge():

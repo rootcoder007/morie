@@ -1,6 +1,7 @@
 """Test ubimv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ubimv import ubimv
 
 

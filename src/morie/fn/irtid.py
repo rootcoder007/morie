@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Identification constraints for Bayesian IRT ideal points."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["irt_identification_constraints"]
@@ -34,7 +36,14 @@ def irt_identification_constraints(x_init, polarity_idx, pivot_idx):
     n = int(x_init) if x_init.ndim == 0 else len(x_init)
     result = float(np.mean(x_init))
     se = float(np.std(x_init, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Identification constraints for Bayesian IRT ideal points"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Identification constraints for Bayesian IRT ideal points",
+        }
+    )
 
 
 def cheatsheet():

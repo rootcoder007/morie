@@ -1,6 +1,7 @@
 """MSM with threshold-treatment regime."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["threshold_treatment_msm"]

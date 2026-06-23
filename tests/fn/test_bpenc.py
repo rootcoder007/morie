@@ -1,5 +1,7 @@
 """Tests for bits per character."""
+
 import pytest
+
 from morie.fn.bpenc import bits_per_char, bpenc
 
 

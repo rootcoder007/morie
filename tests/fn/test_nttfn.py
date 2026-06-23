@@ -1,8 +1,9 @@
 """Test ntt_transform."""
+
 import numpy as np
-import pytest
-from morie.fn.nttfn import ntt_transform
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.nttfn import ntt_transform
 
 
 class TestNttTransform:

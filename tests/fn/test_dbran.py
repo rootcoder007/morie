@@ -1,6 +1,8 @@
 """Test dbran."""
-import pytest
+
 import numpy as np
+import pytest
+
 from morie.fn.dbran import d_brane_tension
 
 

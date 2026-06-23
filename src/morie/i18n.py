@@ -187,8 +187,15 @@ HI: dict[str, str] = {
 }
 
 LOCALES: dict[str, dict[str, str]] = {
-    "en": EN, "fr": FR, "es": ES, "de": DE, "zh": ZH,
-    "pt": PT, "ja": JA, "ar": AR, "hi": HI,
+    "en": EN,
+    "fr": FR,
+    "es": ES,
+    "de": DE,
+    "zh": ZH,
+    "pt": PT,
+    "ja": JA,
+    "ar": AR,
+    "hi": HI,
 }
 
 

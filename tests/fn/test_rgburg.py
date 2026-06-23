@@ -1,6 +1,7 @@
 """Tests for rgburg.rangayyan_burg_method."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgburg import rangayyan_burg_method
 
 
@@ -11,7 +12,7 @@ def test_rgburg_basic():
     fs = 100.0
     result = rangayyan_burg_method(x, order, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgburg_edge():

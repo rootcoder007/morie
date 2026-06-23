@@ -1,6 +1,5 @@
 """Tests for morie.fn.laapx -- Laplace approximation."""
 
-import numpy as np
 from morie.fn.laapx import laplace_approximation
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Variational autoencoder ELBO: reconstruction minus KL to prior."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_vae_elbo"]
@@ -36,7 +38,14 @@ def geron_vae_elbo(x, mu, logvar, recon):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Variational autoencoder ELBO: reconstruction minus KL to prior"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Variational autoencoder ELBO: reconstruction minus KL to prior",
+        }
+    )
 
 
 def cheatsheet():

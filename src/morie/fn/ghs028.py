@@ -1,6 +1,7 @@
 """First and second moments of partitioning-set probabilities under a Polya tree process with parameters alpha_epsilon.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_polya_tree_first_two_moments"]
@@ -34,7 +35,14 @@ def ghosal_ch3_polya_tree_first_two_moments(alpha_epsilon, epsilon, m):
     n = len(alpha_epsilon)
     result = float(np.mean(alpha_epsilon))
     se = float(np.std(alpha_epsilon, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "First and second moments of partitioning-set probabilities under a Polya tree process with parameters alpha_epsilon."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "First and second moments of partitioning-set probabilities under a Polya tree process with parameters alpha_epsilon.",
+        }
+    )
 
 
 def cheatsheet():

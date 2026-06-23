@@ -1,6 +1,7 @@
 """Test bkflt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bkflt import bkflt
 
 

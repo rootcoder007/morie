@@ -1,6 +1,8 @@
 """Tests for glmmpoi."""
+
 import numpy as np
 import pytest
+
 from morie.fn.glmmpoi import glmmpoi
 
 
@@ -28,4 +30,5 @@ def test_glmmpoi_no_data():
 
 def test_glmmpoi_alias():
     from morie.fn.glmmpoi import glmmpoi
+
     assert glmmpoi is glmmpoi

@@ -80,4 +80,4 @@ censr = censored_regression
 
 
 def cheatsheet() -> str:
-    return 'censored_regression({}) -> Censored (Tobit) regression.'
+    return "censored_regression({}) -> Censored (Tobit) regression."

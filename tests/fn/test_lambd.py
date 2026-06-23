@@ -1,12 +1,15 @@
 """Tests for morie.fn.lambd — genomic inflation factor."""
+
 import numpy as np
 import pytest
+
 from morie.fn.lambd import genomic_inflation
 
 
 class TestGenomicInflation:
     def test_no_inflation(self):
         from scipy import stats
+
         chi2 = stats.chi2.rvs(1, size=1000, random_state=42)
         res = genomic_inflation(chi2_stats=chi2)
         assert res.estimate == pytest.approx(1.0, abs=0.15)

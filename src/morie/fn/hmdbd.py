@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Decision boundary for logistic regression: theta^T x = 0."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_decision_boundary"]
@@ -32,7 +34,14 @@ def geron_decision_boundary(theta, X_grid):
     n = len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Decision boundary for logistic regression: theta^T x = 0"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Decision boundary for logistic regression: theta^T x = 0",
+        }
+    )
 
 
 def cheatsheet():

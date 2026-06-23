@@ -119,9 +119,7 @@ def dml_irm(
             g0_hat[te] = _ridge(X[mask0], Y[mask0], Xte)
         e_hat[te] = np.clip(_logistic_ridge(Xtr, T_arr[tr], Xte), 0.01, 0.99)
 
-    psi = (g1_hat - g0_hat
-           + T_arr * (Y - g1_hat) / e_hat
-           - (1 - T_arr) * (Y - g0_hat) / (1 - e_hat))
+    psi = g1_hat - g0_hat + T_arr * (Y - g1_hat) / e_hat - (1 - T_arr) * (Y - g0_hat) / (1 - e_hat)
 
     theta = float(np.mean(psi))
     se = float(np.std(psi, ddof=1) / np.sqrt(n))

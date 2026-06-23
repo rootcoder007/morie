@@ -1,7 +1,6 @@
 """Tests for morie.fn.msshp -- Shepard diagram values"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msshp import shepard_diag
 

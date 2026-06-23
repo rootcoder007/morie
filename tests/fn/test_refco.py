@@ -1,7 +1,8 @@
 """Tests for refco.py - reflection coefficients."""
+
 import numpy as np
-import pytest
-from morie.fn.refco import reflection_coeff_fn, refco
+
+from morie.fn.refco import refco, reflection_coeff_fn
 
 
 def test_reflection_coefficients_returns_descriptive_result():

@@ -1,6 +1,7 @@
 """Tests for causrdd.causal_rdd_local_lin."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causrdd import causal_rdd_local_lin
 
 
@@ -12,7 +13,7 @@ def test_causrdd_basic():
     h = 0.3
     result = causal_rdd_local_lin(x, y, cutoff, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causrdd_edge():

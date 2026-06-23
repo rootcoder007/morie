@@ -1,6 +1,7 @@
 """Tests for lemR.leiden_grph."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lemR import leiden_grph
 
 
@@ -10,7 +11,7 @@ def test_lemR_basic():
     resolution = np.random.default_rng(42).normal(0, 1, 100)
     result = leiden_grph(A, resolution)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lemR_edge():

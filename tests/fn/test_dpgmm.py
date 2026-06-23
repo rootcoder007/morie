@@ -1,6 +1,7 @@
 """Tests for dpgmm.dp_gaussian_mixture."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpgmm import dp_gaussian_mixture
 
 
@@ -13,7 +14,7 @@ def test_dpgmm_basic():
     truncation = np.random.default_rng(42).normal(0, 1, 100)
     result = dp_gaussian_mixture(y, alpha, prior_mu, prior_sigma, truncation)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpgmm_edge():

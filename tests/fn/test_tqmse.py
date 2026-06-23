@@ -7,7 +7,6 @@ from morie.fn.tqmse import turboquant_mse
 
 
 class TestTurboquantMse:
-
     def test_returns_descriptive_result(self):
         x = np.random.default_rng(42).standard_normal(64)
         res = turboquant_mse(x, bits=3)

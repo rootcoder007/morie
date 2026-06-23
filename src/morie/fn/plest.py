@@ -64,7 +64,11 @@ def plest(
     se_approx = 1.0
 
     eps = 1e-5
-    h1 = (neg_ll(mle + np.array([eps] + [0] * (n_params - 1))) + neg_ll(mle - np.array([eps] + [0] * (n_params - 1))) - 2 * neg_ll(mle)) / eps ** 2
+    h1 = (
+        neg_ll(mle + np.array([eps] + [0] * (n_params - 1)))
+        + neg_ll(mle - np.array([eps] + [0] * (n_params - 1)))
+        - 2 * neg_ll(mle)
+    ) / eps**2
     if h1 > 0:
         se_approx = 1.0 / np.sqrt(h1)
 
@@ -73,9 +77,11 @@ def plest(
 
     for k, psi_val in enumerate(psi_range):
         if n_params > 1:
+
             def neg_ll_fixed(eta, pv=psi_val):
                 theta = np.concatenate([[pv], eta])
                 return -log_likelihood(x, theta)
+
             res = optimize.minimize(neg_ll_fixed, mle[1:], method="Nelder-Mead")
             profile_ll[k] = -res.fun
         else:

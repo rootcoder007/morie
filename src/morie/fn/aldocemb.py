@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Document-level embedding via mean-pool over contextual token vectors."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_document_embedding_pool"]
@@ -32,7 +34,14 @@ def alammar_document_embedding_pool(token_embeddings, attention_mask):
     n = len(token_embeddings)
     result = float(np.mean(token_embeddings))
     se = float(np.std(token_embeddings, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Document-level embedding via mean-pool over contextual token vectors"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Document-level embedding via mean-pool over contextual token vectors",
+        }
+    )
 
 
 def cheatsheet():

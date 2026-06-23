@@ -1,8 +1,8 @@
 """PowerAndDesign expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_27_unnumbered_92"]
 
@@ -41,7 +41,12 @@ def statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_27_unnu
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "PowerAndDesign expression (auto-extracted; see ref)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PowerAndDesign expression (auto-extracted; see ref).",
+        },
     )
 
 

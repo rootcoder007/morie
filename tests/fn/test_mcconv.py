@@ -1,6 +1,8 @@
 """Tests for mcconv."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mcconv import mcconv
 
 
@@ -28,4 +30,5 @@ def test_mcconv_no_data():
 
 def test_mcconv_alias():
     from morie.fn.mcconv import mcconv
+
     assert mcconv is mcconv

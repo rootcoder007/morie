@@ -1,6 +1,8 @@
 """Tests for sbpiv."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sbpiv import sbpiv
 
 
@@ -28,4 +30,5 @@ def test_sbpiv_no_data():
 
 def test_sbpiv_alias():
     from morie.fn.sbpiv import sbpiv
+
     assert sbpiv is sbpiv

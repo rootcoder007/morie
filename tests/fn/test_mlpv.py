@@ -1,6 +1,7 @@
 """Tests for mlpv.multilevel_pseudo_variance_ratio."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mlpv import multilevel_pseudo_variance_ratio
 
 
@@ -11,7 +12,7 @@ def test_mlpv_basic():
     cluster = np.random.default_rng(42).normal(0, 1, 100)
     result = multilevel_pseudo_variance_ratio(y, X, cluster)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mlpv_edge():

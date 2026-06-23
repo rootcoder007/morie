@@ -50,4 +50,4 @@ recid = recidivism_rate
 
 
 def cheatsheet() -> str:
-    return 'recidivism_rate({}) -> General recidivism rate.'
+    return "recidivism_rate({}) -> General recidivism rate."

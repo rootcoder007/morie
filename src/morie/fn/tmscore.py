@@ -1,6 +1,7 @@
 """TM-score for protein structure similarity."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tm_score"]
@@ -32,7 +33,9 @@ def tm_score(coords1, coords2):
     n = len(coords1)
     result = float(np.mean(coords1))
     se = float(np.std(coords1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TM-score for protein structure similarity"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "TM-score for protein structure similarity"}
+    )
 
 
 def cheatsheet():

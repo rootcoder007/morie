@@ -67,7 +67,7 @@ def baysa(
         scale_prior = np.var(y) / p * (df_prior - 2.0) / df_prior
         scale_prior = max(scale_prior, 1e-8)
 
-    ztz = np.sum(Z ** 2, axis=0)
+    ztz = np.sum(Z**2, axis=0)
 
     g = np.zeros(p)
     var_e = np.var(y) * 0.5
@@ -94,7 +94,7 @@ def baysa(
             var_m[j] = scale_post / rng.gamma(shape)
 
         shape_e = (n - 2.0) / 2.0
-        scale_e = np.sum(e ** 2) / 2.0
+        scale_e = np.sum(e**2) / 2.0
         if shape_e > 0:
             var_e = scale_e / rng.gamma(shape_e)
 

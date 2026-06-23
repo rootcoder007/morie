@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Knee-joint cartilage pathology classification via VAG features."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_knee_classify"]
@@ -34,7 +36,14 @@ def rangayyan_knee_classify(vag, fs, labels):
     n = int(vag) if vag.ndim == 0 else len(vag)
     result = float(np.mean(vag))
     se = float(np.std(vag, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Knee-joint cartilage pathology classification via VAG features"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Knee-joint cartilage pathology classification via VAG features",
+        }
+    )
 
 
 def cheatsheet():

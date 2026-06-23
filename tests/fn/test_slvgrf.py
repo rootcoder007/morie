@@ -1,6 +1,7 @@
 """Tests for slvgrf.sliced_grf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.slvgrf import sliced_grf
 
 
@@ -12,7 +13,7 @@ def test_slvgrf_basic():
     time = np.linspace(0, 10, 100)
     result = sliced_grf(y, D, X, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_slvgrf_edge():

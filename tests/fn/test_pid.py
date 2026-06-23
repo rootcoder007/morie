@@ -1,5 +1,7 @@
 """Tests for morie.fn.pid."""
+
 import numpy as np
+
 from morie.fn.pid import pid
 
 
@@ -13,6 +15,7 @@ def test_pid_smoke():
 
 def test_cheatsheet():
     from morie.fn.pid import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,6 +1,7 @@
 """Tests for rglevd.rangayyan_levinson_durbin."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rglevd import rangayyan_levinson_durbin
 
 
@@ -10,7 +11,7 @@ def test_rglevd_basic():
     order = 4
     result = rangayyan_levinson_durbin(acf, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rglevd_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Warm restarts: cosine decay with periodic restarts."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_warm_restarts"]
@@ -38,7 +40,9 @@ def geron_warm_restarts(t, T0, factor, eta_max, eta_min):
     n = len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Warm restarts: cosine decay with periodic restarts"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Warm restarts: cosine decay with periodic restarts"}
+    )
 
 
 def cheatsheet():

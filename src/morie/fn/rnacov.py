@@ -1,6 +1,7 @@
 """Covariance model RNA family."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rna_covariance"]

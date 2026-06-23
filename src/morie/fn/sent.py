@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Descriptive statistics for sentence lengths (months)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -44,4 +45,4 @@ sent = sentence_stats
 
 
 def cheatsheet() -> str:
-    return 'sentence_stats({}) -> Sentence length distribution stats.'
+    return "sentence_stats({}) -> Sentence length distribution stats."

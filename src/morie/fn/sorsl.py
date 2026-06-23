@@ -46,9 +46,7 @@ def sor_solve(
     x = np.zeros(n)
     bnorm = np.linalg.norm(b)
     if bnorm < 1e-15:
-        return DescriptiveResult(
-            name="SOR", value=0.0, extra={"x": x, "iterations": 0, "omega": omega}
-        )
+        return DescriptiveResult(name="SOR", value=0.0, extra={"x": x, "iterations": 0, "omega": omega})
     for it in range(1, maxiter + 1):
         x_old = x.copy()
         for i in range(n):

@@ -1,6 +1,7 @@
 """Tests for kmglv.kamath_glove_cost."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmglv import kamath_glove_cost
 
 
@@ -15,7 +16,7 @@ def test_kmglv_basic():
     alpha = 0.05
     result = kamath_glove_cost(X, W, W_tilde, b, b_tilde, x_max, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmglv_edge():

@@ -1,6 +1,7 @@
 """Tests for morie.fn.ess -- MCMC effective sample size."""
 
 import numpy as np
+
 from morie.fn.ess import effective_sample_size
 
 

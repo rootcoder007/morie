@@ -94,7 +94,10 @@ def panel_regression(
 
         y_dm = y - y_bar_e
         X_dm = X - X_bar_e
-        sigma2_e = float((y_dm - X_dm @ np.linalg.lstsq(X_dm, y_dm, rcond=None)[0]) @ (y_dm - X_dm @ np.linalg.lstsq(X_dm, y_dm, rcond=None)[0])) / max(n - N - p, 1)
+        sigma2_e = float(
+            (y_dm - X_dm @ np.linalg.lstsq(X_dm, y_dm, rcond=None)[0])
+            @ (y_dm - X_dm @ np.linalg.lstsq(X_dm, y_dm, rcond=None)[0])
+        ) / max(n - N - p, 1)
 
         y_bar_all = np.mean(y)
         X_bar_all = np.mean(X, axis=0)
@@ -102,7 +105,11 @@ def panel_regression(
         between_X = np.array([np.mean(X[entity == e], axis=0) for e in unique_ent])
         bX_dm = between_X - X_bar_all
         by_dm = between_y - y_bar_all
-        sigma2_b_resid = float(by_dm @ by_dm - by_dm @ bX_dm @ np.linalg.lstsq(bX_dm, by_dm, rcond=None)[0]) / max(N - p - 1, 1) if p + 1 < N else sigma2_e
+        sigma2_b_resid = (
+            float(by_dm @ by_dm - by_dm @ bX_dm @ np.linalg.lstsq(bX_dm, by_dm, rcond=None)[0]) / max(N - p - 1, 1)
+            if p + 1 < N
+            else sigma2_e
+        )
         sigma2_u = max(sigma2_b_resid - sigma2_e / np.mean(T_e[:N]), 0)
 
         theta = np.zeros(n)

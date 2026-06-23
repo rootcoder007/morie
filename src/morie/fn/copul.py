@@ -10,6 +10,7 @@ inversion (Nelsen 2006, *An Introduction to Copulas*, 2nd ed.):
 
 All three families have closed-form tau-to-parameter maps.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -38,8 +39,7 @@ def copula_estimation(x, y, family: str = "gaussian"):
     y = np.asarray(y, dtype=float).ravel()
     n = min(x.size, y.size)
     if n < 3:
-        return RichResult(payload={"estimate": float("nan"), "n": int(n),
-                                   "method": f"copula-{family} (n<3)"})
+        return RichResult(payload={"estimate": float("nan"), "n": int(n), "method": f"copula-{family} (n<3)"})
     tau, _ = stats.kendalltau(x[:n], y[:n])
     family = family.lower()
     if family == "gaussian":
@@ -49,18 +49,23 @@ def copula_estimation(x, y, family: str = "gaussian"):
     elif family == "gumbel":
         theta = float(1.0 / (1 - tau)) if tau < 1 else float("inf")
     else:
-        raise ValueError(f"Unknown copula family {family!r}; "
-                         "use gaussian / clayton / gumbel.")
+        raise ValueError(f"Unknown copula family {family!r}; use gaussian / clayton / gumbel.")
     # empirical pseudo-observations
     u = (stats.rankdata(x[:n]) - 0.5) / n
     v = (stats.rankdata(y[:n]) - 0.5) / n
-    se = float(np.sqrt((1 - tau ** 2) / n))
-    return RichResult(payload={
-        "estimate": theta, "kendall_tau": float(tau),
-        "se_tau": se, "u": u, "v": v, "family": family,
-        "n": int(n),
-        "method": f"Copula {family} (rank-based; Nelsen 2006)",
-    })
+    se = float(np.sqrt((1 - tau**2) / n))
+    return RichResult(
+        payload={
+            "estimate": theta,
+            "kendall_tau": float(tau),
+            "se_tau": se,
+            "u": u,
+            "v": v,
+            "family": family,
+            "n": int(n),
+            "method": f"Copula {family} (rank-based; Nelsen 2006)",
+        }
+    )
 
 
 # CANONICAL TEST

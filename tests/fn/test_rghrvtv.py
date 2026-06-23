@@ -1,6 +1,7 @@
 """Tests for rghrvtv.rangayyan_hrv_time_varying."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rghrvtv import rangayyan_hrv_time_varying
 
 
@@ -11,7 +12,7 @@ def test_rghrvtv_basic():
     window_len = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_hrv_time_varying(rr_intervals, fs_resamp, window_len)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rghrvtv_edge():

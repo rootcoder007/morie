@@ -1,6 +1,7 @@
 """Tests for spwgts.spline_weights."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spwgts import spline_weights
 
 
@@ -11,7 +12,7 @@ def test_spwgts_basic():
     knots = np.random.default_rng(42).normal(0, 1, 100)
     result = spline_weights(A, H, knots)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spwgts_edge():

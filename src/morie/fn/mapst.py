@@ -4,6 +4,8 @@
 import numpy as np
 
 from ._containers import ESRes
+
+
 def map_estimate(
     x,
     prior_mu: float = 0.0,

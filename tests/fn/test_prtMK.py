@@ -1,6 +1,7 @@
 """Tests for prtMK.prewhitening_mk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.prtMK import prewhitening_mk
 
 
@@ -9,7 +10,7 @@ def test_prtMK_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = prewhitening_mk(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_prtMK_edge():

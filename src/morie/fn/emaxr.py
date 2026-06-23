@@ -1,6 +1,7 @@
 """EM step (single iteration) for random-effects variance."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["em_step_random_effects"]
@@ -38,7 +39,14 @@ def em_step_random_effects(y, X, cluster, sigma2_u, sigma2_e):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "EM step (single iteration) for random-effects variance"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "EM step (single iteration) for random-effects variance",
+        }
+    )
 
 
 def cheatsheet():

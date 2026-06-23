@@ -1,6 +1,7 @@
 """Tests for km051.kamath_ch3_qa_trigger_template."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km051 import kamath_ch3_qa_trigger_template
 
 
@@ -12,7 +13,7 @@ def test_km051_basic():
     z_adv = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ch3_qa_trigger_template(x, y, T, z_adv)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km051_edge():

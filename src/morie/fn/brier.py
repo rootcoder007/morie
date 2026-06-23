@@ -155,7 +155,7 @@ def brier(
                 else:
                     w = 1.0
                 bs += w * s_hat[i] ** 2
-                bs_null += w * s_null ** 2
+                bs_null += w * s_null**2
             elif time[i] > t_eval:
                 # Subject still event-free at eval_time
                 bs += (1.0 - s_hat[i]) ** 2

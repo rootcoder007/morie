@@ -1,6 +1,7 @@
 """Test ppann."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppann import ppann
 
 

@@ -1,6 +1,7 @@
 """Test tsslr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tsslr import tsslr
 
 

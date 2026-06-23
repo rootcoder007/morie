@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Random forest for genomic prediction (Breiman 2001)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -28,17 +29,20 @@ def _build_tree(X, y, rng, max_depth, min_samples, mtry):
                 right = idx[X[idx, f] > thr]
                 if len(left) < min_samples or len(right) < min_samples:
                     continue
-                ssE = (float(np.var(y[left])) * len(left)
-                       + float(np.var(y[right])) * len(right))
+                ssE = float(np.var(y[left])) * len(left) + float(np.var(y[right])) * len(right)
                 gain = cur_var - ssE
                 if best is None or gain > best[0]:
                     best = (gain, f, thr, left, right)
         if best is None:
             return {"leaf": True, "value": float(np.mean(y[idx]))}
         _, f, thr, left, right = best
-        return {"leaf": False, "feature": int(f), "threshold": float(thr),
-                "left": split(left, depth + 1),
-                "right": split(right, depth + 1)}
+        return {
+            "leaf": False,
+            "feature": int(f),
+            "threshold": float(thr),
+            "left": split(left, depth + 1),
+            "right": split(right, depth + 1),
+        }
 
     return split(np.arange(n), 0)
 
@@ -55,9 +59,9 @@ def _predict_tree(node, X):
     return out
 
 
-def random_forest_genomic(x, y, markers, n_trees: int = 100,
-                          max_depth: int = 10, min_samples: int = 2,
-                          mtry: int | None = None, seed: int = 0):
+def random_forest_genomic(
+    x, y, markers, n_trees: int = 100, max_depth: int = 10, min_samples: int = 2, mtry: int | None = None, seed: int = 0
+):
     """Random forest regression on the marker matrix.
 
     Uses scikit-learn's RandomForestRegressor if available; otherwise a
@@ -98,10 +102,15 @@ def random_forest_genomic(x, y, markers, n_trees: int = 100,
     method_used = "sklearn RandomForestRegressor"
     try:
         from sklearn.ensemble import RandomForestRegressor
+
         rf = RandomForestRegressor(
-            n_estimators=n_trees, max_depth=max_depth,
-            min_samples_split=min_samples, max_features=mtry,
-            oob_score=True, random_state=seed, n_jobs=1,
+            n_estimators=n_trees,
+            max_depth=max_depth,
+            min_samples_split=min_samples,
+            max_features=mtry,
+            oob_score=True,
+            random_state=seed,
+            n_jobs=1,
         ).fit(feats, y)
         y_hat = rf.predict(feats)
         oob = float(rf.oob_score_) if hasattr(rf, "oob_score_") else float("nan")
@@ -114,9 +123,9 @@ def random_forest_genomic(x, y, markers, n_trees: int = 100,
         imp = np.zeros(p)
         for _ in range(n_trees):
             boot = rng.integers(0, n, size=n)
-            oob_mask = np.ones(n, dtype=bool); oob_mask[boot] = False
-            tree = _build_tree(feats[boot], y[boot], rng, max_depth,
-                               min_samples, mtry)
+            oob_mask = np.ones(n, dtype=bool)
+            oob_mask[boot] = False
+            tree = _build_tree(feats[boot], y[boot], rng, max_depth, min_samples, mtry)
             trees.append(tree)
             if oob_mask.any():
                 preds = _predict_tree(tree, feats[oob_mask])
@@ -124,11 +133,10 @@ def random_forest_genomic(x, y, markers, n_trees: int = 100,
                 oob_count[oob_mask] += 1
         oob_count = np.where(oob_count == 0, 1, oob_count)
         oob_pred_avg = oob_preds / oob_count
-        oob = float(1.0 - np.sum((y - oob_pred_avg) ** 2)
-                    / max(np.sum((y - y.mean()) ** 2), 1e-12))
+        oob = float(1.0 - np.sum((y - oob_pred_avg) ** 2) / max(np.sum((y - y.mean()) ** 2), 1e-12))
         y_hat = np.mean([_predict_tree(t, feats) for t in trees], axis=0)
     resid = y - y_hat
-    se = float(np.sqrt(np.mean(resid ** 2)))
+    se = float(np.sqrt(np.mean(resid**2)))
     return RichResult(
         title="Random-forest genomic predictor",
         summary_lines=[

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Double DQN decouples action selection from evaluation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_double_dqn_target"]
@@ -38,7 +40,14 @@ def geron_double_dqn_target(Q_online, Q_target, s_next, r, gamma):
     n = len(Q_online)
     result = float(np.mean(Q_online))
     se = float(np.std(Q_online, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Double DQN decouples action selection from evaluation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Double DQN decouples action selection from evaluation",
+        }
+    )
 
 
 def cheatsheet():

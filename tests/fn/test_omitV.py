@@ -1,6 +1,7 @@
 """Tests for omitV.omitted_variable_bias."""
+
 import numpy as np
-import pytest
+
 from morie.fn.omitV import omitted_variable_bias
 
 
@@ -10,7 +11,7 @@ def test_omitV_basic():
     beta_yu_given_x = np.random.default_rng(42).normal(0, 1, 100)
     result = omitted_variable_bias(beta_xu, beta_yu_given_x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_omitV_edge():

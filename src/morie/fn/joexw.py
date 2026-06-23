@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Expanding-window CV: training set grows, validation fixed-size, walks forward."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_expanding_window_cv"]
@@ -38,7 +40,14 @@ def joseph_expanding_window_cv(y, T0, step, H, K):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Expanding-window CV: training set grows, validation fixed-size, walks forward"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Expanding-window CV: training set grows, validation fixed-size, walks forward",
+        }
+    )
 
 
 def cheatsheet():

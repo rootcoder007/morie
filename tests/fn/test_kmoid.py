@@ -1,8 +1,9 @@
 """Tests for morie.fn.kmoid -- K-medoids (PAM)."""
 
 import numpy as np
-from morie.fn.kmoid import kmedoids, kmoid
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.kmoid import kmedoids, kmoid
 
 
 class TestKmedoids:
@@ -28,7 +29,9 @@ class TestKmedoids:
         X = rng.standard_normal((20, 2))
         res = kmedoids(X, k=2)
         for idx in res.extra["medoid_indices"]:
-            np.testing.assert_array_equal(res.extra["medoids"][np.where(res.extra["medoid_indices"] == idx)[0][0]], X[idx])
+            np.testing.assert_array_equal(
+                res.extra["medoids"][np.where(res.extra["medoid_indices"] == idx)[0][0]], X[idx]
+            )
 
     def test_cost_positive(self):
         rng = np.random.default_rng(42)

@@ -1,7 +1,9 @@
 """Test dtft_compute (dtft)."""
+
 import numpy as np
-from morie.fn.dtft import dtft_compute, dtft
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.dtft import dtft, dtft_compute
 
 
 class TestDtft:

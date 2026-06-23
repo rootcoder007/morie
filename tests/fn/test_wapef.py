@@ -1,6 +1,8 @@
 """Test wapef."""
+
 import numpy as np
 import pytest
+
 from morie.fn.wapef import wapef
 
 
@@ -11,8 +13,8 @@ def test_wapef_basic():
 
     r = wapef(y_true, y_pred)
     assert isinstance(r.value, float)
-    assert isinstance(r.extra['wape'], float)
-    assert isinstance(r.extra['mape'], float)
+    assert isinstance(r.extra["wape"], float)
+    assert isinstance(r.extra["mape"], float)
 
 
 def test_wapef_perfect():
@@ -31,7 +33,7 @@ def test_wapef_with_weights():
     weights = np.array([1, 2, 1, 3])
 
     r = wapef(y_true, y_pred, weights=weights)
-    assert isinstance(r.extra['wmape'], float)
+    assert isinstance(r.extra["wmape"], float)
 
 
 def test_wapef_validation():

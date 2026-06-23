@@ -1,6 +1,7 @@
 """Tests for morie.fn.rsk_ci -- risk ratio with CI."""
 
 import pytest
+
 from morie.fn.rsk_ci import risk_ratio_ci
 
 

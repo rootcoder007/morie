@@ -91,4 +91,4 @@ lsbemb = lsb_embed
 
 
 def cheatsheet() -> str:
-    return 'lsb_embed({}) -> LSB steganography.'
+    return "lsb_embed({}) -> LSB steganography."

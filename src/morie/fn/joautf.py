@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Autoformer: seasonal/trend decomposition + FFT-based lagged-similarity attention."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_autoformer"]
@@ -34,7 +36,14 @@ def joseph_autoformer(x, horizon, top_k_lags):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Autoformer: seasonal/trend decomposition + FFT-based lagged-similarity attention"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Autoformer: seasonal/trend decomposition + FFT-based lagged-similarity attention",
+        }
+    )
 
 
 def cheatsheet():

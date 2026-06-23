@@ -87,4 +87,4 @@ rey = linear_regression
 
 
 def cheatsheet() -> str:
-    return 'linear_regression({}) -> OLS linear regression.'
+    return "linear_regression({}) -> OLS linear regression."

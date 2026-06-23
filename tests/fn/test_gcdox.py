@@ -1,6 +1,7 @@
 """Test gcdox."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcdox import gcdox
 
 

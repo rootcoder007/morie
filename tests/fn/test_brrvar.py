@@ -1,6 +1,7 @@
 """Tests for brrvar.brr_variance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.brrvar import brr_variance
 
 
@@ -11,7 +12,7 @@ def test_brrvar_basic():
     replicates = np.random.default_rng(42).normal(0, 1, 100)
     result = brr_variance(y, weights, replicates)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_brrvar_edge():

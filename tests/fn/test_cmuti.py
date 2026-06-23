@@ -1,6 +1,7 @@
 """Tests for cmuti.copula_mutual_information."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cmuti import copula_mutual_information
 
 
@@ -13,7 +14,7 @@ def test_cmuti_basic():
     theta = 0.0
     result = copula_mutual_information(y, u, v, copula, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cmuti_edge():

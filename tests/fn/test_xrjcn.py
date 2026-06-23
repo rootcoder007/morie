@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrjcn -- Join count statistic"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrjcn import join_count
 

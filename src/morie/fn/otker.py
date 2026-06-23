@@ -1,6 +1,7 @@
 """Kernel-mean approx of EMD via positive-definite cost."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_kernel_emd_approx"]
@@ -36,7 +37,9 @@ def ot_kernel_emd_approx(X, Y, kernel, epsilon):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Kernel-mean approx of EMD via positive-definite cost"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Kernel-mean approx of EMD via positive-definite cost"}
+    )
 
 
 def cheatsheet():

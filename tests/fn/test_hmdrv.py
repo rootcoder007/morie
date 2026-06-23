@@ -1,6 +1,7 @@
 """Tests for hmdrv.geron_diffusion_reverse."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmdrv import geron_diffusion_reverse
 
 
@@ -11,7 +12,7 @@ def test_hmdrv_basic():
     T = np.random.default_rng(43).integers(0, 2, 100)
     result = geron_diffusion_reverse(x_T, model, T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmdrv_edge():

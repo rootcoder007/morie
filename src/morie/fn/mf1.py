@@ -51,7 +51,9 @@ def multiclass_f1(y_true, y_pred, *, average="macro", labels=None, **kwargs) -> 
         fp_total += fp
         fn_total += fn
     if average == "micro":
-        result = 2 * tp_total / (2 * tp_total + fp_total + fn_total) if (2 * tp_total + fp_total + fn_total) > 0 else 0.0
+        result = (
+            2 * tp_total / (2 * tp_total + fp_total + fn_total) if (2 * tp_total + fp_total + fn_total) > 0 else 0.0
+        )
     elif average == "weighted":
         total_sup = sum(supports)
         result = sum(f * s for f, s in zip(per_class_f1, supports)) / total_sup if total_sup > 0 else 0.0

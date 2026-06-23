@@ -1,6 +1,7 @@
 """Test nbcvd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nbcvd import nbcvd
 
 

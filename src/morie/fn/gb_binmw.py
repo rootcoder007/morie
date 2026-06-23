@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mann-Whitney U relation to Wilcoxon rank-sum W: U = W - m(m+1)/2."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_mw_binomial_link"]
@@ -32,7 +34,14 @@ def gibbons_mw_binomial_link(W, m):
     n = int(W) if W.ndim == 0 else len(W)
     result = float(np.mean(W))
     se = float(np.std(W, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mann-Whitney U relation to Wilcoxon rank-sum W: U = W - m(m+1)/2"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mann-Whitney U relation to Wilcoxon rank-sum W: U = W - m(m+1)/2",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Q-Former: learnable query tokens attend to visual features via cross-attention."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_q_former"]
@@ -32,7 +34,14 @@ def kamath_q_former(queries, visual_features):
     n = len(queries)
     result = float(np.mean(queries))
     se = float(np.std(queries, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Q-Former: learnable query tokens attend to visual features via cross-attention"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Q-Former: learnable query tokens attend to visual features via cross-attention",
+        }
+    )
 
 
 def cheatsheet():

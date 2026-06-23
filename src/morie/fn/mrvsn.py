@@ -89,4 +89,4 @@ mrvsn = granger_causality
 
 
 def cheatsheet() -> str:
-    return 'granger_causality({}) -> Granger causality test.'
+    return "granger_causality({}) -> Granger causality test."

@@ -7,7 +7,6 @@ from morie.fn.qjl import qjl_project
 
 
 class TestQjlProject:
-
     def test_returns_result(self):
         x = np.random.default_rng(42).standard_normal(128)
         res = qjl_project(x, d_target=32)

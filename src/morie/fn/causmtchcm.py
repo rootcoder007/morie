@@ -1,6 +1,7 @@
 """Caliper-matching variant with logit-PS distance cap."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_caliper_matching"]
@@ -34,7 +35,9 @@ def causal_caliper_matching(ps, treat, caliper):
     n = len(ps)
     result = float(np.mean(ps))
     se = float(np.std(ps, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Caliper-matching variant with logit-PS distance cap"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Caliper-matching variant with logit-PS distance cap"}
+    )
 
 
 def cheatsheet():

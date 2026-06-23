@@ -1,6 +1,7 @@
 """Schwarz inequality for real functions a(t) and b(t).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_schwarz_inequality_real"]
@@ -34,7 +35,9 @@ def rangayyan_ch4_schwarz_inequality_real(a, b, t):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Schwarz inequality for real functions a(t) and b(t)."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Schwarz inequality for real functions a(t) and b(t)."}
+    )
 
 
 def cheatsheet():

@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.bdd import bunching_did, bdd
+
 from morie.fn._containers import ESRes
+from morie.fn.bdd import bdd, bunching_did
 
 
 class TestBunchingDiD:

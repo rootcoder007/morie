@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 5.5: bias and variance of boundary-free KDE."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_thm5_5_bdfree_kde_bv"]
@@ -34,7 +36,9 @@ def fauzi_thm5_5_bdfree_kde_bv(x, bandwidth, g_func):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Theorem 5.5: bias and variance of boundary-free KDE"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Theorem 5.5: bias and variance of boundary-free KDE"}
+    )
 
 
 def cheatsheet():

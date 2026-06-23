@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Random forest: bagging of decision trees with random feature splits."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_random_forest"]
@@ -38,7 +40,14 @@ def geron_random_forest(X, y, n_estimators, max_features, seed):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Random forest: bagging of decision trees with random feature splits"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Random forest: bagging of decision trees with random feature splits",
+        }
+    )
 
 
 def cheatsheet():

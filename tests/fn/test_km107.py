@@ -1,6 +1,7 @@
 """Tests for km107.kamath_ch6_pii_likelihood."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km107 import kamath_ch6_pii_likelihood
 
 
@@ -13,7 +14,7 @@ def test_km107_basic():
     L_r = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ch6_pii_likelihood(a_m, A, x, L_q, L_r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km107_edge():

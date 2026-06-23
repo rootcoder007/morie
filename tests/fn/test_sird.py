@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.sird import sir_model
 
 
@@ -21,4 +22,4 @@ class TestSIRModel:
     def test_r0_computed(self):
         """R0 = beta/gamma = 3.0."""
         res = sir_model(beta=0.3, gamma=0.1)
-        assert res.R0 == pytest.approx(3.0)
+        assert pytest.approx(3.0) == res.R0

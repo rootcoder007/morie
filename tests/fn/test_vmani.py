@@ -1,6 +1,7 @@
 """Test vmani."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmani import vmani
 
 

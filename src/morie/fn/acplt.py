@@ -6,6 +6,7 @@ from __future__ import annotations
 from typing import Any, Union
 
 import numpy as np
+
 from ._richresult import RichResult
 
 
@@ -28,7 +29,9 @@ def autocorrelation_data(
     mean_x = np.mean(x)
     c0 = float(np.sum((x - mean_x) ** 2))
     if c0 == 0:
-        return RichResult(payload={"lags": list(range(max_lag + 1)), "acf": [1.0] + [0.0] * max_lag, "first_below_threshold": 1})
+        return RichResult(
+            payload={"lags": list(range(max_lag + 1)), "acf": [1.0] + [0.0] * max_lag, "first_below_threshold": 1}
+        )
 
     acf_vals = []
     for lag in range(max_lag + 1):

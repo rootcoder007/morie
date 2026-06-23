@@ -1,6 +1,7 @@
 """Stochastic block model fit."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["stochastic_block_model"]

@@ -94,8 +94,7 @@ def simin(
 
     b0 = np.zeros(p)
     b0[0] = 1.0
-    res = minimize(obj, b0, method="L-BFGS-B",
-                   options={"maxiter": 100, "ftol": 1e-8})
+    res = minimize(obj, b0, method="L-BFGS-B", options={"maxiter": 100, "ftol": 1e-8})
     beta = res.x / (np.linalg.norm(res.x) + 1e-15)
 
     idx_final = X @ beta

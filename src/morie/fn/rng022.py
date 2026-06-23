@@ -1,6 +1,8 @@
 """Pearson correlation coefficient as normalized covariance.."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_correlation_coefficient"]
@@ -34,9 +36,23 @@ def rangayyan_ch3_correlation_coefficient(C_xy, sigma_x, sigma_y):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(C_xy), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Pearson correlation coefficient as normalized covariance."})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Pearson correlation coefficient as normalized covariance.",
+            }
+        )
     result = stats.spearmanr(C_xy[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Pearson correlation coefficient as normalized covariance."})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Pearson correlation coefficient as normalized covariance.",
+        }
+    )
 
 
 def cheatsheet():

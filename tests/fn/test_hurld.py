@@ -1,6 +1,9 @@
 """Tests for hurdle_model."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.hurld import hurdle_model
+
 
 class TestHurdle:
     def test_basic(self):

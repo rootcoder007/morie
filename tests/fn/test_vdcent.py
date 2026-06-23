@@ -1,6 +1,8 @@
 """Tests for vdcent."""
+
 import numpy as np
 import pytest
+
 from morie.fn.vdcent import vdcent
 
 
@@ -28,4 +30,5 @@ def test_vdcent_no_data():
 
 def test_vdcent_alias():
     from morie.fn.vdcent import vdcent
+
     assert vdcent is vdcent

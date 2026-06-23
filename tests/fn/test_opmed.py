@@ -1,6 +1,7 @@
 """Test opmed."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opmed import opmed
 
 

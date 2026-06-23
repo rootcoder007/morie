@@ -1,6 +1,7 @@
 """Squared magnitude (power spectrum) of a signal with wavelet plus echo.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_power_spectrum_signal_echo"]
@@ -36,7 +37,14 @@ def rangayyan_ch4_power_spectrum_signal_echo(H, a, n_0, z):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Squared magnitude (power spectrum) of a signal with wavelet plus echo."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Squared magnitude (power spectrum) of a signal with wavelet plus echo.",
+        }
+    )
 
 
 def cheatsheet():

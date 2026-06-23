@@ -1,5 +1,7 @@
 """Tests for morie.fn.plam — plot A-M summary."""
+
 import numpy as np
+
 from morie.fn.plam import plam
 
 

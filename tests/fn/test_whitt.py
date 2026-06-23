@@ -1,7 +1,6 @@
 """Tests for morie.fn.whitt — White's test."""
 
 import numpy as np
-import pytest
 
 from morie.fn.whitt import white_test
 

@@ -1,6 +1,7 @@
 """Tests for morie.fn.nutss -- No-U-Turn Sampler."""
 
 import numpy as np
+
 from morie.fn.nutss import nuts_sampler
 
 
@@ -25,9 +26,7 @@ def test_correct_shape():
 
 
 def test_samples_near_target_mean():
-    result = nuts_sampler(
-        _log_normal, _grad_normal, [0.0, 0.0], n_iter=500, epsilon=0.1
-    )
+    result = nuts_sampler(_log_normal, _grad_normal, [0.0, 0.0], n_iter=500, epsilon=0.1)
     means = np.mean(result["samples"][100:], axis=0)
     assert np.all(np.abs(means) < 1.0)
 

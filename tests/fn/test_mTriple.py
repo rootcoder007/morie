@@ -1,6 +1,7 @@
 """Tests for mTriple.triply_robust_mediation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mTriple import triply_robust_mediation
 
 
@@ -12,7 +13,7 @@ def test_mTriple_basic():
     C = np.random.default_rng(42).normal(0, 1, 100)
     result = triply_robust_mediation(Y, X, M, C)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mTriple_edge():

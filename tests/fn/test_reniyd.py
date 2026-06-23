@@ -1,6 +1,5 @@
 """Tests for reniyd.renyi_entropy."""
-import numpy as np
-import pytest
+
 from morie.fn.reniyd import renyi_entropy
 
 
@@ -10,7 +9,7 @@ def test_reniyd_basic():
     alpha = 0.05
     result = renyi_entropy(p, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_reniyd_edge():

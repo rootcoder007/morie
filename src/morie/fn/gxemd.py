@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Genotype-by-environment interaction (G×E) main-and-interaction model."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -62,8 +63,8 @@ def gxe_interaction_model(x, y, env):
     ge_eff = cell_mean - mu - g_eff[:, None] - e_eff[None, :]
     # Sums of squares
     n_per_cell = cell_count.mean() if cell_count.sum() else 1
-    ss_g = float(np.sum(cell_count.sum(axis=1) * g_eff ** 2))
-    ss_e = float(np.sum(cell_count.sum(axis=0) * e_eff ** 2))
+    ss_g = float(np.sum(cell_count.sum(axis=1) * g_eff**2))
+    ss_e = float(np.sum(cell_count.sum(axis=0) * e_eff**2))
     valid = ~np.isnan(ge_eff)
     ss_ge = float(np.sum(cell_count[valid] * ge_eff[valid] ** 2))
     # Residual (within-cell) SS
@@ -73,7 +74,7 @@ def gxe_interaction_model(x, y, env):
             mask = (g_id == gl) & (e_id == el)
             if mask.any():
                 resid[mask] = yv[mask] - cell_mean[i, j]
-    ss_eps = float(np.sum(resid ** 2))
+    ss_eps = float(np.sum(resid**2))
     df_g = max(G - 1, 1)
     df_e = max(E - 1, 1)
     df_ge = max((G - 1) * (E - 1), 1)

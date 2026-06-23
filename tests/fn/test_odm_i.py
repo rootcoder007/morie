@@ -1,13 +1,13 @@
 """Tests for morie.fn.odm_i — OTIS demo diversity index."""
 
-import pytest
 import numpy as np
-from morie.fn.odm_i import otis_demo_index
+import pytest
+
 from morie.fn._containers import ESRes
+from morie.fn.odm_i import otis_demo_index
 
 
 class TestOtisDemoIndex:
-
     def test_returns_esres(self):
         counts = np.array([30, 40, 30])
         result = otis_demo_index(counts)

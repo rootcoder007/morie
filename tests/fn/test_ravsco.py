@@ -1,8 +1,7 @@
 """Tests for morie.fn.ravsco -- Raven's Progressive Matrices scoring."""
 
-import numpy as np
-from morie.fn.ravsco import raven_score, ravsco
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ravsco import raven_score, ravsco
 
 
 class TestRavsco:

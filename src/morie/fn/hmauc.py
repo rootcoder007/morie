@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Area under the ROC curve."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_auc_roc"]

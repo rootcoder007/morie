@@ -1,6 +1,7 @@
 """Restricted mean survival time (RMST)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["restricted_lifetime"]

@@ -1,7 +1,7 @@
 """Tests for morie.fn.rccut."""
 
 import numpy as np
-import pytest
+
 from morie.fn.rccut import rccut
 
 

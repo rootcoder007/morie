@@ -1,6 +1,7 @@
 """Lasso regression argmin |y-Xb|^2 + lambda |b|_1."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["wasserman_lasso"]
@@ -34,7 +35,9 @@ def wasserman_lasso(X, y, lambda_):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Lasso regression argmin |y-Xb|^2 + lambda |b|_1"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Lasso regression argmin |y-Xb|^2 + lambda |b|_1"}
+    )
 
 
 def cheatsheet():

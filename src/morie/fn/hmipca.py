@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Incremental PCA for out-of-core / streaming datasets."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_incremental_pca"]
@@ -34,7 +36,9 @@ def geron_incremental_pca(X_iter, n_components, batch_size):
     n = len(X_iter)
     result = float(np.mean(X_iter))
     se = float(np.std(X_iter, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Incremental PCA for out-of-core / streaming datasets"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Incremental PCA for out-of-core / streaming datasets"}
+    )
 
 
 def cheatsheet():

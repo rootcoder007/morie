@@ -1,5 +1,7 @@
 """Tests for spatial GLM Poisson."""
+
 import numpy as np
+
 from morie.fn.sgglm import sgglm
 
 
@@ -17,6 +19,7 @@ def test_sgglm_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgglm import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

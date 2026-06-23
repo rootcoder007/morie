@@ -114,7 +114,7 @@ def kmcnf(
         km_surv.append(S_new)
         km_n_risk.append(n_r)
         km_n_event.append(n_e)
-        km_gw_var.append(S_new ** 2 * gw_sum)
+        km_gw_var.append(S_new**2 * gw_sum)
         S = S_new
 
     km_times = np.array(km_times)

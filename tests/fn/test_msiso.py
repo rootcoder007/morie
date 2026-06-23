@@ -1,7 +1,6 @@
 """Tests for morie.fn.msiso -- Isotonic regression for MDS"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msiso import isotonic_reg
 

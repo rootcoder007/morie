@@ -1,6 +1,7 @@
 """Tests for matern.matern_cluster."""
+
 import numpy as np
-import pytest
+
 from morie.fn.matern import matern_cluster
 
 
@@ -11,7 +12,7 @@ def test_matern_basic():
     r = 10
     result = matern_cluster(lambda_p, mu, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_matern_edge():

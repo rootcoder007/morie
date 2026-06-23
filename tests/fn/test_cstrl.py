@@ -1,13 +1,13 @@
 """Tests for morie.fn.cstrl — custody release type."""
 
-import pytest
 import numpy as np
-from morie.fn.cstrl import custody_release_type
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cstrl import custody_release_type
 
 
 class TestCustodyReleaseType:
-
     def test_returns_descriptive(self):
         rt = np.array(["parole", "statutory", "warrant", "parole"])
         result = custody_release_type(rt)

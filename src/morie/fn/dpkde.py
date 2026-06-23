@@ -72,9 +72,7 @@ def dirichlet_process_kde(
         cluster_means = [float(x[0])]
 
         for i in range(1, n):
-            cluster_probs = np.array(
-                [np.sum(z[:i] == k) for k in range(len(cluster_means))], dtype=float
-            )
+            cluster_probs = np.array([np.sum(z[:i] == k) for k in range(len(cluster_means))], dtype=float)
             cluster_probs = np.append(cluster_probs, alpha)
             cluster_probs /= np.sum(cluster_probs)
 

@@ -1,6 +1,7 @@
 """Test hmcsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmcsp import hmcsp
 
 

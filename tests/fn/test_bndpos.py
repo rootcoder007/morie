@@ -1,6 +1,7 @@
 """Tests for bndpos.bound_pos_treatment."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndpos import bound_pos_treatment
 
 
@@ -11,7 +12,7 @@ def test_bndpos_basic():
     y_max = 100
     result = bound_pos_treatment(y, D, y_max)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndpos_edge():

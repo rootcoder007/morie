@@ -1,7 +1,9 @@
 """Test harmonic_ratio (hrmnc)."""
+
 import numpy as np
-from morie.fn.hrmnc import harmonic_ratio, hrmnc
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.hrmnc import harmonic_ratio, hrmnc
 
 
 class TestHrmnc:

@@ -65,4 +65,4 @@ short = kepler_orbit
 
 
 def cheatsheet() -> str:
-    return 'kepler_orbit({}) -> Keplerian orbit generator.'
+    return "kepler_orbit({}) -> Keplerian orbit generator."

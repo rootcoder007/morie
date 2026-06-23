@@ -93,4 +93,4 @@ swaopt = swarm_optimize
 
 
 def cheatsheet() -> str:
-    return 'swarm_optimize({}) -> Particle swarm optimization.'
+    return "swarm_optimize({}) -> Particle swarm optimization."

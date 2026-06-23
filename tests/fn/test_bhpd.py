@@ -1,6 +1,7 @@
 """Tests for morie.fn.bhpd -- HPD interval."""
 
 import numpy as np
+
 from morie.fn.bhpd import hpd_interval
 
 

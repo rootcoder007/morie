@@ -1,6 +1,7 @@
 """Tests for varatr.value_at_risk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.varatr import value_at_risk
 
 
@@ -10,7 +11,7 @@ def test_varatr_basic():
     alpha = 0.05
     result = value_at_risk(y, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_varatr_edge():

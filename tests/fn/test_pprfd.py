@@ -1,6 +1,7 @@
 """Test pprfd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pprfd import pprfd
 
 

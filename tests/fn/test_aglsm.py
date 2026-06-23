@@ -1,6 +1,7 @@
 """Test aglsm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.aglsm import aglsm
 
 

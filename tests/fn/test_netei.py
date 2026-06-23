@@ -1,12 +1,11 @@
 """Tests for morie.fn.netei — Expected influence."""
 
 import numpy as np
-import pytest
+
 from morie.fn.netei import network_expected_influence
 
 
 class TestNetworkExpectedInfluence:
-
     def test_one_step(self):
         A = np.array([[0, 0.5, -0.3], [0.5, 0, 0.2], [-0.3, 0.2, 0]])
         result = network_expected_influence(A, step=1)

@@ -1,6 +1,7 @@
 """Tests for medCI.asymmetric_indirect_ci."""
+
 import numpy as np
-import pytest
+
 from morie.fn.medCI import asymmetric_indirect_ci
 
 
@@ -13,7 +14,7 @@ def test_medCI_basic():
     n_sim = np.random.default_rng(42).normal(0, 1, 100)
     result = asymmetric_indirect_ci(a, b, sa, sb, n_sim)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_medCI_edge():

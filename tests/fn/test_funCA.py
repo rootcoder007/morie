@@ -1,6 +1,7 @@
 """Tests for funCA.functional_cca."""
+
 import numpy as np
-import pytest
+
 from morie.fn.funCA import functional_cca
 
 
@@ -10,7 +11,7 @@ def test_funCA_basic():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     result = functional_cca(X, Y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_funCA_edge():

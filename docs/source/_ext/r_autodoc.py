@@ -22,10 +22,10 @@ import logging
 import re
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any
 
 from docutils import nodes
-from docutils.parsers.rst import Directive, directives
+from docutils.parsers.rst import directives
 from docutils.statemachine import StringList
 from sphinx.application import Sphinx
 from sphinx.domains import Domain
@@ -50,7 +50,7 @@ _ITEM_RE = re.compile(r"\\item\{([^}]*)\}\{([^}]*)\}")
 # Rd inline markup — NOTE: \eqn and \deqn are handled separately by
 # _convert_rd_math() because they require brace-aware parsing for nested
 # LaTeX commands like \hat{\mu}, \widehat{ATE}, etc.
-_INLINE_SUBS: List[Tuple[re.Pattern, str]] = [
+_INLINE_SUBS: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\\code\{([^}]*)\}"), r"``\1``"),
     (re.compile(r"\\emph\{([^}]*)\}"), r"*\1*"),
     (re.compile(r"\\bold\{([^}]*)\}"), r"**\1**"),
@@ -113,7 +113,7 @@ def _clean_rd_text(text: str) -> str:
     return text.strip()
 
 
-def _extract_brace_content(text: str, start: int) -> Tuple[str, int]:
+def _extract_brace_content(text: str, start: int) -> tuple[str, int]:
     """Extract content from matched braces starting at ``text[start] == '{'``.
 
     Returns (content, end_index) where end_index is position after closing '}'.
@@ -135,7 +135,7 @@ def _extract_brace_content(text: str, start: int) -> Tuple[str, int]:
     return (text[start + 1 :], len(text))
 
 
-def parse_rd_file(path: Path) -> Dict[str, Any]:
+def parse_rd_file(path: Path) -> dict[str, Any]:
     """Parse a .Rd file and return a dict of sections.
 
     Returns a dict with keys like ``name``, ``title``, ``description``,
@@ -143,7 +143,7 @@ def parse_rd_file(path: Path) -> Dict[str, Any]:
     ``details``, ``examples``, ``references``, ``seealso``.
     """
     raw = path.read_text(encoding="utf-8", errors="replace")
-    result: Dict[str, Any] = {
+    result: dict[str, Any] = {
         "name": "",
         "alias": [],
         "title": "",
@@ -189,9 +189,7 @@ def parse_rd_file(path: Path) -> Dict[str, Any]:
                 arg_name, after_name = _extract_brace_content(content, item_start + 5)
                 if after_name < len(content) and content[after_name] == "{":
                     arg_desc, after_desc = _extract_brace_content(content, after_name)
-                    result["arguments"].append(
-                        (arg_name.strip(), arg_desc.strip())
-                    )
+                    result["arguments"].append((arg_name.strip(), arg_desc.strip()))
                     j = after_desc
                 else:
                     result["arguments"].append((arg_name.strip(), ""))
@@ -241,7 +239,7 @@ class RFunctionDirective(SphinxDirective):
         "no-value": directives.flag,
     }
 
-    def run(self) -> List[nodes.Node]:
+    def run(self) -> list[nodes.Node]:
         func_name = self.arguments[0].strip()
         env = self.state.document.settings.env
         config = env.config
@@ -266,8 +264,7 @@ class RFunctionDirective(SphinxDirective):
         if rd_path is None or not rd_path.is_file():
             note = nodes.note()
             note += nodes.paragraph(
-                text=f"Documentation for R function {func_name}() is pending. "
-                f"Run roxygen2 to generate the .Rd file."
+                text=f"Documentation for R function {func_name}() is pending. Run roxygen2 to generate the .Rd file."
             )
             return [note]
 
@@ -281,11 +278,9 @@ class RFunctionDirective(SphinxDirective):
         self.state.nested_parse(vl, self.content_offset, node)
         return node.children
 
-    def _render_rst(
-        self, func_name: str, parsed: Dict[str, Any]
-    ) -> List[str]:
+    def _render_rst(self, func_name: str, parsed: dict[str, Any]) -> list[str]:
         """Convert parsed Rd data to RST lines."""
-        lines: List[str] = []
+        lines: list[str] = []
 
         # Section anchor
         lines.append(f".. _r-{func_name}:")
@@ -367,7 +362,7 @@ class RFunctionDirective(SphinxDirective):
         return lines
 
 
-def _find_rd_by_alias(man_dir: Path, func_name: str) -> Optional[Path]:
+def _find_rd_by_alias(man_dir: Path, func_name: str) -> Path | None:
     """Scan .Rd files in man_dir for one that declares func_name as an alias."""
     for rd_file in man_dir.glob("*.Rd"):
         try:
@@ -385,14 +380,27 @@ def _find_rd_by_alias(man_dir: Path, func_name: str) -> Optional[Path]:
 
 # Map function name prefixes/patterns to display categories.
 # Order matters — first match wins.
-_CATEGORY_RULES: List[Tuple[re.Pattern, str]] = [
+_CATEGORY_RULES: list[tuple[re.Pattern, str]] = [
     (re.compile(r"^estimate_(propensity|ate|att|atc|aipw|gate|cate|late|irm|g_comp)"), "Causal Inference"),
     (re.compile(r"^(sensitivity_rosenbaum|e_value)$"), "Causal Inference"),
-    (re.compile(r"^(two_sample_t|one_sample_t|paired_t|chi_square|fisher_exact|anova|kruskal|mann_whitney|wilcoxon|shapiro|levene)"), "Frequentist Inference"),
+    (
+        re.compile(
+            r"^(two_sample_t|one_sample_t|paired_t|chi_square|fisher_exact|anova|kruskal|mann_whitney|wilcoxon|shapiro|levene)"
+        ),
+        "Frequentist Inference",
+    ),
     (re.compile(r"^(proportion_ci|odds_ratio|risk_ratio|risk_difference)"), "Frequentist Inference"),
-    (re.compile(r"^(cohens_d|hedges_g|eta_squared|omega_squared|cramers_v|spearman|kendall|point_biserial)"), "Frequentist Inference"),
+    (
+        re.compile(r"^(cohens_d|hedges_g|eta_squared|omega_squared|cramers_v|spearman|kendall|point_biserial)"),
+        "Frequentist Inference",
+    ),
     (re.compile(r"^(power_|sample_size_)"), "Frequentist Inference"),
-    (re.compile(r"^(simple_random|stratified_sample|cluster_sample|pps_sample|bootstrap|jackknife|effective_sample|design_effect|compute_design|calibration)"), "Sampling Design"),
+    (
+        re.compile(
+            r"^(simple_random|stratified_sample|cluster_sample|pps_sample|bootstrap|jackknife|effective_sample|design_effect|compute_design|calibration)"
+        ),
+        "Sampling Design",
+    ),
     (re.compile(r"^(list_morie|run_morie|run_pipeline|canonicalize_cpads|load_cpads)"), "Module Runners"),
     (re.compile(r"^(read_outputs|build_outputs|validate_outputs|audit_public|summarize_output)"), "Manifest and Audit"),
     (re.compile(r"^(run_workflow|default_workflow)"), "Workflow"),
@@ -456,7 +464,7 @@ class RAutoPackageDirective(SphinxDirective):
         "no-internal": directives.flag,
     }
 
-    def run(self) -> List[nodes.Node]:
+    def run(self) -> list[nodes.Node]:
         env = self.state.document.settings.env
         config = env.config
 
@@ -474,17 +482,14 @@ class RAutoPackageDirective(SphinxDirective):
         rd_files = sorted(man_dir.glob("*.Rd"))
         if not rd_files:
             note = nodes.note()
-            note += nodes.paragraph(
-                text="No .Rd files found in man/. "
-                "Run roxygen2 to generate R documentation."
-            )
+            note += nodes.paragraph(text="No .Rd files found in man/. Run roxygen2 to generate R documentation.")
             return [note]
 
         skip_internal = "no-internal" in self.options
         suppress_examples = "no-examples" in self.options
 
         # Parse and categorise
-        categorised: Dict[str, List[Tuple[str, Dict[str, Any]]]] = {}
+        categorised: dict[str, list[tuple[str, dict[str, Any]]]] = {}
         for rd_path in rd_files:
             parsed = parse_rd_file(rd_path)
             func_name = parsed.get("name", rd_path.stem)
@@ -502,7 +507,7 @@ class RAutoPackageDirective(SphinxDirective):
             categorised.setdefault(category, []).append((func_name, parsed))
 
         # Build RST output in category order
-        rst_lines: List[str] = []
+        rst_lines: list[str] = []
 
         # Ordered categories first, then any extras alphabetically
         ordered_cats = [c for c in _CATEGORY_ORDER if c in categorised]
@@ -532,11 +537,9 @@ class RAutoPackageDirective(SphinxDirective):
         self.state.nested_parse(vl, self.content_offset, node)
         return node.children
 
-    def _render_function(
-        self, func_name: str, parsed: Dict[str, Any], suppress_examples: bool
-    ) -> List[str]:
+    def _render_function(self, func_name: str, parsed: dict[str, Any], suppress_examples: bool) -> list[str]:
         """Render a single function's RST (reuses RFunctionDirective logic)."""
-        lines: List[str] = []
+        lines: list[str] = []
 
         # Section anchor
         lines.append(f".. _r-{func_name}:")
@@ -650,9 +653,7 @@ def _run_roxygen_prebuild(app: Sphinx) -> None:
         return
 
     if not (r_pkg_path / "DESCRIPTION").is_file():
-        logger.warning(
-            "No DESCRIPTION file in %s; skipping Roxygen2.", r_pkg_dir
-        )
+        logger.warning("No DESCRIPTION file in %s; skipping Roxygen2.", r_pkg_dir)
         return
 
     # Defensive: check Rscript availability before invoking subprocess.
@@ -676,8 +677,7 @@ def _run_roxygen_prebuild(app: Sphinx) -> None:
             logger.info("Roxygen2 completed successfully.")
         else:
             logger.warning(
-                "Roxygen2 returned non-zero exit code %d (likely missing "
-                "devtools); R API documentation may be stale.",
+                "Roxygen2 returned non-zero exit code %d (likely missing devtools); R API documentation may be stale.",
                 result.returncode,
             )
     except subprocess.TimeoutExpired:
@@ -691,7 +691,7 @@ def _run_roxygen_prebuild(app: Sphinx) -> None:
 # ---------------------------------------------------------------------------
 
 
-def setup(app: Sphinx) -> Dict[str, Any]:
+def setup(app: Sphinx) -> dict[str, Any]:
     """Register the r_autodoc extension with Sphinx."""
 
     # Configuration values

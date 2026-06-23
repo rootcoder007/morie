@@ -1,7 +1,6 @@
 """Tests for morie.fn.hausr — Hausman test."""
 
 import numpy as np
-import pytest
 
 from morie.fn.hausr import hausman_test
 

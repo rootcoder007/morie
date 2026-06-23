@@ -1,6 +1,7 @@
 """Tests for msm236.mvsml_general_eq_1_3."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm236 import mvsml_general_eq_1_3
 
 
@@ -14,7 +15,7 @@ def test_msm236_basic():
     lines = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_general_eq_1_3(Creating, the, design, matrix, of, lines)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm236_edge():

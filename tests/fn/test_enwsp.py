@@ -1,6 +1,7 @@
 """Test enwsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enwsp import enwsp
 
 

@@ -1,6 +1,7 @@
 """Test syssmp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.syssmp import syssmp
 
 

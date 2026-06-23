@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Euclidean distance utility for spatial voting model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["euclidean_utility"]
@@ -32,7 +34,9 @@ def euclidean_utility(ideal_point, policy_position):
     n = int(ideal_point) if ideal_point.ndim == 0 else len(ideal_point)
     result = float(np.mean(ideal_point))
     se = float(np.std(ideal_point, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Euclidean distance utility for spatial voting model"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Euclidean distance utility for spatial voting model"}
+    )
 
 
 def cheatsheet():

@@ -39,4 +39,5 @@ def test_n_events(surv_data):
 
 def test_cheatsheet():
     from morie.fn.gompr import cheatsheet
+
     assert "gompertz" in cheatsheet().lower()

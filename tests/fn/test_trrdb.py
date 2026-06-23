@@ -1,6 +1,7 @@
 """Test trrdb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trrdb import trrdb
 
 

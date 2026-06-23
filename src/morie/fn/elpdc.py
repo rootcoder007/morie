@@ -1,6 +1,7 @@
 """Expected log predictive density (elpd)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["expected_log_predictive_density"]
@@ -30,7 +31,9 @@ def expected_log_predictive_density(log_lik):
     n = len(log_lik)
     result = float(np.mean(log_lik))
     se = float(np.std(log_lik, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Expected log predictive density (elpd)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Expected log predictive density (elpd)"}
+    )
 
 
 def cheatsheet():

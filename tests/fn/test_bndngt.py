@@ -1,6 +1,7 @@
 """Tests for bndngt.bound_neg_treatment."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndngt import bound_neg_treatment
 
 
@@ -11,7 +12,7 @@ def test_bndngt_basic():
     y_min = 0
     result = bound_neg_treatment(y, D, y_min)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndngt_edge():

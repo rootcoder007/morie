@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Marker variance-component estimation (per-marker sigma_m^2)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -67,11 +68,11 @@ def marker_variance(x, y, markers):
     # GBLUP with lambda = 1 (heritability proxy)
     p_x = X.shape[1]
     lam = 1.0
-    C = np.block([[X.T @ X,           X.T               ],
-                  [X,                 np.eye(n) + lam * G_inv]])
+    C = np.block([[X.T @ X, X.T], [X, np.eye(n) + lam * G_inv]])
     rhs = np.concatenate([X.T @ y, y])
     sol = np.linalg.solve(C, rhs)
-    beta = sol[:p_x]; g_hat = sol[p_x:]
+    beta = sol[:p_x]
+    g_hat = sol[p_x:]
     sigma_g2 = float(np.var(g_hat, ddof=1)) if n > 1 else 0.0
     resid = y - X @ beta - g_hat
     sigma_e2 = float(np.var(resid, ddof=1)) if n > 1 else 0.0

@@ -1,7 +1,7 @@
 """Tests for morie.fn.plnet."""
 
 import numpy as np
-import pytest
+
 from morie.fn.plnet import plnet
 
 

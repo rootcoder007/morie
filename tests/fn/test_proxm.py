@@ -1,4 +1,5 @@
 """Tests for morie.fn.proxm — proximity cost."""
+
 from morie.fn.proxm import proxm
 
 

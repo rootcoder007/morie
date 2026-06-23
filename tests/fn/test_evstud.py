@@ -1,6 +1,7 @@
 """Tests for evstud.event_study_coefficients."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evstud import event_study_coefficients
 
 
@@ -13,7 +14,7 @@ def test_evstud_basic():
     cohort = np.random.default_rng(42).normal(0, 1, 100)
     result = event_study_coefficients(y, D, unit, time, cohort)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evstud_edge():

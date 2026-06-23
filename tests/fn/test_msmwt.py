@@ -1,6 +1,8 @@
 """Tests for morie.fn.msmwt — MSM stabilized weights."""
+
 import numpy as np
 import pytest
+
 from morie.fn.msmwt import msmwt
 
 
@@ -15,8 +17,17 @@ def data():
 
 def test_keys(data):
     r = msmwt(*data)
-    for k in ("weights", "weight_numerator", "weight_denominator",
-              "effective_n", "max_weight", "mean_weight", "n", "K", "method"):
+    for k in (
+        "weights",
+        "weight_numerator",
+        "weight_denominator",
+        "effective_n",
+        "max_weight",
+        "mean_weight",
+        "n",
+        "K",
+        "method",
+    ):
         assert k in r
 
 
@@ -56,4 +67,5 @@ def test_K_correct(data):
 
 def test_cheatsheet():
     from morie.fn.msmwt import cheatsheet
+
     assert len(cheatsheet()) > 0

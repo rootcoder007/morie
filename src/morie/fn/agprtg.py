@@ -1,6 +1,7 @@
 """AlphaZero prioritized replay target."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphazero_priority_target"]

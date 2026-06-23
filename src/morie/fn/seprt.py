@@ -56,10 +56,16 @@ def detect_separation(
         vals_0 = X[y == 0, j]
         if len(vals_1) == 0 or len(vals_0) == 0:
             continue
-        if np.min(vals_1) > np.max(vals_0) or np.max(vals_1) < np.min(vals_0) or np.min(vals_1) >= np.max(vals_0) or np.max(vals_1) <= np.min(vals_0):
+        if (
+            np.min(vals_1) > np.max(vals_0)
+            or np.max(vals_1) < np.min(vals_0)
+            or np.min(vals_1) >= np.max(vals_0)
+            or np.max(vals_1) <= np.min(vals_0)
+        ):
             sep_vars.append(j - (1 if add_intercept else 0))
 
     from scipy import special
+
     beta = np.zeros(p)
     for _ in range(200):
         eta = X @ beta
@@ -68,8 +74,7 @@ def detect_separation(
         W = mu * (1 - mu)
         z = eta + (y - mu) / W
         try:
-            beta = np.linalg.solve((X * W[:, None]).T @ X + np.eye(p) * 1e-10,
-                                   (X * W[:, None]).T @ z)
+            beta = np.linalg.solve((X * W[:, None]).T @ X + np.eye(p) * 1e-10, (X * W[:, None]).T @ z)
         except np.linalg.LinAlgError:
             break
 

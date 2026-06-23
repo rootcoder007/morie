@@ -1,7 +1,6 @@
 """Tests for morie.fn.zegrm -- Gravity migration model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zegrm import gravity_migration
 

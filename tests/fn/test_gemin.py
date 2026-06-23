@@ -1,6 +1,7 @@
 """Test gemin."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gemin import gemin
 
 

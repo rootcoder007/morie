@@ -1,6 +1,8 @@
 """Tests for chlinv."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chlinv import chlinv
 
 
@@ -28,4 +30,5 @@ def test_chlinv_no_data():
 
 def test_chlinv_alias():
     from morie.fn.chlinv import chlinv
+
     assert chlinv is chlinv

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxhrc -- Hierarchical spatial (crossed)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxhrc import hier_spatial_cross
 

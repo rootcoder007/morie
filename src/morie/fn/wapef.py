@@ -57,9 +57,7 @@ def wapef(y_true, y_pred, weights=None):
     abs_error = np.abs(y_true - y_pred)
 
     # Absolute percentage error
-    ape = np.where(np.abs(y_true) > 1e-10,
-                   100 * abs_error / np.abs(y_true),
-                   0.0)
+    ape = np.where(np.abs(y_true) > 1e-10, 100 * abs_error / np.abs(y_true), 0.0)
 
     # Weighted metrics
     mae = np.sum(weights * abs_error)

@@ -1,6 +1,7 @@
 """Tests for sppair.schabenberger_pair_correlation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sppair import schabenberger_pair_correlation
 
 
@@ -11,7 +12,7 @@ def test_sppair_basic():
     r = 10
     result = schabenberger_pair_correlation(points, lambda_est, r)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_sppair_edge():

@@ -1,6 +1,8 @@
 """Tests for morie.fn.rcerr -- roll-call errors."""
+
 import numpy as np
-from morie.fn.rcerr import roll_call_errors, rcerr
+
+from morie.fn.rcerr import rcerr, roll_call_errors
 
 
 def test_alias():

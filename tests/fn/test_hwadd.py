@@ -1,6 +1,7 @@
 """Tests for hwadd.holt_winters_additive."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hwadd import holt_winters_additive
 
 
@@ -13,7 +14,7 @@ def test_hwadd_basic():
     gamma = 1.0
     result = holt_winters_additive(y, period, alpha, beta, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hwadd_edge():

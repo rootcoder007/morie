@@ -1,6 +1,7 @@
 """Wild (Mammen 2-pt) bootstrap for heteroskedastic errors."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_wild_regression"]
@@ -34,7 +35,14 @@ def boot_wild_regression(X, y, B):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Wild (Mammen 2-pt) bootstrap for heteroskedastic errors"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Wild (Mammen 2-pt) bootstrap for heteroskedastic errors",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for jodrrc.joseph_dirrec_strategy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jodrrc import joseph_dirrec_strategy
 
 
@@ -11,7 +12,7 @@ def test_jodrrc_basic():
     H = np.random.default_rng(42).normal(0, 1, 100)
     result = joseph_dirrec_strategy(X, y, H)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jodrrc_edge():

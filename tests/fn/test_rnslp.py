@@ -1,6 +1,8 @@
 """Tests for rnslp."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rnslp import rnslp
 
 
@@ -28,4 +30,5 @@ def test_rnslp_no_data():
 
 def test_rnslp_alias():
     from morie.fn.rnslp import rnslp
+
     assert rnslp is rnslp

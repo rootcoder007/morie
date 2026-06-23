@@ -1,7 +1,7 @@
 """Tests for morie.fn.mnero -- cellular automaton."""
 
-from morie.fn.mnero import cellular_automaton, mnero
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mnero import cellular_automaton, mnero
 
 
 class TestMnero:

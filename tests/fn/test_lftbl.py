@@ -1,6 +1,7 @@
 """Tests for morie.fn.lftbl -- Complete life table."""
 
 import pytest
+
 from morie.fn.lftbl import life_table_complete
 
 

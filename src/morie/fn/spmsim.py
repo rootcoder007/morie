@@ -1,5 +1,7 @@
 """Multiscale GWR (MGWR): variable bandwidth per covariate."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_mgwr_bandwidth"]
@@ -33,7 +35,14 @@ def schabenberger_mgwr_bandwidth(x, y, coords):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multiscale GWR (MGWR): variable bandwidth per covariate"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multiscale GWR (MGWR): variable bandwidth per covariate",
+        }
+    )
 
 
 def cheatsheet():

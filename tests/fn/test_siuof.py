@@ -1,8 +1,9 @@
 """Tests for morie.fn.siuof — SIU officer force."""
 
 import pytest
-from morie.fn.siuof import siu_officer_force
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.siuof import siu_officer_force
 
 
 class TestSiuOfficerForce:

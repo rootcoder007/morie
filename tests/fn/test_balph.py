@@ -1,12 +1,11 @@
 """Tests for morie.fn.balph — Bayesian Cronbach's alpha."""
 
 import numpy as np
-import pytest
+
 from morie.fn.balph import bayesian_alpha
 
 
 class TestBayesianAlpha:
-
     def test_returns_dict(self, mapq_df):
         items = [c for c in mapq_df.columns if c.startswith("EE")]
         result = bayesian_alpha(mapq_df[items], n_iter=200)

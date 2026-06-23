@@ -1,6 +1,7 @@
 """Tests for eslcrm.esl_cross_entropy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslcrm import esl_cross_entropy
 
 
@@ -10,7 +11,7 @@ def test_eslcrm_basic():
     p = 5
     result = esl_cross_entropy(y, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslcrm_edge():

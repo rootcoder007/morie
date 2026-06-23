@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgunr -- Universal kriging residual"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgunr import uk_residual
 

@@ -1,7 +1,8 @@
 """Tests for istfa.py - inverse STFT synthesis."""
+
 import numpy as np
-import pytest
-from morie.fn.istfa import istft_synth, istfa
+
+from morie.fn.istfa import istfa, istft_synth
 
 
 def test_istft_returns_signal_result():

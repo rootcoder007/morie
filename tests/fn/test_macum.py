@@ -1,6 +1,7 @@
 """Tests for macum.ma_cumulative."""
+
 import numpy as np
-import pytest
+
 from morie.fn.macum import ma_cumulative
 
 
@@ -11,7 +12,7 @@ def test_macum_basic():
     order = 4
     result = ma_cumulative(yi, vi, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_macum_edge():

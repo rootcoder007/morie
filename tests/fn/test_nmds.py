@@ -1,8 +1,9 @@
 """Tests for morie.fn.nmds -- Non-metric MDS."""
 
 import numpy as np
-from morie.fn.nmds import nmds
+
 from morie.fn._containers import MdsRes
+from morie.fn.nmds import nmds
 
 
 class TestNmds:
@@ -26,6 +27,7 @@ class TestNmds:
 
     def test_from_distance_matrix(self):
         from scipy.spatial.distance import pdist, squareform
+
         rng = np.random.default_rng(42)
         X = rng.standard_normal((15, 3))
         D = squareform(pdist(X))

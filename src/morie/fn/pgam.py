@@ -7,7 +7,15 @@ import numpy as np
 import scipy.stats as stats
 
 
-def pgamma(x: Union[float, np.ndarray], shape: float, rate: float = 1.0, scale: float | None = None, lower_tail: bool = True, log: bool = False, cdf=None) -> Union[float, np.ndarray]:
+def pgamma(
+    x: Union[float, np.ndarray],
+    shape: float,
+    rate: float = 1.0,
+    scale: float | None = None,
+    lower_tail: bool = True,
+    log: bool = False,
+    cdf=None,
+) -> Union[float, np.ndarray]:
     """
     Gamma distribution CDF.
 

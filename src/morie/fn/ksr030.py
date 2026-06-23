@@ -1,6 +1,7 @@
 """Covariance function of the Brownian-bridge limit of the empirical process."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_brownian_bridge_covariance"]
@@ -34,7 +35,14 @@ def kosorok_ch2_brownian_bridge_covariance(s, t, F):
     n = len(s)
     result = float(np.mean(s))
     se = float(np.std(s, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Covariance function of the Brownian-bridge limit of the empirical process"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Covariance function of the Brownian-bridge limit of the empirical process",
+        }
+    )
 
 
 def cheatsheet():

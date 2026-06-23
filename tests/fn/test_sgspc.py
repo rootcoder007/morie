@@ -1,5 +1,7 @@
 """Tests for spectral density estimation."""
+
 import numpy as np
+
 from morie.fn.sgspc import sgspc
 
 
@@ -15,6 +17,7 @@ def test_sgspc_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgspc import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

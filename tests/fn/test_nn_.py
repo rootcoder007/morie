@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.nn_ import nn_classify
 
 
@@ -19,8 +20,7 @@ class TestNnClassify:
 
     def test_separable(self):
         rng = np.random.default_rng(42)
-        X = np.vstack([rng.standard_normal((30, 2)) + [3, 3],
-                        rng.standard_normal((30, 2)) - [3, 3]])
+        X = np.vstack([rng.standard_normal((30, 2)) + [3, 3], rng.standard_normal((30, 2)) - [3, 3]])
         y = np.array([1.0] * 30 + [0.0] * 30)
         result = nn_classify(X, y, hidden_size=8, epochs=200, lr=0.1)
         acc = np.mean(result["predictions"] == y)

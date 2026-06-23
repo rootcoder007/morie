@@ -1,6 +1,8 @@
 """Tests for rnflwdr."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rnflwdr import rnflwdr
 
 
@@ -28,4 +30,5 @@ def test_rnflwdr_no_data():
 
 def test_rnflwdr_alias():
     from morie.fn.rnflwdr import rnflwdr
+
     assert rnflwdr is rnflwdr

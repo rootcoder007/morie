@@ -1,6 +1,7 @@
 """Erdős-Rényi G(n,p)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["erdos_renyi_gnp"]

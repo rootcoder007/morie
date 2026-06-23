@@ -1,7 +1,7 @@
 """Tests for morie.fn.cvsbas -- CVSS v3.1 base score."""
 
-from morie.fn.cvsbas import cvss_base, cvsbas
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cvsbas import cvsbas, cvss_base
 
 
 class TestCvsbas:

@@ -1,4 +1,5 @@
 """Test ldpc_encode."""
+
 import numpy as np
 
 from morie.fn._containers import CryptoResult

@@ -52,4 +52,4 @@ surrou = surface_roughness
 
 
 def cheatsheet() -> str:
-    return 'surface_roughness({}) -> Surface roughness metrics.'
+    return "surface_roughness({}) -> Surface roughness metrics."

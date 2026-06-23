@@ -1,6 +1,7 @@
 """Frechet derivative of the Kaplan-Meier self-consistency operator at S0."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_kaplan_meier_derivative"]
@@ -38,7 +39,14 @@ def kosorok_ch2_kaplan_meier_derivative(S_0, L, G, h, t):
     n = len(S_0)
     result = float(np.mean(S_0))
     se = float(np.std(S_0, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Frechet derivative of the Kaplan-Meier self-consistency operator at S0"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Frechet derivative of the Kaplan-Meier self-consistency operator at S0",
+        }
+    )
 
 
 def cheatsheet():

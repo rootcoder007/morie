@@ -1,5 +1,7 @@
 """Tests for morie.fn.censr."""
+
 import numpy as np
+
 from morie.fn.censr import censr
 
 
@@ -13,6 +15,7 @@ def test_censr_smoke():
 
 def test_cheatsheet():
     from morie.fn.censr import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

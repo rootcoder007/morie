@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptrpl -- Ripley edge correction"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptrpl import ripley_correction
 

@@ -1,6 +1,7 @@
 """Tests for hmrvn.geron_revnet."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmrvn import geron_revnet
 
 
@@ -11,7 +12,7 @@ def test_hmrvn_basic():
     G = np.eye(10)
     result = geron_revnet(x, F, G)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmrvn_edge():

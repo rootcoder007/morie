@@ -1,6 +1,7 @@
 """Test ppitb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppitb import ppitb
 
 

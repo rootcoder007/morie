@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dropout forward pass (inverted dropout)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -9,8 +10,7 @@ from ._richresult import RichResult
 __all__ = ["dropout_forward"]
 
 
-def dropout_forward(x, p: float = 0.5, seed: int = 0, training: bool = True,
-                    deterministic_seed: "int | None" = None):
+def dropout_forward(x, p: float = 0.5, seed: int = 0, training: bool = True, deterministic_seed: int | None = None):
     r"""Dropout forward pass with inverted scaling.
 
     During training, mask :math:`m \\sim \\text{Bernoulli}(1-p)` and
@@ -48,12 +48,18 @@ def dropout_forward(x, p: float = 0.5, seed: int = 0, training: bool = True,
         return RichResult(
             title="Dropout (inference)",
             summary_lines=[("p", p), ("training", training)],
-            payload={"y": x, "estimate": x, "mask": np.ones_like(x), "p": p,
-                     "kept_fraction": 1.0,
-                     "method": "Dropout (pass-through)"},
+            payload={
+                "y": x,
+                "estimate": x,
+                "mask": np.ones_like(x),
+                "p": p,
+                "kept_fraction": 1.0,
+                "method": "Dropout (pass-through)",
+            },
         )
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("drpfw", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)

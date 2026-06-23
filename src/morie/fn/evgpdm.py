@@ -1,6 +1,7 @@
 """MLE of GPD parameters above threshold."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_gpd_mle"]

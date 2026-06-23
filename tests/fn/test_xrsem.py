@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrsem -- SEM (Spatial Error) model ML estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrsem import sem_ml
 

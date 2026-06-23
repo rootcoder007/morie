@@ -1,6 +1,7 @@
 """Tests for grbptt.geron_backprop_through_time."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grbptt import geron_backprop_through_time
 
 
@@ -11,7 +12,7 @@ def test_grbptt_basic():
     inputs = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_backprop_through_time(loss_grads, hiddens, inputs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grbptt_edge():

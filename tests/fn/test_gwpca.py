@@ -1,5 +1,7 @@
 """Tests for morie.fn.gwpca."""
+
 import numpy as np
+
 from morie.fn.gwpca import gw_pca
 
 
@@ -13,6 +15,7 @@ def test_gwpca_smoke():
 
 def test_cheatsheet():
     from morie.fn.gwpca import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

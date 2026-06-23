@@ -1,6 +1,7 @@
 """Tests for mssm.marginal_structural_med."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mssm import marginal_structural_med
 
 
@@ -12,7 +13,7 @@ def test_mssm_basic():
     C = np.random.default_rng(42).normal(0, 1, 100)
     result = marginal_structural_med(Y, X, M, C)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mssm_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """LLaVA visual instruction tuning: linear-project visual features as soft tokens into LLM."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_llava_visual_instruction"]
@@ -36,7 +38,14 @@ def kamath_llava_visual_instruction(image, W, visual_encoder, text_tokens):
     n = len(image)
     result = float(np.mean(image))
     se = float(np.std(image, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "LLaVA visual instruction tuning: linear-project visual features as soft tokens into LLM"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "LLaVA visual instruction tuning: linear-project visual features as soft tokens into LLM",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrlms -- LM test SARMA"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrlms import lm_sarma
 

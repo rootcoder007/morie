@@ -1,6 +1,7 @@
 """MoE feed-forward layer with router + expert mix."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["moe_layer"]
@@ -38,7 +39,9 @@ def moe_layer(y, x, W_g, experts, top_k):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MoE feed-forward layer with router + expert mix"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "MoE feed-forward layer with router + expert mix"}
+    )
 
 
 def cheatsheet():

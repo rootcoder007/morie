@@ -87,4 +87,4 @@ artpoi = articulation_points
 
 
 def cheatsheet() -> str:
-    return 'articulation_points({}) -> Graph articulation points.'
+    return "articulation_points({}) -> Graph articulation points."

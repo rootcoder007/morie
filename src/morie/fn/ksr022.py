@@ -1,6 +1,7 @@
 """Multiplicative intensity model for a counting process with proportional baseline hazard."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch1_multiplicative_intensity"]
@@ -38,7 +39,14 @@ def kosorok_ch1_multiplicative_intensity(t, Z, Y, beta, Lambda):
     n = len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multiplicative intensity model for a counting process with proportional baseline hazard"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multiplicative intensity model for a counting process with proportional baseline hazard",
+        }
+    )
 
 
 def cheatsheet():

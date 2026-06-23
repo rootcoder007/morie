@@ -1,6 +1,7 @@
 """Tests for wsmkmn.wasserman_kmeans."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmkmn import wasserman_kmeans
 
 
@@ -10,7 +11,7 @@ def test_wsmkmn_basic():
     k = 5
     result = wasserman_kmeans(X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmkmn_edge():

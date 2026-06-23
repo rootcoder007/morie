@@ -1,6 +1,7 @@
 """Switch Transformer top-1 routing with capacity factor."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["moe_switch_routing"]
@@ -38,7 +39,14 @@ def moe_switch_routing(y, x, W_g, experts, capacity):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Switch Transformer top-1 routing with capacity factor"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Switch Transformer top-1 routing with capacity factor",
+        }
+    )
 
 
 def cheatsheet():

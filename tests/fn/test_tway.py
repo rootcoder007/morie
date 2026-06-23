@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.tway import twfe, tway
+
 from morie.fn._containers import RegressionResult
+from morie.fn.tway import tway, twfe
 
 
 class TestTWFE:
@@ -35,15 +36,13 @@ class TestTWFE:
         for i in range(10):
             for t in range(5):
                 y = 10 + i + t + (1 if i < 5 and t >= 3 else 0) + rng.normal(0, 0.1)
-                rows.append({"unit": i, "time": t, "outcome": y,
-                             "treatment": 1 if i < 5 and t >= 3 else 0})
+                rows.append({"unit": i, "time": t, "outcome": y, "treatment": 1 if i < 5 and t >= 3 else 0})
         df = pd.DataFrame(rows)
         result = twfe(df)
         assert 0 <= result.r_squared <= 1
 
     def test_no_variation_raises(self):
-        rows = [{"unit": 0, "time": t, "outcome": 1.0, "treatment": 0}
-                for t in range(5)]
+        rows = [{"unit": 0, "time": t, "outcome": 1.0, "treatment": 0} for t in range(5)]
         df = pd.DataFrame(rows)
         with pytest.raises(ValueError, match="variation"):
             twfe(df)

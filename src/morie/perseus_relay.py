@@ -33,6 +33,7 @@ logger = logging.getLogger(__name__)
 
 def _create_agent():
     from .agent import create_agent
+
     return create_agent()
 
 
@@ -51,13 +52,16 @@ class PerseusRelayHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path in ("/v1/health", "/health", "/"):
             model = getattr(self.agent, "_model", "unknown")
-            self._respond(200, {
-                "status": "ok",
-                "service": "perseus-relay",
-                "model": model,
-                "tools": 12,
-                "functions": "5710+",
-            })
+            self._respond(
+                200,
+                {
+                    "status": "ok",
+                    "service": "perseus-relay",
+                    "model": model,
+                    "tools": 12,
+                    "functions": "5710+",
+                },
+            )
         else:
             self._respond(404, {"error": "Not found"})
 
@@ -87,13 +91,16 @@ class PerseusRelayHandler(BaseHTTPRequestHandler):
         try:
             resp = self.agent.chat(question)
             elapsed = time.monotonic() - start
-            self._respond(200, {
-                "text": resp.text,
-                "tool_calls": resp.tool_calls_made,
-                "iterations": resp.iterations,
-                "model": resp.model,
-                "elapsed_s": round(elapsed, 2),
-            })
+            self._respond(
+                200,
+                {
+                    "text": resp.text,
+                    "tool_calls": resp.tool_calls_made,
+                    "iterations": resp.iterations,
+                    "model": resp.model,
+                    "elapsed_s": round(elapsed, 2),
+                },
+            )
         except Exception as exc:
             self._respond(500, {"error": str(exc)})
 
@@ -157,7 +164,7 @@ def serve(port: int = 8421, token: str | None = None, bind: str = "0.0.0.0"):
     PerseusRelayHandler.auth_token = token
 
     server = HTTPServer((bind, port), PerseusRelayHandler)
-    logger.info("Perseus is online. POST /v1/percy with {\"question\": \"...\"}")
+    logger.info('Perseus is online. POST /v1/percy with {"question": "..."}')
     if token:
         logger.info("Auth required: Bearer %s...", token[:4])
 

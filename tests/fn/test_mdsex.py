@@ -1,6 +1,7 @@
 """Tests for morie.fn.mdsex -- convex hull MDS."""
 
 import numpy as np
+
 from morie.fn.mdsex import convex_hull_mds, mdsex
 
 

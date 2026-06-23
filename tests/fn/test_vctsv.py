@@ -1,8 +1,9 @@
 """Tests for morie.fn.vctsv — victim severity."""
 
 import pytest
-from morie.fn.vctsv import victim_severity
+
 from morie.fn._containers import ESRes
+from morie.fn.vctsv import victim_severity
 
 
 class TestVictimSeverity:

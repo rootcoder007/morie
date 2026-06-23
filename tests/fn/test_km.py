@@ -1,4 +1,5 @@
 """Tests for morie.fn.km — Kaplan-Meier estimator."""
+
 import numpy as np
 
 from morie.fn.km import kaplan_meier, km

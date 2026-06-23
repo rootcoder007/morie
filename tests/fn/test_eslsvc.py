@@ -1,6 +1,7 @@
 """Tests for eslsvc.esl_svc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslsvc import esl_svc
 
 
@@ -11,7 +12,7 @@ def test_eslsvc_basic():
     C = np.random.default_rng(42).normal(0, 1, 100)
     result = esl_svc(X, y, C)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslsvc_edge():

@@ -97,4 +97,4 @@ mxflw = max_flow
 
 
 def cheatsheet() -> str:
-    return 'mxflw() -> Compute maximum flow using Edmonds-Karp (BFS-based Ford-Fulkerson)'
+    return "mxflw() -> Compute maximum flow using Edmonds-Karp (BFS-based Ford-Fulkerson)"

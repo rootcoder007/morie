@@ -1,8 +1,8 @@
 """Spatial expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_5_unnumbered_271"]
 

@@ -1,6 +1,7 @@
 """Tests for sgtpgr.sgt_pagerank_power."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sgtpgr import sgt_pagerank_power
 
 
@@ -12,7 +13,7 @@ def test_sgtpgr_basic():
     tol = 1e-6
     result = sgt_pagerank_power(A, d, max_iter, tol)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sgtpgr_edge():

@@ -1,5 +1,7 @@
 """Lemma 3.2: the ProdQJL estimator is unbiased, E[ProdQJL(q,k)] = <q,k>."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_prodqjl_unbiasedness"]
@@ -32,12 +34,27 @@ def turboquant_prodqjl_unbiasedness(q, k, m):
     q = np.atleast_1d(np.asarray(q, dtype=float))
     n = len(q)
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Lemma 3.2: the ProdQJL estimator is unbiased, E[ProdQJL(q,k)] = <q,k>"})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "Lemma 3.2: the ProdQJL estimator is unbiased, E[ProdQJL(q,k)] = <q,k>",
+            }
+        )
     estimate = np.median(q)
     se = 1.2533 * np.std(q, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Lemma 3.2: the ProdQJL estimator is unbiased, E[ProdQJL(q,k)] = <q,k>"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Lemma 3.2: the ProdQJL estimator is unbiased, E[ProdQJL(q,k)] = <q,k>",
+        }
+    )
 
 
 def cheatsheet():

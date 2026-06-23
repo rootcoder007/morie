@@ -1,6 +1,7 @@
 """Tests for hampel.hampel_redescend."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hampel import hampel_redescend
 
 
@@ -12,7 +13,7 @@ def test_hampel_basic():
     c = np.random.default_rng(42).normal(0, 1, 100)
     result = hampel_redescend(r, a, b, c)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hampel_edge():

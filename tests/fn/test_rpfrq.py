@@ -1,6 +1,9 @@
 """Tests for rpfrq — repeat placement frequency."""
+
 import pandas as pd
+
 from morie.fn.rpfrq import rplace_frequency
+
 
 def test_rpfrq_basic(otis_df):
     result = rplace_frequency(otis_df)
@@ -9,6 +12,7 @@ def test_rpfrq_basic(otis_df):
 
 def test_cheatsheet():
     from morie.fn.rpfrq import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

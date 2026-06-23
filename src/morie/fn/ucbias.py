@@ -1,6 +1,7 @@
 """Bias factor for unmeasured confounder."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["unmeasured_conf_bias"]

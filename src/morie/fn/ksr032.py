@@ -1,6 +1,7 @@
 """Weak convergence to a tight limit characterised by fidi convergence plus asymptotic tightness."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_weak_convergence_iff"]
@@ -34,7 +35,14 @@ def kosorok_ch2_weak_convergence_iff(X_n, X, T):
     n = len(X_n)
     result = float(np.mean(X_n))
     se = float(np.std(X_n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Weak convergence to a tight limit characterised by fidi convergence plus asymptotic tightness"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Weak convergence to a tight limit characterised by fidi convergence plus asymptotic tightness",
+        }
+    )
 
 
 def cheatsheet():

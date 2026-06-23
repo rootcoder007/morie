@@ -1,6 +1,7 @@
 """Test rscva."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rscva import rscva
 
 

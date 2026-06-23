@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Elastic net combined penalty objective."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["elastic_net_objective"]
@@ -38,7 +40,9 @@ def elastic_net_objective(y, X, beta, lam, alpha):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Elastic net combined penalty objective"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Elastic net combined penalty objective"}
+    )
 
 
 def cheatsheet():

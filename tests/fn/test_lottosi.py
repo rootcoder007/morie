@@ -1,6 +1,7 @@
 """Tests for lottosi.lottery_sampling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lottosi import lottery_sampling
 
 
@@ -11,7 +12,7 @@ def test_lottosi_basic():
     n = 100
     result = lottery_sampling(y, N, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lottosi_edge():

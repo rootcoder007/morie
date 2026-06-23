@@ -1,8 +1,9 @@
 """Tests for morie.fn.rmspd -- RMSProp optimizer."""
 
 import numpy as np
-from morie.fn.rmspd import rmsprop_optimize, rmspd
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rmspd import rmspd, rmsprop_optimize
 
 
 class TestRmspd:
@@ -17,7 +18,7 @@ class TestRmspd:
         assert r.value < 1.0
 
     def test_converges(self):
-        f = lambda x: (x[0] - 2)**2 + (x[1] - 3)**2
+        f = lambda x: (x[0] - 2) ** 2 + (x[1] - 3) ** 2
         g = lambda x: np.array([2 * (x[0] - 2), 2 * (x[1] - 3)])
         r = rmsprop_optimize(f, g, np.array([0.0, 0.0]), lr=0.01)
         assert r.value < 0.1

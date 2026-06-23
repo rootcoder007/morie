@@ -1,6 +1,7 @@
 """Tests for flmtst.fleming_harrington."""
+
 import numpy as np
-import pytest
+
 from morie.fn.flmtst import fleming_harrington
 
 
@@ -13,7 +14,7 @@ def test_flmtst_basic():
     gamma = 1.0
     result = fleming_harrington(time, event, group, rho, gamma)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_flmtst_edge():

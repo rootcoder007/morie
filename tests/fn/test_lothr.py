@@ -1,8 +1,9 @@
 """Tests for morie.fn.lothr -- template matching."""
 
 import numpy as np
-from morie.fn.lothr import template_match, lothr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lothr import lothr, template_match
 
 
 class TestLothr:

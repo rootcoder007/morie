@@ -1,6 +1,7 @@
 """Tests for hmpg.geron_policy_gradient."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmpg import geron_policy_gradient
 
 
@@ -11,7 +12,7 @@ def test_hmpg_basic():
     gamma = 1.0
     result = geron_policy_gradient(trajectories, policy, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmpg_edge():

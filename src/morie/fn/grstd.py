@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Standardization (z-score normalization) to zero mean, unit variance."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_standardization"]
@@ -30,7 +32,14 @@ def geron_standardization(X):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Standardization (z-score normalization) to zero mean, unit variance"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Standardization (z-score normalization) to zero mean, unit variance",
+        }
+    )
 
 
 def cheatsheet():

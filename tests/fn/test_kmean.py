@@ -2,9 +2,9 @@
 
 import numpy as np
 import pandas as pd
-import pytest
-from morie.fn.kmean import kmean
+
 from morie.fn._containers import KmeansRes
+from morie.fn.kmean import kmean
 
 
 class TestKmean:
@@ -17,11 +17,13 @@ class TestKmean:
 
     def test_labels_count(self, rng):
         """Should produce exactly k unique labels."""
-        X = np.vstack([
-            rng.standard_normal((30, 2)) + [5, 5],
-            rng.standard_normal((30, 2)) + [-5, -5],
-            rng.standard_normal((30, 2)) + [5, -5],
-        ])
+        X = np.vstack(
+            [
+                rng.standard_normal((30, 2)) + [5, 5],
+                rng.standard_normal((30, 2)) + [-5, -5],
+                rng.standard_normal((30, 2)) + [5, -5],
+            ]
+        )
         result = kmean(X, k=3)
         assert len(np.unique(result.labels)) == 3
         assert len(result.labels) == 90

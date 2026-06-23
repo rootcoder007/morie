@@ -1,6 +1,7 @@
 """Tests for morie.fn.cmplt -- Capture-recapture."""
 
 import pytest
+
 from morie.fn.cmplt import capture_recapture
 
 

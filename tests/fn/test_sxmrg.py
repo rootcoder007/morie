@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.sxmrg import sxmrg
 
 
@@ -35,10 +36,8 @@ class TestSxmrg:
 
     def test_negative_se_raises(self):
         with pytest.raises(ValueError):
-            sxmrg(np.array([0.5]), np.array([-0.1]),
-                   np.array([0.5]), np.array([0.1]))
+            sxmrg(np.array([0.5]), np.array([-0.1]), np.array([0.5]), np.array([0.1]))
 
     def test_mismatched_length(self):
         with pytest.raises(ValueError):
-            sxmrg(np.array([0.5, 0.3]), np.array([0.1]),
-                   np.array([0.5]), np.array([0.1]))
+            sxmrg(np.array([0.5, 0.3]), np.array([0.1]), np.array([0.5]), np.array([0.1]))

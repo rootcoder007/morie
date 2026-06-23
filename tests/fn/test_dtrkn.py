@@ -1,7 +1,7 @@
 """Tests for morie.fn.dtrkn."""
 
 import numpy as np
-import pytest
+
 from morie.fn.dtrkn import dtrkn
 
 

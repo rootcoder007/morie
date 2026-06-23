@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import numpy as np
 from scipy.stats import chi2
+
 from ._richresult import RichResult
 
 __all__ = ["lgrst"]
@@ -56,7 +57,9 @@ def lgrst(time: np.ndarray, event: np.ndarray, group: np.ndarray, cdf=None) -> d
         V += e1 * (1 - n1 / n) * (n - d) / (n - 1) if n > 1 else 0
 
     if V <= 0:
-        return RichResult(payload={"statistic": 0.0, "p_value": 1.0, "n_obs": len(time), "n_events": int(np.sum(event))})
+        return RichResult(
+            payload={"statistic": 0.0, "p_value": 1.0, "n_obs": len(time), "n_events": int(np.sum(event))}
+        )
 
     stat = (O1 - E1) ** 2 / V
     pval = 1 - chi2.cdf(stat, df=1)

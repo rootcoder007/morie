@@ -1,6 +1,7 @@
 """Tests for ppoc.ppo."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppoc import ppo
 
 
@@ -11,7 +12,7 @@ def test_ppoc_basic():
     clip_eps = np.random.default_rng(42).normal(0, 1, 100)
     result = ppo(env, policy, clip_eps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ppoc_edge():

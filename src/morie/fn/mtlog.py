@@ -47,6 +47,7 @@ def matrix_log(
         if np.any(np.real(eigvals) <= 0):
             T = np.real(np.linalg.matrix_power(T, 1))
         from scipy.linalg import sqrtm
+
         T = np.real(sqrtm(T))
         s += 1
     X = T - I

@@ -1,6 +1,7 @@
 """Test gdmml."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdmml import gdmml
 
 

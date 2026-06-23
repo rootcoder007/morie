@@ -1,7 +1,9 @@
 """Test zero_crossing_rate."""
+
 import numpy as np
-from morie.fn.zcr import zero_crossing_rate, alias
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.zcr import alias, zero_crossing_rate
 
 
 class TestZeroCrossingRate:

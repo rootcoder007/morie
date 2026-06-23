@@ -48,7 +48,7 @@ def lortz(
         raise ValueError("|v| must be < c.")
 
     beta = v / c
-    gamma = 1.0 / np.sqrt(1.0 - beta ** 2)
+    gamma = 1.0 / np.sqrt(1.0 - beta**2)
 
     L = np.eye(4)
     L[0, 0] = gamma

@@ -1,6 +1,7 @@
 """Test afvwc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.afvwc import afvwc
 
 

@@ -1,6 +1,8 @@
 """Tests for vdneig."""
+
 import numpy as np
 import pytest
+
 from morie.fn.vdneig import vdneig
 
 
@@ -28,4 +30,5 @@ def test_vdneig_no_data():
 
 def test_vdneig_alias():
     from morie.fn.vdneig import vdneig
+
     assert vdneig is vdneig

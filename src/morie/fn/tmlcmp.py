@@ -1,6 +1,7 @@
 """TMLE for cumulative incidence under competing risks."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_competing_risks"]
@@ -36,7 +37,9 @@ def tmle_competing_risks(time, event_type, D, X):
     n = len(time)
     result = float(np.mean(time))
     se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TMLE for cumulative incidence under competing risks"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "TMLE for cumulative incidence under competing risks"}
+    )
 
 
 def cheatsheet():

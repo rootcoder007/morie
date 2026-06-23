@@ -1,6 +1,8 @@
 """Tests for morie.fn.mamod -- MA(q) model."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mamod import ma_fit
 
 
@@ -18,4 +20,5 @@ class TestMAFit:
 
     def test_cheatsheet(self):
         from morie.fn.mamod import cheatsheet
+
         assert isinstance(cheatsheet(), str)

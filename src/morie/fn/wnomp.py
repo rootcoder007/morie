@@ -1,5 +1,7 @@
 """W-NOMINATE vote probability using Gaussian utility function."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["wnominate_probability"]
@@ -35,7 +37,14 @@ def wnominate_probability(ideal_point, yea_pos, nay_pos, beta):
     n = int(ideal_point) if ideal_point.ndim == 0 else len(ideal_point)
     result = float(np.mean(ideal_point))
     se = float(np.std(ideal_point, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "W-NOMINATE vote probability using Gaussian utility function"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "W-NOMINATE vote probability using Gaussian utility function",
+        }
+    )
 
 
 def cheatsheet():

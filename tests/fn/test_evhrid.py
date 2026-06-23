@@ -1,6 +1,7 @@
 """Tests for evhrid.evt_husler_reiss_dep."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evhrid import evt_husler_reiss_dep
 
 
@@ -11,7 +12,7 @@ def test_evhrid_basic():
     lam = 0.1
     result = evt_husler_reiss_dep(x, y, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evhrid_edge():

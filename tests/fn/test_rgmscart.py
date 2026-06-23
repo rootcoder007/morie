@@ -1,6 +1,7 @@
 """Tests for rgmscart.rangayyan_muscle_artifact."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgmscart import rangayyan_muscle_artifact
 
 
@@ -11,7 +12,7 @@ def test_rgmscart_basic():
     fs = 100.0
     result = rangayyan_muscle_artifact(vag, emg_ref, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgmscart_edge():

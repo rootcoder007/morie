@@ -1,6 +1,7 @@
 """Tests for morie.fn.strta -- Stratified 2x2xK analysis."""
 
 import pytest
+
 from morie.fn.strta import stratified_analysis
 
 

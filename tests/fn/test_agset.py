@@ -1,7 +1,7 @@
 """Tests for morie.fn.agset."""
 
 import numpy as np
-import pytest
+
 from morie.fn.agset import agset
 
 

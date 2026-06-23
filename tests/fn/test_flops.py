@@ -1,6 +1,7 @@
 """Test estimate_flops."""
-from morie.fn.flops import estimate_flops, flops
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.flops import estimate_flops, flops
 
 
 class TestEstimateFlops:

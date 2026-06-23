@@ -1,6 +1,7 @@
 """Tests for rgfresp.rangayyan_freq_response."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgfresp import rangayyan_freq_response
 
 
@@ -12,7 +13,7 @@ def test_rgfresp_basic():
     n_freqs = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_freq_response(b, a, fs, n_freqs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgfresp_edge():

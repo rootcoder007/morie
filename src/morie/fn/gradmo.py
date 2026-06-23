@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Adam optimizer step (bias-corrected first and second moments)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_adam_update"]
@@ -46,7 +48,14 @@ def geron_adam_update(theta, grad, m, s, t, eta, b1, b2, eps):
     n = int(theta) if theta.ndim == 0 else len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Adam optimizer step (bias-corrected first and second moments)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Adam optimizer step (bias-corrected first and second moments)",
+        }
+    )
 
 
 def cheatsheet():

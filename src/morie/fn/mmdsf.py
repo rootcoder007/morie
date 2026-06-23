@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Classical metric MDS via Torgerson-Eckart-Young decomposition."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["metric_mds_torgerson"]
@@ -32,7 +34,14 @@ def metric_mds_torgerson(D_matrix, n_dims):
     n = int(D_matrix) if D_matrix.ndim == 0 else len(D_matrix)
     result = float(np.mean(D_matrix))
     se = float(np.std(D_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Classical metric MDS via Torgerson-Eckart-Young decomposition"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Classical metric MDS via Torgerson-Eckart-Young decomposition",
+        }
+    )
 
 
 def cheatsheet():

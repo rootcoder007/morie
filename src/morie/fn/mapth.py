@@ -1,6 +1,7 @@
 """Maximum a posteriori (MAP) theta estimate."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["map_theta_estimator"]
@@ -38,7 +39,16 @@ def map_theta_estimator(y, prior, P_theta):
     se = 1.2533 * np.std(y, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Maximum a posteriori (MAP) theta estimate"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Maximum a posteriori (MAP) theta estimate",
+        }
+    )
 
 
 def cheatsheet():

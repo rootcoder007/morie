@@ -1,5 +1,7 @@
 """Spectral decomposition simulation of Gaussian random fields."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_spectral_sim"]
@@ -33,7 +35,14 @@ def schabenberger_spectral_sim(spectral_density, coords, n_freqs):
     n = int(spectral_density) if spectral_density.ndim == 0 else len(spectral_density)
     result = float(np.mean(spectral_density))
     se = float(np.std(spectral_density, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spectral decomposition simulation of Gaussian random fields"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Spectral decomposition simulation of Gaussian random fields",
+        }
+    )
 
 
 def cheatsheet():

@@ -15,13 +15,13 @@ from ._containers import DescriptiveResult
 # Values below are the pooled central estimates most commonly cited.
 _RR_PER_10_UGM3: dict[tuple[str, str], tuple[float, tuple[float, float]]] = {
     # (pollutant, outcome) -> (RR, (95% CI lo, hi))
-    ("pm25", "all_cause"):         (1.070, (1.04, 1.10)),
-    ("pm25", "cardiopulmonary"):   (1.090, (1.03, 1.16)),
-    ("pm25", "ischemic_heart"):    (1.180, (1.14, 1.23)),
-    ("pm25", "lung_cancer"):       (1.080, (1.01, 1.16)),
-    ("pm25", "stroke"):            (1.110, (1.05, 1.17)),
-    ("pm10", "all_cause"):         (1.040, (1.02, 1.06)),
-    ("pm10", "respiratory"):       (1.040, (1.01, 1.07)),
+    ("pm25", "all_cause"): (1.070, (1.04, 1.10)),
+    ("pm25", "cardiopulmonary"): (1.090, (1.03, 1.16)),
+    ("pm25", "ischemic_heart"): (1.180, (1.14, 1.23)),
+    ("pm25", "lung_cancer"): (1.080, (1.01, 1.16)),
+    ("pm25", "stroke"): (1.110, (1.05, 1.17)),
+    ("pm10", "all_cause"): (1.040, (1.02, 1.06)),
+    ("pm10", "respiratory"): (1.040, (1.01, 1.07)),
 }
 
 

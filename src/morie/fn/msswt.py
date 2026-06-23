@@ -31,4 +31,4 @@ msswt = missing_data_weights
 
 
 def cheatsheet() -> str:
-    return 'missing_data_weights({}) -> Missing data weight matrix.'
+    return "missing_data_weights({}) -> Missing data weight matrix."

@@ -1,7 +1,6 @@
 """Tests for morie.fn.sens — Sensitivity."""
-import numpy as np
 
-from morie.fn.sens import sensitivity_dx, sens
+from morie.fn.sens import sens, sensitivity_dx
 
 
 def test_perfect_sensitivity():

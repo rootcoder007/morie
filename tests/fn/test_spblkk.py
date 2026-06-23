@@ -1,6 +1,7 @@
 """Tests for spblkk.schabenberger_block_kriging."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spblkk import schabenberger_block_kriging
 
 
@@ -9,10 +10,10 @@ def test_spblkk_basic():
     coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
     z = np.random.default_rng(44).normal(0, 1, 100)
     blocks = np.random.default_rng(42).normal(0, 1, 100)
-    cov_model = 'exponential'
+    cov_model = "exponential"
     result = schabenberger_block_kriging(coords, z, blocks, cov_model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spblkk_edge():
@@ -20,6 +21,6 @@ def test_spblkk_edge():
     coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
     z = np.random.default_rng(44).normal(0, 1, 100)
     blocks = np.random.default_rng(42).normal(0, 1, 100)
-    cov_model = 'exponential'
+    cov_model = "exponential"
     result = schabenberger_block_kriging(coords, z, blocks, cov_model)
     assert isinstance(result, dict)

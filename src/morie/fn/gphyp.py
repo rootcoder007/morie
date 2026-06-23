@@ -81,15 +81,13 @@ def gphyp(
     coords = np.asarray(coords, dtype=float)
 
     def objective(theta):
-        return gaussian_process_marginal_likelihood(
-            coords, data, theta[0], theta[1], theta[2]
-        )
+        return gaussian_process_marginal_likelihood(coords, data, theta[0], theta[1], theta[2])
 
     init_theta = np.array([init_length_scale, init_output_scale, init_noise_var])
     opt = minimize(
         objective,
         init_theta,
-        method='L-BFGS-B',
+        method="L-BFGS-B",
         bounds=[(0.01, 10), (0.01, 10), (0.001, 10)],
     )
 

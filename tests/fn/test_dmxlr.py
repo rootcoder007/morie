@@ -1,7 +1,7 @@
 """Tests for morie.fn.dmxlr -- DNA mixture likelihood ratio."""
 
-import numpy as np
 import pytest
+
 from morie.fn.dmxlr import dmxlr
 
 

@@ -1,6 +1,7 @@
 """Tests for morie.fn.or2d -- Convert odds ratio to Cohen's d."""
 
 import pytest
+
 from morie.fn.or2d import or_to_d
 
 
@@ -16,6 +17,7 @@ class TestORToD:
     def test_roundtrip_with_d2or(self):
         """d -> OR -> d should recover original d."""
         from morie.fn.d2or import d_to_or
+
         d_orig = 0.6
         d_back = or_to_d(d_to_or(d_orig))
         assert d_back == pytest.approx(d_orig, abs=1e-10)

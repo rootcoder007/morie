@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ARCH-in-Mean (ARCH-M) -- risk premium proportional to conditional volatility."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -53,7 +54,7 @@ def arch_in_mean(x):
             s2[t] = omega + alpha * eps[t - 1] ** 2
             s2[t] = max(s2[t], 1e-12)
             eps[t] = y[t] - mu - delta * np.sqrt(s2[t])
-        return 0.5 * np.sum(np.log(2 * np.pi * s2) + eps ** 2 / s2)
+        return 0.5 * np.sum(np.log(2 * np.pi * s2) + eps**2 / s2)
 
     var_y = float(np.var(y))
     fit = optimize.minimize(
@@ -70,14 +71,18 @@ def arch_in_mean(x):
     for t in range(1, n):
         s2[t] = omega + alpha * eps[t - 1] ** 2
         eps[t] = y[t] - mu - delta * np.sqrt(s2[t])
-    return RichResult(payload={
-        "mu": float(mu), "delta": float(delta),
-        "omega": float(omega), "alpha": float(alpha),
-        "loglik": float(-fit.fun),
-        "conditional_variance": s2,
-        "n": int(n),
-        "method": "ARCH(1)-in-mean Gaussian MLE (numpy)",
-    })
+    return RichResult(
+        payload={
+            "mu": float(mu),
+            "delta": float(delta),
+            "omega": float(omega),
+            "alpha": float(alpha),
+            "loglik": float(-fit.fun),
+            "conditional_variance": s2,
+            "n": int(n),
+            "method": "ARCH(1)-in-mean Gaussian MLE (numpy)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 """Tests for idwcv."""
+
 import numpy as np
 import pytest
+
 from morie.fn.idwcv import idwcv
 
 
@@ -28,4 +30,5 @@ def test_idwcv_no_data():
 
 def test_idwcv_alias():
     from morie.fn.idwcv import idwcv
+
     assert idwcv is idwcv

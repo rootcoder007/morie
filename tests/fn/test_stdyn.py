@@ -7,7 +7,6 @@ from morie.fn.stdyn import stdyn
 
 
 class TestStdyn:
-
     def test_output_shape(self):
         rng = np.random.default_rng(42)
         data = rng.standard_normal((10, 3))

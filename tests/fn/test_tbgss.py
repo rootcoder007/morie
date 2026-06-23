@@ -1,6 +1,8 @@
 """Tests for tbgss."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tbgss import tbgss
 
 
@@ -28,4 +30,5 @@ def test_tbgss_no_data():
 
 def test_tbgss_alias():
     from morie.fn.tbgss import tbgss
+
     assert tbgss is tbgss

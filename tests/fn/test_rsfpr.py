@@ -1,6 +1,7 @@
 """Test rsfpr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsfpr import rsfpr
 
 

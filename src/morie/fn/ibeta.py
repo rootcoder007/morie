@@ -2,6 +2,8 @@
 """Regularised incomplete Beta."""
 
 from scipy.special import betainc
+
+
 def ibeta(a: float, b: float, x: float) -> float:
     """Regularised incomplete beta function I_x(a, b).
 

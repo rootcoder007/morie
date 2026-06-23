@@ -1,6 +1,7 @@
 """Test trspd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trspd import trspd
 
 

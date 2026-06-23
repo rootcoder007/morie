@@ -1,7 +1,7 @@
 """Tests for morie.fn.bnhan — Han's maximum rank correlation."""
 
 import numpy as np
-import pytest
+
 from morie.fn.bnhan import bnhan
 
 

@@ -1,6 +1,7 @@
 """Tests for polrg.polynomial_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.polrg import polynomial_regression
 
 
@@ -10,7 +11,7 @@ def test_polrg_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = polynomial_regression(x, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_polrg_edge():

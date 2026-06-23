@@ -1,6 +1,7 @@
 """Tests for rng175.rangayyan_ch3_rls_a_priori_error."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng175 import rangayyan_ch3_rls_a_priori_error
 
 
@@ -12,7 +13,7 @@ def test_rng175_basic():
     n = 100
     result = rangayyan_ch3_rls_a_priori_error(x, r, w_tilde, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng175_edge():

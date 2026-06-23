@@ -1,6 +1,8 @@
 """Tests for nngrd."""
+
 import numpy as np
 import pytest
+
 from morie.fn.nngrd import nngrd
 
 
@@ -28,4 +30,5 @@ def test_nngrd_no_data():
 
 def test_nngrd_alias():
     from morie.fn.nngrd import nngrd
+
     assert nngrd is nngrd

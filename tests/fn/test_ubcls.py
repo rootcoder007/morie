@@ -1,6 +1,7 @@
 """Test ubcls."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ubcls import ubcls
 
 

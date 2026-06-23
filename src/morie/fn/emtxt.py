@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """EM-IRT for text/word-count frequency data as input."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["em_irt_text"]
@@ -32,7 +34,9 @@ def em_irt_text(word_freq_matrix, n_dims):
     n = int(word_freq_matrix) if word_freq_matrix.ndim == 0 else len(word_freq_matrix)
     result = float(np.mean(word_freq_matrix))
     se = float(np.std(word_freq_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "EM-IRT for text/word-count frequency data as input"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "EM-IRT for text/word-count frequency data as input"}
+    )
 
 
 def cheatsheet():

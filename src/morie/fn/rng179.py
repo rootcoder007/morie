@@ -1,6 +1,7 @@
 """Filtered weighted-squared first-derivative operator for QRS detection (Murthy and Rangaraj).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_filtered_derivative_murthy"]
@@ -34,7 +35,14 @@ def rangayyan_ch4_filtered_derivative_murthy(x, n, N):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Filtered weighted-squared first-derivative operator for QRS detection (Murthy and Rangaraj)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Filtered weighted-squared first-derivative operator for QRS detection (Murthy and Rangaraj).",
+        }
+    )
 
 
 def cheatsheet():

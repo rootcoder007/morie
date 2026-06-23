@@ -1,6 +1,8 @@
 """Tests for vdang."""
+
 import numpy as np
 import pytest
+
 from morie.fn.vdang import vdang
 
 
@@ -28,4 +30,5 @@ def test_vdang_no_data():
 
 def test_vdang_alias():
     from morie.fn.vdang import vdang
+
     assert vdang is vdang

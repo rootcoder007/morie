@@ -1,6 +1,8 @@
 """Tests for rbftps."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rbftps import rbftps
 
 
@@ -28,4 +30,5 @@ def test_rbftps_no_data():
 
 def test_rbftps_alias():
     from morie.fn.rbftps import rbftps
+
     assert rbftps is rbftps

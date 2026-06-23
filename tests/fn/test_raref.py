@@ -1,5 +1,7 @@
 """Tests for morie.fn.raref."""
+
 import numpy as np
+
 from morie.fn.raref import raref
 
 
@@ -13,6 +15,7 @@ def test_raref_smoke():
 
 def test_cheatsheet():
     from morie.fn.raref import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

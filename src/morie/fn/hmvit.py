@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Vision Transformer (ViT): transformer on image patches."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_vision_transformer"]
@@ -34,7 +36,14 @@ def geron_vision_transformer(image, patch_size, n_layers):
     n = len(image)
     result = float(np.mean(image))
     se = float(np.std(image, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Vision Transformer (ViT): transformer on image patches"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Vision Transformer (ViT): transformer on image patches",
+        }
+    )
 
 
 def cheatsheet():

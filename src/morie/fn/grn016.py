@@ -1,6 +1,7 @@
 """Logistic regression class prediction using a 50% probability threshold.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ch4_logistic_regression_prediction"]
@@ -30,7 +31,14 @@ def geron_ch4_logistic_regression_prediction(p_hat):
     n = len(p_hat)
     result = float(np.mean(p_hat))
     se = float(np.std(p_hat, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Logistic regression class prediction using a 50% probability threshold."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Logistic regression class prediction using a 50% probability threshold.",
+        }
+    )
 
 
 def cheatsheet():

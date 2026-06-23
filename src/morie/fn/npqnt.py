@@ -84,6 +84,7 @@ def npqnt(
         x_eval = np.asarray(x_eval, dtype=float).ravel()
 
     from morie.fn.nwker import _get_kernel, _silverman_bw
+
     if bandwidth is None:
         bandwidth = _silverman_bw(x)
     k_fn = _get_kernel(kernel)

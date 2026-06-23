@@ -1,6 +1,7 @@
 """Tests for causscg.causal_generalised_sc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causscg import causal_generalised_sc
 
 
@@ -12,7 +13,7 @@ def test_causscg_basic():
     r = 10
     result = causal_generalised_sc(Y_panel, treated_idx, treat_time, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causscg_edge():

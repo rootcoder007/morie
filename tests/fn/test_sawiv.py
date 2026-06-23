@@ -1,6 +1,7 @@
 """Test sawiv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sawiv import sawiv
 
 

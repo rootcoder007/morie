@@ -1,6 +1,7 @@
 """Cross-method consistency check (g-formula vs IPW vs g-est)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["g_methods_consistency"]
@@ -36,7 +37,14 @@ def g_methods_consistency(y, treatment_history, covariate_history, tau):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cross-method consistency check (g-formula vs IPW vs g-est)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Cross-method consistency check (g-formula vs IPW vs g-est)",
+        }
+    )
 
 
 def cheatsheet():

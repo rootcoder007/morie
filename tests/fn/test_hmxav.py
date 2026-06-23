@@ -1,6 +1,7 @@
 """Tests for hmxav.geron_glorot_init."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmxav import geron_glorot_init
 
 
@@ -11,7 +12,7 @@ def test_hmxav_basic():
     seed = 42
     result = geron_glorot_init(fan_in, fan_out, seed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmxav_edge():

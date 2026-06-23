@@ -1,6 +1,7 @@
 """Tests for boryis.borusyak_jaravel_spiess."""
+
 import numpy as np
-import pytest
+
 from morie.fn.boryis import borusyak_jaravel_spiess
 
 
@@ -13,7 +14,7 @@ def test_boryis_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = borusyak_jaravel_spiess(y, D, unit, time, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_boryis_edge():

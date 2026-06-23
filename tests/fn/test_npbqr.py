@@ -1,6 +1,7 @@
 """Tests for npbqr.np_bayes_quant_reg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.npbqr import np_bayes_quant_reg
 
 
@@ -11,7 +12,7 @@ def test_npbqr_basic():
     tau = 0.1
     result = np_bayes_quant_reg(y, X, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_npbqr_edge():

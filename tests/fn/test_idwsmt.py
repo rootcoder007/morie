@@ -1,6 +1,7 @@
 """Tests for idwsmt.inverse_distance_weighting."""
+
 import numpy as np
-import pytest
+
 from morie.fn.idwsmt import inverse_distance_weighting
 
 
@@ -12,7 +13,7 @@ def test_idwsmt_basic():
     power = np.random.default_rng(42).normal(0, 1, 100)
     result = inverse_distance_weighting(coords, values, s_predict, power)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_idwsmt_edge():

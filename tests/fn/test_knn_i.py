@@ -1,8 +1,8 @@
 """Tests for morie.fn.knn_i -- KNN imputation."""
 
 import numpy as np
-import pandas as pd
 import pytest
+
 from morie.fn.knn_i import knn_impute
 
 

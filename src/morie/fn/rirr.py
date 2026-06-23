@@ -8,7 +8,14 @@ import pandas as pd
 from scipy import stats as sp
 
 
-def rirr(ratings1: np.ndarray | pd.Series, ratings2: np.ndarray | pd.Series, cdf=None, *, weights: str = "quadratic", alpha: float = 0.05) -> dict:
+def rirr(
+    ratings1: np.ndarray | pd.Series,
+    ratings2: np.ndarray | pd.Series,
+    cdf=None,
+    *,
+    weights: str = "quadratic",
+    alpha: float = 0.05,
+) -> dict:
     """Cohen's weighted kappa for inter-rater reliability.
 
     Computes agreement between two raters on ordinal ratings, adjusting

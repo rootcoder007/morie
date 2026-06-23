@@ -61,4 +61,4 @@ crssp = correspondence_analysis
 
 
 def cheatsheet() -> str:
-    return 'correspondence_analysis({}) -> Simple correspondence analysis.'
+    return "correspondence_analysis({}) -> Simple correspondence analysis."

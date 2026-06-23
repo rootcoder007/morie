@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """XGBoost: regularized gradient boosting with second-order Taylor approximation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_xgboost"]
@@ -38,7 +40,14 @@ def geron_xgboost(X, y, n_estimators, learning_rate, max_depth):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "XGBoost: regularized gradient boosting with second-order Taylor approximation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "XGBoost: regularized gradient boosting with second-order Taylor approximation",
+        }
+    )
 
 
 def cheatsheet():

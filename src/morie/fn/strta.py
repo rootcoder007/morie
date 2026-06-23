@@ -73,8 +73,7 @@ def stratified_analysis(tables: list[tuple[int, int, int, int]], confidence: flo
         c_exp = n1 - a_exp
         d_exp = m0 - c_exp
 
-        var_a = 1.0 / (1 / max(a_exp, 0.5) + 1 / max(b_exp, 0.5) +
-                        1 / max(c_exp, 0.5) + 1 / max(d_exp, 0.5))
+        var_a = 1.0 / (1 / max(a_exp, 0.5) + 1 / max(b_exp, 0.5) + 1 / max(c_exp, 0.5) + 1 / max(d_exp, 0.5))
         bd_stat += (a - a_exp) ** 2 / var_a
 
     bd_df = len(tables) - 1

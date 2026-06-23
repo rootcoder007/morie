@@ -1,6 +1,7 @@
 """Tests for rgmahd.rangayyan_mahalanobis."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgmahd import rangayyan_mahalanobis
 
 
@@ -11,7 +12,7 @@ def test_rgmahd_basic():
     sigma = 1.0
     result = rangayyan_mahalanobis(x, mu, sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgmahd_edge():

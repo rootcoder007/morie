@@ -1,6 +1,7 @@
 """Test geapt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.geapt import geapt
 
 

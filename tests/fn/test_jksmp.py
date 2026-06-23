@@ -1,8 +1,9 @@
 """Tests for fn/jksmp.py -- Jackknife variance estimation."""
+
 import numpy as np
 import pandas as pd
 
-from morie.fn.jksmp import jksmp, jackknife_estimate
+from morie.fn.jksmp import jackknife_estimate, jksmp
 
 
 def test_jksmp_returns_dict():

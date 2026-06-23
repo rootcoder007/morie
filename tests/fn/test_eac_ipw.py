@@ -30,15 +30,17 @@ def synth_ebac_data():
     ebac_legal_with_na = ebac_legal.astype(float)
     ebac_legal_with_na[~observed] = np.nan
 
-    return pd.DataFrame({
-        "x1": x1,
-        "x2": x2,
-        "cannabis_any_use": treatment,
-        "alcohol_past12m": alcohol,
-        "ebac_tot": ebac_vals_with_na,
-        "ebac_legal": ebac_legal_with_na,
-        "weight": rng.uniform(0.5, 2.0, n),
-    })
+    return pd.DataFrame(
+        {
+            "x1": x1,
+            "x2": x2,
+            "cannabis_any_use": treatment,
+            "alcohol_past12m": alcohol,
+            "ebac_tot": ebac_vals_with_na,
+            "ebac_legal": ebac_legal_with_na,
+            "weight": rng.uniform(0.5, 2.0, n),
+        }
+    )
 
 
 def test_returns_dict(synth_ebac_data):

@@ -6,7 +6,9 @@ data) to the same Gaussian limit as G_n.  We Monte-Carlo it: draw B
 multinomial(n; 1/n,...,1/n) weights, recompute the bootstrap mean,
 and return the bootstrap sd as the SE of sqrt(n) P_n.
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_bootstrap_empirical"]
@@ -36,6 +38,7 @@ def kosorok_bootstrap_empirical(x, B=1000, seed=0, deterministic_seed: int | Non
     n = len(x)
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("ksr07", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -43,12 +46,14 @@ def kosorok_bootstrap_empirical(x, B=1000, seed=0, deterministic_seed: int | Non
     boot_means = x[idx].mean(axis=1)
     pn = float(x.mean())
     gn_star = np.sqrt(n) * (boot_means - pn)
-    return RichResult(payload={
-        "estimate": float(gn_star.mean()),
-        "se":       float(gn_star.std(ddof=1)),
-        "n":        n,
-        "method":   "Bootstrap G_n^*(f) = sqrt(n)(P_n^* - P_n)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(gn_star.mean()),
+            "se": float(gn_star.std(ddof=1)),
+            "n": n,
+            "method": "Bootstrap G_n^*(f) = sqrt(n)(P_n^* - P_n)",
+        }
+    )
 
 
 def cheatsheet():

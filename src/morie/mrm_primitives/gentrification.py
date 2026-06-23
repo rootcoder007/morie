@@ -23,8 +23,6 @@ The function returns a three-level factor:
 
 from __future__ import annotations
 
-from typing import Literal
-
 import numpy as np
 import pandas as pd
 

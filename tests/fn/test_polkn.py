@@ -1,6 +1,7 @@
 """Tests for polkn.polynomial_kernel."""
+
 import numpy as np
-import pytest
+
 from morie.fn.polkn import polynomial_kernel
 
 
@@ -11,7 +12,7 @@ def test_polkn_basic():
     d = 5
     result = polynomial_kernel(X, c, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_polkn_edge():

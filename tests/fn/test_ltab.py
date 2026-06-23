@@ -1,7 +1,7 @@
 """Tests for morie.fn.ltab -- Abridged life table."""
 
-import numpy as np
 import pytest
+
 from morie.fn.ltab import life_table
 
 

@@ -42,7 +42,7 @@ def bayesian_kernel_regression(
 
     def _kernel(A, B):
         sq = np.sum((A[:, None, :] - B[None, :, :]) ** 2, axis=2)
-        return np.exp(-sq / (2 * bandwidth ** 2))
+        return np.exp(-sq / (2 * bandwidth**2))
 
     Phi = _kernel(Xtr, Xtr)
     n = len(Xtr)

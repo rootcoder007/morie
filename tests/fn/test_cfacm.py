@@ -4,7 +4,6 @@ from morie.fn.cfacm import cfa_compare
 
 
 class TestCfaCompare:
-
     def test_basic_comparison(self):
         fit1 = {"chi2": 100, "df": 50, "cfi": 0.95}
         fit2 = {"chi2": 120, "df": 55, "cfi": 0.93}

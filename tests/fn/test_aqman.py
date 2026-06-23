@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.aqman import idw_interpolate, aqman
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.aqman import aqman, idw_interpolate
 
 
 class TestAqman:
@@ -11,11 +12,13 @@ class TestAqman:
         assert aqman is idw_interpolate
 
     def test_basic_interp(self):
-        df = pd.DataFrame({
-            "x": [0, 1, 0, 1, 0.5],
-            "y": [0, 0, 1, 1, 0.5],
-            "z": [0, 1, 1, 2, 1],
-        })
+        df = pd.DataFrame(
+            {
+                "x": [0, 1, 0, 1, 0.5],
+                "y": [0, 0, 1, 1, 0.5],
+                "z": [0, 1, 1, 2, 1],
+            }
+        )
         result = idw_interpolate(df, grid_size=5)
         assert isinstance(result, DescriptiveResult)
         assert result.extra["n_points"] == 5

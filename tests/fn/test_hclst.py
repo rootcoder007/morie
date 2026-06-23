@@ -1,9 +1,9 @@
 """Tests for morie.fn.hclst — Hierarchical clustering."""
 
 import numpy as np
-import pytest
-from morie.fn.hclst import hclst
+
 from morie.fn._containers import HclstRes
+from morie.fn.hclst import hclst
 
 
 class TestHclst:

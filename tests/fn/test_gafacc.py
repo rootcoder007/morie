@@ -1,6 +1,7 @@
 """Test gafacc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gafacc import gafacc
 
 

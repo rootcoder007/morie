@@ -36,11 +36,13 @@ def test_length_matches_input(synth_data):
 def test_works_with_categorical_covariate():
     rng = np.random.default_rng(42)
     n = 200
-    df = pd.DataFrame({
-        "x1": rng.standard_normal(n),
-        "cat": rng.choice(["a", "b", "c"], n),
-        "treatment": rng.binomial(1, 0.4, n),
-    })
+    df = pd.DataFrame(
+        {
+            "x1": rng.standard_normal(n),
+            "cat": rng.choice(["a", "b", "c"], n),
+            "treatment": rng.binomial(1, 0.4, n),
+        }
+    )
     ps = compute_propensity_scores(df, treatment="treatment", covariates=["x1", "cat"])
     assert len(ps) == n
     assert (ps > 0).all() and (ps < 1).all()

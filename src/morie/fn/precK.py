@@ -1,6 +1,7 @@
 """Precision@k."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["precision_at_k"]

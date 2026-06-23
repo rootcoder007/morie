@@ -1,7 +1,9 @@
 """Test eog_detect (eogdt)."""
+
 import numpy as np
-from morie.fn.eogdt import eog_detect, eogdt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.eogdt import eog_detect, eogdt
 
 
 class TestEogDetect:

@@ -1,6 +1,8 @@
 """Tests for morie.fn.anchr — Anchor explanations."""
+
 import numpy as np
 import pytest
+
 from morie.fn.anchr import anchr
 
 
@@ -10,17 +12,18 @@ def setup():
     n, p = 200, 3
     X_train = rng.standard_normal((n, p))
     instance = np.array([1.5, -0.5, 0.3])
+
     # Threshold classifier on feature 0
     def predict_fn(Xp):
         return (Xp[:, 0] > 0).astype(float)
+
     return predict_fn, instance, X_train
 
 
 def test_keys(setup):
     fn, inst, X_tr = setup
     r = anchr(fn, inst, X_tr, seed=0)
-    for k in ("anchor_features", "anchor_conditions", "precision",
-              "coverage", "prediction", "p", "method"):
+    for k in ("anchor_features", "anchor_conditions", "precision", "coverage", "prediction", "p", "method"):
         assert k in r
 
 
@@ -64,4 +67,5 @@ def test_method(setup):
 
 def test_cheatsheet():
     from morie.fn.anchr import cheatsheet
+
     assert len(cheatsheet()) > 0

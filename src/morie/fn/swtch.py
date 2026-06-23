@@ -74,4 +74,4 @@ swtch = encode_labels
 
 
 def cheatsheet() -> str:
-    return 'encode_labels({}) -> Label / one-hot encoding.'
+    return "encode_labels({}) -> Label / one-hot encoding."

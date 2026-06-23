@@ -1,6 +1,7 @@
 """LR(1) parser."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["lr_parser"]

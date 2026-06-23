@@ -1,8 +1,9 @@
 """Tests for morie.fn.mtoint — intersection."""
 
 import pytest
-from morie.fn.mtoint import mto_intersection
+
 from morie.fn._containers import CrimeResult
+from morie.fn.mtoint import mto_intersection
 
 
 class TestIntersection:

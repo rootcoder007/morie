@@ -1,5 +1,7 @@
 """Tests for shannon_entropy."""
+
 import numpy as np
+
 from morie.fn.shent import shannon_entropy, shent
 
 

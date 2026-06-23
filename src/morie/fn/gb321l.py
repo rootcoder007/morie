@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Lemma: number of ways to distribute n-like objects into r cells with no cell empty."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_distributing_objects"]
@@ -35,7 +37,14 @@ def gibbons_distributing_objects(n, r):
         data = rng.standard_normal(max(n, 2))
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Lemma: number of ways to distribute n-like objects into r cells with no cell empty"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Lemma: number of ways to distribute n-like objects into r cells with no cell empty",
+        }
+    )
 
 
 def cheatsheet():

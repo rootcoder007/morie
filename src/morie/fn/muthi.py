@@ -1,17 +1,21 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mutual information with R-style verbose result."""
 
-from typing import Sequence, Union
 import math
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
 
 
 def muthi(joint: Union[Sequence, np.ndarray]):
     """MI from joint p(x,y): I(X;Y) = Sigma_ij P_ij log(P_ij / (P_i. P.j))."""
     from ._richresult import RichResult
+
     P = np.asarray(joint, dtype=float)
     P = P / P.sum()
-    Px = P.sum(axis=1); Py = P.sum(axis=0)
+    Px = P.sum(axis=1)
+    Py = P.sum(axis=0)
     out = 0.0
     for i in range(P.shape[0]):
         for j in range(P.shape[1]):
@@ -29,8 +33,15 @@ def muthi(joint: Union[Sequence, np.ndarray]):
             ("H(Y)", float(Hy)),
             ("Joint shape", P.shape),
         ],
-        interpretation=(f"I={out:.4f} nats. Normalized = {norm:+.3f} on [0,1] scale; "
-                        "0 = independent, 1 = perfect mutual determination."),
-        payload={"value": float(out), "statistic": float(out),
-                 "normalized": float(norm), "H_x": float(Hx), "H_y": float(Hy)},
+        interpretation=(
+            f"I={out:.4f} nats. Normalized = {norm:+.3f} on [0,1] scale; "
+            "0 = independent, 1 = perfect mutual determination."
+        ),
+        payload={
+            "value": float(out),
+            "statistic": float(out),
+            "normalized": float(norm),
+            "H_x": float(Hx),
+            "H_y": float(Hy),
+        },
     )

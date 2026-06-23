@@ -9,7 +9,9 @@ from scipy import stats as sp_stats
 from ._containers import DescriptiveResult
 
 
-def hotelling_t2(X: np.ndarray, Y: np.ndarray | None = None, mu0: np.ndarray | None = None, cdf=None) -> DescriptiveResult:
+def hotelling_t2(
+    X: np.ndarray, Y: np.ndarray | None = None, mu0: np.ndarray | None = None, cdf=None
+) -> DescriptiveResult:
     """Hotelling's T-squared test.
 
     One-sample: test if mean of X equals mu0.

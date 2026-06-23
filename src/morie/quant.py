@@ -893,9 +893,10 @@ class TQOutlierBlock:
     Outliers are stored as (index, fp16-value) pairs; bulk indices are the
     standard TQBlock layout.  Decode is bulk-decode-then-overwrite-outliers.
     """
-    bulk: "TQBlock"
+
+    bulk: TQBlock
     outlier_indices: np.ndarray  # int32, sparse positions in original x
-    outlier_values: np.ndarray   # float16
+    outlier_values: np.ndarray  # float16
 
 
 def turboquant_mse_outlier(
@@ -904,7 +905,7 @@ def turboquant_mse_outlier(
     rotation_seed: int = 42,
     outlier_z: float = 4.0,
     max_outlier_frac: float = 0.01,
-) -> "TQOutlierBlock":
+) -> TQOutlierBlock:
     """Outlier-aware TurboQuant.
 
     Step 1: detect outliers via |x − mean| > outlier_z · std.
@@ -959,7 +960,7 @@ def turboquant_mse_outlier(
     )
 
 
-def turboquant_mse_outlier_decode(block: "TQOutlierBlock") -> F64:
+def turboquant_mse_outlier_decode(block: TQOutlierBlock) -> F64:
     """Decode an outlier-aware TQ block -- bulk decode then overwrite outliers."""
     out = turboquant_mse_decode(block.bulk)
     if len(block.outlier_indices) > 0:

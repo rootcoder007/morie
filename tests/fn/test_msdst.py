@@ -1,7 +1,6 @@
 """Tests for morie.fn.msdst -- Distance matrix computation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msdst import dist_matrix
 

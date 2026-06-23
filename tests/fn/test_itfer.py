@@ -1,6 +1,7 @@
 """Tests for morie.fn.itfer — interference effects."""
+
 import numpy as np
-import pytest
+
 from morie.fn.itfer import interference_effects
 
 

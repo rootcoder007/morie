@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrspc -- Spatial Poisson count model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrspc import spatial_poisson
 

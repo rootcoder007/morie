@@ -1,6 +1,7 @@
 """Test cscpt2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cscpt2 import cscpt2
 
 

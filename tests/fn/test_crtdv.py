@@ -1,8 +1,8 @@
 """Tests for morie.fn.crtdv — diversion rate."""
 
 import pytest
+
 from morie.fn.crtdv import court_diversion
-from morie.fn._containers import CrimeResult
 
 
 class TestDiversion:

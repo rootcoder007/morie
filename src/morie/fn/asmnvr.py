@@ -1,6 +1,7 @@
 """De novo assembly (de Bruijn graph)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["genome_assembly"]

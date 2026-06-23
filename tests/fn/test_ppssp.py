@@ -1,6 +1,7 @@
 """Test ppssp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppssp import ppssp
 
 

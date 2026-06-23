@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-from morie.fn.gmafn import gemma_function_call, _default_morie_tools, _execute_morie_function
+from morie.fn.gmafn import _default_morie_tools, _execute_morie_function, gemma_function_call
 
 
 def test_default_tools_structure():
@@ -51,9 +51,7 @@ def test_successful_chat_with_tool_call():
         "message": {
             "role": "assistant",
             "content": "",
-            "tool_calls": [
-                {"function": {"name": "dnorm", "arguments": {"x": 0}}}
-            ],
+            "tool_calls": [{"function": {"name": "dnorm", "arguments": {"x": 0}}}],
         }
     }
     with patch("httpx.post", return_value=mock_resp):
@@ -78,9 +76,7 @@ def test_custom_model_and_url():
     mock_resp.raise_for_status = MagicMock()
     mock_resp.json.return_value = {"message": {"content": "ok", "tool_calls": []}}
     with patch("httpx.post", return_value=mock_resp) as mock_post:
-        r = gemma_function_call(
-            "test", model="gemma4:12b", base_url="http://remote:11434"
-        )
+        r = gemma_function_call("test", model="gemma4:12b", base_url="http://remote:11434")
     call_args = mock_post.call_args
     assert "remote:11434" in call_args[0][0]
     body = call_args[1]["json"]
@@ -94,10 +90,12 @@ def test_execute_unknown_function():
 
 def test_registry_entry():
     from morie.fn._registry import REGISTRY
+
     assert "gmafn" in REGISTRY
     assert REGISTRY["gmafn"].category == "LLM"
 
 
 def test_import_from_fn():
     from morie.fn.gmafn import gemma_function_call
+
     assert callable(gemma_function_call)

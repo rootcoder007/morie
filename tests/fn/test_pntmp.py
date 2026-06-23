@@ -1,22 +1,22 @@
 """Test pan_tompkins_qrs (pntmp)."""
-import numpy as np
-import pytest
 
-from morie.fn.pntmp import pan_tompkins_qrs, pntmp
+import numpy as np
+
 from morie.fn._containers import SignalResult
+from morie.fn.pntmp import pan_tompkins_qrs, pntmp
 
 
 class TestPanTompkinsQRS:
     def test_basic(self):
         rng = np.random.default_rng(42)
-        t = np.arange(0, 5, 1/360)
+        t = np.arange(0, 5, 1 / 360)
         ecg = np.sin(2 * np.pi * 1.2 * t) + 0.1 * rng.standard_normal(len(t))
         result = pan_tompkins_qrs(ecg, fs=360.0)
         assert isinstance(result, SignalResult)
         assert result.name == "pan_tompkins_qrs"
 
     def test_extra_keys(self):
-        t = np.arange(0, 3, 1/360)
+        t = np.arange(0, 3, 1 / 360)
         ecg = np.sin(2 * np.pi * 1.0 * t)
         result = pan_tompkins_qrs(ecg, fs=360.0)
         assert "qrs_indices" in result.extra

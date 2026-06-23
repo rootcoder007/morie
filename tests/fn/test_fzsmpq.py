@@ -1,6 +1,7 @@
 """Tests for fzsmpq.fauzi_sample_quantile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fzsmpq import fauzi_sample_quantile
 
 
@@ -10,7 +11,7 @@ def test_fzsmpq_basic():
     p = 5
     result = fauzi_sample_quantile(data, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fzsmpq_edge():

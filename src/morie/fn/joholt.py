@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Holt's linear trend method (double exponential smoothing)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_holt_linear"]
@@ -36,7 +38,14 @@ def joseph_holt_linear(y, alpha, beta, horizon):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Holt's linear trend method (double exponential smoothing)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Holt's linear trend method (double exponential smoothing)",
+        }
+    )
 
 
 def cheatsheet():

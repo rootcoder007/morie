@@ -1,6 +1,9 @@
 """Tests for em_imputation."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.emimq import em_imputation
+
 
 class TestEM:
     def test_basic(self):

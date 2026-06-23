@@ -1,6 +1,7 @@
 """Tests for ghs008.ghosal_ch3_normalized_weights_prior."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghs008 import ghosal_ch3_normalized_weights_prior
 
 
@@ -10,7 +11,7 @@ def test_ghs008_basic():
     k = 5
     result = ghosal_ch3_normalized_weights_prior(Y_j, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ghs008_edge():

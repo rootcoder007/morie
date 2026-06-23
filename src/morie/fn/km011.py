@@ -1,6 +1,7 @@
 r"""Scaled dot score.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch2_scaled_dot_score"]

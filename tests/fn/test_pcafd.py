@@ -1,6 +1,8 @@
 """Tests for pca_features."""
+
 import numpy as np
 import pytest
+
 from morie.fn.pcafd import pca_features, pcafd
 
 

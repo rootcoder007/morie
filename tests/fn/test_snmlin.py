@@ -1,6 +1,7 @@
 """Tests for snmlin.snm_linear."""
+
 import numpy as np
-import pytest
+
 from morie.fn.snmlin import snm_linear
 
 
@@ -12,7 +13,7 @@ def test_snmlin_basic():
     time = np.linspace(0, 10, 100)
     result = snm_linear(y, treatment_history, covariate_history, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_snmlin_edge():

@@ -1,8 +1,8 @@
 """Regression expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_2_unnumbered_9"]
 

@@ -1,6 +1,7 @@
 """Tests for zfmech.z_dp_mechanism."""
+
 import numpy as np
-import pytest
+
 from morie.fn.zfmech import z_dp_mechanism
 
 
@@ -11,7 +12,7 @@ def test_zfmech_basic():
     rho = 0.5
     result = z_dp_mechanism(y, sensitivity, rho)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_zfmech_edge():

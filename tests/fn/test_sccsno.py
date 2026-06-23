@@ -1,6 +1,7 @@
 """Tests for sccsno.sccs_no_replacement."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sccsno import sccs_no_replacement
 
 
@@ -11,7 +12,7 @@ def test_sccsno_basic():
     person_id = np.random.default_rng(42).normal(0, 1, 100)
     result = sccs_no_replacement(events, periods, person_id)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sccsno_edge():

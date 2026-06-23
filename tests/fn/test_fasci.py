@@ -1,7 +1,9 @@
 """Test fastica (fasci)."""
+
 import numpy as np
-from morie.fn.fasci import fastica, fasci
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.fasci import fasci, fastica
 
 
 class TestFasci:

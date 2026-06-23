@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Jackknife bias and variance estimation (Quenouille 1956, Tukey 1958)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -37,9 +38,15 @@ def jackknife_estimator(x, statistic=None):
     x = np.asarray(x, dtype=float).ravel()
     n = x.size
     if n < 2:
-        return RichResult(payload={"estimate": float("nan"), "bias": float("nan"),
-                                   "se": float("nan"), "n": int(n),
-                                   "method": "Jackknife (n<2)"})
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "bias": float("nan"),
+                "se": float("nan"),
+                "n": int(n),
+                "method": "Jackknife (n<2)",
+            }
+        )
     if statistic is None:
         statistic = np.mean
     T_hat = float(statistic(x))
@@ -49,11 +56,17 @@ def jackknife_estimator(x, statistic=None):
     T_jack = n * T_hat - (n - 1) * T_bar
     var_jack = (n - 1) / n * float(np.sum((T_loo - T_bar) ** 2))
     se = float(np.sqrt(var_jack))
-    return RichResult(payload={
-        "estimate": T_jack, "theta_hat": T_hat, "bias": float(bias),
-        "var": var_jack, "se": se, "n": int(n),
-        "method": "Jackknife (Quenouille 1956)",
-    })
+    return RichResult(
+        payload={
+            "estimate": T_jack,
+            "theta_hat": T_hat,
+            "bias": float(bias),
+            "var": var_jack,
+            "se": se,
+            "n": int(n),
+            "method": "Jackknife (Quenouille 1956)",
+        }
+    )
 
 
 # CANONICAL TEST

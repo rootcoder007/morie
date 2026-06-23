@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Two-stage least squares (2SLS) IV estimation."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -91,4 +92,4 @@ iv = iv_2sls
 
 
 def cheatsheet() -> str:
-    return 'iv_2sls({}) -> Instrumental variables (2SLS).'
+    return "iv_2sls({}) -> Instrumental variables (2SLS)."

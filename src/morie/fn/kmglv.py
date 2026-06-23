@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GloVe weighted least-squares cost over co-occurrence counts X_ij."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_glove_cost"]
@@ -42,7 +44,14 @@ def kamath_glove_cost(X, W, W_tilde, b, b_tilde, x_max, alpha):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GloVe weighted least-squares cost over co-occurrence counts X_ij"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "GloVe weighted least-squares cost over co-occurrence counts X_ij",
+        }
+    )
 
 
 def cheatsheet():

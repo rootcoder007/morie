@@ -1,6 +1,7 @@
 """SAIGE for case-control GWAS."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["saige_gwas"]

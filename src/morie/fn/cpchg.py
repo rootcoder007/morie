@@ -70,9 +70,7 @@ def changepoint_pelt(
     if min_size < 1:
         raise ValueError(f"min_size must be >= 1, got {min_size}.")
     if n < 2 * min_size:
-        raise ValueError(
-            f"Need n >= 2*min_size = {2*min_size}; got n={n}."
-        )
+        raise ValueError(f"Need n >= 2*min_size = {2 * min_size}; got n={n}.")
 
     if isinstance(penalty, str):
         if penalty == "bic":
@@ -91,7 +89,7 @@ def changepoint_pelt(
     cumsum = np.zeros(n + 1)
     cumsum2 = np.zeros(n + 1)
     cumsum[1:] = np.cumsum(y)
-    cumsum2[1:] = np.cumsum(y ** 2)
+    cumsum2[1:] = np.cumsum(y**2)
 
     def _cost(s: int, t: int) -> float:
         """Within-segment SSQ cost for observations y[s:t]."""
@@ -100,7 +98,7 @@ def changepoint_pelt(
             return 0.0
         s_sum = cumsum[t] - cumsum[s]
         s_sq = cumsum2[t] - cumsum2[s]
-        return float(s_sq - s_sum ** 2 / length)
+        return float(s_sq - s_sum**2 / length)
 
     # PELT dynamic programming (without full pruning for simplicity;
     # still O(n^2) worst case but correct and exact).
@@ -137,10 +135,7 @@ def changepoint_pelt(
 
     # Build segment list.
     breakpoints = np.concatenate([[0], cps_arr, [n]])
-    segments = [
-        (int(breakpoints[i]), int(breakpoints[i + 1]))
-        for i in range(len(breakpoints) - 1)
-    ]
+    segments = [(int(breakpoints[i]), int(breakpoints[i + 1])) for i in range(len(breakpoints) - 1)]
 
     return DescriptiveResult(
         name="changepoint_pelt",

@@ -1,6 +1,7 @@
 """Test vmwav."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmwav import vmwav
 
 

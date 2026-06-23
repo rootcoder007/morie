@@ -1,7 +1,8 @@
 """Tests for morie.fn.scdly -- Surveillance case delay."""
 
-import pytest
 import numpy as np
+import pytest
+
 from morie.fn.scdly import case_delay
 
 

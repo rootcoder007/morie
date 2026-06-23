@@ -1,6 +1,7 @@
 """Test gebal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gebal import gebal
 
 

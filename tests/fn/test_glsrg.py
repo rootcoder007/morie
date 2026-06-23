@@ -13,6 +13,7 @@ def test_gls_identity_omega_matches_ols():
     y = 2.0 + 3.0 * X[:, 0] + rng.standard_normal(n) * 0.5
     Omega = np.eye(n) * 0.25
     from morie.fn.olsrg import ols_regression
+
     ols = ols_regression(y, X)
     gls = gls_regression(y, X, Omega)
     np.testing.assert_allclose(

@@ -51,9 +51,11 @@ def slest(
     x_std = (x - np.mean(x)) / max(np.std(x, ddof=0), 1e-10)
 
     if basis == "polynomial":
+
         def phi(z, K):
-            return np.column_stack([z ** k for k in range(K)])
+            return np.column_stack([z**k for k in range(K)])
     elif basis == "cosine":
+
         def phi(z, K):
             return np.column_stack([np.cos(k * np.pi * z) for k in range(K)])
     else:

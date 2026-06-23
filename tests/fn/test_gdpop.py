@@ -1,6 +1,7 @@
 """Test gdpop."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdpop import gdpop
 
 

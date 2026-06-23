@@ -1,6 +1,7 @@
 """Tests for ccdsgn.case_control."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ccdsgn import case_control
 
 
@@ -12,7 +13,7 @@ def test_ccdsgn_basic():
     unexposed = np.random.default_rng(42).normal(0, 1, 100)
     result = case_control(cases, controls, exposed, unexposed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ccdsgn_edge():

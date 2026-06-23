@@ -11,7 +11,7 @@ class TestKmise:
         data = np.arange(1, 101, dtype=float)
         res = kmise(data)
         sigma = np.std(data, ddof=1)
-        expected = (4.0 * sigma ** 5 / (3.0 * 100)) ** 0.2
+        expected = (4.0 * sigma**5 / (3.0 * 100)) ** 0.2
         assert res["bw_opt"] == pytest.approx(expected, rel=1e-6)
 
     def test_positive_mise(self):

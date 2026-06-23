@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsidw -- IDW interpolation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsidw import idw_interp
 

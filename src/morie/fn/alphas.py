@@ -1,6 +1,7 @@
 """AlphaZero self-play training step."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphazero_self_play"]

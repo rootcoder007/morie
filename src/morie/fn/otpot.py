@@ -1,6 +1,7 @@
 """Recover log potentials f,g from Sinkhorn marginals."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_pot_log_potentials"]
@@ -34,7 +35,9 @@ def ot_pot_log_potentials(u, v, epsilon):
     n = len(u)
     result = float(np.mean(u))
     se = float(np.std(u, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Recover log potentials f,g from Sinkhorn marginals"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Recover log potentials f,g from Sinkhorn marginals"}
+    )
 
 
 def cheatsheet():

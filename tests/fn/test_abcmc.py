@@ -1,6 +1,7 @@
 """Tests for morie.fn.abcmc -- ABC-MCMC."""
 
 import numpy as np
+
 from morie.fn.abcmc import abc_mcmc
 
 

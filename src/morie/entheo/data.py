@@ -22,9 +22,7 @@ from __future__ import annotations
 
 import os
 import re
-import warnings
 from pathlib import Path
-from typing import Iterable
 
 import numpy as np
 
@@ -63,8 +61,7 @@ def list_subjects(root: str | Path | None = None) -> list[str]:
     return sorted(subs)
 
 
-def _synthetic_record(subject_id: str, n_tp: int = 480, n_chan: int = 32,
-                      n_parcels: int = 100, seed: int = 0) -> dict:
+def _synthetic_record(subject_id: str, n_tp: int = 480, n_chan: int = 32, n_parcels: int = 100, seed: int = 0) -> dict:
     """Reproducible synthetic record matching the on-disk schema shape.
 
     Used both as a CI fixture and as the OpenNeuro-fallback placeholder
@@ -104,11 +101,13 @@ def _try_load_mat(path: Path) -> dict | None:
     """
     try:
         from scipy.io import loadmat  # type: ignore
+
         return dict(loadmat(str(path), squeeze_me=True, struct_as_record=False))
     except Exception:
         pass
     try:
         from pymatreader import read_mat  # type: ignore
+
         return dict(read_mat(str(path)))
     except Exception:
         pass
@@ -177,15 +176,27 @@ def load_dmt_imaging(subject_id: str | int | None = None) -> RichResult:
     # Default subject roster: the 15 motion-survived subjects per
     # README + manuscript when no real root is present.
     default_subjects = [
-        "01", "02", "03", "06", "07", "08", "09", "10",
-        "11", "12", "13", "14", "15", "16", "17",
+        "01",
+        "02",
+        "03",
+        "06",
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
     ]
 
     if subject_id is None:
         subs = list_subjects(root) or default_subjects
     else:
-        subs = [f"{int(subject_id):02d}"] if not isinstance(subject_id, str) \
-            else [subject_id.zfill(2)]
+        subs = [f"{int(subject_id):02d}"] if not isinstance(subject_id, str) else [subject_id.zfill(2)]
 
     records: list[dict] = []
     any_synthetic = False

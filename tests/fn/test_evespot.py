@@ -1,6 +1,7 @@
 """Tests for evespot.evt_pot_es."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evespot import evt_pot_es
 
 
@@ -12,7 +13,7 @@ def test_evespot_basic():
     VaR = np.random.default_rng(42).normal(0, 1, 100)
     result = evt_pot_es(u, sigma, xi, VaR)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evespot_edge():

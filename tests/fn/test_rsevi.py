@@ -1,6 +1,7 @@
 """Test rsevi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsevi import rsevi
 
 

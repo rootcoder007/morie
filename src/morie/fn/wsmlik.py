@@ -1,6 +1,7 @@
 """Likelihood function L(theta) = prod f(x_i;theta)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["wasserman_likelihood"]
@@ -34,7 +35,9 @@ def wasserman_likelihood(data, f, theta):
     n = len(data)
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Likelihood function L(theta) = prod f(x_i;theta)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Likelihood function L(theta) = prod f(x_i;theta)"}
+    )
 
 
 def cheatsheet():

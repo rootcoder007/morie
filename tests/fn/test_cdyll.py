@@ -1,7 +1,8 @@
 """Tests for morie.fn.cdyll -- YLL."""
 
-import pytest
 import numpy as np
+import pytest
+
 from morie.fn.cdyll import years_life_lost
 
 

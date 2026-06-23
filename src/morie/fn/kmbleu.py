@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """BLEU score: geometric mean of n-gram precisions * brevity penalty."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_bleu_score"]
@@ -34,7 +36,14 @@ def kamath_bleu_score(hypothesis, references, max_n):
     n = len(hypothesis)
     result = float(np.mean(hypothesis))
     se = float(np.std(hypothesis, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BLEU score: geometric mean of n-gram precisions * brevity penalty"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "BLEU score: geometric mean of n-gram precisions * brevity penalty",
+        }
+    )
 
 
 def cheatsheet():

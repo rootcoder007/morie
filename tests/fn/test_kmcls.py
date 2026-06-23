@@ -1,8 +1,9 @@
 """Tests for morie.fn.kmcls -- K-means clustering."""
 
 import numpy as np
-from morie.fn.kmcls import kmeans, kmcls
+
 from morie.fn._containers import KmeansRes
+from morie.fn.kmcls import kmcls, kmeans
 
 
 class TestKmeans:

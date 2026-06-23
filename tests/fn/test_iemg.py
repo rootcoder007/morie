@@ -1,7 +1,9 @@
 """Test integrated_emg_fn."""
+
 import numpy as np
-from morie.fn.iemg import integrated_emg_fn, alias
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.iemg import alias, integrated_emg_fn
 
 
 class TestIntegratedEmgFn:

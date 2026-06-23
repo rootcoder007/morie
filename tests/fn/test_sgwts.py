@@ -1,5 +1,7 @@
 """Tests for spatial weights matrix."""
+
 import numpy as np
+
 from morie.fn.sgwts import sgwts
 
 

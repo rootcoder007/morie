@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Batch normalization forward pass."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -55,8 +56,7 @@ def batch_norm_forward(x, gamma=None, beta=None, eps: float = 1e-5, axis: int = 
     y = gamma * x_hat + beta
     return RichResult(
         title="Batch normalization (forward)",
-        summary_lines=[("mu mean", float(mu.mean())),
-                       ("var mean", float(var.mean()))],
+        summary_lines=[("mu mean", float(mu.mean())), ("var mean", float(var.mean()))],
         payload={
             "y": y,
             "estimate": y,

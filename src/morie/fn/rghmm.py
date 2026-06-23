@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """FitzHugh-Nagumo simplified neuron model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_fitzhugh_nagumo"]
@@ -38,7 +40,9 @@ def rangayyan_fitzhugh_nagumo(t, I_ext, a, b, eps):
     n = int(t) if t.ndim == 0 else len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "FitzHugh-Nagumo simplified neuron model"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "FitzHugh-Nagumo simplified neuron model"}
+    )
 
 
 def cheatsheet():

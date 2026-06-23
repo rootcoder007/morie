@@ -1,6 +1,7 @@
 """Tests for aitzlk.compositional_zero_lrda."""
+
 import numpy as np
-import pytest
+
 from morie.fn.aitzlk import compositional_zero_lrda
 
 
@@ -10,7 +11,7 @@ def test_aitzlk_basic():
     n_iter = 50
     result = compositional_zero_lrda(X, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_aitzlk_edge():

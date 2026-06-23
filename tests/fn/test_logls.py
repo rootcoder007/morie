@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.logls import log_loss
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.mssmi -- Individual differences SMACOF"""
 
 import numpy as np
-import pytest
 
 from morie.fn.mssmi import smacof_indiv
 

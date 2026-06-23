@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """ViT patch embedding: split image into PxP patches, flatten, linear-project to d_model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_vit_patch_embedding"]
@@ -34,7 +36,14 @@ def alammar_vit_patch_embedding(image, patch_size, E):
     n = len(image)
     result = float(np.mean(image))
     se = float(np.std(image, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ViT patch embedding: split image into PxP patches, flatten, linear-project to d_model"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "ViT patch embedding: split image into PxP patches, flatten, linear-project to d_model",
+        }
+    )
 
 
 def cheatsheet():

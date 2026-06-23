@@ -1,6 +1,7 @@
 """Tests for mvecv.min_volume_ellipsoid."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mvecv import min_volume_ellipsoid
 
 
@@ -11,7 +12,7 @@ def test_mvecv_basic():
     h = 0.3
     result = min_volume_ellipsoid(y, X, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mvecv_edge():

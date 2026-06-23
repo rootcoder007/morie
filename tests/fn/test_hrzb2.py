@@ -1,6 +1,7 @@
 """Tests for hrzb2.horowitz_smoothed_maximum_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzb2 import horowitz_smoothed_maximum_score
 
 
@@ -11,7 +12,7 @@ def test_hrzb2_basic():
     bandwidth = 0.3
     result = horowitz_smoothed_maximum_score(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzb2_edge():

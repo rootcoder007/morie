@@ -1,6 +1,7 @@
 """Tests for grvqv.geron_vq_vae_codebook_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grvqv import geron_vq_vae_codebook_loss
 
 
@@ -13,7 +14,7 @@ def test_grvqv_basic():
     beta = 0.8
     result = geron_vq_vae_codebook_loss(x, z_e, z_q, codebook, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grvqv_edge():

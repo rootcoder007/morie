@@ -1,7 +1,6 @@
 """Tests for morie.fn.bp_ts — Bai-Perron structural break test."""
 
 import numpy as np
-import pytest
 
 from morie.fn.bp_ts import bp_ts
 
@@ -12,10 +11,12 @@ class TestBpTs:
     def test_detects_single_break(self):
         """Detects a single mean shift in a piecewise-constant series."""
         rng = np.random.default_rng(42)
-        y = np.concatenate([
-            rng.normal(0, 0.5, 60),
-            rng.normal(5, 0.5, 60),
-        ])
+        y = np.concatenate(
+            [
+                rng.normal(0, 0.5, 60),
+                rng.normal(5, 0.5, 60),
+            ]
+        )
         result = bp_ts(y, max_breaks=3)
         assert result["n_breaks"] >= 1
         assert len(result["bic"]) >= 2

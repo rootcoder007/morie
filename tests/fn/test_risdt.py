@@ -1,8 +1,8 @@
 """Tests for morie.fn.risdt — rise time detection."""
-import numpy as np
-import pytest
 
-from morie.fn.risdt import rise_time_detect, risdt
+import numpy as np
+
+from morie.fn.risdt import risdt, rise_time_detect
 
 
 def test_ramp_rise():

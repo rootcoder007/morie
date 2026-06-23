@@ -1,6 +1,7 @@
 """Pole-zero factored transfer function in terms of (1 - z_k z^-1) factors.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_pole_zero_factored_form"]
@@ -38,7 +39,14 @@ def rangayyan_ch3_pole_zero_factored_form(z_k, p_k, z, N, M):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pole-zero factored transfer function in terms of (1 - z_k z^-1) factors."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pole-zero factored transfer function in terms of (1 - z_k z^-1) factors.",
+        }
+    )
 
 
 def cheatsheet():

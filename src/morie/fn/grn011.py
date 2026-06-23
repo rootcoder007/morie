@@ -1,6 +1,7 @@
 """Lasso regression cost function: MSE plus an L1 penalty on the feature weights.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ch4_lasso_regression_cost_function"]
@@ -36,7 +37,14 @@ def geron_ch4_lasso_regression_cost_function(X, y, theta, alpha):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Lasso regression cost function: MSE plus an L1 penalty on the feature weights."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Lasso regression cost function: MSE plus an L1 penalty on the feature weights.",
+        }
+    )
 
 
 def cheatsheet():

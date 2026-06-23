@@ -1,5 +1,7 @@
 """Tests for wvcrs.py - Cross-wavelet transform."""
+
 import numpy as np
+
 from morie.fn.wvcrs import wavelet_cross_spectrum, wvcrs
 
 

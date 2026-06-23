@@ -1,6 +1,7 @@
 """Test trshr2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trshr2 import trshr2
 
 

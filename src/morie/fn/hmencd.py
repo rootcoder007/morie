@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Encoder-decoder transformer (original architecture)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_encoder_decoder_transformer"]
@@ -34,7 +36,9 @@ def geron_encoder_decoder_transformer(src, tgt, n_layers):
     n = len(src)
     result = float(np.mean(src))
     se = float(np.std(src, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Encoder-decoder transformer (original architecture)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Encoder-decoder transformer (original architecture)"}
+    )
 
 
 def cheatsheet():

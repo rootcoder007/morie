@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Deep Q-network (DQN): neural Q-function with replay buffer and target net."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_dqn"]
@@ -40,7 +42,14 @@ def geron_dqn(env, Q, Q_target, buffer, epochs, lr):
     n = len(env)
     result = float(np.mean(env))
     se = float(np.std(env, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Deep Q-network (DQN): neural Q-function with replay buffer and target net"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Deep Q-network (DQN): neural Q-function with replay buffer and target net",
+        }
+    )
 
 
 def cheatsheet():

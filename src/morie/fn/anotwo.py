@@ -75,4 +75,4 @@ anotwo = anova_twoway
 
 
 def cheatsheet() -> str:
-    return 'anova_twoway({}) -> Two-way ANOVA.'
+    return "anova_twoway({}) -> Two-way ANOVA."

@@ -1,6 +1,7 @@
 """Tests for hmclsn.geron_classification_mlp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmclsn import geron_classification_mlp
 
 
@@ -13,7 +14,7 @@ def test_hmclsn_basic():
     lr = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_classification_mlp(X, y, hidden_sizes, epochs, lr)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmclsn_edge():

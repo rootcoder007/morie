@@ -35,4 +35,4 @@ jarber = jarque_bera
 
 
 def cheatsheet() -> str:
-    return 'jarque_bera({}) -> Jarque-Bera normality test.'
+    return "jarque_bera({}) -> Jarque-Bera normality test."

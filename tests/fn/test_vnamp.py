@@ -1,5 +1,5 @@
 """Test vnamp."""
-import pytest
+
 from morie.fn.vnamp import veneziano_amplitude
 
 

@@ -1,6 +1,7 @@
 """Test ubcng."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ubcng import ubcng
 
 

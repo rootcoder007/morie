@@ -1,6 +1,7 @@
 """Tests for basEvap.penman_monteith."""
+
 import numpy as np
-import pytest
+
 from morie.fn.basEvap import penman_monteith
 
 
@@ -12,7 +13,7 @@ def test_basEvap_basic():
     VPD = np.random.default_rng(42).normal(0, 1, 100)
     result = penman_monteith(T, R_n, u2, VPD)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_basEvap_edge():

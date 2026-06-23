@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsgrz -- Zonal grid statistics"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsgrz import grid_zonal
 

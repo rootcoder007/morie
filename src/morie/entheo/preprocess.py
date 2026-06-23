@@ -16,7 +16,6 @@ return a RichResult whose ``.record`` holds the cleaned record.
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Tuple
 
 import numpy as np
 
@@ -29,16 +28,17 @@ __all__ = ["preprocess_eeg", "preprocess_fmri"]
 # Filter helpers (pure-NumPy fallbacks if scipy.signal is unavailable)
 # ---------------------------------------------------------------------------
 
+
 def _scipy_signal():
     try:
         import scipy.signal as sps  # type: ignore
+
         return sps
     except Exception:
         return None
 
 
-def _butter_bandpass(data: np.ndarray, sfreq: float, low: float, high: float,
-                     order: int = 4) -> np.ndarray:
+def _butter_bandpass(data: np.ndarray, sfreq: float, low: float, high: float, order: int = 4) -> np.ndarray:
     sps = _scipy_signal()
     if sps is not None:
         ny = 0.5 * sfreq
@@ -67,7 +67,7 @@ def _notch(data: np.ndarray, sfreq: float, freq: float, q: float = 30.0) -> np.n
     return np.fft.irfft(spec, n=n, axis=-1).astype(data.dtype)
 
 
-def _asr_trim(data: np.ndarray, threshold: float) -> Tuple[np.ndarray, int]:
+def _asr_trim(data: np.ndarray, threshold: float) -> tuple[np.ndarray, int]:
     """Toy ASR: clip channel-wise z-scores beyond ``threshold`` standard
     deviations and report how many samples were affected. Matches the
     spirit of EEGLAB's Artifact Subspace Reconstruction without the
@@ -88,8 +88,10 @@ def _asr_trim(data: np.ndarray, threshold: float) -> Tuple[np.ndarray, int]:
 # Public callables
 # ---------------------------------------------------------------------------
 
-def preprocess_eeg(record: dict, bandpass: Tuple[float, float] = (1.0, 40.0),
-                   notch: float = 60.0, asr_threshold: float = 20.0) -> RichResult:
+
+def preprocess_eeg(
+    record: dict, bandpass: tuple[float, float] = (1.0, 40.0), notch: float = 60.0, asr_threshold: float = 20.0
+) -> RichResult:
     """Butterworth bandpass + notch + ASR-style trimming on an EEG record.
 
     Parameters
@@ -120,8 +122,7 @@ def preprocess_eeg(record: dict, bandpass: Tuple[float, float] = (1.0, 40.0),
             continue
         arr = np.asarray(arr, dtype=np.float32)
         if arr.ndim != 2:
-            warnings_list.append(
-                f"eeg.{key} ndim={arr.ndim} (expected 2); skipping")
+            warnings_list.append(f"eeg.{key} ndim={arr.ndim} (expected 2); skipping")
             continue
         n_chan = max(n_chan, arr.shape[0])
         arr = _butter_bandpass(arr, sfreq, low, high)
@@ -132,8 +133,7 @@ def preprocess_eeg(record: dict, bandpass: Tuple[float, float] = (1.0, 40.0),
 
     return RichResult(
         title="EEG preprocessing",
-        call=(f"preprocess_eeg(bandpass={bandpass}, notch={notch}, "
-              f"asr_threshold={asr_threshold})"),
+        call=(f"preprocess_eeg(bandpass={bandpass}, notch={notch}, asr_threshold={asr_threshold})"),
         summary_lines=[
             ("sfreq", sfreq),
             ("bandpass_hz", f"{low}-{high}"),
@@ -149,13 +149,11 @@ def preprocess_eeg(record: dict, bandpass: Tuple[float, float] = (1.0, 40.0),
             "For production use, swap to MNE-Python (mne.io.Raw.filter "
             "and asrpy.ASR)."
         ),
-        payload={"record": cleaned, "n_bad": n_bad_total,
-                 "sfreq": sfreq, "bandpass": bandpass, "notch": notch},
+        payload={"record": cleaned, "n_bad": n_bad_total, "sfreq": sfreq, "bandpass": bandpass, "notch": notch},
     )
 
 
-def preprocess_fmri(record: dict, motion_threshold_mm: float = 0.5,
-                    n_noise_components: int = 5) -> RichResult:
+def preprocess_fmri(record: dict, motion_threshold_mm: float = 0.5, n_noise_components: int = 5) -> RichResult:
     """Motion scrubbing + ICA-AROMA-style noise removal (toy SVD).
 
     Parameters
@@ -183,8 +181,7 @@ def preprocess_fmri(record: dict, motion_threshold_mm: float = 0.5,
             continue
         arr = np.asarray(arr, dtype=np.float32)
         if arr.ndim != 2:
-            warnings_list.append(
-                f"fmri.{key} ndim={arr.ndim} (expected 2); skipping")
+            warnings_list.append(f"fmri.{key} ndim={arr.ndim} (expected 2); skipping")
             continue
         n_parcels = max(n_parcels, arr.shape[0])
 
@@ -203,8 +200,7 @@ def preprocess_fmri(record: dict, motion_threshold_mm: float = 0.5,
             arr = arr.copy()
             arr[:, bad] = 0.0
         else:
-            warnings_list.append(
-                f"fmri.motion_fd_mm absent -- skipping scrubbing on {key}")
+            warnings_list.append(f"fmri.motion_fd_mm absent -- skipping scrubbing on {key}")
 
         # 2. Toy ICA-AROMA stand-in: project out top-k singular vectors.
         try:
@@ -221,8 +217,7 @@ def preprocess_fmri(record: dict, motion_threshold_mm: float = 0.5,
 
     return RichResult(
         title="fMRI preprocessing",
-        call=(f"preprocess_fmri(motion_threshold_mm={motion_threshold_mm}, "
-              f"n_noise_components={n_noise_components})"),
+        call=(f"preprocess_fmri(motion_threshold_mm={motion_threshold_mm}, n_noise_components={n_noise_components})"),
         summary_lines=[
             ("motion_threshold_mm", motion_threshold_mm),
             ("volumes_scrubbed", n_scrubbed),
@@ -237,6 +232,5 @@ def preprocess_fmri(record: dict, motion_threshold_mm: float = 0.5,
             "stand-in. For production use, swap to "
             "nilearn.signal.clean + fmriprep / aroma proper."
         ),
-        payload={"record": cleaned, "n_scrubbed": n_scrubbed,
-                 "n_noise_components": n_noise_components},
+        payload={"record": cleaned, "n_scrubbed": n_scrubbed, "n_noise_components": n_noise_components},
     )

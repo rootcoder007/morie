@@ -1,6 +1,7 @@
 r"""Tversky asymmetric similarity."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tversky_similarity"]

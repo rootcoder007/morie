@@ -1,6 +1,5 @@
 """Tests for morie.fn.t1smp -- One-sample t-test."""
 
-import pytest
 from morie.fn.t1smp import one_sample_t_test
 
 

@@ -1,5 +1,7 @@
 """Tests for instf.py - Instantaneous frequency."""
+
 import numpy as np
+
 from morie.fn.instf import instantaneous_freq, instf
 
 

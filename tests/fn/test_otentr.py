@@ -1,6 +1,7 @@
 """Tests for otentr.ot_entropy_regulariser."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otentr import ot_entropy_regulariser
 
 
@@ -10,7 +11,7 @@ def test_otentr_basic():
     epsilon = 1e-6
     result = ot_entropy_regulariser(T, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otentr_edge():

@@ -1,6 +1,7 @@
 """Tests for brrpf.brr_prior_posterior."""
+
 import numpy as np
-import pytest
+
 from morie.fn.brrpf import brr_prior_posterior
 
 
@@ -14,7 +15,7 @@ def test_brrpf_basic():
     b_e = np.random.default_rng(42).normal(0, 1, 100)
     result = brr_prior_posterior(y, X, a_b, b_b, a_e, b_e)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_brrpf_edge():

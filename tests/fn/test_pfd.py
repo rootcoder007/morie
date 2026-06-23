@@ -1,7 +1,9 @@
 """Tests for pfd — Petrosian fractal dimension."""
+
 import numpy as np
-from morie.fn.pfd import petrosian_fd
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.pfd import petrosian_fd
 
 
 def test_pfd_basic(rng):

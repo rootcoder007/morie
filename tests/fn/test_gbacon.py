@@ -1,6 +1,7 @@
 """Tests for gbacon.goodman_bacon_decomp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gbacon import goodman_bacon_decomp
 
 
@@ -12,7 +13,7 @@ def test_gbacon_basic():
     time = np.linspace(0, 10, 100)
     result = goodman_bacon_decomp(y, D, unit, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gbacon_edge():

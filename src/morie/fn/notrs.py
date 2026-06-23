@@ -14,6 +14,7 @@ DAGs with NO TEARS: Continuous optimization for structure learning.
 Zheng, X., Dan, C., Aragam, B., Ravikumar, P., & Xing, E. (2020).
 Learning sparse nonparametric DAGs with NOTEARS. *AISTATS*, 3414-3425.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -77,7 +78,7 @@ def notrs(
 
     W = np.zeros((p, p))
     rho = 1.0
-    alpha = 0.0           # Lagrange multiplier
+    alpha = 0.0  # Lagrange multiplier
     lr = 0.001
 
     def _loss(W_):

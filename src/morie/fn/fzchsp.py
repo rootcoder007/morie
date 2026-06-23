@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Chung-Smirnov property for KDFE."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_chung_smirnov"]

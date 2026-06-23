@@ -1,6 +1,7 @@
 """Tests for rgblwand.rangayyan_baseline_wander."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgblwand import rangayyan_baseline_wander
 
 
@@ -11,7 +12,7 @@ def test_rgblwand_basic():
     cutoff = 10.0
     result = rangayyan_baseline_wander(ecg, fs, cutoff)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgblwand_edge():

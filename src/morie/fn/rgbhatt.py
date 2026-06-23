@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bhattacharyya distance for class separability."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_bhattacharyya"]
@@ -36,7 +38,9 @@ def rangayyan_bhattacharyya(mu1, sigma1, mu2, sigma2):
     n = int(mu1) if mu1.ndim == 0 else len(mu1)
     result = float(np.mean(mu1))
     se = float(np.std(mu1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bhattacharyya distance for class separability"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bhattacharyya distance for class separability"}
+    )
 
 
 def cheatsheet():

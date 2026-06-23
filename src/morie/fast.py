@@ -98,10 +98,12 @@ def jit_if_available(*args, **kwargs):
 
         def _passthrough(fn):
             return fn
+
         return _passthrough
 
     # numba is available; defer to it
     import numba  # noqa: WPS433 — local on purpose; never eager-imported
+
     return numba.njit(*args, **kwargs)
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsgph -- GP hyperparameter optimization"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsgph import gp_hyperparams
 

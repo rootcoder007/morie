@@ -37,8 +37,12 @@ def lzwcd(data: np.ndarray, *, alphabet_size: int = 256) -> dict:
     """
     data = np.asarray(data, dtype=np.int64).ravel()
     if len(data) == 0:
-        return {"compressed": [], "compression_ratio": 1.0,
-                "dictionary_size": alphabet_size, "decompressed": np.array([], dtype=np.int64)}
+        return {
+            "compressed": [],
+            "compression_ratio": 1.0,
+            "dictionary_size": alphabet_size,
+            "decompressed": np.array([], dtype=np.int64),
+        }
 
     if np.any(data < 0) or np.any(data >= alphabet_size):
         raise ValueError(f"data values must be in [0, {alphabet_size}).")

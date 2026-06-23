@@ -89,4 +89,4 @@ cox = cox_ph
 
 
 def cheatsheet() -> str:
-    return 'cox() -> Cox PH model via partial likelihood maximization'
+    return "cox() -> Cox PH model via partial likelihood maximization"

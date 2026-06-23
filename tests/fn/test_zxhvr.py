@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxhvr -- Haversine distance"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxhvr import haversine_dist
 

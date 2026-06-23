@@ -1,6 +1,7 @@
 """Partly linear logistic regression model with smooth nuisance function eta."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch1_partly_linear_logistic"]
@@ -38,7 +39,14 @@ def kosorok_ch1_partly_linear_logistic(Y, Z, U, beta, eta):
     n = len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Partly linear logistic regression model with smooth nuisance function eta"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Partly linear logistic regression model with smooth nuisance function eta",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test vmfml."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmfml import vmfml
 
 

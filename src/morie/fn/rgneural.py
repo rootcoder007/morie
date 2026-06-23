@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Neural decoding for prosthesis control from spike trains."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_neural_decode"]
@@ -34,7 +36,14 @@ def rangayyan_neural_decode(spike_trains, movement_labels, n_ch):
     n = int(spike_trains) if spike_trains.ndim == 0 else len(spike_trains)
     result = float(np.mean(spike_trains))
     se = float(np.std(spike_trains, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Neural decoding for prosthesis control from spike trains"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Neural decoding for prosthesis control from spike trains",
+        }
+    )
 
 
 def cheatsheet():

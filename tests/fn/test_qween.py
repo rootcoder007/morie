@@ -1,13 +1,11 @@
 """Tests for morie.fn.qween — Queen contiguity weights."""
 
-import numpy as np
 import pytest
 
 from morie.fn.qween import queen_weights
 
 
 class TestQueenWeights:
-
     def test_four_cell_grid(self):
         """2x2 grid: corner cells have 1-3 neighbors under queen contiguity."""
         adj = [

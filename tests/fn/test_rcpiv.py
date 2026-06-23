@@ -1,7 +1,7 @@
 """Tests for morie.fn.rcpiv."""
 
 import numpy as np
-import pytest
+
 from morie.fn.rcpiv import rcpiv
 
 

@@ -61,4 +61,4 @@ kssup = ks_supremum
 
 
 def cheatsheet() -> str:
-    return 'ks_supremum({}) -> Supremum test / KS statistic.'
+    return "ks_supremum({}) -> Supremum test / KS statistic."

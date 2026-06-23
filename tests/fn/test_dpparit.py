@@ -1,6 +1,5 @@
 """Tests for dpparit.pitman_yor_process."""
-import numpy as np
-import pytest
+
 from morie.fn.dpparit import pitman_yor_process
 
 
@@ -11,7 +10,7 @@ def test_dpparit_basic():
     sigma = 1.0
     result = pitman_yor_process(n, alpha, sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpparit_edge():

@@ -1,6 +1,7 @@
 """Two-stage hazard regression."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["two_stage_hazard"]

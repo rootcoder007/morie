@@ -1,6 +1,7 @@
 """Tests for cv2gn.cv2_genomic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cv2gn import cv2_genomic
 
 
@@ -12,7 +13,7 @@ def test_cv2gn_basic():
     n_folds = np.random.default_rng(42).normal(0, 1, 100)
     result = cv2_genomic(y, markers, env, n_folds)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_cv2gn_edge():

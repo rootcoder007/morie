@@ -1,6 +1,7 @@
 """Tests for neyman.neyman_allocation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.neyman import neyman_allocation
 
 
@@ -12,7 +13,7 @@ def test_neyman_basic():
     n = 100
     result = neyman_allocation(y, N_h, S_h, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_neyman_edge():

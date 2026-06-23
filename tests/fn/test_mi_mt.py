@@ -1,11 +1,10 @@
 """Tests for morie.fn.mi_mt -- metric invariance."""
 
-from morie.fn.mi_mt import mi_metric
 from morie.fn.mi_cf import mi_configural
+from morie.fn.mi_mt import mi_metric
 
 
 class TestMiMetric:
-
     def test_returns_expected_keys(self, mapq_df):
         result = mi_metric(mapq_df, "gender")
         for key in ("level", "fit", "delta_fit", "passed"):

@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mean and variance of smoothed sign test statistic."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_sign_moments"]
@@ -36,7 +38,14 @@ def fauzi_sign_moments(n, bandwidth, theta, cdf):
     data = np.asarray(n, dtype=float) if np.ndim(n) > 0 else None
     n = int(n) if np.ndim(n) == 0 else len(n)
     if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Mean and variance of smoothed sign test statistic"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Mean and variance of smoothed sign test statistic",
+            }
+        )
     if data is None:
         rng = np.random.default_rng(0)
         data = rng.standard_normal(n)
@@ -54,9 +63,16 @@ def fauzi_sign_moments(n, bandwidth, theta, cdf):
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
-    return RichResult(payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Mean and variance of smoothed sign test statistic"})
+    return RichResult(
+        payload={
+            "statistic": float(statistic),
+            "p_value": float(p_value),
+            "n": n,
+            "method": "Mean and variance of smoothed sign test statistic",
+        }
+    )
 
 
 def cheatsheet():

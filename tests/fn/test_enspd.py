@@ -1,6 +1,7 @@
 """Test enspd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enspd import enspd
 
 

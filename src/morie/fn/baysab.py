@@ -1,6 +1,7 @@
 """BayesA prior on marker effects."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bayes_a_alpha"]

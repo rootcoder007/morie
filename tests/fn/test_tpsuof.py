@@ -1,8 +1,9 @@
 """Tests for morie.fn.tpsuof — use of force."""
 
 import pytest
-from morie.fn.tpsuof import tps_use_of_force
+
 from morie.fn._containers import CrimeResult
+from morie.fn.tpsuof import tps_use_of_force
 
 
 class TestUseOfForce:

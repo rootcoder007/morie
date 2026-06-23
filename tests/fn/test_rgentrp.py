@@ -1,6 +1,7 @@
 """Tests for rgentrp.rangayyan_spectral_entropy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgentrp import rangayyan_spectral_entropy
 
 
@@ -10,7 +11,7 @@ def test_rgentrp_basic():
     fs = 100.0
     result = rangayyan_spectral_entropy(x, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgentrp_edge():

@@ -1,6 +1,8 @@
 """Tests for stiag."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stiag import stiag
 
 
@@ -28,4 +30,5 @@ def test_stiag_no_data():
 
 def test_stiag_alias():
     from morie.fn.stiag import stiag
+
     assert stiag is stiag

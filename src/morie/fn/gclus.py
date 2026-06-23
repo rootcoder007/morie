@@ -103,4 +103,4 @@ gclus = geo_cluster
 
 
 def cheatsheet() -> str:
-    return 'geo_cluster({}) -> Geographic k-means clustering.'
+    return "geo_cluster({}) -> Geographic k-means clustering."

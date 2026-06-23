@@ -1,5 +1,7 @@
 """Tests for morie.fn.whttk."""
+
 import numpy as np
+
 from morie.fn.whttk import whttk
 
 
@@ -13,6 +15,7 @@ def test_whttk_smoke():
 
 def test_cheatsheet():
     from morie.fn.whttk import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,6 +1,7 @@
 """Test madox."""
+
 import numpy as np
-import pytest
+
 from morie.fn.madox import madox
 
 

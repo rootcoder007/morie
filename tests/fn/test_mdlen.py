@@ -1,5 +1,7 @@
 """Tests for minimum description length."""
+
 import pytest
+
 from morie.fn.mdlen import mdl, mdlen
 
 

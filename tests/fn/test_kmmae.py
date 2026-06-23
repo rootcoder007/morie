@@ -1,6 +1,7 @@
 """Tests for kmmae.kamath_multimodal_mae."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmmae import kamath_multimodal_mae
 
 
@@ -11,7 +12,7 @@ def test_kmmae_basic():
     masks = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_multimodal_mae(x_visible, x_masked_true, masks)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmmae_edge():

@@ -1,6 +1,7 @@
 """Tests for morie.fn.mdsrk -- reconstruct distances."""
 
 import numpy as np
+
 from morie.fn.mdsrk import mds_reconstruct_distances, mdsrk
 
 

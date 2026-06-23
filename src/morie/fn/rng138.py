@@ -1,6 +1,7 @@
 """Output of the Wiener (transversal) filter as convolution of input with tap weights.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_wiener_filter_output_convolution"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_wiener_filter_output_convolution(x, w_k, n, M):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Output of the Wiener (transversal) filter as convolution of input with tap weights."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Output of the Wiener (transversal) filter as convolution of input with tap weights.",
+        }
+    )
 
 
 def cheatsheet():

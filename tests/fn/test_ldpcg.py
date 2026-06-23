@@ -1,4 +1,5 @@
 """Test ldpc_generate."""
+
 from morie.fn._containers import DescriptiveResult
 from morie.fn.ldpcg import ldpc_generate, ldpcg
 

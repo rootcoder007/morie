@@ -1,6 +1,7 @@
 """Test dtcar."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtcar import dtcar
 
 

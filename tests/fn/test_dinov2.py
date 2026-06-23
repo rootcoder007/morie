@@ -1,6 +1,7 @@
 """Tests for dinov2.dino_v2_repr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dinov2 import dino_v2_repr
 
 
@@ -12,7 +13,7 @@ def test_dinov2_basic():
     tau = 0.1
     result = dino_v2_repr(x, student, teacher, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dinov2_edge():

@@ -1,6 +1,7 @@
 """Path-specific causal effect for multiple mediators."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["path_specific_causal_effect"]
@@ -34,7 +35,9 @@ def path_specific_causal_effect(X, M, Y):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Path-specific causal effect for multiple mediators"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Path-specific causal effect for multiple mediators"}
+    )
 
 
 def cheatsheet():

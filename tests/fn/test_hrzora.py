@@ -1,6 +1,7 @@
 """Tests for hrzora.horowitz_two_step_oracle."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzora import horowitz_two_step_oracle
 
 
@@ -11,7 +12,7 @@ def test_hrzora_basic():
     bandwidth = 0.3
     result = horowitz_two_step_oracle(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzora_edge():

@@ -80,4 +80,4 @@ fasann = fast_ann
 
 
 def cheatsheet() -> str:
-    return 'fast_ann({}) -> Fast approximate nearest neighbor search.'
+    return "fast_ann({}) -> Fast approximate nearest neighbor search."

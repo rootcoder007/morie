@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmwnp -- W-NOMINATE vote probability"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmwnp import wnominate_prob
 

@@ -1,6 +1,7 @@
 """Tests for taubrg.tau_estimator_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.taubrg import tau_estimator_regression
 
 
@@ -10,7 +11,7 @@ def test_taubrg_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = tau_estimator_regression(y, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_taubrg_edge():

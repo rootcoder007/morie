@@ -1,6 +1,7 @@
 """Test mtacc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtacc import mtacc
 
 

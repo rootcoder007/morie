@@ -1,6 +1,7 @@
 """Test geodes."""
+
 import numpy as np
-import pytest
+
 from morie.fn.geodes import geodes
 
 

@@ -1,5 +1,7 @@
 """Theorem 3.6: attention-score distortion with sketch dim m."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_score_distortion"]
@@ -33,7 +35,14 @@ def turboquant_score_distortion(eps, r, n):
     n = len(eps)
     result = float(np.mean(eps))
     se = float(np.std(eps, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Theorem 3.6: attention-score distortion with sketch dim m"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Theorem 3.6: attention-score distortion with sketch dim m",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for morie.fn.tajd -- Tajima's D."""
 
 import pytest
+
 from morie.fn.tajd import tajimas_d
 
 

@@ -1,6 +1,7 @@
 """Tests for dpsum.dp_sum."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpsum import dp_sum
 
 
@@ -12,7 +13,7 @@ def test_dpsum_basic():
     epsilon = 1e-6
     result = dp_sum(x, a, b, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpsum_edge():

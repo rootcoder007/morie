@@ -1,6 +1,7 @@
 """Test enrad."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enrad import enrad
 
 

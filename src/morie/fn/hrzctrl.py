@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Control function approach to endogeneity."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_control_function"]
@@ -36,7 +38,9 @@ def horowitz_control_function(x, y, w, bandwidth):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Control function approach to endogeneity"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Control function approach to endogeneity"}
+    )
 
 
 def cheatsheet():

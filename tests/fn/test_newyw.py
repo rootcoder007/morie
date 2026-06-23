@@ -1,7 +1,6 @@
 """Tests for morie.fn.newyw — Newey-West HAC SE."""
 
 import numpy as np
-import pytest
 
 from morie.fn.newyw import newey_west
 
@@ -12,6 +11,7 @@ def test_nw_coefficients_same_as_ols():
     X = rng.standard_normal((n, 1))
     y = 2.0 + 3.0 * X[:, 0] + rng.standard_normal(n) * 0.5
     from morie.fn.olsrg import ols_regression
+
     ols = ols_regression(y, X)
     nw = newey_west(y, X)
     np.testing.assert_allclose(
@@ -31,6 +31,7 @@ def test_nw_se_differs_from_ols_with_autocorrelation():
         e[t] = 0.8 * e[t - 1] + rng.standard_normal()
     y = 1.0 + 2.0 * X[:, 0] + e
     from morie.fn.olsrg import ols_regression
+
     ols = ols_regression(y, X)
     nw = newey_west(y, X, max_lag=5)
     ols_se = list(ols.se.values())

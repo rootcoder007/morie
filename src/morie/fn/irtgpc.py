@@ -1,6 +1,7 @@
 """Generalized partial credit model (GPCM)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["generalized_partial_credit"]
@@ -32,7 +33,9 @@ def generalized_partial_credit(X, ncats):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Generalized partial credit model (GPCM)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Generalized partial credit model (GPCM)"}
+    )
 
 
 def cheatsheet():

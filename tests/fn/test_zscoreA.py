@@ -1,6 +1,7 @@
 """Tests for zscoreA.zscore_anomaly."""
+
 import numpy as np
-import pytest
+
 from morie.fn.zscoreA import zscore_anomaly
 
 
@@ -10,7 +11,7 @@ def test_zscoreA_basic():
     k = 5
     result = zscore_anomaly(x, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_zscoreA_edge():

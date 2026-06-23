@@ -22,12 +22,11 @@ the FSF convention is that they do not trigger GPL linking.
 from __future__ import annotations
 
 import csv
-import json
 import re
-import tomllib
 from collections import Counter
 from pathlib import Path
 
+import tomllib
 
 CURRENT_VERSION = None  # auto-detected below
 
@@ -40,10 +39,8 @@ def _detect_current_version() -> str:
 
 # ────────────────────────── VERSION_INVENTORY.csv ────────────────────────────
 
-SKIP_DIRS = {".git", "node_modules", ".venv", "build", "morie.Rcheck",
-             "__pycache__", ".Rcheck"}
-SKIP_EXT = {".pyc", ".gz", ".whl", ".pdf", ".png", ".jpg", ".jpeg", ".gif",
-            ".ico", ".so", ".dylib"}
+SKIP_DIRS = {".git", "node_modules", ".venv", "build", "morie.Rcheck", "__pycache__", ".Rcheck"}
+SKIP_EXT = {".pyc", ".gz", ".whl", ".pdf", ".png", ".jpg", ".jpeg", ".gif", ".ico", ".so", ".dylib"}
 
 
 def build_version_inventory(out_path: str = "VERSION_INVENTORY.csv") -> int:
@@ -65,25 +62,45 @@ def build_version_inventory(out_path: str = "VERSION_INVENTORY.csv") -> int:
                         ver = m.group(0)
                         # Filter out random scientific decimals: require version-y context
                         ctx = line.lower()
-                        if not any(t in ctx for t in [
-                            "version", "morie==", "morie-0", "v0.", "v1.",
-                            "release", "tag", "ver", "morie 0", "morie/"
-                        ]):
+                        if not any(
+                            t in ctx
+                            for t in [
+                                "version",
+                                "morie==",
+                                "morie-0",
+                                "v0.",
+                                "v1.",
+                                "release",
+                                "tag",
+                                "ver",
+                                "morie 0",
+                                "morie/",
+                            ]
+                        ):
                             continue
-                        rows.append({
-                            "file": str(path),
-                            "line": i,
-                            "version_match": ver,
-                            "category": "CURRENT" if cur in ver else "HISTORICAL",
-                            "context": line.strip()[:140],
-                        })
+                        rows.append(
+                            {
+                                "file": str(path),
+                                "line": i,
+                                "version_match": ver,
+                                "category": "CURRENT" if cur in ver else "HISTORICAL",
+                                "context": line.strip()[:140],
+                            }
+                        )
         except Exception:
             continue
 
     with open(out_path, "w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=[
-            "file", "line", "version_match", "category", "context",
-        ])
+        w = csv.DictWriter(
+            fh,
+            fieldnames=[
+                "file",
+                "line",
+                "version_match",
+                "category",
+                "context",
+            ],
+        )
         w.writeheader()
         for r in rows:
             w.writerow(r)
@@ -94,14 +111,29 @@ def build_version_inventory(out_path: str = "VERSION_INVENTORY.csv") -> int:
 
 # FSF-list-derived: True = combinable with GPL-2.0-only consumer.
 GPL2_COMPAT = {
-    "MIT": True, "BSD-2-Clause": True, "BSD-3-Clause": True, "BSD": True,
-    "ISC": True, "Zlib": True, "Unlicense": True, "CC0-1.0": True,
-    "GPL-2.0-only": True, "GPL-2.0-or-later": True,
-    "LGPL-2.1-only": True, "LGPL-2.1-or-later": True,
-    "Python-2.0": True, "PSF-2.0": True, "MPL-2.0": True, "HPND": True,
-    "GPL-3.0-only": False, "GPL-3.0-or-later": False,
-    "LGPL-3.0-only": False, "LGPL-3.0-or-later": False,
-    "Apache-2.0": False, "ASL 2.0": False, "ASL2.0": False,
+    "MIT": True,
+    "BSD-2-Clause": True,
+    "BSD-3-Clause": True,
+    "BSD": True,
+    "ISC": True,
+    "Zlib": True,
+    "Unlicense": True,
+    "CC0-1.0": True,
+    "GPL-2.0-only": True,
+    "GPL-2.0-or-later": True,
+    "LGPL-2.1-only": True,
+    "LGPL-2.1-or-later": True,
+    "Python-2.0": True,
+    "PSF-2.0": True,
+    "MPL-2.0": True,
+    "HPND": True,
+    "GPL-3.0-only": False,
+    "GPL-3.0-or-later": False,
+    "LGPL-3.0-only": False,
+    "LGPL-3.0-or-later": False,
+    "Apache-2.0": False,
+    "ASL 2.0": False,
+    "ASL2.0": False,
     "Artistic-2.0": True,
 }
 
@@ -160,11 +192,11 @@ CURATED: dict[str, tuple[str, str, str]] = {
     "smotefamily": ("GPL-2.0-only", "Yes", ""),
     "DoubleML.R": ("MIT", "Yes", ""),
     # R Suggests with GPL-3 licenses (R-convention OK)
-    "pracma":       ("GPL-3.0-only", "Yes*", "Suggests-only, optional/not linked"),
-    "mlr3":         ("LGPL-3.0-only", "Yes*", "Suggests-only, optional/not linked"),
+    "pracma": ("GPL-3.0-only", "Yes*", "Suggests-only, optional/not linked"),
+    "mlr3": ("LGPL-3.0-only", "Yes*", "Suggests-only, optional/not linked"),
     "mlr3learners": ("LGPL-3.0-only", "Yes*", "Suggests-only, optional/not linked"),
-    "dbscan":       ("GPL-3.0-only", "Yes*", "Suggests-only, optional/not linked"),
-    "reticulate":   ("Apache-2.0",   "Yes*", "Suggests-only, optional/not linked; user opt-in"),
+    "dbscan": ("GPL-3.0-only", "Yes*", "Suggests-only, optional/not linked"),
+    "reticulate": ("Apache-2.0", "Yes*", "Suggests-only, optional/not linked; user opt-in"),
     "testthat": ("MIT", "Yes", ""),
     "knitr": ("GPL-2.0-or-later", "Yes", ""),
     "rmarkdown": ("GPL-2.0-or-later", "Yes", ""),
@@ -192,31 +224,58 @@ def build_dependencies(out_path: str = "DEPENDENCIES.csv") -> int:
 
     for r in proj.get("dependencies", []):
         name, version = _parse_pep508(r)
-        rows.append({"language": "Python", "package": name,
-                     "version": version or "any", "kind": "runtime",
-                     "license": "", "gpl2_compatible": "", "notes": ""})
+        rows.append(
+            {
+                "language": "Python",
+                "package": name,
+                "version": version or "any",
+                "kind": "runtime",
+                "license": "",
+                "gpl2_compatible": "",
+                "notes": "",
+            }
+        )
     for grp, deps in proj.get("optional-dependencies", {}).items():
         for r in deps:
             name, version = _parse_pep508(r)
-            rows.append({"language": "Python", "package": name,
-                         "version": version or "any",
-                         "kind": f"extra:{grp}",
-                         "license": "", "gpl2_compatible": "", "notes": ""})
+            rows.append(
+                {
+                    "language": "Python",
+                    "package": name,
+                    "version": version or "any",
+                    "kind": f"extra:{grp}",
+                    "license": "",
+                    "gpl2_compatible": "",
+                    "notes": "",
+                }
+            )
 
     desc_path = Path("r-package/morie/DESCRIPTION")
     if desc_path.is_file():
         desc = desc_path.read_text()
-        for field, kind in [("Imports", "imports"), ("Depends", "depends"),
-                            ("Suggests", "suggests"), ("LinkingTo", "linkingto")]:
+        for field, kind in [
+            ("Imports", "imports"),
+            ("Depends", "depends"),
+            ("Suggests", "suggests"),
+            ("LinkingTo", "linkingto"),
+        ]:
             for p in _parse_desc_field(desc, field):
                 m = re.match(r"([A-Za-z0-9_.]+)\s*(?:\(([^)]+)\))?", p)
                 if not m:
                     continue
                 name = m.group(1)
                 ver = m.group(2) or "any"
-                rows.append({"language": "R", "package": name, "version": ver,
-                             "kind": kind, "license": "",
-                             "gpl2_compatible": "", "notes": ""})
+                rows.append(
+                    {
+                        "language": "R",
+                        "package": name,
+                        "version": ver,
+                        "kind": kind,
+                        "license": "",
+                        "gpl2_compatible": "",
+                        "notes": "",
+                    }
+                )
 
     for r in rows:
         cur = CURATED.get(r["package"])
@@ -228,10 +287,18 @@ def build_dependencies(out_path: str = "DEPENDENCIES.csv") -> int:
             r["notes"] = "needs manual classification"
 
     with open(out_path, "w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=[
-            "language", "package", "version", "kind",
-            "license", "gpl2_compatible", "notes",
-        ])
+        w = csv.DictWriter(
+            fh,
+            fieldnames=[
+                "language",
+                "package",
+                "version",
+                "kind",
+                "license",
+                "gpl2_compatible",
+                "notes",
+            ],
+        )
         w.writeheader()
         for r in rows:
             w.writerow(r)
@@ -248,13 +315,12 @@ def main() -> int:
     # Quick sanity check on dependency compat
     with open("DEPENDENCIES.csv") as fh:
         compat = Counter(r["gpl2_compatible"] for r in csv.DictReader(fh))
-    print(f"\nDependency compat:")
+    print("\nDependency compat:")
     for k, n in compat.most_common():
         print(f"  {k}: {n}")
     flagged = compat.get("No", 0) + compat.get("?", 0)
     if flagged:
-        print(f"\n{flagged} entries need attention "
-              f"(see DEPENDENCIES.csv for the 'gpl2_compatible' column).")
+        print(f"\n{flagged} entries need attention (see DEPENDENCIES.csv for the 'gpl2_compatible' column).")
     return 0
 
 

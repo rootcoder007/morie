@@ -2,14 +2,14 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.svm_ import svm_classify
 
 
 class TestSvmClassify:
     def test_linearly_separable(self):
         rng = np.random.default_rng(42)
-        X = np.vstack([rng.standard_normal((30, 2)) + [3, 3],
-                        rng.standard_normal((30, 2)) - [3, 3]])
+        X = np.vstack([rng.standard_normal((30, 2)) + [3, 3], rng.standard_normal((30, 2)) - [3, 3]])
         y = np.array([1] * 30 + [0] * 30, dtype=float)
         result = svm_classify(X, y, max_iter=500)
         assert "predictions" in result

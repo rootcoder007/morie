@@ -1,8 +1,9 @@
 """Tests for morie.fn.impfor -- impact force modeling."""
 
-from morie.fn.impfor import impact_force, impfor
-from morie.fn._containers import DescriptiveResult
 import pytest
+
+from morie.fn._containers import DescriptiveResult
+from morie.fn.impfor import impact_force, impfor
 
 
 class TestImpfor:

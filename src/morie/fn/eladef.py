@@ -76,4 +76,4 @@ eladef = elastic_deformation
 
 
 def cheatsheet() -> str:
-    return 'elastic_deformation({}) -> Elastic deformation field computation.'
+    return "elastic_deformation({}) -> Elastic deformation field computation."

@@ -1,6 +1,7 @@
 """Full gradient vector of the MSE cost function over all parameters, used in batch gradient descent.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ch4_mse_gradient_vector"]
@@ -34,7 +35,14 @@ def geron_ch4_mse_gradient_vector(X, y, theta):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Full gradient vector of the MSE cost function over all parameters, used in batch gradient descent."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Full gradient vector of the MSE cost function over all parameters, used in batch gradient descent.",
+        }
+    )
 
 
 def cheatsheet():

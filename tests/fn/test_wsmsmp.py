@@ -1,6 +1,7 @@
 """Tests for wsmsmp.wasserman_smoothing_spline."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmsmp import wasserman_smoothing_spline
 
 
@@ -11,7 +12,7 @@ def test_wsmsmp_basic():
     lambda_ = np.random.default_rng(42).normal(0, 1, 100)
     result = wasserman_smoothing_spline(x, y, lambda_)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmsmp_edge():

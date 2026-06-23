@@ -1,6 +1,9 @@
 """Tests for alinc — alert incidence."""
+
 import pandas as pd
+
 from morie.fn.alinc import alincd
+
 
 def test_alinc_basic(otis_df):
     result = alincd(otis_df)
@@ -9,6 +12,7 @@ def test_alinc_basic(otis_df):
 
 def test_cheatsheet():
     from morie.fn.alinc import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

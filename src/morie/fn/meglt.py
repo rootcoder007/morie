@@ -1,6 +1,7 @@
 """Low-rank matrix completion (nuclear norm)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["matrix_completion_low_rank"]
@@ -32,7 +33,9 @@ def matrix_completion_low_rank(R_obs, mask):
     n = len(R_obs)
     result = float(np.mean(R_obs))
     se = float(np.std(R_obs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Low-rank matrix completion (nuclear norm)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Low-rank matrix completion (nuclear norm)"}
+    )
 
 
 def cheatsheet():

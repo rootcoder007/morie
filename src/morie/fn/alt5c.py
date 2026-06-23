@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """T5/Flan-T5 classification: generate label token as text output."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_t5_text_to_text_classify"]
@@ -34,7 +36,14 @@ def alammar_t5_text_to_text_classify(input, label_tokens, model):
     n = len(input)
     result = float(np.mean(input))
     se = float(np.std(input, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "T5/Flan-T5 classification: generate label token as text output"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "T5/Flan-T5 classification: generate label token as text output",
+        }
+    )
 
 
 def cheatsheet():

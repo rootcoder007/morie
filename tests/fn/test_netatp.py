@@ -1,6 +1,7 @@
 """Tests for netatp.network_attack_tolerance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.netatp import network_attack_tolerance
 
 
@@ -11,7 +12,7 @@ def test_netatp_basic():
     k = 5
     result = network_attack_tolerance(G, attack_strategy, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_netatp_edge():

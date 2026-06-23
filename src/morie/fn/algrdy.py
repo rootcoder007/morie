@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Greedy decoding: argmax at each step."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_greedy_decoding"]

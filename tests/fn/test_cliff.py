@@ -1,8 +1,9 @@
 """Tests for morie.fn.cliff -- Cliff's delta (non-parametric effect size)."""
 
 import pytest
-from morie.fn.cliff import cliffs_delta
+
 from morie.fn._containers import ESRes
+from morie.fn.cliff import cliffs_delta
 
 
 class TestCliffsDelta:

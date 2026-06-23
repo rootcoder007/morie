@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsgrf -- Focal grid statistics"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsgrf import grid_focal
 

@@ -7,7 +7,7 @@ Uses a trust radius to guarantee convergence to local minima.
 import numpy as np
 from scipy.linalg import solve
 
-__all__ = ['trnrg']
+__all__ = ["trnrg"]
 
 
 def trnrg(f, grad_f, hess_f, x0, tol=1e-6, max_iter=100, radius=1.0, full_output=False):
@@ -69,11 +69,7 @@ def trnrg(f, grad_f, hess_f, x0, tol=1e-6, max_iter=100, radius=1.0, full_output
         g = grad_f(x)
         if np.linalg.norm(g) < tol:
             if full_output:
-                return x, {
-                    'iterations': iteration,
-                    'converged': True,
-                    'final_value': f(x)
-                }
+                return x, {"iterations": iteration, "converged": True, "final_value": f(x)}
             return x
 
         H = hess_f(x)
@@ -118,9 +114,5 @@ def trnrg(f, grad_f, hess_f, x0, tol=1e-6, max_iter=100, radius=1.0, full_output
                 Delta *= 0.25
 
     if full_output:
-        return x, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_value': f(x)
-        }
+        return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x

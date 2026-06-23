@@ -1,6 +1,7 @@
 """Variance components via Henderson Method III (ANOVA-style)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["variance_components_henderson3"]
@@ -32,7 +33,14 @@ def variance_components_henderson3(y, cluster):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Variance components via Henderson Method III (ANOVA-style)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Variance components via Henderson Method III (ANOVA-style)",
+        }
+    )
 
 
 def cheatsheet():

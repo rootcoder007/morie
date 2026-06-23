@@ -1,8 +1,7 @@
 """Nature does not hurry, yet everything is accomplished. — Lao Tzu"""
 
-import numpy as np
-from morie.fn.defall import defense_allocation, defall
 from morie.fn._containers import DescriptiveResult
+from morie.fn.defall import defall, defense_allocation
 
 
 class TestDefall:

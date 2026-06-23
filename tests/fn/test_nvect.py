@@ -1,5 +1,7 @@
 """Tests for normal vector projection."""
+
 import numpy as np
+
 from morie.fn.nvect import nvect
 
 
@@ -15,6 +17,7 @@ def test_nvect_smoke():
 
 def test_cheatsheet():
     from morie.fn.nvect import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

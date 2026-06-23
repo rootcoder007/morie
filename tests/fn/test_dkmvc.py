@@ -1,6 +1,7 @@
 """Test dkmvc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkmvc import dkmvc
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """r_1 integral in KDFE variance formula."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_r1_integral"]

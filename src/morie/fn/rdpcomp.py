@@ -1,6 +1,7 @@
 """Rényi DP for subsampled mechanisms."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rdp_subsampled_composition"]

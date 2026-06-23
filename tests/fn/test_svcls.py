@@ -1,7 +1,6 @@
 """Tests for morie.fn.svcls -- Minimum winning coalition size"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svcls import coalition_size
 

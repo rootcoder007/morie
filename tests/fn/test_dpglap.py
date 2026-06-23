@@ -1,6 +1,7 @@
 """Tests for dpglap.dp_laplace_mechanism."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpglap import dp_laplace_mechanism
 
 
@@ -11,7 +12,7 @@ def test_dpglap_basic():
     epsilon = 1e-6
     result = dp_laplace_mechanism(y, sensitivity, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpglap_edge():

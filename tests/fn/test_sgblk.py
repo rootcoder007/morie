@@ -1,5 +1,7 @@
 """Tests for block kriging."""
+
 import numpy as np
+
 from morie.fn.sgblk import sgblk
 
 
@@ -15,6 +17,7 @@ def test_sgblk_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgblk import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

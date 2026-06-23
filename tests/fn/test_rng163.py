@@ -1,6 +1,7 @@
 """Tests for rng163.rangayyan_ch3_rls_objective."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng163 import rangayyan_ch3_rls_objective
 
 
@@ -11,7 +12,7 @@ def test_rng163_basic():
     n = 100
     result = rangayyan_ch3_rls_objective(e, lam, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng163_edge():

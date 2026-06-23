@@ -1,6 +1,7 @@
 """DIF p-difference (raw)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dif_p_diff"]

@@ -1,6 +1,7 @@
 """Tests for kmitm.kamath_image_text_matching."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmitm import kamath_image_text_matching
 
 
@@ -12,7 +13,7 @@ def test_kmitm_basic():
     b = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_image_text_matching(image_emb, text_emb, W, b)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmitm_edge():

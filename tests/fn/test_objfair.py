@@ -1,6 +1,7 @@
 """Tests for objfair.individual_fairness_lipschitz."""
+
 import numpy as np
-import pytest
+
 from morie.fn.objfair import individual_fairness_lipschitz
 
 
@@ -12,7 +13,7 @@ def test_objfair_basic():
     L = np.random.default_rng(42).normal(0, 1, 100)
     result = individual_fairness_lipschitz(y, h_values, x_pairs, L)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_objfair_edge():

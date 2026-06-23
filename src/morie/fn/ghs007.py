@@ -1,6 +1,7 @@
 """Conditional Bernoulli density of a binary response Y given covariate x using a link H composed with a function f.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch2_binary_regression_density"]
@@ -36,7 +37,14 @@ def ghosal_ch2_binary_regression_density(y, x, f, H):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Conditional Bernoulli density of a binary response Y given covariate x using a link H composed with a function f."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Conditional Bernoulli density of a binary response Y given covariate x using a link H composed with a function f.",
+        }
+    )
 
 
 def cheatsheet():

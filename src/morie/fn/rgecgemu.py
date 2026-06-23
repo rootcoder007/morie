@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ECG-EMG coupling during physical effort (VMG correlation)."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ecg_emg_coupling"]
@@ -35,9 +37,23 @@ def rangayyan_ecg_emg_coupling(ecg, emg, fs):
     y = np.asarray(emg, dtype=float)
     n = min(len(ecg), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "ECG-EMG coupling during physical effort (VMG correlation)"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "ECG-EMG coupling during physical effort (VMG correlation)",
+            }
+        )
     result = stats.spearmanr(ecg[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "ECG-EMG coupling during physical effort (VMG correlation)"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "ECG-EMG coupling during physical effort (VMG correlation)",
+        }
+    )
 
 
 def cheatsheet():

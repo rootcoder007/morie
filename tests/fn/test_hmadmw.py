@@ -1,6 +1,7 @@
 """Tests for hmadmw.geron_adamw."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmadmw import geron_adamw
 
 
@@ -17,7 +18,7 @@ def test_hmadmw_basic():
     t = np.linspace(0, 10, 100)
     result = geron_adamw(grads, m, v, b1, b2, eta, wd, eps, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmadmw_edge():

@@ -21,11 +21,13 @@ class TestMarginalStructural:
     def test_ess_less_than_n(self):
         rng = np.random.default_rng(42)
         n = 100
-        df = pd.DataFrame({
-            "treatment": rng.choice([0, 1], n),
-            "x1": rng.normal(size=n),
-            "x2": rng.normal(size=n),
-        })
+        df = pd.DataFrame(
+            {
+                "treatment": rng.choice([0, 1], n),
+                "x1": rng.normal(size=n),
+                "x2": rng.normal(size=n),
+            }
+        )
         res = marginal_structural(df, treatment_col="treatment")
         assert res.extra["ess"] <= n + 1
 

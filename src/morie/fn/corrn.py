@@ -11,7 +11,9 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['corrn']
+__all__ = ["corrn"]
+
+
 def corrn(
     x: np.ndarray,
     *,
@@ -48,7 +50,7 @@ def corrn(
     if N < 10:
         raise ValueError("Signal too short.")
 
-    Y = np.array([x[i:i + (m - 1) * tau + 1:tau] for i in range(N)])
+    Y = np.array([x[i : i + (m - 1) * tau + 1 : tau] for i in range(N)])
 
     dists = []
     for i in range(N):
@@ -58,8 +60,7 @@ def corrn(
     dists = dists[dists > 0]
 
     if len(dists) == 0:
-        return DescriptiveResult(name="corrn", value=0.0,
-                                 extra={"d2": 0.0, "log_r": [], "log_C": []})
+        return DescriptiveResult(name="corrn", value=0.0, extra={"d2": 0.0, "log_r": [], "log_C": []})
 
     if r_min is None:
         r_min = np.percentile(dists, 1)

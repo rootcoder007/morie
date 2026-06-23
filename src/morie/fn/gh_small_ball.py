@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Small ball probability for GP: log Pi(||f||<eps) ~ -phi(eps) as eps->0."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_small_ball_prob"]
@@ -30,7 +32,14 @@ def ghosal_small_ball_prob(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Small ball probability for GP: log Pi(||f||<eps) ~ -phi(eps) as eps->0"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Small ball probability for GP: log Pi(||f||<eps) ~ -phi(eps) as eps->0",
+        }
+    )
 
 
 def cheatsheet():

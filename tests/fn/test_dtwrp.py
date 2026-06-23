@@ -1,6 +1,7 @@
 """Test dtwrp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtwrp import dtwrp
 
 

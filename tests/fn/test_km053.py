@@ -1,6 +1,7 @@
 """Tests for km053.kamath_ch3_prefix_tuning_obj."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km053 import kamath_ch3_prefix_tuning_obj
 
 
@@ -12,7 +13,7 @@ def test_km053_basic():
     h = 0.3
     result = kamath_ch3_prefix_tuning_obj(phi, x, y, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km053_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multinomial logistic (softmax) regression end-to-end fit."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_multinomial_logistic"]
@@ -36,7 +38,14 @@ def geron_multinomial_logistic(X, Y, lr, n_iter):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multinomial logistic (softmax) regression end-to-end fit"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multinomial logistic (softmax) regression end-to-end fit",
+        }
+    )
 
 
 def cheatsheet():

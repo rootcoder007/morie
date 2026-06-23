@@ -1,4 +1,5 @@
 """Fetch a web page and return raw HTML."""
+
 from __future__ import annotations
 
 import urllib.request
@@ -82,4 +83,4 @@ wscrp = web_scrape_result
 
 
 def cheatsheet() -> str:
-    return 'web_scrape({}) -> Web page fetch + text extraction.'
+    return "web_scrape({}) -> Web page fetch + text extraction."

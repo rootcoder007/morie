@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxsbg -- Spatial bagging"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxsbg import spatial_bagging
 

@@ -1,6 +1,7 @@
 """Tests for btmult.boot_multinomial_weights."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btmult import boot_multinomial_weights
 
 
@@ -11,7 +12,7 @@ def test_btmult_basic():
     rng = np.random.default_rng(42)
     result = boot_multinomial_weights(n, B, rng)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_btmult_edge():

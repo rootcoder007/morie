@@ -10,7 +10,14 @@ from scipy.optimize import minimize
 from ._containers import ESRes
 
 
-def dose_response(doses: list[float] | np.ndarray, responses: list[int] | np.ndarray, totals: list[int] | np.ndarray, link: str = "logit", confidence: float = 0.95, cdf=None) -> ESRes:
+def dose_response(
+    doses: list[float] | np.ndarray,
+    responses: list[int] | np.ndarray,
+    totals: list[int] | np.ndarray,
+    link: str = "logit",
+    confidence: float = 0.95,
+    cdf=None,
+) -> ESRes:
     """Dose-response analysis via logistic or probit regression.
 
     Fits P(response) = link^{-1}(alpha + beta * dose).
@@ -71,11 +78,11 @@ def dose_response(doses: list[float] | np.ndarray, responses: list[int] | np.nda
 
     try:
         from scipy.optimize import approx_fprime
+
         hess_inv = np.linalg.inv(
-            np.array([
-                [approx_fprime([alpha, beta], lambda p: neg_ll(p), 1e-5)[i]
-                 for i in range(2)]
-            ]).reshape(1, 2).repeat(2, axis=0)
+            np.array([[approx_fprime([alpha, beta], lambda p: neg_ll(p), 1e-5)[i] for i in range(2)]])
+            .reshape(1, 2)
+            .repeat(2, axis=0)
         )
         se_beta = np.sqrt(abs(hess_inv[1, 1]))
     except Exception:

@@ -1,8 +1,8 @@
 """Probability expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["advanced_r_second_edition_hadley_wickham_chapman_hall_crc_th_chapter_13_unnumbered_7"]
 

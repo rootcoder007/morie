@@ -1,7 +1,9 @@
 """Tests for hfd — Higuchi fractal dimension."""
+
 import numpy as np
-from morie.fn.hfd import higuchi_fd
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.hfd import higuchi_fd
 
 
 def test_hfd_basic(rng):

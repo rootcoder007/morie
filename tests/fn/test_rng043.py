@@ -1,6 +1,7 @@
 """Tests for rng043.rangayyan_ch3_lsi_series_combined_h."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng043 import rangayyan_ch3_lsi_series_combined_h
 
 
@@ -11,7 +12,7 @@ def test_rng043_basic():
     n = 100
     result = rangayyan_ch3_lsi_series_combined_h(h_1, h_2, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng043_edge():

@@ -1,5 +1,7 @@
 """Tests for morie.fn.hasht."""
+
 import numpy as np
+
 from morie.fn.hasht import hash_table
 
 
@@ -13,6 +15,7 @@ def test_hasht_smoke():
 
 def test_cheatsheet():
     from morie.fn.hasht import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,6 +1,7 @@
 """Tests for infbtl.information_bottleneck."""
+
 import numpy as np
-import pytest
+
 from morie.fn.infbtl import information_bottleneck
 
 
@@ -11,7 +12,7 @@ def test_infbtl_basic():
     beta = 0.8
     result = information_bottleneck(X, Y, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_infbtl_edge():

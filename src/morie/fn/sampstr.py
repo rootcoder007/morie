@@ -1,8 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Stratified random sample (proportional allocation)."""
 
-from typing import Sequence, Union
 import numpy as np
+
+
 def sampstr(strata: dict, n_total: int, seed: int = 42) -> dict:
     """Stratified sample with proportional allocation.
 

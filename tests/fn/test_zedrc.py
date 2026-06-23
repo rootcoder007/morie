@@ -1,7 +1,6 @@
 """Tests for morie.fn.zedrc -- Spatial dose-response curve"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zedrc import dose_resp_spatial
 

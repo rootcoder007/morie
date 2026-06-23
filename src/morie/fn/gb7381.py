@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Null variance formula from Chernoff-Savage theory under H0."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_cs_null_var"]
@@ -32,7 +34,14 @@ def gibbons_cs_null_var(J, lam):
     n = int(J) if J.ndim == 0 else len(J)
     result = float(np.mean(J))
     se = float(np.std(J, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Null variance formula from Chernoff-Savage theory under H0"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Null variance formula from Chernoff-Savage theory under H0",
+        }
+    )
 
 
 def cheatsheet():

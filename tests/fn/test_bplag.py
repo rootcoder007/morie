@@ -1,7 +1,6 @@
 """Tests for morie.fn.bplag — Breusch-Pagan LM test."""
 
 import numpy as np
-import pytest
 
 from morie.fn.bplag import breusch_pagan_lm
 

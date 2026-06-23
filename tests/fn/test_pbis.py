@@ -1,11 +1,14 @@
 """Tests for point_biserial."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.pbis import point_biserial
+
 
 class TestPBis:
     def test_correlated(self):
-        binary = np.array([0]*20 + [1]*20, dtype=float)
-        cont = np.concatenate([np.random.default_rng(0).normal(0,1,20), np.random.default_rng(0).normal(3,1,20)])
+        binary = np.array([0] * 20 + [1] * 20, dtype=float)
+        cont = np.concatenate([np.random.default_rng(0).normal(0, 1, 20), np.random.default_rng(0).normal(3, 1, 20)])
         r = point_biserial(binary, cont)
         assert r.estimate > 0.3
 

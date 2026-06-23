@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """KS test critical values D_{n,alpha}: exact for n <= 40, asymptotic for n > 40."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_ks_critical_values"]
@@ -32,7 +34,14 @@ def gibbons_ks_critical_values(n, alpha, cdf=None):
     data = np.asarray(n, dtype=float) if np.ndim(n) > 0 else None
     n = int(n) if np.ndim(n) == 0 else len(n)
     if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "KS test critical values D_{n,alpha}: exact for n <= 40, asymptotic for n > 40"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "KS test critical values D_{n,alpha}: exact for n <= 40, asymptotic for n > 40",
+            }
+        )
     if data is None:
         rng = np.random.default_rng(0)
         data = rng.standard_normal(n)
@@ -50,9 +59,16 @@ def gibbons_ks_critical_values(n, alpha, cdf=None):
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
-    return RichResult(payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "KS test critical values D_{n,alpha}: exact for n <= 40, asymptotic for n > 40"})
+    return RichResult(
+        payload={
+            "statistic": float(statistic),
+            "p_value": float(p_value),
+            "n": n,
+            "method": "KS test critical values D_{n,alpha}: exact for n <= 40, asymptotic for n > 40",
+        }
+    )
 
 
 def cheatsheet():

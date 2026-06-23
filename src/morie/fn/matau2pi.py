@@ -1,6 +1,7 @@
 """Approximate 95% prediction interval given τ²."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_tau2_predict_interval"]
@@ -38,7 +39,9 @@ def ma_tau2_predict_interval(theta, se, tau2, k, level):
     n = len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Approximate 95% prediction interval given τ²"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Approximate 95% prediction interval given τ²"}
+    )
 
 
 def cheatsheet():

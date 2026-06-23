@@ -1,6 +1,7 @@
 """Tests for morie.fn.dst2s -- distance to squared."""
 
 import numpy as np
+
 from morie.fn.dst2s import distance_to_squared, dst2s
 
 

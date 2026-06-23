@@ -1,6 +1,7 @@
 """Output of the ANC as the difference between primary input and adaptive filter output.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_anc_output"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_anc_output(x, y, n):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Output of the ANC as the difference between primary input and adaptive filter output."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Output of the ANC as the difference between primary input and adaptive filter output.",
+        }
+    )
 
 
 def cheatsheet():

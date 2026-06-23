@@ -1,6 +1,7 @@
 """Tests for gb992.gibbons_fligner_killeen."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb992 import gibbons_fligner_killeen
 
 
@@ -10,7 +11,7 @@ def test_gb992_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = gibbons_fligner_killeen(x, y)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb992_edge():

@@ -1,6 +1,7 @@
 """Expected shortfall via POT/GPD tail."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_pot_es"]

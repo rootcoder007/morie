@@ -1,6 +1,7 @@
 """IPW sensitivity (Robins-Rotnitzky-Scharfstein)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ipw_sensitivity"]
@@ -36,7 +37,9 @@ def ipw_sensitivity(Y, X, C, lam_grid):
     n = len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "IPW sensitivity (Robins-Rotnitzky-Scharfstein)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "IPW sensitivity (Robins-Rotnitzky-Scharfstein)"}
+    )
 
 
 def cheatsheet():

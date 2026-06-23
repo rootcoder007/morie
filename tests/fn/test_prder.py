@@ -1,6 +1,8 @@
 """Tests for prder.py - Forward prediction error."""
+
 import numpy as np
-from morie.fn.prder import prediction_error_fn, prder
+
+from morie.fn.prder import prder, prediction_error_fn
 
 
 def test_prder_returns_result():

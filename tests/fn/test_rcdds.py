@@ -1,13 +1,12 @@
 """Tests for morie.fn.rcdds — recidivism desistance."""
 
-import pytest
 import numpy as np
-from morie.fn.rcdds import recidivism_desistance
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rcdds import recidivism_desistance
 
 
 class TestRecidivismDesistance:
-
     def test_returns_descriptive(self):
         t = np.array([1, 2, 3, 4, 5, 10, 15, 20])
         result = recidivism_desistance(t)

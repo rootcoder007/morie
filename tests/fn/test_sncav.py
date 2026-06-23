@@ -1,9 +1,9 @@
 """Test sync_avg (sncav)."""
-import numpy as np
-import pytest
 
-from morie.fn.sncav import sync_avg, sncav
+import numpy as np
+
 from morie.fn._containers import SignalResult
+from morie.fn.sncav import sncav, sync_avg
 
 
 class TestSyncAvg:

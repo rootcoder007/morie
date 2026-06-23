@@ -1,6 +1,8 @@
 """Tests for chlcnd."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chlcnd import chlcnd
 
 
@@ -28,4 +30,5 @@ def test_chlcnd_no_data():
 
 def test_chlcnd_alias():
     from morie.fn.chlcnd import chlcnd
+
     assert chlcnd is chlcnd

@@ -110,4 +110,4 @@ tsnred = tsne_reduce
 
 
 def cheatsheet() -> str:
-    return 'tsne_reduce({}) -> Dimensionality reduction via Barnes-Hut t-SNE.'
+    return "tsne_reduce({}) -> Dimensionality reduction via Barnes-Hut t-SNE."

@@ -1,6 +1,7 @@
 """Tests for blipqf.blip_qformer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.blipqf import blip_qformer
 
 
@@ -11,7 +12,7 @@ def test_blipqf_basic():
     llm = np.random.default_rng(42).normal(0, 1, 100)
     result = blip_qformer(image_features, queries, llm)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_blipqf_edge():

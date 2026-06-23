@@ -1,5 +1,7 @@
 """Tests for morie.fn.nwalg."""
+
 import numpy as np
+
 from morie.fn.nwalg import needleman_wunsch
 
 
@@ -13,6 +15,7 @@ def test_nwalg_smoke():
 
 def test_cheatsheet():
     from morie.fn.nwalg import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

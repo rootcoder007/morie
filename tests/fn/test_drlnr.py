@@ -1,6 +1,7 @@
 """Tests for drlnr.dr_learner."""
+
 import numpy as np
-import pytest
+
 from morie.fn.drlnr import dr_learner
 
 
@@ -15,7 +16,7 @@ def test_drlnr_basic():
     cate_model = np.random.default_rng(42).normal(0, 1, 100)
     result = dr_learner(Y, T, X, mu0, mu1, e_model, cate_model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_drlnr_edge():

@@ -1,6 +1,7 @@
 """Tests for morie.fn.maf -- Minor allele frequency."""
 
 import pytest
+
 from morie.fn.maf import minor_allele_frequency
 
 

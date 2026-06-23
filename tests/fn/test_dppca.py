@@ -1,6 +1,7 @@
 """Tests for dppca.dp_pca."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dppca import dp_pca
 
 
@@ -11,7 +12,7 @@ def test_dppca_basic():
     epsilon = 1e-6
     result = dp_pca(X, k, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dppca_edge():

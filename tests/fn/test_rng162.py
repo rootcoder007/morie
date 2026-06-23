@@ -1,6 +1,7 @@
 """Tests for rng162.rangayyan_ch3_lms_step_size_zhang."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng162 import rangayyan_ch3_lms_step_size_zhang
 
 
@@ -14,7 +15,7 @@ def test_rng162_basic():
     n = 100
     result = rangayyan_ch3_lms_step_size_zhang(mu, M, x_bar, alpha, r, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng162_edge():

@@ -1,6 +1,7 @@
 r"""Simplified categorical cross-entropy loss when the target is one-hot, reducing to the negative log-probability of the correct class c.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch2_categorical_cross_entropy"]
@@ -32,7 +33,14 @@ def burkov_lm_ch2_categorical_cross_entropy(y_hat, c):
     n = len(y_hat)
     result = float(np.mean(y_hat))
     se = float(np.std(y_hat, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Simplified categorical cross-entropy loss when the target is one-hot, reducing to the negative log-probability of the correct class c."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Simplified categorical cross-entropy loss when the target is one-hot, reducing to the negative log-probability of the correct class c.",
+        }
+    )
 
 
 def cheatsheet():

@@ -78,7 +78,7 @@ def sxdec(
         y_hat = X @ beta
         resid = y - y_hat
         df = max(n - X.shape[1], 1)
-        mse = np.sum(resid ** 2) / df
+        mse = np.sum(resid**2) / df
 
         try:
             cov_beta = mse * np.linalg.inv(X.T @ X)
@@ -90,19 +90,22 @@ def sxdec(
         se_gs = np.sqrt(max(cov_beta[3, 3], 0))
 
         from scipy.stats import t as t_dist
+
         if se_gs > 1e-10:
             t_val = b_gs / se_gs
             p_val = float(2 * t_dist.sf(abs(t_val), df))
         else:
             p_val = 1.0
 
-        results.append({
-            "beta_female": float(b_g),
-            "beta_male": float(b_g + b_gs),
-            "beta_interaction": float(b_gs),
-            "se_interaction": float(se_gs),
-            "p_interaction": p_val,
-        })
+        results.append(
+            {
+                "beta_female": float(b_g),
+                "beta_male": float(b_g + b_gs),
+                "beta_interaction": float(b_gs),
+                "se_interaction": float(se_gs),
+                "p_interaction": p_val,
+            }
+        )
 
     if len(results) == 1:
         r = results[0]

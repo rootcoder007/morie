@@ -1,6 +1,7 @@
 """One-stage cluster sample mean."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["one_stage_cluster"]

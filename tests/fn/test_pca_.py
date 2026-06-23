@@ -1,6 +1,7 @@
 """Tests for morie.fn.pca_ — PCA."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pca_ import pca_simple
 
 

@@ -1,5 +1,7 @@
 """Tests for morie.fn.lrpos."""
+
 import numpy as np
+
 from morie.fn.lrpos import lrpos
 
 
@@ -13,6 +15,7 @@ def test_lrpos_smoke():
 
 def test_cheatsheet():
     from morie.fn.lrpos import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,4 +1,5 @@
 """Vanilla (batch) gradient descent for linear regression."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -52,14 +53,16 @@ def gradient_descent_vanilla(x, y, *, lr=0.01, n_iter=1000, tol=1e-8):
     ref = LinearRegression().fit(X, y)
     ref_coef = np.concatenate([[ref.intercept_], ref.coef_])
 
-    return RichResult(payload={
-        "estimate": theta.tolist(),
-        "reference_ols": ref_coef.tolist(),
-        "n_iter": int(last_iter),
-        "loss": loss,
-        "n": int(n),
-        "method": "Vanilla batch gradient descent (linear regression)",
-    })
+    return RichResult(
+        payload={
+            "estimate": theta.tolist(),
+            "reference_ols": ref_coef.tolist(),
+            "n_iter": int(last_iter),
+            "loss": loss,
+            "n": int(n),
+            "method": "Vanilla batch gradient descent (linear regression)",
+        }
+    )
 
 
 def cheatsheet():

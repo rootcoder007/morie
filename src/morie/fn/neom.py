@@ -94,4 +94,4 @@ neom = decision_split
 
 
 def cheatsheet() -> str:
-    return 'decision_split({}) -> Decision tree split criterion.'
+    return "decision_split({}) -> Decision tree split criterion."

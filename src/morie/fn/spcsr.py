@@ -1,5 +1,7 @@
 """Complete spatial randomness (CSR): homogeneous Poisson process."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_csr_def"]
@@ -31,7 +33,14 @@ def schabenberger_csr_def(points, region):
     n = int(points) if points.ndim == 0 else len(points)
     result = float(np.mean(points))
     se = float(np.std(points, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Complete spatial randomness (CSR): homogeneous Poisson process"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Complete spatial randomness (CSR): homogeneous Poisson process",
+        }
+    )
 
 
 def cheatsheet():

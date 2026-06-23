@@ -1,6 +1,7 @@
 """Tests for retnet.retnet_retention."""
+
 import numpy as np
-import pytest
+
 from morie.fn.retnet import retnet_retention
 
 
@@ -13,7 +14,7 @@ def test_retnet_basic():
     gamma = 1.0
     result = retnet_retention(y, Q, K, V, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_retnet_edge():

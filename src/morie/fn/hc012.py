@@ -63,7 +63,7 @@ def hc_robust_se(
     H = X @ XtX_inv @ X.T
     h = np.diag(H)
 
-    e2 = resid ** 2
+    e2 = resid**2
     if hc_type == "HC0":
         omega = e2
     elif hc_type == "HC1":
@@ -84,9 +84,7 @@ def hc_robust_se(
     ss_tot = float(np.sum((y - np.mean(y)) ** 2))
     r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else 0.0
 
-    names = (["(Intercept)"] if add_intercept else []) + [
-        f"x{j}" for j in range(p_raw)
-    ]
+    names = (["(Intercept)"] if add_intercept else []) + [f"x{j}" for j in range(p_raw)]
     return RegressionResult(
         method=f"OLS ({hc_type})",
         coefficients={nm: float(b) for nm, b in zip(names, beta)},

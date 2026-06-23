@@ -1,6 +1,8 @@
 """Tests for vdarea."""
+
 import numpy as np
 import pytest
+
 from morie.fn.vdarea import vdarea
 
 
@@ -28,4 +30,5 @@ def test_vdarea_no_data():
 
 def test_vdarea_alias():
     from morie.fn.vdarea import vdarea
+
     assert vdarea is vdarea

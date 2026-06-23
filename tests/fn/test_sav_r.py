@@ -1,7 +1,9 @@
 """Tests for sav_r -- ER AVE."""
+
 import numpy as np
-from morie.fn.sav_r import subscale_er_ave
+
 from morie.fn._containers import ESRes
+from morie.fn.sav_r import subscale_er_ave
 
 
 class TestSavR:

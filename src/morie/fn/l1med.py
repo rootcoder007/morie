@@ -1,6 +1,7 @@
 """Geometric (L1) median."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["l1_median"]

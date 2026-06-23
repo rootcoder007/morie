@@ -116,15 +116,14 @@ def temperature_mortality_vcurve(
     rr = np.exp(log_rr)
 
     val = float(rr.mean()) if rr.size > 1 else float(rr.item())
-    af = (rr - 1.0) / rr   # attributable fraction per observation
+    af = (rr - 1.0) / rr  # attributable fraction per observation
 
     return DescriptiveResult(
         name="temperature_mortality_vcurve",
         value=val,
         extra={
             "rr": rr.tolist() if rr.size > 1 else float(rr.item()),
-            "attributable_fraction": (af.tolist() if af.size > 1
-                                       else float(af.item())),
+            "attributable_fraction": (af.tolist() if af.size > 1 else float(af.item())),
             "mmt_C": mmt,
             "beta_hot": beta_hot,
             "beta_cold": beta_cold,

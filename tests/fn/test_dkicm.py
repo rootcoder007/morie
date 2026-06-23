@@ -1,6 +1,7 @@
 """Test dkicm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkicm import dkicm
 
 

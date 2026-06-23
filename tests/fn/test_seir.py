@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.seir import seir_model
 
 
@@ -22,4 +23,4 @@ class TestSEIRModel:
     def test_r0(self):
         """R0 = beta/gamma."""
         res = seir_model(beta=0.5, sigma=0.2, gamma=0.25)
-        assert res.R0 == pytest.approx(2.0)
+        assert pytest.approx(2.0) == res.R0

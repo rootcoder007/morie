@@ -11,8 +11,7 @@ def flat_metric(x):
 
 
 def test_returns_dict():
-    r = geods(flat_metric, np.array([0, 1, 0, 0]), np.array([1, 0.5, 0, 0]),
-              tau_span=(0, 1), n_points=20)
+    r = geods(flat_metric, np.array([0, 1, 0, 0]), np.array([1, 0.5, 0, 0]), tau_span=(0, 1), n_points=20)
     assert isinstance(r, dict)
     for k in ("tau", "position", "velocity"):
         assert k in r

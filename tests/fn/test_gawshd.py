@@ -1,6 +1,7 @@
 """Test gawshd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gawshd import gawshd
 
 

@@ -1,8 +1,9 @@
 """Tests for morie.fn.idisc — item discrimination index."""
 
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
+
 from morie.fn import idisc
 
 
@@ -11,10 +12,7 @@ def items_data():
     """5 items x 100 respondents with varying difficulty."""
     rng = np.random.default_rng(42)
     latent = rng.standard_normal(100)
-    data = np.column_stack([
-        (latent + rng.standard_normal(100) * 0.3 > 0).astype(float)
-        for _ in range(5)
-    ])
+    data = np.column_stack([(latent + rng.standard_normal(100) * 0.3 > 0).astype(float) for _ in range(5)])
     return pd.DataFrame(data, columns=[f"q{i}" for i in range(5)])
 
 

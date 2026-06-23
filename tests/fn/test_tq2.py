@@ -7,7 +7,6 @@ from morie.fn.tq2 import turboquant_2bit
 
 
 class TestTurboquant2bit:
-
     def test_returns_result(self):
         x = np.random.default_rng(42).standard_normal(64)
         res = turboquant_2bit(x)

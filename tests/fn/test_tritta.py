@@ -1,6 +1,7 @@
 """Tests for tritta.alphafold_triangle_attn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tritta import alphafold_triangle_attn
 
 
@@ -10,7 +11,7 @@ def test_tritta_basic():
     start_end = np.random.default_rng(42).normal(0, 1, 100)
     result = alphafold_triangle_attn(pair_repr, start_end)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tritta_edge():

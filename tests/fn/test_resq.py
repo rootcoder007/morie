@@ -1,8 +1,9 @@
 """Tests for morie.fn.resq -- resonance Q-factor."""
 
 import numpy as np
-from morie.fn.resq import resonance_q, resq
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.resq import resonance_q, resq
 
 
 class TestResq:

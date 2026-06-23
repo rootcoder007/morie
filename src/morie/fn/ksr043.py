@@ -1,6 +1,7 @@
 """Quantile-process inequality used to verify Hadamard-differentiability of inverse map."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_quantile_hadamard_inequality"]
@@ -40,7 +41,14 @@ def kosorok_ch2_quantile_hadamard_inequality(F, h_n, t_n, xi_p, xi_pn, eps_pn):
     n = len(F)
     result = float(np.mean(F))
     se = float(np.std(F, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Quantile-process inequality used to verify Hadamard-differentiability of inverse map"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Quantile-process inequality used to verify Hadamard-differentiability of inverse map",
+        }
+    )
 
 
 def cheatsheet():

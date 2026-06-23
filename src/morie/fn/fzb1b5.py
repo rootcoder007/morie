@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Assumptions B1-B5 for bias-reduced KDFE (kernel, bandwidth, f_X conditions)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_assumptions_b1_b5"]
@@ -29,7 +31,14 @@ def fauzi_assumptions_b1_b5(x=None, *args, **kwargs):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Assumptions B1-B5 for bias-reduced KDFE (kernel, bandwidth, f_X conditions)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Assumptions B1-B5 for bias-reduced KDFE (kernel, bandwidth, f_X conditions)",
+        }
+    )
 
 
 def cheatsheet():

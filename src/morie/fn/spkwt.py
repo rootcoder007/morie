@@ -1,5 +1,7 @@
 """Kriging weights from kriging system solution."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_kriging_weights"]
@@ -33,7 +35,9 @@ def schabenberger_kriging_weights(cov_matrix, cov_target, coords):
     n = int(cov_matrix) if cov_matrix.ndim == 0 else len(cov_matrix)
     result = float(np.mean(cov_matrix))
     se = float(np.std(cov_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Kriging weights from kriging system solution"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Kriging weights from kriging system solution"}
+    )
 
 
 def cheatsheet():

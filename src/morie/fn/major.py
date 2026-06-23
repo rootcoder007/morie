@@ -57,4 +57,4 @@ major = majorize_step
 
 
 def cheatsheet() -> str:
-    return 'majorize_step({}) -> SMACOF majorize step (Guttman transform).'
+    return "majorize_step({}) -> SMACOF majorize step (Guttman transform)."

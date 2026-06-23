@@ -1,6 +1,7 @@
 """Covariate balance check post-IPTW."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["covariate_balance_check"]

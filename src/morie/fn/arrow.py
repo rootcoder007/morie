@@ -90,4 +90,4 @@ arrow = directed_layout
 
 
 def cheatsheet() -> str:
-    return 'directed_layout({}) -> Arrow plot / directed graph layout.'
+    return "directed_layout({}) -> Arrow plot / directed graph layout."

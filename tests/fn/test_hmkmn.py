@@ -1,6 +1,7 @@
 """Tests for hmkmn.geron_kmeans."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmkmn import geron_kmeans
 
 
@@ -11,7 +12,7 @@ def test_hmkmn_basic():
     seed = 42
     result = geron_kmeans(X, n_clusters, seed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmkmn_edge():

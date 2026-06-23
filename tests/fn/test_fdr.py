@@ -1,6 +1,7 @@
 """Tests for morie.fn.fdr -- Benjamini-Hochberg FDR."""
 
 import pytest
+
 from morie.fn.fdr import benjamini_hochberg
 
 

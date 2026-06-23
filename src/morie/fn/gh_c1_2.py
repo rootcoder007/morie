@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Absolute continuity condition for posterior existence in nonparametric Bayes."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_absolute_continuity"]
@@ -30,7 +32,14 @@ def ghosal_absolute_continuity(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Absolute continuity condition for posterior existence in nonparametric Bayes"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Absolute continuity condition for posterior existence in nonparametric Bayes",
+        }
+    )
 
 
 def cheatsheet():

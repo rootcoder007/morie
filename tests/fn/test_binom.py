@@ -1,8 +1,9 @@
 """Tests for morie.fn.binom -- Exact binomial test."""
 
 import pytest
-from morie.fn.binom import binomial_test
+
 from morie.fn._containers import TestResult
+from morie.fn.binom import binomial_test
 
 
 class TestBinomial:

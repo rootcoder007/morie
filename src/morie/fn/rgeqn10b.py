@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Optimal ROC operating point minimizing expected cost."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch10_roc_optimal"]
@@ -36,7 +38,9 @@ def rangayyan_ch10_roc_optimal(fpr, tpr, cost_matrix, priors):
     n = int(fpr) if fpr.ndim == 0 else len(fpr)
     result = float(np.mean(fpr))
     se = float(np.std(fpr, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Optimal ROC operating point minimizing expected cost"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Optimal ROC operating point minimizing expected cost"}
+    )
 
 
 def cheatsheet():

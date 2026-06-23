@@ -1,5 +1,7 @@
 """Thomas cluster process: Normal offspring displacements."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_thomas_process"]
@@ -35,7 +37,14 @@ def schabenberger_thomas_process(r, rho, mu, sigma):
     n = int(r) if r.ndim == 0 else len(r)
     result = float(np.mean(r))
     se = float(np.std(r, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Thomas cluster process: Normal offspring displacements"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Thomas cluster process: Normal offspring displacements",
+        }
+    )
 
 
 def cheatsheet():

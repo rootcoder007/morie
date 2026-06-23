@@ -1,6 +1,8 @@
 """Tests for glmmcar."""
+
 import numpy as np
 import pytest
+
 from morie.fn.glmmcar import glmmcar
 
 
@@ -28,4 +30,5 @@ def test_glmmcar_no_data():
 
 def test_glmmcar_alias():
     from morie.fn.glmmcar import glmmcar
+
     assert glmmcar is glmmcar

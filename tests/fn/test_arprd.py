@@ -1,6 +1,7 @@
 """Tests for arprd.py - AR model prediction."""
+
 import numpy as np
-import pytest
+
 from morie.fn.arprd import ar_predict_fn, arprd
 
 

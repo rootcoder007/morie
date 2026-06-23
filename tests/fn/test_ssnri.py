@@ -1,8 +1,9 @@
 """Test snr_improvement (ssnri)."""
-import numpy as np
+
 import pytest
-from morie.fn.ssnri import snr_improvement, ssnri
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ssnri import snr_improvement, ssnri
 
 
 class TestSNRImprovement:

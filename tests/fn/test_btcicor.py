@@ -1,6 +1,7 @@
 """Tests for btcicor.boot_ci_correlation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btcicor import boot_ci_correlation
 
 
@@ -12,7 +13,7 @@ def test_btcicor_basic():
     alpha = 0.05
     result = boot_ci_correlation(x, y, B, alpha)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_btcicor_edge():

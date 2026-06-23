@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Geometric mean with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
 from scipy.stats import gmean
 
@@ -9,6 +11,7 @@ from scipy.stats import gmean
 def geomean(x: Union[Sequence[float], np.ndarray]):
     """Geometric mean = (Π_i x_i)^(1/n)."""
     from ._richresult import RichResult
+
     a = np.asarray(x, dtype=float)
     if a.size == 0:
         raise ValueError("empty input.")
@@ -24,7 +27,8 @@ def geomean(x: Union[Sequence[float], np.ndarray]):
             ("AM/GM ratio (>=1)", arith / g),
             ("n", int(a.size)),
         ],
-        interpretation=("AM >= GM always. Use GM for ratios, growth rates, "
-                        "or log-Normal data. AM/GM gap reflects variance."),
+        interpretation=(
+            "AM >= GM always. Use GM for ratios, growth rates, or log-Normal data. AM/GM gap reflects variance."
+        ),
         payload={"value": g, "statistic": g, "arithmetic_mean": arith},
     )

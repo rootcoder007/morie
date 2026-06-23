@@ -1,8 +1,9 @@
 """Tests for morie.fn.mmddis -- MMD distance."""
 
 import numpy as np
-from morie.fn.mmddis import mmd_distance, mmddis
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mmddis import mmd_distance, mmddis
 
 
 class TestMmddis:

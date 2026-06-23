@@ -23,6 +23,7 @@ Kernels:
   - bootstrap_mean_jit           -- bootstrap replicate means (numpy;
         the C++ port is deferred pending a deliberate RNG decision)
 """
+
 from __future__ import annotations
 
 import math
@@ -31,6 +32,7 @@ import numpy as np
 
 try:
     from . import _core as _c
+
     _CORE_AVAILABLE = True
 except ImportError:  # pragma: no cover -- source checkout w/o built ext
     _CORE_AVAILABLE = False
@@ -112,13 +114,11 @@ def euclid_dist_jit(a, b) -> float:
     return float(np.sqrt(np.sum((a - b) ** 2)))
 
 
-def trimmed_ipw_weights_jit(treat, propensity, trim_lo: float = 0.01,
-                            trim_hi: float = 0.99) -> np.ndarray:
+def trimmed_ipw_weights_jit(treat, propensity, trim_lo: float = 0.01, trim_hi: float = 0.99) -> np.ndarray:
     """IPW weights with propensity-score clipping at [trim_lo, trim_hi]."""
     treat, propensity = _vec(treat), _vec(propensity)
     if _CORE_AVAILABLE:
-        return _c.trimmed_ipw_weights_jit(
-            treat, propensity, float(trim_lo), float(trim_hi))
+        return _c.trimmed_ipw_weights_jit(treat, propensity, float(trim_lo), float(trim_hi))
     e = np.clip(propensity, trim_lo, trim_hi)
     return np.where(treat == 1.0, 1.0 / e, 1.0 / (1.0 - e))
 
@@ -136,7 +136,8 @@ def bootstrap_mean_jit(arr, B: int, seed: int) -> np.ndarray:
     if not _CORE_AVAILABLE:
         raise RuntimeError(
             "bootstrap_mean_jit requires the compiled morie C++ core "
-            "(morie._core); build the extension or install a wheel.")
+            "(morie._core); build the extension or install a wheel."
+        )
     return _c.bootstrap_mean_jit(_vec(arr), int(B), int(seed))
 
 

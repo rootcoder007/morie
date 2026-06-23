@@ -1,6 +1,7 @@
 """Tests for msm270.mvsml_convolutional_nn_eq_14_7."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm270 import mvsml_convolutional_nn_eq_14_7
 
 
@@ -14,7 +15,7 @@ def test_msm270_basic():
     are = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_convolutional_nn_eq_14_7(o, t, where, cio, L2, are)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm270_edge():

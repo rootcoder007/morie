@@ -1,6 +1,7 @@
 """Tests for straprp.stratified_proportion."""
+
 import numpy as np
-import pytest
+
 from morie.fn.straprp import stratified_proportion
 
 
@@ -11,7 +12,7 @@ def test_straprp_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = stratified_proportion(y, stratum, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_straprp_edge():

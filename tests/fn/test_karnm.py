@@ -1,5 +1,7 @@
 """Tests for morie.fn.karnm."""
+
 import numpy as np
+
 from morie.fn.karnm import karnaugh_map
 
 
@@ -13,6 +15,7 @@ def test_karnm_smoke():
 
 def test_cheatsheet():
     from morie.fn.karnm import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

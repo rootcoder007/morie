@@ -1,4 +1,5 @@
 """Tests for morie.fn.simip — simulate ideal points."""
+
 from morie.fn.simip import simip
 
 
@@ -12,6 +13,7 @@ def test_simip_smoke():
 
 def test_cheatsheet():
     from morie.fn.simip import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

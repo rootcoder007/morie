@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Compute great-circle distance using the Haversine formula."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -72,4 +73,4 @@ havsn = haversine_distance
 
 
 def cheatsheet() -> str:
-    return 'haversine_distance({}) -> Haversine great-circle distance.'
+    return "haversine_distance({}) -> Haversine great-circle distance."

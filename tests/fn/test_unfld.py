@@ -1,5 +1,7 @@
 """Tests for morie.fn.unfld — Unfolding model."""
+
 import numpy as np
+
 from morie.fn.unfld import unfld
 
 

@@ -1,6 +1,7 @@
 """AlphaZero L2-regularized optimizer step."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphazero_optimizer"]
@@ -36,7 +37,9 @@ def alphazero_optimizer(theta, grad, momentum, weight_decay):
     n = len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AlphaZero L2-regularized optimizer step"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "AlphaZero L2-regularized optimizer step"}
+    )
 
 
 def cheatsheet():

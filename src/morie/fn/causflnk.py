@@ -1,6 +1,7 @@
 """Pre-treatment placebo/falsification regression."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_falsification_test"]
@@ -34,7 +35,9 @@ def causal_falsification_test(y_pre, treat, X_baseline):
     n = len(y_pre)
     result = float(np.mean(y_pre))
     se = float(np.std(y_pre, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pre-treatment placebo/falsification regression"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Pre-treatment placebo/falsification regression"}
+    )
 
 
 def cheatsheet():

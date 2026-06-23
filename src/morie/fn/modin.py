@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Modular multiplicative inverse."""
 
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "You have power over your mind -- not outside events. -- Marcus Aurelius"

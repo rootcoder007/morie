@@ -1,6 +1,7 @@
 """Tests for dpkb.k_anonymity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpkb import k_anonymity
 
 
@@ -11,7 +12,7 @@ def test_dpkb_basic():
     k = 5
     result = k_anonymity(X, quasi_ids, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpkb_edge():

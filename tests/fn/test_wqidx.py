@@ -1,6 +1,7 @@
 """Tests for morie.fn.wqidx -- water quality index."""
 
 import pytest
+
 from morie.fn.wqidx import water_quality_index
 
 

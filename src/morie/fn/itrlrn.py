@@ -1,6 +1,7 @@
 """Iterative Q-learning for dynamic regimes."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["iterative_q_learning"]
@@ -36,7 +37,9 @@ def iterative_q_learning(state, action, reward, time):
     n = len(state)
     result = float(np.mean(state))
     se = float(np.std(state, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Iterative Q-learning for dynamic regimes"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Iterative Q-learning for dynamic regimes"}
+    )
 
 
 def cheatsheet():

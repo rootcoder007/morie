@@ -1,7 +1,9 @@
 """Tests for morie.fn.ovrlp — Overlap weights (causal inference) + Szymkiewicz-Simpson."""
+
 import numpy as np
 import pytest
-from morie.fn.ovrlp import ovrlp, overlap_coefficient
+
+from morie.fn.ovrlp import overlap_coefficient, ovrlp
 
 
 @pytest.fixture()
@@ -17,8 +19,7 @@ def causal_data():
 
 def test_keys(causal_data):
     r = ovrlp(*causal_data)
-    for k in ("ate", "se", "ci_lower", "ci_upper", "weights",
-              "propensity", "effective_n", "n", "method"):
+    for k in ("ate", "se", "ci_lower", "ci_upper", "weights", "propensity", "effective_n", "n", "method"):
         assert k in r
 
 
@@ -48,14 +49,15 @@ def test_ci_valid(causal_data):
 
 def test_set_overlap_coefficient():
     oc = overlap_coefficient({1, 2, 3, 4}, {3, 4, 5, 6})
-    assert abs(oc - 0.5) < 1e-9     # intersection={3,4}, min_size=4
+    assert abs(oc - 0.5) < 1e-9  # intersection={3,4}, min_size=4
 
 
 def test_set_overlap_subset():
     oc = overlap_coefficient({1, 2}, {1, 2, 3, 4})
-    assert abs(oc - 1.0) < 1e-9     # smaller set fully contained
+    assert abs(oc - 1.0) < 1e-9  # smaller set fully contained
 
 
 def test_cheatsheet():
     from morie.fn.ovrlp import cheatsheet
+
     assert len(cheatsheet()) > 0

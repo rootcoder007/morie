@@ -1,6 +1,7 @@
 """Rational z-transform expressed in pole-zero product form (used to derive complex cepstrum).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_rational_z_transform_form"]
@@ -50,7 +51,14 @@ def rangayyan_ch4_rational_z_transform_form(A, z, r, a_k, b_k, c_k, d_k, M_I, M_
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rational z-transform expressed in pole-zero product form (used to derive complex cepstrum)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Rational z-transform expressed in pole-zero product form (used to derive complex cepstrum).",
+        }
+    )
 
 
 def cheatsheet():

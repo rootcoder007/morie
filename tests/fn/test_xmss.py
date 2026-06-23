@@ -1,4 +1,5 @@
 """Test xmss_sign."""
+
 from morie.fn._containers import CryptoResult
 from morie.fn.xmss import xmss, xmss_sign
 

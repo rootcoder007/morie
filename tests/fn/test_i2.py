@@ -1,6 +1,7 @@
 """Tests for morie.fn.i2 -- Higgins' I-squared heterogeneity."""
 
 import pytest
+
 from morie.fn.i2 import i_squared
 
 

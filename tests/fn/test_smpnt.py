@@ -1,6 +1,8 @@
 """Tests for sample entropy."""
+
 import numpy as np
 import pytest
+
 from morie.fn.smpnt import sample_entropy, smpnt
 
 

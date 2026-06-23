@@ -1,6 +1,7 @@
 """Empirical Bayes for NP priors."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["empirical_bayes_np"]

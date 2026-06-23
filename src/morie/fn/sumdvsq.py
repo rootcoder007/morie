@@ -1,6 +1,10 @@
 """Σ(xᵢ - x̄)² -- sum of squared deviations from the mean (atomic)."""
-from typing import Sequence, Union
+
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
+
 
 def sumdvsq(x: Union[Sequence[float], np.ndarray]) -> float:
     """Sum of squared deviations: Σᵢ (xᵢ − x̄)².

@@ -10,7 +10,15 @@ from scipy import stats as sp
 from morie.fn._containers import DIFResult
 
 
-def dif_uniform(responses: np.ndarray | pd.DataFrame, total_score: np.ndarray, group: np.ndarray | list, cdf=None, *, item_names: list[str] | None = None, alpha: float = 0.05) -> DIFResult:
+def dif_uniform(
+    responses: np.ndarray | pd.DataFrame,
+    total_score: np.ndarray,
+    group: np.ndarray | list,
+    cdf=None,
+    *,
+    item_names: list[str] | None = None,
+    alpha: float = 0.05,
+) -> DIFResult:
     """Detect uniform DIF via logistic regression (group main effect).
 
     Fits logit(P) = b0 + b1*total + b2*group per item.

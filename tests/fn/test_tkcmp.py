@@ -1,8 +1,10 @@
 """Test tucker_decompose (tkcmp)."""
+
 import numpy as np
 import pytest
-from morie.fn.tkcmp import tucker_decompose, tkcmp
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.tkcmp import tkcmp, tucker_decompose
 
 
 class TestTkcmp:

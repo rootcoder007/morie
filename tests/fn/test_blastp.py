@@ -1,6 +1,7 @@
 """Tests for blastp.blast_protein."""
+
 import numpy as np
-import pytest
+
 from morie.fn.blastp import blast_protein
 
 
@@ -10,7 +11,7 @@ def test_blastp_basic():
     db = np.random.default_rng(42).normal(0, 1, 100)
     result = blast_protein(query, db)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_blastp_edge():

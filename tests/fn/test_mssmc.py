@@ -1,7 +1,6 @@
 """Tests for morie.fn.mssmc -- SMACOF iterative MDS"""
 
 import numpy as np
-import pytest
 
 from morie.fn.mssmc import smacof_mds
 
@@ -14,5 +13,5 @@ class TestSmacofMds:
         assert result.value is not None
 
     def test_output_type(self):
-        result = smacof_mds(np.random.default_rng(0).standard_normal((5,2)))
+        result = smacof_mds(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

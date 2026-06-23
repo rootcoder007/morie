@@ -1,6 +1,7 @@
 """Tests for rgicaart.rangayyan_ica_artifact."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgicaart import rangayyan_ica_artifact
 
 
@@ -11,7 +12,7 @@ def test_rgicaart_basic():
     artifact_labels = np.random.default_rng(43).integers(0, 2, 100)
     result = rangayyan_ica_artifact(eeg, n_components, artifact_labels)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgicaart_edge():

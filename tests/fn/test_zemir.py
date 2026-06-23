@@ -1,7 +1,6 @@
 """Tests for morie.fn.zemir -- Migration flow model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zemir import migration_flow
 

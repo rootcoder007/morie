@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bayesian multidimensional unfolding with MCMC."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["bayesian_mds_unfolding"]
@@ -34,7 +36,9 @@ def bayesian_mds_unfolding(ratings, n_dims, n_iter):
     n = int(ratings) if ratings.ndim == 0 else len(ratings)
     result = float(np.mean(ratings))
     se = float(np.std(ratings, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian multidimensional unfolding with MCMC"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bayesian multidimensional unfolding with MCMC"}
+    )
 
 
 def cheatsheet():

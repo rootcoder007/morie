@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsids -- Modified Shepard interpolation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsids import idw_shepard
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """NExT-GPT any-to-any: modality encoders -> LLM -> modality-specific decoders."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_nextgpt_any2any"]
@@ -36,7 +38,14 @@ def kamath_nextgpt_any2any(inputs_by_modality, encoders, llm, decoders):
     n = len(inputs_by_modality)
     result = float(np.mean(inputs_by_modality))
     se = float(np.std(inputs_by_modality, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "NExT-GPT any-to-any: modality encoders -> LLM -> modality-specific decoders"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "NExT-GPT any-to-any: modality encoders -> LLM -> modality-specific decoders",
+        }
+    )
 
 
 def cheatsheet():

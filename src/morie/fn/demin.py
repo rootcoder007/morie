@@ -70,4 +70,4 @@ demin = deming_regression
 
 
 def cheatsheet() -> str:
-    return 'deming_regression({}) -> Deming (errors-in-variables) regression.'
+    return "deming_regression({}) -> Deming (errors-in-variables) regression."

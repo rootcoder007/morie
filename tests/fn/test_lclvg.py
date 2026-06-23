@@ -7,7 +7,6 @@ from morie.fn.lclvg import lclvg
 
 
 class TestLclvg:
-
     def test_output_shape(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (20, 2))

@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgrdr -- Rodogram estimator"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgrdr import rodogram
 

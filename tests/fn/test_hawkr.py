@@ -9,8 +9,7 @@ from morie.fn.hawkr import hawkr
 def test_returns_dict():
     r = hawkr(M=1.989e30)
     assert isinstance(r, dict)
-    for k in ("temperature_K", "r_schwarzschild", "luminosity_W",
-              "evaporation_time_s", "peak_wavelength_m"):
+    for k in ("temperature_K", "r_schwarzschild", "luminosity_W", "evaporation_time_s", "peak_wavelength_m"):
         assert k in r
 
 
@@ -30,7 +29,7 @@ def test_temperature_formula():
     c = 299792458.0
     G = 6.67430e-11
     kB = 1.380649e-23
-    expected = hbar * c ** 3 / (8 * np.pi * G * M * kB)
+    expected = hbar * c**3 / (8 * np.pi * G * M * kB)
     r = hawkr(M=M)
     assert r["temperature_K"] == pytest.approx(expected, rel=1e-6)
 

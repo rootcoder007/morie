@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """SBERT triplet loss: anchor-positive closer than anchor-negative by margin."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_sbert_triplet_loss"]
@@ -36,7 +38,14 @@ def alammar_sbert_triplet_loss(anchor, positive, negative, margin):
     n = len(anchor)
     result = float(np.mean(anchor))
     se = float(np.std(anchor, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SBERT triplet loss: anchor-positive closer than anchor-negative by margin"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "SBERT triplet loss: anchor-positive closer than anchor-negative by margin",
+        }
+    )
 
 
 def cheatsheet():

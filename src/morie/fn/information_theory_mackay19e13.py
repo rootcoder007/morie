@@ -1,8 +1,8 @@
 """CentralTendency equation extracted from Information theory MacKay.."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["information_theory_mackay_chapter_19_equation_13"]
 
@@ -41,7 +41,12 @@ def information_theory_mackay_chapter_19_equation_13(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "CentralTendency equation extracted from Information theory MacKay."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "CentralTendency equation extracted from Information theory MacKay.",
+        },
     )
 
 

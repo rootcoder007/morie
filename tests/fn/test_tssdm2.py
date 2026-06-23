@@ -1,6 +1,7 @@
 """Test tssdm2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tssdm2 import tssdm2
 
 

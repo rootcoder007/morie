@@ -1,4 +1,5 @@
 """Tests for morie.fn.kappa — Cohen's kappa."""
+
 import numpy as np
 import pytest
 

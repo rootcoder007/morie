@@ -1,6 +1,7 @@
 """CO₂ radiative forcing."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["radiative_forcing_co2"]

@@ -1,6 +1,7 @@
 """Test vmdmp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmdmp import vmdmp
 
 

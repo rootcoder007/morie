@@ -1,6 +1,7 @@
 """Tests for bndsbs.bound_subset_inference."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndsbs import bound_subset_inference
 
 
@@ -10,7 +11,7 @@ def test_bndsbs_basic():
     subset_idx = np.random.default_rng(42).normal(0, 1, 100)
     result = bound_subset_inference(theta_full, subset_idx)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndsbs_edge():

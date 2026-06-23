@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kruskal stress-1 badness-of-fit for MDS solutions."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kruskal_stress"]
@@ -32,7 +34,9 @@ def kruskal_stress(D_observed, D_config):
     n = int(D_observed) if D_observed.ndim == 0 else len(D_observed)
     result = float(np.mean(D_observed))
     se = float(np.std(D_observed, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Kruskal stress-1 badness-of-fit for MDS solutions"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Kruskal stress-1 badness-of-fit for MDS solutions"}
+    )
 
 
 def cheatsheet():

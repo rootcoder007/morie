@@ -1,7 +1,7 @@
 """Tests for morie.fn.rcpnl."""
 
 import numpy as np
-import pytest
+
 from morie.fn.rcpnl import rcpnl
 
 

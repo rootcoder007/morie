@@ -1,6 +1,7 @@
 """Tests for morie.fn.oatt1 — ATT by region via IPW."""
 
 import pandas as pd
+
 from morie.fn.oatt1 import otis_att_region
 
 

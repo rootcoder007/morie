@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Linear discriminant function with optimal separability."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_lin_discr_sep"]
@@ -32,7 +34,14 @@ def rangayyan_lin_discr_sep(X_1, X_2):
     n = int(X_1) if X_1.ndim == 0 else len(X_1)
     result = float(np.mean(X_1))
     se = float(np.std(X_1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Linear discriminant function with optimal separability"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Linear discriminant function with optimal separability",
+        }
+    )
 
 
 def cheatsheet():

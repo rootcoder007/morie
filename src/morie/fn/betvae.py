@@ -1,6 +1,7 @@
 """beta-VAE disentangling penalty."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["beta_vae_disentangle"]

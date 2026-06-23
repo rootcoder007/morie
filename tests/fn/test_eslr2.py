@@ -1,6 +1,7 @@
 """Tests for eslr2.esl_r_squared."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslr2 import esl_r_squared
 
 
@@ -11,7 +12,7 @@ def test_eslr2_basic():
     beta = 0.8
     result = esl_r_squared(X, y, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslr2_edge():

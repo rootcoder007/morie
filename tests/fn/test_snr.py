@@ -1,9 +1,9 @@
 """Test snr_estimate_fn (snr)."""
-import numpy as np
-import pytest
 
-from morie.fn.snr import snr_estimate_fn, snr
+import numpy as np
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.snr import snr, snr_estimate_fn
 
 
 class TestSnrEstimate:

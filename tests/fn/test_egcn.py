@@ -1,6 +1,7 @@
 """Tests for egcn.e_gcn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.egcn import e_gcn
 
 
@@ -11,7 +12,7 @@ def test_egcn_basic():
     coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
     result = e_gcn(G, X, coords)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_egcn_edge():

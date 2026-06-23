@@ -1,6 +1,7 @@
 """Two-sided product bounds on the Polya-tree posterior density factor used to control its tail when sum a_j^{-1} is finite.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_polya_tree_density_bounds"]
@@ -36,7 +37,14 @@ def ghosal_ch3_polya_tree_density_bounds(a_j, n, N, m):
     n = len(a_j)
     result = float(np.mean(a_j))
     se = float(np.std(a_j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Two-sided product bounds on the Polya-tree posterior density factor used to control its tail when sum a_j^{-1} is finite."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Two-sided product bounds on the Polya-tree posterior density factor used to control its tail when sum a_j^{-1} is finite.",
+        }
+    )
 
 
 def cheatsheet():

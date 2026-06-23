@@ -1,6 +1,7 @@
 """Test trfry."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trfry import trfry
 
 

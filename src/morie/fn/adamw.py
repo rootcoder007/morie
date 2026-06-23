@@ -13,6 +13,7 @@ In ICLR.
 __all__ = ["adamw"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 

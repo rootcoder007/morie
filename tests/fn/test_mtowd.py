@@ -1,8 +1,9 @@
 """Tests for morie.fn.mtowd — weather factor."""
 
 import pytest
-from morie.fn.mtowd import mto_weather_factor
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mtowd import mto_weather_factor
 
 
 class TestWeatherFactor:

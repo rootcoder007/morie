@@ -1,6 +1,8 @@
 """Tests for nncv."""
+
 import numpy as np
 import pytest
+
 from morie.fn.nncv import nncv
 
 
@@ -28,4 +30,5 @@ def test_nncv_no_data():
 
 def test_nncv_alias():
     from morie.fn.nncv import nncv
+
     assert nncv is nncv

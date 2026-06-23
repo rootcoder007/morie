@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """AdamW: decoupled weight decay applied directly to parameters."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_adamw_decoupled_weight_decay"]
@@ -48,7 +50,14 @@ def geron_adamw_decoupled_weight_decay(theta, grad, m, s, t, eta, b1, b2, eps, l
     n = len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AdamW: decoupled weight decay applied directly to parameters"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "AdamW: decoupled weight decay applied directly to parameters",
+        }
+    )
 
 
 def cheatsheet():

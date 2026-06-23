@@ -1,5 +1,7 @@
 """Tests for goldfeld_quandt_test."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.gldvr import goldfeld_quandt_test
 
 

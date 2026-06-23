@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PCA preserves variance along principal components."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_pca_variance"]
@@ -32,7 +34,9 @@ def geron_pca_variance(X, n_components):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PCA preserves variance along principal components"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "PCA preserves variance along principal components"}
+    )
 
 
 def cheatsheet():

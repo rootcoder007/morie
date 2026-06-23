@@ -1,6 +1,7 @@
 """Test curvgr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.curvgr import curvgr
 
 

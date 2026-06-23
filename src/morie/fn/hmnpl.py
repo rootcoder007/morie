@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Neurons-per-layer heuristic: typically similar width across hidden layers."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_neurons_per_layer"]
@@ -30,7 +32,14 @@ def geron_neurons_per_layer(n_features):
     n = len(n_features)
     result = float(np.mean(n_features))
     se = float(np.std(n_features, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Neurons-per-layer heuristic: typically similar width across hidden layers"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Neurons-per-layer heuristic: typically similar width across hidden layers",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ALiBi: add linear bias to attention scores based on token distance."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_alibi_bias"]
@@ -36,7 +38,14 @@ def kamath_alibi_bias(Q, K, V, slopes):
     n = len(Q)
     result = float(np.mean(Q))
     se = float(np.std(Q, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ALiBi: add linear bias to attention scores based on token distance"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "ALiBi: add linear bias to attention scores based on token distance",
+        }
+    )
 
 
 def cheatsheet():

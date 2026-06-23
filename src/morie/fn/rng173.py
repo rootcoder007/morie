@@ -1,6 +1,7 @@
 """Identity P(n)*r(n) = k(n) used in deriving the RLS update.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_rls_gain_identity"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_rls_gain_identity(P, r, n):
     n = len(P)
     result = float(np.mean(P))
     se = float(np.std(P, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Identity P(n)*r(n) = k(n) used in deriving the RLS update."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Identity P(n)*r(n) = k(n) used in deriving the RLS update.",
+        }
+    )
 
 
 def cheatsheet():

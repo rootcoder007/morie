@@ -1,5 +1,7 @@
 """Tests for dynamic IRT."""
+
 import numpy as np
+
 from morie.fn.dirt import dirt
 
 
@@ -15,6 +17,7 @@ def test_dirt_smoke():
 
 def test_cheatsheet():
     from morie.fn.dirt import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

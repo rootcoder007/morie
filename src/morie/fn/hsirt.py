@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Heteroskedastic IRT (Lauderdale 2010): per-legislator variation in uncertainty."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["heteroskedastic_irt"]
@@ -32,7 +34,14 @@ def heteroskedastic_irt(votes, n_dims):
     n = int(votes) if votes.ndim == 0 else len(votes)
     result = float(np.mean(votes))
     se = float(np.std(votes, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Heteroskedastic IRT (Lauderdale 2010): per-legislator variation in uncertainty"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Heteroskedastic IRT (Lauderdale 2010): per-legislator variation in uncertainty",
+        }
+    )
 
 
 def cheatsheet():

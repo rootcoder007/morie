@@ -1,6 +1,7 @@
 """Test opsfl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opsfl import opsfl
 
 

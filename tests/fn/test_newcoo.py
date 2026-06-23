@@ -1,8 +1,7 @@
 """Tests for morie.fn.newcoo -- Newton's law of cooling."""
 
-import numpy as np
-from morie.fn.newcoo import newton_cooling, newcoo
 from morie.fn._containers import DescriptiveResult
+from morie.fn.newcoo import newcoo, newton_cooling
 
 
 class TestNewcoo:

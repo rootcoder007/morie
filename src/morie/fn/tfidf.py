@@ -89,4 +89,4 @@ def tfidf(
 
 
 def cheatsheet() -> str:
-    return 'tfidf({}) -> TF-IDF vectorization.'
+    return "tfidf({}) -> TF-IDF vectorization."

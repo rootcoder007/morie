@@ -1,6 +1,7 @@
 """Tests for bayocl.bayes_outlier_dp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bayocl import bayes_outlier_dp
 
 
@@ -10,7 +11,7 @@ def test_bayocl_basic():
     alpha = 0.05
     result = bayes_outlier_dp(y, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bayocl_edge():

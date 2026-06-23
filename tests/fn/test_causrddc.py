@@ -1,6 +1,7 @@
 """Tests for causrddc.causal_rdd_ccft_bw."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causrddc import causal_rdd_ccft_bw
 
 
@@ -12,7 +13,7 @@ def test_causrddc_basic():
     p = 5
     result = causal_rdd_ccft_bw(x, y, cutoff, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causrddc_edge():

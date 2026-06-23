@@ -36,13 +36,13 @@ def blackbox_scaling_basic(
 
     U, S, Vt = np.linalg.svd(centered, full_matrices=False)
     ideal_points = U[:, :n_dims] * S[:n_dims]
-    explained = (S[:n_dims] ** 2).sum() / max((S ** 2).sum(), 1e-14)
+    explained = (S[:n_dims] ** 2).sum() / max((S**2).sum(), 1e-14)
 
     return DescriptiveResult(
         name="blackbox_scaling",
         value={"ideal_points": ideal_points, "explained_variance": float(explained)},
         extra={
-            "eigenvalues": S[:min(10, len(S))].tolist(),
+            "eigenvalues": S[: min(10, len(S))].tolist(),
             "n_respondents": n_resp,
             "n_items": n_items,
             "n_dims": n_dims,

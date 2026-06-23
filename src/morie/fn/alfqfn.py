@@ -1,6 +1,7 @@
 """AlphaZero action-value Q via mean of child returns."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphazero_q_function"]
@@ -32,7 +33,9 @@ def alphazero_q_function(N, v):
     n = len(N)
     result = float(np.mean(N))
     se = float(np.std(N, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AlphaZero action-value Q via mean of child returns"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "AlphaZero action-value Q via mean of child returns"}
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgunv -- Universal kriging variance"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgunv import uk_variance
 

@@ -1,7 +1,9 @@
 """Test acf_biased (acfbi)."""
+
 import numpy as np
-from morie.fn.acfbi import acf_biased, acfbi
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.acfbi import acf_biased, acfbi
 
 
 class TestAcfbi:

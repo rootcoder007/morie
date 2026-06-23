@@ -1,6 +1,7 @@
 """HKSJ-based t-distribution prediction interval."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_hksj_t_pi"]
@@ -36,7 +37,9 @@ def ma_hksj_t_pi(theta, se_hksj, tau2, k):
     n = len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "HKSJ-based t-distribution prediction interval"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "HKSJ-based t-distribution prediction interval"}
+    )
 
 
 def cheatsheet():

@@ -45,4 +45,4 @@ prref = procrustes_reflection
 
 
 def cheatsheet() -> str:
-    return 'procrustes_reflection({}) -> Procrustes reflection and rotation.'
+    return "procrustes_reflection({}) -> Procrustes reflection and rotation."

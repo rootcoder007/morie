@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Instruction-data templating: (instruction, input?, output) formatted for SFT."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_instruction_data_template"]
@@ -32,7 +34,14 @@ def alammar_instruction_data_template(records, template):
     n = len(records)
     result = float(np.mean(records))
     se = float(np.std(records, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Instruction-data templating: (instruction, input?, output) formatted for SFT"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Instruction-data templating: (instruction, input?, output) formatted for SFT",
+        }
+    )
 
 
 def cheatsheet():

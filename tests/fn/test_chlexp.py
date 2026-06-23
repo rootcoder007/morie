@@ -1,6 +1,8 @@
 """Tests for chlexp."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chlexp import chlexp
 
 
@@ -28,4 +30,5 @@ def test_chlexp_no_data():
 
 def test_chlexp_alias():
     from morie.fn.chlexp import chlexp
+
     assert chlexp is chlexp

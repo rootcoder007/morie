@@ -1,6 +1,7 @@
 """Tests for dpgan.dp_gan."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpgan import dp_gan
 
 
@@ -12,7 +13,7 @@ def test_dpgan_basic():
     sigma = 1.0
     result = dp_gan(G, D, C, sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpgan_edge():

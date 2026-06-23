@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """FIR filter design (windowed sinc) -- Rangayyan Ch 3."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -41,7 +42,7 @@ def rangayyan_fir_filter(x, cutoff, order=51, fs=1.0, window="hamming"):
     ----------
     Rangayyan, R.M. *Biomedical Signal Analysis* (Wiley/IEEE, 3rd ed., 2015), Ch. 3.
     """
-    from scipy.signal import firwin, filtfilt
+    from scipy.signal import filtfilt, firwin
 
     x = np.asarray(x, dtype=float)
     order = int(order)
@@ -59,6 +60,7 @@ def rangayyan_fir_filter(x, cutoff, order=51, fs=1.0, window="hamming"):
         y = filtfilt(taps, [1.0], x)
     else:
         from scipy.signal import lfilter
+
         y = lfilter(taps, [1.0], x)
     res = RichResult(
         title="FIR lowpass filter (windowed sinc)",
@@ -70,8 +72,7 @@ def rangayyan_fir_filter(x, cutoff, order=51, fs=1.0, window="hamming"):
             ("Output length", int(y.size)),
         ],
         interpretation=(
-            f"Zero-phase FIR lowpass of order {order} with cutoff "
-            f"{cutoff:.4g} Hz applied to {x.size} samples."
+            f"Zero-phase FIR lowpass of order {order} with cutoff {cutoff:.4g} Hz applied to {x.size} samples."
         ),
         payload={
             "signal": y,

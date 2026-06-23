@@ -1,5 +1,7 @@
 """Tests for PQL spatial GLMM."""
+
 import numpy as np
+
 from morie.fn.sgpql import sgpql
 
 
@@ -17,6 +19,7 @@ def test_sgpql_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgpql import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

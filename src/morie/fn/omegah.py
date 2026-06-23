@@ -1,6 +1,7 @@
 """Omega hierarchical for general-factor reliability."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["omega_hierarchical"]
@@ -34,7 +35,9 @@ def omega_hierarchical(X, loadings_g, loadings_specific):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Omega hierarchical for general-factor reliability"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Omega hierarchical for general-factor reliability"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 """Tests for rnaspc."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rnaspc import rnaspc
 
 
@@ -28,4 +30,5 @@ def test_rnaspc_no_data():
 
 def test_rnaspc_alias():
     from morie.fn.rnaspc import rnaspc
+
     assert rnaspc is rnaspc

@@ -1,7 +1,7 @@
 """Tests for morie.fn.wlcx -- Wilcoxon alias."""
 
-from morie.fn.wlcx import wlcx, wilcoxon
 from morie.fn.wilcox import wilcoxon_signed_rank_test
+from morie.fn.wlcx import wilcoxon, wlcx
 
 
 class TestWlcx:

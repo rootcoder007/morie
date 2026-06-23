@@ -1,6 +1,7 @@
 """Tests for sirepi.sir_compartmental."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sirepi import sir_compartmental
 
 
@@ -14,7 +15,7 @@ def test_sirepi_basic():
     T = np.random.default_rng(43).integers(0, 2, 100)
     result = sir_compartmental(S0, I0, R0, beta, gamma, T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sirepi_edge():

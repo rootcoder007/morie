@@ -1,7 +1,9 @@
 """Test overlap_add (oladd)."""
+
 import numpy as np
-from morie.fn.oladd import overlap_add, oladd
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.oladd import oladd, overlap_add
 
 
 class TestOladd:
@@ -17,7 +19,7 @@ class TestOladd:
         h = np.array([0.25, 0.5, 0.25])
         result = overlap_add(x, h, block_size=32)
         direct = np.convolve(x, h)
-        assert np.allclose(result.extra["output"][:len(direct)], direct, atol=1e-10)
+        assert np.allclose(result.extra["output"][: len(direct)], direct, atol=1e-10)
 
     def test_alias(self):
         assert oladd is overlap_add

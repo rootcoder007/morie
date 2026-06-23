@@ -81,4 +81,4 @@ aqman = idw_interpolate
 
 
 def cheatsheet() -> str:
-    return 'idw_interpolate({}) -> Aquifer/water table interpolation.'
+    return "idw_interpolate({}) -> Aquifer/water table interpolation."

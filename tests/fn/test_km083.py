@@ -1,6 +1,7 @@
 """Tests for km083.kamath_ch6_ceat_random_effects."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km083 import kamath_ch6_ceat_random_effects
 
 
@@ -13,7 +14,7 @@ def test_km083_basic():
     v = np.random.default_rng(44).normal(0, 1, 100)
     result = kamath_ch6_ceat_random_effects(S_A1, S_A2, S_W1, S_W2, v)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km083_edge():

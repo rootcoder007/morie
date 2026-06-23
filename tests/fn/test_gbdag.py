@@ -10,5 +10,6 @@ class TestGBDAgePattern:
 
     def test_empty(self):
         import pytest
+
         with pytest.raises(ValueError):
             gbd_age_pattern({})

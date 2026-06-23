@@ -1,7 +1,10 @@
 """Tests for edward_frenkel_love_and_math_the_heart_of_hidden_reality8u19.edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_8_unnumbered_19."""
+
 import numpy as np
-import pytest
-from morie.fn.edward_frenkel_love_and_math_the_heart_of_hidden_reality8u19 import edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_8_unnumbered_19
+
+from morie.fn.edward_frenkel_love_and_math_the_heart_of_hidden_reality8u19 import (
+    edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_8_unnumbered_19,
+)
 
 
 def test_edward_frenkel_love_and_math_the_heart_of_hidden_reality8u19_basic():
@@ -9,7 +12,7 @@ def test_edward_frenkel_love_and_math_the_heart_of_hidden_reality8u19_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_8_unnumbered_19(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_edward_frenkel_love_and_math_the_heart_of_hidden_reality8u19_edge():

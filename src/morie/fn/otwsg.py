@@ -1,6 +1,7 @@
 """2-Wasserstein between two Gaussians (closed-form)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_wasserstein_gauss"]
@@ -36,7 +37,9 @@ def ot_wasserstein_gauss(mu1, Sigma1, mu2, Sigma2):
     n = len(mu1)
     result = float(np.mean(mu1))
     se = float(np.std(mu1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "2-Wasserstein between two Gaussians (closed-form)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "2-Wasserstein between two Gaussians (closed-form)"}
+    )
 
 
 def cheatsheet():

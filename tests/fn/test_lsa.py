@@ -1,6 +1,7 @@
 """Tests for lsa.lsa."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lsa import lsa
 
 
@@ -10,7 +11,7 @@ def test_lsa_basic():
     k = 5
     result = lsa(X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lsa_edge():

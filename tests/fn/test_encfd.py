@@ -1,6 +1,7 @@
 """Test encfd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.encfd import encfd
 
 

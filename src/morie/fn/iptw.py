@@ -97,8 +97,7 @@ def stabilized_iptw(
     p_treat = T.mean()
     sw = np.where(T == 1, p_treat / ps, (1 - p_treat) / (1 - ps))
 
-    ate = float(np.mean(sw * T * Y) / np.mean(sw * T)
-                - np.mean(sw * (1 - T) * Y) / np.mean(sw * (1 - T)))
+    ate = float(np.mean(sw * T * Y) / np.mean(sw * T) - np.mean(sw * (1 - T) * Y) / np.mean(sw * (1 - T)))
 
     scores = sw * T * (Y - ate) / np.mean(sw * T) - sw * (1 - T) * Y / np.mean(sw * (1 - T))
     se = float(np.std(scores, ddof=1) / np.sqrt(len(T)))

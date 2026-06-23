@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DirRec hybrid: direct per horizon, but include previous prediction as input."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_dirrec_strategy"]
@@ -34,7 +36,14 @@ def joseph_dirrec_strategy(X, y, H):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DirRec hybrid: direct per horizon, but include previous prediction as input"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "DirRec hybrid: direct per horizon, but include previous prediction as input",
+        }
+    )
 
 
 def cheatsheet():

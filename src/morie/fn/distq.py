@@ -1,6 +1,7 @@
 """C51 categorical distributional RL."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["distributional_rl"]

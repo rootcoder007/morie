@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Infomax ICA algorithm (Bell-Sejnowski)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_infomax_ica"]
@@ -36,7 +38,9 @@ def rangayyan_infomax_ica(X, n_components, lr, max_iter):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Infomax ICA algorithm (Bell-Sejnowski)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Infomax ICA algorithm (Bell-Sejnowski)"}
+    )
 
 
 def cheatsheet():

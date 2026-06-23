@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxcpc -- Clayton copula spatial"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxcpc import copula_clayton_sp
 

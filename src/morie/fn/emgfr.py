@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['emgfr']
+__all__ = ["emgfr"]
 
 _QUOTE = "Frequency of the warrior. -- Ahsoka"
 
@@ -46,7 +46,8 @@ def emgfr(
     total_power = np.sum(psd)
     if total_power < 1e-20:
         return DescriptiveResult(
-            name="emgfr", value=0.0,
+            name="emgfr",
+            value=0.0,
             extra={"median_freq": 0.0, "mean_freq": 0.0, "total_power": 0.0},
         )
 

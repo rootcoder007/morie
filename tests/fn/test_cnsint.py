@@ -1,6 +1,7 @@
 """Tests for cnsint.concurrent_calibration."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cnsint import concurrent_calibration
 
 
@@ -12,7 +13,7 @@ def test_cnsint_basic():
     anchor = np.random.default_rng(42).normal(0, 1, 100)
     result = concurrent_calibration(y, item, group, anchor)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cnsint_edge():

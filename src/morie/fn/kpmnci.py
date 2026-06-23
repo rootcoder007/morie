@@ -1,6 +1,7 @@
 """KM pointwise CI via Greenwood."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["km_pointwise_ci"]

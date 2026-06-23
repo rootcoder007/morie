@@ -1,7 +1,10 @@
 """Errors using inadequate data are much less than those using no data at all. — Charles Babbage"""
+
 import numpy as np
-import pytest
-from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_4u30 import christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_30
+
+from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_4u30 import (
+    christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_30,
+)
 
 
 def test_christopher_gandrud_author_reproducible_research_with_r_and_4u30_basic():
@@ -9,7 +12,7 @@ def test_christopher_gandrud_author_reproducible_research_with_r_and_4u30_basic(
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_30(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_christopher_gandrud_author_reproducible_research_with_r_and_4u30_edge():

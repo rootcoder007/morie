@@ -1,6 +1,7 @@
 """TMLE for transporting effects across populations."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_transportability"]
@@ -36,7 +37,9 @@ def tmle_transportability(y, D, X, S):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TMLE for transporting effects across populations"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "TMLE for transporting effects across populations"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test nbcmp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nbcmp import nbcmp
 
 

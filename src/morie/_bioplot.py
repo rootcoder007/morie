@@ -407,7 +407,7 @@ def respiratory_rate(
     x: np.ndarray,
     fs: float = 100.0,
 ) -> float:
-    from scipy.signal import butter, filtfilt, find_peaks
+    from scipy.signal import find_peaks
 
     nyq = fs / 2
     low = 0.1 / nyq
@@ -418,7 +418,9 @@ def respiratory_rate(
     # filtfilt. Direct-form (b, a) becomes ill-conditioned at low cutoffs
     # (here 0.002 / 0.01 of Nyquist) and produces huge transients that
     # diverge between x86 and ARM BLAS implementations. SOS is stable.
-    from scipy.signal import butter as _butter, sosfiltfilt
+    from scipy.signal import butter as _butter
+    from scipy.signal import sosfiltfilt
+
     sos = _butter(4, [low, high], btype="band", output="sos")
     filtered = sosfiltfilt(sos, x)
     peaks, _ = find_peaks(filtered, distance=int(fs * 1.5))

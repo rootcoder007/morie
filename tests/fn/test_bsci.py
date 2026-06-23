@@ -1,7 +1,7 @@
 """Tests for morie.fn.bsci -- bootstrap effect-size CI wrapper."""
 
 import numpy as np
-import pytest
+
 from morie.fn.bsci import bootstrap_effect_size_ci
 
 

@@ -1,6 +1,7 @@
 """Time-dependent ROC curve."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["time_dep_roc"]

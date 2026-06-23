@@ -1,6 +1,8 @@
 """Tests for stsmm."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stsmm import stsmm
 
 
@@ -28,4 +30,5 @@ def test_stsmm_no_data():
 
 def test_stsmm_alias():
     from morie.fn.stsmm import stsmm
+
     assert stsmm is stsmm

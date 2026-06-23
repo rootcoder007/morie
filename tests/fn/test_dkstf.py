@@ -1,6 +1,7 @@
 """Test dkstf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkstf import dkstf
 
 

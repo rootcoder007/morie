@@ -1,7 +1,7 @@
 """Tests for morie.fn.elimp."""
 
 import numpy as np
-import pytest
+
 from morie.fn.elimp import elimp
 
 

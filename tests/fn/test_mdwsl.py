@@ -1,7 +1,7 @@
 """Tests for morie.fn.mdwsl."""
 
 import numpy as np
-import pytest
+
 from morie.fn.mdwsl import mdwsl
 
 

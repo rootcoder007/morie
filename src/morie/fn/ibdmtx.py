@@ -1,6 +1,7 @@
 """Identity-by-descent matrix."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ibd_matrix"]

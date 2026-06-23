@@ -1,6 +1,7 @@
 """Tests for morie.fn.scrnp -- Screening test properties."""
 
 import pytest
+
 from morie.fn.scrnp import screening_properties
 
 

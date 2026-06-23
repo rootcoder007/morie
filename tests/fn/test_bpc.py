@@ -1,6 +1,7 @@
 """Tests for bpc.bits_per_character."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bpc import bits_per_character
 
 
@@ -10,7 +11,7 @@ def test_bpc_basic():
     N = 100
     result = bits_per_character(log_probs, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bpc_edge():

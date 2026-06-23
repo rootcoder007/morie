@@ -1,9 +1,10 @@
 """Test stationarity_test (stner)."""
+
 import numpy as np
 import pytest
 
-from morie.fn.stner import stationarity_test, stner
 from morie.fn._containers import DescriptiveResult
+from morie.fn.stner import stationarity_test, stner
 
 
 class TestStationarityTest:

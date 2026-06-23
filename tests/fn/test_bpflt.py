@@ -1,7 +1,9 @@
 """Test bandpass_filter (bpflt)."""
+
 import numpy as np
-from morie.fn.bpflt import bandpass_filter, bpflt
+
 from morie.fn._containers import SignalResult
+from morie.fn.bpflt import bandpass_filter, bpflt
 
 
 class TestBandpassFilter:

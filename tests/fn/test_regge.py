@@ -1,5 +1,7 @@
 """Test regge."""
+
 import pytest
+
 from morie.fn.regge import regge_trajectory
 
 

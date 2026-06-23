@@ -1,6 +1,7 @@
 """Tests for kmtopk.kamath_moe_top_k_gating."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmtopk import kamath_moe_top_k_gating
 
 
@@ -10,7 +11,7 @@ def test_kmtopk_basic():
     k = 5
     result = kamath_moe_top_k_gating(gates, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmtopk_edge():

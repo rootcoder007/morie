@@ -1,7 +1,7 @@
 """Tests for hrvnl — HRV nonlinear metrics."""
-import numpy as np
-from morie.fn.hrvnl import hrv_nonlinear
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.hrvnl import hrv_nonlinear
 
 
 def test_hrvnl_basic(rng):

@@ -1,6 +1,7 @@
 """Test gcslr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcslr import gcslr
 
 

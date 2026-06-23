@@ -1,6 +1,7 @@
 """Censoring-at-risk weights for survival."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["censoring_at_risk_weight"]
@@ -36,7 +37,9 @@ def censoring_at_risk_weight(time, censor, A, H):
     n = len(time)
     result = float(np.mean(time))
     se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Censoring-at-risk weights for survival"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Censoring-at-risk weights for survival"}
+    )
 
 
 def cheatsheet():

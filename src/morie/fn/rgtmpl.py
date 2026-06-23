@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Template matching for EEG spike-and-wave detection."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_template_match"]
@@ -34,7 +36,9 @@ def rangayyan_template_match(eeg, template, threshold):
     n = int(eeg) if eeg.ndim == 0 else len(eeg)
     result = float(np.mean(eeg))
     se = float(np.std(eeg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Template matching for EEG spike-and-wave detection"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Template matching for EEG spike-and-wave detection"}
+    )
 
 
 def cheatsheet():

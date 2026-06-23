@@ -8,4 +8,4 @@ double_ml = estimate_double_ml
 
 
 def cheatsheet() -> str:
-    return 'douml() -> Double ML.'
+    return "douml() -> Double ML."

@@ -1,6 +1,7 @@
 """Tests for wilcox7e30.wilcox_chapter_7_equation_30."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wilcox7e30 import wilcox_chapter_7_equation_30
 
 
@@ -9,7 +10,7 @@ def test_wilcox7e30_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = wilcox_chapter_7_equation_30(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_wilcox7e30_edge():

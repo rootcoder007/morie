@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmala -- Alpha-NOMINATE acceptance rate"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmala import alpha_nom_accept
 

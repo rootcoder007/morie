@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Stride: step size of kernel sliding over input."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_stride"]
@@ -36,7 +38,9 @@ def geron_stride(in_dim, k, p, s):
     n = len(in_dim)
     result = float(np.mean(in_dim))
     se = float(np.std(in_dim, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Stride: step size of kernel sliding over input"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Stride: step size of kernel sliding over input"}
+    )
 
 
 def cheatsheet():

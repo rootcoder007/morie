@@ -1,7 +1,7 @@
 """Tests for morie.fn.or_ci -- odds ratio with confidence interval."""
 
-import numpy as np
 import pytest
+
 from morie.fn.or_ci import odds_ratio_ci
 
 

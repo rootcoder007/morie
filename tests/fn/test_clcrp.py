@@ -1,6 +1,7 @@
 """Tests for clcrp.clustered_crp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clcrp import clustered_crp
 
 
@@ -11,7 +12,7 @@ def test_clcrp_basic():
     alpha = 0.05
     result = clustered_crp(y, distances, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_clcrp_edge():

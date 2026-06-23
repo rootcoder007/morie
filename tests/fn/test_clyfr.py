@@ -1,6 +1,7 @@
 """Tests for clyfr.clayton_copula_frailty."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clyfr import clayton_copula_frailty
 
 
@@ -11,7 +12,7 @@ def test_clyfr_basic():
     cluster = np.random.default_rng(42).normal(0, 1, 100)
     result = clayton_copula_frailty(time, event, cluster)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_clyfr_edge():

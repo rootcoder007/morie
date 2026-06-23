@@ -1,8 +1,9 @@
 """Tests for morie.fn.crtbk — court backlog."""
 
 import pytest
-from morie.fn.crtbk import court_backlog
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.crtbk import court_backlog
 
 
 class TestCourtBacklog:

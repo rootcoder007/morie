@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ARMA pole-zero model identification."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_pole_zero_model"]

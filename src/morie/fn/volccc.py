@@ -1,6 +1,8 @@
 """Constant Conditional Correlation MGARCH."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_ccc_garch"]
@@ -32,9 +34,23 @@ def vol_ccc_garch(R_panel, init):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(R_panel), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Constant Conditional Correlation MGARCH"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Constant Conditional Correlation MGARCH",
+            }
+        )
     result = stats.spearmanr(R_panel[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Constant Conditional Correlation MGARCH"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Constant Conditional Correlation MGARCH",
+        }
+    )
 
 
 def cheatsheet():

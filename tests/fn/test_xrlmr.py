@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrlmr -- Robust LM test for lag"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrlmr import lm_robust_lag
 

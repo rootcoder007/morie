@@ -1,6 +1,7 @@
 """Pseudo-R^2 / proportional variance reduction across nested models."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["multilevel_pseudo_variance_ratio"]
@@ -34,7 +35,14 @@ def multilevel_pseudo_variance_ratio(y, X, cluster):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pseudo-R^2 / proportional variance reduction across nested models"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pseudo-R^2 / proportional variance reduction across nested models",
+        }
+    )
 
 
 def cheatsheet():

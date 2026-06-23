@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Augmented SBERT: cross-encoder labels silver pairs -> train bi-encoder on them."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_augmented_sbert"]
@@ -32,7 +34,14 @@ def alammar_augmented_sbert(unlabeled_pairs, cross_encoder):
     n = len(unlabeled_pairs)
     result = float(np.mean(unlabeled_pairs))
     se = float(np.std(unlabeled_pairs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Augmented SBERT: cross-encoder labels silver pairs -> train bi-encoder on them"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Augmented SBERT: cross-encoder labels silver pairs -> train bi-encoder on them",
+        }
+    )
 
 
 def cheatsheet():

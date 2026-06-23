@@ -75,8 +75,8 @@ def gibbs_bivariate_normal(
     rng = np.random.default_rng(seed)
     s1, s2 = sigma
     m1, m2 = mu
-    cond_sd1 = s1 * np.sqrt(1 - rho ** 2)
-    cond_sd2 = s2 * np.sqrt(1 - rho ** 2)
+    cond_sd1 = s1 * np.sqrt(1 - rho**2)
+    cond_sd2 = s2 * np.sqrt(1 - rho**2)
 
     all_samples = np.empty((n_iter, 2))
     x1 = m1

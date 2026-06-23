@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Early-stopping rule: halt training when validation error is minimal."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_early_stopping"]
@@ -40,7 +42,14 @@ def geron_early_stopping(X_train, y_train, X_val, y_val, n_iter, eta):
     n = int(X_train) if X_train.ndim == 0 else len(X_train)
     result = float(np.mean(X_train))
     se = float(np.std(X_train, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Early-stopping rule: halt training when validation error is minimal"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Early-stopping rule: halt training when validation error is minimal",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for ototk.ot_kantorovich_dual_value."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ototk import ot_kantorovich_dual_value
 
 
@@ -12,7 +13,7 @@ def test_ototk_basic():
     g = np.random.default_rng(43).normal(0, 1, 100)
     result = ot_kantorovich_dual_value(a, b, f, g)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ototk_edge():

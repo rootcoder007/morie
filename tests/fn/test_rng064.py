@@ -1,6 +1,7 @@
 """Tests for rng064.rangayyan_ch3_fourier_transform_omega."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng064 import rangayyan_ch3_fourier_transform_omega
 
 
@@ -11,7 +12,7 @@ def test_rng064_basic():
     omega = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_ch3_fourier_transform_omega(x, t, omega)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng064_edge():

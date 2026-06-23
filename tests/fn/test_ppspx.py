@@ -1,6 +1,7 @@
 """Test ppspx."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppspx import ppspx
 
 

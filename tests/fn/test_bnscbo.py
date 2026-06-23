@@ -1,6 +1,7 @@
 """Tests for bnscbo.bound_compound_outcome."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bnscbo import bound_compound_outcome
 
 
@@ -11,7 +12,7 @@ def test_bnscbo_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = bound_compound_outcome(y_components, D, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bnscbo_edge():

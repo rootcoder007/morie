@@ -1,6 +1,7 @@
 """Tests for kmhyde.kamath_hyde_hypothetical_doc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmhyde import kamath_hyde_hypothetical_doc
 
 
@@ -11,7 +12,7 @@ def test_kmhyde_basic():
     embeddings = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_hyde_hypothetical_doc(query, model, embeddings)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmhyde_edge():

@@ -7,7 +7,6 @@ from morie.fn.spdef import spdef
 
 
 class TestSpdef:
-
     def test_output_shape(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (15, 2))

@@ -7,8 +7,10 @@ uses the log-bijection g(x)=log(x): smooth on the unbounded log-scale,
 then transform back.  The induced kernel on the X-scale is the
 log-normal kernel, which has zero density at x<=0 by construction.
 """
+
 import numpy as np
 from scipy import stats as _sps
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_mrl_boundary_free"]
@@ -34,8 +36,7 @@ def fauzi_mrl_boundary_free(x, t=None, h=None):
         raise ValueError("fzmrb requires strictly positive x")
     n = len(x)
     if n < 2:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                    "method": "fzmrb -- too few obs"})
+        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "fzmrb -- too few obs"})
     if t is None:
         t = float(np.median(x))
     if t <= 0:
@@ -48,30 +49,28 @@ def fauzi_mrl_boundary_free(x, t=None, h=None):
     s = np.log(t)
     S_y = float(np.mean(_sps.norm.sf((s - y) / h)))
     if S_y <= 0:
-        return RichResult(payload={"estimate": np.nan, "S_hat": S_y,
-                                    "n": n, "t": t,
-                                    "method": "fzmrb -- S(t)=0"})
+        return RichResult(payload={"estimate": np.nan, "S_hat": S_y, "n": n, "t": t, "method": "fzmrb -- S(t)=0"})
 
     diffs = x - t
     above = diffs > 0
     if not above.any():
-        return RichResult(payload={"estimate": 0.0, "S_hat": S_y,
-                                    "n": n, "t": t,
-                                    "method": "fzmrb -- no x>t"})
+        return RichResult(payload={"estimate": 0.0, "S_hat": S_y, "n": n, "t": t, "method": "fzmrb -- no x>t"})
     m_hat = float(np.mean(diffs[above]))
     second = float(np.mean((diffs[above]) ** 2))
     sigma2 = max((second - m_hat * m_hat) / S_y, 0.0)
     se = float(np.sqrt(sigma2 / n))
 
-    return RichResult(payload={
-        "estimate": m_hat,
-        "se": se,
-        "S_hat": S_y,
-        "t": t,
-        "h": h,
-        "n": n,
-        "method": "Fauzi boundary-free MRL via log-bijection (Ch 4)",
-    })
+    return RichResult(
+        payload={
+            "estimate": m_hat,
+            "se": se,
+            "S_hat": S_y,
+            "t": t,
+            "h": h,
+            "n": n,
+            "method": "Fauzi boundary-free MRL via log-bijection (Ch 4)",
+        }
+    )
 
 
 def cheatsheet():

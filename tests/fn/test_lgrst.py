@@ -55,4 +55,5 @@ def test_wrong_groups():
 
 def test_cheatsheet():
     from morie.fn.lgrst import cheatsheet
+
     assert "log-rank" in cheatsheet().lower()

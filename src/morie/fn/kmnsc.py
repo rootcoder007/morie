@@ -1,4 +1,5 @@
 """K-means clustering via Lloyd's algorithm."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -35,19 +36,20 @@ def kmeans_clustering(x, *, n_clusters=3, n_init=10, max_iter=300, seed=0):
     if X.ndim == 1:
         X = X.reshape(-1, 1)
     n = X.shape[0]
-    km = KMeans(n_clusters=n_clusters, n_init=n_init, max_iter=max_iter,
-                random_state=seed)
+    km = KMeans(n_clusters=n_clusters, n_init=n_init, max_iter=max_iter, random_state=seed)
     km.fit(X)
-    return RichResult(payload={
-        "estimate": float(km.inertia_),
-        "labels": km.labels_.tolist(),
-        "centers": km.cluster_centers_.tolist(),
-        "inertia": float(km.inertia_),
-        "n_iter": int(km.n_iter_),
-        "n_clusters": int(n_clusters),
-        "n": int(n),
-        "method": "K-means (Lloyd, k-means++ init)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(km.inertia_),
+            "labels": km.labels_.tolist(),
+            "centers": km.cluster_centers_.tolist(),
+            "inertia": float(km.inertia_),
+            "n_iter": int(km.n_iter_),
+            "n_clusters": int(n_clusters),
+            "n": int(n),
+            "method": "K-means (Lloyd, k-means++ init)",
+        }
+    )
 
 
 def cheatsheet():

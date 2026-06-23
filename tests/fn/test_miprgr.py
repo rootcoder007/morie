@@ -1,6 +1,7 @@
 """Tests for miprgr.mip_branch_bound."""
+
 import numpy as np
-import pytest
+
 from morie.fn.miprgr import mip_branch_bound
 
 
@@ -12,7 +13,7 @@ def test_miprgr_basic():
     integer_indices = np.random.default_rng(42).normal(0, 1, 100)
     result = mip_branch_bound(c, A, b, integer_indices)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_miprgr_edge():

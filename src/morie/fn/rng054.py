@@ -1,6 +1,7 @@
 """Convolution in time becomes multiplication of z-transforms.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_z_transform_convolution"]
@@ -32,7 +33,14 @@ def rangayyan_ch3_z_transform_convolution(x, h):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Convolution in time becomes multiplication of z-transforms."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Convolution in time becomes multiplication of z-transforms.",
+        }
+    )
 
 
 def cheatsheet():

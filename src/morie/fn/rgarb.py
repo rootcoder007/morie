@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """AR(p) model via Burg's recursion -- Rangayyan Ch 4."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -42,21 +43,21 @@ def rangayyan_ar_burg(x, order=10):
     b = x.copy()
     a = np.zeros(p + 1)
     a[0] = 1.0
-    var = float(np.mean(x ** 2))
+    var = float(np.mean(x**2))
     k = np.zeros(p)
     for m in range(p):
-        num = -2.0 * np.sum(f[m + 1:N] * b[m:N - 1])
-        den = np.sum(f[m + 1:N] ** 2) + np.sum(b[m:N - 1] ** 2)
+        num = -2.0 * np.sum(f[m + 1 : N] * b[m : N - 1])
+        den = np.sum(f[m + 1 : N] ** 2) + np.sum(b[m : N - 1] ** 2)
         km = (num / den) if den > 0 else 0.0
         k[m] = km
         new_a = a.copy()
         for i in range(1, m + 2):
             new_a[i] = a[i] + km * a[m + 1 - i]
         a = new_a
-        f_new = f[m + 1:N] + km * b[m:N - 1]
-        b_new = b[m:N - 1] + km * f[m + 1:N]
-        f[m + 1:N] = f_new
-        b[m + 1:N] = b_new
+        f_new = f[m + 1 : N] + km * b[m : N - 1]
+        b_new = b[m : N - 1] + km * f[m + 1 : N]
+        f[m + 1 : N] = f_new
+        b[m + 1 : N] = b_new
         var = var * (1.0 - km * km)
 
     res = RichResult(
@@ -67,8 +68,7 @@ def rangayyan_ar_burg(x, order=10):
             ("First reflection k_1", float(k[0])),
         ],
         interpretation=f"Stable AR({p}) fit; residual variance {var:.4g}.",
-        payload={"ar_coeffs": a[1:], "variance": float(var),
-                 "order": p, "reflection": k},
+        payload={"ar_coeffs": a[1:], "variance": float(var), "order": p, "reflection": k},
     )
     return with_describe_pointer(res, "rgarb")
 

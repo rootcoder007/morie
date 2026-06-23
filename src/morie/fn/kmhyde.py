@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """HyDE: use an LLM-generated hypothetical answer as the retrieval query."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_hyde_hypothetical_doc"]
@@ -34,7 +36,14 @@ def kamath_hyde_hypothetical_doc(query, model, embeddings):
     n = len(query)
     result = float(np.mean(query))
     se = float(np.std(query, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "HyDE: use an LLM-generated hypothetical answer as the retrieval query"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "HyDE: use an LLM-generated hypothetical answer as the retrieval query",
+        }
+    )
 
 
 def cheatsheet():

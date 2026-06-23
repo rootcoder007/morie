@@ -51,47 +51,87 @@ Example
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from difflib import SequenceMatcher
-from typing import Iterable
 
 import pandas as pd
-
 
 # Synonyms that come up across criminology / public-health datasets.
 # Used to nudge the fuzzy matcher when the literal column names diverge
 # but the underlying concept is the same.
 _SYNONYMS: dict[str, list[str]] = {
     "weight": [
-        "wt", "wtpumf", "wtdf", "surveyweight", "design_weight", "pweight",
-        "sampling_weight", "wgt",
+        "wt",
+        "wtpumf",
+        "wtdf",
+        "surveyweight",
+        "design_weight",
+        "pweight",
+        "sampling_weight",
+        "wgt",
     ],
     "alcohol_past12m": [
-        "alc05", "alcohol", "drinker", "drinker_yn", "drinks_yn",
-        "past_year_alcohol", "any_alcohol",
+        "alc05",
+        "alcohol",
+        "drinker",
+        "drinker_yn",
+        "drinks_yn",
+        "past_year_alcohol",
+        "any_alcohol",
     ],
     "heavy_drinking_30d": [
-        "binge30", "binge_30d", "heavy_binge", "hed", "alc12_30d_prev",
-        "alc12_30d_prev_total", "binge_drink", "heavy_drinking",
+        "binge30",
+        "binge_30d",
+        "heavy_binge",
+        "hed",
+        "alc12_30d_prev",
+        "alc12_30d_prev_total",
+        "binge_drink",
+        "heavy_drinking",
     ],
     "ebac_tot": ["ebac", "bac_total", "blood_alcohol_total"],
     "ebac_legal": ["bac_legal", "blood_alcohol_legal", "above_legal_bac"],
     "cannabis_any_use": [
-        "can05", "cannabis", "marijuana", "weed_yn", "any_cannabis",
+        "can05",
+        "cannabis",
+        "marijuana",
+        "weed_yn",
+        "any_cannabis",
     ],
     "age_group": [
-        "age_band", "age_groups", "agegroup", "age_cat", "age_bin",
+        "age_band",
+        "age_groups",
+        "agegroup",
+        "age_cat",
+        "age_bin",
     ],
     "gender": [
-        "sex", "dvdemq01", "gender_id", "sex_at_birth", "self_gender",
+        "sex",
+        "dvdemq01",
+        "gender_id",
+        "sex_at_birth",
+        "self_gender",
     ],
     "province_region": [
-        "region", "province", "geo", "geo_region", "prov",
+        "region",
+        "province",
+        "geo",
+        "geo_region",
+        "prov",
     ],
     "mental_health": [
-        "hwbq02", "mh", "mh_self", "mental_self", "mh_status",
+        "hwbq02",
+        "mh",
+        "mh_self",
+        "mental_self",
+        "mh_status",
     ],
     "physical_health": [
-        "hwbq01", "ph", "ph_self", "physical_self", "phys_status",
+        "hwbq01",
+        "ph",
+        "ph_self",
+        "physical_self",
+        "phys_status",
     ],
 }
 
@@ -198,9 +238,7 @@ def parse_cli_mapping(spec: str) -> dict[str, str]:
         if not item:
             continue
         if ":" not in item:
-            raise ValueError(
-                f"bad mapping entry {item!r}; expected user_col:canonical_name"
-            )
+            raise ValueError(f"bad mapping entry {item!r}; expected user_col:canonical_name")
         user, canon = item.split(":", 1)
         out[user.strip()] = canon.strip()
     return out

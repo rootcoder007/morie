@@ -1,7 +1,6 @@
 """Tests for morie.fn.msitr -- MDS iteration convergence"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msitr import mds_iter
 
@@ -14,5 +13,5 @@ class TestMdsIter:
         assert result.value is not None
 
     def test_output_type(self):
-        result = mds_iter(np.random.default_rng(0).standard_normal((5,2)))
+        result = mds_iter(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

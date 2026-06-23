@@ -1,6 +1,8 @@
 """Empirical variogram estimation (Matheron classical estimator)."""
+
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
+
 from ._richresult import RichResult
 
 __all__ = ["variogram_estimation"]
@@ -68,11 +70,13 @@ def variogram_estimation(x, coords, n_bins: int = 10, max_dist: float | None = N
         "gamma": gamma.tolist(),
         "n_pairs": npairs.tolist(),
     }
-    return RichResult(payload={
-        "estimate": estimate,
-        "n": int(n),
-        "method": "Empirical (Matheron) variogram",
-    })
+    return RichResult(
+        payload={
+            "estimate": estimate,
+            "n": int(n),
+            "method": "Empirical (Matheron) variogram",
+        }
+    )
 
 
 def cheatsheet():

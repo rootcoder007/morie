@@ -1,5 +1,8 @@
 """Tests for partial_kendall."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.pknds import partial_kendall
 
 

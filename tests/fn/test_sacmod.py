@@ -1,6 +1,7 @@
 """Tests for sacmod.spatial_combined."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sacmod import spatial_combined
 
 
@@ -11,7 +12,7 @@ def test_sacmod_basic():
     W = np.random.default_rng(42).normal(0, 1, 100)
     result = spatial_combined(y, X, W)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sacmod_edge():

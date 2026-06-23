@@ -1,6 +1,7 @@
 """Tests for bkcbow.burkov_cbow."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bkcbow import burkov_cbow
 
 
@@ -12,7 +13,7 @@ def test_bkcbow_basic():
     U = np.random.default_rng(42).normal(0, 1, 100)
     result = burkov_cbow(context_indices, center_index, V, U)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bkcbow_edge():

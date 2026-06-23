@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exhaustive grid search over hyperparam grid with CV scoring."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_grid_search_cv"]
@@ -36,7 +38,14 @@ def geron_grid_search_cv(X, y, param_grid, K):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Exhaustive grid search over hyperparam grid with CV scoring"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Exhaustive grid search over hyperparam grid with CV scoring",
+        }
+    )
 
 
 def cheatsheet():

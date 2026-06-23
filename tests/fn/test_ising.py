@@ -9,8 +9,7 @@ from morie.fn.ising import ising
 def test_returns_dict():
     r = ising(T=2.0)
     assert isinstance(r, dict)
-    for k in ("T_c", "beta_c", "magnetization", "free_energy_per_site",
-              "internal_energy_per_site", "is_ordered"):
+    for k in ("T_c", "beta_c", "magnetization", "free_energy_per_site", "internal_energy_per_site", "is_ordered"):
         assert k in r
 
 

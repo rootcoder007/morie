@@ -1,6 +1,7 @@
 """Tests for gscmcl.generalized_synthetic_control."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gscmcl import generalized_synthetic_control
 
 
@@ -13,7 +14,7 @@ def test_gscmcl_basic():
     r = 10
     result = generalized_synthetic_control(y, D, unit, time, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gscmcl_edge():

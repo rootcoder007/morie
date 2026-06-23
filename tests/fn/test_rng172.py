@@ -1,6 +1,7 @@
 """Tests for rng172.rangayyan_ch3_rls_p_recursion."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng172 import rangayyan_ch3_rls_p_recursion
 
 
@@ -13,7 +14,7 @@ def test_rng172_basic():
     n = 100
     result = rangayyan_ch3_rls_p_recursion(P, k, r, lam, n)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_rng172_edge():

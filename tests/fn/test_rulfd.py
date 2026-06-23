@@ -1,7 +1,9 @@
 """Test ruler_fd."""
+
 import numpy as np
-from morie.fn.rulfd import ruler_fd, rulfd
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rulfd import ruler_fd, rulfd
 
 
 class TestRulerFD:

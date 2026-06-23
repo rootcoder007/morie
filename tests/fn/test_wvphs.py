@@ -1,5 +1,7 @@
 """Tests for wvphs.py - Wavelet phase."""
+
 import numpy as np
+
 from morie.fn.wvphs import wavelet_phase, wvphs
 
 

@@ -1,6 +1,7 @@
 """Test krgsm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.krgsm import krgsm
 
 

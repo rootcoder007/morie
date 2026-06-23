@@ -1,6 +1,7 @@
 """PSD as the Fourier transform of the ACF (Wiener-Khinchin).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_psd_from_acf"]
@@ -36,7 +37,14 @@ def rangayyan_ch4_psd_from_acf(phi_xx, X, f, tau):
     n = len(phi_xx)
     result = float(np.mean(phi_xx))
     se = float(np.std(phi_xx, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PSD as the Fourier transform of the ACF (Wiener-Khinchin)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PSD as the Fourier transform of the ACF (Wiener-Khinchin).",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for grsmxp.geron_softmax_probability."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grsmxp import geron_softmax_probability
 
 
@@ -10,7 +11,7 @@ def test_grsmxp_basic():
     theta = 0.0
     result = geron_softmax_probability(X, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grsmxp_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Beam search decoder: keep top-k hypotheses at each step."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_beam_search_decoder"]
@@ -34,7 +36,14 @@ def geron_beam_search_decoder(scores, beam_width, max_len):
     n = len(scores)
     result = float(np.mean(scores))
     se = float(np.std(scores, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Beam search decoder: keep top-k hypotheses at each step"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Beam search decoder: keep top-k hypotheses at each step",
+        }
+    )
 
 
 def cheatsheet():

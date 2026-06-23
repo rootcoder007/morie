@@ -1,6 +1,7 @@
 """Tests for trimit.weight_trimming."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trimit import weight_trimming
 
 
@@ -11,7 +12,7 @@ def test_trimit_basic():
     threshold = np.random.default_rng(42).normal(0, 1, 100)
     result = weight_trimming(y, weights, threshold)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_trimit_edge():

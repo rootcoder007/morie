@@ -1,4 +1,5 @@
 """Test ntru_keygen."""
+
 from morie.fn._containers import CryptoResult
 from morie.fn.ntru import ntru, ntru_keygen
 

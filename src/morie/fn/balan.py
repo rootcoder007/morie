@@ -6,6 +6,8 @@ from __future__ import annotations
 import numpy as np
 
 from ._containers import ESRes
+
+
 def balanced_accuracy(y_true, y_pred, *, pos_label=1, **kwargs) -> ESRes:
     """
     Compute balanced accuracy (average of sensitivity and specificity).

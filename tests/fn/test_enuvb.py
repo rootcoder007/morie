@@ -1,6 +1,7 @@
 """Test enuvb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enuvb import enuvb
 
 

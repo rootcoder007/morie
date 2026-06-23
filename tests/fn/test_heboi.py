@@ -1,6 +1,7 @@
 """Tests for morie.fn.heboi -- burden of illness."""
 
 import pytest
+
 from morie.fn.heboi import burden_of_illness
 
 

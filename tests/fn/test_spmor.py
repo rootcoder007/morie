@@ -1,6 +1,7 @@
 """Tests for spmor.schabenberger_moran_i."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spmor import schabenberger_moran_i
 
 
@@ -10,7 +11,7 @@ def test_spmor_basic():
     w = np.random.default_rng(45).exponential(1, 100)
     result = schabenberger_moran_i(x, w)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_spmor_edge():

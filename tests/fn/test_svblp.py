@@ -1,7 +1,6 @@
 """Tests for morie.fn.svblp -- Bliss point estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svblp import bliss_point
 

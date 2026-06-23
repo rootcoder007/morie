@@ -1,7 +1,6 @@
 """Tests for morie.fn.mstri -- Triangle inequality check"""
 
 import numpy as np
-import pytest
 
 from morie.fn.mstri import triangle_ineq
 

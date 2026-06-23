@@ -1,6 +1,7 @@
 """Tests for rgppg.rangayyan_ppg_features."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgppg import rangayyan_ppg_features
 
 
@@ -10,7 +11,7 @@ def test_rgppg_basic():
     fs = 100.0
     result = rangayyan_ppg_features(ppg, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgppg_edge():

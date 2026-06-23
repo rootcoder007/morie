@@ -1,6 +1,7 @@
 """Tests for morie.fn.occrt -- occupational injury rate."""
 
 import pytest
+
 from morie.fn.occrt import occupational_injury_rate
 
 

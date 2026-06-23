@@ -1,6 +1,7 @@
 """Tests for strtwt.stratified_weights."""
+
 import numpy as np
-import pytest
+
 from morie.fn.strtwt import stratified_weights
 
 
@@ -11,7 +12,7 @@ def test_strtwt_basic():
     S = np.random.default_rng(42).normal(0, 1, 100)
     result = stratified_weights(A, H, S)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_strtwt_edge():

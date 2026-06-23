@@ -1,6 +1,7 @@
 """Tests for rgnrnst.rangayyan_nernst_potential."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgnrnst import rangayyan_nernst_potential
 
 
@@ -12,7 +13,7 @@ def test_rgnrnst_basic():
     conc_in = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_nernst_potential(T, z, conc_out, conc_in)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgnrnst_edge():

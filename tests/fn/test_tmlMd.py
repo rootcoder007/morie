@@ -1,6 +1,7 @@
 """Tests for tmlMd.tmle_mediation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlMd import tmle_mediation
 
 
@@ -12,7 +13,7 @@ def test_tmlMd_basic():
     C = np.random.default_rng(42).normal(0, 1, 100)
     result = tmle_mediation(Y, X, M, C)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlMd_edge():

@@ -1,6 +1,8 @@
 """Tests for rfgss."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfgss import rfgss
 
 
@@ -28,4 +30,5 @@ def test_rfgss_no_data():
 
 def test_rfgss_alias():
     from morie.fn.rfgss import rfgss
+
     assert rfgss is rfgss

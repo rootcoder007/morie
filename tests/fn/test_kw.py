@@ -1,7 +1,7 @@
 """Tests for morie.fn.kw -- Kruskal-Wallis H-test."""
 
-import numpy as np
 import pytest
+
 from morie.fn.kw import kruskal_wallis_test
 
 

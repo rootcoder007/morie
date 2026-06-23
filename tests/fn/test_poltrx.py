@@ -1,6 +1,7 @@
 """Tests for poltrx.polya_tree_extended."""
+
 import numpy as np
-import pytest
+
 from morie.fn.poltrx import polya_tree_extended
 
 
@@ -11,7 +12,7 @@ def test_poltrx_basic():
     alpha = 0.05
     result = polya_tree_extended(y, M, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_poltrx_edge():

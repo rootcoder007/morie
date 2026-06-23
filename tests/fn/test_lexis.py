@@ -1,6 +1,7 @@
 """Tests for morie.fn.lexis -- Lexis diagram data."""
 
 import pytest
+
 from morie.fn.lexis import lexis_diagram_data
 
 

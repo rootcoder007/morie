@@ -1,4 +1,5 @@
 """Tests for morie.fn.hotlg — Hotelling model."""
+
 from morie.fn.hotlg import hotlg
 
 
@@ -11,6 +12,7 @@ def test_hotlg_smoke():
 
 def test_cheatsheet():
     from morie.fn.hotlg import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

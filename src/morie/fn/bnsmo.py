@@ -70,8 +70,7 @@ def bnsmo(y: np.ndarray, X: np.ndarray, cdf=None, *, bandwidth: float | None = N
 
     b0 = np.zeros(p)
     b0[0] = 1.0
-    res = minimize(neg_score, b0, method="L-BFGS-B",
-                   options={"maxiter": 200})
+    res = minimize(neg_score, b0, method="L-BFGS-B", options={"maxiter": 200})
     beta = res.x / (np.linalg.norm(res.x) + 1e-15)
     score = -float(res.fun)
 

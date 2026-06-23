@@ -1,6 +1,5 @@
 """Test bic."""
-import numpy as np
-import pytest
+
 from morie.fn.bic import bayesian_info_criterion
 
 

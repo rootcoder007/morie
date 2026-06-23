@@ -1,6 +1,7 @@
 r"""Numbered display equation (7.2) from MVSML chapter 7.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_2"]
@@ -40,7 +41,14 @@ def mvsml_bayesian_regression_pt2_eq_7_2(Bayesian, Classical, Prediction, Models
     n = len(Bayesian)
     result = float(np.mean(Bayesian))
     se = float(np.std(Bayesian, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (7.2) from MVSML chapter 7."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (7.2) from MVSML chapter 7.",
+        }
+    )
 
 
 def cheatsheet():

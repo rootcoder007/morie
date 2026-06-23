@@ -1,6 +1,7 @@
 """Translate prefix prompt.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_translate_prefix_prompt"]

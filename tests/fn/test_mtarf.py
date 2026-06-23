@@ -1,6 +1,7 @@
 """Test mtarf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtarf import mtarf
 
 

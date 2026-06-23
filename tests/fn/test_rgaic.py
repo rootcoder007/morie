@@ -1,6 +1,7 @@
 """Tests for rgaic.rangayyan_ar_order_aic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgaic import rangayyan_ar_order_aic
 
 
@@ -10,7 +11,7 @@ def test_rgaic_basic():
     max_order = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_ar_order_aic(x, max_order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgaic_edge():

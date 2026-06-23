@@ -1,6 +1,7 @@
 """Tests for gb1131n.gibbons_spearman_asymp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb1131n import gibbons_spearman_asymp
 
 
@@ -10,7 +11,7 @@ def test_gb1131n_basic():
     n = 100
     result = gibbons_spearman_asymp(r_s, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb1131n_edge():

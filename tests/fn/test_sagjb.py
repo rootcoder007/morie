@@ -1,6 +1,7 @@
 """Test sagjb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sagjb import sagjb
 
 

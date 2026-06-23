@@ -1,6 +1,7 @@
 """Tests for morie.fn.bbeta -- Bayesian beta-binomial model."""
 
 import numpy as np
+
 from morie.fn.bbeta import bayesian_beta_binomial
 
 

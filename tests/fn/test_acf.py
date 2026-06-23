@@ -1,8 +1,9 @@
 """Tests for morie.fn.acf — Autocorrelation function."""
+
 import numpy as np
 import pytest
 
-from morie.fn.acf import autocorrelation, acf
+from morie.fn.acf import acf, autocorrelation
 
 
 def test_acf_lag0_is_one():

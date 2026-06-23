@@ -1,8 +1,9 @@
 """Test pll_bandwidth (pllbd)."""
+
 import pytest
 
-from morie.fn.pllbd import pll_bandwidth, pllbd
 from morie.fn._containers import DescriptiveResult
+from morie.fn.pllbd import pll_bandwidth, pllbd
 
 
 class TestPllBandwidth:

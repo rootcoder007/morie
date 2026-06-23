@@ -71,7 +71,7 @@ def finfo(
 
     fim = np.zeros((p, p))
     for i in range(n_samples):
-        x_i = samples[i] if samples.ndim > 1 else samples[i:i+1]
+        x_i = samples[i] if samples.ndim > 1 else samples[i : i + 1]
         score = log_likelihood_grad(x_i, theta)
         score = np.asarray(score, dtype=np.float64).ravel()
         fim += np.outer(score, score)

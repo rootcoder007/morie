@@ -1,8 +1,9 @@
 """Tests for morie.fn.impene -- impact energy."""
 
 import pytest
-from morie.fn.impene import impact_energy, impene
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.impene import impact_energy, impene
 
 
 class TestImpene:

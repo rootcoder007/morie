@@ -1,6 +1,7 @@
 """Tests for copul.copula_estimation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.copul import copula_estimation
 
 
@@ -10,7 +11,7 @@ def test_copul_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = copula_estimation(x, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_copul_edge():

@@ -1,6 +1,7 @@
 """Tests for guide_on_data_analysis5u308.guide_on_data_analysis_chapter_5_unnumbered_308."""
+
 import numpy as np
-import pytest
+
 from morie.fn.guide_on_data_analysis5u308 import guide_on_data_analysis_chapter_5_unnumbered_308
 
 
@@ -9,7 +10,7 @@ def test_guide_on_data_analysis5u308_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = guide_on_data_analysis_chapter_5_unnumbered_308(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_guide_on_data_analysis5u308_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Gini impurity for classification tree splits."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gini_impurity"]
@@ -30,7 +32,9 @@ def gini_impurity(class_probs):
     n = len(class_probs)
     result = float(np.mean(class_probs))
     se = float(np.std(class_probs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gini impurity for classification tree splits"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Gini impurity for classification tree splits"}
+    )
 
 
 def cheatsheet():

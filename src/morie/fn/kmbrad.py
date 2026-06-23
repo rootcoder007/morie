@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bradley-Terry preference pair probability."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_bradley_terry_preference"]
@@ -32,7 +34,9 @@ def kamath_bradley_terry_preference(r_w, r_l):
     n = len(r_w)
     result = float(np.mean(r_w))
     se = float(np.std(r_w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bradley-Terry preference pair probability"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bradley-Terry preference pair probability"}
+    )
 
 
 def cheatsheet():

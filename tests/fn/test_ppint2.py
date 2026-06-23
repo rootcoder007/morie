@@ -1,6 +1,7 @@
 """Test ppint2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppint2 import ppint2
 
 

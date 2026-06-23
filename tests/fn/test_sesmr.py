@@ -1,6 +1,7 @@
 """Test sesmr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sesmr import sesmr
 
 

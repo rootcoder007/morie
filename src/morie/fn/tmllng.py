@@ -1,6 +1,7 @@
 """TMLE for longitudinal data with time-varying treatments and confounders."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_longitudinal"]
@@ -36,7 +37,14 @@ def tmle_longitudinal(L, A, Y, time):
     n = len(L)
     result = float(np.mean(L))
     se = float(np.std(L, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TMLE for longitudinal data with time-varying treatments and confounders"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "TMLE for longitudinal data with time-varying treatments and confounders",
+        }
+    )
 
 
 def cheatsheet():

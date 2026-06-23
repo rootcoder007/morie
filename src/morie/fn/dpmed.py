@@ -1,6 +1,7 @@
 """DP median (q=0.5 quantile)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dp_median"]

@@ -1,6 +1,6 @@
 """Tests for bidmn.py - Bidomain cardiac model."""
-import numpy as np
-from morie.fn.bidmn import bidomain_model_fn, bidmn
+
+from morie.fn.bidmn import bidmn, bidomain_model_fn
 
 
 def test_bidmn_returns_descriptive_result():

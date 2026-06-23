@@ -1,7 +1,7 @@
 """Tests for morie.fn.mdcov."""
 
 import numpy as np
-import pytest
+
 from morie.fn.mdcov import mdcov
 
 

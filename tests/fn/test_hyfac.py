@@ -1,6 +1,7 @@
 """Test hyfac."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hyfac import hyfac
 
 

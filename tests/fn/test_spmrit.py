@@ -1,6 +1,7 @@
 """Tests for spmrit.schabenberger_moran_i_residuals."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spmrit import schabenberger_moran_i_residuals
 
 
@@ -10,7 +11,7 @@ def test_spmrit_basic():
     w = np.random.default_rng(45).exponential(1, 100)
     result = schabenberger_moran_i_residuals(residuals, w)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_spmrit_edge():

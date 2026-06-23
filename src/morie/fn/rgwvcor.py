@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wavelet cross-correlation between two signals at each scale."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_wavelet_corr"]
@@ -37,9 +39,23 @@ def rangayyan_wavelet_corr(x, y, wavelet, levels):
     y = np.asarray(y, dtype=float)
     n = min(len(x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Wavelet cross-correlation between two signals at each scale"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Wavelet cross-correlation between two signals at each scale",
+            }
+        )
     result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Wavelet cross-correlation between two signals at each scale"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Wavelet cross-correlation between two signals at each scale",
+        }
+    )
 
 
 def cheatsheet():

@@ -26,7 +26,16 @@ _DEFAULT_LINKS = {
 }
 
 
-def glm_fit(y: np.ndarray, X: np.ndarray, cdf=None, *, family: str = "gaussian", link: str | None = None, max_iter: int = 50, tol: float = 1e-8) -> RegressionResult:
+def glm_fit(
+    y: np.ndarray,
+    X: np.ndarray,
+    cdf=None,
+    *,
+    family: str = "gaussian",
+    link: str | None = None,
+    max_iter: int = 50,
+    tol: float = 1e-8,
+) -> RegressionResult:
     """Generalized linear model via IRLS.
 
     :param y: Response variable (n,).

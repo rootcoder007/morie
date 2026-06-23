@@ -1,10 +1,9 @@
 """Tests for morie.fn.cstor — cache store."""
 
 import pandas as pd
-import pytest
 
-from morie.fn.cstor import cstor, cache_store
 from morie.fn.cload import cload
+from morie.fn.cstor import cache_store, cstor
 
 
 def test_alias_is_same_function():

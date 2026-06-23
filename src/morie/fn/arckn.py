@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Arc-cosine kernel for neural network-like features."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["arc_cosine_kernel"]
@@ -32,7 +34,9 @@ def arc_cosine_kernel(X, n):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Arc-cosine kernel for neural network-like features"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Arc-cosine kernel for neural network-like features"}
+    )
 
 
 def cheatsheet():

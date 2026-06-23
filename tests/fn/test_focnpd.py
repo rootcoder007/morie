@@ -1,6 +1,7 @@
 """Test focnpd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.focnpd import focnpd
 
 

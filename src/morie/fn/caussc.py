@@ -1,6 +1,7 @@
 """Abadie-Diamond-Hainmueller synthetic control weights."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_synthetic_control"]
@@ -34,7 +35,9 @@ def causal_synthetic_control(X1_pre, X0_pre, V):
     n = len(X1_pre)
     result = float(np.mean(X1_pre))
     se = float(np.std(X1_pre, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Abadie-Diamond-Hainmueller synthetic control weights"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Abadie-Diamond-Hainmueller synthetic control weights"}
+    )
 
 
 def cheatsheet():

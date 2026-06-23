@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptcsr -- Complete Spatial Randomness test"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptcsr import csr_test
 

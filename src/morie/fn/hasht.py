@@ -74,4 +74,4 @@ short = hash_table
 
 
 def cheatsheet() -> str:
-    return 'hash_table({}) -> Hash table with chaining.'
+    return "hash_table({}) -> Hash table with chaining."

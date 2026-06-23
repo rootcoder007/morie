@@ -1,6 +1,7 @@
 """Test mamng."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mamng import mamng
 
 

@@ -1,6 +1,8 @@
 """Tests for spcsts."""
+
 import numpy as np
 import pytest
+
 from morie.fn.spcsts import spcsts
 
 
@@ -28,4 +30,5 @@ def test_spcsts_no_data():
 
 def test_spcsts_alias():
     from morie.fn.spcsts import spcsts
+
     assert spcsts is spcsts

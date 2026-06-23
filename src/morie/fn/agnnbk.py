@@ -1,6 +1,7 @@
 """AlphaZero residual network block."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphazero_resnet_block"]

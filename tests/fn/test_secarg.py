@@ -1,6 +1,7 @@
 """Tests for secarg.argon2id_kdf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.secarg import argon2id_kdf
 
 
@@ -13,7 +14,7 @@ def test_secarg_basic():
     p = 5
     result = argon2id_kdf(password, salt, m, t, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_secarg_edge():

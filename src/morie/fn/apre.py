@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Aggregate proportional reduction in error (APRE) for OC."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["oc_apre"]
@@ -32,7 +34,14 @@ def oc_apre(votes, predictions):
     n = int(votes) if votes.ndim == 0 else len(votes)
     result = float(np.mean(votes))
     se = float(np.std(votes, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Aggregate proportional reduction in error (APRE) for OC"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Aggregate proportional reduction in error (APRE) for OC",
+        }
+    )
 
 
 def cheatsheet():

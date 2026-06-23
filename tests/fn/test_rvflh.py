@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.rvflh import causal_reversal_test, rvflh
+
 from morie.fn._containers import TestResult
+from morie.fn.rvflh import causal_reversal_test, rvflh
 
 
 class TestRvflh:

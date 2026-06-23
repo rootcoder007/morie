@@ -1,6 +1,7 @@
 """Tests for morie.fn.acmrt -- Age-cause-specific mortality."""
 
 import pytest
+
 from morie.fn.acmrt import age_cause_mortality
 
 

@@ -1,6 +1,7 @@
 """Tests for ratest.ratio_estimator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ratest import ratio_estimator
 
 
@@ -11,7 +12,7 @@ def test_ratest_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = ratio_estimator(y, x, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ratest_edge():

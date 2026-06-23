@@ -1,6 +1,7 @@
 """Tests for mmeeq.henderson_mme_eq2_2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mmeeq import henderson_mme_eq2_2
 
 
@@ -13,7 +14,7 @@ def test_mmeeq_basic():
     Sigma = np.random.default_rng(42).normal(0, 1, 100)
     result = henderson_mme_eq2_2(Y, X, Z, R, Sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mmeeq_edge():

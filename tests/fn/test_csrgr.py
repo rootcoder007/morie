@@ -1,6 +1,7 @@
 """Test csrgr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csrgr import csrgr
 
 

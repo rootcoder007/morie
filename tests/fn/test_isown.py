@@ -1,7 +1,7 @@
 """Tests for morie.fn.isown."""
 
 import numpy as np
-import pytest
+
 from morie.fn.isown import isown
 
 

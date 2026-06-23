@@ -1,6 +1,7 @@
 """Tests for thmksp.thomas_cluster."""
+
 import numpy as np
-import pytest
+
 from morie.fn.thmksp import thomas_cluster
 
 
@@ -11,7 +12,7 @@ def test_thmksp_basic():
     sigma = 1.0
     result = thomas_cluster(lambda_p, mu, sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_thmksp_edge():

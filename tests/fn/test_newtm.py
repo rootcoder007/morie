@@ -1,8 +1,9 @@
 """Tests for morie.fn.newtm -- Newton's method."""
 
 import numpy as np
-from morie.fn.newtm import newton_method, newtm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.newtm import newtm, newton_method
 
 
 class TestNewtm:
@@ -21,7 +22,8 @@ class TestNewtm:
 
     def test_multivariate(self):
         def f(x):
-            return np.array([x[0]**2 + x[1] - 1, x[0] + x[1]**2 - 1])
+            return np.array([x[0] ** 2 + x[1] - 1, x[0] + x[1] ** 2 - 1])
+
         r = newton_method(f, np.array([0.5, 0.5]))
         root = r.value
         np.testing.assert_allclose(f(root), [0, 0], atol=1e-6)

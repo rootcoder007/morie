@@ -1,7 +1,6 @@
 """Tests for morie.fn.mslcl -- Local continuity meta-criterion"""
 
 import numpy as np
-import pytest
 
 from morie.fn.mslcl import lcmc
 

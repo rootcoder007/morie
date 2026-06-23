@@ -1,6 +1,7 @@
 """Test encrn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.encrn import encrn
 
 

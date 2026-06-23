@@ -1,6 +1,5 @@
 """Tests for morie.fn.aqidx -- air quality index."""
 
-import pytest
 from morie.fn.aqidx import air_quality_index
 
 

@@ -31,4 +31,4 @@ eigvl = extract_eigenvalues
 
 
 def cheatsheet() -> str:
-    return 'extract_eigenvalues({}) -> Extract sorted eigenvalues.'
+    return "extract_eigenvalues({}) -> Extract sorted eigenvalues."

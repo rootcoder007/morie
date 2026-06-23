@@ -1,6 +1,7 @@
 """Test annsi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.annsi import annsi
 
 

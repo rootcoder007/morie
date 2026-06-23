@@ -7,10 +7,10 @@ Solves GLM via weighted least squares with iteratively updated weights.
 
 import numpy as np
 
-__all__ = ['irlsf']
+__all__ = ["irlsf"]
 
 
-def irlsf(X, y, family='gaussian', max_iter=100, tol=1e-6, full_output=False):
+def irlsf(X, y, family="gaussian", max_iter=100, tol=1e-6, full_output=False):
     """
     IRLS (iteratively reweighted least squares) for GLM fitting.
 
@@ -63,16 +63,16 @@ def irlsf(X, y, family='gaussian', max_iter=100, tol=1e-6, full_output=False):
         eta = X @ beta
         mu = eta.copy()
 
-        if family == 'gaussian':
+        if family == "gaussian":
             g_mu = mu
             g_prime = np.ones(n)
             w = np.ones(n)
-        elif family == 'binomial':
+        elif family == "binomial":
             mu = 1.0 / (1.0 + np.exp(-eta))
             g_mu = np.log(mu / (1 - mu + 1e-10))
             g_prime = 1.0 / (mu * (1 - mu) + 1e-10)
             w = mu * (1 - mu)
-        elif family == 'poisson':
+        elif family == "poisson":
             mu = np.exp(eta)
             g_mu = np.log(mu + 1e-10)
             g_prime = 1.0 / (mu + 1e-10)
@@ -99,28 +99,20 @@ def irlsf(X, y, family='gaussian', max_iter=100, tol=1e-6, full_output=False):
         if residual < tol:
             if full_output:
                 eta = X @ beta
-                if family == 'gaussian':
-                    dev = np.sum((y - eta)**2)
-                elif family == 'binomial':
+                if family == "gaussian":
+                    dev = np.sum((y - eta) ** 2)
+                elif family == "binomial":
                     mu = 1.0 / (1.0 + np.exp(-eta))
                     dev = 2 * np.sum(y * np.log(mu + 1e-10) + (1 - y) * np.log(1 - mu + 1e-10))
-                elif family == 'poisson':
+                elif family == "poisson":
                     mu = np.exp(eta)
                     dev = 2 * np.sum(y * np.log(y / (mu + 1e-10) + 1e-10) - (y - mu))
-                return beta, {
-                    'iterations': it + 1,
-                    'converged': True,
-                    'deviance': dev
-                }
+                return beta, {"iterations": it + 1, "converged": True, "deviance": dev}
             return beta
 
     if full_output:
         eta = X @ beta
-        if family == 'gaussian':
-            dev = np.sum((y - eta)**2)
-        return beta, {
-            'iterations': max_iter,
-            'converged': False,
-            'deviance': dev
-        }
+        if family == "gaussian":
+            dev = np.sum((y - eta) ** 2)
+        return beta, {"iterations": max_iter, "converged": False, "deviance": dev}
     return beta

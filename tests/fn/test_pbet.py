@@ -1,6 +1,5 @@
 """Tests for morie.fn.pbet — beta CDF."""
 
-import numpy as np
 import pytest
 
 from morie.fn.pbet import pbeta

@@ -1,7 +1,7 @@
 """Tests for morie.fn.elcmp."""
 
 import numpy as np
-import pytest
+
 from morie.fn.elcmp import elcmp
 
 

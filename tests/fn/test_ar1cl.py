@@ -1,6 +1,7 @@
 """Tests for ar1cl.ar1_climate."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ar1cl import ar1_climate
 
 
@@ -10,7 +11,7 @@ def test_ar1cl_basic():
     phi = np.random.default_rng(42).normal(0, 1, 100)
     result = ar1_climate(x, phi)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ar1cl_edge():

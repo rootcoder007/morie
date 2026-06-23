@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gradient boosting for genomic prediction (Friedman 2001)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -25,7 +26,8 @@ def _stump_split(X, r):
                 continue
             left_sum = cumsum[k - 1]
             right_sum = total - left_sum
-            n_l = k; n_r = n - k
+            n_l = k
+            n_r = n - k
             sse_l = float(np.var(sr[:k])) * n_l
             sse_r = float(np.var(sr[k:])) * n_r
             sse = sse_l + sse_r
@@ -37,21 +39,24 @@ def _stump_split(X, r):
                 best = (gain, f, thr, left_val, right_val)
     if best is None:
         return None
-    return {"feature": int(best[1]), "threshold": float(best[2]),
-            "left_val": float(best[3]), "right_val": float(best[4])}
+    return {
+        "feature": int(best[1]),
+        "threshold": float(best[2]),
+        "left_val": float(best[3]),
+        "right_val": float(best[4]),
+    }
 
 
 def _stump_predict(stump, X):
     if stump is None:
         return np.zeros(X.shape[0])
-    out = np.where(X[:, stump["feature"]] <= stump["threshold"],
-                   stump["left_val"], stump["right_val"])
+    out = np.where(X[:, stump["feature"]] <= stump["threshold"], stump["left_val"], stump["right_val"])
     return out
 
 
-def gradient_boosting_genomic(x, y, markers, n_estimators: int = 100,
-                              learning_rate: float = 0.1,
-                              max_depth: int = 3, seed: int = 0):
+def gradient_boosting_genomic(
+    x, y, markers, n_estimators: int = 100, learning_rate: float = 0.1, max_depth: int = 3, seed: int = 0
+):
     """Gradient-boosted regression on markers (squared-error loss).
 
     Tries scikit-learn's GradientBoostingRegressor; falls back to a NumPy
@@ -90,9 +95,12 @@ def gradient_boosting_genomic(x, y, markers, n_estimators: int = 100,
     train_loss = []
     try:
         from sklearn.ensemble import GradientBoostingRegressor
+
         gb = GradientBoostingRegressor(
-            n_estimators=n_estimators, learning_rate=learning_rate,
-            max_depth=max_depth, random_state=seed,
+            n_estimators=n_estimators,
+            learning_rate=learning_rate,
+            max_depth=max_depth,
+            random_state=seed,
         ).fit(feats, y)
         y_hat = gb.predict(feats)
         train_loss = list(gb.train_score_) if hasattr(gb, "train_score_") else []
@@ -108,7 +116,7 @@ def gradient_boosting_genomic(x, y, markers, n_estimators: int = 100,
             train_loss.append(float(np.mean((y - F) ** 2)))
         y_hat = F
     resid = y - y_hat
-    se = float(np.sqrt(np.mean(resid ** 2)))
+    se = float(np.sqrt(np.mean(resid**2)))
     return RichResult(
         title="Gradient-boosting genomic predictor",
         summary_lines=[
@@ -117,8 +125,7 @@ def gradient_boosting_genomic(x, y, markers, n_estimators: int = 100,
             ("n_estimators", n_estimators),
             ("learning_rate", learning_rate),
             ("max_depth", max_depth),
-            ("final train MSE",
-             train_loss[-1] if train_loss else float(np.mean(resid ** 2))),
+            ("final train MSE", train_loss[-1] if train_loss else float(np.mean(resid**2))),
             ("residual SE", se),
         ],
         payload={

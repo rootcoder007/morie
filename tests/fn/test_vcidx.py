@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.vcidx import vcidx, VCIndexResult
+from morie.fn.vcidx import VCIndexResult, vcidx
 
 
 def test_returns_result_type():

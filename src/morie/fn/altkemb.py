@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Token embedding table lookup."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_token_embedding_lookup"]

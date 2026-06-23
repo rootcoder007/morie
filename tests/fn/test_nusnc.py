@@ -13,7 +13,7 @@ def test_normal_mean_variance():
     def ll(data, theta):
         mu, log_sig = theta[0], theta[1]
         sig = np.exp(log_sig)
-        return float(np.sum(-0.5 * np.log(2 * np.pi * sig ** 2) - (data - mu) ** 2 / (2 * sig ** 2)))
+        return float(np.sum(-0.5 * np.log(2 * np.pi * sig**2) - (data - mu) ** 2 / (2 * sig**2)))
 
     result = nusnc(x, ll, n_interest=1, theta0=np.array([0.0, 0.0]))
     assert result["psi_mle"][0] == pytest.approx(2.0, abs=0.3)

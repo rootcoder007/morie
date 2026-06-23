@@ -1,6 +1,7 @@
 """Rainbow: 6 DQN improvements combined."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rainbow_dqn"]

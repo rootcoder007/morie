@@ -1,6 +1,7 @@
 """Pivotal (bootstrap) confidence interval."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["wasserman_bootstrap_pivotal"]
@@ -36,7 +37,9 @@ def wasserman_bootstrap_pivotal(data, T, B, alpha):
     n = len(data)
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pivotal (bootstrap) confidence interval"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Pivotal (bootstrap) confidence interval"}
+    )
 
 
 def cheatsheet():

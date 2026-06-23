@@ -1,6 +1,7 @@
 """Tests for hmmpp.geron_model_parallelism."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmmpp import geron_model_parallelism
 
 
@@ -10,7 +11,7 @@ def test_hmmpp_basic():
     n_devices = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_model_parallelism(model, n_devices)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmmpp_edge():

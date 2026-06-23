@@ -42,4 +42,4 @@ rcprd = predicted_choice
 
 
 def cheatsheet() -> str:
-    return 'predicted_choice({}) -> Predicted choice from ideal points.'
+    return "predicted_choice({}) -> Predicted choice from ideal points."

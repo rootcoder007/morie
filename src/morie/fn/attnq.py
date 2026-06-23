@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Scaled dot-product attention (Vaswani et al. 2017)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -66,8 +67,7 @@ def scaled_dot_product_attention(Q, K=None, V=None, mask=None):
     out = attn @ V
     return RichResult(
         title="Scaled dot-product attention",
-        summary_lines=[("d_k", d_k), ("Q shape", Q.shape),
-                       ("K shape", K.shape), ("V shape", V.shape)],
+        summary_lines=[("d_k", d_k), ("Q shape", Q.shape), ("K shape", K.shape), ("V shape", V.shape)],
         payload={
             "output": out,
             "estimate": out,

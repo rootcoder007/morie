@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Derivatives of quantile function Q_X(p): first and second order."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_quantile_deriv"]
@@ -32,7 +34,14 @@ def gibbons_quantile_deriv(p, f):
     n = int(p) if p.ndim == 0 else len(p)
     result = float(np.mean(p))
     se = float(np.std(p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Derivatives of quantile function Q_X(p): first and second order"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Derivatives of quantile function Q_X(p): first and second order",
+        }
+    )
 
 
 def cheatsheet():

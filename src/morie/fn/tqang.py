@@ -1,5 +1,7 @@
 """Uniform angle quantization over [-pi, pi]."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_angle_quantization"]
@@ -31,7 +33,9 @@ def turboquant_angle_quantization(theta, bits):
     n = len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Uniform angle quantization over [-pi, pi]"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Uniform angle quantization over [-pi, pi]"}
+    )
 
 
 def cheatsheet():

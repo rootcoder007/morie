@@ -1,6 +1,7 @@
 """Test mteff."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mteff import mteff
 
 

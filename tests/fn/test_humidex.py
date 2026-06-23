@@ -24,10 +24,10 @@ def test_humidex_environment_canada_reference_value():
 
 def test_humidex_classification_bands():
     # Pick T/Td to land in each band
-    no_disc = humidex(25, 10)   # mild
-    some = humidex(30, 18)      # moderate humid
-    great = humidex(33, 25)     # hot humid
-    danger = humidex(38, 27)    # severe
+    no_disc = humidex(25, 10)  # mild
+    some = humidex(30, 18)  # moderate humid
+    great = humidex(33, 25)  # hot humid
+    danger = humidex(38, 27)  # severe
     assert no_disc.extra["classification"] == "no discomfort"
     assert some.extra["classification"] in ("some discomfort", "great discomfort")
     assert great.extra["classification"] in ("great discomfort", "dangerous")

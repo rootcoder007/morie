@@ -1,6 +1,7 @@
 """DP-SGD with per-sample clipping + noise."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dp_sgd"]
@@ -36,7 +37,9 @@ def dp_sgd(loss, C, sigma, lr):
     n = len(loss)
     result = float(np.mean(loss))
     se = float(np.std(loss, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DP-SGD with per-sample clipping + noise"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DP-SGD with per-sample clipping + noise"}
+    )
 
 
 def cheatsheet():

@@ -1,8 +1,9 @@
 """Tests for morie.fn.simpx -- Simplex method."""
 
 import numpy as np
-from morie.fn.simpx import simplex_lp, simpx
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.simpx import simplex_lp, simpx
 
 
 class TestSimpx:

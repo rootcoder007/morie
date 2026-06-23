@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """TF-IDF score: term frequency weighted by inverse document frequency."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_tf_idf"]
@@ -34,7 +36,14 @@ def burkov_tf_idf(term, document, corpus):
     n = len(term)
     result = float(np.mean(term))
     se = float(np.std(term, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TF-IDF score: term frequency weighted by inverse document frequency"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "TF-IDF score: term frequency weighted by inverse document frequency",
+        }
+    )
 
 
 def cheatsheet():

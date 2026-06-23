@@ -1,5 +1,7 @@
 """Tests for morie.fn.tm — melting temperature."""
+
 import pytest
+
 from morie.fn.tm import melting_temperature
 
 

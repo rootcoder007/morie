@@ -1,7 +1,9 @@
 """Test event_align (evtag)."""
+
 import numpy as np
-from morie.fn.evtag import event_align, evtag
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.evtag import event_align, evtag
 
 
 class TestEventAlign:

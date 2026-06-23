@@ -1,6 +1,7 @@
 """Test csrac."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csrac import csrac
 
 

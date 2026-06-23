@@ -1,6 +1,10 @@
 """Tests for concordance_corr."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.ccc import concordance_corr
+
 
 class TestCCC:
     def test_perfect(self):

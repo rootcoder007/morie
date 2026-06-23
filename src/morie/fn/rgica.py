@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """FastICA algorithm for independent component analysis."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_fastica"]
@@ -38,7 +40,9 @@ def rangayyan_fastica(X, n_components, nonlin, max_iter, tol):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "FastICA algorithm for independent component analysis"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "FastICA algorithm for independent component analysis"}
+    )
 
 
 def cheatsheet():

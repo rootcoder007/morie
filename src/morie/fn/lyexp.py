@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['lyexp']
+__all__ = ["lyexp"]
 
 _QUOTE = "That which does not kill us makes us stronger. -- Friedrich Nietzsche"
 
@@ -58,7 +58,7 @@ def lyexp(
     if max_iter is None:
         max_iter = N // 4
 
-    Y = np.array([x[i:i + (m - 1) * tau + 1:tau] for i in range(N)])
+    Y = np.array([x[i : i + (m - 1) * tau + 1 : tau] for i in range(N)])
 
     nn = np.zeros(N, dtype=int)
     for i in range(N):

@@ -1,6 +1,7 @@
 """Test mpsim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mpsim import mpsim
 
 

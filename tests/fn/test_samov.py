@@ -1,6 +1,7 @@
 """Test samov."""
+
 import numpy as np
-import pytest
+
 from morie.fn.samov import samov
 
 

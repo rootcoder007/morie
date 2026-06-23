@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wavelet energy per subband (scale)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_wavelet_energy"]

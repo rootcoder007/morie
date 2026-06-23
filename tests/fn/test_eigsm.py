@@ -2,8 +2,8 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.eigsm import eigen_symmetric, eigsm
-from morie.fn._containers import DescriptiveResult
 
 
 class TestEigsm:

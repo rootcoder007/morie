@@ -1,6 +1,7 @@
 """Synthetic DiD: combine SC weights + DiD."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_synthetic_did"]
@@ -34,7 +35,9 @@ def causal_synthetic_did(Y_panel, treated_idx, treat_time):
     n = len(Y_panel)
     result = float(np.mean(Y_panel))
     se = float(np.std(Y_panel, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Synthetic DiD: combine SC weights + DiD"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Synthetic DiD: combine SC weights + DiD"}
+    )
 
 
 def cheatsheet():

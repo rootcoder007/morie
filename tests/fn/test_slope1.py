@@ -1,6 +1,7 @@
 """Tests for slope1.slope_one."""
+
 import numpy as np
-import pytest
+
 from morie.fn.slope1 import slope_one
 
 
@@ -11,7 +12,7 @@ def test_slope1_basic():
     i = np.random.default_rng(42).normal(0, 1, 100)
     result = slope_one(R, u, i)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_slope1_edge():

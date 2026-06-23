@@ -1,6 +1,7 @@
 """Tests for painn.painn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.painn import painn
 
 
@@ -10,7 +11,7 @@ def test_painn_basic():
     atom_types = np.random.default_rng(42).normal(0, 1, 100)
     result = painn(coords, atom_types)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_painn_edge():

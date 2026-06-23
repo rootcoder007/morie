@@ -1,6 +1,7 @@
 """Grand-mean centering for level-1 or level-2 covariate."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["grand_mean_centering"]
@@ -30,7 +31,14 @@ def grand_mean_centering(y):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Grand-mean centering for level-1 or level-2 covariate"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Grand-mean centering for level-1 or level-2 covariate",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test rwsim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rwsim import rwsim
 
 

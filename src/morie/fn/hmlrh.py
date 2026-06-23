@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Learning-rate heuristic: start with LR finder, use 1/10 of divergence point."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_learning_rate_heuristic"]
@@ -30,7 +32,14 @@ def geron_learning_rate_heuristic(lr_curve):
     n = len(lr_curve)
     result = float(np.mean(lr_curve))
     se = float(np.std(lr_curve, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Learning-rate heuristic: start with LR finder, use 1/10 of divergence point"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Learning-rate heuristic: start with LR finder, use 1/10 of divergence point",
+        }
+    )
 
 
 def cheatsheet():

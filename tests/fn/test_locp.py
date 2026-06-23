@@ -1,6 +1,7 @@
 """Tests for locp.local_polynomial."""
+
 import numpy as np
-import pytest
+
 from morie.fn.locp import local_polynomial
 
 
@@ -12,7 +13,7 @@ def test_locp_basic():
     degree = np.random.default_rng(42).normal(0, 1, 100)
     result = local_polynomial(x, y, h, degree)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_locp_edge():

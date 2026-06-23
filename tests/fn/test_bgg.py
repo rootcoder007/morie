@@ -1,8 +1,9 @@
 """Tests for morie.fn.bgg -- Bagging."""
 
 import numpy as np
-from morie.fn.bgg import bagging, bgg
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.bgg import bagging, bgg
 
 
 class TestBgg:

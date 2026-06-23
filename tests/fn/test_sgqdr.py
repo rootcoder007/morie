@@ -1,5 +1,7 @@
 """Tests for quadrat count test."""
+
 import numpy as np
+
 from morie.fn.sgqdr import sgqdr
 
 
@@ -15,6 +17,7 @@ def test_sgqdr_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgqdr import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

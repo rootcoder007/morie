@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """L2 (Euclidean) norm of a vector."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_vector_norm"]

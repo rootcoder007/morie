@@ -1,6 +1,7 @@
 """Tests for wsmwhz.wasserman_white_huber."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmwhz import wasserman_white_huber
 
 
@@ -11,7 +12,7 @@ def test_wsmwhz_basic():
     f = np.random.default_rng(42).normal(0, 1, 100)
     result = wasserman_white_huber(X, y, f)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmwhz_edge():

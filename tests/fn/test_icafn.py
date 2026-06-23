@@ -1,6 +1,7 @@
 """Tests for icafn.py - Independent Component Analysis."""
+
 import numpy as np
-import pytest
+
 from morie.fn.icafn import ica_fn, icafn
 
 

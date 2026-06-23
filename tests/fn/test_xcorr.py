@@ -1,9 +1,10 @@
 """Test cross_correlation (xcorr)."""
+
 import numpy as np
 import pytest
 
-from morie.fn.xcorr import cross_correlation, xcorr
 from morie.fn._containers import DescriptiveResult
+from morie.fn.xcorr import cross_correlation, xcorr
 
 
 class TestCrossCorrelation:

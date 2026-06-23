@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Phase response of a digital filter."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_phase_response"]

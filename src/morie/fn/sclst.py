@@ -86,7 +86,11 @@ def sclst(
                     imputed[i] = ei
                     continue
                 idx_above = np.where(mask)[0]
-                s_at_e = surv[np.searchsorted(e_sorted, ei, side="right") - 1] if np.searchsorted(e_sorted, ei, side="right") > 0 else 1.0
+                s_at_e = (
+                    surv[np.searchsorted(e_sorted, ei, side="right") - 1]
+                    if np.searchsorted(e_sorted, ei, side="right") > 0
+                    else 1.0
+                )
                 if s_at_e <= 0:
                     imputed[i] = ei
                     continue

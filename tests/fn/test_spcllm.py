@@ -1,6 +1,7 @@
 """Tests for spcllm.spatial_cluster_lisa."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spcllm import spatial_cluster_lisa
 
 
@@ -11,7 +12,7 @@ def test_spcllm_basic():
     alpha = 0.05
     result = spatial_cluster_lisa(x, W, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spcllm_edge():

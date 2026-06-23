@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Top-k decoding (Fan et al. 2018)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -43,9 +44,7 @@ def top_k_decoding(x, k: int = 5, T: float = 1.0):
     return RichResult(
         title="Top-k Decoding (Fan 2018)",
         summary_lines=[("k", k), ("V", V)],
-        payload={"tensor": p, "topk_indices": topk_idx,
-                 "topk_logits": topk_logits, "k": k,
-                 "method": "top-k"},
+        payload={"tensor": p, "topk_indices": topk_idx, "topk_logits": topk_logits, "k": k, "method": "top-k"},
     )
 
 

@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.finn import find_patterns, finn
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.finn import find_patterns, finn
 
 
 class TestFinn:
@@ -14,11 +15,13 @@ class TestFinn:
         rng = np.random.default_rng(42)
         n = 200
         x = rng.normal(0, 1, n)
-        df = pd.DataFrame({
-            "x": x,
-            "y": x + rng.normal(0, 0.1, n),  # highly correlated with x
-            "z": rng.normal(0, 1, n),          # uncorrelated
-        })
+        df = pd.DataFrame(
+            {
+                "x": x,
+                "y": x + rng.normal(0, 0.1, n),  # highly correlated with x
+                "z": rng.normal(0, 1, n),  # uncorrelated
+            }
+        )
         result = find_patterns(df, threshold=0.5)
         assert isinstance(result, DescriptiveResult)
         pairs = result.extra["pairs"]
@@ -26,8 +29,7 @@ class TestFinn:
         assert any(p["col1"] == "x" and p["col2"] == "y" for p in pairs)
         # x-z and y-z should NOT be found at threshold=0.5
         assert not any(
-            (p["col1"] == "x" and p["col2"] == "z") or (p["col1"] == "y" and p["col2"] == "z")
-            for p in pairs
+            (p["col1"] == "x" and p["col2"] == "z") or (p["col1"] == "y" and p["col2"] == "z") for p in pairs
         )
 
     def test_spearman(self):
@@ -40,9 +42,11 @@ class TestFinn:
 
     def test_no_pairs_below_threshold(self):
         rng = np.random.default_rng(42)
-        df = pd.DataFrame({
-            "a": rng.normal(0, 1, 100),
-            "b": rng.normal(0, 1, 100),
-        })
+        df = pd.DataFrame(
+            {
+                "a": rng.normal(0, 1, 100),
+                "b": rng.normal(0, 1, 100),
+            }
+        )
         result = find_patterns(df, threshold=0.99)
         assert result.value == 0

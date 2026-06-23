@@ -1,6 +1,7 @@
 """Interaction information II(X;Y;Z)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["interaction_information"]

@@ -1,6 +1,8 @@
 """Tests for ctisoq."""
+
 import numpy as np
 import pytest
+
 from morie.fn.ctisoq import ctisoq
 
 
@@ -28,4 +30,5 @@ def test_ctisoq_no_data():
 
 def test_ctisoq_alias():
     from morie.fn.ctisoq import ctisoq
+
     assert ctisoq is ctisoq

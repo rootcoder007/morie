@@ -1,6 +1,7 @@
 """Tests for gin.gin."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gin import gin
 
 
@@ -11,7 +12,7 @@ def test_gin_basic():
     epsilon = 1e-6
     result = gin(A, X, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gin_edge():

@@ -1,6 +1,7 @@
 """HLM gamma covariance matrix for random effects (T matrix)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["hlm_gamma_matrix"]
@@ -36,7 +37,14 @@ def hlm_gamma_matrix(y, X, Z, cluster):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "HLM gamma covariance matrix for random effects (T matrix)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "HLM gamma covariance matrix for random effects (T matrix)",
+        }
+    )
 
 
 def cheatsheet():

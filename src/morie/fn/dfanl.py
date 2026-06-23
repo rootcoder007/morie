@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['dfanl']
+__all__ = ["dfanl"]
 
 _QUOTE = "Knowledge is power. -- Francis Bacon"
 
@@ -52,9 +52,7 @@ def dfanl(
         n_max = N // 4
     n_max = max(n_max, n_min + 1)
 
-    scales = np.unique(np.logspace(
-        np.log10(n_min), np.log10(n_max), n_scales
-    ).astype(int))
+    scales = np.unique(np.logspace(np.log10(n_min), np.log10(n_max), n_scales).astype(int))
     scales = scales[scales >= n_min]
 
     fluct = np.zeros(len(scales))
@@ -65,7 +63,7 @@ def dfanl(
             continue
         rms_vals = []
         for v in range(n_seg):
-            seg = y[v * s:(v + 1) * s]
+            seg = y[v * s : (v + 1) * s]
             t = np.arange(s)
             p = np.polyfit(t, seg, order)
             trend = np.polyval(p, t)

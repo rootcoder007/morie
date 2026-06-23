@@ -1,8 +1,9 @@
 """Tests for morie.fn.ada -- AdaBoost."""
 
 import numpy as np
-from morie.fn.ada import adaboost, ada
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ada import ada, adaboost
 
 
 class TestAda:

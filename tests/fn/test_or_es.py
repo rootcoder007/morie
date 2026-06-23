@@ -1,6 +1,7 @@
 """Tests for morie.fn.or_es -- odds ratio effect size."""
 
 import pytest
+
 from morie.fn.or_es import odds_ratio
 
 

@@ -1,6 +1,7 @@
 """Test slcsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.slcsp import slcsp
 
 

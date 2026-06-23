@@ -1,8 +1,9 @@
 """Tests for morie.fn.manov -- MANOVA."""
 
 import numpy as np
-from morie.fn.manov import manova, manov
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.manov import manov, manova
 
 
 class TestManova:
@@ -12,14 +13,14 @@ class TestManova:
     def test_returns_result(self):
         rng = np.random.default_rng(42)
         X = np.vstack([rng.normal(0, 1, (20, 3)), rng.normal(2, 1, (20, 3))])
-        g = np.array([0]*20 + [1]*20)
+        g = np.array([0] * 20 + [1] * 20)
         res = manova(X, g)
         assert isinstance(res, DescriptiveResult)
 
     def test_all_statistics_present(self):
         rng = np.random.default_rng(42)
         X = np.vstack([rng.normal(0, 1, (20, 3)), rng.normal(3, 1, (20, 3))])
-        g = np.array([0]*20 + [1]*20)
+        g = np.array([0] * 20 + [1] * 20)
         res = manova(X, g)
         assert "pillai" in res.extra
         assert "wilks" in res.extra
@@ -29,13 +30,13 @@ class TestManova:
     def test_significant_difference(self):
         rng = np.random.default_rng(42)
         X = np.vstack([rng.normal(0, 0.5, (30, 2)), rng.normal(5, 0.5, (30, 2))])
-        g = np.array([0]*30 + [1]*30)
+        g = np.array([0] * 30 + [1] * 30)
         res = manova(X, g)
         assert res.extra["p_wilks"] < 0.05
 
     def test_wilks_bounded(self):
         rng = np.random.default_rng(42)
         X = np.vstack([rng.normal(0, 1, (20, 2)), rng.normal(1, 1, (20, 2))])
-        g = np.array([0]*20 + [1]*20)
+        g = np.array([0] * 20 + [1] * 20)
         res = manova(X, g)
         assert 0 <= res.value <= 1

@@ -1,5 +1,7 @@
 """Tests for morie.fn.dbscr."""
+
 import numpy as np
+
 from morie.fn.dbscr import dbscr
 
 
@@ -13,6 +15,7 @@ def test_dbscr_smoke():
 
 def test_cheatsheet():
     from morie.fn.dbscr import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,19 +1,21 @@
 """Test fractal_dim_from_psd."""
+
 import numpy as np
-from morie.fn.fdspc import fractal_dim_from_psd, fdspc
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.fdspc import fdspc, fractal_dim_from_psd
 
 
 class TestFractalDimFromPSD:
     def test_basic(self):
         freqs = np.linspace(0.1, 50, 100)
-        psd = 1.0 / freqs ** 2
+        psd = 1.0 / freqs**2
         result = fractal_dim_from_psd(psd, freqs)
         assert isinstance(result, DescriptiveResult)
 
     def test_value_is_float(self):
         freqs = np.linspace(0.1, 50, 100)
-        psd = 1.0 / freqs ** 2
+        psd = 1.0 / freqs**2
         result = fractal_dim_from_psd(psd, freqs)
         assert isinstance(result.value, float)
 
@@ -25,7 +27,7 @@ class TestFractalDimFromPSD:
 
     def test_name(self):
         freqs = np.linspace(0.1, 50, 100)
-        psd = 1.0 / freqs ** 2
+        psd = 1.0 / freqs**2
         result = fractal_dim_from_psd(psd, freqs)
         assert result.name == "fractal_dim_psd"
 

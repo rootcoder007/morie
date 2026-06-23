@@ -1,6 +1,8 @@
 """Tests for vdchk."""
+
 import numpy as np
 import pytest
+
 from morie.fn.vdchk import vdchk
 
 
@@ -28,4 +30,5 @@ def test_vdchk_no_data():
 
 def test_vdchk_alias():
     from morie.fn.vdchk import vdchk
+
     assert vdchk is vdchk

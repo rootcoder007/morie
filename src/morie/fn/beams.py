@@ -13,6 +13,7 @@ arXiv preprint arXiv:1702.01806.
 __all__ = ["beams"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 

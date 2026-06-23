@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multivariate analysis of concurrent biomedical signals (covariance matrix)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch2_multivariate"]
@@ -30,7 +32,14 @@ def rangayyan_ch2_multivariate(signals_matrix):
     n = int(signals_matrix) if signals_matrix.ndim == 0 else len(signals_matrix)
     result = float(np.mean(signals_matrix))
     se = float(np.std(signals_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multivariate analysis of concurrent biomedical signals (covariance matrix)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multivariate analysis of concurrent biomedical signals (covariance matrix)",
+        }
+    )
 
 
 def cheatsheet():

@@ -14,6 +14,7 @@ Mothilal, R. K., Sharma, A., & Tan, C. (2020). Explaining machine
 learning classifiers through diverse counterfactual explanations.
 *Proceedings of ACM FAccT*, 607-617.
 """
+
 from __future__ import annotations
 
 from collections.abc import Callable

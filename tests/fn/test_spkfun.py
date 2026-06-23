@@ -1,6 +1,7 @@
 """Tests for spkfun.schabenberger_k_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spkfun import schabenberger_k_function
 
 
@@ -11,7 +12,7 @@ def test_spkfun_basic():
     r = 10
     result = schabenberger_k_function(points, lambda_est, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spkfun_edge():

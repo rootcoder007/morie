@@ -1,6 +1,7 @@
 """Tests for morie.fn.svmc — SVM classifier."""
+
 import numpy as np
-import pytest
+
 from morie.fn.svmc import svm_classify
 
 
@@ -23,8 +24,7 @@ class TestSVMClassify:
 
     def test_linear_separable(self):
         rng = np.random.default_rng(42)
-        X = np.vstack([rng.normal(-2, 0.5, (30, 2)),
-                        rng.normal(2, 0.5, (30, 2))])
+        X = np.vstack([rng.normal(-2, 0.5, (30, 2)), rng.normal(2, 0.5, (30, 2))])
         y = np.array([-1.0] * 30 + [1.0] * 30)
         res = svm_classify(X, y, kernel="linear")
         assert res.extra["accuracy"] > 0.8

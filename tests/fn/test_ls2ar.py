@@ -1,7 +1,7 @@
 """Test lsf_to_ar (ls2ar)."""
-import numpy as np
-from morie.fn.ls2ar import lsf_to_ar, ls2ar
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ls2ar import ls2ar, lsf_to_ar
 
 
 class TestLs2ar:

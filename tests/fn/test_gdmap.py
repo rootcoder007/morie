@@ -1,6 +1,7 @@
 """Test gdmap."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdmap import gdmap
 
 

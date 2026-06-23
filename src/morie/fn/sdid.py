@@ -122,9 +122,7 @@ def synthetic_did(
 
     y_treat_post = float(Y_t_post.mean())
     y_treat_pre = float(np.sum(lam_pre * Y_t_pre.mean(axis=0)))
-    y_ctrl_post = float(omega @ Y_c_post.mean(axis=1)) if T_post == 1 else float(
-        omega @ np.mean(Y_c_post, axis=1)
-    )
+    y_ctrl_post = float(omega @ Y_c_post.mean(axis=1)) if T_post == 1 else float(omega @ np.mean(Y_c_post, axis=1))
     y_ctrl_pre = float(np.sum(lam_pre * (omega @ Y_c_pre)))
 
     tau = (y_treat_post - y_ctrl_post) - (y_treat_pre - y_ctrl_pre)
@@ -138,7 +136,11 @@ def synthetic_did(
         other_idx = [j for j in range(n_c) if j != i]
         if len(other_idx) == 0:
             continue
-        w_other = omega[other_idx] / omega[other_idx].sum() if omega[other_idx].sum() > 0 else np.ones(len(other_idx)) / len(other_idx)
+        w_other = (
+            omega[other_idx] / omega[other_idx].sum()
+            if omega[other_idx].sum() > 0
+            else np.ones(len(other_idx)) / len(other_idx)
+        )
         y_synth_post = float(w_other @ Y_c_post[other_idx].mean(axis=1))
         y_synth_pre = float(np.sum(lam_pre * (w_other @ Y_c_pre[other_idx])))
         placebo_effects.append((y_pbo_post - y_synth_post) - (y_pbo_pre - y_synth_pre))

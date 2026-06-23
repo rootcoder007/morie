@@ -1,6 +1,7 @@
 """Tests for rng056.rangayyan_ch3_iir_transfer_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng056 import rangayyan_ch3_iir_transfer_function
 
 
@@ -13,7 +14,7 @@ def test_rng056_basic():
     M = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = rangayyan_ch3_iir_transfer_function(b_k, a_k, z, N, M)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng056_edge():

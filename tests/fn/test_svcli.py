@@ -1,7 +1,6 @@
 """Tests for morie.fn.svcli -- Optimal cutting line"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svcli import cut_line
 

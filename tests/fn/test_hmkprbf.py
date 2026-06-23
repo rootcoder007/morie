@@ -1,6 +1,7 @@
 """Tests for hmkprbf.geron_kernel_pca_rbf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmkprbf import geron_kernel_pca_rbf
 
 
@@ -11,7 +12,7 @@ def test_hmkprbf_basic():
     gamma = 1.0
     result = geron_kernel_pca_rbf(X, n_components, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmkprbf_edge():

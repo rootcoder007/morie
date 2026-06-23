@@ -1,6 +1,7 @@
 """Tests for km052.kamath_ch3_t5_template_obj."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km052 import kamath_ch3_t5_template_obj
 
 
@@ -11,7 +12,7 @@ def test_km052_basic():
     T5 = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ch3_t5_template_obj(D_train, T, T5)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km052_edge():

@@ -1,6 +1,7 @@
 """Test mstld."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mstld import mstld
 
 

@@ -1,6 +1,7 @@
 """Mutual information from copula density."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["copula_mutual_information"]
@@ -38,7 +39,9 @@ def copula_mutual_information(y, u, v, copula, theta):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mutual information from copula density"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Mutual information from copula density"}
+    )
 
 
 def cheatsheet():

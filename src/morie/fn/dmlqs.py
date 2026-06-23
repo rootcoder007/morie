@@ -1,6 +1,7 @@
 """Deep-learning QSAR (graph neural network)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["deepml_qsar"]
@@ -32,7 +33,9 @@ def deepml_qsar(smiles, activities):
     n = len(smiles)
     result = float(np.mean(smiles))
     se = float(np.std(smiles, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Deep-learning QSAR (graph neural network)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Deep-learning QSAR (graph neural network)"}
+    )
 
 
 def cheatsheet():

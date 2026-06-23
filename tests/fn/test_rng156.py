@@ -1,6 +1,7 @@
 """Tests for rng156.rangayyan_ch3_lms_estimation_error."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng156 import rangayyan_ch3_lms_estimation_error
 
 
@@ -12,7 +13,7 @@ def test_rng156_basic():
     n = 100
     result = rangayyan_ch3_lms_estimation_error(x, w, r, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng156_edge():

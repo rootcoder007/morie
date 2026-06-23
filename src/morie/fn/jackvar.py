@@ -1,6 +1,7 @@
 """Jackknife replicate variance for complex surveys."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["jackknife_variance_survey"]
@@ -34,7 +35,9 @@ def jackknife_variance_survey(y, weights, replicates):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Jackknife replicate variance for complex surveys"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Jackknife replicate variance for complex surveys"}
+    )
 
 
 def cheatsheet():

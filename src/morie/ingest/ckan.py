@@ -125,8 +125,9 @@ class Client:
     # ------------------------------------------------------------------
     # High-level: the verbs sociolegal users actually need
 
-    def package_search(self, query: str | None = None, *, rows: int = 100, start: int = 0,
-                       fq: str | None = None) -> dict[str, Any]:
+    def package_search(
+        self, query: str | None = None, *, rows: int = 100, start: int = 0, fq: str | None = None
+    ) -> dict[str, Any]:
         """Search for packages (datasets) by free-text or filter query.
 
         Returns the raw CKAN response: ``{"count": N, "results": [...]}``.
@@ -248,8 +249,9 @@ def cli(args: list[str]) -> int:
     import sys
     from pathlib import Path
 
-    p = argparse.ArgumentParser(prog="morie ingest ckan",
-                                description="Pull a CKAN package or search results into local CSVs.")
+    p = argparse.ArgumentParser(
+        prog="morie ingest ckan", description="Pull a CKAN package or search results into local CSVs."
+    )
     p.add_argument("--portal", required=True, help="Base URL of the CKAN portal, e.g. https://open.canada.ca/data")
     p.add_argument("--package", help="Package id / slug to download every CSV resource of")
     p.add_argument("--search", help="Free-text search; prints matching packages as JSON to stdout")

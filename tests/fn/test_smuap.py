@@ -1,6 +1,8 @@
 """Tests for smuap.py - SMUAP point process EMG simulation."""
+
 import numpy as np
-from morie.fn.smuap import smuap_point_process_fn, smuap
+
+from morie.fn.smuap import smuap, smuap_point_process_fn
 
 
 def test_smuap_returns_signal_result():

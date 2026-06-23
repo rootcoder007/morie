@@ -1,6 +1,6 @@
 """Tests for chebyshev_dist."""
-import pytest
-from morie.fn.chbyd import chebyshev_dist, chbyd
+
+from morie.fn.chbyd import chbyd, chebyshev_dist
 
 
 def test_basic():

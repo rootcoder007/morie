@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrwkn -- K-nearest neighbors weights"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrwkn import w_knn
 

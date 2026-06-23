@@ -8,6 +8,7 @@ a unit-norm coefficient vector.  Standard errors are NOT root-n
 identifiable for Manski's estimator (Cube Root Asymptotics) so a
 subsample SE is returned as a pragmatic stand-in.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -35,9 +36,14 @@ def horowitz_binary_response(x, y):
         X = X.T
     n, p = X.shape
     if n < max(10, 2 * p):
-        return RichResult(payload={"estimate": np.full(p, np.nan),
-                                   "se": np.full(p, np.nan), "n": n,
-                                   "method": "maximum-score (insufficient data)"})
+        return RichResult(
+            payload={
+                "estimate": np.full(p, np.nan),
+                "se": np.full(p, np.nan),
+                "n": n,
+                "method": "maximum-score (insufficient data)",
+            }
+        )
     y_signed = 2 * y - 1
     # Warm start from OLS / probit-like
     beta0, *_ = np.linalg.lstsq(X, y_signed, rcond=None)
@@ -48,20 +54,26 @@ def horowitz_binary_response(x, y):
 
     # Multistart Nelder-Mead -- the score function is piecewise constant
     rng = np.random.default_rng(0)
-    best_beta = beta0; best_loss = _score(beta0, X, y_signed)
+    best_beta = beta0
+    best_loss = _score(beta0, X, y_signed)
     starts = [beta0] + [rng.standard_normal(p) for _ in range(8)]
     for s in starts:
         s = s / max(np.linalg.norm(s), 1e-12)
         try:
-            r = minimize(_score, s, args=(X, y_signed),
-                         method="Nelder-Mead",
-                         options={"xatol": 1e-3, "fatol": 1e-4, "maxiter": 300})
+            r = minimize(
+                _score,
+                s,
+                args=(X, y_signed),
+                method="Nelder-Mead",
+                options={"xatol": 1e-3, "fatol": 1e-4, "maxiter": 300},
+            )
             b = r.x / max(np.linalg.norm(r.x), 1e-12)
             if b[0] < 0:
                 b = -b
             l = _score(b, X, y_signed)
             if l < best_loss:
-                best_loss = l; best_beta = b
+                best_loss = l
+                best_beta = b
         except Exception:
             continue
 
@@ -72,12 +84,17 @@ def horowitz_binary_response(x, y):
     m = max(20, n // 2)
     for b_idx in range(B):
         idx = rng2.choice(n, size=m, replace=False)
-        Xb = X[idx]; yb_signed = y_signed[idx]
+        Xb = X[idx]
+        yb_signed = y_signed[idx]
         s0 = best_beta + 0.05 * rng2.standard_normal(p)
         s0 = s0 / max(np.linalg.norm(s0), 1e-12)
-        r = minimize(_score, s0, args=(Xb, yb_signed),
-                     method="Nelder-Mead",
-                     options={"xatol": 1e-3, "fatol": 1e-3, "maxiter": 150})
+        r = minimize(
+            _score,
+            s0,
+            args=(Xb, yb_signed),
+            method="Nelder-Mead",
+            options={"xatol": 1e-3, "fatol": 1e-3, "maxiter": 150},
+        )
         bv = r.x / max(np.linalg.norm(r.x), 1e-12)
         if bv[0] < 0:
             bv = -bv
@@ -85,14 +102,16 @@ def horowitz_binary_response(x, y):
         boot[b_idx] = bv
     se = boot.std(axis=0, ddof=1) * (m / n) ** (1.0 / 3.0)
 
-    return RichResult(payload={
-        "estimate": best_beta.astype(float),
-        "se": se.astype(float),
-        "score": float(-best_loss), "n": n,
-        "method": "Manski (1975) maximum-score (binary response)",
-        "warnings": ["Cube-root asymptotics: SEs from subsample rescaling, "
-                     "not normal-theory."],
-    })
+    return RichResult(
+        payload={
+            "estimate": best_beta.astype(float),
+            "se": se.astype(float),
+            "score": float(-best_loss),
+            "n": n,
+            "method": "Manski (1975) maximum-score (binary response)",
+            "warnings": ["Cube-root asymptotics: SEs from subsample rescaling, not normal-theory."],
+        }
+    )
 
 
 def cheatsheet():

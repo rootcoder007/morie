@@ -1,6 +1,7 @@
 """Tests for hrzplr.horowitz_robinson_plr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzplr import horowitz_robinson_plr
 
 
@@ -12,7 +13,7 @@ def test_hrzplr_basic():
     bandwidth = 0.3
     result = horowitz_robinson_plr(x, y, z, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzplr_edge():

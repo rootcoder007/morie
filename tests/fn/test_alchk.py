@@ -1,6 +1,7 @@
 """Tests for alchk.alammar_recursive_chunking."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alchk import alammar_recursive_chunking
 
 
@@ -12,7 +13,7 @@ def test_alchk_basic():
     overlap = np.random.default_rng(42).normal(0, 1, 100)
     result = alammar_recursive_chunking(text, separators, target_size, overlap)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alchk_edge():

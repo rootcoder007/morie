@@ -1,10 +1,13 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Euclidean distance."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
-def eucldst(x: Union[Sequence, np.ndarray],
-            y: Union[Sequence, np.ndarray]) -> float:
+
+
+def eucldst(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]) -> float:
     """Euclidean (L₂) distance between vectors x and y."""
     a = np.asarray(x, dtype=float)
     b = np.asarray(y, dtype=float)

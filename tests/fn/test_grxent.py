@@ -1,6 +1,7 @@
 """Tests for grxent.geron_softmax_cross_entropy_cost."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grxent import geron_softmax_cross_entropy_cost
 
 
@@ -11,7 +12,7 @@ def test_grxent_basic():
     theta = 0.0
     result = geron_softmax_cross_entropy_cost(X, Y, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grxent_edge():

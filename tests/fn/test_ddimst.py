@@ -1,6 +1,7 @@
 """Tests for ddimst.ddim_step."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ddimst import ddim_step
 
 
@@ -12,7 +13,7 @@ def test_ddimst_basic():
     eta = np.random.default_rng(42).normal(0, 1, 100)
     result = ddim_step(x_t, t, eps_theta, eta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ddimst_edge():

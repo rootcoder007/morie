@@ -1,5 +1,7 @@
 """Tests for aicsc.py - AIC score."""
+
 import numpy as np
+
 from morie.fn.aicsc import aic_score_fn, aicsc
 
 

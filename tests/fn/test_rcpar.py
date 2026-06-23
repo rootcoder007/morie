@@ -1,7 +1,7 @@
 """Tests for morie.fn.rcpar."""
 
 import numpy as np
-import pytest
+
 from morie.fn.rcpar import rcpar
 
 

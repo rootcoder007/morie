@@ -1,6 +1,7 @@
 """IQR outlier rule."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["iqr_outlier"]

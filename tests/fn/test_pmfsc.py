@@ -1,6 +1,7 @@
 """Tests for pmfsc.pmf_potential."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pmfsc import pmf_potential
 
 
@@ -10,7 +11,7 @@ def test_pmfsc_basic():
     ligand = np.random.default_rng(42).normal(0, 1, 100)
     result = pmf_potential(receptor, ligand)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pmfsc_edge():

@@ -1,6 +1,7 @@
 r"""Maximum-likelihood estimate of a trigram language-model probability using n-gram counts from a corpus.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch2_trigram_count"]
@@ -33,13 +34,30 @@ def burkov_lm_ch2_trigram_count(t_i, t_im1, t_im2):
     t_i = np.atleast_1d(np.asarray(t_i, dtype=float))
     n = len(t_i)
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Maximum-likelihood estimate of a trigram language-model probability using n-gram counts from a corpus."})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "Maximum-likelihood estimate of a trigram language-model probability using n-gram counts from a corpus.",
+            }
+        )
     estimate = np.median(t_i)
     se = 1.2533 * np.std(t_i, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Maximum-likelihood estimate of a trigram language-model probability using n-gram counts from a corpus."})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Maximum-likelihood estimate of a trigram language-model probability using n-gram counts from a corpus.",
+        }
+    )
 
 
 def cheatsheet():
-    return "b204: Maximum-likelihood estimate of a trigram language-model probability using n-gram counts from a corpus."
+    return (
+        "b204: Maximum-likelihood estimate of a trigram language-model probability using n-gram counts from a corpus."
+    )

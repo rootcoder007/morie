@@ -1,6 +1,7 @@
 """Tests for bayreg.bayes_linear."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bayreg import bayes_linear
 
 
@@ -11,7 +12,7 @@ def test_bayreg_basic():
     prior_var = np.random.default_rng(42).normal(0, 1, 100)
     result = bayes_linear(y, X, prior_var)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bayreg_edge():

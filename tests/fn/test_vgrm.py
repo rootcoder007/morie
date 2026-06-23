@@ -1,6 +1,7 @@
 """Tests for vgrm.variogram."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vgrm import variogram
 
 
@@ -11,7 +12,7 @@ def test_vgrm_basic():
     bins = np.random.default_rng(42).normal(0, 1, 100)
     result = variogram(coords, values, bins)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_vgrm_edge():

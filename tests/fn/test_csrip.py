@@ -1,5 +1,7 @@
 """Tests for morie.fn.csrip."""
+
 import numpy as np
+
 from morie.fn.csrip import csrip
 
 
@@ -13,6 +15,7 @@ def test_csrip_smoke():
 
 def test_cheatsheet():
     from morie.fn.csrip import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

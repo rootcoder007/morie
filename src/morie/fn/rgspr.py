@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spectral power ratio (LF/HF) for HRV analysis."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_spectral_power_ratio"]
@@ -32,7 +34,9 @@ def rangayyan_spectral_power_ratio(rr_psd, freqs):
     n = int(rr_psd) if rr_psd.ndim == 0 else len(rr_psd)
     result = float(np.mean(rr_psd))
     se = float(np.std(rr_psd, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spectral power ratio (LF/HF) for HRV analysis"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Spectral power ratio (LF/HF) for HRV analysis"}
+    )
 
 
 def cheatsheet():

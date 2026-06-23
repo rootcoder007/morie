@@ -14,7 +14,14 @@ from morie.fn._cfa_engine import (
 )
 
 
-def mi_configural(data: pd.DataFrame, group_col: str, structure: dict[str, list[str]] | None = None, cdf=None, *, items: list[str] | None = None) -> dict:
+def mi_configural(
+    data: pd.DataFrame,
+    group_col: str,
+    structure: dict[str, list[str]] | None = None,
+    cdf=None,
+    *,
+    items: list[str] | None = None,
+) -> dict:
     """Configural (form) invariance: same factor structure, all params free.
 
     Fits the CFA model separately in each group and reports pooled fit.

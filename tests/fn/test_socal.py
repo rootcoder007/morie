@@ -1,6 +1,7 @@
 """Test socal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.socal import socal
 
 

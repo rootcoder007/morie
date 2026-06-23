@@ -1,5 +1,7 @@
 """Walsh-Hadamard Transform with 1/sqrt(d) normalization (CRITICAL -- not 1/d)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_walsh_hadamard_transform"]
@@ -29,7 +31,14 @@ def turboquant_walsh_hadamard_transform(x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Walsh-Hadamard Transform with 1/sqrt(d) normalization (CRITICAL -- not 1/d)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Walsh-Hadamard Transform with 1/sqrt(d) normalization (CRITICAL -- not 1/d)",
+        }
+    )
 
 
 def cheatsheet():

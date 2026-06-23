@@ -6,6 +6,7 @@ from typing import Union
 
 import numpy as np
 import scipy.stats as stats
+
 from ._richresult import RichResult
 
 
@@ -43,7 +44,14 @@ def risk_ratio_ci(table_2x2: Union[list, np.ndarray], *, alpha: float = 0.05) ->
     p1 = a / n1
     p2 = c / n2
     if p2 == 0:
-        return RichResult(payload={"risk_ratio": float("inf"), "ci_lower": float("nan"), "ci_upper": float("nan"), "p_value": float("nan")})
+        return RichResult(
+            payload={
+                "risk_ratio": float("inf"),
+                "ci_lower": float("nan"),
+                "ci_upper": float("nan"),
+                "p_value": float("nan"),
+            }
+        )
     rr = p1 / p2
     log_rr = math.log(rr)
     # SE(log RR) = sqrt((1-p1)/(a) + (1-p2)/(c)) via delta method

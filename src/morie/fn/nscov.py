@@ -64,8 +64,8 @@ def nscov(
             ri = local_range[i]
             rj = local_range[j]
             avg_r = np.sqrt(ri * rj)
-            det_factor = (2 * ri * rj / (ri ** 2 + rj ** 2 + 1e-12))
-            c = np.sqrt(si * sj) * det_factor * np.exp(-dists[i, j] ** 2 / (ri ** 2 + rj ** 2 + 1e-12))
+            det_factor = 2 * ri * rj / (ri**2 + rj**2 + 1e-12)
+            c = np.sqrt(si * sj) * det_factor * np.exp(-(dists[i, j] ** 2) / (ri**2 + rj**2 + 1e-12))
             cov[i, j] = c
             cov[j, i] = c
 

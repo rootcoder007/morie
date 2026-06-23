@@ -14,26 +14,24 @@ extraction by:
 from __future__ import annotations
 
 import re
-from typing import Optional
-from urllib.parse import urljoin, urlparse, parse_qs
+from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
-from ._schema import BLANK_ROW
 from ._normalize import (
     find_case_number,
+    normalise_sex,
+    normalise_yes_no,
     parse_date,
     parse_drid_from_url,
     parse_nrid_from_url,
-    normalise_sex,
-    normalise_yes_no,
 )
+from ._schema import BLANK_ROW
 
 PARSER_VERSION = "0.1.0"
 
 
-def parse_html(html: str, *, drid: Optional[int] = None,
-               source_url: Optional[str] = None) -> dict:
+def parse_html(html: str, *, drid: int | None = None, source_url: str | None = None) -> dict:
     """Turn a director's-report HTML page into a SIU.csv row dict.
 
     :param html: raw response body.
@@ -110,48 +108,57 @@ def parse_html(html: str, *, drid: Optional[int] = None,
     row["siu_forensics_investigators"] = _team_field(team_section, "SIU Forensic Investigators")
 
     # ── witnesses + officer counts (parsed from sub-sections) ──────
-    cw_section = _section_text(text, "Civilian Witnesses",
-                                end_markers=("Witness Officers", "Subject Officers", "Incident Narrative"))
+    cw_section = _section_text(
+        text, "Civilian Witnesses", end_markers=("Witness Officers", "Subject Officers", "Incident Narrative")
+    )
     row["number_of_civilian_witnesses"] = _count_lines_starting_with(cw_section, "CW")
 
     # Modern (post-SIU Act 2019) format calls these "Witness Officials"
     # and "Subject Official" (singular). Try both in turn.
-    wo_section = (
-        _section_text(text, "Witness Officials",
-                      end_markers=("Evidence", "Subject Official",
-                                   "Subject Officers", "Incident Narrative"))
-        or _section_text(text, "Witness Officers",
-                         end_markers=("Subject Officers", "Subject Official",
-                                      "Incident Narrative"))
+    wo_section = _section_text(
+        text,
+        "Witness Officials",
+        end_markers=("Evidence", "Subject Official", "Subject Officers", "Incident Narrative"),
+    ) or _section_text(
+        text, "Witness Officers", end_markers=("Subject Officers", "Subject Official", "Incident Narrative")
     )
     row["number_of_witness_officials"] = _detect_witness_officer_count(wo_section)
 
     so_section = (
-        _section_text(text, "Subject Officials",
-                      end_markers=("Witness Officials", "Witness Officers",
-                                   "Incident Narrative", "Evidence",
-                                   "Relevant Legislation"))
-        or _section_text(text, "Subject Official",
-                         end_markers=("Witness Officials", "Witness Officers",
-                                      "Incident Narrative", "Evidence",
-                                      "Relevant Legislation"))
-        or _section_text(text, "Subject Officers",
-                         end_markers=("Incident Narrative", "Evidence",
-                                      "Relevant Legislation"))
+        _section_text(
+            text,
+            "Subject Officials",
+            end_markers=(
+                "Witness Officials",
+                "Witness Officers",
+                "Incident Narrative",
+                "Evidence",
+                "Relevant Legislation",
+            ),
+        )
+        or _section_text(
+            text,
+            "Subject Official",
+            end_markers=(
+                "Witness Officials",
+                "Witness Officers",
+                "Incident Narrative",
+                "Evidence",
+                "Relevant Legislation",
+            ),
+        )
+        or _section_text(
+            text, "Subject Officers", end_markers=("Incident Narrative", "Evidence", "Relevant Legislation")
+        )
     )
-    row["number_of_subject_officials"] = (
-        _count_lines_starting_with(so_section, "The SO")
-        or _count_lines_starting_with(so_section, "SO")
+    row["number_of_subject_officials"] = _count_lines_starting_with(so_section, "The SO") or _count_lines_starting_with(
+        so_section, "SO"
     )
-    if so_section and any(kw in so_section.lower() for kw in
-                          ("interviewed", "declined", "notes received")):
+    if so_section and any(kw in so_section.lower() for kw in ("interviewed", "declined", "notes received")):
         row["subject_official_interviewed_or_notes"] = "Yes"
 
     # ── reason / location (prose-mined) ────────────────────────────
-    row["location_of_call"] = (
-        _label_value(text, "Location")
-        or _detect_location_from_intro(text)
-    )
+    row["location_of_call"] = _label_value(text, "Location") or _detect_location_from_intro(text)
     row["reason_for_interaction"] = _label_value(text, "Reason for Interaction")
 
     # ── date_of_incident ───────────────────────────────────────────
@@ -165,9 +172,7 @@ def parse_html(html: str, *, drid: Optional[int] = None,
 
     # ── date_siu_notified (the "Notification of the SIU" subsection) ─
     raw_not = (
-        _label_value(text, "Date SIU was Notified")
-        or _label_value(text, "SIU Notified")
-        or _detect_siu_notified(text)
+        _label_value(text, "Date SIU was Notified") or _label_value(text, "SIU Notified") or _detect_siu_notified(text)
     )
     iso_not, raw_not_kept = parse_date(raw_not)
     row["date_siu_notified_iso"], row["date_siu_notified_raw"] = iso_not, raw_not_kept
@@ -185,15 +190,13 @@ def parse_html(html: str, *, drid: Optional[int] = None,
     row["date_of_director_decision_iso"], row["date_of_director_decision_raw"] = iso_dec, raw_dec_kept
 
     # ── injuries, sex, age ────────────────────────────────────────
-    row["injuries_sustained"] = (
-        _label_value(text, "Injuries Sustained")
-        or _detect_injuries_sustained(text)
-    )
+    row["injuries_sustained"] = _label_value(text, "Injuries Sustained") or _detect_injuries_sustained(text)
     row["specific_injuries"] = _detect_specific_injuries(text)
 
     sex, age = _detect_age_sex(text)
-    row["sex_gender_affected"] = normalise_sex(sex) if sex else \
-        normalise_sex(_label_value(text, "Sex") or _label_value(text, "Gender"))
+    row["sex_gender_affected"] = (
+        normalise_sex(sex) if sex else normalise_sex(_label_value(text, "Sex") or _label_value(text, "Gender"))
+    )
     row["age_affected"] = age or _label_value(text, "Age")
 
     # ── relevant legislation (parse the named "Section X, ACT" hits) ─
@@ -216,8 +219,7 @@ def parse_html(html: str, *, drid: Optional[int] = None,
     return row
 
 
-def parse_news_html(html: str, *, nrid: Optional[int] = None,
-                    source_url: Optional[str] = None) -> dict:
+def parse_news_html(html: str, *, nrid: int | None = None, source_url: str | None = None) -> dict:
     """Parse a SIU news-release page into a partial row dict.
 
     News-release pages live at `news_template.php?nrid=<N>` and have a
@@ -268,6 +270,7 @@ def parse_news_html(html: str, *, nrid: Optional[int] = None,
 
 # ── extraction primitives ─────────────────────────────────────────────────
 
+
 def _stripped_text(soup: BeautifulSoup) -> str:
     """Get the page's visible text with normalised whitespace."""
     for s in soup(["script", "style", "noscript"]):
@@ -290,17 +293,17 @@ def _trim_to_body(text: str) -> str:
     """
     matches = list(re.finditer(r"(?:^|\n)\s*Mandate of the SIU\s*\n", text, re.M))
     if len(matches) >= 2:
-        return text[matches[1].start():]
+        return text[matches[1].start() :]
     if len(matches) == 1:
-        return text[matches[0].start():]
+        return text[matches[0].start() :]
     # No "Mandate of the SIU" -- fall back to "The Investigation"
     matches = list(re.finditer(r"(?:^|\n)\s*The Investigation\s*\n", text, re.M))
     if len(matches) >= 2:
-        return text[matches[1].start():]
+        return text[matches[1].start() :]
     return text
 
 
-def _label_value(text: str, label: str) -> Optional[str]:
+def _label_value(text: str, label: str) -> str | None:
     """Look for `<label>:?\\s*<value>` in the stripped text and return the value.
 
     Tolerant of label variants -- the caller passes the canonical phrase;
@@ -318,7 +321,7 @@ def _label_value(text: str, label: str) -> Optional[str]:
     return val or None
 
 
-def _label_int(text: str, label: str) -> Optional[int]:
+def _label_int(text: str, label: str) -> int | None:
     raw = _label_value(text, label)
     if not raw:
         return None
@@ -326,8 +329,7 @@ def _label_int(text: str, label: str) -> Optional[int]:
     return int(m.group(0)) if m else None
 
 
-def _find_news_release_link(soup: BeautifulSoup,
-                            source_url: Optional[str]) -> Optional[str]:
+def _find_news_release_link(soup: BeautifulSoup, source_url: str | None) -> str | None:
     """Return absolute URL of any `news_template.php?nrid=…` link on the page."""
     for a in soup.find_all("a", href=True):
         href = a["href"]
@@ -339,8 +341,12 @@ def _find_news_release_link(soup: BeautifulSoup,
 
 
 _NARRATIVE_HEADERS = (
-    "The Investigation", "Investigation", "Director's Decision",
-    "The Director's Decision", "Brief Summary", "Narrative",
+    "The Investigation",
+    "Investigation",
+    "Director's Decision",
+    "The Director's Decision",
+    "Brief Summary",
+    "Narrative",
 )
 _NARRATIVE_START_RE = re.compile(
     r"(?:Mandate engaged|The Investigation|Notification of the SIU)",
@@ -364,8 +370,7 @@ def _extract_narrative_full(soup: BeautifulSoup, text: str) -> str:
     end at "Endnotes" / "News Releases for this Case".
     """
     # First try DOM containers (real production HTML may have one).
-    for selector in ("div.report-body", "div.article-body",
-                     "article", "div#main-content"):
+    for selector in ("div.report-body", "div.article-body", "article", "div#main-content"):
         node = soup.select_one(selector)
         if node:
             return node.get_text("\n", strip=True)
@@ -381,7 +386,7 @@ def _extract_narrative_full(soup: BeautifulSoup, text: str) -> str:
     return "\n\n".join(p for p in paras if p)
 
 
-def _extract_summary(text: str) -> Optional[str]:
+def _extract_summary(text: str) -> str | None:
     """Pull the first meaningful paragraph as a summary. Limited to 1500 chars."""
     paras = [p for p in text.split("\n\n") if len(p) > 80]
     if not paras:
@@ -391,14 +396,37 @@ def _extract_summary(text: str) -> Optional[str]:
 
 _MH_RACE_KEYWORDS = (
     # Mental health
-    "mental health", "mental illness", "psychiatric", "schizophren",
-    "bipolar", "depression", "psychosis", "psychotic", "suicidal",
-    "self-harm", "delusion", "crisis intervention", "EDP",
-    "emotionally disturbed", "MCIT",
+    "mental health",
+    "mental illness",
+    "psychiatric",
+    "schizophren",
+    "bipolar",
+    "depression",
+    "psychosis",
+    "psychotic",
+    "suicidal",
+    "self-harm",
+    "delusion",
+    "crisis intervention",
+    "EDP",
+    "emotionally disturbed",
+    "MCIT",
     # Race
-    "Black", "African", "Indigenous", "First Nations", "Métis", "Metis",
-    "Inuit", "racialised", "racialized", "racial", "anti-Black",
-    "anti-black", "ethnic", "South Asian", "racism",
+    "Black",
+    "African",
+    "Indigenous",
+    "First Nations",
+    "Métis",
+    "Metis",
+    "Inuit",
+    "racialised",
+    "racialized",
+    "racial",
+    "anti-Black",
+    "anti-black",
+    "ethnic",
+    "South Asian",
+    "racism",
 )
 
 
@@ -414,8 +442,7 @@ def _scan_mental_health_race(narrative: str) -> str:
     return "; ".join(found)
 
 
-def _extract_outbound_links(soup: BeautifulSoup,
-                            source_url: Optional[str]) -> str:
+def _extract_outbound_links(soup: BeautifulSoup, source_url: str | None) -> str:
     """Joined string of absolute URLs to non-siu.on.ca pages on the report."""
     base_host = urlparse(source_url).netloc if source_url else "siu.on.ca"
     out: list[str] = []
@@ -472,7 +499,7 @@ _POLICE_SERVICES = [
     "Timmins Police Service",
     "Abbotsford Police Department",
     "Cornwall Community Police Service",
-    "Cornwall Police Service",      # actual page form (SIU1a sometimes entered "Community" version)
+    "Cornwall Police Service",  # actual page form (SIU1a sometimes entered "Community" version)
     "St. Thomas Police Service",
     "Hanover Police Service",
     "Stratford Police Service",
@@ -542,7 +569,7 @@ _SIU_NPC_BOILERPLATE_RE = re.compile(
 )
 
 
-def _detect_police_service(text: str) -> Optional[str]:
+def _detect_police_service(text: str) -> str | None:
     """Find the canonical police-service name mentioned most in `text`.
 
     Counts occurrences of each vocabulary entry and returns the
@@ -585,8 +612,7 @@ def _detect_police_service(text: str) -> Optional[str]:
     return None
 
 
-def _section_text(text: str, header: str,
-                  end_markers: tuple[str, ...] = ()) -> str:
+def _section_text(text: str, header: str, end_markers: tuple[str, ...] = ()) -> str:
     """Return the text starting at `header` up to the first end_marker.
 
     Used to slice out subsections like "The Team", "Subject Officers",
@@ -608,7 +634,7 @@ def _section_text(text: str, header: str,
     return text[start:end]
 
 
-def _team_field(team_section: str, label: str) -> Optional[str]:
+def _team_field(team_section: str, label: str) -> str | None:
     """Pull a field like `Number of SIU Investigators assigned: 2`."""
     if not team_section:
         return None
@@ -617,7 +643,7 @@ def _team_field(team_section: str, label: str) -> Optional[str]:
     return m.group(1) if m else None
 
 
-def _detect_officers_involved(text: str, team_section: str) -> Optional[int]:
+def _detect_officers_involved(text: str, team_section: str) -> int | None:
     """Detect officers involved in the incident (NOT SIU investigators).
 
     Order of attempts:
@@ -632,8 +658,7 @@ def _detect_officers_involved(text: str, team_section: str) -> Optional[int]:
 
     # 2) numbered SOs in Subject Officers section. Note: real SIU HTML
     # breaks `SO\n#1` across lines, so flatten whitespace first.
-    so_section = _section_text(text, "Subject Officers",
-                                end_markers=("Incident Narrative", "Evidence"))
+    so_section = _section_text(text, "Subject Officers", end_markers=("Incident Narrative", "Evidence"))
     haystack = so_section or text
     flat = re.sub(r"\s+", " ", haystack)
     so_nums = set()
@@ -648,7 +673,7 @@ def _detect_officers_involved(text: str, team_section: str) -> Optional[int]:
     return None
 
 
-def _count_lines_starting_with(section: str, prefix: str) -> Optional[int]:
+def _count_lines_starting_with(section: str, prefix: str) -> int | None:
     """Count distinct numbered tags like CW #1, CW #2, …
 
     The real SIU HTML breaks `CW #1` across two lines (`CW` then `#1`),
@@ -670,7 +695,7 @@ def _count_lines_starting_with(section: str, prefix: str) -> Optional[int]:
     return None
 
 
-def _detect_witness_officer_count(wo_section: str) -> Optional[int]:
+def _detect_witness_officer_count(wo_section: str) -> int | None:
     """Witness Officers -- usually 'There were no police officers witness…'
     or a list of WO #1, WO #2.
 
@@ -687,19 +712,20 @@ def _detect_witness_officer_count(wo_section: str) -> Optional[int]:
     return max(wo_nums) if wo_nums else None
 
 
-def _detect_location_from_intro(text: str) -> Optional[str]:
+def _detect_location_from_intro(text: str) -> str | None:
     """Find "in the [Township|City|Town] of <Place>" pattern early in the
     Investigation section."""
     inv = _section_text(text, "The Investigation", end_markers=("The Team", "Incident Narrative"))
     haystack = inv or text
-    m = re.search(r"in the (Township|City|Town|Municipality|Region) of ([A-Z][A-Za-z\s\-]+?)(?:[\.,]|\s+(?:on|at|when))",
-                  haystack)
+    m = re.search(
+        r"in the (Township|City|Town|Municipality|Region) of ([A-Z][A-Za-z\s\-]+?)(?:[\.,]|\s+(?:on|at|when))", haystack
+    )
     if m:
         return f"{m.group(1)} of {m.group(2).strip()}"
     return None
 
 
-def _detect_incident_date_from_narrative(text: str) -> Optional[str]:
+def _detect_incident_date_from_narrative(text: str) -> str | None:
     """Find the date of incident inside "Incident Narrative" or "The
     Investigation" sections.
 
@@ -711,31 +737,36 @@ def _detect_incident_date_from_narrative(text: str) -> Optional[str]:
     SKIP_NEAR = ("notified", "contacted the siu", "Notification of the SIU")
 
     for sec_name in ("Incident Narrative", "The Investigation"):
-        sec = _section_text(text, sec_name,
-                            end_markers=("Nature of Injuries", "Evidence",
-                                         "The Team",  # post-2019 separator
-                                         "Analysis and Director",
-                                         "Relevant Legislation"))
+        sec = _section_text(
+            text,
+            sec_name,
+            end_markers=(
+                "Nature of Injuries",
+                "Evidence",
+                "The Team",  # post-2019 separator
+                "Analysis and Director",
+                "Relevant Legislation",
+            ),
+        )
         if not sec:
             continue
         # Walk every "On <Date>" hit; pick first NOT near a notification verb
         for m in re.finditer(r"\b[Oo]n\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})", sec):
-            window = sec[max(0, m.start()-50):m.end()+80].lower()
+            window = sec[max(0, m.start() - 50) : m.end() + 80].lower()
             if any(skip in window for skip in SKIP_NEAR):
                 continue
             return m.group(1).replace(",", "")
     return None
 
 
-def _detect_siu_notified(text: str) -> Optional[str]:
+def _detect_siu_notified(text: str) -> str | None:
     """Date SIU was notified.
 
     Two phrasings seen in the wild:
       pre-2019 format: "the OPP notified the SIU"
       post-2019 format: "NRPS contacted the SIU"
     """
-    inv = _section_text(text, "The Investigation",
-                        end_markers=("The Team", "Incident Narrative"))
+    inv = _section_text(text, "The Investigation", end_markers=("The Team", "Incident Narrative"))
     haystack = inv or text
     # Form A: "<Date>, ... notified|contacted the SIU" -- date may be
     # preceded by "On" (capitalized) or "on" (lowercase, often after
@@ -743,20 +774,17 @@ def _detect_siu_notified(text: str) -> Optional[str]:
     m = re.search(
         r"\b[Oo]n\s+(?:[A-Z][a-z]+,?\s+)?([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})"
         r"[^\n]{0,200}?(?:notified|contacted)\s+the\s+SIU",
-        haystack)
+        haystack,
+    )
     if m:
         return m.group(1).replace(",", "")
     # Form B: "...notified|contacted the SIU on <Date>"
-    m = re.search(
-        r"(?:notified|contacted)\s+the\s+SIU[^\n]{0,200}?[Oo]n\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})",
-        haystack)
+    m = re.search(r"(?:notified|contacted)\s+the\s+SIU[^\n]{0,200}?[Oo]n\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})", haystack)
     if m:
         return m.group(1).replace(",", "")
     # Form C: any "On <Date>" inside the "Notification of the SIU"
     # subsection (the modern format opens with this)
-    notif = _section_text(text, "Notification of the SIU",
-                          end_markers=("The Team", "Incident Narrative",
-                                       "Evidence"))
+    notif = _section_text(text, "Notification of the SIU", end_markers=("The Team", "Incident Narrative", "Evidence"))
     if notif:
         m = re.search(r"On\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})", notif)
         if m:
@@ -764,10 +792,9 @@ def _detect_siu_notified(text: str) -> Optional[str]:
     return None
 
 
-def _detect_notifying_party(text: str) -> Optional[str]:
+def _detect_notifying_party(text: str) -> str | None:
     """Detect who notified the SIU. Same vocabulary as police service."""
-    inv = _section_text(text, "The Investigation",
-                        end_markers=("The Team", "Incident Narrative"))
+    inv = _section_text(text, "The Investigation", end_markers=("The Team", "Incident Narrative"))
     haystack = inv or text[:5000]
     m = re.search(r"the\s+([A-Z][A-Za-z\s]+?)\s+(?:\([A-Z]+\)\s+)?notified the SIU", haystack)
     if m:
@@ -775,7 +802,7 @@ def _detect_notifying_party(text: str) -> Optional[str]:
     return _detect_police_service(haystack)
 
 
-def _detect_decision_date(text: str) -> Optional[str]:
+def _detect_decision_date(text: str) -> str | None:
     """Director's decision date -- signature block usually has 'Date: <date>'
     immediately above the director's name."""
     # "Date: October 18, 2018" near "Director" mention.
@@ -789,11 +816,14 @@ def _detect_decision_date(text: str) -> Optional[str]:
     return None
 
 
-def _detect_age_sex(text: str) -> tuple[Optional[str], Optional[str]]:
+def _detect_age_sex(text: str) -> tuple[str | None, str | None]:
     """Find "<age>-year-old <woman|man|female|male|girl|boy>" patterns,
     typically in the "Mandate engaged" or "Complainant" sections."""
-    m = re.search(r"\b(\d{1,3})[\s\-]year[\s\-]old\s+(woman|man|female|male|girl|boy|person|individual|youth|child|adult)\b",
-                  text, re.IGNORECASE)
+    m = re.search(
+        r"\b(\d{1,3})[\s\-]year[\s\-]old\s+(woman|man|female|male|girl|boy|person|individual|youth|child|adult)\b",
+        text,
+        re.IGNORECASE,
+    )
     if not m:
         return None, None
     age = m.group(1)
@@ -801,15 +831,16 @@ def _detect_age_sex(text: str) -> tuple[Optional[str], Optional[str]]:
     return sex, age
 
 
-def _detect_injuries_sustained(text: str) -> Optional[str]:
+def _detect_injuries_sustained(text: str) -> str | None:
     """Pull the most-specific injury phrase from "Nature of Injuries /
     Treatment" subsection."""
-    sec = _section_text(text, "Nature of Injuries / Treatment",
-                        end_markers=("Evidence", "Relevant Legislation",
-                                      "Analysis and Director"))
+    sec = _section_text(
+        text,
+        "Nature of Injuries / Treatment",
+        end_markers=("Evidence", "Relevant Legislation", "Analysis and Director"),
+    )
     if not sec:
-        sec = _section_text(text, "Nature of Injuries",
-                             end_markers=("Evidence", "Relevant Legislation"))
+        sec = _section_text(text, "Nature of Injuries", end_markers=("Evidence", "Relevant Legislation"))
     if sec:
         # First non-empty paragraph
         for ln in sec.splitlines():
@@ -819,46 +850,59 @@ def _detect_injuries_sustained(text: str) -> Optional[str]:
     return None
 
 
-def _detect_specific_injuries(text: str) -> Optional[str]:
+def _detect_specific_injuries(text: str) -> str | None:
     """Look for fracture/laceration/etc. specifics in narrative."""
-    m = re.search(r"((?:fractured?|broken|lacerat\w+|gunshot|stab\w+|burns?)[^\n]{1,200}?(?:rib|leg|arm|skull|wrist|ankle|jaw|nose|tooth|finger|spine|vertebra)[^\n]{0,80})",
-                  text, re.IGNORECASE)
+    m = re.search(
+        r"((?:fractured?|broken|lacerat\w+|gunshot|stab\w+|burns?)[^\n]{1,200}?(?:rib|leg|arm|skull|wrist|ankle|jaw|nose|tooth|finger|spine|vertebra)[^\n]{0,80})",
+        text,
+        re.IGNORECASE,
+    )
     return m.group(1).strip() if m else None
 
 
-def _detect_legislation(text: str) -> Optional[str]:
+def _detect_legislation(text: str) -> str | None:
     """Collect all 'Section N, <Act> – <description>' headings from the
     Relevant Legislation section."""
-    sec = _section_text(text, "Relevant Legislation",
-                        end_markers=("Analysis and Director", "News Releases"))
+    sec = _section_text(text, "Relevant Legislation", end_markers=("Analysis and Director", "News Releases"))
     if not sec:
         return None
     sections = []
-    for m in re.finditer(r"Section\s+\d+(?:\([^)]+\))?,?\s+([A-Z][^\n,–-]+?)(?:\s*[–-]|$)",
-                         sec):
+    for m in re.finditer(r"Section\s+\d+(?:\([^)]+\))?,?\s+([A-Z][^\n,–-]+?)(?:\s*[–-]|$)", sec):
         act = m.group(1).strip().rstrip(",")
         if act not in sections:
             sections.append(act)
     return "; ".join(sections) if sections else None
 
 
-def _detect_charges_from_decision(text: str) -> Optional[bool]:
+def _detect_charges_from_decision(text: str) -> bool | None:
     """Read the Analysis and Director's Decision section for the verdict."""
-    sec = _section_text(text, "Analysis and Director's Decision",
-                        end_markers=("Endnotes", "News Release", "Note:"))
+    sec = _section_text(text, "Analysis and Director's Decision", end_markers=("Endnotes", "News Release", "Note:"))
     if not sec:
         return None
     low = sec.lower()
-    if any(p in low for p in (
-        "no charges", "shall issue", "none shall issue",
-        "no basis for charges", "no reasonable grounds",
-        "do not lay", "decline to lay", "lack the necessary grounds",
-    )):
+    if any(
+        p in low
+        for p in (
+            "no charges",
+            "shall issue",
+            "none shall issue",
+            "no basis for charges",
+            "no reasonable grounds",
+            "do not lay",
+            "decline to lay",
+            "lack the necessary grounds",
+        )
+    ):
         return False
-    if any(p in low for p in (
-        "charged with", "have caused .* to be charged",
-        "criminal charges have been laid", "charges have been laid",
-    )):
+    if any(
+        p in low
+        for p in (
+            "charged with",
+            "have caused .* to be charged",
+            "criminal charges have been laid",
+            "charges have been laid",
+        )
+    ):
         return True
     return None
 
@@ -899,7 +943,7 @@ def _detect_language(text: str) -> str:
     return "unknown"
 
 
-def _detect_news_release_title(full_text: str) -> Optional[str]:
+def _detect_news_release_title(full_text: str) -> str | None:
     """Find the headline of a news release.
 
     The page has chrome menu with "News Release" appearing many times;
@@ -916,7 +960,7 @@ def _detect_news_release_title(full_text: str) -> Optional[str]:
         nl = full_text.find("\n", m.end())
         if nl == -1:
             continue
-        candidate = full_text[m.end():nl].strip()
+        candidate = full_text[m.end() : nl].strip()
         if not candidate:
             continue
         # Reject obvious nav labels
@@ -934,7 +978,7 @@ _RELEASE_DATE_RE = re.compile(
 )
 
 
-def _detect_news_release_date(full_text: str) -> tuple[Optional[str], Optional[str]]:
+def _detect_news_release_date(full_text: str) -> tuple[str | None, str | None]:
     m = _RELEASE_DATE_RE.search(full_text)
     if not m:
         return None, None
@@ -943,12 +987,12 @@ def _detect_news_release_date(full_text: str) -> tuple[Optional[str], Optional[s
     return iso, raw
 
 
-def _detect_news_release_summary(full_text: str) -> Optional[str]:
+def _detect_news_release_summary(full_text: str) -> str | None:
     """Pull the paragraph immediately after the city/date stamp."""
     m = _RELEASE_DATE_RE.search(full_text)
     if not m:
         return None
-    after = full_text[m.end():]
+    after = full_text[m.end() :]
     # Strip the trailing "---" if present
     after = re.sub(r"^\s*-+\s*", "", after).lstrip()
     # Take up to the next double-newline or 1500 chars
@@ -963,22 +1007,20 @@ _DIRECTOR_NAME_RE = re.compile(
 )
 
 
-def _detect_directors_name(full_text: str) -> Optional[str]:
+def _detect_directors_name(full_text: str) -> str | None:
     m = _DIRECTOR_NAME_RE.search(full_text)
     if m:
         return m.group(1).strip()
     # Director sign-off line: "<Name>\nDirector\nSpecial Investigations Unit"
-    m = re.search(r"\n\s*([A-Z][A-Za-z'\-]+\s+[A-Z][A-Za-z'\-]+)\s*\n\s*Director\s*\n",
-                   full_text)
+    m = re.search(r"\n\s*([A-Z][A-Za-z'\-]+\s+[A-Z][A-Za-z'\-]+)\s*\n\s*Director\s*\n", full_text)
     if m:
         return m.group(1).strip()
     return None
 
 
-def _detect_reasonable_grounds(text: str) -> Optional[str]:
+def _detect_reasonable_grounds(text: str) -> str | None:
     """Pull the conclusion sentence from the Director's Decision."""
-    sec = _section_text(text, "Analysis and Director's Decision",
-                        end_markers=("Endnotes", "News Release", "Note:"))
+    sec = _section_text(text, "Analysis and Director's Decision", end_markers=("Endnotes", "News Release", "Note:"))
     if not sec:
         return None
     # First sentence containing "reasonable grounds"

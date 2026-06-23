@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayesian LASSO (Park & Casella 2008 Gibbs sampler, light version)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -9,9 +10,15 @@ from ._richresult import RichResult
 __all__ = ["bayesian_lasso_full"]
 
 
-def bayesian_lasso_full(x, y, n_iter: int = 200, burn: int = 50,
-                        lam: float | None = None, seed: int = 0,
-                        deterministic_seed: int | None = None):
+def bayesian_lasso_full(
+    x,
+    y,
+    n_iter: int = 200,
+    burn: int = 50,
+    lam: float | None = None,
+    seed: int = 0,
+    deterministic_seed: int | None = None,
+):
     """Bayesian LASSO with a double-exponential (Laplace) prior on beta.
 
     Model::
@@ -51,6 +58,7 @@ def bayesian_lasso_full(x, y, n_iter: int = 200, burn: int = 50,
     """
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("blasf", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -95,23 +103,24 @@ def bayesian_lasso_full(x, y, n_iter: int = 200, burn: int = 50,
         # tau_j^{-2} | rest ~ InverseGaussian(mu', lam'). Use formula:
         # 1/tau_j^2 ~ IG(sqrt(lam^2 * sigma2 / beta_j^2), lam^2)
         beta_safe = np.where(np.abs(beta) < 1e-8, 1e-8, beta)
-        mu_prime = np.sqrt((lam_val ** 2) * sigma2 / (beta_safe ** 2))
-        lam_prime = lam_val ** 2
+        mu_prime = np.sqrt((lam_val**2) * sigma2 / (beta_safe**2))
+        lam_prime = lam_val**2
         # Sample inverse Gaussian via Michael-Schucany-Haas
         u = rng.chisquare(1, size=p)
         x_mu = mu_prime
-        y_ig = (x_mu
-                + (x_mu ** 2) * u / (2.0 * lam_prime)
-                - (x_mu / (2.0 * lam_prime))
-                * np.sqrt(4.0 * x_mu * lam_prime * u + (x_mu ** 2) * u ** 2))
+        y_ig = (
+            x_mu
+            + (x_mu**2) * u / (2.0 * lam_prime)
+            - (x_mu / (2.0 * lam_prime)) * np.sqrt(4.0 * x_mu * lam_prime * u + (x_mu**2) * u**2)
+        )
         z2 = rng.uniform(0, 1, size=p)
-        x_ig = np.where(z2 <= x_mu / (x_mu + y_ig), y_ig, (x_mu ** 2) / y_ig)
+        x_ig = np.where(z2 <= x_mu / (x_mu + y_ig), y_ig, (x_mu**2) / y_ig)
         x_ig = np.maximum(x_ig, 1e-8)
         tau2 = 1.0 / x_ig
         # sigma^2 | rest ~ IG((n-1+p)/2, (||y - X beta||^2 + beta' D^{-1} beta)/2)
         resid = yc - Xc @ beta
         shape = (n - 1 + p) / 2.0
-        scale = 0.5 * (np.sum(resid ** 2) + np.sum((beta ** 2) / tau2))
+        scale = 0.5 * (np.sum(resid**2) + np.sum((beta**2) / tau2))
         sigma2 = float(scale / rng.gamma(shape, 1.0))
         # lam^2 | rest ~ Gamma(p + r, 0.5*sum(tau_j^2) + s) ; r=1,s=0.1 weak prior
         if lam is None:
@@ -152,8 +161,9 @@ def bayesian_lasso_full(x, y, n_iter: int = 200, burn: int = 50,
             "p": p,
             "method": "Bayesian LASSO (Park-Casella Gibbs, short chain)",
         },
-        warnings=["Short chain (default 200 iters / 50 burn-in) -- for "
-                  "publication-grade posteriors use BGLR with ≥10k iters."],
+        warnings=[
+            "Short chain (default 200 iters / 50 burn-in) -- for publication-grade posteriors use BGLR with ≥10k iters."
+        ],
     )
 
 

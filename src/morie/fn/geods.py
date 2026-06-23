@@ -67,9 +67,7 @@ def geods(
                 for nu in range(4):
                     s = 0.0
                     for sig in range(4):
-                        s += 0.5 * ginv[lam, sig] * (
-                            dg[nu, sig, mu] + dg[mu, sig, nu] - dg[sig, mu, nu]
-                        )
+                        s += 0.5 * ginv[lam, sig] * (dg[nu, sig, mu] + dg[mu, sig, nu] - dg[sig, mu, nu])
                     G[lam, mu, nu] = s
         return G
 
@@ -88,8 +86,7 @@ def geods(
 
     y0 = np.concatenate([x0, u0])
     tau_eval = np.linspace(tau_span[0], tau_span[1], n_points)
-    sol = solve_ivp(rhs, tau_span, y0, t_eval=tau_eval, method="RK45",
-                    rtol=1e-10, atol=1e-12)
+    sol = solve_ivp(rhs, tau_span, y0, t_eval=tau_eval, method="RK45", rtol=1e-10, atol=1e-12)
 
     return {
         "tau": sol.t,

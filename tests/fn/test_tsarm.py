@@ -1,6 +1,7 @@
 """Test tsarm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tsarm import tsarm
 
 

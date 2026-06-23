@@ -1,6 +1,7 @@
 """Test pfsim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pfsim import pfsim
 
 

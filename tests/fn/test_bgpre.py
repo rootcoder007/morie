@@ -1,6 +1,7 @@
 """Tests for morie.fn.bgpre -- Bayesian GP regression."""
 
 import numpy as np
+
 from morie.fn.bgpre import bayesian_gp_regression
 
 

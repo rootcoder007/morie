@@ -1,6 +1,8 @@
 """Test sobfp."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sobfp import sobfp
 
 

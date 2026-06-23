@@ -90,4 +90,4 @@ speclu = rbf_spectral_cluster
 
 
 def cheatsheet() -> str:
-    return 'rbf_spectral_cluster({}) -> Spectral clustering variant.'
+    return "rbf_spectral_cluster({}) -> Spectral clustering variant."

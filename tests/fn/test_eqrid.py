@@ -1,8 +1,9 @@
 """Tests for morie.fn.eqrid — racial disparity index."""
 
 import pytest
-from morie.fn.eqrid import racial_disparity_index
+
 from morie.fn._containers import ESRes
+from morie.fn.eqrid import racial_disparity_index
 
 
 class TestRdi:

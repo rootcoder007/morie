@@ -1,6 +1,7 @@
 """Tests for mard.ma_risk_difference."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mard import ma_risk_difference
 
 
@@ -12,7 +13,7 @@ def test_mard_basic():
     d = 5
     result = ma_risk_difference(a, b, c, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mard_edge():

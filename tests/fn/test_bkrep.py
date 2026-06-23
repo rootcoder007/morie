@@ -1,6 +1,7 @@
 """Tests for bkrep.burkov_repetition_penalty."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bkrep import burkov_repetition_penalty
 
 
@@ -11,7 +12,7 @@ def test_bkrep_basic():
     penalty = np.random.default_rng(42).normal(0, 1, 100)
     result = burkov_repetition_penalty(logits, prev_tokens, penalty)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bkrep_edge():

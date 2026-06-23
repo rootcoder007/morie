@@ -1,6 +1,7 @@
 """Test opcnt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opcnt import opcnt
 
 

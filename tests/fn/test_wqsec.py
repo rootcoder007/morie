@@ -1,6 +1,7 @@
 """Test wqsec."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wqsec import wqsec
 
 

@@ -86,4 +86,4 @@ voron = voronoi_areas
 
 
 def cheatsheet() -> str:
-    return 'voronoi_areas({}) -> Voronoi tessellation areas.'
+    return "voronoi_areas({}) -> Voronoi tessellation areas."

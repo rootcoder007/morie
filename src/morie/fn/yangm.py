@@ -71,7 +71,7 @@ def yangm(
                     for cc in range(n_gen):
                         F[a, mu, nu] += g_coupling * f[a, b, cc] * A[b, mu] * A[cc, nu]
 
-    action_density = -0.25 * np.sum(F ** 2)
+    action_density = -0.25 * np.sum(F**2)
 
     return {
         "field_strength": F,

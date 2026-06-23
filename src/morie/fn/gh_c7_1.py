@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Polya tree KL property: canonical PT*(alpha, a_m) has KL support at continuous densities."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_pt_kl_prop"]
@@ -30,7 +32,14 @@ def ghosal_pt_kl_prop(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Polya tree KL property: canonical PT*(alpha, a_m) has KL support at continuous densities"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Polya tree KL property: canonical PT*(alpha, a_m) has KL support at continuous densities",
+        }
+    )
 
 
 def cheatsheet():

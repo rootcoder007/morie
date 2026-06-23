@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.rf import rf_dist, rf
+from morie.fn.rf import rf, rf_dist
 
 
 class TestRf:

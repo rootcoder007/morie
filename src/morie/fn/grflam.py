@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Flamingo gated cross-attention between language tokens and visual features."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_flamingo_cross_modal_attn"]
@@ -36,7 +38,14 @@ def geron_flamingo_cross_modal_attn(h, visual_features, alpha, weights):
     n = len(h)
     result = float(np.mean(h))
     se = float(np.std(h, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Flamingo gated cross-attention between language tokens and visual features"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Flamingo gated cross-attention between language tokens and visual features",
+        }
+    )
 
 
 def cheatsheet():

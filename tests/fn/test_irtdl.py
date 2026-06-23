@@ -1,7 +1,7 @@
 """Tests for morie.fn.irtdl — IRT difficulty extraction."""
 
-import numpy as np
 import pandas as pd
+
 from morie.fn.irtdl import irt_difficulty
 
 

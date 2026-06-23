@@ -1,6 +1,7 @@
 """Test seebg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.seebg import seebg
 
 

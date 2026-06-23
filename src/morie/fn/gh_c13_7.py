@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mixtures of Beta processes for flexible hazard modeling."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_mix_bp"]
@@ -30,7 +32,14 @@ def ghosal_mix_bp(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mixtures of Beta processes for flexible hazard modeling"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mixtures of Beta processes for flexible hazard modeling",
+        }
+    )
 
 
 def cheatsheet():

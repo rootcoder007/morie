@@ -1,6 +1,8 @@
 """Tests for morie.fn.nobll -- bill outcome positions."""
+
 import numpy as np
-from morie.fn.nobll import nominate_bill_params, nobll
+
+from morie.fn.nobll import nobll, nominate_bill_params
 
 
 def test_alias():

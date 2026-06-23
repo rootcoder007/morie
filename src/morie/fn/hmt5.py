@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """T5: text-to-text transfer transformer (encoder-decoder)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_t5"]
@@ -32,7 +34,14 @@ def geron_t5(src, tgt):
     n = len(src)
     result = float(np.mean(src))
     se = float(np.std(src, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "T5: text-to-text transfer transformer (encoder-decoder)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "T5: text-to-text transfer transformer (encoder-decoder)",
+        }
+    )
 
 
 def cheatsheet():

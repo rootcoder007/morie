@@ -1,6 +1,7 @@
 """Tests for evrlpot.evt_return_level_pot."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evrlpot import evt_return_level_pot
 
 
@@ -14,7 +15,7 @@ def test_evrlpot_basic():
     T = np.random.default_rng(43).integers(0, 2, 100)
     result = evt_return_level_pot(u, sigma, xi, zeta_u, n_y, T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evrlpot_edge():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svmvt -- Median voter theorem test"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svmvt import median_voter
 

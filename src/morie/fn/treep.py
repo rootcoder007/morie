@@ -93,15 +93,11 @@ def tpe_minimize(
 
             log_l = 0.0
             for j in range(d):
-                log_l += np.log(
-                    np.mean(stats.norm.pdf(candidate[j], x_good[:, j], bw_good)) + 1e-30
-                )
+                log_l += np.log(np.mean(stats.norm.pdf(candidate[j], x_good[:, j], bw_good)) + 1e-30)
 
             log_g = 0.0
             for j in range(d):
-                log_g += np.log(
-                    np.mean(stats.norm.pdf(candidate[j], x_bad[:, j], bw_bad)) + 1e-30
-                )
+                log_g += np.log(np.mean(stats.norm.pdf(candidate[j], x_bad[:, j], bw_bad)) + 1e-30)
 
             ratio = log_l - log_g
             if ratio > best_ratio:

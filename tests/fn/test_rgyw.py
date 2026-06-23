@@ -1,6 +1,7 @@
 """Tests for rgyw.rangayyan_yule_walker."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgyw import rangayyan_yule_walker
 
 
@@ -10,7 +11,7 @@ def test_rgyw_basic():
     order = 4
     result = rangayyan_yule_walker(x, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgyw_edge():

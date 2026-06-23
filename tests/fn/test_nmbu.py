@@ -1,4 +1,5 @@
 """Test nmbu."""
+
 from morie.fn.nmbu import nambu_goto_action
 
 

@@ -41,4 +41,5 @@ def test_mean_restricted_positive(surv_data):
 
 def test_cheatsheet():
     from morie.fn.srdur import cheatsheet
+
     assert "duration" in cheatsheet().lower()

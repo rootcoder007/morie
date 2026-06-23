@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 4.1: Identification of beta under median independence."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_thm4_1_id_median"]
@@ -32,7 +34,14 @@ def horowitz_thm4_1_id_median(x, y):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Theorem 4.1: Identification of beta under median independence"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Theorem 4.1: Identification of beta under median independence",
+        }
+    )
 
 
 def cheatsheet():

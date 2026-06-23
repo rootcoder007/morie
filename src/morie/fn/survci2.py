@@ -1,6 +1,7 @@
 """Uno C-index for censored data."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["uno_concordance"]

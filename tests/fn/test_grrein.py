@@ -1,6 +1,7 @@
 """Tests for grrein.geron_reinforce_policy_gradient."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grrein import geron_reinforce_policy_gradient
 
 
@@ -12,7 +13,7 @@ def test_grrein_basic():
     alpha = 0.05
     result = geron_reinforce_policy_gradient(theta, log_probs, returns_G, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grrein_edge():

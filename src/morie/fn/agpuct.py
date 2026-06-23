@@ -1,6 +1,7 @@
 """PUCT (Predictor Upper Confidence Tree) score for AlphaZero MCTS."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphazero_puct"]
@@ -36,7 +37,14 @@ def alphazero_puct(P, N, Q, c_puct):
     n = len(P)
     result = float(np.mean(P))
     se = float(np.std(P, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PUCT (Predictor Upper Confidence Tree) score for AlphaZero MCTS"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PUCT (Predictor Upper Confidence Tree) score for AlphaZero MCTS",
+        }
+    )
 
 
 def cheatsheet():

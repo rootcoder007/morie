@@ -43,7 +43,7 @@ def dkern(
     knots = coords[idx]
 
     dists_to_knots = cdist(coords, knots)
-    r2 = dists_to_knots ** 2
+    r2 = dists_to_knots**2
     with np.errstate(divide="ignore", invalid="ignore"):
         phi = np.where(r2 > 0, r2 * np.log(r2), 0.0)
 

@@ -1,6 +1,7 @@
 """Tests for psddb.py - PSD to decibels."""
+
 import numpy as np
-import pytest
+
 from morie.fn.psddb import psd_decibels, psddb
 
 

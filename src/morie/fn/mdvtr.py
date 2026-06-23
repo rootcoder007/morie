@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Median voter theorem (Armstrong et al. Ch 2)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["median_voter", "mdvtr"]
@@ -29,8 +31,7 @@ def median_voter(x):
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n == 0:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": 0,
-                                   "method": "median_voter"})
+        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": 0, "method": "median_voter"})
     est = float(np.median(x))
     if n > 1:
         # Laplace asymptotic SE of the sample median for normal-like data:
@@ -44,11 +45,16 @@ def median_voter(x):
         title="Median voter theorem (Black 1948)",
         summary_lines=[("Median (x*)", est), ("SE (Laplace)", se), ("n", n)],
         interpretation=(
-            f"With single-peaked preferences in 1D, the Condorcet winner "
-            f"is x* = {est:.4f} (the median ideal point)."),
-        payload={"estimate": est, "se": se, "ci_lower": ci_lo,
-                 "ci_upper": ci_hi, "n": n,
-                 "method": "Median voter theorem"},
+            f"With single-peaked preferences in 1D, the Condorcet winner is x* = {est:.4f} (the median ideal point)."
+        ),
+        payload={
+            "estimate": est,
+            "se": se,
+            "ci_lower": ci_lo,
+            "ci_upper": ci_hi,
+            "n": n,
+            "method": "Median voter theorem",
+        },
     )
 
 

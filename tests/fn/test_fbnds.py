@@ -1,8 +1,9 @@
 """Test filter_bounds (fbnds)."""
+
 import pytest
 
-from morie.fn.fbnds import filter_bounds, fbnds
 from morie.fn._containers import DescriptiveResult
+from morie.fn.fbnds import fbnds, filter_bounds
 
 
 class TestFilterBounds:

@@ -1,6 +1,7 @@
 """Tests for konfound.konfound."""
+
 import numpy as np
-import pytest
+
 from morie.fn.konfound import konfound
 
 
@@ -12,7 +13,7 @@ def test_konfound_basic():
     threshold = np.random.default_rng(42).normal(0, 1, 100)
     result = konfound(est, se, n, threshold)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_konfound_edge():

@@ -1,4 +1,5 @@
 """DBSCAN density-based clustering (Ester et al. 1996)."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -37,17 +38,19 @@ def dbscan_clustering(x, *, eps=0.5, min_samples=5, metric="euclidean"):
     labels = db.fit_predict(X)
     n_clusters = int(len(set(labels)) - (1 if -1 in labels else 0))
     n_noise = int(np.sum(labels == -1))
-    return RichResult(payload={
-        "estimate": n_clusters,
-        "labels": labels.tolist(),
-        "n_clusters": n_clusters,
-        "n_noise": n_noise,
-        "core_sample_indices": db.core_sample_indices_.tolist(),
-        "eps": float(eps),
-        "min_samples": int(min_samples),
-        "n": int(n),
-        "method": "DBSCAN (Ester et al. 1996)",
-    })
+    return RichResult(
+        payload={
+            "estimate": n_clusters,
+            "labels": labels.tolist(),
+            "n_clusters": n_clusters,
+            "n_noise": n_noise,
+            "core_sample_indices": db.core_sample_indices_.tolist(),
+            "eps": float(eps),
+            "min_samples": int(min_samples),
+            "n": int(n),
+            "method": "DBSCAN (Ester et al. 1996)",
+        }
+    )
 
 
 def cheatsheet():

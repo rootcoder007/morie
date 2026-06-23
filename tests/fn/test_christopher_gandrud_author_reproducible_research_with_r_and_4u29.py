@@ -1,7 +1,10 @@
 """Waste no more time arguing what a good person should be. Be one. — Marcus Aurelius"""
+
 import numpy as np
-import pytest
-from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_4u29 import christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_29
+
+from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_4u29 import (
+    christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_29,
+)
 
 
 def test_christopher_gandrud_author_reproducible_research_with_r_and_4u29_basic():
@@ -9,7 +12,7 @@ def test_christopher_gandrud_author_reproducible_research_with_r_and_4u29_basic(
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_29(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_christopher_gandrud_author_reproducible_research_with_r_and_4u29_edge():

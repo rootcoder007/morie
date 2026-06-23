@@ -1,6 +1,7 @@
 """Tests for rglstm.rangayyan_lstm_signal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rglstm import rangayyan_lstm_signal
 
 
@@ -14,7 +15,7 @@ def test_rglstm_basic():
     epochs = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_lstm_signal(X_seq, y, hidden_size, n_layers, lr, epochs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rglstm_edge():

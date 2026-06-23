@@ -1,6 +1,7 @@
 """Tests for hzbnds.horowitz_manski_bounds."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hzbnds import horowitz_manski_bounds
 
 
@@ -12,7 +13,7 @@ def test_hzbnds_basic():
     y_max = 100
     result = horowitz_manski_bounds(y, R, y_min, y_max)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hzbnds_edge():

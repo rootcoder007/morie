@@ -61,4 +61,5 @@ def test_invalid_n_components():
 
 def test_cheatsheet():
     from morie.fn.mxmod import cheatsheet
+
     assert "mixture" in cheatsheet().lower()

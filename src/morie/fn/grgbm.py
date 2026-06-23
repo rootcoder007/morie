@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gradient boosting residual-fitting step (regression with squared loss)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_gradient_boosting_residual"]
@@ -34,7 +36,14 @@ def geron_gradient_boosting_residual(X, y, F_prev):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gradient boosting residual-fitting step (regression with squared loss)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Gradient boosting residual-fitting step (regression with squared loss)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for morie.fn.vaccv -- vaccine coverage."""
 
 import pytest
+
 from morie.fn.vaccv import vaccine_coverage
 
 

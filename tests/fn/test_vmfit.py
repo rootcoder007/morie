@@ -1,6 +1,7 @@
 """Test vmfit."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmfit import vmfit
 
 

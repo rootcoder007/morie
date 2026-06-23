@@ -1,6 +1,7 @@
 """Test dtzpf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtzpf import dtzpf
 
 

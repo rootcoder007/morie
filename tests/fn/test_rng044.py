@@ -1,6 +1,7 @@
 """Tests for rng044.rangayyan_ch3_lsi_parallel_branch_1."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng044 import rangayyan_ch3_lsi_parallel_branch_1
 
 
@@ -11,7 +12,7 @@ def test_rng044_basic():
     n = 100
     result = rangayyan_ch3_lsi_parallel_branch_1(x, h_1, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng044_edge():

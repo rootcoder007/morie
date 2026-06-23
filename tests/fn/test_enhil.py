@@ -1,6 +1,7 @@
 """Test enhil."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enhil import enhil
 
 

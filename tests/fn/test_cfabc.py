@@ -1,6 +1,7 @@
 """Tests for cfabc -- BIC."""
-from morie.fn.cfabc import cfa_bic
+
 from morie.fn._containers import ESRes
+from morie.fn.cfabc import cfa_bic
 
 
 class TestCfaBic:

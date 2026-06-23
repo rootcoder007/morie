@@ -1,6 +1,7 @@
 """Variant calling (GATK HaplotypeCaller)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["variant_calling"]
@@ -32,7 +33,9 @@ def variant_calling(bam, reference):
     n = len(bam)
     result = float(np.mean(bam))
     se = float(np.std(bam, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Variant calling (GATK HaplotypeCaller)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Variant calling (GATK HaplotypeCaller)"}
+    )
 
 
 def cheatsheet():

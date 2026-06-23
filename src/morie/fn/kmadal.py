@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """AdaLoRA: SVD-parametrized LoRA delta with importance-based rank pruning."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_adalora_rank_allocation"]
@@ -38,7 +40,14 @@ def kamath_adalora_rank_allocation(P, s, Q, importance, target_rank):
     n = len(P)
     result = float(np.mean(P))
     se = float(np.std(P, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AdaLoRA: SVD-parametrized LoRA delta with importance-based rank pruning"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "AdaLoRA: SVD-parametrized LoRA delta with importance-based rank pruning",
+        }
+    )
 
 
 def cheatsheet():

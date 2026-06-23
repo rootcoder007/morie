@@ -1,6 +1,7 @@
 """Tests for ovbnk.oster_omitted_bias_bound."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ovbnk import oster_omitted_bias_bound
 
 
@@ -14,7 +15,7 @@ def test_ovbnk_basic():
     delta = np.random.default_rng(42).normal(0, 1, 100)
     result = oster_omitted_bias_bound(beta_short, beta_long, R_short, R_long, R_max, delta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ovbnk_edge():

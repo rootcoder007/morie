@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Word embedding lookup (Mikolov et al. 2013)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -9,8 +10,7 @@ from ._richresult import RichResult
 __all__ = ["word_embedding"]
 
 
-def word_embedding(x, E=None, vocab_size: int = 100, d_model: int = 16,
-                   seed: int = 0):
+def word_embedding(x, E=None, vocab_size: int = 100, d_model: int = 16, seed: int = 0):
     """Look up word embeddings from a (V x d) matrix.
 
     Formula: ``e = E[token_id]``, where ``E`` has shape ``(vocab_size, d_model)``.
@@ -42,10 +42,8 @@ def word_embedding(x, E=None, vocab_size: int = 100, d_model: int = 16,
     e = E[ids]
     return RichResult(
         title="Word Embedding Lookup (Mikolov 2013)",
-        summary_lines=[("ids", ids.tolist()),
-                       ("d_model", E.shape[1])],
-        payload={"tensor": e, "E": E, "ids": ids,
-                 "shape": e.shape, "method": "embedding-lookup"},
+        summary_lines=[("ids", ids.tolist()), ("d_model", E.shape[1])],
+        payload={"tensor": e, "E": E, "ids": ids, "shape": e.shape, "method": "embedding-lookup"},
     )
 
 

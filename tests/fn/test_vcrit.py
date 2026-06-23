@@ -1,12 +1,11 @@
 """Tests for morie.fn.vcrit — Criterion validity."""
 
 import numpy as np
-import pytest
+
 from morie.fn.vcrit import validity_criterion
 
 
 class TestValidityCriterion:
-
     def test_high_correlation(self, rng):
         x = rng.standard_normal(100)
         y = x + rng.standard_normal(100) * 0.2

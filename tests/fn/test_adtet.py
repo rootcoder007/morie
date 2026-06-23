@@ -1,5 +1,8 @@
 """Tests for anderson_darling_test."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.adtet import anderson_darling_test
 
 

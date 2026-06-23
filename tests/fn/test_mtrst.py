@@ -41,4 +41,5 @@ def test_residuals_bounded(cox_data):
 
 def test_cheatsheet():
     from morie.fn.mtrst import cheatsheet
+
     assert "martingale" in cheatsheet().lower()

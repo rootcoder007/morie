@@ -1,6 +1,8 @@
 """Tests for morie.fn.pdplt — Partial dependence plot values."""
+
 import numpy as np
 import pytest
+
 from morie.fn.pdplt import pdplt
 
 
@@ -10,8 +12,10 @@ def setup():
     n, p = 100, 3
     X = rng.standard_normal((n, p))
     beta = np.array([2.0, -1.0, 0.5])
+
     def predict_fn(Xp):
         return Xp @ beta
+
     return predict_fn, X
 
 
@@ -62,4 +66,5 @@ def test_method_label(setup):
 
 def test_cheatsheet():
     from morie.fn.pdplt import cheatsheet
+
     assert len(cheatsheet()) > 0

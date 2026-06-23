@@ -123,9 +123,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "table_name": "cchs22",
         "ckan_resource_id": "",
         "fetcher": "morie.ingest.statcan:fetch_statcan_csv",
-        "fetcher_args": {
-            "url": "https://www150.statcan.gc.ca/n1/pub/82m0013x/2024001/2022_CSV.zip"
-        },
+        "fetcher_args": {"url": "https://www150.statcan.gc.ca/n1/pub/82m0013x/2024001/2022_CSV.zip"},
     },
     "occ22": {
         "name": "CCS 2018-2022 PUMF",
@@ -522,8 +520,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "indicator",
         "large_file": False,
         "local_path": (
-            "data/datasets/cihi/885/"
-            "885-number-integrated-youth-services-sites-2024-2025-data-tables-en-additonal.xlsx"
+            "data/datasets/cihi/885/885-number-integrated-youth-services-sites-2024-2025-data-tables-en-additonal.xlsx"
         ),
         "table_name": "cihi885b",
         "ckan_resource_id": "",
@@ -798,154 +795,251 @@ DATASET_CATALOG: dict[str, dict] = {
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "no2", "year": 2022, "province": "ON"},
     },
-
     # ────────────────────────────────────────────────────────────────
     # W5 extension (2026-04-17 night): other provinces + trend years.
     # Each entry dispatches to morie.earth.fetch_naps via the 'fetcher'
     # field, so adding another province/year is one dict entry and
     # NAPS CKAN auto-caches under ~/.cache/morie/earth/ as parquet.
     # ────────────────────────────────────────────────────────────────
-
     # --- 2023, other key provinces (PM2.5 + NO2) ---
     "naps-pm25-qc-2023": {
         "name": "NAPS PM2.5 Quebec 2023",
-        "source": "naps", "survey": "naps", "year": "2023", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_pm25_qc_2023", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2023",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_pm25_qc_2023",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "pm25", "year": 2023, "province": "QC"},
     },
     "naps-no2-qc-2023": {
         "name": "NAPS NO2 Quebec 2023",
-        "source": "naps", "survey": "naps", "year": "2023", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_no2_qc_2023", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2023",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_no2_qc_2023",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "no2", "year": 2023, "province": "QC"},
     },
     "naps-pm25-bc-2023": {
         "name": "NAPS PM2.5 British Columbia 2023 (wildfire-smoke dominant)",
-        "source": "naps", "survey": "naps", "year": "2023", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_pm25_bc_2023", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2023",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_pm25_bc_2023",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "pm25", "year": 2023, "province": "BC"},
     },
     "naps-no2-bc-2023": {
         "name": "NAPS NO2 British Columbia 2023",
-        "source": "naps", "survey": "naps", "year": "2023", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_no2_bc_2023", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2023",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_no2_bc_2023",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "no2", "year": 2023, "province": "BC"},
     },
     "naps-pm25-ab-2023": {
         "name": "NAPS PM2.5 Alberta 2023",
-        "source": "naps", "survey": "naps", "year": "2023", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_pm25_ab_2023", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2023",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_pm25_ab_2023",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "pm25", "year": 2023, "province": "AB"},
     },
     "naps-no2-ab-2023": {
         "name": "NAPS NO2 Alberta 2023",
-        "source": "naps", "survey": "naps", "year": "2023", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_no2_ab_2023", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2023",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_no2_ab_2023",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "no2", "year": 2023, "province": "AB"},
     },
     "naps-pm25-ns-2023": {
         "name": "NAPS PM2.5 Nova Scotia 2023",
-        "source": "naps", "survey": "naps", "year": "2023", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_pm25_ns_2023", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2023",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_pm25_ns_2023",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "pm25", "year": 2023, "province": "NS"},
     },
     "naps-no2-ns-2023": {
         "name": "NAPS NO2 Nova Scotia 2023",
-        "source": "naps", "survey": "naps", "year": "2023", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_no2_ns_2023", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2023",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_no2_ns_2023",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "no2", "year": 2023, "province": "NS"},
     },
-
     # --- Ontario PM2.5 trend baseline (2019-2022) ---
     "naps-pm25-on-2022": {
         "name": "NAPS PM2.5 Ontario 2022 (trend baseline)",
-        "source": "naps", "survey": "naps", "year": "2022", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_pm25_on_2022", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2022",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_pm25_on_2022",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "pm25", "year": 2022, "province": "ON"},
     },
     "naps-pm25-on-2021": {
         "name": "NAPS PM2.5 Ontario 2021 (pandemic-year baseline)",
-        "source": "naps", "survey": "naps", "year": "2021", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_pm25_on_2021", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2021",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_pm25_on_2021",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "pm25", "year": 2021, "province": "ON"},
     },
     "naps-pm25-on-2020": {
         "name": "NAPS PM2.5 Ontario 2020 (COVID-lockdown air quality)",
-        "source": "naps", "survey": "naps", "year": "2020", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_pm25_on_2020", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2020",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_pm25_on_2020",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "pm25", "year": 2020, "province": "ON"},
     },
     "naps-pm25-on-2019": {
         "name": "NAPS PM2.5 Ontario 2019 (pre-COVID reference)",
-        "source": "naps", "survey": "naps", "year": "2019", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_pm25_on_2019", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2019",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_pm25_on_2019",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "pm25", "year": 2019, "province": "ON"},
     },
-
     # --- Ontario O3 trend (for heat × ozone interaction studies) ---
     "naps-o3-on-2022": {
         "name": "NAPS O3 Ontario 2022 (heat × ozone study base)",
-        "source": "naps", "survey": "naps", "year": "2022", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_o3_on_2022", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2022",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_o3_on_2022",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "o3", "year": 2022, "province": "ON"},
     },
     "naps-o3-on-2021": {
         "name": "NAPS O3 Ontario 2021",
-        "source": "naps", "survey": "naps", "year": "2021", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_o3_on_2021", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2021",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_o3_on_2021",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "o3", "year": 2021, "province": "ON"},
     },
-
     # --- 2023 national (no province filter; all-Canada aggregate) ---
     "naps-pm25-ca-2023": {
         "name": "NAPS PM2.5 Canada 2023 (national, all provinces)",
-        "source": "naps", "survey": "naps", "year": "2023", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_pm25_ca_2023", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2023",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_pm25_ca_2023",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "pm25", "year": 2023, "province": None},
     },
     "naps-no2-ca-2023": {
         "name": "NAPS NO2 Canada 2023 (national, all provinces)",
-        "source": "naps", "survey": "naps", "year": "2023", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_no2_ca_2023", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2023",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_no2_ca_2023",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "no2", "year": 2023, "province": None},
     },
     "naps-o3-ca-2023": {
         "name": "NAPS O3 Canada 2023 (national, all provinces)",
-        "source": "naps", "survey": "naps", "year": "2023", "format": "fetcher",
-        "type": "air-quality", "large_file": False, "local_path": "",
-        "table_name": "naps_o3_ca_2023", "ckan_resource_id": "",
+        "source": "naps",
+        "survey": "naps",
+        "year": "2023",
+        "format": "fetcher",
+        "type": "air-quality",
+        "large_file": False,
+        "local_path": "",
+        "table_name": "naps_o3_ca_2023",
+        "ckan_resource_id": "",
         "fetcher": "morie.earth:fetch_naps",
         "fetcher_args": {"pollutant": "o3", "year": 2023, "province": None},
     },
@@ -1209,6 +1303,7 @@ def _fuzzy_match_key(key: str) -> str | None:
     catalog entry. Handles both hyphen and underscore separators in the
     input by normalising BOTH the query and each catalog key to the same
     form (underscores + lowercase + no whitespace) before comparing."""
+
     def _norm(s: str) -> str:
         return s.lower().replace("-", "_").replace(" ", "")
 
@@ -1291,15 +1386,13 @@ def load_dataset(
     fetcher_spec = entry.get("fetcher")
     if fetcher_spec:
         import importlib
+
         mod_name, fn_name = fetcher_spec.split(":", 1)
         try:
             mod = importlib.import_module(mod_name)
             fetcher_fn = getattr(mod, fn_name)
         except (ImportError, AttributeError) as exc:
-            raise ImportError(
-                f"Cannot resolve fetcher {fetcher_spec!r} for dataset "
-                f"{matched!r}: {exc}"
-            ) from exc
+            raise ImportError(f"Cannot resolve fetcher {fetcher_spec!r} for dataset {matched!r}: {exc}") from exc
         args = dict(entry.get("fetcher_args") or {})
         logger.info("Fetching %s via %s(**%s) ...", matched, fetcher_spec, args)
         df = fetcher_fn(**args)
@@ -1334,10 +1427,7 @@ def load_dataset(
         logger.info("Fetching %s from CKAN API...", matched)
         return fetch_ckan_to_cache(matched, db_path=db_path, timeout=timeout)
 
-    raise FileNotFoundError(
-        f"Dataset {matched!r} could not be loaded.\n"
-        + dataset_recommendation(matched, entry)
-    )
+    raise FileNotFoundError(f"Dataset {matched!r} could not be loaded.\n" + dataset_recommendation(matched, entry))
 
 
 def list_datasets(db_path: str | Path | None = None) -> list[dict]:
@@ -1598,8 +1688,7 @@ def dataset_recommendation(key: str, entry: "dict | None" = None) -> str:
     """
     entry = entry if entry is not None else DATASET_CATALOG.get(key, {})
     if not entry:
-        return (f"Dataset {key!r} is not in the morie catalogue. "
-                f"Run morie.check_datasets() to list catalogued datasets.")
+        return f"Dataset {key!r} is not in the morie catalogue. Run morie.check_datasets() to list catalogued datasets."
 
     name = entry.get("name", key)
     src = entry.get("source", "?")
@@ -1612,20 +1701,23 @@ def dataset_recommendation(key: str, entry: "dict | None" = None) -> str:
         lines.append(
             "  Published on the Open Government portal. morie fetches it "
             "automatically when online; if you are seeing this, the portal "
-            "was unreachable -- retry when connected.")
+            "was unreachable -- retry when connected."
+        )
         lines.append(
-            "  CKAN datastore API: https://open.canada.ca/data/api/3/"
-            f"action/datastore_search?resource_id={rid}&limit=5")
+            f"  CKAN datastore API: https://open.canada.ca/data/api/3/action/datastore_search?resource_id={rid}&limit=5"
+        )
     elif fetcher:
         lines.append(
             f"  Fetched on demand via {fetcher}. morie downloads it "
             "automatically when online; if you are seeing this, the remote "
-            "source was unreachable -- retry when connected.")
+            "source was unreachable -- retry when connected."
+        )
     else:
         lines.append(
             "  morie has no public remote source for this dataset -- it is "
             "your own or otherwise restricted data, not redistributed by "
-            "morie.")
+            "morie."
+        )
         if local_path:
             lines.append(f"  Place the data file at: {local_path}")
     return "\n".join(lines)
@@ -1668,9 +1760,7 @@ def check_datasets(
     if builtin is not None:
         try:
             builtin_tables = {
-                r[0] for r in builtin.execute(
-                    "SELECT name FROM sqlite_master WHERE type='table'"
-                ).fetchall()
+                r[0] for r in builtin.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
             }
         finally:
             builtin.close()
@@ -1730,20 +1820,15 @@ def check_datasets(
             warnings.append(f"{key} ({entry.get('name', key)}): {tier} — {detail}")
             missing.append(key)
             recommendations[key] = dataset_recommendation(key, entry)
-        link = (entry.get("ckan_resource_id")
-                or ("fetcher:" + entry["fetcher"] if entry.get("fetcher")
-                    else entry.get("local_path", "")))
-        rows.append([key, str(entry.get("name", ""))[:36], tier,
-                     str(link)[:42]])
+        link = entry.get("ckan_resource_id") or (
+            "fetcher:" + entry["fetcher"] if entry.get("fetcher") else entry.get("local_path", "")
+        )
+        rows.append([key, str(entry.get("name", ""))[:36], tier, str(link)[:42]])
 
-    ok = sum(tiers.get(t, 0) for t in ("bundled", "cached", "local",
-                                       "remote", "remote-ok"))
+    ok = sum(tiers.get(t, 0) for t in ("bundled", "cached", "local", "remote", "remote-ok"))
     needs = tiers.get("MISSING", 0) + tiers.get("remote-dead", 0)
-    interp = (
-        f"{ok} of {len(DATASET_CATALOG)} catalogued datasets have a "
-        f"working source"
-        + (f"; {needs} need attention (see warnings)."
-           if needs else " — every catalogued dataset is reachable.")
+    interp = f"{ok} of {len(DATASET_CATALOG)} catalogued datasets have a working source" + (
+        f"; {needs} need attention (see warnings)." if needs else " — every catalogued dataset is reachable."
     )
     return RichResult(
         title="morie Dataset Availability Audit",
@@ -1753,16 +1838,21 @@ def check_datasets(
             ("Need attention", needs),
             ("Remote probed", probe_remote),
         ],
-        tables=[{
-            "title": "Per-dataset availability:",
-            "headers": ["key", "name", "tier", "link / source"],
-            "rows": rows,
-        }],
+        tables=[
+            {
+                "title": "Per-dataset availability:",
+                "headers": ["key", "name", "tier", "link / source"],
+                "rows": rows,
+            }
+        ],
         warnings=warnings,
         interpretation=interp,
-        payload={"value": ok, "tiers": tiers,
-                 "n_catalog": len(DATASET_CATALOG),
-                 "needs_attention": needs,
-                 "missing": missing,
-                 "recommendations": recommendations},
+        payload={
+            "value": ok,
+            "tiers": tiers,
+            "n_catalog": len(DATASET_CATALOG),
+            "needs_attention": needs,
+            "missing": missing,
+            "recommendations": recommendations,
+        },
     )

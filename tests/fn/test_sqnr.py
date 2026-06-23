@@ -7,7 +7,6 @@ from morie.fn.sqnr import signal_quant_noise_ratio
 
 
 class TestSqnr:
-
     def test_perfect_reconstruction(self):
         x = np.random.default_rng(42).standard_normal(64)
         res = signal_quant_noise_ratio(x, x)

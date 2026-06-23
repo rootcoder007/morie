@@ -1,6 +1,7 @@
 """Tests for rng215.rangayyan_ch4_snr_normalized_ratio."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng215 import rangayyan_ch4_snr_normalized_ratio
 
 
@@ -13,7 +14,7 @@ def test_rng215_basic():
     t_0 = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_ch4_snr_normalized_ratio(H, X, P_eta_i, f, t_0)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng215_edge():

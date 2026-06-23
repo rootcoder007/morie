@@ -1,7 +1,6 @@
 """Tests for morie.fn.pt2nd -- Second-order point pattern stats"""
 
 import numpy as np
-import pytest
 
 from morie.fn.pt2nd import second_order_pp
 

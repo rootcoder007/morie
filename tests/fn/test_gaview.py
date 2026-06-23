@@ -1,6 +1,7 @@
 """Test gaview."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gaview import gaview
 
 

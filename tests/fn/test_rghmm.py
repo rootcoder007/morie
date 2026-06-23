@@ -1,6 +1,7 @@
 """Tests for rghmm.rangayyan_fitzhugh_nagumo."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rghmm import rangayyan_fitzhugh_nagumo
 
 
@@ -13,7 +14,7 @@ def test_rghmm_basic():
     eps = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_fitzhugh_nagumo(t, I_ext, a, b, eps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rghmm_edge():

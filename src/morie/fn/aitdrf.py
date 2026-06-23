@@ -1,6 +1,7 @@
 """Method-of-moments fit of Dirichlet α."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dirichlet_fit_mom"]

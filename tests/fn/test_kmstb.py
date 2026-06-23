@@ -1,6 +1,7 @@
 """Tests for kmstb.kamath_step_back_prompting."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmstb import kamath_step_back_prompting
 
 
@@ -10,7 +11,7 @@ def test_kmstb_basic():
     model = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_step_back_prompting(query, model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmstb_edge():

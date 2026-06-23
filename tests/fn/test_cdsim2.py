@@ -1,6 +1,8 @@
 """Tests for cdsim2."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cdsim2 import cdsim2
 
 
@@ -28,4 +30,5 @@ def test_cdsim2_no_data():
 
 def test_cdsim2_alias():
     from morie.fn.cdsim2 import cdsim2
+
     assert cdsim2 is cdsim2

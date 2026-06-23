@@ -1,6 +1,7 @@
 """Test opmax."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opmax import opmax
 
 

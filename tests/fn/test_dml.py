@@ -6,6 +6,7 @@ import pytest
 
 try:
     import doubleml  # noqa: F401
+
     _HAS_DOUBLEML = True
 except ImportError:
     _HAS_DOUBLEML = False
@@ -28,34 +29,26 @@ def synth_data():
 
 
 def test_returns_fitted_object(synth_data):
-    result = estimate_double_ml(
-        synth_data, outcome="outcome", treatment="treatment", covariates=["x1", "x2"]
-    )
+    result = estimate_double_ml(synth_data, outcome="outcome", treatment="treatment", covariates=["x1", "x2"])
     assert hasattr(result, "coef")
     assert hasattr(result, "se")
 
 
 def test_coef_is_finite(synth_data):
-    result = estimate_double_ml(
-        synth_data, outcome="outcome", treatment="treatment", covariates=["x1", "x2"]
-    )
+    result = estimate_double_ml(synth_data, outcome="outcome", treatment="treatment", covariates=["x1", "x2"])
     assert np.isfinite(result.coef[0])
 
 
 def test_se_is_positive(synth_data):
-    result = estimate_double_ml(
-        synth_data, outcome="outcome", treatment="treatment", covariates=["x1", "x2"]
-    )
+    result = estimate_double_ml(synth_data, outcome="outcome", treatment="treatment", covariates=["x1", "x2"])
     assert result.se[0] > 0
 
 
 def test_custom_random_state(synth_data):
     r1 = estimate_double_ml(
-        synth_data, outcome="outcome", treatment="treatment",
-        covariates=["x1", "x2"], random_state=123
+        synth_data, outcome="outcome", treatment="treatment", covariates=["x1", "x2"], random_state=123
     )
     r2 = estimate_double_ml(
-        synth_data, outcome="outcome", treatment="treatment",
-        covariates=["x1", "x2"], random_state=123
+        synth_data, outcome="outcome", treatment="treatment", covariates=["x1", "x2"], random_state=123
     )
     assert r1.coef[0] == pytest.approx(r2.coef[0])

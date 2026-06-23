@@ -1,7 +1,6 @@
 """Tests for morie.fn.zssis -- Sequential indicator simulation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zssis import seq_ind_sim
 

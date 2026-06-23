@@ -70,4 +70,4 @@ cpvar = variance_changepoint
 
 
 def cheatsheet() -> str:
-    return 'variance_changepoint({}) -> Variance change-point detection.'
+    return "variance_changepoint({}) -> Variance change-point detection."

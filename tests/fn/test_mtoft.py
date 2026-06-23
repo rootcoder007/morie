@@ -1,8 +1,9 @@
 """Tests for morie.fn.mtoft — fatality rate."""
 
 import pytest
-from morie.fn.mtoft import mto_fatality_rate
+
 from morie.fn._containers import CrimeResult
+from morie.fn.mtoft import mto_fatality_rate
 
 
 class TestFatalityRate:

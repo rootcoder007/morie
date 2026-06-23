@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Beta-process prior for survival (Hjort 1990)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_survival_beta_process", "ghsrv"]
@@ -47,10 +49,13 @@ def ghosal_survival_beta_process(time, event=None, c=1.0, lam0=None):
     t = np.asarray(time, dtype=float).ravel()
     n = int(t.size)
     if n == 0:
-        return RichResult(payload={
-            "estimate": float("nan"), "n": 0,
-            "method": "Beta-process survival (empty input)",
-        })
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "n": 0,
+                "method": "Beta-process survival (empty input)",
+            }
+        )
     if event is None:
         d = np.ones(n, dtype=int)
     else:
@@ -75,16 +80,18 @@ def ghosal_survival_beta_process(time, event=None, c=1.0, lam0=None):
     t_med = float(np.median(t))
     idx = int(np.searchsorted(uniq, t_med, side="right") - 1)
     S_at_med = float(S_post[idx]) if 0 <= idx < len(S_post) else 1.0
-    return RichResult(payload={
-        "estimate": S_at_med,
-        "times": uniq.tolist(),
-        "S_post": S_post.tolist(),
-        "H_post": H_post.tolist(),
-        "c": float(c),
-        "lam0": float(lam0),
-        "n": n,
-        "method": "Beta-process posterior survival (Hjort 1990)",
-    })
+    return RichResult(
+        payload={
+            "estimate": S_at_med,
+            "times": uniq.tolist(),
+            "S_post": S_post.tolist(),
+            "H_post": H_post.tolist(),
+            "c": float(c),
+            "lam0": float(lam0),
+            "n": n,
+            "method": "Beta-process posterior survival (Hjort 1990)",
+        }
+    )
 
 
 # Back-compat alias for the legacy `ghsrv` import in fn/__init__.py.

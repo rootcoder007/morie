@@ -1,7 +1,7 @@
 """Tests for morie.fn.vtblk."""
 
 import numpy as np
-import pytest
+
 from morie.fn.vtblk import vtblk
 
 

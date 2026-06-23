@@ -1,7 +1,6 @@
 """Tests for morie.fn.svamn -- Sequential amendment procedure"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svamn import amendment_seq
 

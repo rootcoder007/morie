@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['gbrwv']
+__all__ = ["gbrwv"]
 
 _QUOTE = "What is now proved was once only imagined. -- William Blake"
 
@@ -64,7 +64,7 @@ def gbrwv(
         lo = max(0, ti - half)
         hi = min(n, ti + half + 1)
         seg = x[lo:hi]
-        w = window[:len(seg)]
+        w = window[: len(seg)]
         X = np.fft.rfft(seg * w, n=nfft)
         gabor[:, ti] = np.abs(X) ** 2
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Optimal Classification cutting-plane estimator (Poole 2000; Armstrong Ch 3)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["optimal_classification", "optcl"]
@@ -31,17 +33,29 @@ def optimal_classification(x, votes=None):
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n == 0:
-        return RichResult(payload={"cut": np.nan, "correct_class": 0,
-                                   "polarity": 1, "pre": np.nan, "n": 0,
-                                   "method": "optimal_classification"})
+        return RichResult(
+            payload={
+                "cut": np.nan,
+                "correct_class": 0,
+                "polarity": 1,
+                "pre": np.nan,
+                "n": 0,
+                "method": "optimal_classification",
+            }
+        )
     if votes is None:
         cut = float(np.median(x))
         return RichResult(
             title="Optimal Classification (Poole 2000)",
             summary_lines=[("Cut (median split)", cut), ("n", n)],
-            payload={"cut": cut, "correct_class": n // 2 + n % 2,
-                     "polarity": 1, "pre": np.nan, "n": n,
-                     "method": "optimal_classification"},
+            payload={
+                "cut": cut,
+                "correct_class": n // 2 + n % 2,
+                "polarity": 1,
+                "pre": np.nan,
+                "n": n,
+                "method": "optimal_classification",
+            },
         )
     y = np.asarray(votes, dtype=int).ravel()
     # Candidate cuts: midpoints between sorted unique ideal pts
@@ -54,7 +68,7 @@ def optimal_classification(x, votes=None):
     best_pol = 1
     for c in candidates:
         for pol in (1, -1):
-            pred = ((x > c).astype(int) if pol == 1 else (x <= c).astype(int))
+            pred = (x > c).astype(int) if pol == 1 else (x <= c).astype(int)
             cc = int(np.sum(pred == y))
             if cc > best_cc:
                 best_cc, best_cut, best_pol = cc, float(c), pol
@@ -68,14 +82,18 @@ def optimal_classification(x, votes=None):
             ("Optimal cut c*", best_cut),
             ("Correctly classified", best_cc),
             ("Polarity (+1 yea-high)", best_pol),
-            ("PRE", pre), ("n", n),
+            ("PRE", pre),
+            ("n", n),
         ],
-        interpretation=(
-            f"Cut at {best_cut:.4f} correctly classifies {best_cc}/{n} "
-            f"votes (PRE = {pre:.3f})."),
-        payload={"cut": best_cut, "correct_class": int(best_cc),
-                 "polarity": int(best_pol), "pre": float(pre), "n": n,
-                 "method": "optimal_classification"},
+        interpretation=(f"Cut at {best_cut:.4f} correctly classifies {best_cc}/{n} votes (PRE = {pre:.3f})."),
+        payload={
+            "cut": best_cut,
+            "correct_class": int(best_cc),
+            "polarity": int(best_pol),
+            "pre": float(pre),
+            "n": n,
+            "method": "optimal_classification",
+        },
     )
 
 

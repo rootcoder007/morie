@@ -1,6 +1,7 @@
 """Test wltrn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wltrn import wltrn
 
 

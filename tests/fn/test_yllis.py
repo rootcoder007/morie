@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.yllis import years_of_life_lost
 
 

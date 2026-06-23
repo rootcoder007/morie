@@ -78,4 +78,4 @@ detmet = detection_metrics
 
 
 def cheatsheet() -> str:
-    return 'detection_metrics({}) -> Object detection precision/recall.'
+    return "detection_metrics({}) -> Object detection precision/recall."

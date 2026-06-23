@@ -1,6 +1,7 @@
 """Tests for hmevr.geron_explained_variance_ratio."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmevr import geron_explained_variance_ratio
 
 
@@ -10,7 +11,7 @@ def test_hmevr_basic():
     n_components = 3
     result = geron_explained_variance_ratio(X, n_components)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmevr_edge():

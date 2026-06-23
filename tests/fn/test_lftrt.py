@@ -41,4 +41,5 @@ def test_survival_bounded(trunc_data):
 
 def test_cheatsheet():
     from morie.fn.lftrt import cheatsheet
+
     assert "truncat" in cheatsheet().lower()

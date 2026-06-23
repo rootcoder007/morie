@@ -1,9 +1,9 @@
 """Tests for morie.fn.mtobac — BAC analysis."""
 
 import pytest
-import numpy as np
-from morie.fn.mtobac import mto_bac_analysis
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mtobac import mto_bac_analysis
 
 
 class TestBacAnalysis:

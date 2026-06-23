@@ -73,4 +73,4 @@ cpbbs = bbs_changepoint
 
 
 def cheatsheet() -> str:
-    return 'bbs_changepoint({}) -> Binary segmentation for change-point detection.'
+    return "bbs_changepoint({}) -> Binary segmentation for change-point detection."

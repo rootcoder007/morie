@@ -55,7 +55,7 @@ def trreg(
         beta = np.linalg.lstsq(X_aug, z, rcond=None)[0]
         resid = z - X_aug @ beta
         sigma2 = float(np.var(resid, ddof=p + 1))
-        ll = float(-n / 2 * np.log(2 * np.pi * sigma2) - np.sum(resid ** 2) / (2 * sigma2) + np.sum(np.log(1.0 / y)))
+        ll = float(-n / 2 * np.log(2 * np.pi * sigma2) - np.sum(resid**2) / (2 * sigma2) + np.sum(np.log(1.0 / y)))
         lambda_ = 0.0
     elif transform == "box-cox":
         if np.any(y <= 0):
@@ -64,7 +64,7 @@ def trreg(
         def box_cox(y_val, lam):
             if abs(lam) < 1e-10:
                 return np.log(y_val)
-            return (y_val ** lam - 1.0) / lam
+            return (y_val**lam - 1.0) / lam
 
         def neg_ll(lam):
             z = box_cox(y, lam)
@@ -81,7 +81,9 @@ def trreg(
         beta = np.linalg.lstsq(X_aug, z, rcond=None)[0]
         resid = z - X_aug @ beta
         sigma2 = float(np.var(resid, ddof=p + 1))
-        ll = float(-n / 2 * np.log(2 * np.pi * sigma2) - np.sum(resid ** 2) / (2 * sigma2) + (lambda_ - 1) * np.sum(np.log(y)))
+        ll = float(
+            -n / 2 * np.log(2 * np.pi * sigma2) - np.sum(resid**2) / (2 * sigma2) + (lambda_ - 1) * np.sum(np.log(y))
+        )
     else:
         raise ValueError(f"transform must be 'box-cox' or 'log', got '{transform}'.")
 

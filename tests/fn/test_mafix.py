@@ -1,6 +1,7 @@
 """Tests for mafix.ma_fixed_effect."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mafix import ma_fixed_effect
 
 
@@ -10,7 +11,7 @@ def test_mafix_basic():
     vi = np.random.default_rng(42).normal(0, 1, 100)
     result = ma_fixed_effect(yi, vi)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mafix_edge():

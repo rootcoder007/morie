@@ -1,8 +1,9 @@
 """Tests for morie.fn.phoen -- structural break detection."""
 
 import numpy as np
-from morie.fn.phoen import phoenix_break, phoen
+
 from morie.fn._containers import TimeSeriesResult
+from morie.fn.phoen import phoen, phoenix_break
 
 
 class TestPhoen:

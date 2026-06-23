@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.donsk import donsk, DonskerResult
+from morie.fn.donsk import DonskerResult, donsk
 
 
 @pytest.fixture()

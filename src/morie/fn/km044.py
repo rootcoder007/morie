@@ -1,6 +1,7 @@
 r"""Prompt search argmax.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_prompt_search_argmax"]

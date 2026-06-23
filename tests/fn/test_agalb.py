@@ -1,6 +1,7 @@
 """Test agalb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agalb import agalb
 
 

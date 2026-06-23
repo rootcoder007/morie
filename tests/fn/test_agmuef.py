@@ -1,6 +1,7 @@
 """Tests for agmuef.muzero_efficient_exploration."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agmuef import muzero_efficient_exploration
 
 
@@ -11,7 +12,7 @@ def test_agmuef_basic():
     sims = np.random.default_rng(42).normal(0, 1, 100)
     result = muzero_efficient_exploration(model, root_state, sims)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_agmuef_edge():

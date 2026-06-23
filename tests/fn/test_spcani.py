@@ -1,6 +1,8 @@
 """Tests for spcani."""
+
 import numpy as np
 import pytest
+
 from morie.fn.spcani import spcani
 
 
@@ -28,4 +30,5 @@ def test_spcani_no_data():
 
 def test_spcani_alias():
     from morie.fn.spcani import spcani
+
     assert spcani is spcani

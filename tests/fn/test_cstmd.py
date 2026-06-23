@@ -1,13 +1,13 @@
 """Tests for morie.fn.cstmd — custody medical rate."""
 
-import pytest
 import numpy as np
-from morie.fn.cstmd import custody_medical
+import pytest
+
 from morie.fn._containers import CrimeResult
+from morie.fn.cstmd import custody_medical
 
 
 class TestCustodyMedical:
-
     def test_returns_crime(self):
         visits = np.array([10, 20, 15])
         pd_arr = np.array([1000, 2000, 1500])

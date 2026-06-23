@@ -1,6 +1,7 @@
 """Tests for evmsexp.evt_max_stable_logistic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evmsexp import evt_max_stable_logistic
 
 
@@ -11,7 +12,7 @@ def test_evmsexp_basic():
     alpha = 0.05
     result = evt_max_stable_logistic(x, y, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evmsexp_edge():

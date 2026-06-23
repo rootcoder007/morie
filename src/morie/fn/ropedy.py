@@ -1,6 +1,7 @@
 """RoPE NTK-aware dynamic scaling for longer context."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rope_ntk_dynamic"]
@@ -40,7 +41,9 @@ def rope_ntk_dynamic(y, q, m, theta, L_new, L_train):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "RoPE NTK-aware dynamic scaling for longer context"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "RoPE NTK-aware dynamic scaling for longer context"}
+    )
 
 
 def cheatsheet():

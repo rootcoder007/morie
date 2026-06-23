@@ -1,6 +1,7 @@
 """Test spltps."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spltps import spltps
 
 

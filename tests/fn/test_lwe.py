@@ -1,8 +1,9 @@
 """Test lwe_sample."""
+
 import numpy as np
-import pytest
-from morie.fn.lwe import lwe_sample
+
 from morie.fn._containers import CryptoResult
+from morie.fn.lwe import lwe_sample
 
 
 class TestLweSample:

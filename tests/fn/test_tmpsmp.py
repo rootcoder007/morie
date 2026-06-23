@@ -1,6 +1,7 @@
 """Test tmpsmp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmpsmp import tmpsmp
 
 

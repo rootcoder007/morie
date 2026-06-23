@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bias-variance decomposition of expected prediction error."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["bias_variance_tradeoff"]
@@ -34,7 +36,14 @@ def bias_variance_tradeoff(y_true, y_pred, noise_var):
     n = int(y_true) if y_true.ndim == 0 else len(y_true)
     result = float(np.mean(y_true))
     se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bias-variance decomposition of expected prediction error"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bias-variance decomposition of expected prediction error",
+        }
+    )
 
 
 def cheatsheet():

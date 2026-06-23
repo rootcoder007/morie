@@ -1,8 +1,9 @@
 """Tests for morie.fn.ad -- Anderson-Darling test for normality."""
 
 import numpy as np
-from morie.fn.ad import anderson_darling, ad
+
 from morie.fn._containers import TestResult
+from morie.fn.ad import ad, anderson_darling
 
 
 class TestAD:

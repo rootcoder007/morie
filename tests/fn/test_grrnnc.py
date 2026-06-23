@@ -1,6 +1,7 @@
 """Tests for grrnnc.geron_simple_rnn_cell."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grrnnc import geron_simple_rnn_cell
 
 
@@ -13,7 +14,7 @@ def test_grrnnc_basic():
     b = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_simple_rnn_cell(x_t, h_prev, Whh, Wxh, b)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grrnnc_edge():

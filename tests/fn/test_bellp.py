@@ -1,4 +1,5 @@
 """Tests for bellp (Bell numbers)."""
+
 from morie.fn.bellp import bell_polynomial
 
 
@@ -12,6 +13,7 @@ def test_bell_basic():
 
 def test_cheatsheet():
     from morie.fn.bellp import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

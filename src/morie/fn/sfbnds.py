@@ -1,6 +1,7 @@
 """Balke-Pearl sharp bounds on ATE under instrument."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sharp_bounds_balke_pearl"]
@@ -34,7 +35,9 @@ def sharp_bounds_balke_pearl(y, D, Z):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Balke-Pearl sharp bounds on ATE under instrument"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Balke-Pearl sharp bounds on ATE under instrument"}
+    )
 
 
 def cheatsheet():

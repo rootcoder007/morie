@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Linear-Gaussian state-space model -- Kalman filter + smoother."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -42,18 +43,23 @@ def state_space_model(x):
 
     try:
         from statsmodels.tsa.statespace.structural import UnobservedComponents
+
         mod = UnobservedComponents(y, level="local level")
         fit = mod.fit(disp=False)
         Q = float(fit.params[0])
         R = float(fit.params[1])
-        return RichResult(payload={
-            "filtered_state": np.asarray(fit.filtered_state[0]),
-            "filtered_state_variance": np.asarray(fit.filtered_state_cov[0, 0]),
-            "smoothed_state": np.asarray(fit.smoothed_state[0]),
-            "loglik": float(fit.llf),
-            "Q": Q, "R": R, "n": int(n),
-            "method": "Local-level Kalman via statsmodels.UnobservedComponents",
-        })
+        return RichResult(
+            payload={
+                "filtered_state": np.asarray(fit.filtered_state[0]),
+                "filtered_state_variance": np.asarray(fit.filtered_state_cov[0, 0]),
+                "smoothed_state": np.asarray(fit.smoothed_state[0]),
+                "loglik": float(fit.llf),
+                "Q": Q,
+                "R": R,
+                "n": int(n),
+                "method": "Local-level Kalman via statsmodels.UnobservedComponents",
+            }
+        )
     except Exception:
         pass
 
@@ -73,7 +79,7 @@ def state_space_model(x):
         K = P_pred / F
         a[t] = a_pred + K * v
         P[t] = P_pred - K * P_pred
-        ll += -0.5 * (np.log(2 * np.pi * F) + v ** 2 / F)
+        ll += -0.5 * (np.log(2 * np.pi * F) + v**2 / F)
     # Backward smoother (RTS).
     a_s = a.copy()
     P_s = P.copy()
@@ -81,14 +87,19 @@ def state_space_model(x):
         Pp = P[t] + Q
         J = P[t] / Pp
         a_s[t] = a[t] + J * (a_s[t + 1] - a[t])
-        P_s[t] = P[t] + J ** 2 * (P_s[t + 1] - Pp)
-    return RichResult(payload={
-        "filtered_state": a, "filtered_state_variance": P,
-        "smoothed_state": a_s,
-        "loglik": float(ll),
-        "Q": float(Q), "R": float(R), "n": int(n),
-        "method": "Local-level Kalman filter+smoother (numpy)",
-    })
+        P_s[t] = P[t] + J**2 * (P_s[t + 1] - Pp)
+    return RichResult(
+        payload={
+            "filtered_state": a,
+            "filtered_state_variance": P,
+            "smoothed_state": a_s,
+            "loglik": float(ll),
+            "Q": float(Q),
+            "R": float(R),
+            "n": int(n),
+            "method": "Local-level Kalman filter+smoother (numpy)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Population attributable fraction (PAF)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["population_attributable"]
@@ -32,7 +33,9 @@ def population_attributable(pe, RR):
     n = len(pe)
     result = float(np.mean(pe))
     se = float(np.std(pe, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Population attributable fraction (PAF)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Population attributable fraction (PAF)"}
+    )
 
 
 def cheatsheet():

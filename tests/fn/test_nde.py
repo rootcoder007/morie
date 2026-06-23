@@ -1,6 +1,7 @@
 """Tests for nde.natural_direct_effect."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nde import natural_direct_effect
 
 
@@ -11,7 +12,7 @@ def test_nde_basic():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     result = natural_direct_effect(X, M, Y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_nde_edge():

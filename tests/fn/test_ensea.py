@@ -1,6 +1,7 @@
 """Test ensea."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ensea import ensea
 
 

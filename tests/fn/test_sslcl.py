@@ -1,7 +1,9 @@
 """Test semi_supervised (sslcl)."""
+
 import numpy as np
-from morie.fn.sslcl import semi_supervised, sslcl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sslcl import semi_supervised, sslcl
 
 
 class TestSslcl:

@@ -1,6 +1,7 @@
 """Tests for rng083.rangayyan_ch3_even_odd_decomposition."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng083 import rangayyan_ch3_even_odd_decomposition
 
 
@@ -11,7 +12,7 @@ def test_rng083_basic():
     n = 100
     result = rangayyan_ch3_even_odd_decomposition(x_e, x_o, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng083_edge():

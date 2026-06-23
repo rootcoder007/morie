@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ACI: online update of alpha to maintain coverage under distribution shift."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_adaptive_conformal_inference"]
@@ -36,7 +38,14 @@ def joseph_adaptive_conformal_inference(alpha_t, miscoverage_t, eta, alpha_targe
     n = len(alpha_t)
     result = float(np.mean(alpha_t))
     se = float(np.std(alpha_t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ACI: online update of alpha to maintain coverage under distribution shift"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "ACI: online update of alpha to maintain coverage under distribution shift",
+        }
+    )
 
 
 def cheatsheet():

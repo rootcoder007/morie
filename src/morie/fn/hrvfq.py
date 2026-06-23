@@ -11,7 +11,9 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['hrvfq']
+__all__ = ["hrvfq"]
+
+
 def hrvfq(
     rr_intervals: np.ndarray,
     *,

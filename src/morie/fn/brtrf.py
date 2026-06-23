@@ -56,9 +56,11 @@ def brent_root(
                 extra={"iterations": it, "bracket_width": abs(b - a)},
             )
         if abs(fa - fc) > 1e-15 and abs(fb - fc) > 1e-15:
-            s = (a * fb * fc / ((fa - fb) * (fa - fc))
-                 + b * fa * fc / ((fb - fa) * (fb - fc))
-                 + c * fa * fb / ((fc - fa) * (fc - fb)))
+            s = (
+                a * fb * fc / ((fa - fb) * (fa - fc))
+                + b * fa * fc / ((fb - fa) * (fb - fc))
+                + c * fa * fb / ((fc - fa) * (fc - fb))
+            )
         else:
             s = b - fb * (b - a) / (fb - fa + 1e-30)
         cond1 = not ((3 * a + b) / 4 < s < b or b < s < (3 * a + b) / 4)

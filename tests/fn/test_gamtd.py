@@ -1,6 +1,7 @@
 """Tests for gamtd.n_step_td."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gamtd import n_step_td
 
 
@@ -12,7 +13,7 @@ def test_gamtd_basic():
     gamma = 1.0
     result = n_step_td(traj, V, n, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gamtd_edge():

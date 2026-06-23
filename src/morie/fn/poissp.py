@@ -1,6 +1,7 @@
 """Poisson spatial GLM with offset."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["poisson_spatial_glm"]

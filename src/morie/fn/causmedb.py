@@ -1,6 +1,7 @@
 """Baron-Kenny three-equation mediation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_mediation_baron_kenny"]

@@ -1,6 +1,8 @@
 """Tests for tbvar."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tbvar import tbvar
 
 
@@ -28,4 +30,5 @@ def test_tbvar_no_data():
 
 def test_tbvar_alias():
     from morie.fn.tbvar import tbvar
+
     assert tbvar is tbvar

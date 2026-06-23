@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """RMSProp optimizer update rule."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rmsprop_optimizer"]

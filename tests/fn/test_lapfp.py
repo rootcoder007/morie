@@ -1,6 +1,7 @@
 """Test lapfp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lapfp import lapfp
 
 

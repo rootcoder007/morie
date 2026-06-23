@@ -54,9 +54,9 @@ Laukkonen, R. E. & Slagter, H. A. (2021) From many to (n)one:
 
 from __future__ import annotations
 
+from .analysis import beautiful_loop_metric, san_score
 from .data import load_dmt_imaging
 from .preprocess import preprocess_eeg, preprocess_fmri
-from .analysis import beautiful_loop_metric, san_score
 
 __all__ = [
     "load_dmt_imaging",

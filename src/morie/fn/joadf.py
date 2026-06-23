@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Augmented Dickey-Fuller test for unit-root stationarity."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_adf_unit_root_test"]
@@ -34,7 +36,14 @@ def joseph_adf_unit_root_test(y, p, cdf=None):
     y = np.asarray(y, dtype=float)
     n = len(y)
     if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Augmented Dickey-Fuller test for unit-root stationarity"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Augmented Dickey-Fuller test for unit-root stationarity",
+            }
+        )
     x_sorted = np.sort(y)
     if cdf is None:
         cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y), scale=np.std(y, ddof=1))
@@ -49,9 +58,16 @@ def joseph_adf_unit_root_test(y, p, cdf=None):
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
-    return RichResult(payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Augmented Dickey-Fuller test for unit-root stationarity"})
+    return RichResult(
+        payload={
+            "statistic": float(statistic),
+            "p_value": float(p_value),
+            "n": n,
+            "method": "Augmented Dickey-Fuller test for unit-root stationarity",
+        }
+    )
 
 
 def cheatsheet():

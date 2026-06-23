@@ -1,7 +1,9 @@
 """Test signal_arc_length."""
+
 import numpy as np
-from morie.fn.sglen import signal_arc_length, sglen
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sglen import sglen, signal_arc_length
 
 
 class TestSignalArcLength:

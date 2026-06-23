@@ -1,6 +1,8 @@
 """Tests for morie.fn.stl — STL decomposition."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stl import stl_decompose
 
 

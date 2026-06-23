@@ -1,6 +1,8 @@
 """Tests for permutation entropy."""
+
 import numpy as np
 import pytest
+
 from morie.fn.prmnt import permutation_entropy, prmnt
 
 

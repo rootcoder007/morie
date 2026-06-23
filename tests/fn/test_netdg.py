@@ -1,6 +1,9 @@
 """Tests for network_degree."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.netdg import network_degree
+
 
 class TestNetDeg:
     def test_complete(self):

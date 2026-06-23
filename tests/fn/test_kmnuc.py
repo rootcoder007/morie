@@ -1,6 +1,7 @@
 """Tests for kmnuc.kamath_nucleus_sampling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmnuc import kamath_nucleus_sampling
 
 
@@ -10,7 +11,7 @@ def test_kmnuc_basic():
     p = 5
     result = kamath_nucleus_sampling(logits, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmnuc_edge():

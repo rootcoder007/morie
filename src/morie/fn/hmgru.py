@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GRU cell: reset and update gates."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_gru"]

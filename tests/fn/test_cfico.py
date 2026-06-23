@@ -1,7 +1,7 @@
 """Tests for morie.fn.cfico."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cfico import cfico
 
 

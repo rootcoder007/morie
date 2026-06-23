@@ -1,7 +1,6 @@
 """Tests for morie.dataset — dataset-agnostic profiling and analysis engine."""
 
 import tempfile
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -9,7 +8,6 @@ import pytest
 
 from morie.dataset import (
     ColumnProfile,
-    DatasetProfile,
     MeasurementLevel,
     infer_measurement_level,
     load_dataset,
@@ -17,46 +15,50 @@ from morie.dataset import (
     suggest_analysis_plan,
 )
 
-
 # ---------------------------------------------------------------------------
 # Fixtures: synthetic DataFrames
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def epi_df():
     """Synthetic epidemiological DataFrame with known variable types."""
     rng = np.random.default_rng(42)
     n = 200
-    return pd.DataFrame({
-        "id": range(n),
-        "treatment_arm": rng.choice([0, 1], size=n),
-        "outcome_event": rng.normal(5.0, 2.0, size=n),
-        "age_group": rng.choice(["18-24", "25-34", "35-44", "45-54"], size=n),
-        "gender": rng.choice(["Male", "Female"], size=n),
-        "province_region": rng.choice(["ON", "QC", "BC", "AB", "SK", "MB", "NS",
-                                        "NB", "NL", "PE", "YT"], size=n),
-        "weight": rng.uniform(0.5, 4.0, size=n),
-        "income": rng.exponential(50000, size=n),
-        "year_of_birth": rng.integers(1960, 2005, size=n),
-        "likert_satisfaction": rng.integers(1, 6, size=n),  # 1-5 scale
-        "count_visits": rng.poisson(3, size=n),
-    })
+    return pd.DataFrame(
+        {
+            "id": range(n),
+            "treatment_arm": rng.choice([0, 1], size=n),
+            "outcome_event": rng.normal(5.0, 2.0, size=n),
+            "age_group": rng.choice(["18-24", "25-34", "35-44", "45-54"], size=n),
+            "gender": rng.choice(["Male", "Female"], size=n),
+            "province_region": rng.choice(["ON", "QC", "BC", "AB", "SK", "MB", "NS", "NB", "NL", "PE", "YT"], size=n),
+            "weight": rng.uniform(0.5, 4.0, size=n),
+            "income": rng.exponential(50000, size=n),
+            "year_of_birth": rng.integers(1960, 2005, size=n),
+            "likert_satisfaction": rng.integers(1, 6, size=n),  # 1-5 scale
+            "count_visits": rng.poisson(3, size=n),
+        }
+    )
 
 
 @pytest.fixture
 def minimal_binary_df():
     """Minimal DataFrame with clear binary treatment and binary outcome."""
-    return pd.DataFrame({
-        "drug_exposure": [0, 1, 0, 1, 0, 1, 0, 1],
-        "death_event": [0, 0, 1, 1, 0, 1, 0, 1],
-        "age": [20, 30, 40, 50, 25, 35, 45, 55],
-        "bmi": [22.0, 25.0, 28.0, 30.0, 21.5, 24.5, 27.5, 31.0],
-    })
+    return pd.DataFrame(
+        {
+            "drug_exposure": [0, 1, 0, 1, 0, 1, 0, 1],
+            "death_event": [0, 0, 1, 1, 0, 1, 0, 1],
+            "age": [20, 30, 40, 50, 25, 35, 45, 55],
+            "bmi": [22.0, 25.0, 28.0, 30.0, 21.5, 24.5, 27.5, 31.0],
+        }
+    )
 
 
 # ---------------------------------------------------------------------------
 # infer_measurement_level
 # ---------------------------------------------------------------------------
+
 
 class TestInferMeasurementLevel:
     """Test NOIR classification for individual columns."""
@@ -114,6 +116,7 @@ class TestInferMeasurementLevel:
 # ---------------------------------------------------------------------------
 # profile_dataset
 # ---------------------------------------------------------------------------
+
 
 class TestProfileDataset:
     """Test the full profiling pipeline."""
@@ -186,10 +189,12 @@ class TestProfileDataset:
             profile_dataset([1, 2, 3])
 
     def test_missing_percentage(self):
-        df = pd.DataFrame({
-            "complete": [1, 2, 3, 4],
-            "half_missing": [1.0, np.nan, 3.0, np.nan],
-        })
+        df = pd.DataFrame(
+            {
+                "complete": [1, 2, 3, 4],
+                "half_missing": [1.0, np.nan, 3.0, np.nan],
+            }
+        )
         profile = profile_dataset(df)
         assert profile.columns["complete"].missing_pct == 0.0
         assert abs(profile.columns["half_missing"].missing_pct - 50.0) < 0.1
@@ -198,6 +203,7 @@ class TestProfileDataset:
 # ---------------------------------------------------------------------------
 # load_dataset
 # ---------------------------------------------------------------------------
+
 
 class TestLoadDataset:
     """Test file ingestion."""
@@ -228,6 +234,7 @@ class TestLoadDataset:
 # ---------------------------------------------------------------------------
 # suggest_analysis_plan
 # ---------------------------------------------------------------------------
+
 
 class TestSuggestAnalysisPlan:
     """Test analysis plan suggestions."""

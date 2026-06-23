@@ -8,7 +8,9 @@ import pandas as pd
 from scipy import stats
 
 
-def otis_gate_age(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", age_col: str = "age_group") -> pd.DataFrame:
+def otis_gate_age(
+    df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", age_col: str = "age_group"
+) -> pd.DataFrame:
     """Estimate Group Average Treatment Effect (GATE) by age group.
 
     Simple difference-in-means within each age stratum, with

@@ -1,7 +1,9 @@
 """Tests for dispersion entropy."""
+
 import numpy as np
 import pytest
-from morie.fn.dient import dispersion_entropy, dient
+
+from morie.fn.dient import dient, dispersion_entropy
 
 
 def test_random():

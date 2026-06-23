@@ -9,7 +9,14 @@ import scipy.stats as stats
 from ._containers import ESRes
 
 
-def berkson_bias_test(or_hospital: float, or_population: float, se_hospital: float, se_population: float, confidence: float = 0.95, cdf=None) -> ESRes:
+def berkson_bias_test(
+    or_hospital: float,
+    or_population: float,
+    se_hospital: float,
+    se_population: float,
+    confidence: float = 0.95,
+    cdf=None,
+) -> ESRes:
     """Test for Berkson's bias by comparing hospital vs population ORs.
 
     Berkson's bias arises in hospital-based case-control studies when

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Transformer architecture (Vaswani et al. 2017)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_transformer"]
@@ -36,7 +38,9 @@ def geron_transformer(X, n_heads, d_model, n_layers):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Transformer architecture (Vaswani et al. 2017)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Transformer architecture (Vaswani et al. 2017)"}
+    )
 
 
 def cheatsheet():

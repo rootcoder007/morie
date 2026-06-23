@@ -30,4 +30,4 @@ rcdst = distance_from_agreement
 
 
 def cheatsheet() -> str:
-    return 'distance_from_agreement({}) -> Distance from agreement.'
+    return "distance_from_agreement({}) -> Distance from agreement."

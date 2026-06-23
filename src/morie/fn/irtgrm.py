@@ -1,6 +1,7 @@
 """Samejima graded response model."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["graded_response"]

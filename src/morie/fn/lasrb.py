@@ -66,4 +66,4 @@ lasrb = iou_metric
 
 
 def cheatsheet() -> str:
-    return 'iou_metric({}) -> IoU tracking metric.'
+    return "iou_metric({}) -> IoU tracking metric."

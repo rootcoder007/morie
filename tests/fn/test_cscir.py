@@ -1,6 +1,7 @@
 """Test cscir."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cscir import cscir
 
 

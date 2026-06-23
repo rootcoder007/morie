@@ -1,6 +1,8 @@
 """Tests for mcanis."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mcanis import mcanis
 
 
@@ -28,4 +30,5 @@ def test_mcanis_no_data():
 
 def test_mcanis_alias():
     from morie.fn.mcanis import mcanis
+
     assert mcanis is mcanis

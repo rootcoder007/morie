@@ -37,12 +37,12 @@ def kpss_test(y: np.ndarray, regression: str = "c", n_lags: int | None = None) -
     beta = np.linalg.lstsq(X, y, rcond=None)[0]
     resid = y - X @ beta
     cumsum = np.cumsum(resid)
-    s2 = np.sum(resid ** 2) / n
+    s2 = np.sum(resid**2) / n
     for lag in range(1, n_lags + 1):
         w = 1 - lag / (n_lags + 1)
         s2 += 2 * w * np.sum(resid[lag:] * resid[:-lag]) / n
     s2 = max(s2, 1e-10)
-    stat = float(np.sum(cumsum ** 2) / (n ** 2 * s2))
+    stat = float(np.sum(cumsum**2) / (n**2 * s2))
     if regression == "ct":
         crit = {"10%": 0.119, "5%": 0.146, "2.5%": 0.176, "1%": 0.216}
     else:

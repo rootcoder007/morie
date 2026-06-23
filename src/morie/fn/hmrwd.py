@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Reward function R(s, a, s')."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_reward_function"]

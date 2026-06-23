@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dynamic W-NOMINATE / dynamic ideal points (Armstrong Ch 6)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["dynamic_wnominate", "dwnmn"]
@@ -31,34 +33,47 @@ def dynamic_wnominate(x, sigma_w: float = 0.1):
         raw = x.copy()
         T = raw.size
         if T == 0:
-            return RichResult(payload={"smoothed": np.array([]),
-                                       "raw": np.array([]),
-                                       "sigma_w": sigma_w, "n_periods": 0,
-                                       "method": "dynamic_wnominate"})
+            return RichResult(
+                payload={
+                    "smoothed": np.array([]),
+                    "raw": np.array([]),
+                    "sigma_w": sigma_w,
+                    "n_periods": 0,
+                    "method": "dynamic_wnominate",
+                }
+            )
         # 1-D Kalman + RTS smoother on raw scalar
         s2_obs = float(np.var(raw) + 1e-6)
         # forward
-        m = np.zeros(T); P = np.zeros(T)
-        m[0] = raw[0]; P[0] = s2_obs
+        m = np.zeros(T)
+        P = np.zeros(T)
+        m[0] = raw[0]
+        P[0] = s2_obs
         for t in range(1, T):
-            mp = m[t-1]
-            Pp = P[t-1] + sigma_w ** 2
+            mp = m[t - 1]
+            Pp = P[t - 1] + sigma_w**2
             K = Pp / (Pp + s2_obs)
             m[t] = mp + K * (raw[t] - mp)
             P[t] = (1 - K) * Pp
         # backward smoother
-        ms = m.copy(); Ps = P.copy()
+        ms = m.copy()
+        Ps = P.copy()
         for t in range(T - 2, -1, -1):
-            Pp = P[t] + sigma_w ** 2
+            Pp = P[t] + sigma_w**2
             J = P[t] / Pp
-            ms[t] = m[t] + J * (ms[t+1] - m[t])
-            Ps[t] = P[t] + J ** 2 * (Ps[t+1] - Pp)
+            ms[t] = m[t] + J * (ms[t + 1] - m[t])
+            Ps[t] = P[t] + J**2 * (Ps[t + 1] - Pp)
         return RichResult(
             title="Dynamic ideal points (RTS smoother)",
             summary_lines=[("T periods", T), ("sigma_w", sigma_w)],
-            payload={"smoothed": ms, "raw": raw, "P_smoothed": Ps,
-                     "sigma_w": float(sigma_w), "n_periods": int(T),
-                     "method": "dynamic_wnominate"},
+            payload={
+                "smoothed": ms,
+                "raw": raw,
+                "P_smoothed": Ps,
+                "sigma_w": float(sigma_w),
+                "n_periods": int(T),
+                "method": "dynamic_wnominate",
+            },
         )
     # Panel: smooth each legislator independently
     n, T = x.shape
@@ -68,11 +83,15 @@ def dynamic_wnominate(x, sigma_w: float = 0.1):
         out[i] = sub["smoothed"]
     return RichResult(
         title="Dynamic ideal points (RTS smoother, panel)",
-        summary_lines=[("n legislators", n), ("T periods", T),
-                       ("sigma_w", sigma_w)],
-        payload={"smoothed": out, "raw": x, "sigma_w": float(sigma_w),
-                 "n_periods": int(T), "n_units": int(n),
-                 "method": "dynamic_wnominate"},
+        summary_lines=[("n legislators", n), ("T periods", T), ("sigma_w", sigma_w)],
+        payload={
+            "smoothed": out,
+            "raw": x,
+            "sigma_w": float(sigma_w),
+            "n_periods": int(T),
+            "n_units": int(n),
+            "method": "dynamic_wnominate",
+        },
     )
 
 

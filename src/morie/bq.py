@@ -18,6 +18,7 @@ The high-level helpers (``bq_describe``, ``bq_columns``, ``bq_summary``,
 ``bq_correlate``) auto-pick local first, fall through to remote when
 configured.
 """
+
 from __future__ import annotations
 
 import json
@@ -35,9 +36,7 @@ from typing import Any
 REMOTE_BASE_URL = os.environ.get("MORIE_REMOTE_URL", "")
 
 # Where any user-supplied SQLite mirrors live locally.
-LOCAL_DB_DIR = Path(
-    os.environ.get("MORIE_LOCAL_DB_DIR", str(Path.home() / "morie_data"))
-)
+LOCAL_DB_DIR = Path(os.environ.get("MORIE_LOCAL_DB_DIR", str(Path.home() / "morie_data")))
 
 
 # --------------------------------------------------------------------------
@@ -53,7 +52,7 @@ class TableInfo:
     table: str
     row_count: int
     columns: list[dict[str, str]]  # [{"name": "...", "type": "..."}]
-    sample: list[dict[str, Any]]   # first 5 rows, dict-shaped
+    sample: list[dict[str, Any]]  # first 5 rows, dict-shaped
 
 
 @dataclass
@@ -91,9 +90,7 @@ def _local_path(db: str) -> Path | None:
 def _query_local(db: str, sql: str) -> list[dict[str, Any]]:
     path = _local_path(db)
     if path is None:
-        raise FileNotFoundError(
-            f"no local copy of {db!r}; set MORIE_LOCAL_DB_DIR or use bq_query_remote"
-        )
+        raise FileNotFoundError(f"no local copy of {db!r}; set MORIE_LOCAL_DB_DIR or use bq_query_remote")
     with sqlite3.connect(path) as conn:
         conn.row_factory = sqlite3.Row
         cur = conn.execute(sql)
@@ -106,8 +103,7 @@ def _query_remote(db: str, sql: str) -> list[dict[str, Any]]:
         # exceptions (e.g. eval_pipeline gate runners) treat "no
         # endpoint configured" as a skip rather than a hard error.
         raise ConnectionError(
-            "no remote endpoint configured; set MORIE_REMOTE_URL "
-            "or supply a local SQLite mirror via MORIE_LOCAL_DB_DIR"
+            "no remote endpoint configured; set MORIE_REMOTE_URL or supply a local SQLite mirror via MORIE_LOCAL_DB_DIR"
         )
     qs = urllib.parse.urlencode({"sql": sql, "_shape": "objects"})
     url = f"{REMOTE_BASE_URL}/{db}.json?{qs}"

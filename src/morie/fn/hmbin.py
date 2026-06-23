@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Binary classification: predict one of two classes using probability threshold."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_binary_classification"]
@@ -32,7 +34,14 @@ def geron_binary_classification(X, theta):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Binary classification: predict one of two classes using probability threshold"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Binary classification: predict one of two classes using probability threshold",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for km037.kamath_ch2_gpt_combined_obj."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km037 import kamath_ch2_gpt_combined_obj
 
 
@@ -11,7 +12,7 @@ def test_km037_basic():
     lam = 0.1
     result = kamath_ch2_gpt_combined_obj(L_1, L_2, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km037_edge():

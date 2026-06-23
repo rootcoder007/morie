@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nucleotide frequency distribution (A/T/G/C counts and proportions)."""
 
-
 from ._containers import DescriptiveResult
 
 

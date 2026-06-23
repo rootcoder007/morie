@@ -42,4 +42,4 @@ simth = simulate_thermometer
 
 
 def cheatsheet() -> str:
-    return 'simulate_thermometer({}) -> Simulate feeling thermometer data.'
+    return "simulate_thermometer({}) -> Simulate feeling thermometer data."

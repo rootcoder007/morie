@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxcpv -- Vine copula spatial"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxcpv import copula_vine_sp
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """IRT-based 2PL spatial ideal-point model (Armstrong Ch 4)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["irt_spatial", "irtsp"]
@@ -34,11 +36,16 @@ def irt_spatial(x, n_iter: int = 60, tol: float = 1e-6):
         M = M.reshape(-1, 1)
     n, m = M.shape
     if n < 2 or m < 1:
-        return RichResult(payload={"x_hat": np.full(n, np.nan),
-                                   "alpha": np.full(m, np.nan),
-                                   "beta": np.full(m, np.nan),
-                                   "loglik": np.nan, "n_iter": 0,
-                                   "method": "irt_spatial"})
+        return RichResult(
+            payload={
+                "x_hat": np.full(n, np.nan),
+                "alpha": np.full(m, np.nan),
+                "beta": np.full(m, np.nan),
+                "loglik": np.nan,
+                "n_iter": 0,
+                "method": "irt_spatial",
+            }
+        )
     # Init via first PCA component of vote matrix
     Mc = M - np.nanmean(M, axis=0, keepdims=True)
     Mc = np.nan_to_num(Mc)
@@ -57,7 +64,8 @@ def irt_spatial(x, n_iter: int = 60, tol: float = 1e-6):
         for j in range(m):
             yj = M[:, j]
             mask = ~np.isnan(yj)
-            xj = x_hat[mask]; yjm = yj[mask]
+            xj = x_hat[mask]
+            yjm = yj[mask]
             a, b = alpha[j], beta[j]
             for _ in range(5):
                 z = a * (xj - b)
@@ -84,14 +92,16 @@ def irt_spatial(x, n_iter: int = 60, tol: float = 1e-6):
         for i in range(n):
             yi = M[i]
             mask = ~np.isnan(yi)
-            aj = alpha[mask]; bj = beta[mask]; yim = yi[mask]
+            aj = alpha[mask]
+            bj = beta[mask]
+            yim = yi[mask]
             xi = x_hat[i]
             for _ in range(5):
                 z = aj * (xi - bj)
                 p = _logistic(z)
                 w = p * (1 - p) + 1e-9
                 g = np.sum(aj * (yim - p))
-                H = -np.sum(w * aj ** 2)
+                H = -np.sum(w * aj**2)
                 if abs(H) < 1e-12:
                     break
                 step = g / H
@@ -104,19 +114,21 @@ def irt_spatial(x, n_iter: int = 60, tol: float = 1e-6):
         Z = alpha[None, :] * (x_hat[:, None] - beta[None, :])
         P = _logistic(Z)
         mask_full = ~np.isnan(M)
-        ll = float(np.sum(np.where(mask_full,
-                                   M * np.log(P + 1e-12)
-                                   + (1 - M) * np.log(1 - P + 1e-12), 0.0)))
+        ll = float(np.sum(np.where(mask_full, M * np.log(P + 1e-12) + (1 - M) * np.log(1 - P + 1e-12), 0.0)))
         if abs(ll - prev_ll) < tol * max(1.0, abs(prev_ll)):
             break
         prev_ll = ll
     return RichResult(
         title="IRT 2PL spatial model (Clinton-Jackman-Rivers)",
-        summary_lines=[("log-lik", ll), ("n legislators", n),
-                       ("m items", m), ("iter", it)],
-        payload={"x_hat": x_hat, "alpha": alpha, "beta": beta,
-                 "loglik": ll, "n_iter": int(it),
-                 "method": "irt_spatial_2pl"},
+        summary_lines=[("log-lik", ll), ("n legislators", n), ("m items", m), ("iter", it)],
+        payload={
+            "x_hat": x_hat,
+            "alpha": alpha,
+            "beta": beta,
+            "loglik": ll,
+            "n_iter": int(it),
+            "method": "irt_spatial_2pl",
+        },
     )
 
 

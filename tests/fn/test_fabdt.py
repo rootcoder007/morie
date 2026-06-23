@@ -1,7 +1,7 @@
 """Tests for fabdt (Freund-Ansari-Bradley-David test)."""
 
 import numpy as np
-import pytest
+
 from morie.fn.fabdt import fabdt
 
 

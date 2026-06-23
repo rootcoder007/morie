@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DR-learner: doubly robust meta-learner for CATE."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["dr_learner"]
@@ -42,7 +44,9 @@ def dr_learner(Y, T, X, mu0, mu1, e_model, cate_model):
     n = int(Y) if Y.ndim == 0 else len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DR-learner: doubly robust meta-learner for CATE"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DR-learner: doubly robust meta-learner for CATE"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Smith's 1cycle LR schedule: triangular warm-up then anneal + momentum mirror."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_1cycle_schedule"]
@@ -36,7 +38,14 @@ def geron_1cycle_schedule(eta_min, eta_max, t, T):
     n = int(eta_min) if eta_min.ndim == 0 else len(eta_min)
     result = float(np.mean(eta_min))
     se = float(np.std(eta_min, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Smith's 1cycle LR schedule: triangular warm-up then anneal + momentum mirror"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Smith's 1cycle LR schedule: triangular warm-up then anneal + momentum mirror",
+        }
+    )
 
 
 def cheatsheet():

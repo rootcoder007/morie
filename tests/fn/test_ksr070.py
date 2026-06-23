@@ -1,6 +1,7 @@
 """Tests for ksr070.kosorok_ch3_score_operator_path."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr070 import kosorok_ch3_score_operator_path
 
 
@@ -14,7 +15,7 @@ def test_ksr070_basic():
     p = 5
     result = kosorok_ch3_score_operator_path(B, theta, eta, h, x, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr070_edge():

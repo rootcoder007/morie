@@ -1,6 +1,7 @@
 """Multinomial weights helper for boot resamples."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_multinomial_weights"]
@@ -34,7 +35,9 @@ def boot_multinomial_weights(n, B, rng):
     n = len(n)
     result = float(np.mean(n))
     se = float(np.std(n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multinomial weights helper for boot resamples"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Multinomial weights helper for boot resamples"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test seecl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.seecl import seecl
 
 

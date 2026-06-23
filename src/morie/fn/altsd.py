@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """TSDAE: encoder takes corrupted sentence, decoder reconstructs the clean one."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_tsdae_objective"]
@@ -36,7 +38,14 @@ def alammar_tsdae_objective(clean, corrupted, encoder, decoder):
     n = len(clean)
     result = float(np.mean(clean))
     se = float(np.std(clean, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TSDAE: encoder takes corrupted sentence, decoder reconstructs the clean one"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "TSDAE: encoder takes corrupted sentence, decoder reconstructs the clean one",
+        }
+    )
 
 
 def cheatsheet():

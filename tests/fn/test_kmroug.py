@@ -1,6 +1,7 @@
 """Tests for kmroug.kamath_rouge_n."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmroug import kamath_rouge_n
 
 
@@ -11,7 +12,7 @@ def test_kmroug_basic():
     n = 100
     result = kamath_rouge_n(hypothesis, reference, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmroug_edge():

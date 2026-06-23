@@ -17,6 +17,7 @@ Importing it without JAX raises :class:`ImportError`; morie's lazy
 loader then reports the symbol as absent — the standard
 optional-dependency behaviour.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -25,15 +26,13 @@ try:
     import jax
     import jax.numpy as jnp
 except ImportError as exc:  # pragma: no cover - only hit without JAX
-    raise ImportError(
-        "morie.fairness.gan needs JAX — install the simulation extra: "
-        "pip install 'morie[sim]'"
-    ) from exc
+    raise ImportError("morie.fairness.gan needs JAX — install the simulation extra: pip install 'morie[sim]'") from exc
 
 __all__ = ["SpatialGAN", "CTGANDebiaser"]
 
 
 # ── tiny MLP ─────────────────────────────────────────────────────────
+
 
 def _init_mlp(key, sizes):
     """He-initialised MLP parameters as a list of ``(W, b)`` tuples."""
@@ -57,21 +56,20 @@ def _mlp(params, x):
 
 # ── hand-written Adam (keeps the extra to just `jax`) ────────────────
 
+
 def _adam_init(params):
-    return [(jnp.zeros_like(w), jnp.zeros_like(b),
-             jnp.zeros_like(w), jnp.zeros_like(b)) for w, b in params]
+    return [(jnp.zeros_like(w), jnp.zeros_like(b), jnp.zeros_like(w), jnp.zeros_like(b)) for w, b in params]
 
 
-def _adam_step(params, grads, state, step, lr,
-               b1=0.9, b2=0.999, eps=1e-8):
+def _adam_step(params, grads, state, step, lr, b1=0.9, b2=0.999, eps=1e-8):
     new_params, new_state = [], []
     for (w, b), (gw, gb), (mw, mb, vw, vb) in zip(params, grads, state):
         mw = b1 * mw + (1 - b1) * gw
         mb = b1 * mb + (1 - b1) * gb
-        vw = b2 * vw + (1 - b2) * gw ** 2
-        vb = b2 * vb + (1 - b2) * gb ** 2
-        bc1 = 1.0 - b1 ** step
-        bc2 = 1.0 - b2 ** step
+        vw = b2 * vw + (1 - b2) * gw**2
+        vb = b2 * vb + (1 - b2) * gb**2
+        bc1 = 1.0 - b1**step
+        bc2 = 1.0 - b2**step
         w = w - lr * (mw / bc1) / (jnp.sqrt(vw / bc2) + eps)
         b = b - lr * (mb / bc1) / (jnp.sqrt(vb / bc2) + eps)
         new_params.append((w, b))
@@ -81,14 +79,14 @@ def _adam_step(params, grads, state, step, lr,
 
 # ── GAN losses ───────────────────────────────────────────────────────
 
+
 def _disc_loss(dp, gp, real, z):
     fake = _mlp(gp, z)
     real_logit = _mlp(dp, real)[:, 0]
     fake_logit = _mlp(dp, fake)[:, 0]
     # binary cross-entropy: real -> 1, fake -> 0.
     # log(1 - sigmoid(x)) == log_sigmoid(-x)
-    return (-jax.nn.log_sigmoid(real_logit).mean()
-            - jax.nn.log_sigmoid(-fake_logit).mean())
+    return -jax.nn.log_sigmoid(real_logit).mean() - jax.nn.log_sigmoid(-fake_logit).mean()
 
 
 def _gen_loss(gp, dp, z):
@@ -122,18 +120,16 @@ class SpatialGAN:
     (500, 2)
     """
 
-    def __init__(self, latent_dim: int = 16, hidden: int = 64,
-                 seed: int = 0):
+    def __init__(self, latent_dim: int = 16, hidden: int = 64, seed: int = 0):
         self.latent_dim = int(latent_dim)
         self.hidden = int(hidden)
         self.seed = int(seed)
-        self._gp = None          # generator params
-        self._mean = None        # standardisation
+        self._gp = None  # generator params
+        self._mean = None  # standardisation
         self._std = None
         self.history: list[float] = []
 
-    def fit(self, points, *, steps: int = 1500, batch_size: int = 128,
-            lr: float = 2e-3):
+    def fit(self, points, *, steps: int = 1500, batch_size: int = 128, lr: float = 2e-3):
         """Train the GAN on an ``(n, 2)`` array of coordinates."""
         pts = np.asarray(points, dtype=np.float32)
         if pts.ndim != 2 or pts.shape[1] != 2:
@@ -188,12 +184,12 @@ class SpatialGAN:
 
 # ── conditional GAN losses (for the CTGAN-style debiaser) ────────────
 
+
 def _cond_disc_loss(dp, gp, real_feat, cond, z):
     fake = _mlp(gp, jnp.concatenate([z, cond], axis=1))
     real_logit = _mlp(dp, jnp.concatenate([real_feat, cond], axis=1))[:, 0]
     fake_logit = _mlp(dp, jnp.concatenate([fake, cond], axis=1))[:, 0]
-    return (-jax.nn.log_sigmoid(real_logit).mean()
-            - jax.nn.log_sigmoid(-fake_logit).mean())
+    return -jax.nn.log_sigmoid(real_logit).mean() - jax.nn.log_sigmoid(-fake_logit).mean()
 
 
 def _cond_gen_loss(gp, dp, cond, z):
@@ -230,8 +226,7 @@ class CTGANDebiaser:
         As for :class:`SpatialGAN`.
     """
 
-    def __init__(self, latent_dim: int = 16, hidden: int = 64,
-                 seed: int = 0):
+    def __init__(self, latent_dim: int = 16, hidden: int = 64, seed: int = 0):
         self.latent_dim = int(latent_dim)
         self.hidden = int(hidden)
         self.seed = int(seed)
@@ -248,9 +243,18 @@ class CTGANDebiaser:
         cond[np.arange(len(gi)), ng + oi] = 1.0
         return cond
 
-    def fit(self, df, *, outcome_col, feature_cols, group_col="group",
-            favorable=1, steps: int = 1500, batch_size: int = 128,
-            lr: float = 2e-3):
+    def fit(
+        self,
+        df,
+        *,
+        outcome_col,
+        feature_cols,
+        group_col="group",
+        favorable=1,
+        steps: int = 1500,
+        batch_size: int = 128,
+        lr: float = 2e-3,
+    ):
         """Train the conditional GAN on a biased :class:`~pandas.DataFrame`.
 
         Parameters
@@ -289,8 +293,7 @@ class CTGANDebiaser:
         ng = len(self._groups)
         self._group_props = np.bincount(gi, minlength=ng) / len(gi)
         self._group_fav_rate = {
-            g: float(oi[gi == i].mean()) if (gi == i).any() else 0.0
-            for i, g in enumerate(self._groups)
+            g: float(oi[gi == i].mean()) if (gi == i).any() else 0.0 for i, g in enumerate(self._groups)
         }
         cond = jnp.asarray(self._cond(gi, oi))
         cond_dim = ng + 2
@@ -299,17 +302,14 @@ class CTGANDebiaser:
 
         key = jax.random.PRNGKey(self.seed)
         key, kg, kd = jax.random.split(key, 3)
-        gp = _init_mlp(kg, [self.latent_dim + cond_dim, self.hidden,
-                            self.hidden, n_feat])
-        dp = _init_mlp(kd, [n_feat + cond_dim, self.hidden,
-                            self.hidden, 1])
+        gp = _init_mlp(kg, [self.latent_dim + cond_dim, self.hidden, self.hidden, n_feat])
+        dp = _init_mlp(kd, [n_feat + cond_dim, self.hidden, self.hidden, 1])
         gs = _adam_init(gp)
         ds = _adam_init(dp)
 
         @jax.jit
         def step(gp, dp, gs, ds, t, real, cnd, zd, zg):
-            dl, dg = jax.value_and_grad(_cond_disc_loss)(
-                dp, gp, real, cnd, zd)
+            dl, dg = jax.value_and_grad(_cond_disc_loss)(dp, gp, real, cnd, zd)
             dp2, ds2 = _adam_step(dp, dg, ds, t, lr)
             gl, gg = jax.value_and_grad(_cond_gen_loss)(gp, dp2, cnd, zg)
             gp2, gs2 = _adam_step(gp, gg, gs, t, lr)
@@ -360,21 +360,16 @@ class CTGANDebiaser:
         if self._gp is None:
             raise RuntimeError("CTGANDebiaser is not fitted; call fit()")
         if privileged not in self._groups:
-            raise ValueError(
-                f"privileged group {privileged!r} not seen in training; "
-                f"groups: {self._groups}"
-            )
+            raise ValueError(f"privileged group {privileged!r} not seen in training; groups: {self._groups}")
         target_rate = self._group_fav_rate[privileged]
         rng = np.random.default_rng(seed)
-        gi = rng.choice(len(self._groups), size=int(n),
-                        p=self._group_props)
+        gi = rng.choice(len(self._groups), size=int(n), p=self._group_props)
         oi = (rng.random(int(n)) < target_rate).astype(int)
         cond = jnp.asarray(self._cond(gi, oi))
 
         key = jax.random.PRNGKey(self.seed if seed is None else int(seed))
         z = jax.random.normal(key, (int(n), self.latent_dim))
-        std_feat = np.asarray(_mlp(self._gp, jnp.concatenate([z, cond],
-                                                             axis=1)))
+        std_feat = np.asarray(_mlp(self._gp, jnp.concatenate([z, cond], axis=1)))
         feats = std_feat * self._fstd + self._fmean
 
         out = {

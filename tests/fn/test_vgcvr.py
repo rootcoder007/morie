@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgcvr -- Covariance matrix from variogram"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgcvr import covario_matrix
 
@@ -15,5 +14,5 @@ class TestCovarioMatrix:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = covario_matrix(np.random.default_rng(0).uniform(0,1,(5,2)), np.ones(5))
+        result = covario_matrix(np.random.default_rng(0).uniform(0, 1, (5, 2)), np.ones(5))
         assert hasattr(result, "statistic")

@@ -1,4 +1,5 @@
 """Test gen_parity_check."""
+
 from morie.fn._containers import DescriptiveResult
 from morie.fn.genpk import gen_parity_check, genpk
 

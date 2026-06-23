@@ -1,6 +1,7 @@
 """Unit-of-privacy definition (event vs user)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dp_unit_definition"]
@@ -32,7 +33,9 @@ def dp_unit_definition(unit, records):
     n = len(unit)
     result = float(np.mean(unit))
     se = float(np.std(unit, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Unit-of-privacy definition (event vs user)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Unit-of-privacy definition (event vs user)"}
+    )
 
 
 def cheatsheet():

@@ -12,34 +12,34 @@ def bnhan(
     X: np.ndarray,
 ) -> dict:
     r"""
-'s maximum rank correlation (MRC) estimator for binary response.
+    's maximum rank correlation (MRC) estimator for binary response.
 
-    Maximises the rank correlation between :math:`Y` and :math:`X'\beta`:
+        Maximises the rank correlation between :math:`Y` and :math:`X'\beta`:
 
-    .. math::
+        .. math::
 
-        R_n(\beta) = \binom{n}{2}^{-1}
-        \sum_{i<j} \mathbf{1}[(Y_i - Y_j)(X_i'\beta - X_j'\beta) > 0]
+            R_n(\beta) = \binom{n}{2}^{-1}
+            \sum_{i<j} \mathbf{1}[(Y_i - Y_j)(X_i'\beta - X_j'\beta) > 0]
 
-    Rank-based, so robust to monotone transformations of the link.
+        Rank-based, so robust to monotone transformations of the link.
 
-    Parameters
-    ----------
-    y : np.ndarray
-        Binary (or ordinal) response (n,).
-    X : np.ndarray
-        Covariates (n, p), p >= 2.
+        Parameters
+        ----------
+        y : np.ndarray
+            Binary (or ordinal) response (n,).
+        X : np.ndarray
+            Covariates (n, p), p >= 2.
 
-    Returns
-    -------
-    dict
-        ``beta`` (normalised), ``rank_correlation``, ``n_obs``.
+        Returns
+        -------
+        dict
+            ``beta`` (normalised), ``rank_correlation``, ``n_obs``.
 
-    References
-    ----------
-, A. K. (1987). Non-parametric analysis of a generalized
-        regression model. JoE, 35, 303-316.
-    Horowitz (2009). Ch 4.
+        References
+        ----------
+    , A. K. (1987). Non-parametric analysis of a generalized
+            regression model. JoE, 35, 303-316.
+        Horowitz (2009). Ch 4.
     """
     y = np.asarray(y, dtype=float).ravel()
     X = np.asarray(X, dtype=float)
@@ -65,8 +65,7 @@ def bnhan(
 
     b0 = np.zeros(p)
     b0[0] = 1.0
-    res = minimize(neg_rc, b0, method="L-BFGS-B",
-                   options={"maxiter": 200})
+    res = minimize(neg_rc, b0, method="L-BFGS-B", options={"maxiter": 200})
     beta = res.x / (np.linalg.norm(res.x) + 1e-15)
     rc = -float(res.fun)
 

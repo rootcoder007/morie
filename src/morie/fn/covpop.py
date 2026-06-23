@@ -1,6 +1,7 @@
 """Coverage correction (under/over-coverage adjustment)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["coverage_correction"]
@@ -34,7 +35,9 @@ def coverage_correction(y, weights, target_totals):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Coverage correction (under/over-coverage adjustment)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Coverage correction (under/over-coverage adjustment)"}
+    )
 
 
 def cheatsheet():

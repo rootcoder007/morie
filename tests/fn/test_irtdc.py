@@ -1,5 +1,5 @@
 """Tests for morie.fn.irtdc -- IRT discrimination summary."""
-import numpy as np
+
 from morie.fn.irtdc import irt_discrimination_summary, irtdc
 
 

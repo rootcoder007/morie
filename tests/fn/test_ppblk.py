@@ -1,7 +1,7 @@
 """Tests for morie.fn.ppblk."""
 
 import numpy as np
-import pytest
+
 from morie.fn.ppblk import ppblk
 
 

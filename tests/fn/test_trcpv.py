@@ -1,6 +1,7 @@
 """Test trcpv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trcpv import trcpv
 
 

@@ -28,7 +28,9 @@ import numpy as np
 from scipy import stats
 
 
-def ctrfn(Y: np.ndarray, X: np.ndarray, Z: np.ndarray, W: np.ndarray | None = None, cdf=None, *, alpha: float = 0.05) -> dict[str, Any]:
+def ctrfn(
+    Y: np.ndarray, X: np.ndarray, Z: np.ndarray, W: np.ndarray | None = None, cdf=None, *, alpha: float = 0.05
+) -> dict[str, Any]:
     r"""Control function estimator for endogeneity correction.
 
     Parameters
@@ -81,7 +83,7 @@ def ctrfn(Y: np.ndarray, X: np.ndarray, Z: np.ndarray, W: np.ndarray | None = No
     rho = float(coef[1])
 
     resid = Y - M @ coef
-    sigma2 = float(np.sum(resid ** 2) / max(n - M.shape[1], 1))
+    sigma2 = float(np.sum(resid**2) / max(n - M.shape[1], 1))
     MtM_inv = np.linalg.inv(M.T @ M + 1e-10 * np.eye(M.shape[1]))
     se_all = np.sqrt(sigma2 * np.diag(MtM_inv))
     se_beta = float(se_all[0])

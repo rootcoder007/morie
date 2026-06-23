@@ -1,7 +1,9 @@
 """Test spectral_entropy (spent)."""
+
 import numpy as np
-from morie.fn.spent import spectral_entropy, spent
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.spent import spectral_entropy, spent
 
 
 class TestSpent:

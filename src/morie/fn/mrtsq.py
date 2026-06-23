@@ -31,7 +31,7 @@ def mauchly_test(data: np.ndarray, cdf=None) -> DescriptiveResult:
     n, k = X.shape
 
     C = np.eye(k) - np.ones((k, k)) / k
-    C = C[:, :k - 1]
+    C = C[:, : k - 1]
 
     Y = X @ C
     S = np.cov(Y, rowvar=False, ddof=1)
@@ -41,14 +41,14 @@ def mauchly_test(data: np.ndarray, cdf=None) -> DescriptiveResult:
     trace_S = np.trace(S)
     W = det_S / (trace_S / p) ** p if trace_S > 0 else 0.0
 
-    f = 1.0 - (2 * p ** 2 + p + 2) / (6 * p * (n - 1))
+    f = 1.0 - (2 * p**2 + p + 2) / (6 * p * (n - 1))
     chi2 = -f * (n - 1) * np.log(max(W, 1e-300))
     df = p * (p + 1) // 2 - 1
     p_value = float(1 - sp_stats.chi2.cdf(chi2, max(df, 1)))
 
     eigvals = np.linalg.eigvalsh(S)
     eigvals = np.maximum(eigvals, 0)
-    eps_gg = np.sum(eigvals) ** 2 / (p * np.sum(eigvals ** 2)) if np.sum(eigvals ** 2) > 0 else 1.0
+    eps_gg = np.sum(eigvals) ** 2 / (p * np.sum(eigvals**2)) if np.sum(eigvals**2) > 0 else 1.0
 
     return DescriptiveResult(
         name="MauchlySphericity",

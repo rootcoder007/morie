@@ -1,6 +1,7 @@
 """Magnitude response from products of distances to zeros and poles.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_magnitude_response_from_pole_zero"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_magnitude_response_from_pole_zero(l_k, r_k, N, M):
     n = len(l_k)
     result = float(np.mean(l_k))
     se = float(np.std(l_k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Magnitude response from products of distances to zeros and poles."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Magnitude response from products of distances to zeros and poles.",
+        }
+    )
 
 
 def cheatsheet():

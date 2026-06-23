@@ -1,5 +1,5 @@
 """Test sgspd."""
-import numpy as np
+
 from morie.fn.sgspd import space_deformation
 
 

@@ -1,7 +1,9 @@
 """Test shape_factor_fn."""
+
 import numpy as np
-from morie.fn.shpfc import shape_factor_fn, alias
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.shpfc import alias, shape_factor_fn
 
 
 class TestShapeFactorFn:

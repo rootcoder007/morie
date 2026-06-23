@@ -1,5 +1,7 @@
 """Test dropout."""
+
 import numpy as np
+
 from morie.fn.drupt import drupt
 
 

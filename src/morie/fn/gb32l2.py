@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Combinatorial identity: sum_r C(m,r)C(n,r) = C(m+n,m)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_vandermonde_id1"]
@@ -32,7 +34,14 @@ def gibbons_vandermonde_id1(m, n):
     n = int(m) if m.ndim == 0 else len(m)
     result = float(np.mean(m))
     se = float(np.std(m, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Combinatorial identity: sum_r C(m,r)C(n,r) = C(m+n,m)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Combinatorial identity: sum_r C(m,r)C(n,r) = C(m+n,m)",
+        }
+    )
 
 
 def cheatsheet():

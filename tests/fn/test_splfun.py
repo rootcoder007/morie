@@ -1,6 +1,7 @@
 """Tests for splfun.schabenberger_l_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.splfun import schabenberger_l_function
 
 
@@ -11,7 +12,7 @@ def test_splfun_basic():
     r = 10
     result = schabenberger_l_function(points, lambda_est, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_splfun_edge():

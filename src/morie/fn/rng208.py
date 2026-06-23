@@ -1,6 +1,7 @@
 """Output of matched filter via inverse Fourier transform of X(omega)*H(omega).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_matched_filter_output_inverse_ft"]
@@ -38,7 +39,14 @@ def rangayyan_ch4_matched_filter_output_inverse_ft(X, H, omega, f, t):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Output of matched filter via inverse Fourier transform of X(omega)*H(omega)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Output of matched filter via inverse Fourier transform of X(omega)*H(omega).",
+        }
+    )
 
 
 def cheatsheet():

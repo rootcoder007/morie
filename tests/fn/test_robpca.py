@@ -1,6 +1,7 @@
 """Tests for robpca.robust_pca."""
+
 import numpy as np
-import pytest
+
 from morie.fn.robpca import robust_pca
 
 
@@ -10,7 +11,7 @@ def test_robpca_basic():
     k = 5
     result = robust_pca(X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_robpca_edge():

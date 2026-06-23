@@ -1,5 +1,7 @@
 """Tests for morie.fn.cedfm."""
+
 import numpy as np
+
 from morie.fn.cedfm import ecdf
 
 
@@ -13,6 +15,7 @@ def test_cedfm_smoke():
 
 def test_cheatsheet():
     from morie.fn.cedfm import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

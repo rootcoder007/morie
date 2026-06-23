@@ -1,8 +1,9 @@
 """Tests for morie.fn.fanlz -- Factor analysis (ML)."""
 
 import numpy as np
-from morie.fn.fanlz import factor_analysis_ml, fanlz
+
 from morie.fn._containers import FaRes
+from morie.fn.fanlz import factor_analysis_ml, fanlz
 
 
 class TestFactorAnalysisMl:

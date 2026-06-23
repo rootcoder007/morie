@@ -1,6 +1,7 @@
 """Tests for morie.fn.suaud -- AUDIT score."""
 
 import pytest
+
 from morie.fn.suaud import audit_score
 
 

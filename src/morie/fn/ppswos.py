@@ -1,6 +1,7 @@
 """PPS without replacement (Sampford)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["pps_without_replacement"]

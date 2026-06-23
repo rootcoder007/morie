@@ -38,7 +38,7 @@ def epkrn(u: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
         Applications*, 14(1), 153-158.
     """
     u = np.asarray(u, dtype=float)
-    result = np.where(np.abs(u) <= 1.0, 0.75 * (1.0 - u ** 2), 0.0)
+    result = np.where(np.abs(u) <= 1.0, 0.75 * (1.0 - u**2), 0.0)
     return float(result) if result.ndim == 0 else result
 
 

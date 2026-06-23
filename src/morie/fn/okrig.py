@@ -1,6 +1,8 @@
 """Ordinary kriging prediction (exact predictor with unbiasedness)."""
+
 import numpy as np
 from scipy.spatial.distance import cdist
+
 from ._richresult import RichResult
 
 __all__ = ["ordinary_kriging"]
@@ -12,16 +14,16 @@ def _covariance(h, c0, c1, a, model):
     if model == "exponential":
         return c1 * np.exp(-h / a) + np.where(h == 0, c0, 0.0)
     if model == "gaussian":
-        return c1 * np.exp(-(h ** 2) / (a ** 2)) + np.where(h == 0, c0, 0.0)
+        return c1 * np.exp(-(h**2) / (a**2)) + np.where(h == 0, c0, 0.0)
     if model == "spherical":
         c = np.where(h <= a, c1 * (1.0 - 1.5 * h / a + 0.5 * (h / a) ** 3), 0.0)
         return c + np.where(h == 0, c0, 0.0)
     raise ValueError(f"unknown model: {model}")
 
 
-def ordinary_kriging(x, coords, target,
-                     model: str = "exponential",
-                     nugget: float = 0.0, sill: float = 1.0, range_: float = 1.0):
+def ordinary_kriging(
+    x, coords, target, model: str = "exponential", nugget: float = 0.0, sill: float = 1.0, range_: float = 1.0
+):
     """
     Ordinary kriging prediction at one or more target locations.
 
@@ -59,8 +61,7 @@ def ordinary_kriging(x, coords, target,
     if target.ndim == 1:
         target = target.reshape(1, -1)
     if target.shape[1] != coords.shape[1]:
-        raise ValueError(
-            f"target dim {target.shape[1]} must match coords dim {coords.shape[1]}")
+        raise ValueError(f"target dim {target.shape[1]} must match coords dim {coords.shape[1]}")
     n = x.size
     if coords.shape[0] != n:
         raise ValueError(f"coords rows ({coords.shape[0]}) must match x ({n})")
@@ -101,12 +102,14 @@ def ordinary_kriging(x, coords, target,
         est_out, se_out = estimates[0], ses[0]
     else:
         est_out, se_out = estimates, ses
-    return RichResult(payload={
-        "estimate": est_out,
-        "se": se_out,
-        "n": int(n),
-        "method": f"Ordinary kriging ({model})",
-    })
+    return RichResult(
+        payload={
+            "estimate": est_out,
+            "se": se_out,
+            "n": int(n),
+            "method": f"Ordinary kriging ({model})",
+        }
+    )
 
 
 def cheatsheet():

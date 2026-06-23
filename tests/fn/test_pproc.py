@@ -1,6 +1,8 @@
 """Tests for morie.fn.pproc — point process intensity."""
+
 import numpy as np
 import pytest
+
 from morie.fn.pproc import point_process_intensity
 
 

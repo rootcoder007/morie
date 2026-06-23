@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrlmb -- Robust LM test for error"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrlmb import lm_robust_error
 

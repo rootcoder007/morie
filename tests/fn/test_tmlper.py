@@ -1,6 +1,7 @@
 """Tests for tmlper.tmle_periodic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlper import tmle_periodic
 
 
@@ -12,7 +13,7 @@ def test_tmlper_basic():
     period = np.random.default_rng(42).normal(0, 1, 100)
     result = tmle_periodic(y, D, X, period)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlper_edge():

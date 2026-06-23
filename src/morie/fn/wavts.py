@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Discrete wavelet decomposition for time series (Percival & Walden 2000)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -48,18 +49,22 @@ def wavelet_time_series(x, wavelet="haar", level=None):
 
     try:
         import pywt
+
         coeffs = pywt.wavedec(y, wavelet, level=level)
         cA = coeffs[0]
         cDs = coeffs[1:]
-        energies = [float(np.sum(c ** 2)) for c in coeffs]
-        return RichResult(payload={
-            "approximation": np.asarray(cA),
-            "details": [np.asarray(c) for c in cDs],
-            "energies": energies,
-            "level": int(level), "n": int(n),
-            "wavelet": wavelet,
-            "method": f"DWT via pywt (wavelet={wavelet}, level={level})",
-        })
+        energies = [float(np.sum(c**2)) for c in coeffs]
+        return RichResult(
+            payload={
+                "approximation": np.asarray(cA),
+                "details": [np.asarray(c) for c in cDs],
+                "energies": energies,
+                "level": int(level),
+                "n": int(n),
+                "wavelet": wavelet,
+                "method": f"DWT via pywt (wavelet={wavelet}, level={level})",
+            }
+        )
     except Exception:
         pass
 
@@ -77,15 +82,18 @@ def wavelet_time_series(x, wavelet="haar", level=None):
         cD = (even - odd) / np.sqrt(2.0)
         cDs.append(cD)
         cA = cA_new
-    energies = [float(np.sum(cA ** 2))] + [float(np.sum(c ** 2)) for c in cDs]
-    return RichResult(payload={
-        "approximation": cA,
-        "details": cDs[::-1],
-        "energies": energies,
-        "level": int(level), "n": int(n),
-        "wavelet": "haar",
-        "method": "Haar DWT (numpy fallback)",
-    })
+    energies = [float(np.sum(cA**2))] + [float(np.sum(c**2)) for c in cDs]
+    return RichResult(
+        payload={
+            "approximation": cA,
+            "details": cDs[::-1],
+            "energies": energies,
+            "level": int(level),
+            "n": int(n),
+            "wavelet": "haar",
+            "method": "Haar DWT (numpy fallback)",
+        }
+    )
 
 
 def cheatsheet():

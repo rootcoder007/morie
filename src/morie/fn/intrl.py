@@ -51,6 +51,7 @@ def interrupted_time_series(y: list[float] | np.ndarray, intervention_point: int
     se_beta = np.sqrt(np.diag(XtX_inv) * mse)
 
     from scipy import stats as st
+
     t_stats = beta / se_beta
     p_values = 2 * (1 - st.t.cdf(np.abs(t_stats), n - 4))
 

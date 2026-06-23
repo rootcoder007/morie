@@ -1,6 +1,8 @@
 """Tests for idwblk."""
+
 import numpy as np
 import pytest
+
 from morie.fn.idwblk import idwblk
 
 
@@ -28,4 +30,5 @@ def test_idwblk_no_data():
 
 def test_idwblk_alias():
     from morie.fn.idwblk import idwblk
+
     assert idwblk is idwblk

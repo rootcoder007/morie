@@ -1,6 +1,7 @@
 """Tests for cluseff.intracluster_correlation_rho."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cluseff import intracluster_correlation_rho
 
 
@@ -10,7 +11,7 @@ def test_cluseff_basic():
     cluster = np.random.default_rng(42).normal(0, 1, 100)
     result = intracluster_correlation_rho(y, cluster)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_cluseff_edge():

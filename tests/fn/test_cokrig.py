@@ -1,6 +1,7 @@
 """Tests for cokrig.cokriging."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cokrig import cokriging
 
 
@@ -13,7 +14,7 @@ def test_cokrig_basic():
     cross_vario = np.random.default_rng(42).normal(0, 1, 100)
     result = cokriging(coords, z1, z2, s0, cross_vario)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cokrig_edge():

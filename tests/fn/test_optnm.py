@@ -1,6 +1,7 @@
 """Tests for morie.fn.optnm -- Nelder-Mead MDS."""
 
 import numpy as np
+
 from morie.fn.optnm import nelder_mead_mds, optnm
 
 

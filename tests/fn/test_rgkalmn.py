@@ -1,6 +1,7 @@
 """Tests for rgkalmn.rangayyan_kalman_filter."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgkalmn import rangayyan_kalman_filter
 
 
@@ -15,7 +16,7 @@ def test_rgkalmn_basic():
     P0 = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_kalman_filter(z, F, H, Q, R, x0, P0)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgkalmn_edge():

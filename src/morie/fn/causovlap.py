@@ -1,6 +1,7 @@
 """Common-support / overlap diagnostic on PS distributions."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_overlap_diagnostic"]
@@ -32,7 +33,14 @@ def causal_overlap_diagnostic(ps, treat):
     n = len(ps)
     result = float(np.mean(ps))
     se = float(np.std(ps, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Common-support / overlap diagnostic on PS distributions"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Common-support / overlap diagnostic on PS distributions",
+        }
+    )
 
 
 def cheatsheet():

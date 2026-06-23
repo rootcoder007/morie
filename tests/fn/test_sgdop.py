@@ -1,5 +1,7 @@
 """Test SGD optimizer."""
+
 import numpy as np
+
 from morie.fn.sgdop import sgdop
 
 

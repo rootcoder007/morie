@@ -1,15 +1,16 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Truncated stick-breaking representation of a DP."""
+
 import numpy as np
-from scipy.stats import norm
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_stick_breaking_trunc"]
 
 
-def ghosal_stick_breaking_trunc(x, alpha=1.0, K=50, seed=0,
-                                  base_mean=None, base_sd=None,
-                                  deterministic_seed: int | None = None):
+def ghosal_stick_breaking_trunc(
+    x, alpha=1.0, K=50, seed=0, base_mean=None, base_sd=None, deterministic_seed: int | None = None
+):
     """Draw a truncated stick-breaking representation of ``DP(alpha, G0)``.
 
     Sethuraman (1994) representation::
@@ -56,6 +57,7 @@ def ghosal_stick_breaking_trunc(x, alpha=1.0, K=50, seed=0,
     """
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("ghstk", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -75,15 +77,17 @@ def ghosal_stick_breaking_trunc(x, alpha=1.0, K=50, seed=0,
     # Headline: G_K((-inf, t0]) = sum_k w_k * 1{theta_k <= t0}.
     estimate = float(np.sum(w * (theta <= t0)))
     trunc_bound = (alpha / (alpha + 1.0)) ** K
-    return RichResult(payload={
-        "estimate": estimate,
-        "weights": w.tolist(),
-        "atoms": theta.tolist(),
-        "effective_K": int(np.sum(w > 1e-3)),
-        "trunc_err_bound": float(trunc_bound),
-        "n": n,
-        "method": "Truncated stick-breaking DP draw (Sethuraman 1994)",
-    })
+    return RichResult(
+        payload={
+            "estimate": estimate,
+            "weights": w.tolist(),
+            "atoms": theta.tolist(),
+            "effective_K": int(np.sum(w > 1e-3)),
+            "trunc_err_bound": float(trunc_bound),
+            "n": n,
+            "method": "Truncated stick-breaking DP draw (Sethuraman 1994)",
+        }
+    )
 
 
 def cheatsheet():

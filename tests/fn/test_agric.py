@@ -1,6 +1,7 @@
 """Test agric."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agric import agric
 
 

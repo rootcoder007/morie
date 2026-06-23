@@ -123,7 +123,9 @@ def gmprl(
     x0[1] = 0.0  # start at exponential
 
     res = _opt.minimize(
-        _neg_ll, x0, method="L-BFGS-B",
+        _neg_ll,
+        x0,
+        method="L-BFGS-B",
         options={"maxiter": max_iter, "ftol": tol, "gtol": tol},
     )
     params_hat = res.x
@@ -132,11 +134,13 @@ def gmprl(
     # SE via numerical Hessian
     try:
         from scipy.optimize import approx_fprime
+
         eps = 1e-5
         hess = np.zeros((p_full, p_full))
         g0 = approx_fprime(params_hat, _neg_ll, eps)
         for j in range(p_full):
-            pp = params_hat.copy(); pp[j] += eps
+            pp = params_hat.copy()
+            pp[j] += eps
             g1 = approx_fprime(pp, _neg_ll, eps)
             hess[:, j] = (g1 - g0) / eps
         vcov = np.linalg.pinv((hess + hess.T) / 2)

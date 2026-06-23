@@ -1,6 +1,7 @@
 """Tests for deepF.deepfm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.deepF import deepfm
 
 
@@ -12,7 +13,7 @@ def test_deepF_basic():
     mlp_h = np.random.default_rng(42).normal(0, 1, 100)
     result = deepfm(X, y, K, mlp_h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_deepF_edge():

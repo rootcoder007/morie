@@ -1,6 +1,7 @@
 """Orwin's fail-safe N for trivial-effect target."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_orwin_fsn"]
@@ -36,7 +37,9 @@ def ma_orwin_fsn(d_obs, d_crit, d_filldraw, k):
     n = len(d_obs)
     result = float(np.mean(d_obs))
     se = float(np.std(d_obs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Orwin's fail-safe N for trivial-effect target"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Orwin's fail-safe N for trivial-effect target"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for rgvag.rangayyan_vag_analysis."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgvag import rangayyan_vag_analysis
 
 
@@ -10,7 +11,7 @@ def test_rgvag_basic():
     fs = 100.0
     result = rangayyan_vag_analysis(vag, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgvag_edge():

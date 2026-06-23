@@ -5,6 +5,7 @@ Phase 1 of the v0.9.1 backend port: each compiled-C++ kernel result is
 checked against an independent pure-numpy reference. Requires the built
 extension -- skipped on a bare PYTHONPATH=src checkout.
 """
+
 import math
 
 import numpy as np
@@ -52,15 +53,13 @@ def test_mean_var_std(rng):
 def test_cor_pearson(rng):
     x = rng.normal(size=400)
     y = 0.6 * x + rng.normal(size=400)
-    assert np.isclose(_jit.cor_pearson_jit(x, y),
-                      np.corrcoef(x, y)[0, 1], rtol=1e-9)
+    assert np.isclose(_jit.cor_pearson_jit(x, y), np.corrcoef(x, y)[0, 1], rtol=1e-9)
 
 
 def test_euclid_dist(rng):
     a = rng.normal(size=300)
     b = rng.normal(size=300)
-    assert np.isclose(_jit.euclid_dist_jit(a, b),
-                      np.linalg.norm(a - b), rtol=1e-12)
+    assert np.isclose(_jit.euclid_dist_jit(a, b), np.linalg.norm(a - b), rtol=1e-12)
 
 
 def test_trimmed_ipw_weights(rng):

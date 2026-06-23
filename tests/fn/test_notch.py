@@ -1,9 +1,9 @@
 """Test notch_filter_signal (notch)."""
-import numpy as np
-import pytest
 
-from morie.fn.notch import notch_filter_signal, notch
+import numpy as np
+
 from morie.fn._containers import SignalResult
+from morie.fn.notch import notch, notch_filter_signal
 
 
 class TestNotchFilter:

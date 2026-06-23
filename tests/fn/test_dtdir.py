@@ -1,6 +1,7 @@
 """Test dtdir."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtdir import dtdir
 
 

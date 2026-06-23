@@ -1,6 +1,7 @@
 """Tests for morie.fn.pwr_av -- power for one-way ANOVA."""
 
 import pytest
+
 from morie.fn.pwr_av import power_anova
 
 

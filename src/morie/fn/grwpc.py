@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """WordPiece likelihood-maximizing merge score."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_wordpiece_tokenizer_score"]
@@ -32,7 +34,9 @@ def geron_wordpiece_tokenizer_score(counts, pairs):
     n = len(counts)
     result = float(np.mean(counts))
     se = float(np.std(counts, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "WordPiece likelihood-maximizing merge score"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "WordPiece likelihood-maximizing merge score"}
+    )
 
 
 def cheatsheet():

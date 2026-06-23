@@ -1,6 +1,7 @@
 """Test elpd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.elpd import expected_log_pred
 
 

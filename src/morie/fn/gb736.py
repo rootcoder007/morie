@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Special case symmetry when N even and a_i = i for i <= N/2, else N-i+1."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_linrank_sym_special"]
@@ -30,7 +32,14 @@ def gibbons_linrank_sym_special(N):
     n = int(N) if N.ndim == 0 else len(N)
     result = float(np.mean(N))
     se = float(np.std(N, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Special case symmetry when N even and a_i = i for i <= N/2, else N-i+1"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Special case symmetry when N even and a_i = i for i <= N/2, else N-i+1",
+        }
+    )
 
 
 def cheatsheet():

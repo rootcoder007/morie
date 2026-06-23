@@ -1,7 +1,7 @@
 """Tests for morie.fn.aggta."""
 
 import numpy as np
-import pytest
+
 from morie.fn.aggta import aggta
 
 

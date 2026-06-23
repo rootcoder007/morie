@@ -1,6 +1,7 @@
 """Targeted MLE for NIE/NDE."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_mediation"]

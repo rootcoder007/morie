@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Embedding lookup: map token id to dense vector."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_embedding_lookup"]
@@ -32,7 +34,9 @@ def geron_embedding_lookup(ids, E):
     n = len(ids)
     result = float(np.mean(ids))
     se = float(np.std(ids, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Embedding lookup: map token id to dense vector"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Embedding lookup: map token id to dense vector"}
+    )
 
 
 def cheatsheet():
